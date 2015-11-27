@@ -58,7 +58,7 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 - 克隆或者下载代码：
 
-	<a href="https://github.com/star7th/showdoc" target="_blank">https://github.com/star7th/showdoc</a>
+	<a href="https://github.com/star7th/showdoc" target="_blank">GitHub地址</a>
 
 - 导入数据库
 
@@ -74,6 +74,7 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 ###版权
 
-ShowDoc遵循Apache2开源协议发布，并提供免费使用。
-版权所有Copyright © 2015 by star7th ( [http://blog.star7th.com/](http://blog.star7th.com/) )
+ShowDoc遵循Apache2开源协议发布，并提供免费使用。  
+版权所有Copyright © 2015 by star7th  <a href="http://blog.star7th.com/" target="_blank">blog.star7th.com/</a>
+
 All rights reserved
