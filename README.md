@@ -66,7 +66,7 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 - 修改配置文件
 
-	Application/Common/Conf/目录下的config.php.sample文件重命名为config.php。编辑config.php文件，填写相应的数据库信息
+	进入Application/Common/Conf/目录，编辑config.php文件，填写相应的数据库信息
 
 - 目录权限
 
