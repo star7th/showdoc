@@ -74,6 +74,6 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 ###版权
 
-	ShowDoc遵循Apache2开源协议发布，并提供免费使用。
-	版权所有Copyright © 2015 by star7th ( http://blog.star7th.com/ )
-	All rights reserved
+ShowDoc遵循Apache2开源协议发布，并提供免费使用。
+版权所有Copyright © 2015 by star7th ( [http://blog.star7th.com/](http://blog.star7th.com/) )
+All rights reserved
