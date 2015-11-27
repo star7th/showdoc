@@ -55,6 +55,7 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 		ShowDoc为页面提供历史版本功能，你可以方便地把页面恢复到之前的版本。
 
 ###如何部署代码
+
 	- 克隆或者下载代码：
 		<a href="https://github.com/star7th/showdoc" target="_blank">https://github.com/star7th/showdoc</a>
 	- 导出数据库
@@ -65,6 +66,7 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 		请确保Application/Runtime 有可写权限
 
 ###版权
+
 	ShowDoc遵循Apache2开源协议发布，并提供免费使用。
 	版权所有Copyright © 2015 by star7th ( http://blog.star7th.com/ )
 	All rights reserved
