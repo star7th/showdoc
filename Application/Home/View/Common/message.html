@@ -1,0 +1,38 @@
+
+<include file="Common/header" />
+<style type="text/css">
+.message {
+  width: 600px;
+  min-height: 80px;
+  padding: 20px 20px 10px 20px;
+  margin: 50px auto 0 auto;
+  border-width: 5px;
+  overflow: hidden;
+}
+.message .content {
+  overflow: hidden;
+}
+.message h4 {
+  margin: 10px 0;
+  line-height: 30px;
+}
+
+</style>
+<div class="message alert alert-{$type}">
+	<div class="icon pull-left"><i class="{if $type=='success'}icon-ok{else if $type=='error'}icon-remove{else if $type=='tips'}icon-exclamation-sign{else if $type=='sql'}icon-warning-sign{/if}"></i></div>
+	<div class="content">
+		<h4><?php echo $msg;?></h4>
+		<?php if($redirect){ ?>
+		<p><a href="<?php echo $redirect;?>">如果你的浏览器没有自动跳转，请点击此链接</a></p>
+		<script type="text/javascript">
+			setTimeout(function () {
+				location.href = "<?php echo $redirect;?>";
+			}, 3000);
+		</script>
+		<?php }else{ ?>
+		<p>[<a href="javascript:history.go(-1);">点击这里返回上一页</a>] &nbsp; [<a href="__APP__/">首页</a>]</p>
+		<?php } ?>
+	</div>
+</div>
+
+<include file="Common/footer" />

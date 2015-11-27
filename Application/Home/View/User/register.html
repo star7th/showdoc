@@ -1,0 +1,35 @@
+<include file="Common/header" />
+<link rel="stylesheet" href="__PUBLIC__/css/login.css" />
+
+    <div class="container">
+
+      <form class="form-signin" method="post">
+        <h3 class="form-signin-heading">注册新用户</h3>
+        <input type="text" class="input-block-level" name="username" placeholder="用户名（可填英文昵称或邮箱）">
+        <input type="password" class="input-block-level" name="password"  placeholder="密码">
+        <input type="password" class="input-block-level" name="confirm_password"  placeholder="再次输入密码">
+        <input type="password" class="input-block-level" name="v_code"  placeholder="验证码">
+        <div class="control-group">
+          <div class="controls">
+            <img src="#" id="v_code_img">
+          </div>
+        </div>
+        <button class="btn btn-large btn-primary" type="submit">注册</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="login">已有账号？马上去登录→</a>
+      </form>
+
+    </div> <!-- /container -->
+
+
+ <include file="Common/footer" />
+
+ <script type="text/javascript">
+ $(function(){
+    $("#v_code_img").attr("src" , DocConfig.pubile+'/verifyCode.php');
+    $("#v_code_img").click(function(){
+      var v_code_img = $("#v_code_img").attr("src");
+      $("#v_code_img").attr('src' ,v_code_img+'?'+Date.parse(new Date()) );
+    }); 
+ });
+
+</script>

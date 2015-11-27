@@ -1,0 +1,113 @@
+<include file="Common/header" />
+<link rel="stylesheet" href="__PUBLIC__/css/item/show.css" />
+
+
+<div class="doc-head row" >
+  <div class="left "><h2>{$item.item_name}</h2></div>
+  <div class="right">
+    <ul class="inline pull-right">
+
+      <if condition="$ItemPermn">
+      <li>
+          <div class="btn-group ">
+            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+              项目
+              <span class="caret"></span>
+            </a>
+          <ul class="dropdown-menu">
+          <!-- dropdown menu links -->
+            <li><a href="#" id="share">分享</a></li>
+             <li><a href="{:U('Home/Item/word')}?item_id={$item.item_id}">导出</a></li>
+
+             <if condition="$ItemCreator">
+              <li><a href="{:U('Home/Item/add')}?item_id={$item.item_id}">修改信息</a></li>          
+              <li><a href="{:U('Home/Member/edit')}?item_id={$item.item_id}">成员管理</a></li>
+              <li><a href="{:U('Home/Attorn/index')}?item_id={$item.item_id}">转让</a></li>
+              <li><a href="{:U('Home/Item/delete')}?item_id={$item.item_id}">删除</a></li>
+            </if>
+
+            <li><a href="{:U('Home/Item/index')}">更多项目</a></li>
+          </ul>
+      </li>
+      </if>
+      <if condition="! $login_user">
+        <li ><a href="{:U('Home/User/login')}">登录/注册</a></li>
+      </if>
+    </ul>
+    </div>  
+  </div>
+</div>
+
+<div class="doc-body row">
+  <!-- 左侧栏菜单 -->
+    <div class="doc-left span3 bs-docs-sidebar pull-left">
+      <ul class="nav nav-list bs-docs-sidenav">
+
+        <foreach name="pages" item="page">
+          <li ><a href="{:U('Home/Page/index')}?page_id={$page.page_id}" data-page-id="{$page.page_id}" ><i class="icon-blank"></i>{$page.page_title}</a></li>
+        </foreach>
+
+        <foreach name="catalogs" item="catalog">
+
+          <li><a href="#"><i class="icon-chevron-right"></i>{$catalog.cat_name}</a>
+            <ul class="child-ul nav-list hide">
+              <foreach name="catalog.pages" item="catalog_page">
+                <li><a href="{:U('Home/Page/index')}?page_id={$catalog_page.page_id}" data-page-id="{$catalog_page.page_id}" >{$catalog_page.page_title}</a></li>
+              </foreach>
+            </ul>
+          </li>
+
+        </foreach>
+
+      </ul>
+      <!-- 新建栏 -->
+      <div class="doc-left-newbar">
+
+        <if condition="$ItemPermn">
+          <div><a href="{:U('Home/Page/edit')}?item_id={$item.item_id}"><i class="icon-plus"></i>&nbsp;新建页面</a></div>
+          <div><a href="{:U('Home/Catalog/edit')}?item_id={$item.item_id}" ><i class="icon-folder-open"></i>新建目录</a></div>
+
+        </if>
+
+      </div>
+
+      <input type="hidden" id="item_id" value="{$item.item_id}">
+      <input type="hidden" id="page_id" value="{$page_id}">
+      <input type="hidden" id="base_url" value="__APP__">
+
+
+    </div>
+    <div class="doc-right  span12 ">
+      <!-- 编辑栏 -->
+      <div class='page-edit-link pull-right hide'>
+        <ul class="inline">
+          <if condition="$ItemPermn">
+            <li><a href="" id="edit-link">编辑</a></li>
+            <li><a href="" id="delete-link">删除</a></li>
+          <else />
+            <li></li>
+            <li></li>
+        </if>
+        </ul>
+      </div>
+      <!-- 页面内容 -->
+      <div class='iframe_content'>
+        <iframe id="page-content" width="100%" scrolling="yes"  height="100%" frameborder="0" style=" overflow:visible; height:100%;" name="main"  seamless ="seamless"src=""></iframe>
+      </div>
+
+    </div>
+
+<include file="Common/footer" />
+<!-- 分享框 -->
+<div class="modal hide fade" id="share-modal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>分享</h3>
+  </div>
+  <div class="modal-body">
+    <p>项目地址：<code>{$share_url}</code></p>
+    <p>你可以复制项目地址给你的好友</p>
+  </div>
+</div>
+
+<script src="__PUBLIC__/js/item/show.js"></script>

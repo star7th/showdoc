@@ -1,0 +1,29 @@
+<include file="Common/header" />
+<link href="__PUBLIC__/highlight/default.min.css" rel="stylesheet"> 
+<script src="__PUBLIC__/highlight/highlight.min.js"></script> 
+
+
+<!-- 这里开始是内容 -->
+<div class="">
+
+{$page.page_content}
+
+</div>
+
+
+
+
+ <include file="Common/footer" />
+<script>
+
+$(function(){
+    hljs.initHighlightingOnLoad();
+
+    //为所有table标签添加bootstap支持的表格类
+    $("table").addClass("table table-bordered table-hover");
+
+})
+
+
+
+</script>

@@ -1,0 +1,70 @@
+<include file="Common/header" />
+<link rel="stylesheet" href="__PUBLIC__/css/page/edit.css" />
+<link rel="stylesheet" href="__PUBLIC__/editor.md/css/editormd.css" />
+
+<style type="text/css">
+.btn-primary{
+    background-color: #006dcc;
+}
+.btn-primary:hover{
+    background-color: #04c;
+}
+#page_title , #cat_id , #order{
+  height: 30px;
+}
+#cat_id {
+  width: 150px;
+}
+#order{
+  width:120px;
+  margin-right: 20px;
+}
+</style>
+<div id="layout">
+    <!-- 顶部条 --> 
+    <header class="row">
+      <div class="head-left  pull-left">
+
+        <ul class="inline">
+          <li> <input type="text" name ="page_title" id="page_title" placeholder="请输入页面标题" value="{$page.page_title}">
+          </li>
+          <li>       
+            上级目录：<select name="cat_id" id="cat_id"></select>
+          </li>
+          <li>       
+            <input type="text" name ="order" id="order" value="{$page.order}" placeholder="可选：顺序数字">
+          </li>
+          <li>
+            <a href="history?page_id={$page.page_id}">历史版本</a>
+          </li>
+        </ul>
+
+      </div>
+      <div class="head-right pull-right">
+        <a href="#" class="btn btn-primary " id="save">保存</a>
+        <a href="../item/show?item_id={$item_id}&page_id={$page.page_id}" class="btn ">取消</a>
+      </div>
+
+    </header>
+      <br>
+      <!-- 插入模板的按钮组 -->
+      <div class="btns" >
+          <button id="api-doc">插入API接口模板</button>                    
+          <button id="database-doc">插入数据字典模板</button>                    
+      </div>
+
+    <div id="editormd">
+        <textarea id="page_content" style="display:none;">{$page.page_content}</textarea>
+    </div>
+      <input type="hidden" id="item_id" value="{$item_id}">
+      <input type="hidden" id="page_id" value="{$page.page_id}">
+      <input type="hidden" id="default_cat_id" value="{$page.cat_id}">
+  </div>
+
+<!-- 模板存放的地方 -->
+  <div id="api-doc-templ" style="display:none"><include file="MdTemplate/api-doc" /></div>
+  <div id="database-doc-templ" style="display:none"><include file="MdTemplate/database" /></div>
+
+ <include file="Common/footer" />
+ <script src="__PUBLIC__/editor.md/editormd.min.js"></script>
+ <script src="__PUBLIC__/js/page/edit.js"></script>

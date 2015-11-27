@@ -1,0 +1,70 @@
+<include file="Common/header" />
+<link rel="stylesheet" href="__PUBLIC__/css/item/index.css" />
+<style type="text/css">
+  .container-thumbnails{
+    margin-top: 60px;
+  }
+  .thumbnails li a{
+    color: #888;
+    font-weight: bold;
+  }
+  .thumbnails li a:hover,
+  .thumbnails li a:focus{
+    border-color:#f2f5e9;
+    -webkit-box-shadow:none;
+    box-shadow:none;
+    text-decoration: none;
+    background-color: #f2f5e9;
+  }
+</style>
+    <div class="container-narrow">
+
+      <div class="masthead">
+        <div class="btn-group pull-right">
+        <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+        {$login_user.username}
+        <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+        <!-- dropdown menu links -->
+          <li><a href="{:U('Home/User/setting')}">个人设置</a></li>
+          <li><a href="../">网站首页</a></li>
+          <li><a href="{:U('Home/User/exist')}">退出登录</a></li>
+
+        </ul>
+        </div>
+
+        </ul>
+        <h3 class="muted">ShowDoc</h3>
+      </div>
+
+      <hr>
+
+    <div class="container-thumbnails">
+      <ul class="thumbnails">
+
+        <foreach name="items" item="item">
+          <li class="span3 text-center">
+            <a class="thumbnail" href="show?item_id={$item.item_id}" title="{$item.item_description}">
+              <p class="my-item">{$item.item_name}</p>
+            </a>
+          </li>     
+        </foreach>
+
+        <li class="span3 text-center">
+          <a class="thumbnail" href="{:U('Home/Item/add')}" title="添加一个新项目">
+            <p class="my-item ">新建项目&nbsp;<i class="icon-plus"></i></p>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+
+    </div> <!-- /container -->
+
+
+ <include file="Common/footer" />
+ <script type="text/javascript">
+
+
+ </script>

@@ -1,0 +1,76 @@
+  body,html,.doc-body{
+    height: 100%;
+  }
+  .doc-head{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .doc-head .left{
+    padding-left: 30px;
+    float: left;
+  }
+
+  .doc-head .right{
+    padding-top: 15px;
+    padding-right: 40px;
+  }
+  .doc-left{
+    position: relative;
+    padding-top: 10px;
+    height: 100%;
+    border-right-color: rgb(221, 221, 221);
+    border-right-width: 1px;
+    border-right-style: solid;
+    overflow-y: auto;
+    display: block;
+    background: rgb(245, 245, 245);
+  }
+
+  .doc-left ul li{
+    font-size: 16px;
+    line-height: 30px;
+  }
+  .doc-left ul li a{
+    color: #000;
+  }
+  .doc-left ul li a:hover ,.doc-left ul li a:focus{
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.2);
+    background-color: #08c;
+  }
+
+  .child-ul{
+      list-style: none;
+      padding-left: 10px;
+  }
+  .child-ul li a {
+    padding: 3px 15px;
+    margin-right: -15px;
+    margin-left: -15px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    display: block;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 25px;
+  }
+
+  .icon-blank{
+    padding-right: 4px;
+  }
+
+  .doc-left-newbar{
+    float: right;
+    margin-right: 20px;
+    margin-top: 20px;
+  }
+
+  .page-edit-link{
+    padding-top: 10px;
+  }
+  .iframe_content{
+    padding-left: 20px;
+    padding-right: 20px;
+  }

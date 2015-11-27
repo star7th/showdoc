@@ -1,0 +1,44 @@
+<include file="Common/header" />
+<style type="text/css">
+.single-cat{
+  margin: 10px;
+}
+</style>
+ <div id="edit-cat" class="modal hide fade">
+  <!-- 编辑框 -->
+  <div class="cat-edit">
+      <div class="modal-header">
+      <h4>转让项目</h4>
+      </div>
+      <input type="hidden" id="item_id" value="{$item_id}">
+      <div class="add-cat">
+          <form class="form-horizontal">
+            <div class="control-group">
+              <label class="control-label" for="inputEmail">用户名</label>
+              <div class="controls">
+                <input type="text" id="username" placeholder="项目接收者用户名" value="">
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label" for="inputEmail">验证身份</label>
+              <div class="controls">
+                <input type="password" id="password" placeholder="你的登录密码" value="">
+              </div>
+            </div>
+            <div class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn" id="save-cat">转让</button>
+              </div>
+            </div>
+          </form>
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <a href="#" class="btn exist-cat">关闭</a>
+    </div>
+ </div>
+
+ <include file="Common/footer" />
+ <script src="__PUBLIC__/js/attorn/index.js"></script>

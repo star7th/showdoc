@@ -1,0 +1,42 @@
+<include file="Common/header" />
+<style type="text/css">
+.single-cat{
+  margin: 10px;
+
+}
+</style>
+ <div id="edit-cat" class="modal hide fade">
+  <div class="modal-header">
+    <h4>历史版本</h4>
+  </div>
+  <table class="table table-hover">
+    <TR>
+      <td>修改时间</td>
+      <td>修改人</td>
+      <td>操作</td>
+    </TR>
+    <if condition="$PageHistory">
+      <foreach name="PageHistory" item="value">
+      <TR>
+        <td>{$value.addtime}</td>
+        <td>{$value.author_username}</td>
+        <td><a href="edit?page_id={$page_id}&page_history_id={$value.page_history_id}">恢复到此版本</a></td>
+      </TR>
+
+      </foreach>
+    </if>
+  </table>
+
+    <div class="modal-footer">
+      <a href="edit?page_id={$page_id}" class="btn exist-cat">关闭</a>
+      <a href="edit?page_id={$page_id}" class="btn btn-primary exist-cat">完成</a>
+    </div>
+ </div>
+<input type="hidden" id="page_id" value="{$page_id}">
+ <include file="Common/footer" />
+ <script type="text/javascript">
+ $(function(){
+   $('#edit-cat').modal();
+ })
+
+ </script>

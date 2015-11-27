@@ -1,0 +1,19 @@
+<include file="Common/header" />
+<link rel="stylesheet" href="__PUBLIC__/css/login.css" />
+
+    <div class="container">
+
+      <form class="form-signin" method="post">
+        <input type="hidden" id="item_id" name="item_id" value="{$item.item_id}">
+        <!-- <h3 class="form-signin-heading">新建项目</h3> -->
+        <input type="text" class="input-block-level"  name="item_name" placeholder="项目名" value="{$item.item_name}" >
+        <input type="text" class="input-block-level"  name="item_description" placeholder="项目描述" value="{$item.item_description}">
+        <input type="password" class="input-block-level" name="password" placeholder="访问密码（可选，私密项目请设置密码）" value="{$item.password}">
+        <button class="btn  btn-primary" type="submit">提交</button>
+        <a href="javascript:history.go(-1)" class="btn">返回</a>
+      </form>
+
+    </div> <!-- /container -->
+
+
+ <include file="Common/footer" />
