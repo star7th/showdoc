@@ -22,6 +22,11 @@ $(function(){
     //为所有table标签添加bootstap支持的表格类
     $("table").addClass("table table-bordered table-hover");
 
+    //超链接都在新窗口打开
+	$('a[href^="http"]').each(function() {
+				$(this).attr('target', '_blank');
+	});
+
 })
 
 

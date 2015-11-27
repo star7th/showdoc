@@ -10,11 +10,11 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 ###它可以用来做什么
 
-- #### API文档（<a href="http://doc.star7th.com/2" target="_blank">查看Demo</a>）
+- #### API文档（ [查看Demo](http://doc.star7th.com/2)）
 
 	随着移动互联网的发展，BaaS（后端即服务）越来越流行。服务端提供API，APP端或者网页前端便可方便调用数据。用ShowDoc可以非常方便快速地编写出美观的API文档。
 
-- #### 数据字典（<a href="http://doc.star7th.com/1" target="_blank">查看Demo</a>）
+- #### 数据字典（ [查看Demo](http://doc.star7th.com/1)）
 
 	一份好的数据字典可以很方便地向别人说明你的数据库结构，如各个字段的释义等。
 
@@ -54,11 +54,12 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 	
 		ShowDoc为页面提供历史版本功能，你可以方便地把页面恢复到之前的版本。
 
-###如何部署代码
+
+###部署到自己的服务器
 
 - 克隆或者下载代码：
 
-	<a href="https://github.com/star7th/showdoc" target="_blank">GitHub地址</a>
+	[https://github.com/star7th/showdoc](https://github.com/star7th/showdoc")
 
 - 导入数据库
 
@@ -72,9 +73,12 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 	请确保Application/Runtime 有可写权限
 
+###使用在线的ShowDoc
+
+- 如果你没有自己的服务器，但又想使用ShowDoc作为分档分享工具，你可以使用在线的ShowDoc   [http://doc.star7th.com](http://doc.star7th.com/index.php/home/user/login)
+
 ###版权
 
-ShowDoc遵循Apache2开源协议发布，并提供免费使用。  
-版权所有Copyright © 2015 by star7th  <a href="http://blog.star7th.com/" target="_blank">blog.star7th.com/</a>
-
+- ShowDoc遵循Apache2开源协议发布，并提供免费使用。  
+版权所有Copyright © 2015 by star7th  [http://blog.star7th.com](http://blog.star7th.com)  
 All rights reserved.
