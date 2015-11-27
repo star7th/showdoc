@@ -56,14 +56,21 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 ###如何部署代码
 
-	- 克隆或者下载代码：
-		<a href="https://github.com/star7th/showdoc" target="_blank">https://github.com/star7th/showdoc</a>
-	- 导出数据库
-		下载代码后，将跟目录的showdoc.sql文件导入mysql数据库
-	- 修改配置文件
-		Application/Common/Conf/目录下的config.php.sample文件重命名为config.php。编辑config.php文件，填写相应的数据库信息
-	- 目录权限
-		请确保Application/Runtime 有可写权限
+- 克隆或者下载代码：
+
+	<a href="https://github.com/star7th/showdoc" target="_blank">https://github.com/star7th/showdoc</a>
+
+- 导入数据库
+
+	下载代码后，将跟目录的showdoc.sql文件导入mysql数据库
+
+- 修改配置文件
+
+	Application/Common/Conf/目录下的config.php.sample文件重命名为config.php。编辑config.php文件，填写相应的数据库信息
+
+- 目录权限
+
+	请确保Application/Runtime 有可写权限
 
 ###版权
 
