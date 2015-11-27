@@ -10,21 +10,19 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 ###它可以用来做什么
 
-- #### API文档
+- #### API文档（<a href="http://doc.star7th.com/2" target="_blank">查看Demo</a>）
 
 	随着移动互联网的发展，BaaS（后端即服务）越来越流行。服务端提供API，APP端或者网页前端便可方便调用数据。用ShowDoc可以非常方便快速地编写出美观的API文档。
-	API文档DEMO地址：<a href="http://doc.star7th.com/2" target="_blank">链接</a>
 
-- #### 数据字典
+- #### 数据字典（<a href="http://doc.star7th.com/1" target="_blank">查看Demo</a>）
 
 	一份好的数据字典可以很方便地向别人说明你的数据库结构，如各个字段的释义等。
-	数据字典DEMO地址：<a href="http://doc.star7th.com/1" target="_blank">链接</a>
 
 - #### 说明文档
 
 	你完全可以使用showdoc来编写一些工具的说明书。例如你正在看的教程说明便是用showdoc编辑的。你也可以编写一些技术规范说明文档以供团队查阅
 
-###它都有些什么功能：
+###它都有些什么功能
 
 	
 - ####分享与导出
@@ -55,3 +53,18 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 	- 历史版本
 	
 		ShowDoc为页面提供历史版本功能，你可以方便地把页面恢复到之前的版本。
+
+###如何部署代码
+	- 克隆或者下载代码：
+		<a href="https://github.com/star7th/showdoc" target="_blank">https://github.com/star7th/showdoc</a>
+	- 导出数据库
+		下载代码后，将跟目录的showdoc.sql文件导入mysql数据库
+	- 修改配置文件
+		Application/Common/Conf/目录下的config.php.sample文件重命名为config.php。编辑config.php文件，填写相应的数据库信息
+	- 目录权限
+		请确保Application/Runtime 有可写权限
+
+###版权
+	ShowDoc遵循Apache2开源协议发布，并提供免费使用。
+	版权所有Copyright © 2015 by star7th ( http://blog.star7th.com/ )
+	All rights reserved
