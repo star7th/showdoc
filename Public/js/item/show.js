@@ -99,7 +99,7 @@ $(function(){
     };
     //获取对应的page_id
     page_id = $(this).children("a").attr("data-page-id");
-    if (page_id != '' && page_id !='#') {
+    if (page_id != '' && page_id != null  && page_id !='#') {
         change_page(page_id);
         //如果是移动设备的话，则滚动页面
         if( isMobile()){
