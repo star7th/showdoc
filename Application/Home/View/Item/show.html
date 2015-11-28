@@ -29,10 +29,17 @@
             <li><a href="{:U('Home/Item/index')}">更多项目</a></li>
           </ul>
       </li>
-      </if>
+      <else />
+
       <if condition="! $login_user">
         <li ><a href="{:U('Home/User/login')}">登录/注册</a></li>
+        <else />
+        <li><a href="{:U('Home/Item/index')}">我的项目</a></li>
       </if>
+
+        
+      </if>
+
     </ul>
     </div>  
   </div>
