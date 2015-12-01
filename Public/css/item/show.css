@@ -74,3 +74,7 @@
     padding-left: 20px;
     padding-right: 20px;
   }
+
+  .search-query-input{
+    width: 130px;
+  }

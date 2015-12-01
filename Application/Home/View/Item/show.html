@@ -49,6 +49,15 @@
 <div class="doc-body row">
   <!-- 左侧栏菜单 -->
     <div class="doc-left span3 bs-docs-sidebar pull-left">
+        <form class="form-search text-center" action="" method="get">
+          <div class="input-append search-input-append">
+            <i class="icon-blank"></i>
+            <input type="text" name="keyword" class="search-query search-query-input" value="{$keyword}">
+            <input type="hidden" name="item_id" value="{$item.item_id}">
+            <button type="submit" class="btn"><i class="icon-search"></i></button>
+          </div>
+        </form>
+
       <ul class="nav nav-list bs-docs-sidenav">
 
         <foreach name="pages" item="page">

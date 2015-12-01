@@ -14,7 +14,7 @@ $(function(){
     $(".doc-left li").each(function(){
       url = $(this).children("a").attr("href");
       //如果链接中包含当前url的信息，两者相匹配
-      if (url.indexOf(str) >= 0 ) {
+      if (url && url.indexOf(str) >= 0 ) {
         //激活菜单
         $(this).addClass("active");
         //如果该菜单是子菜单，则还需要把父菜单打开才行
@@ -70,6 +70,10 @@ $(function(){
     $(".doc-left-newbar").html('');
     $(".iframe_content").css("padding-left","30px");
     $(".doc-left .nav-list li a i ").css("margin-left" , '10px');
+    $(".search-input-append").css("width","100%");
+    $(".search-query-input").css("width","70%");
+
+
 
   }
 

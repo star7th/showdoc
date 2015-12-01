@@ -55,22 +55,34 @@ class ItemController extends BaseController {
     //展示单个项目
     public function show(){
         $item_id = I("item_id");
+        $keyword = I("keyword");
         $login_user = session("login_user");
         $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
             
         $this->checkItemVisit($uid , $item_id);
 
+
         $item = D("Item")->where("item_id = '$item_id' ")->find();
-        //获取所有父目录id为0的页面
-        $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `order` asc  ")->select();
-        //获取所有目录
-        $catalogs = D("Catalog")->where("item_id = '$item_id' ")->order(" `order` asc  ")->select();
-        if ($catalogs) {
-            foreach ($catalogs as $key => &$catalog) {
-                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `order` asc  ")->select();
-                $catalog['pages'] = $temp ? $temp: array();
+
+        //是否有搜索词
+        if ($keyword) {
+            
+            $pages = D("Page")->where("item_id = '$item_id' and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `order` asc  ")->select();
+        
+        }else{
+            //获取所有父目录id为0的页面
+            $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `order` asc  ")->select();
+            //获取所有目录
+            $catalogs = D("Catalog")->where("item_id = '$item_id' ")->order(" `order` asc  ")->select();
+            if ($catalogs) {
+                foreach ($catalogs as $key => &$catalog) {
+                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `order` asc  ")->select();
+                    $catalog['pages'] = $temp ? $temp: array();
+                }
             }
         }
+
+
 
         $share_url = get_domain().__APP__.'/'.$item_id;
 
@@ -78,6 +90,7 @@ class ItemController extends BaseController {
 
         $ItemCreator = $this->checkItemCreator($uid , $item_id);
 
+        $this->assign("keyword" , $keyword);
         $this->assign("ItemPermn" , $ItemPermn);
         $this->assign("ItemCreator" , $ItemCreator);
         $this->assign("share_url" , $share_url);
