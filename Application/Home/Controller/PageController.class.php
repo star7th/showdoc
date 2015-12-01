@@ -54,7 +54,7 @@ class PageController extends BaseController {
     public function save(){
         $login_user = $this->checkLogin();
         $page_id = I("page_id") ? I("page_id") : 0 ;
-        $page_title = I("page_title");
+        $page_title = I("page_title") ?I("page_title") : '默认页面';
         $page_content = I("page_content");
         $cat_id = I("cat_id")? I("cat_id") : 0;
         $item_id = I("item_id")? I("item_id") : 0;
