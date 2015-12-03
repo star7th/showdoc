@@ -200,7 +200,7 @@ class ItemController extends BaseController {
             foreach ($pages as $key => $value) {
                 $data .= "<h1>{$parent}、{$value['page_title']}</h1>";
                 $data .= '<div style="margin-left:20px;">';
-                    $data .= $Parsedown->text($value['page_content']);
+                    $data .= htmlspecialchars_decode($Parsedown->text($page['page_content']));
                 $data .= '</div>';
                 $parent ++;
             }
