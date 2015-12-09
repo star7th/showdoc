@@ -37,7 +37,11 @@ $(function() {
       height  : 1000,
       syncScrolling : "single",
       path    : DocConfig.pubile + "/editor.md/lib/" ,
-      placeholder : "本编辑器支持Markdown编辑，左边编写，右边预览"
+      placeholder : "本编辑器支持Markdown编辑，左边编写，右边预览",
+      imageUpload : true,
+      imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+      imageUploadURL : "ImgUpload",
+
   });
 
   /*插入API接口模板*/
