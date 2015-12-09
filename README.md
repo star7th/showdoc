@@ -63,7 +63,7 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 - 导入数据库
 
-	下载代码后，将跟目录的showdoc.sql文件导入mysql数据库
+	下载代码后，将根目录的showdoc.sql文件导入mysql数据库
 
 - 修改配置文件
 
@@ -80,5 +80,7 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 ###版权
 
 - ShowDoc遵循Apache2开源协议发布，并提供免费使用。  
-版权所有Copyright © 2015 by star7th  [http://blog.star7th.com](http://blog.star7th.com)  
+版权所有Copyright © 2015 by star7th  
+博客：[http://blog.star7th.com](http://blog.star7th.com)  
+邮箱：xing7th#gmail.com（把#改为@）
 All rights reserved.
