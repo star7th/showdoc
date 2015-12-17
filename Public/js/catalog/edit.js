@@ -59,22 +59,25 @@ $(function(){
 
   //删除目录
   $("#delete-cat").click(function(){
-      var cat_id = $("#cat_id").val();
-      if (cat_id > 0 ) {
-          $.post(
-              "delete",
-              { "cat_id": cat_id  },
-              function(data){
-                if (data.error_code == 0) {
-                  alert("删除成功！");
-                }else{
-                  alert("删除失败！");
-                }
-              },
-              "json"
-            );
-      }
+    if(confirm('确认删除吗？')){
+        var cat_id = $("#cat_id").val();
+        if (cat_id > 0 ) {
+            $.post(
+                "delete",
+                { "cat_id": cat_id  },
+                function(data){
+                  if (data.error_code == 0) {
+                    alert("删除成功！");
+                  }else{
+                    alert("删除失败！");
+                  }
+                },
+                "json"
+              );
+        }
       window.location.href="edit?item_id="+item_id;
+    }
+
       return false;
   })
 

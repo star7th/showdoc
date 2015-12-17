@@ -100,7 +100,7 @@
         <ul class="inline">
           <if condition="$ItemPermn">
             <li><a href="" id="edit-link">编辑</a></li>
-            <li><a href="" id="delete-link">删除</a></li>
+            <li><a href="" onclick="return confirm('确认删除吗？');return false;" id="delete-link">删除</a></li>
           <else />
             <li></li>
             <li></li>
