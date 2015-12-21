@@ -9,7 +9,7 @@ class PageController extends BaseController {
         $page_id = I("page_id");
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
         $Parsedown = new \Parsedown();
-        $page['page_content'] = htmlspecialchars_decode($Parsedown->text($page['page_content']));//重新转义回来。因为Parsedown会把代码块里的代码也解析称html实体
+        $page['page_content'] = $Parsedown->text(htmlspecialchars_decode($page['page_content']));
         $this->assign("page" , $page);
         $this->display();
     }
