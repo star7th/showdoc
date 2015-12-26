@@ -159,7 +159,6 @@ class PageController extends BaseController {
         $info = $upload->upload() ;
         if(!$info) {// 上传错误提示错误信息
           $this->error($upload->getError());
-          $this->sendError(10101);
           return;
         }else{// 上传成功 获取上传文件信息
           
