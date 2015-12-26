@@ -163,7 +163,7 @@ class PageController extends BaseController {
           return;
         }else{// 上传成功 获取上传文件信息
           
-          $url = get_domain().__ROOT__.$upload->rootPath.$info['editormd-image-file']['savepath'].$info['editormd-image-file']['savename'] ;
+          $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['editormd-image-file']['savepath'].$info['editormd-image-file']['savename'] ;
           echo json_encode(array("url"=>$url,"success"=>1));
         }
     }
