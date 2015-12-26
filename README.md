@@ -71,7 +71,7 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 - 目录权限
 
-	请确保Application/Runtime 有可写权限
+	请确保Application/Runtime 和Public/Uploads 有可写权限
 
 ###使用在线的ShowDoc
 

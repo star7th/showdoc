@@ -40,7 +40,7 @@ $(function() {
       placeholder : "本编辑器支持Markdown编辑，左边编写，右边预览",
       imageUpload : true,
       imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-      imageUploadURL : "ImgUpload",
+      imageUploadURL : "uploadImg",
 
   });
 
