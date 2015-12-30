@@ -113,8 +113,8 @@ class PageController extends BaseController {
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
 
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
-            $this->message("你无权限");
+        if (!$this->checkItemCreator($login_user['uid'] , $page['item_id']) && $login_user['uid'] != $page['author_uid']) {
+            $this->message("你无权限！此页面由".$page['author_username']."创建");
             return;
         }
 
