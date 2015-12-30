@@ -99,6 +99,7 @@
       <div class='page-edit-link pull-right hide'>
         <ul class="inline">
           <if condition="$ItemPermn">
+            <li><a href="" id="share-page">分享</a></li>
             <li><a href="" id="edit-link">编辑</a></li>
             <li><a href="" onclick="return confirm('确认删除吗？');return false;" id="delete-link">删除</a></li>
           <else />
@@ -115,7 +116,7 @@
     </div>
 
 <include file="Common/footer" />
-<!-- 分享框 -->
+<!-- 分享项目框 -->
 <div class="modal hide fade" id="share-modal">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -123,7 +124,19 @@
   </div>
   <div class="modal-body">
     <p>项目地址：<code>{$share_url}</code></p>
-    <p>你可以复制项目地址给你的好友</p>
+    <p>你可以复制地址给你的好友</p>
+  </div>
+</div>
+
+<!-- 分享页面框 -->
+<div class="modal hide fade" id="share-page-modal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>分享页面</h3>
+  </div>
+  <div class="modal-body">
+    <p>页面地址：<code id="share-page-link"></code></p>
+    <p>你可以复制地址给你的好友</p>
   </div>
 </div>
 
