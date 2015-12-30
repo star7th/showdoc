@@ -87,7 +87,16 @@ class CatalogController extends BaseController {
         
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->message("你无权限");
+            $return['error_code'] = -1 ;
+            $return['error_message'] = '你无权限' ;
+            $this->sendResult($return);
+            return;
+        }
+
+        if (D("Page")->where(" cat_id = '$cat_id' ")->find()) {
+            $return['error_code'] = -1 ;
+            $return['error_message'] = '为了安全，不允许直接删除非空目录。请先删除或转移该目录下的所有页面' ;
+            $this->sendResult($return);
             return;
         }
 
@@ -99,7 +108,7 @@ class CatalogController extends BaseController {
         if ($ret) {
            $this->sendResult($ret);
         }else{
-            $return['error_code'] = 10103 ;
+            $return['error_code'] = -1 ;
             $return['error_message'] = 'request  fail' ;
             $this->sendResult($return);
         }

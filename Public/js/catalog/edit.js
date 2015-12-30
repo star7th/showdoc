@@ -68,14 +68,19 @@ $(function(){
                 function(data){
                   if (data.error_code == 0) {
                     alert("删除成功！");
+                    window.location.href="edit?item_id="+item_id;
                   }else{
-                    alert("删除失败！");
+                    if (data.error_message) {
+                      alert(data.error_message);
+                    }else{
+                      alert("删除失败！");
+                    }
+                    
                   }
                 },
                 "json"
               );
         }
-      window.location.href="edit?item_id="+item_id;
     }
 
       return false;
