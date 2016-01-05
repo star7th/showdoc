@@ -39,7 +39,7 @@ $(function() {
       path    : DocConfig.pubile + "/editor.md/lib/" ,
       placeholder : "本编辑器支持Markdown编辑，左边编写，右边预览",
       imageUpload : true,
-      imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+      imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp","JPG", "JPEG", "GIF", "PNG", "BMP", "WEBP"],
       imageUploadURL : "uploadImg",
 
   });
