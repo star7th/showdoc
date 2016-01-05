@@ -54,6 +54,7 @@ class ItemController extends BaseController {
 
     //展示单个项目
     public function show(){
+        $this->checkLogin(false);
         $item_id = I("item_id");
         $keyword = I("keyword");
         $login_user = session("login_user");

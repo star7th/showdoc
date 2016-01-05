@@ -9,7 +9,7 @@ class BaseController extends Controller {
 		$this->display ("Common/message");
 	}
 
-	public function checkLogin(){
+	public function checkLogin($redirect = true){
 		if ( ! session("login_user")) {
 			$cookie_token = cookie('cookie_token');
 			if ($cookie_token) {
@@ -21,8 +21,10 @@ class BaseController extends Controller {
 
 				}
 			}
-			$this->message("你尚未登录！",U('Home/User/login'));
-			exit();
+			if ($redirect) {
+				$this->message("你尚未登录！",U('Home/User/login'));
+				exit();
+			}
 		}else{
 			return  session("login_user") ;
 		}
