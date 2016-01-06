@@ -8,6 +8,11 @@ class PageController extends BaseController {
         import("Vendor.Parsedown.Parsedown");
         $page_id = I("page_id");
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
+        $login_user = $this->checkLogin(false);
+        if (!$this->checkItemVisit($login_user['uid'] , $page['item_id'])) {
+            $this->message("你无权限");
+            return;
+        }
         $Parsedown = new \Parsedown();
         $page['page_content'] = $Parsedown->text(htmlspecialchars_decode($page['page_content']));
         $this->assign("page" , $page);
