@@ -28,7 +28,10 @@ class PageController extends BaseController {
 
     //编辑页面
     public function edit(){
+        $login_user = $this->checkLogin();
         $page_id = I("page_id");
+        $item_id = I("item_id");
+
         $page_history_id = I("page_history_id");
 
         if ($page_id > 0 ) {
@@ -37,19 +40,26 @@ class PageController extends BaseController {
             }else{
                 $page = D("Page")->where(" page_id = '$page_id' ")->find();
             }
-            
-            $this->assign("page" , $page);
+            $default_cat_id = $page['cat_id'];
+        }else{
+            //查找用户上一次设置的目录
+            $last_page = D("Page")->where(" author_uid ='$login_user[uid]' and $item_id = '$item_id' ")->order(" addtime desc ")->limit(1)->find();
+            $default_cat_id = $last_page['cat_id'];
+
         }
 
-        $item_id = $page['item_id'] ?$page['item_id'] :I("item_id");
+        $item_id = $page['item_id'] ?$page['item_id'] :$item_id;
 
-        $login_user = $this->checkLogin();
+        
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
             $this->message("你无权限");
             return;
         }
 
+
+        $this->assign("page" , $page);
         $this->assign("item_id" , $item_id);
+        $this->assign("default_cat_id" , $default_cat_id);
 
 
         $this->display();        
