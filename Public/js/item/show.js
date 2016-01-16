@@ -152,7 +152,36 @@ $(function(){
       return height
   }
 
-
+  var keyMap = {
+    // 编辑
+    "Ctrl+E": function() {
+      location.href = $("#edit-link").attr('href');
+    },
+    // 删除
+    "Ctrl+D": function() {
+      if (confirm('确认删除吗？'))
+        location.href = $("#delete-link").attr('href');
+    },
+    // 新建页面
+    "Ctrl+F1": function() {
+      location.href = $("#new-like").attr('href');
+    },
+    // 新建目录
+    "Ctrl+F2": function() {
+      location.href = $("#dir-like").attr('href');
+    }
+  };
+  if (!isMobile()) initKeys();
+  function initKeys() {
+    var $doc = $(document);
+    $.each(keyMap, function(key, fn) {
+      $doc.on('keydown', null, key, function(e) {
+        e.preventDefault();
+        fn();
+        return false;
+      });
+    });
+  }
     
 })
 

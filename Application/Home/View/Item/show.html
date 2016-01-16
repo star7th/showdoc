@@ -81,8 +81,8 @@
       <div class="doc-left-newbar">
 
         <if condition="$ItemPermn">
-          <div><a href="{:U('Home/Page/edit')}?item_id={$item.item_id}"><i class="icon-plus"></i>&nbsp;新建页面</a></div>
-          <div><a href="{:U('Home/Catalog/edit')}?item_id={$item.item_id}" ><i class="icon-folder-open"></i>新建目录</a></div>
+          <div><a href="{:U('Home/Page/edit')}?item_id={$item.item_id}&type=new" id="new-like"><i class="icon-plus"></i>&nbsp;新建页面</a></div>
+          <div><a href="{:U('Home/Catalog/edit')}?item_id={$item.item_id}" id="dir-like" ><i class="icon-folder-open"></i>新建目录</a></div>
 
         </if>
 
@@ -139,5 +139,7 @@
     <p>你可以复制地址给你的好友</p>
   </div>
 </div>
+<script src="__PUBLIC__/js/jquery.bootstrap-growl.min.js"></script>
+<script src="__PUBLIC__/js/jquery.hotkeys.js"></script>
 
 <script src="__PUBLIC__/js/item/show.js"></script>

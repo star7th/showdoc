@@ -31,14 +31,14 @@
         <div class="head-left  pull-left">
             <ul class="inline">
                 <li>
-                    <input type="text" name="page_title" id="page_title" placeholder="请输入页面标题" value="{$page.page_title}">
+                    <input type="text" name="page_title" id="page_title" placeholder="请输入页面标题" value="{$page.page_title}" tabindex="1">
                 </li>
                 <li>
                     上级目录：
-                    <select name="cat_id" id="cat_id"></select>
+                    <select name="cat_id" id="cat_id" tabindex="2"></select>
                 </li>
                 <li>
-                    <input type="text" name="order" id="order" value="{$page.order}" placeholder="可选：顺序数字">
+                    <input type="text" name="order" id="order" value="{$page.order}" placeholder="可选：顺序数字"  tabindex="3" >
                 </li>
                 <li>
                     <!-- 首次添加没有历史版本，不显示 -->
@@ -51,17 +51,17 @@
         </div>
         <div class="head-right pull-right">
             <a href="#" class="btn btn-primary " id="save">保存</a>
-            <a href="../item/show?item_id={$item_id}&page_id={$page.page_id}" class="btn ">取消</a>
+            <a href="../item/show?item_id={$item_id}&page_id={$page.page_id}" class="btn cancel">取消</a>
         </div>
     </header>
     <br>
     <!-- 插入模板的按钮组 -->
     <div class="btns">
-        <button id="api-doc">插入API接口模板</button>
-        <button id="database-doc">插入数据字典模板</button>
+        <button id="api-doc" tabindex="4" >插入API接口模板</button>
+        <button id="database-doc" tabindex="5" >插入数据字典模板</button>
     </div>
     <div id="editormd">
-        <textarea id="page_content" style="display:none;">{$page.page_content}</textarea>
+        <textarea id="page_content" style="display:none;" tabindex="6" >{$page.page_content}</textarea>
     </div>
     <input type="hidden" id="item_id" value="{$item_id}">
     <input type="hidden" id="page_id" value="{$page.page_id}">
@@ -75,6 +75,8 @@
     <include file="MdTemplate/database" />
 </div>
 <include file="Common/footer" />
+<script src="__PUBLIC__/js/jquery.bootstrap-growl.min.js"></script>
+<script src="__PUBLIC__/js/jquery.hotkeys.js"></script>
 <script src="__PUBLIC__/editor.md/editormd.min.js"></script>
 <script src="__PUBLIC__/editor.md/plugins/image-dialog/image-dialog.js"></script>
 <script src="__PUBLIC__/editor.md/plugins/link-dialog/link-dialog.js"></script>
