@@ -57,6 +57,11 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 ###部署到自己的服务器
 
+- 环境要求
+
+	PHP5.3以上版本、php-mbstring模块、php-pdo模块、mysql数据库
+
+
 - 克隆或者下载代码：
 
 	[https://github.com/star7th/showdoc](https://github.com/star7th/showdoc)
