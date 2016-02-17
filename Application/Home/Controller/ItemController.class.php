@@ -15,7 +15,7 @@ class ItemController extends BaseController {
     //新建项目
     public function add(){
     	$login_user = $this->checkLogin();
-        $item_id = I("item_id");
+        $item_id = I("item_id/d");
 		if (!IS_POST) {
           $item = D("Item")->where("item_id = '$item_id' ")->find();
           $this->assign("item" , $item);
@@ -55,7 +55,7 @@ class ItemController extends BaseController {
     //展示单个项目
     public function show(){
         $this->checkLogin(false);
-        $item_id = I("item_id");
+        $item_id = I("item_id/d");
         $keyword = I("keyword");
         $login_user = session("login_user");
         $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
@@ -67,7 +67,7 @@ class ItemController extends BaseController {
 
         //是否有搜索词
         if ($keyword) {
-            
+            $keyword = mysql_escape_string($keyword);
             $pages = D("Page")->where("item_id = '$item_id' and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `order` asc  ")->select();
         
         }else{
@@ -118,7 +118,7 @@ class ItemController extends BaseController {
     public function ajaxDelete(){
         $login_user = $this->checkLogin();
 
-        $item_id = I("item_id");
+        $item_id = I("item_id/d");
         $password = I("password");
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
@@ -146,7 +146,7 @@ class ItemController extends BaseController {
 
     //输入访问密码
     public function pwd(){
-        $item_id = I("item_id");
+        $item_id = I("item_id/d");
         if (!IS_POST) {
           $this->assign("item_id" , $item_id);
           $this->display ();
@@ -175,7 +175,7 @@ class ItemController extends BaseController {
     public function word(){
         import("Vendor.Parsedown.Parsedown");
         $Parsedown = new \Parsedown();
-        $item_id =  I("item_id");
+        $item_id =  I("item_id/d");
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
             $this->message("你无权限");

@@ -46,7 +46,7 @@ class UserController extends BaseController {
 			//如果有cookie记录，则自动登录
 			$cookie_token = cookie('cookie_token');
 			if ($cookie_token) {
-				$ret = D("User")->where("cookie_token = '$cookie_token' ")->find();
+				$ret = D("User")->where("cookie_token = '%s' ",array($cookie_token))->find();
 				if ($ret && $ret['cookie_token_expire'] > time() ) {
 					$login_user = $ret ;
 					session("login_user" , $login_user);

@@ -18,14 +18,14 @@ class MemberController extends BaseController {
 
     //保存
     public function save(){
-        $item_id =  I("item_id");
+        $item_id =  I("item_id/d");
         $login_user = $this->checkLogin();
         if (!$this->checkItemCreator($login_user['uid'] , $item_id)) {
             $this->message("你无权限");
             return;
         }
         $username = I("username");
-        $member = D("User")->where(" username = '$username' ")->find();
+        $member = D("User")->where(" username = '%s' ",array($username))->find();
 
         if (!$member) {
             $return['error_code'] = 10201 ;
@@ -54,7 +54,7 @@ class MemberController extends BaseController {
 
     //获取成员列表
     public function getList(){
-        $item_id = I("item_id");
+        $item_id = I("item_id/d");
         if ($item_id > 0 ) {
             $ret = D("ItemMember")->where(" item_id = '$item_id' ")->order(" 'order', addtime asc  ")->select();
         }
@@ -69,7 +69,7 @@ class MemberController extends BaseController {
 
     //删除目录
     public function delete(){
-        $item_id = I("item_id")? I("item_id") : 0;
+        $item_id = I("item_id/d")? I("item_id/d") : 0;
         $login_user = $this->checkLogin();
         if (!$this->checkItemCreator($login_user['uid'] , $item_id)) {
             $this->message("你无权限");
@@ -79,7 +79,7 @@ class MemberController extends BaseController {
 
         if ($username) {
             
-            $ret = D("ItemMember")->where(" item_id = '$item_id' and username = '$username'  ")->limit(1)->delete();
+            $ret = D("ItemMember")->where(" item_id = '%d' and username = '%s'  ",array($item_id,$username))->limit(1)->delete();
 
         }
         if ($ret) {

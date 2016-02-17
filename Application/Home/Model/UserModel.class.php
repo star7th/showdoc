@@ -9,7 +9,7 @@ class UserModel extends BaseModel {
      * 
      */
     public function isExist($username){
-        return  $this->where("username = '$username'")->find();
+        return  $this->where("username = '%s'",array($username))->find();
     }
 
     /**
@@ -24,7 +24,7 @@ class UserModel extends BaseModel {
     //修改用户密码
     public function updatePwd($uid, $password){
         $password = md5(base64_encode(md5($password)).'576hbgh6');
-        return $this->where("uid ='$uid' ")->save(array('password'=>$password));   
+        return $this->where("uid ='%d' ",array($uid))->save(array('password'=>$password));   
     }
 
     /**
@@ -32,7 +32,7 @@ class UserModel extends BaseModel {
      * @return 
      */
     public function userInfo($uid){
-        return  $this->where("uid = '$uid'")->find();
+        return  $this->where("uid = '%d'",array($uid))->find();
     }
     
     /**

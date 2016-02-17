@@ -6,7 +6,7 @@ class PageController extends BaseController {
     //展示某个项目的单个页面
     public function index(){
         import("Vendor.Parsedown.Parsedown");
-        $page_id = I("page_id");
+        $page_id = I("page_id/d");
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
         $login_user = $this->checkLogin(false);
         if (!$this->checkItemVisit($login_user['uid'] , $page['item_id'])) {
@@ -21,7 +21,7 @@ class PageController extends BaseController {
 
     //返回单个页面的源markdown代码
     public function md(){
-        $page_id = I("page_id");
+        $page_id = I("page_id/d");
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
         echo $page['page_content'];
     }
@@ -29,10 +29,10 @@ class PageController extends BaseController {
     //编辑页面
     public function edit(){
         $login_user = $this->checkLogin();
-        $page_id = I("page_id");
-        $item_id = I("item_id");
+        $page_id = I("page_id/d");
+        $item_id = I("item_id/d");
 
-        $page_history_id = I("page_history_id");
+        $page_history_id = I("page_history_id/d");
 
         if ($page_id > 0 ) {
             if ($page_history_id) {
@@ -68,12 +68,12 @@ class PageController extends BaseController {
     //保存
     public function save(){
         $login_user = $this->checkLogin();
-        $page_id = I("page_id") ? I("page_id") : 0 ;
+        $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
         $page_title = I("page_title") ?I("page_title") : '默认页面';
         $page_content = I("page_content");
-        $cat_id = I("cat_id")? I("cat_id") : 0;
-        $item_id = I("item_id")? I("item_id") : 0;
-        $order = I("order")? I("order") : 99;
+        $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
+        $item_id = I("item_id/d")? I("item_id/d") : 0;
+        $order = I("order/d")? I("order/d") : 99;
 
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
@@ -124,7 +124,7 @@ class PageController extends BaseController {
 
     //删除页面
     public function delete(){
-        $page_id = I("page_id")? I("page_id") : 0;
+        $page_id = I("page_id/d")? I("page_id/d") : 0;
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
 
         $login_user = $this->checkLogin();
@@ -147,7 +147,7 @@ class PageController extends BaseController {
 
     //历史版本
     public function history(){
-        $page_id = I("page_id") ? I("page_id") : 0 ;
+        $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
         $this->assign("page_id" , $page_id);
 
         $PageHistory = D("PageHistory")->where("page_id = '$page_id' ")->order(" addtime desc")->limit(10)->select();

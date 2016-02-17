@@ -21,7 +21,7 @@ class AttornController extends BaseController {
         $login_user = $this->checkLogin();
 
         $username = I("username");
-        $item_id = I("item_id");
+        $item_id = I("item_id/d");
         $password = I("password");
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
@@ -33,7 +33,7 @@ class AttornController extends BaseController {
             return ;
         }
 
-        $member = D("User")->where(" username = '$username' ")->find();
+        $member = D("User")->where(" username = '%s' ",array($username))->find();
 
         if (!$member) {
             $return['error_code'] = 10201 ;

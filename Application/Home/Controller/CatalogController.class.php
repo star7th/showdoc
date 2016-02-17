@@ -6,7 +6,7 @@ class CatalogController extends BaseController {
     //编辑页面
     public function edit(){
 
-        $cat_id = I("cat_id");
+        $cat_id = I("cat_id/d");
 
         $Catalog = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
 
@@ -30,9 +30,9 @@ class CatalogController extends BaseController {
     //保存目录
     public function save(){
         $cat_name = I("cat_name");
-        $order = I("order") ? I("order") : 99 ;
-        $cat_id = I("cat_id")? I("cat_id") : 0;
-        $item_id =  I("item_id");
+        $order = I("order/d") ? I("order/d") : 99 ;
+        $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
+        $item_id =  I("item_id/d");
 
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
@@ -66,7 +66,7 @@ class CatalogController extends BaseController {
 
     //获取目录列表
     public function catList(){
-        $item_id = I("item_id");
+        $item_id = I("item_id/d");
         if ($item_id > 0 ) {
             $ret = D("Catalog")->where(" item_id = '$item_id' ")->order(" 'order', addtime asc  ")->select();
         }
@@ -81,7 +81,7 @@ class CatalogController extends BaseController {
 
     //删除目录
     public function delete(){
-        $cat_id = I("cat_id")? I("cat_id") : 0;
+        $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $cat = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
         $item_id = $cat['item_id'];
         

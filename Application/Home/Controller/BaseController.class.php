@@ -13,7 +13,7 @@ class BaseController extends Controller {
 		if ( ! session("login_user")) {
 			$cookie_token = cookie('cookie_token');
 			if ($cookie_token) {
-				$ret = D("User")->where("cookie_token = '$cookie_token' ")->find();
+				$ret = D("User")->where("cookie_token = '%d' ",array($cookie_token))->find();
 				if ($ret && $ret['cookie_token_expire'] > time() ) {
 					$login_user = $ret ;
 					session("login_user" , $login_user);
@@ -56,12 +56,12 @@ class BaseController extends Controller {
 			return true;
 		}
 
-		$item = D("Item")->where("item_id = '$item_id' ")->find();
+		$item = D("Item")->where("item_id = '%d' ",array($item_id))->find();
 		if ($item['uid'] && $item['uid'] == $uid) {
 			session("mamage_item_".$item_id , 1 );
 			return true;
 		}
-		$ItemMember = D("ItemMember")->where("item_id = '$item_id' and uid = '$uid' ")->find();
+		$ItemMember = D("ItemMember")->where("item_id = '%d' and uid = '%d' ",array($item_id,$uid))->find();
 		if ($ItemMember) {
 			session("mamage_item_".$item_id , 1 );
 			return true;
@@ -78,7 +78,7 @@ class BaseController extends Controller {
 			return true;
 		}
 
-		$item = D("Item")->where("item_id = '$item_id' ")->find();
+		$item = D("Item")->where("item_id = '%d' ",array($item_id))->find();
 		if ($item['uid'] && $item['uid'] == $uid) {
 			session("creat_item_".$item_id , 1 );
 			return true;
@@ -96,7 +96,7 @@ class BaseController extends Controller {
 			return true;
 		}
 
-		$item = D("Item")->where("item_id = '$item_id' ")->find();
+		$item = D("Item")->where("item_id = '%d' ",array($item_id))->find();
 		if ($item['password']) {
 			//跳转到输入访问密码框
 			header("location:".U("Home/item/pwd").'?item_id='.$item_id);
