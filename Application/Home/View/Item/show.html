@@ -99,9 +99,10 @@
       <div class='page-edit-link pull-right hide'>
         <ul class="inline">
           <if condition="$ItemPermn">
-            <li><a href="" id="share-page">分享</a></li>
-            <li><a href="" id="edit-link">编辑</a></li>
-            <li><a href="" onclick="return confirm('确认删除吗？');return false;" id="delete-link">删除</a></li>
+            <li><a href="" id="share-page" title="分享该接口访问地址给你的好友">分享</a></li>
+            <li><a href="" id="copy-link" title="复制该接口到新接口">复制</a></li>
+            <li><a href="" id="edit-link" title="编辑接口">编辑</a></li>
+            <li><a href="" title="删除接口" onclick="return confirm('确认删除吗？');return false;" id="delete-link">删除</a></li>
           <else />
             <li></li>
             <li></li>

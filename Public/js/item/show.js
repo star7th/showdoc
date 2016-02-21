@@ -121,6 +121,7 @@ $(function(){
       $(".page-edit-link").show();
       $("#page-content").attr("src" , base_url+"/Home/page/index?page_id="+page_id);
       $("#edit-link").attr("href" , base_url+"/Home/page/edit?page_id="+page_id);
+      $("#copy-link").attr("href" , base_url+"/Home/page/edit?item_id="+item_id+"&copy_page_id="+page_id);
       $("#share-page-link").html("http://"+window.location.host+base_url+"/"+item_id+"?page_id="+page_id);
       $("#delete-link").attr("href" , base_url+"/Home/page/delete?page_id="+page_id);
   }

@@ -33,6 +33,7 @@ class PageController extends BaseController {
         $item_id = I("item_id/d");
 
         $page_history_id = I("page_history_id/d");
+        $copy_page_id = I("copy_page_id/d");
 
         if ($page_id > 0 ) {
             if ($page_history_id) {
@@ -41,10 +42,20 @@ class PageController extends BaseController {
                 $page = D("Page")->where(" page_id = '$page_id' ")->find();
             }
             $default_cat_id = $page['cat_id'];
+        }
+        //如果是复制接口
+        elseif ($copy_page_id) {
+            $copy_page = D("Page")->where(" page_id = '$copy_page_id' ")->find();
+            $page['page_title'] = $copy_page['page_title']."-副本";
+            $page['page_content'] = $copy_page['page_content'];
+            $page['item_id'] = $copy_page['item_id'];
+            $default_cat_id = $copy_page['cat_id'];
+
         }else{
             //查找用户上一次设置的目录
             $last_page = D("Page")->where(" author_uid ='$login_user[uid]' and $item_id = '$item_id' ")->order(" addtime desc ")->limit(1)->find();
             $default_cat_id = $last_page['cat_id'];
+
 
         }
 
