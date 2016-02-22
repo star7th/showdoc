@@ -59,6 +59,7 @@
     <div class="btns">
         <button id="api-doc" tabindex="4" >插入API接口模板</button>
         <button id="database-doc" tabindex="5" >插入数据字典模板</button>
+        <button id="jsons" tabindex="7" >插入JSON</button>
     </div>
     <div id="editormd">
         <textarea id="page_content" style="display:none;" tabindex="6" >{$page.page_content}</textarea>
@@ -74,6 +75,25 @@
 <div id="database-doc-templ" style="display:none">
     <include file="MdTemplate/database" />
 </div>
+
+<div id="json-templ" class="editormd-dialog editormd-preformatted-text-dialog" style="width: 780px; height: 540px;">
+
+    <div style="cursor: move;" class="editormd-dialog-header">
+        <strong class="editormd-dialog-title">添加JSON</strong>
+    </div>
+    <a class="fa fa-close editormd-dialog-close" href="javascript:closeDiv('#json-templ');"></a>
+    <div class="editormd-dialog-container">
+        <textarea id="jsons_add" class="jsons" placeholder="coding now...."></textarea>
+        
+        <div class="editormd-dialog-footer">
+            <button class="editormd-btn editormd-enter-btn">确定</button>
+            <button class="editormd-btn editormd-cancel-btn" onclick="closeDiv('#json-templ')">取消</button>
+        </div>
+    </div>
+    <div class="editormd-dialog-mask editormd-dialog-mask-bg"></div><div class="editormd-dialog-mask editormd-dialog-mask-con"></div>
+</div>
+
+
 <include file="Common/footer" />
 <script src="__PUBLIC__/js/jquery.bootstrap-growl.min.js"></script>
 <script src="__PUBLIC__/js/jquery.hotkeys.js"></script>
@@ -86,4 +106,5 @@
 <script src="__PUBLIC__/editor.md/plugins/goto-line-dialog/goto-line-dialog.js"></script>
 <script src="__PUBLIC__/editor.md/plugins/table-dialog/table-dialog.js"></script>
 <script src="__PUBLIC__/editor.md/plugins/reference-link-dialog/reference-link-dialog.js"></script>
+
 <script src="__PUBLIC__/js/page/edit.js"></script>
