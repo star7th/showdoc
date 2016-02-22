@@ -78,3 +78,57 @@
   .search-query-input{
     width: 130px;
   }
+
+
+@media screen and (min-width:1200px){
+  .doc-right{ width: 930px;} 
+}
+@media screen and (min-width:1300px){
+  .doc-right{ width: 1030px;} 
+}
+@media screen and (min-width:1400px){
+  .doc-right{ width: 1130px;} 
+}
+@media screen and (min-width:1500px){
+  .doc-right{ width: 1230px;} 
+}
+@media screen and (min-width:1600px){
+  .doc-right{ width: 1330px;} 
+}
+@media screen and (min-width:1700px){
+  .doc-right{ width: 1430px;} 
+}
+@media screen and (min-width:1800px){
+  .doc-right{ width: 1530px;} 
+}
+@media screen and (min-width:1900px){
+  .doc-right{ width: 1630px;} 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

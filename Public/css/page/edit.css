@@ -92,3 +92,7 @@ body {
 .btns button:hover, .btn:hover {
     background: #f6f6f6;
 }
+
+#json-templ{ position:fixed; float:left; top:100px; left:300px; border:2px solid #ccc; display:none; z-index:999999;}
+
+.markdown-body.editormd-preview-container table tr td{ max-width:300px;}
