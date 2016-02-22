@@ -211,7 +211,7 @@ function Change(data)
 		var type = typeof(value);
 		if(type == "object")
 		{
-			json_table_data+='|'+level_str+key+'|object[]|'+type+'| 默认 | 备注 |\n';
+			json_table_data+='| '+level_str+key+' |object[] | '+type+' | 默认 | 备注 |\n';
 			if(value instanceof Array)
 			{
 				var j=level+1;
@@ -224,9 +224,9 @@ function Change(data)
 			//}
 			
 		}
-		else{
-			json_table_data+='|'+key+'|'+value+'|'+type+'| 默认 | 备注 |\n';
-			//Show(key,value,type);
+		else
+		{
+			json_table_data+='| '+key+' | '+value+' | '+type+' | 默认 | 备注 |\n';
 		}
 	}
 }
