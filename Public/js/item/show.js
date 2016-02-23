@@ -31,9 +31,6 @@ $(function(){
     })
   }
 
-  function isMobile(){
-    return navigator.userAgent.match(/iPhone|iPad|iPod|Android|android|BlackBerry|IEMobile/i) ? true : false; 
-  }
 
   //根据屏幕宽度进行响应(应对移动设备的访问)
   if( isMobile()){

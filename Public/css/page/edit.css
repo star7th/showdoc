@@ -96,3 +96,26 @@ body {
 #json-templ{ position:fixed; float:left; top:100px; left:300px; border:2px solid #ccc; display:none; z-index:999999;}
 
 .markdown-body.editormd-preview-container table tr td{ max-width:300px;}
+
+.btn-primary {
+    background-color: #006dcc;
+}
+
+.btn-primary:hover {
+    background-color: #04c;
+}
+
+#page_title,
+#cat_id,
+#order {
+    height: 30px;
+}
+
+#cat_id {
+    width: 150px;
+}
+
+#order {
+    width: 120px;
+    margin-right: 20px;
+}
