@@ -1,5 +1,7 @@
 var editormd;
 
+var json_table_data='|键|值|类型|空|备注|\n'+
+		'|:-------|:-------|:-------|:-------|:-------|\n';
 
 $(function() {
   /*加载目录*/
@@ -84,6 +86,54 @@ $(function() {
     var tmpl = $("#database-doc-templ").html();
     editormd.insertValue(tmpl);
   });
+  
+   /*插入JSON*/
+  $("#jsons").click(function() {
+	  
+   $("#json-templ").show();
+	
+  });
+  
+  
+
+		
+	$("#json-templ .editormd-enter-btn").click(function(){
+		
+		
+		var datas=$("#json-templ .jsons").val();
+		
+		try{
+			Change($.parseJSON(datas));   
+		}
+		catch(e){
+			alert("json导入失败" + e);
+		}
+		
+		//datas=processJSONImport(datas);
+		//alert(datas);
+		/*var datas='|键|值|类型|空|注释|\n'+
+		'|:-------|:-------|:-------|:-------|:-------|\n'+
+		'|uid|int(10)|否|||\n'+
+		'|username|varchar(20)|否||用户名|';*/
+		
+		//alert(json_table_data);return;
+		
+		
+		
+		editormd.insertValue(json_table_data);
+		
+		json_table_data='|键|值|类型|空|备注|\n'+
+		'|:-------|:-------|:-------|:-------|:-------|\n';
+		
+		
+		$("#json-templ .jsons").val("");
+		$("#json-templ").hide();
+		
+	});
+	
+
+//{"dgfgdfg":"gdfgdfg"}
+  
 
   /*保存*/
   var saving = false;
@@ -118,8 +168,67 @@ $(function() {
       },
       'json'
     )
-  })
+  });
 
 
+
+	$(".editormd-preview-container").bind('DOMNodeInserted', function(e){
+		
+		$(".editormd-preview-container table tr").eq(0).css({"background-color":"#08c","color":"#fff"});
+		$(".editormd-preview-container table tr").each(function(){
+			if($(this).find("td").eq(1).html()=="object[]")
+			{
+				$(this).css({"background-color":"#99CC99","color":"#000"});
+			}
+			
+			});
+	});
 
 });
+
+
+function closeDiv(target)
+{
+	$(target).hide();
+}
+
+function Change(data)
+{
+	var level_str="- ";
+	if(arguments.length>1)
+	{
+		var level;
+		arguments[1]>0?level=arguments[1]:level=1;
+		for(var i=0;i<level;i++)
+		{
+			level_str+="- ";
+		}
+	}
+	
+	for(var key in data)
+	{
+		var value = data[key];
+		var type = typeof(value);
+		if(type == "object")
+		{
+			json_table_data+='| '+level_str+key+' |object[] | '+type+' | 默认 | 备注 |\n';
+			if(value instanceof Array)
+			{
+				var j=level+1;
+				Change(value[0],j);
+				continue;
+			}
+			//else
+			//{
+				Change(value,level);
+			//}
+			
+		}
+		else
+		{
+			json_table_data+='| '+key+' | '+value+' | '+type+' | 默认 | 备注 |\n';
+		}
+	}
+}
+
+//{"Result":[{"name":"test1","list":{"pros":"prosfsf","ppps":{"images":[{"22":"22"}]}}}]}
