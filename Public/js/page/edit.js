@@ -1,7 +1,7 @@
 var editormd;
 
-var json_table_data='|键|值|类型|空|备注|\n'+
-		'|:-------|:-------|:-------|:-------|:-------|\n';
+var json_table_data='|参数名|类型|说明|\n'+
+		'|:-------|:-------|:-------|\n';
 
 $(function() {
   /*加载目录*/
@@ -122,8 +122,8 @@ $(function() {
 		
 		editormd.insertValue(json_table_data);
 		
-		json_table_data='|键|值|类型|空|备注|\n'+
-		'|:-------|:-------|:-------|:-------|:-------|\n';
+		json_table_data='|键|类型|说明|\n'+
+		'|:-------|:-------|:-------|\n';
 		
 		
 		$("#json-templ .jsons").val("");
@@ -211,7 +211,7 @@ function Change(data)
 		var type = typeof(value);
 		if(type == "object")
 		{
-			json_table_data+='| '+level_str+key+' |object[] | '+type+' | 默认 | 备注 |\n';
+			json_table_data+='| '+level_str+key+' |'+type+'  | 无 |\n';
 			if(value instanceof Array)
 			{
 				var j=level+1;
@@ -226,7 +226,7 @@ function Change(data)
 		}
 		else
 		{
-			json_table_data+='| '+key+' | '+value+' | '+type+' | 默认 | 备注 |\n';
+			json_table_data+='| '+key+' | '+type+'| 无 |\n';
 		}
 	}
 }

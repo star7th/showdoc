@@ -59,7 +59,7 @@
     <div class="btns">
         <button id="api-doc" tabindex="4" >插入API接口模板</button>
         <button id="database-doc" tabindex="5" >插入数据字典模板</button>
-        <button id="jsons" tabindex="7" >插入JSON</button>
+        <button id="jsons" tabindex="7" >JSON转参数表格</button>
     </div>
     <div id="editormd">
         <textarea id="page_content" style="display:none;" tabindex="6" >{$page.page_content}</textarea>
@@ -79,11 +79,11 @@
 <div id="json-templ" class="editormd-dialog editormd-preformatted-text-dialog" style="width: 780px; height: 540px;">
 
     <div style="cursor: move;" class="editormd-dialog-header">
-        <strong class="editormd-dialog-title">添加JSON</strong>
+        <strong class="editormd-dialog-title">JSON转参数表格</strong>
     </div>
     <a class="fa fa-close editormd-dialog-close" href="javascript:closeDiv('#json-templ');"></a>
     <div class="editormd-dialog-container">
-        <textarea id="jsons_add" class="jsons" placeholder="coding now...."></textarea>
+        <textarea id="jsons_add" class="jsons" placeholder="请粘贴一段json，程序将自动将json解析并生成参数表格。此功能适合用于快速编写API文档的返回参数表格"></textarea>
         
         <div class="editormd-dialog-footer">
             <button class="editormd-btn editormd-enter-btn">确定</button>
