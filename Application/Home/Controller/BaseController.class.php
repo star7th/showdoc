@@ -13,7 +13,7 @@ class BaseController extends Controller {
 		if ( ! session("login_user")) {
 			$cookie_token = cookie('cookie_token');
 			if ($cookie_token) {
-				$ret = D("User")->where("cookie_token = '%d' ",array($cookie_token))->find();
+				$ret = D("User")->where("cookie_token = '%s' ",array($cookie_token))->find();
 				if ($ret && $ret['cookie_token_expire'] > time() ) {
 					$login_user = $ret ;
 					session("login_user" , $login_user);
