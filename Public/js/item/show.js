@@ -61,6 +61,7 @@ $(function(){
     $(".doc-left").removeClass("span3");
     $(".doc-left").css("width",'100%');
     $(".doc-left").css("height",'initial');
+    $(".doc-left").css("min-height",'0px');
     $(".doc-right").removeClass("span12");
     $(".doc-head .right").hide();
     $(".page-edit-link").html('');
