@@ -20,7 +20,7 @@
   .doc-left{
     position: relative;
     padding-top: 10px;
-    height: 100%;
+    min-height: 100%;
     border-right-color: rgb(221, 221, 221);
     border-right-width: 1px;
     border-right-style: solid;
