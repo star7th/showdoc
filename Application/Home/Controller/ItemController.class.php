@@ -4,8 +4,8 @@ use Think\Controller;
 class ItemController extends BaseController {
 	//项目列表页
     public function index(){
-    	$login_user = $this->checkLogin();
-    	$items  = D("Item")->where("uid = '$login_user[uid]' or item_id in ( select item_id from item_member where uid = '$login_user[uid]' ) ")->select();
+    	$login_user = $this->checkLogin();        
+    	$items  = D("Item")->where("uid = '$login_user[uid]' or item_id in ( select ".C('DB_PREFIX')."item_id from item_member where uid = '$login_user[uid]' ) ")->select();
 
         $this->assign("items" , $items);
     	$this->assign("login_user" , $login_user);
