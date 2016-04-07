@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `page_history` (
 
 CREATE TABLE IF NOT EXISTS `user` (
   `uid` int(10) NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `username` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `groupid` tinyint(2) NOT NULL DEFAULT '2' COMMENT '1为超级管理员，2为普通用户',
   `name` varchar(15) CHARACTER SET utf8 DEFAULT '',
   `avatar` varchar(200) CHARACTER SET utf8 DEFAULT '' COMMENT '头像',
