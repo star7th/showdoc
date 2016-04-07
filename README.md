@@ -59,7 +59,7 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 
 - 环境要求
 
-	PHP5.3以上版本、php-mbstring模块、php-pdo模块、mysql数据库
+	PHP5.3以上版本、php-mbstring模块、php-pdo模块、php-gd库、mysql数据库
 
 
 - 克隆或者下载代码：
