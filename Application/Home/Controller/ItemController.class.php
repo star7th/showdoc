@@ -6,10 +6,27 @@ class ItemController extends BaseController {
     public function index(){
     	$login_user = $this->checkLogin();        
     	$items  = D("Item")->where("uid = '$login_user[uid]' or item_id in ( select ".C('DB_PREFIX')."item_id from item_member where uid = '$login_user[uid]' ) ")->select();
+        
+        $share_url = get_domain().__APP__.'/uid/'.$login_user['uid'];
 
         $this->assign("items" , $items);
-    	$this->assign("login_user" , $login_user);
+        $this->assign("login_user" , $login_user);
+    	$this->assign("share_url" , $share_url);
         $this->display();
+    }
+    //我公开的项目列表
+    public function showByUid(){
+        $login_user = $this->checkLogin(false); //如果用户有登录，则赋值给$login_user
+        $uid = I("uid/d");
+        $show_user = D("User")->where(" uid = '$uid' ")->find();
+        if ($show_user) {
+            $items  = D("Item")->where(" password = '' and  ( uid = '$show_user[uid]' or item_id in ( select ".C('DB_PREFIX')."item_id from item_member where uid = '$show_user[uid]' ) ) ")->select();
+            $this->assign("items" , $items);
+            $this->assign("show_user" , $show_user);
+            $this->assign("login_user" , $login_user);
+            $this->display();
+        }
+
     }
 
     //新建项目

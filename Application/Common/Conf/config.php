@@ -14,6 +14,7 @@ return array(
 	'URL_ROUTER_ON'   => true, 
 	'URL_ROUTE_RULES'=>array(
 	    ':id\d'               => 'Home/Item/Show?item_id=:1',
+	    'uid/:id\d'               => 'Home/Item/showByUid?uid=:1',
 	),
 	'URL_CASE_INSENSITIVE'=>true
 );

@@ -28,6 +28,7 @@
         <ul class="dropdown-menu">
         <!-- dropdown menu links -->
           <li><a href="{:U('Home/User/setting')}">个人设置</a></li>
+          <li><a href="#share-home-modal"  data-toggle="modal">分享主页</a></li>
           <li><a href="../">网站首页</a></li>
           <li><a href="{:U('Home/User/exist')}">退出登录</a></li>
 
@@ -45,7 +46,7 @@
 
         <foreach name="items" item="item">
           <li class="span3 text-center">
-            <a class="thumbnail" href="show?item_id={$item.item_id}" title="{$item.item_description}">
+            <a class="thumbnail" href="{:U('Home/Item/Show')}?item_id={$item.item_id}" title="{$item.item_description}">
               <p class="my-item">{$item.item_name}</p>
             </a>
           </li>     
@@ -61,6 +62,18 @@
 
 
     </div> <!-- /container -->
+
+<!-- 分享项目框 -->
+<div class="modal hide fade" id="share-home-modal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>分享我的主页</h3>
+  </div>
+  <div class="modal-body">
+    <p>主页地址：<code id="share-home-link">{$share_url}</code></p>
+    <p>别人访问您的主页时，将可以看到您的所有公开项目（但没有新建项目等权限）。你可以复制地址给你的好友</p>
+  </div>
+</div>
 
 
  <include file="Common/footer" />
