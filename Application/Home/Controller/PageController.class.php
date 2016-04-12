@@ -119,10 +119,18 @@ class PageController extends BaseController {
              D("PageHistory")->add($insert_history);
 
             $ret = D("Page")->where(" page_id = '$page_id' ")->save($data);
+
+            //更新项目时间
+            D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));
+
             $return = D("Page")->where(" page_id = '$page_id' ")->find();
         }else{
             
             $page_id = D("Page")->add($data);
+
+            //更新项目时间
+            D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));
+
             $return = D("Page")->where(" page_id = '$page_id' ")->find();
         }
         if (!$return) {
@@ -147,6 +155,8 @@ class PageController extends BaseController {
         if ($page) {
             
             $ret = D("Page")->where(" page_id = '$page_id' ")->limit(1)->delete();
+            //更新项目时间
+            D("Item")->where(" item_id = '$page[item_id]' ")->save(array("last_update_time"=>time()));
 
         }
         if ($ret) {
