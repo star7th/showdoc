@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `page_history` (
   `order` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部为0则按时间排序',
   `addtime` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`page_history_id`),
-  KEY `order` (`order`),
+  KEY `page_id` (`page_id`),
   KEY `addtime` (`addtime`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='页面历史表' AUTO_INCREMENT=1 ;
 
