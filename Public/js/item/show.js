@@ -103,7 +103,7 @@ $(function(){
     page_title = $(this).children("a")[0].innerText;
     if (page_id != '' && page_id != null  && page_id !='#') {
         if (page_title != '' && page_title != null) {
-            document.title = page_title + " - KAAAsS Docs";
+            document.title = page_title + " - ShowDoc";
         }
         change_page(page_id);
         //如果是移动设备的话，则滚动页面
