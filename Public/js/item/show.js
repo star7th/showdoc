@@ -1,4 +1,3 @@
-
 //页面加载完就执行
 $(function(){
 
@@ -101,7 +100,11 @@ $(function(){
     };
     //获取对应的page_id
     page_id = $(this).children("a").attr("data-page-id");
+    page_title = $(this).children("a")[0].innerText;
     if (page_id != '' && page_id != null  && page_id !='#') {
+        if (page_title != '' && page_title != null) {
+            document.title = page_title + " - KAAAsS Docs";
+        }
         change_page(page_id);
         //如果是移动设备的话，则滚动页面
         if( isMobile()){
@@ -122,6 +125,7 @@ $(function(){
       $("#copy-link").attr("href" , base_url+"/Home/page/edit?item_id="+item_id+"&copy_page_id="+page_id);
       $("#share-page-link").html("http://"+window.location.host+base_url+"/"+item_id+"?page_id="+page_id);
       $("#delete-link").attr("href" , base_url+"/Home/page/delete?page_id="+page_id);
+      history.replaceState(null, null, "http://"+window.location.host+base_url+"/"+item_id+"?page_id="+page_id);
   }
 
   //分享项目
