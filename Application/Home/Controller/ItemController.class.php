@@ -100,8 +100,6 @@ class ItemController extends BaseController {
             }
         }
 
-
-
         $share_url = get_domain().__APP__.'/'.$item_id;
 
         $ItemPermn = $this->checkItemPermn($uid , $item_id) ;
@@ -175,7 +173,7 @@ class ItemController extends BaseController {
             $item = D("Item")->where("item_id = '$item_id' ")->find();
             if ($item['password'] == $password) {
                 session("visit_item_".$item_id , 1 );
-                header("location:".U("Home/item/show").'?item_id='.$item_id);
+                header("location:".U("Home/Item/show").'?item_id='.$item_id);
             }else{
                 
                 $this->message("访问密码不正确");
