@@ -8,6 +8,13 @@ class BaseController extends Controller {
 		$this->assign("redirect" , $redirect);
 		$this->display ("Common/message");
 	}
+		
+	public function alertMsg($msg="提示信息"){
+		print "<script charset='utf-8', language='JavaScript'>";
+		print "alert('.$msg.');";
+		print "history.back();";
+		print "</script>";
+	}
 
 	public function checkLogin($redirect = true){
 		if ( ! session("login_user")) {
