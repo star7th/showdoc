@@ -90,9 +90,8 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 - 关闭验证码
 
 	如果想关闭验证码功能，请打开Application/Home/Controller目录下面UserController.class.php和ItemController.class.php中一下注释部分：
-
 ``` php
-$v_code = $this->preCheckVcode($v_code);
+        $v_code = $this->preCheckVcode($v_code);
 ```
 
 ###使用在线的ShowDoc
