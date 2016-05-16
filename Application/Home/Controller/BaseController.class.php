@@ -2,6 +2,7 @@
 namespace Home\Controller;
 use Think\Controller;
 class BaseController extends Controller {
+	const default_vcode = '9999';
 
 	public function message($msg , $redirect = ''){
 		$this->assign("msg" , $msg);
@@ -114,5 +115,16 @@ class BaseController extends Controller {
 
 	}
 
-
+	//验证码预处理，如果输入的是9999或者不输入验证码则返回当前验证码
+	public function preCheckVcode($v_code){
+		if($v_code){
+			if($v_code == $this::default_vcode){
+				return session('v_code');
+			}else{
+				return $v_code;
+			}
+		}else{
+			return session('v_code');
+		}
+	}
 }

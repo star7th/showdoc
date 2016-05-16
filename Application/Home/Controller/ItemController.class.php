@@ -169,6 +169,8 @@ class ItemController extends BaseController {
         }else{
           $password = I("password");
           $v_code = I("v_code");
+		  //如果想开启万能验证码，请打开以下部分
+		  //$v_code = $this->preCheckVcode($v_code);
           if ($v_code && $v_code == session('v_code')) {
             $item = D("Item")->where("item_id = '$item_id' ")->find();
             if ($item['password'] == $password) {
