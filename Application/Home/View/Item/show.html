@@ -17,13 +17,13 @@
           <ul class="dropdown-menu">
           <!-- dropdown menu links -->
             <li><a href="#" id="share">分享</a></li>
-             <li><a href="{:U('Home/Item/word')}?item_id={$item.item_id}">导出</a></li>
+             <li><a href="{:U('Home/Item/word')}&item_id={$item.item_id}">导出</a></li>
 
              <if condition="$ItemCreator">
-              <li><a href="{:U('Home/Item/add')}?item_id={$item.item_id}">修改信息</a></li>          
-              <li><a href="{:U('Home/Member/edit')}?item_id={$item.item_id}">成员管理</a></li>
-              <li><a href="{:U('Home/Attorn/index')}?item_id={$item.item_id}">转让</a></li>
-              <li><a href="{:U('Home/Item/delete')}?item_id={$item.item_id}">删除</a></li>
+              <li><a href="{:U('Home/Item/add')}&item_id={$item.item_id}">修改信息</a></li>          
+              <li><a href="{:U('Home/Member/edit')}&item_id={$item.item_id}">成员管理</a></li>
+              <li><a href="{:U('Home/Attorn/index')}&item_id={$item.item_id}">转让</a></li>
+              <li><a href="{:U('Home/Item/delete')}&item_id={$item.item_id}">删除</a></li>
             </if>
 
             <li><a href="{:U('Home/Item/index')}">更多项目</a></li>
@@ -33,7 +33,7 @@
 
       <if condition="! $login_user">
         <li ><a href="{:U('Home/User/login')}">登录/注册</a></li>
-        <li ><a href="http://doc.star7th.com/3" target="_blank">关于ShowDoc</a></li>
+        <li ><a href="http://doc.star7th.com/?s=/3" target="_blank">关于ShowDoc</a></li>
         <else />
         <li><a href="{:U('Home/Item/index')}">我的项目</a></li>
       </if>
@@ -61,7 +61,7 @@
       <ul class="nav nav-list bs-docs-sidenav">
 
         <foreach name="pages" item="page">
-          <li ><a href="{:U('Home/Page/index')}?page_id={$page.page_id}" data-page-id="{$page.page_id}" ><i class="icon-blank"></i>{$page.page_title}</a></li>
+          <li ><a href="{:U('Home/Page/index')}&page_id={$page.page_id}" data-page-id="{$page.page_id}" ><i class="icon-blank"></i>{$page.page_title}</a></li>
         </foreach>
 
         <foreach name="catalogs" item="catalog">
@@ -69,7 +69,7 @@
           <li><a href="#"><i class="icon-chevron-right"></i>{$catalog.cat_name}</a>
             <ul class="child-ul nav-list hide">
               <foreach name="catalog.pages" item="catalog_page">
-                <li><a href="{:U('Home/Page/index')}?page_id={$catalog_page.page_id}" data-page-id="{$catalog_page.page_id}" >{$catalog_page.page_title}</a></li>
+                <li><a href="{:U('Home/Page/index')}&page_id={$catalog_page.page_id}" data-page-id="{$catalog_page.page_id}" >{$catalog_page.page_title}</a></li>
               </foreach>
             </ul>
           </li>
@@ -81,8 +81,8 @@
       <div class="doc-left-newbar">
 
         <if condition="$ItemPermn">
-          <div><a href="{:U('Home/Page/edit')}?item_id={$item.item_id}&type=new" id="new-like"><i class="icon-plus"></i>&nbsp;新建页面</a></div>
-          <div><a href="{:U('Home/Catalog/edit')}?item_id={$item.item_id}" id="dir-like" ><i class="icon-folder-open"></i>新建目录</a></div>
+          <div><a href="{:U('Home/Page/edit')}&item_id={$item.item_id}&type=new" id="new-like"><i class="icon-plus"></i>&nbsp;新建页面</a></div>
+          <div><a href="{:U('Home/Catalog/edit')}&item_id={$item.item_id}" id="dir-like" ><i class="icon-folder-open"></i>新建目录</a></div>
 
         </if>
 

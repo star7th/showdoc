@@ -12,12 +12,12 @@ $(function(){
   $("#save-cat").click(function(){
       var password = $("#password").val();
       $.post(
-        "ajaxDelete",
+        "?s=/home/item/ajaxDelete",
         {"item_id": item_id , "password": password  },
         function(data){
           if (data.error_code == 0) {
             alert("删除成功！");
-            window.location.href="../item/index";
+            window.location.href="?s=/home/item/index";
           }else{
             alert(data.error_message);
 
@@ -30,7 +30,7 @@ $(function(){
   });
 
   $(".exist-cat").click(function(){
-    window.location.href="../item/show?item_id="+item_id;
+    window.location.href="?s=/home/item/show&item_id="+item_id;
   });
 
 });

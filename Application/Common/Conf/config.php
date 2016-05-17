@@ -11,6 +11,7 @@ return array(
 	'DB_CHARSET'=> 'utf8', // 字符集
 	'DB_DEBUG'  =>  TRUE, // 数据库调试模式 开启后可以记录SQL日志
 	"URL_HTML_SUFFIX" => '',//url伪静态后缀
+	"URL_MODEL" => 3 ,//URL兼容模式
 	'URL_ROUTER_ON'   => true, 
 	'URL_ROUTE_RULES'=>array(
 	    ':id\d'               => 'Home/Item/Show?item_id=:1',

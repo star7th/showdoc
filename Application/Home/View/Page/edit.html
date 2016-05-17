@@ -22,7 +22,7 @@
                 <li>
                     <!-- 首次添加没有历史版本，不显示 -->
                     <if condition="$page.page_id gt 0">
-                        <a href="history?page_id={$page.page_id}">历史版本</a>
+                        <a href="?s=home/page/history&page_id={$page.page_id}">历史版本</a>
                         <else />
                     </if>
                 </li>
@@ -30,7 +30,7 @@
         </div>
         <div class="head-right pull-right">
             <a href="#" class="btn btn-primary " id="save">保存</a>
-            <a href="../Item/show?item_id={$item_id}&page_id={$page.page_id}" class="btn cancel">取消</a>
+            <a href="?s=home/item/show&item_id={$item_id}&page_id={$page.page_id}" class="btn cancel">取消</a>
         </div>
     </header>
     <br>
