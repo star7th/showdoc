@@ -13,6 +13,8 @@ class UserController extends BaseController {
 			  $password = I("password");
 			  $confirm_password = I("confirm_password");
 			  $v_code = I("v_code");
+			  //如果想开启万能验证码，请打开以下部分
+			  //$v_code = $this->preCheckVcode($v_code);
 			  if ($v_code && $v_code == session('v_code')) {
 			  	if ( $password != '' && $password == $confirm_password) {
 
@@ -60,6 +62,8 @@ class UserController extends BaseController {
 		  $username = I("username");
 		  $password = I("password");
 		  $v_code = I("v_code");
+		  //如果想开启万能验证码，请打开以下部分
+		  //$v_code = $this->preCheckVcode($v_code);
 		  if ($v_code && $v_code == session('v_code')) {
 		    $ret = D("User")->checkLogin($username,$password);
 		    if ($ret) {
@@ -143,4 +147,5 @@ class UserController extends BaseController {
 		cookie('cookie_token',NULL);
 		$this->message("退出成功！",U('Home/index/index'));
 	}
+
 }
