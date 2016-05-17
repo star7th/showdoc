@@ -99,7 +99,7 @@ class BaseController extends Controller {
 		$item = D("Item")->where("item_id = '%d' ",array($item_id))->find();
 		if ($item['password']) {
 			//跳转到输入访问密码框
-			header("location:".U("Home/item/pwd").'?item_id='.$item_id);
+			header("location:".U("Home/item/pwd",array("item_id"=>$item_id)));
 		}else{
 			session("visit_item_".$item_id , 1 );
 			return true;

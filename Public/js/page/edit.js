@@ -11,8 +11,9 @@ $(function() {
     var default_cat_id = $("#default_cat_id").val();
     var item_id = $("#item_id").val();
     $.get(
-      "../catalog/catList", {
-        "item_id": item_id
+      "./", {
+        "item_id": item_id,
+        "s": "home/catalog/catList",
       },
       function(data) {
         $("#cat_id").html('<OPTION value="0">无</OPTION>');
@@ -70,7 +71,7 @@ $(function() {
     placeholder: "本编辑器支持Markdown编辑，左边编写，右边预览",
     imageUpload: true,
     imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp", "JPG", "JPEG", "GIF", "PNG", "BMP", "WEBP"],
-    imageUploadURL: "uploadImg",
+    imageUploadURL: "?s=home/page/uploadImg",
     onload: function() {
       this.addKeyMap(keyMap);
     }
@@ -148,7 +149,7 @@ $(function() {
     var order = $("#order").val();
     saving = true;
     $.post(
-      "save", {
+      "?s=home/page/save", {
         "page_id": page_id,
         "cat_id": cat_id,
         "order": order,
@@ -159,7 +160,7 @@ $(function() {
       function(data) {
         if (data.error_code == 0) {
           $.bootstrapGrowl("保存成功！");
-          window.location.href = "../item/show?page_id=" + data.data.page_id + "&item_id=" + item_id;
+          window.location.href = "?s=home/item/show&page_id=" + data.data.page_id + "&item_id=" + item_id;
         } else {
           $.bootstrapGrowl("保存失败！");
 

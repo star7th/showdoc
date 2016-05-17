@@ -160,9 +160,9 @@ class PageController extends BaseController {
 
         }
         if ($ret) {
-           $this->message("删除成功！",U("Home/item/show").'?item_id='.$page['item_id']);
+           $this->message("删除成功！",U("Home/item/show?item_id={$page['item_id']}"));
         }else{
-           $this->message("删除失败！",U("Home/item/show").'?item_id='.$page['item_id']);
+           $this->message("删除失败！",U("Home/item/show?item_id={$page['item_id']}"));
         }
     }
 

@@ -10,7 +10,7 @@ $(function(){
 
   function getCatList(){
       $.get(
-        "catList",
+        "?s=home/catalog/catList",
         { "item_id": item_id },
         function(data){
           $("#show-cat").html('');
@@ -18,7 +18,7 @@ $(function(){
             json = data.data;
             console.log(json);
             for (var i = 0; i < json.length; i++) {
-                cat_html ='<a class="badge badge-info single-cat " href="edit?cat_id='+json[i].cat_id+'&item_id='+json[i].item_id+'">'+json[i].cat_name+'&nbsp;<i class="icon-edit"></i></a>';
+                cat_html ='<a class="badge badge-info single-cat " href="?s=home/catalog/edit&cat_id='+json[i].cat_id+'&item_id='+json[i].item_id+'">'+json[i].cat_name+'&nbsp;<i class="icon-edit"></i></a>';
                 $("#show-cat").append(cat_html);
             };
 
@@ -37,7 +37,7 @@ $(function(){
       var order = $("#order").val();
       var cat_id = $("#cat_id").val();
       $.post(
-        "save",
+        "?s=home/catalog/save",
         {"cat_name": cat_name , "order": order , "item_id": item_id , "cat_id": cat_id  },
         function(data){
           if (data.error_code == 0) {
@@ -63,12 +63,12 @@ $(function(){
         var cat_id = $("#cat_id").val();
         if (cat_id > 0 ) {
             $.post(
-                "delete",
+                "?s=home/catalog/delete",
                 { "cat_id": cat_id  },
                 function(data){
                   if (data.error_code == 0) {
                     alert("删除成功！");
-                    window.location.href="edit?item_id="+item_id;
+                    window.location.href="?s=home/catalog/edit&item_id="+item_id;
                   }else{
                     if (data.error_message) {
                       alert(data.error_message);
@@ -87,7 +87,7 @@ $(function(){
   })
 
   $(".exist-cat").click(function(){
-    window.location.href="../item/show?item_id="+item_id;
+    window.location.href="?s=home/item/show&item_id="+item_id;
   });
 
 
