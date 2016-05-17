@@ -10,7 +10,7 @@ $(function(){
 
   function getList(){
       $.get(
-        "getList",
+        "?s=/home/member/getList",
         { "item_id": item_id },
         function(data){
           $("#show-cat").html('');
@@ -35,7 +35,7 @@ $(function(){
   $("#save-cat").click(function(){
       var username = $("#username").val();
       $.post(
-        "save",
+        "?s=/home/member/save",
         {"username": username ,"item_id": item_id  },
         function(data){
           if (data.error_code == 0) {
@@ -59,7 +59,7 @@ $(function(){
 
       if (username) {
           $.post(
-              "delete",
+              "?s=/home/member/delete",
               { "username": username, "item_id" :item_id },
               function(data){
                 if (data.error_code == 0) {
@@ -79,7 +79,7 @@ $(function(){
 
   $(".exist-cat").click(function(){
     
-    window.location.href="../item/show?item_id="+item_id;
+    window.location.href="?s=/home/item/show&item_id="+item_id;
   });
 
 });

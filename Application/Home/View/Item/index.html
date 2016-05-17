@@ -29,7 +29,7 @@
         <!-- dropdown menu links -->
           <li><a href="{:U('Home/User/setting')}">个人设置</a></li>
           <li><a href="#share-home-modal"  data-toggle="modal">分享主页</a></li>
-          <li><a href="../">网站首页</a></li>
+          <li><a href="{:U('Home/index/index')}">网站首页</a></li>
           <li><a href="{:U('Home/User/exist')}">退出登录</a></li>
 
         </ul>
@@ -46,7 +46,7 @@
 
         <foreach name="items" item="item">
           <li class="span3 text-center">
-            <a class="thumbnail" href="{:U('Home/Item/Show')}?item_id={$item.item_id}" title="{$item.item_description}">
+            <a class="thumbnail" href="{:U('Home/Item/Show')}&item_id={$item.item_id}" title="{$item.item_description}">
               <p class="my-item">{$item.item_name}</p>
             </a>
           </li>     

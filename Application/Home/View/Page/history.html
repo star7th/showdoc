@@ -20,7 +20,7 @@
       <TR>
         <td>{$value.addtime}</td>
         <td>{$value.author_username}</td>
-        <td><a href="edit?page_id={$page_id}&page_history_id={$value.page_history_id}">恢复到此版本</a></td>
+        <td><a href="?s=home/page/edit&page_id={$page_id}&page_history_id={$value.page_history_id}">恢复到此版本</a></td>
       </TR>
 
       </foreach>
@@ -28,8 +28,8 @@
   </table>
 
     <div class="modal-footer">
-      <a href="edit?page_id={$page_id}" class="btn exist-cat">关闭</a>
-      <a href="edit?page_id={$page_id}" class="btn btn-primary exist-cat">完成</a>
+      <a href="?s=home/page/edit&page_id={$page_id}" class="btn exist-cat">关闭</a>
+      <a href="?s=home/page/edit&page_id={$page_id}" class="btn btn-primary exist-cat">完成</a>
     </div>
  </div>
 <input type="hidden" id="page_id" value="{$page_id}">

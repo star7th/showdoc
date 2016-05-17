@@ -10,12 +10,12 @@ $(function(){
       var username = $("#username").val();
       var password = $("#password").val();
       $.post(
-        "save",
+        "?s=/home/attorn/save",
         {"username": username ,"item_id": item_id , "password": password  },
         function(data){
           if (data.error_code == 0) {
             alert("转让成功！");
-            window.location.href="../item/index";
+            window.location.href="?s=/home/item/index";
           }else{
             alert(data.error_message);
 
@@ -28,7 +28,7 @@ $(function(){
   }); 
   
   $(".exist-cat").click(function(){
-    window.location.href="../item/show?item_id="+item_id;
+    window.location.href="?s=/home/item/show&item_id="+item_id;
   });
 
 });
