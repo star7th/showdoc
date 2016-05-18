@@ -8,6 +8,9 @@ class UpdateController extends BaseController {
     	if (strtolower(C("DB_TYPE")) == 'mysql' ) {
     		$this->mysql();
     	}
+        elseif (strtolower(C("DB_TYPE")) == 'sqlite' ) {
+            $this->sqlite();
+        }
     	
     }
     //升级mysql数据库  
@@ -139,6 +142,10 @@ class UpdateController extends BaseController {
     	echo "OK!";
 
 
+    }
+
+    public function sqlite(){
+        echo 'OK!';
     }
 
 
