@@ -30,10 +30,10 @@ CREATE TABLE IF NOT EXISTS `catalog` (
   `cat_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '目录id',
   `cat_name` varchar(20) NOT NULL DEFAULT '' COMMENT '目录名',
   `item_id` int(10) NOT NULL DEFAULT '0' COMMENT '所在的项目id',
-  `order` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
+  `s_number` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
   `addtime` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`cat_id`),
-  KEY `order` (`order`),
+  KEY `s_number` (`s_number`),
   KEY `addtime` (`addtime`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='目录表' AUTO_INCREMENT=1 ;
 
@@ -90,10 +90,10 @@ CREATE TABLE IF NOT EXISTS `page` (
   `cat_id` int(10) NOT NULL DEFAULT '0',
   `page_title` varchar(50) NOT NULL DEFAULT '',
   `page_content` text NOT NULL,
-  `order` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
+  `s_number` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
   `addtime` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`page_id`),
-  KEY `order` (`order`),
+  KEY `s_number` (`s_number`),
   KEY `addtime` (`addtime`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='文章页面表' AUTO_INCREMENT=1 ;
 
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `page_history` (
   `cat_id` int(10) NOT NULL DEFAULT '0',
   `page_title` varchar(50) NOT NULL DEFAULT '',
   `page_content` text NOT NULL,
-  `order` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部为0则按时间排序',
+  `s_number` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部为0则按时间排序',
   `addtime` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`page_history_id`),
   KEY `page_id` (`page_id`),
