@@ -30,7 +30,7 @@ class CatalogController extends BaseController {
     //保存目录
     public function save(){
         $cat_name = I("cat_name");
-        $order = I("order/d") ? I("order/d") : 99 ;
+        $s_number = I("s_number/d") ? I("s_number/d") : 99 ;
         $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $item_id =  I("item_id/d");
 
@@ -41,7 +41,7 @@ class CatalogController extends BaseController {
         }
 
         $data['cat_name'] = $cat_name ;
-        $data['order'] = $order ;
+        $data['s_number'] = $s_number ;
         $data['item_id'] = $item_id ;
         
 
@@ -68,7 +68,7 @@ class CatalogController extends BaseController {
     public function catList(){
         $item_id = I("item_id/d");
         if ($item_id > 0 ) {
-            $ret = D("Catalog")->where(" item_id = '$item_id' ")->order(" 'order', addtime asc  ")->select();
+            $ret = D("Catalog")->where(" item_id = '$item_id' ")->order(" 's_number', addtime asc  ")->select();
         }
         if ($ret) {
            $this->sendResult($ret);

@@ -56,7 +56,7 @@ class MemberController extends BaseController {
     public function getList(){
         $item_id = I("item_id/d");
         if ($item_id > 0 ) {
-            $ret = D("ItemMember")->where(" item_id = '$item_id' ")->order(" 'order', addtime asc  ")->select();
+            $ret = D("ItemMember")->where(" item_id = '$item_id' ")->order(" addtime asc  ")->select();
         }
         if ($ret) {
            $this->sendResult($ret);

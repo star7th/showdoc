@@ -146,13 +146,13 @@ $(function() {
     var page_title = $("#page_title").val();
     var page_content = $("#page_content").val();
     var item_id = $("#item_id").val();
-    var order = $("#order").val();
+    var s_number = $("#s_number").val();
     saving = true;
     $.post(
       "?s=home/page/save", {
         "page_id": page_id,
         "cat_id": cat_id,
-        "order": order,
+        "s_number": s_number,
         "page_content": page_content,
         "page_title": page_title,
         "item_id": item_id

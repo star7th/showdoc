@@ -5,7 +5,7 @@ class ItemController extends BaseController {
 	//项目列表页
     public function index(){
     	$login_user = $this->checkLogin();        
-    	$items  = D("Item")->where("uid = '$login_user[uid]' or item_id in ( select ".C('DB_PREFIX')."item_id from item_member where uid = '$login_user[uid]' ) ")->select();
+    	$items  = D("Item")->where("uid = '$login_user[uid]' or item_id in ( select item_id from ".C('DB_PREFIX')."item_member where uid = '$login_user[uid]' ) ")->select();
         
         $share_url = get_domain().__APP__.'/uid/'.$login_user['uid'];
 
@@ -20,7 +20,7 @@ class ItemController extends BaseController {
         $uid = I("uid/d");
         $show_user = D("User")->where(" uid = '$uid' ")->find();
         if ($show_user) {
-            $items  = D("Item")->where(" password = '' and  ( uid = '$show_user[uid]' or item_id in ( select ".C('DB_PREFIX')."item_id from item_member where uid = '$show_user[uid]' ) ) ")->select();
+            $items  = D("Item")->where(" password = '' and  ( uid = '$show_user[uid]' or item_id in ( select item_id from ".C('DB_PREFIX')."item_member where uid = '$show_user[uid]' ) ) ")->select();
             $this->assign("items" , $items);
             $this->assign("show_user" , $show_user);
             $this->assign("login_user" , $login_user);
@@ -85,16 +85,16 @@ class ItemController extends BaseController {
         //是否有搜索词
         if ($keyword) {
             $keyword = mysql_escape_string($keyword);
-            $pages = D("Page")->where("item_id = '$item_id' and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `order` asc  ")->select();
+            $pages = D("Page")->where("item_id = '$item_id' and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `s_number` asc  ")->select();
         
         }else{
             //获取所有父目录id为0的页面
-            $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `order` asc  ")->select();
+            $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `s_number` asc  ")->select();
             //获取所有目录
-            $catalogs = D("Catalog")->where("item_id = '$item_id' ")->order(" `order` asc  ")->select();
+            $catalogs = D("Catalog")->where("item_id = '$item_id' ")->order(" `s_number` asc  ")->select();
             if ($catalogs) {
                 foreach ($catalogs as $key => &$catalog) {
-                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `order` asc  ")->select();
+                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
                     $catalog['pages'] = $temp ? $temp: array();
                 }
             }
@@ -199,12 +199,12 @@ class ItemController extends BaseController {
 
         $item = D("Item")->where("item_id = '$item_id' ")->find();
         //获取所有父目录id为0的页面
-        $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `order` asc  ")->select();
+        $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `s_number` asc  ")->select();
         //获取所有目录
-        $catalogs = D("Catalog")->where("item_id = '$item_id' ")->order(" `order` asc  ")->select();
+        $catalogs = D("Catalog")->where("item_id = '$item_id' ")->order(" `s_number` asc  ")->select();
         if ($catalogs) {
             foreach ($catalogs as $key => &$catalog) {
-                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `order` asc  ")->select();
+                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
                 $catalog['pages'] = $temp ? $temp: array();
             }
         }
