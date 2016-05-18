@@ -34,16 +34,16 @@ $(function(){
   //保存目录
   $("#save-cat").click(function(){
       var cat_name = $("#cat_name").val();
-      var order = $("#order").val();
+      var s_number = $("#s_number").val();
       var cat_id = $("#cat_id").val();
       $.post(
         "?s=home/catalog/save",
-        {"cat_name": cat_name , "order": order , "item_id": item_id , "cat_id": cat_id  },
+        {"cat_name": cat_name , "s_number": s_number , "item_id": item_id , "cat_id": cat_id  },
         function(data){
           if (data.error_code == 0) {
             $("#delete-cat").hide();
             $("#cat_name").val('');
-            $("#order").val('');
+            $("#s_number").val('');
             $("#cat_id").val('');
             alert("保存成功！");
           }else{
