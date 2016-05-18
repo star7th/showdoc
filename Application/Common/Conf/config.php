@@ -1,9 +1,13 @@
 <?php
 return array(
 	//'配置项'=>'配置值'
-	'DB_TYPE'   => 'mysql', // 数据库类型
+	//使用sqlite数据库（ShowDoc默认）
+	'DB_TYPE'   => 'Sqlite', 
+	'DB_NAME'   => 'Sqlite/showdoc.db.php', 
+	//使用mysql数据库
+	//'DB_TYPE'   => 'mysql', 
+	//'DB_NAME'   => 'showdoc',
 	'DB_HOST'   => 'localhost',
-	'DB_NAME'   => 'showdoc', 
 	'DB_USER'   => 'showdoc', 
 	'DB_PWD'    => 'showdoc123456',
 	'DB_PORT'   => 3306, // 端口
