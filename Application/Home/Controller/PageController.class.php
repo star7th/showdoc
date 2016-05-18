@@ -120,6 +120,14 @@ class PageController extends BaseController {
 
             $ret = D("Page")->where(" page_id = '$page_id' ")->save($data);
 
+            //统计该page_id有多少历史版本了
+            $Count = D("PageHistory")->where(" page_id = '$page_id' ")->Count();
+            if ($Count > 20 ) {
+               //每个单页面只保留最多20个历史版本
+               $ret = D("PageHistory")->where(" page_id = '$page_id' ")->limit("20")->order("page_history_id desc")->select();
+               D("PageHistory")->where(" page_id = '$page_id' and page_history_id < ".$ret[19]['page_history_id'] )->delete();
+            }
+
             //更新项目时间
             D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));
 
