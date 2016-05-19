@@ -7,14 +7,15 @@ class UserController extends BaseController {
 	//注册
 	public function register(){
 		if (!IS_POST) {
+			  $this->assign('CloseVerify',C('CloseVerify'));
 			  $this->display ();
 			}else{
 			  $username = I("username");
 			  $password = I("password");
 			  $confirm_password = I("confirm_password");
 			  $v_code = I("v_code");
-			  if ($v_code && $v_code == session('v_code')) {
-			  	if ( $password != '' && $password == $confirm_password) {
+			  if (C('CloseVerify')) {
+		  		if ( $password != '' && $password == $confirm_password) {
 
 			  		if ( ! D("User")->isExist($username) ) {
 						$ret = D("User")->register($username,$password);
@@ -31,8 +32,13 @@ class UserController extends BaseController {
 			  		$this->message("两次输入的密码不一致！");
 			  	}
 			  }else{
-			    $this->message("验证码不正确");
+				  if ($v_code && $v_code == session('v_code')) {
+				  	
+				  }else{
+				    $this->message("验证码不正确");
+				  }	
 			  }
+			  
 
 			}
 	}
@@ -54,14 +60,15 @@ class UserController extends BaseController {
 					exit();
 				}
 			}
-		  $this->display ();
+			$this->assign('CloseVerify',C('CloseVerify'));
+		  	$this->display ();
 
 		}else{
 		  $username = I("username");
 		  $password = I("password");
 		  $v_code = I("v_code");
-		  if ($v_code && $v_code == session('v_code')) {
-		    $ret = D("User")->checkLogin($username,$password);
+		  if (C('CloseVerify')) { //如果关闭验证码
+		  	$ret = D("User")->checkLogin($username,$password);
 		    if ($ret) {
 		      session("login_user" , $ret );
 		      $cookie_token = md5(time().rand().'efeffthdh');
@@ -74,10 +81,27 @@ class UserController extends BaseController {
 		    }else{
 		      $this->message("用户名或密码不正确");
 		    }
-
 		  }else{
-		    $this->message("验证码不正确");
+			  if ($v_code && $v_code == session('v_code')) {
+			    $ret = D("User")->checkLogin($username,$password);
+			    if ($ret) {
+			      session("login_user" , $ret );
+			      $cookie_token = md5(time().rand().'efeffthdh');
+			      $cookie_token_expire = time() + 60*60*24*90 ;
+		          cookie('cookie_token',$cookie_token,60*60*24*90);
+			      D("User")->where(" uid = '$ret[uid]' ")->save(array("last_login_time"=>time(),"cookie_token"=>$cookie_token,"cookie_token_expire"=>$cookie_token_expire));
+			      unset($ret['password']);
+
+		          $this->message("登录成功！",U('Home/Item/index'));		        
+			    }else{
+			      $this->message("用户名或密码不正确");
+			    }
+
+			  }else{
+			    $this->message("验证码不正确");
+			  }	
 		  }
+		  
 
 		}
 	}

@@ -7,12 +7,14 @@
         <h3 class="form-signin-heading">登录</h3>
         <input type="text" class="input-block-level"  name="username" placeholder="用户名">
         <input type="password" class="input-block-level" name="password" placeholder="密码">
+        <if  condition="$CloseVerify != 1">
         <input type="text" class="input-block-level"  name="v_code" placeholder="验证码">
         <div class="control-group">
           <div class="controls">
             <img src="#" id="v_code_img">
           </div>
         </div>
+        </if>
         <button class="btn btn-large btn-primary" type="submit">登录</button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="?s=/home/user/register">没有账号？马上去注册→</a>
       </form>
