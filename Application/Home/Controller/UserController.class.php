@@ -14,7 +14,7 @@ class UserController extends BaseController {
 			  $password = I("password");
 			  $confirm_password = I("confirm_password");
 			  $v_code = I("v_code");
-			  if (C('CloseVerify')) {
+			  if (C('CloseVerify') || $v_code && $v_code == session('v_code') ) {
 		  		if ( $password != '' && $password == $confirm_password) {
 
 			  		if ( ! D("User")->isExist($username) ) {
@@ -32,11 +32,7 @@ class UserController extends BaseController {
 			  		$this->message("两次输入的密码不一致！");
 			  	}
 			  }else{
-				  if ($v_code && $v_code == session('v_code')) {
-				  	
-				  }else{
 				    $this->message("验证码不正确");
-				  }	
 			  }
 			  
 
