@@ -38,7 +38,7 @@ class PageController extends BaseController {
         if ($page_id > 0 ) {
             if ($page_history_id) {
                 $page = D("PageHistory")->where(" page_history_id = '$page_history_id' ")->find();
-                $page_content = gzuncompress($page['page_content']); 
+                $page_content = gzuncompress(base64_decode($page['page_content']); 
                 $page['page_content'] = $page_content ? $page_content : $page['page_content'] ;
             }else{
                 $page = D("Page")->where(" page_id = '$page_id' ")->find();
@@ -112,7 +112,7 @@ class PageController extends BaseController {
                 'item_id'=>$page['item_id'],
                 'cat_id'=>$page['cat_id'],
                 'page_title'=>$page['page_title'],
-                'page_content'=>gzcompress($page['page_content'], 9),
+                'page_content'=>base64_encode( gzcompress($page['page_content'], 9)),
                 's_number'=>$page['s_number'],
                 'addtime'=>$page['addtime'],
                 'author_uid'=>$page['author_uid'],
@@ -185,7 +185,7 @@ class PageController extends BaseController {
 
         if ($PageHistory) {
             foreach ($PageHistory as $key => &$value) {
-                $page_content = gzuncompress($value['page_content']); 
+                $page_content = gzuncompress(base64_decode($value['page_content'])); 
                 $value['page_content'] = $page_content ? $page_content : $value['page_content'] ;
                 $value['addtime'] = date("Y-m-d H:i:s" , $value['addtime']);
             }
