@@ -49,7 +49,7 @@
 <div class="doc-body row">
   <!-- 左侧栏菜单 -->
     <div class="doc-left span3 bs-docs-sidebar pull-left">
-        <form class="form-search text-center" action="{:U('Home/item/show')}&item_id={$item.item_id}" method="get">
+        <form class="form-search text-center" action="{:U('Home/item/show')}&item_id={$item.item_id}" method="post">
           <div class="input-append search-input-append">
             <i class="icon-blank"></i>
             <input type="text" name="keyword" class="search-query search-query-input" value="{$keyword}">
