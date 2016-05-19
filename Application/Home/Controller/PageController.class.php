@@ -38,7 +38,7 @@ class PageController extends BaseController {
         if ($page_id > 0 ) {
             if ($page_history_id) {
                 $page = D("PageHistory")->where(" page_history_id = '$page_history_id' ")->find();
-                $page_content = gzuncompress(base64_decode($page['page_content']); 
+                $page_content = gzuncompress(base64_decode($page['page_content'])); 
                 $page['page_content'] = $page_content ? $page_content : $page['page_content'] ;
             }else{
                 $page = D("Page")->where(" page_id = '$page_id' ")->find();
