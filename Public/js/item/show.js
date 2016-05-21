@@ -48,6 +48,17 @@ $(function(){
     }
   });
 
+  //增加返回顶部按钮
+  $.goup({
+        trigger: 100,
+        bottomOffset: 150,
+        locationOffset: 100,
+        title: '回到顶部',
+        titleAsText: true,
+        containerColor:"#08c",
+    });
+
+
   //js获取url参数
   function GetQueryString(name)
   {
