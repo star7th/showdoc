@@ -139,12 +139,70 @@ class UpdateController extends BaseController {
     		}
     	}
 
-    	echo "OK!";
 
+        //catalog表增加parent_cat_id字段
+        $columns = M("catalog")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'parent_cat_id') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."catalog ADD parent_cat_id INT( 10 ) NOT NULL DEFAULT '0' COMMENT '上一级目录的id';";
+                D("catalog")->execute($sql);
+            }
+        }
 
+        //catalog表增加level字段
+        $columns = M("catalog")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'level') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."catalog ADD level INT( 10 ) NOT NULL DEFAULT '2' COMMENT '2为二级目录，3为三级目录';";
+                D("catalog")->execute($sql);
+            }
+        }
+
+        echo "OK!";
     }
 
     public function sqlite(){
+        //catalog表增加parent_cat_id字段
+        $columns = M("catalog")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'parent_cat_id') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."catalog ADD parent_cat_id INT( 10 ) NOT NULL DEFAULT '0' ;";
+                D("catalog")->execute($sql);
+            }
+        }
+
+        //catalog表增加level字段
+        $columns = M("catalog")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'level') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."catalog ADD level INT( 10 ) NOT NULL DEFAULT '2'  ;";
+                D("catalog")->execute($sql);
+            }
+        }    
         echo 'OK!';
     }
 

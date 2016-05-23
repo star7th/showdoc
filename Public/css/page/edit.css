@@ -111,11 +111,11 @@ body {
     height: 30px;
 }
 
-#cat_id {
+#cat_id ,#parent_cat_id {
     width: 150px;
 }
 
-#order {
+#s_number {
     width: 120px;
     margin-right: 20px;
 }

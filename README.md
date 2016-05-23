@@ -75,3 +75,8 @@ ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以�
 博客：[http://blog.star7th.com](http://blog.star7th.com)  
 邮箱：xing7th#gmail.com（把#改为@）   
 All rights reserved.
+
+### ShowDoc交流群
+
+- ShowDoc使用交流qq群
+	ShowDoc的使用者交流qq群：564671853

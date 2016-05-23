@@ -18,6 +18,7 @@
     padding-right: 40px;
   }
   .doc-left{
+    width: 240px;
     position: relative;
     padding-top: 10px;
     min-height: 100%;
@@ -76,9 +77,11 @@
   }
 
   .search-query-input{
-    width: 130px;
+    width: 140px;
   }
-
+.third-child-catalog{
+  margin-left: -16px;
+}
 
 @media screen and (min-width:1200px){
   .doc-right{ width: 930px;} 
