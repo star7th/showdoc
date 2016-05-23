@@ -1,5 +1,5 @@
 <include file="Common/header" />
-<link rel="stylesheet" href="__PUBLIC__/css/page/edit.css" />
+<link rel="stylesheet" href="__PUBLIC__/css/page/edit.css?1.1third" />
 <link rel="stylesheet" href="__PUBLIC__/editor.md/css/editormd.css" />
 <style type="text/css">
 
@@ -13,8 +13,12 @@
                     <input type="text" name="page_title" id="page_title" placeholder="请输入页面标题" value="{$page.page_title}" tabindex="1">
                 </li>
                 <li>
-                    上级目录：
+                    二级目录：
                     <select name="cat_id" id="cat_id" tabindex="2"></select>
+                </li>
+                <li id="li_parent_cat">
+                    三级目录：
+                    <select name="parent_cat_id" id="parent_cat_id" ></select>
                 </li>
                 <li>
                     <input type="text" name="s_number" id="s_number" value="{$page.s_number}" placeholder="可选：顺序数字"  tabindex="3" >
@@ -45,7 +49,8 @@
     </div>
     <input type="hidden" id="item_id" value="{$item_id}">
     <input type="hidden" id="page_id" value="{$page.page_id}">
-    <input type="hidden" id="default_cat_id" value="{$default_cat_id}">
+    <input type="hidden" id="default_second_cat_id" value="{$default_second_cat_id}">
+    <input type="hidden" id="default_child_cat_id" value="{$default_child_cat_id}">
 </div>
 <!-- 模板存放的地方 -->
 <div id="api-doc-templ" style="display:none">
@@ -86,4 +91,4 @@
 <script src="__PUBLIC__/editor.md/plugins/table-dialog/table-dialog.js"></script>
 <script src="__PUBLIC__/editor.md/plugins/reference-link-dialog/reference-link-dialog.js"></script>
 
-<script src="__PUBLIC__/js/page/edit.js?v=1.1.1"></script>
+<script src="__PUBLIC__/js/page/edit.js?v=1.1.2third"></script>

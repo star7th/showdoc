@@ -69,10 +69,19 @@ class PageController extends BaseController {
             return;
         }
 
+        $Catalog = D("Catalog")->where(" cat_id = '$default_cat_id' ")->find();
+        if ($Catalog['parent_cat_id']) {
+            $default_second_cat_id = $Catalog['parent_cat_id'];
+            $default_child_cat_id = $default_cat_id;
+
+        }else{
+            $default_second_cat_id = $default_cat_id;
+        }
 
         $this->assign("page" , $page);
         $this->assign("item_id" , $item_id);
-        $this->assign("default_cat_id" , $default_cat_id);
+        $this->assign("default_second_cat_id" , $default_second_cat_id);
+        $this->assign("default_child_cat_id" , $default_child_cat_id);
 
 
         $this->display();        

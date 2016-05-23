@@ -1,5 +1,5 @@
 <include file="Common/header" />
-<link rel="stylesheet" href="__PUBLIC__/css/item/show.css" />
+<link rel="stylesheet" href="__PUBLIC__/css/item/show.css?1.1.1third" />
 
 
 <div class="doc-head row" >
@@ -60,17 +60,33 @@
 
       <ul class="nav nav-list bs-docs-sidenav">
 
+        <!-- 一级目录的页面在前面 -->
         <foreach name="pages" item="page">
           <li ><a href="{:U('Home/Page/index')}&page_id={$page.page_id}" data-page-id="{$page.page_id}" ><i class="icon-blank"></i>{$page.page_title}</a></li>
         </foreach>
 
         <foreach name="catalogs" item="catalog">
 
+        
           <li><a href="#"><i class="icon-chevron-right"></i>{$catalog.cat_name}</a>
             <ul class="child-ul nav-list hide">
+              <!-- 二级目录的页面们 -->
               <foreach name="catalog.pages" item="catalog_page">
                 <li><a href="{:U('Home/Page/index')}&page_id={$catalog_page.page_id}" data-page-id="{$catalog_page.page_id}" >{$catalog_page.page_title}</a></li>
               </foreach>
+              <!-- 二级目录的子目录们（三级目录） -->
+                <foreach name="catalog.catalogs" item="catalog3">   
+                  <li class="third-child-catalog"><a href="#"><i class="icon-chevron-right"></i>{$catalog3.cat_name}</a>
+                    <ul class="child-ul nav-list hide">
+                      <!-- 二级目录的页面们 -->
+                      <foreach name="catalog3.pages" item="catalog3_page">
+                        <li><a href="{:U('Home/Page/index')}&page_id={$catalog3_page.page_id}" data-page-id="{$catalog3_page.page_id}" >{$catalog3_page.page_title}</a></li>
+                      </foreach>
+                    </ul>
+                  </li>
+
+                </foreach>
+
             </ul>
           </li>
 
@@ -144,4 +160,4 @@
 <script src="__PUBLIC__/js/jquery.goup.min.js"></script>
 <script src="__PUBLIC__/js/jquery.hotkeys.js"></script>
 
-<script src="__PUBLIC__/js/item/show.js?v=1.12"></script>
+<script src="__PUBLIC__/js/item/show.js?v=1.12third"></script>

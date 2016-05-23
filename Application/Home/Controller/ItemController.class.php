@@ -90,16 +90,28 @@ class ItemController extends BaseController {
         }else{
             //获取所有父目录id为0的页面
             $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `s_number` asc  ")->select();
-            //获取所有目录
-            $catalogs = D("Catalog")->where("item_id = '$item_id' ")->order(" `s_number` asc  ")->select();
+            //获取所有二级目录
+            $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->order(" `s_number` asc  ")->select();
             if ($catalogs) {
                 foreach ($catalogs as $key => &$catalog) {
+                    //该二级目录下的所有子页面
                     $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
                     $catalog['pages'] = $temp ? $temp: array();
+
+                    //该二级目录下的所有子目录
+                    $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
+                    $catalog['catalogs'] = $temp ? $temp: array();
+                    if($catalog['catalogs']){
+                        //获取所有三级目录的子页面
+                        foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
+                            //该二级目录下的所有子页面
+                            $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->order(" `s_number` asc  ")->select();
+                            $catalog3['pages'] = $temp ? $temp: array();
+                        }                        
+                    }               
                 }
             }
         }
-
         $share_url = get_domain().__APP__.'/'.$item_id;
 
         $ItemPermn = $this->checkItemPermn($uid , $item_id) ;
@@ -198,14 +210,28 @@ class ItemController extends BaseController {
         }
 
         $item = D("Item")->where("item_id = '$item_id' ")->find();
+
         //获取所有父目录id为0的页面
         $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `s_number` asc  ")->select();
-        //获取所有目录
-        $catalogs = D("Catalog")->where("item_id = '$item_id' ")->order(" `s_number` asc  ")->select();
+        //获取所有二级目录
+        $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->order(" `s_number` asc  ")->select();
         if ($catalogs) {
             foreach ($catalogs as $key => &$catalog) {
+                //该二级目录下的所有子页面
                 $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
                 $catalog['pages'] = $temp ? $temp: array();
+
+                //该二级目录下的所有子目录
+                $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
+                $catalog['catalogs'] = $temp ? $temp: array();
+                if($catalog['catalogs']){
+                    //获取所有三级目录的子页面
+                    foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
+                        //该二级目录下的所有子页面
+                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->order(" `s_number` asc  ")->select();
+                        $catalog3['pages'] = $temp ? $temp: array();
+                    }                        
+                }               
             }
         }
 
@@ -234,6 +260,25 @@ class ItemController extends BaseController {
                                 $data .= htmlspecialchars_decode($Parsedown->text($page['page_content']));
                             $data .= '</div>';
                             $child ++;
+                        }
+                    }
+                    if ($value['catalogs']) {
+                        $parent2 = 1 ;
+                        foreach ($value['catalogs'] as $key3 => $value3) {
+                            $data .= "<h2>{$parent}.{$parent2}、{$value3['cat_name']}</h2>";
+                            $data .= '<div style="margin-left:20px;">';
+                                $child2 = 1 ;
+                                if ($value3['pages']) {
+                                    foreach ($value3['pages'] as $page3) {
+                                        $data .= "<h3>{$parent}.{$parent2}.{$child2}、{$page3['page_title']}</h3>";
+                                        $data .= '<div style="margin-left:30px;">';
+                                            $data .= htmlspecialchars_decode($Parsedown->text($page3['page_content']));
+                                        $data .= '</div>';
+                                        $child2 ++;
+                                    }
+                                }
+                            $data .= '</div>';
+                            $parent2 ++;
                         }
                     }
                 $data .= '</div>';
