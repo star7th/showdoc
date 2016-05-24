@@ -173,7 +173,7 @@ class PageController extends BaseController {
 
         if ($page) {
             
-            $ret = D("Page")->where(" page_id = '$page_id' ")->limit(1)->delete();
+            $ret = D("Page")->where(" page_id = '$page_id' ")->delete();
             //更新项目时间
             D("Item")->where(" item_id = '$page[item_id]' ")->save(array("last_update_time"=>time()));
 

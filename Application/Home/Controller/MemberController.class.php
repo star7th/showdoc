@@ -79,7 +79,7 @@ class MemberController extends BaseController {
 
         if ($username) {
             
-            $ret = D("ItemMember")->where(" item_id = '%d' and username = '%s'  ",array($item_id,$username))->limit(1)->delete();
+            $ret = D("ItemMember")->where(" item_id = '%d' and username = '%s'  ",array($item_id,$username))->delete();
 
         }
         if ($ret) {
