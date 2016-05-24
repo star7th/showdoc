@@ -59,10 +59,8 @@ $(function() {
 
             cat_html += ' ">' + json[i].cat_name + '</OPTION>';
             $("#parent_cat_id").append(cat_html);
-            $("#li_parent_cat").show();
           };
         }else{
-          $("#li_parent_cat").hide();
         }
 
       },
