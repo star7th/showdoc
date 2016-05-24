@@ -51,6 +51,8 @@ class CatalogController extends BaseController {
         $data['parent_cat_id'] = $parent_cat_id ;
         if ($parent_cat_id > 0 ) {
            $data['level'] = 3;
+        }else{
+            $data['level'] = 2;
         }
 
         if ($cat_id > 0 ) {
@@ -139,7 +141,7 @@ class CatalogController extends BaseController {
 
         if ($cat_id > 0 ) {
             
-            $ret = D("Catalog")->where(" cat_id = '$cat_id' ")->limit(1)->delete();
+            $ret = D("Catalog")->where(" cat_id = '$cat_id' ")->delete();
 
         }
         if ($ret) {
