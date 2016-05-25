@@ -1,20 +1,7 @@
--- phpMyAdmin SQL Dump
--- version 4.0.10
--- http://www.phpmyadmin.net
---
--- 主机: localhost
--- 生成日期: 2016-04-12 04:37:19
--- 服务器版本: 5.1.73
--- PHP 版本: 5.4.45
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- 数据库: `showdoc`
@@ -32,11 +19,12 @@ CREATE TABLE IF NOT EXISTS `catalog` (
   `item_id` int(10) NOT NULL DEFAULT '0' COMMENT '所在的项目id',
   `s_number` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
   `addtime` int(11) NOT NULL DEFAULT '0',
+  `parent_cat_id` int(10) NOT NULL DEFAULT '0' COMMENT '上一级目录的id',
+  `level` int(10) NOT NULL DEFAULT '2' COMMENT '2为二级目录，3为三级目录',
   PRIMARY KEY (`cat_id`),
-  KEY `s_number` (`s_number`),
+  KEY `order` (`s_number`),
   KEY `addtime` (`addtime`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='目录表' AUTO_INCREMENT=1 ;
-
 
 -- --------------------------------------------------------
 
@@ -57,8 +45,6 @@ CREATE TABLE IF NOT EXISTS `item` (
   KEY `addtime` (`addtime`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='项目表' AUTO_INCREMENT=1 ;
 
-
-
 -- --------------------------------------------------------
 
 --
@@ -73,8 +59,6 @@ CREATE TABLE IF NOT EXISTS `item_member` (
   `addtime` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_member_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='项目成员表' AUTO_INCREMENT=1 ;
-
-
 
 -- --------------------------------------------------------
 
@@ -93,10 +77,9 @@ CREATE TABLE IF NOT EXISTS `page` (
   `s_number` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
   `addtime` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`page_id`),
-  KEY `s_number` (`s_number`),
+  KEY `order` (`s_number`),
   KEY `addtime` (`addtime`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='文章页面表' AUTO_INCREMENT=1 ;
-
 
 -- --------------------------------------------------------
 
@@ -113,12 +96,12 @@ CREATE TABLE IF NOT EXISTS `page_history` (
   `cat_id` int(10) NOT NULL DEFAULT '0',
   `page_title` varchar(50) NOT NULL DEFAULT '',
   `page_content` text NOT NULL,
-  `s_number` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部为0则按时间排序',
+  `s_number` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
   `addtime` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`page_history_id`),
-  KEY `page_id` (`page_id`),
-  KEY `addtime` (`addtime`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='页面历史表' AUTO_INCREMENT=1 ;
+  KEY `addtime` (`addtime`),
+  KEY `page_id` (`page_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='页面历史表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -128,22 +111,17 @@ CREATE TABLE IF NOT EXISTS `page_history` (
 
 CREATE TABLE IF NOT EXISTS `user` (
   `uid` int(10) NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) NOT NULL DEFAULT '',
+  `username` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `groupid` tinyint(2) NOT NULL DEFAULT '2' COMMENT '1为超级管理员，2为普通用户',
-  `name` varchar(15) DEFAULT '',
-  `avatar` varchar(200) DEFAULT '' COMMENT '头像',
-  `avatar_small` varchar(200) CHARACTER SET latin1 DEFAULT '',
-  `email` varchar(50) DEFAULT '',
-  `password` varchar(50) NOT NULL,
-  `cookie_token` varchar(50) NOT NULL DEFAULT '' COMMENT '实现cookie自动登录的token凭证',
+  `name` varchar(15) CHARACTER SET utf8 DEFAULT '',
+  `avatar` varchar(200) CHARACTER SET utf8 DEFAULT '' COMMENT '头像',
+  `avatar_small` varchar(200) DEFAULT '',
+  `email` varchar(50) CHARACTER SET utf8 DEFAULT '',
+  `password` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `cookie_token` varchar(50) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT '实现cookie自动登录的token凭证',
   `cookie_token_expire` int(11) NOT NULL DEFAULT '0',
   `reg_time` int(11) NOT NULL DEFAULT '0',
   `last_login_time` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`uid`),
   UNIQUE KEY `username` (`username`) USING BTREE
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户表' AUTO_INCREMENT=1 ;
-
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='用户表' AUTO_INCREMENT=1 ;
