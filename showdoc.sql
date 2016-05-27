@@ -1,7 +1,6 @@
 
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+
 
 --
 -- 数据库: `showdoc`
@@ -22,8 +21,8 @@ CREATE TABLE IF NOT EXISTS `catalog` (
   `parent_cat_id` int(10) NOT NULL DEFAULT '0' COMMENT '上一级目录的id',
   `level` int(10) NOT NULL DEFAULT '2' COMMENT '2为二级目录，3为三级目录',
   PRIMARY KEY (`cat_id`),
-  KEY `order` (`s_number`),
-  KEY `addtime` (`addtime`)
+  KEY `addtime` (`addtime`),
+  KEY `s_number` (`s_number`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='目录表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -77,8 +76,8 @@ CREATE TABLE IF NOT EXISTS `page` (
   `s_number` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
   `addtime` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`page_id`),
-  KEY `order` (`s_number`),
-  KEY `addtime` (`addtime`)
+  KEY `addtime` (`addtime`),
+  KEY `s_number` (`s_number`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='文章页面表' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
