@@ -95,3 +95,28 @@ function output_word($data,$fileName=''){
     rewind($filepath);
     echo fread($filepath,$len);
 }
+
+
+function clear_runtime($path = RUNTIME_PATH){  
+    //给定的目录不是一个文件夹  
+    if(!is_dir($path)){  
+        return null;  
+    }  
+  
+    $fh = opendir($path);  
+    while(($row = readdir($fh)) !== false){  
+        //过滤掉虚拟目录  
+        if($row == '.' || $row == '..'|| $row == 'index.html'){  
+            continue;  
+        }  
+  
+        if(!is_dir($path.'/'.$row)){
+            unlink($path.'/'.$row);  
+        }  
+        clear_runtime($path.'/'.$row);  
+          
+    }  
+    //关闭目录句柄，否则出Permission denied  
+    closedir($fh);    
+    return true;  
+}  
