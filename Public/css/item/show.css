@@ -83,6 +83,26 @@
   margin-left: -16px;
 }
 
+@media screen and (min-width:500px){
+  .doc-right{ width: 400px;} 
+}
+
+@media screen and (min-width:600px){
+  .doc-right{ width: 500px;} 
+}
+
+@media screen and (min-width:700px){
+  .doc-right{ width: 600px;} 
+}
+
+@media screen and (min-width:800px){
+  .doc-right{ width: 700px;} 
+}
+
+@media screen and (min-width:900px){
+  .doc-right{ width: 800px;} 
+}
+
 @media screen and (min-width:1000px){
   .doc-right{ width: 700px;} 
 }
