@@ -73,6 +73,8 @@ class ItemController extends BaseController {
     public function show(){
         $this->checkLogin(false);
         $item_id = I("item_id/d");
+        $current_page_id = I("page_id/d");
+
         $keyword = I("keyword");
         $login_user = session("login_user");
         $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
@@ -118,6 +120,7 @@ class ItemController extends BaseController {
 
         $ItemCreator = $this->checkItemCreator($uid , $item_id);
 
+        $this->assign("current_page_id" , $current_page_id);
         $this->assign("keyword" , $keyword);
         $this->assign("ItemPermn" , $ItemPermn);
         $this->assign("ItemCreator" , $ItemCreator);
