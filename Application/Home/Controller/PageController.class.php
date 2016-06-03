@@ -120,13 +120,8 @@ class PageController extends BaseController {
 		curl_setopt ( $oCurl, CURLOPT_URL, $url );
 		curl_setopt ( $oCurl, CURLOPT_RETURNTRANSFER, 1 );
 		$sContent = curl_exec ( $oCurl );
-		$aStatus = curl_getinfo ( $oCurl );
 		curl_close ( $oCurl );
-		if (intval ( $aStatus ["http_code"] ) == 200) {
-			return $sContent;
-		} else {
-			return false;
-		}
+		return $sContent;
 	}
 	
 	/**
@@ -156,13 +151,8 @@ class PageController extends BaseController {
 		curl_setopt ( $oCurl, CURLOPT_POST, true );
 		curl_setopt ( $oCurl, CURLOPT_POSTFIELDS, $strPOST );
 		$sContent = curl_exec ( $oCurl );
-		$aStatus = curl_getinfo ( $oCurl );
 		curl_close ( $oCurl );
-		if (intval ( $aStatus ["http_code"] ) == 200) {
-			return $sContent;
-		} else {
-			return false;
-		}
+		return $sContent;
 	}
 
     //保存
