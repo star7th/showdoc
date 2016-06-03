@@ -77,10 +77,13 @@
 				method:$("#method").val(),
 				params:$("#params").val()
 			},function (data) {
-				
-				console.log(JSON.parse(data));
-				var text="\{ \n"+dump(JSON.parse(data))+" \}";//整体加个大括号
-				$("#http-response").val(text);
+				try{
+					var text="\{ \n"+dump(JSON.parse(data))+" \}";//整体加个大括号
+					$("#http-response").val(text);
+				}catch(e){
+					//非json数据直接显示
+					$("#http-response").val(data);
+				}
 			});
 		});
 	});
