@@ -14,6 +14,9 @@ if(!new_is_writeable("./")){
 	ajax_out("请赋予 /install 目录以可写权限！",10098);
 }
 
+if(!new_is_writeable("../Public/Uploads")){
+	ajax_out("请赋予 /Public/Uploads/ 目录以可写权限！",10098);
+}
 
 if(!new_is_writeable("../Application/Runtime")){
 	ajax_out("请赋予 /Application/Runtime 目录以可写权限！",10095);
