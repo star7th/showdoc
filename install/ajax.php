@@ -14,6 +14,9 @@ if(!new_is_writeable("./")){
 	ajax_out("请赋予 /install 目录以可写权限！",10098);
 }
 
+if(!new_is_writeable("../Public/Uploads")){
+	ajax_out("请赋予 /Public/Uploads/ 目录以可写权限！",10098);
+}
 
 if(!new_is_writeable("../Application/Runtime")){
 	ajax_out("请赋予 /Application/Runtime 目录以可写权限！",10095);
@@ -89,14 +92,14 @@ function user_mysql(){
 
         //检测数据库配置是否能链接得上
 
-        $con = mysql_connect($db_host.":".$db_port,$db_user,$db_password);
-        $r = mysql_select_db($db_name);
+        $con = mysqli_connect($db_host.":".$db_port,$db_user,$db_password);
+        $r = mysqli_select_db($con, $db_name);
         if (!$con || !$r) {
            ajax_out("数据库链接错误，请检查配置信息是否填写正确",10002);
            exit();
         }
-        mysql_query("SET NAMES UTF8");
-        $row = mysql_fetch_array(mysql_query(" SELECT COUNT(*) FROM user "));
+        mysqli_query($con, "SET NAMES UTF8");
+        $row = mysqli_fetch_array(mysqli_query($con, " SELECT COUNT(*) FROM user "));
         
         if ($row) {
            ajax_out("检测到该数据库已经存在数据。请清理后再重试",10003);
@@ -104,7 +107,7 @@ function user_mysql(){
         }
         
         //开始导入mysql数据库 
-        $ret = import_mysql();
+        $ret = import_mysql($con);
         if (!$ret) {
            ajax_out("创建数据库表失败！",10004);
            exit();
@@ -194,7 +197,7 @@ function import_mysql($con){
 	KEY `addtime` (`addtime`),
 	KEY `s_number` (`s_number`)
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='目录表' AUTO_INCREMENT=1 ";
-	mysql_query($sql);
+	mysqli_query($con, $sql);
 
 	//创建item表
 	$sql = "CREATE TABLE IF NOT EXISTS `item` (
@@ -209,7 +212,7 @@ function import_mysql($con){
 	PRIMARY KEY (`item_id`),
 	KEY `addtime` (`addtime`)
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='项目表' AUTO_INCREMENT=1 ";
-	mysql_query($sql);	
+	mysqli_query($con, $sql);	
 
 	//创建项目成员表
 	$sql = "CREATE TABLE IF NOT EXISTS `item_member` (
@@ -220,7 +223,7 @@ function import_mysql($con){
 	`addtime` int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`item_member_id`)
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='项目成员表' AUTO_INCREMENT=1 ";
-	mysql_query($sql);
+	mysqli_query($con, $sql);
 
 	//创建项目page表
 	$sql = "CREATE TABLE IF NOT EXISTS `page` (
@@ -237,7 +240,7 @@ function import_mysql($con){
 	KEY `addtime` (`addtime`),
 	KEY `s_number` (`s_number`)
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='文章页面表' AUTO_INCREMENT=1 ";
-	mysql_query($sql);
+	mysqli_query($con, $sql);
 
 	//创建项目page_history表
 	$sql = "CREATE TABLE IF NOT EXISTS `page_history` (
@@ -255,7 +258,7 @@ function import_mysql($con){
 	KEY `addtime` (`addtime`),
 	KEY `page_id` (`page_id`)
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='页面历史表' AUTO_INCREMENT=1 ";
-	mysql_query($sql);
+	mysqli_query($con, $sql);
 
 	//创建项目user表
 	$sql = "CREATE TABLE IF NOT EXISTS `user` (
@@ -275,7 +278,7 @@ function import_mysql($con){
 	UNIQUE KEY `username` (`username`) USING BTREE
 	) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='用户表' AUTO_INCREMENT=1 ";
 
-	$ret = mysql_query($sql);
+	$ret = mysqli_query($con, $sql);
 
 	if ($ret) {
 		return true;

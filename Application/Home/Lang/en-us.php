@@ -116,6 +116,7 @@ return array(
     'inser_apidoc_template'=>'Insert apidoc template',
     'inser_database_doc_template'=>'Insert db-doc template',
     'json_to_table'=>'Json to table',
+    'http_test_api'=>'Api test online',
     'json_to_table_description'=>'Please paste a section of JSON, the program will automatically parse and generate JSON parameters table. This feature is suitable for the rapid preparation of API documents returned to the parameter table',
     'confirm'=>'Confirm',
     'cancel'=>'Cancel',
@@ -126,6 +127,13 @@ return array(
     'recover_to_this_version'=>'Restore to this version',
     'close'=>'Close',
     'finish'=>'Finish',
+    'api_test_title'=>'Test for GET and POST',
+    'api_address_description'=>'Api address(e.g:ttp://www.abc.com/api/login)',
+    'api_address'=>'Api address',
+    'params_description'=>'Params(e.g:user_id=121&age=22&date=2016-06-02)',
+    'params'=>'Params',
+    'clear'=>'Clear',
+    'result'=>'Result',
 
     //user
     'login'=>'Login',
