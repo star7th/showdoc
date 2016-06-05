@@ -18,9 +18,11 @@ return array(
     'URL_MODEL' => 3 ,//URL兼容模式
     'URL_ROUTER_ON'   => true, 
     'URL_ROUTE_RULES'=>array(
+        ':domain\s$'               => 'Home/Item/Show?item_domain=:1',//item的个性域名
         ':id\d'               => 'Home/Item/Show?item_id=:1',
         'uid/:id\d'               => 'Home/Item/showByUid?uid=:1',
     ),
     'URL_CASE_INSENSITIVE'=>true,
     'SHOW_ERROR_MSG'        =>  true,    // 显示错误信息，这样在部署模式下也能显示错误
+
 );

@@ -36,6 +36,8 @@ return array(
     //item/add
     'item_name' => '项目名',
     'item_description' => '项目描述',
+    'item_domain' => '(可选)个性域名',
+    'item_domain_illegal' => '个性域名只能是字母或数字的组合',
     'visit_password_placeholder' => '访问密码（可选，私密项目请设置密码）',
     'submit' => '提交',
     'goback' => '返回',

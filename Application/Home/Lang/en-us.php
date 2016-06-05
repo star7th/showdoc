@@ -36,6 +36,8 @@ return array(
     //item/add
     'item_name' => "Item's name",
     'item_description' => "Item's description",
+    'item_domain' => '(Optional)domain hack',
+    'item_domain_illegal' => 'domain hack must be a combination of letters and numbers',
     'visit_password_placeholder' => 'Access password(Optional: private project required)',
     'submit' => 'Submit',
     'goback' => 'Goback',
