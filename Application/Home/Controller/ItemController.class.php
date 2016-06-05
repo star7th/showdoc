@@ -42,11 +42,20 @@ class ItemController extends BaseController {
             $item_name = I("item_name");
 			$item_domain = I("item_domain");
 
-            if(!ctype_alnum($item_domain)){
-                //echo '个性域名只能是字母或数字的组合';exit;
-                $this->message(L('item_domain_illegal'));
-                return false;
+            if ($item_domain) {
+                $item = D("Item")->where("item_domain = '$item_domain' ")->find();
+                if ($item) {
+                    //个性域名已经存在
+                    $this->message(L('domain_already_exists'));
+                    return false;
+                }
+                if(!ctype_alnum($item_domain)){
+                    //echo '个性域名只能是字母或数字的组合';exit;
+                    $this->message(L('item_domain_illegal'));
+                    return false;
+                }
             }
+
 
             $password = I("password");
 			$item_description = I("item_description");
