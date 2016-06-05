@@ -11,34 +11,34 @@
   <!-- 编辑框 -->
   <div class="cat-edit">
       <div class="modal-header">
-      <h4>新建/编辑目录</h4>
+      <h4>{$Think.Lang.new_or_edit_catalog}</h4>
       </div>
       <input type="hidden" id="item_id" value="{$item_id}">
       <input type="hidden" id="cat_id" value="{$Catalog.cat_id}">
       <div class="add-cat">
           <form class="form-horizontal">
             <div class="control-group">
-              <label class="control-label" for="inputEmail">目录名</label>
+              <label class="control-label" for="inputEmail">{$Think.Lang.catalog_name}</label>
               <div class="controls">
-                <input type="text" id="cat_name" placeholder="目录名" value="{$Catalog.cat_name}">
+                <input type="text" id="cat_name" placeholder="{$Think.Lang.catalog_name}" value="{$Catalog.cat_name}">
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label" for="inputPassword">序号</label>
+              <label class="control-label" for="inputPassword">{$Think.Lang.s_number}</label>
               <div class="controls">
-                <input type="text" id="s_number" placeholder="可选：顺序数字" value="{$Catalog.s_number}">
+                <input type="text" id="s_number" placeholder="{$Think.Lang.s_number_explain}" value="{$Catalog.s_number}">
               </div>
             </div>
              <div class="control-group">
-              <label class="control-label" for="inputPassword">上级目录：</label>
+              <label class="control-label" for="inputPassword">{$Think.Lang.last_catalog}</label>
               <div class="controls">
                   <select name="parent_cat_id" id="parent_cat_id" ></select>
               </div>
             </div>
             <div class="control-group">
               <div class="controls">
-                <button  class="btn" id="save-cat">保存</button>
-                <button  class="btn btn-link" id="delete-cat">删除目录</button>
+                <button  class="btn" id="save-cat">{$Think.Lang.save}</button>
+                <button  class="btn btn-link" id="delete-cat">{$Think.Lang.delete_catalog}</button>
               </div>
             </div>
           </form>
@@ -48,7 +48,7 @@
   <!-- 目录列表 -->
   <div class="cat-list">
     <div class="modal-header">
-    <h4>目录列表&nbsp;<small>（点击可编辑）</small></h4>
+    <h4>{$Think.Lang.catalog_list}&nbsp;<small>({$Think.Lang.click_to_edit})</small></h4>
     </div>
     <div id="show-cat">
 
@@ -58,7 +58,7 @@
   </div>
 
     <div class="modal-footer">
-      <a href="#" class="btn exist-cat">关闭</a>
+      <a href="#" class="btn exist-cat">{$Think.Lang.close}</a>
     </div>
  </div>
 

@@ -1,82 +1,77 @@
-﻿### ShowDoc是什么
+﻿## 中文版教程：http://doc.star7th.com/3
+***
+### What is ShowDoc ?
 
-每当接手一个他人开发好的模块或者项目，看着那些没有写注释的代码，我们都无比抓狂。文档呢？！文档呢？！**Show me the doc  ！！**  
+Whenever we take over a module or project which has been developed by other people, we always feel crazy watching at those codes without notes. Where is the document?! Where is the document?! **Show me the doc !!**
+
+A programmer often hopes the others to write technical documents, with the hope of not writing them on his/her own. Because writing a technical document needs a lot of time to handle the format and layout, and the person who writes it has to think of all kinds of non-technical details such as which catalog to put in the newly-established word document
+
+All kinds of the word documents are kept by different persons in a team dispersedly. The person who needs other documents gets the documents by shouting out. He/She gives a shout asking for the documents and then receives them from other people by IMs or the e-mail. This kind of communication is not bad, but the efficiency is not high.
+
+ShowDoc is a tool greatly applicable for an IT team to share documents online. It can promote communication efficiency among members of the team.
+
+### What can it be used for?
+
+- #### API Document （ [Demo](http://doc.star7th.com/3276)）
  
-程序员都很希望别人能写技术文档，而自己却很不希望要写文档。因为写文档需要花大量的时间去处理格式排版，想着新建的word文档放在哪个目录等各种非技术细节。
+ With the development of mobile Internet, BaaS (Backend as a Service) becomes more and more popular. The Server end provides API, and the APP end or Webpage frontend can invoke data conveniently. Using ShowDoc can compile exquisite API documents in a very fast and convenient way.
 
-word文档零零散散地放在团队不同人那里，需要文档的人基本靠吼，吼一声然后上qq或者邮箱接收对方丢过来的文档。这种沟通方式当然可以，只是效率不高。  
+- #### Data Dictionary （ [Demo](http://doc.star7th.com/3276)）
  
-ShowDoc就是一个非常适合IT团队的在线文档分享工具，它可以加快团队之间沟通的效率。  
+ A good Data Dictionary can easily exhibit database structure to other people, such as definition of each field and the like.
 
-### 它可以用来做什么
+- #### Explanation Document （ [Demo](http://doc.star7th.com/3097)）
+ 
+ You can absolutely use ShowDoc to compile the explanation documents for some tools, as well as to compile some technical specifications explanation documents for the team to look up.
+ 
+### What functions does it have?
 
-- #### API文档（ [查看Demo](http://doc.star7th.com/2)）
+- #### Sharing and Exporting
 
-	随着移动互联网的发展，BaaS（后端即服务）越来越流行。服务端提供API，APP端或者网页前端便可方便调用数据。用ShowDoc可以非常方便快速地编写出美观的API文档。
+ Responsive webpage design can share the project documents to computer or mobile devices for reading. It can also export the project into word document for browsing offline.
+ 
+- #### Permission Management
 
-- #### 数据字典（ [查看Demo](http://doc.star7th.com/1)）
+ - Public Project and Private Project
+ 
+   Projects on ShowDoc are divided into two categories including Public Project and Private Project. Public Project can be visited by any user no matter he/she logs in or not, while inputting password for verification is needed for visiting the Private Project. The password is set by project creator. 
+   
+  - Project Transfer
+  
+   The project creator can transfer the project to other users of the website freely.
+   
+  - Project Members
+  
+   You can easily add or delete project members in the project of ShowDoc. Members of the project can edit the project, but they can not transfer or delete the project (only creator of the project has the permission).
+   
+ - #### Edit Function
+  - Markdown Edit
+  
+   ShowDoc adopts Markdown Editor, and it is excellent both in editing and reading experience. If you know nothing about Markdown, please search “Learning and Introduction of Markdown” on the search engine.
+   
+  - Template Insert
+  
+   On the editing page of ShowDoc, a click on the button which is on the top of the Editor can easily insert API interface template and data dictionary template. After inserting the template, altering data is the only thing that need to do and it reduces a lot of work in editing.
+   
+  - History Version
+  
+   ShowDoc provides a function of History Version on the page, and you can easily restore the page to the former version.
+   
 
-	一份好的数据字典可以很方便地向别人说明你的数据库结构，如各个字段的释义等。
+### Deploy It to Your Own Server
+ - ShowDoc Deploy Manual
+  
+     Please refer to:[http://doc.star7th.com/3097&page_id=16975](http://doc.star7th.com/3097&page_id=16975)
+  
 
-- #### 说明文档（[查看Demo](http://doc.star7th.com/3) ）
+### Copyright 
 
-	你完全可以使用showdoc来编写一些工具的说明书,也可以编写一些技术规范说明文档以供团队查阅。
-
-### 它都有些什么功能
-
-	
-- #### 分享与导出
-
-	- 响应式网页设计，可将项目文档分享到电脑或移动设备查看。同时也可以将项目导出成word文件，以便离线浏览。
-
-- #### 权限管理
-	- 公开项目与私密项目
-		
-		ShowDoc上的项目有公开项目和私密项目两种。公开项目可供任何登录与非登录的用户访问，而私密项目则需要输入密码验证访问。密码由项目创建者设置。
-	
-	- 项目转让
-		
-		项目创建者可以自由地把项目转让给网站的其他用户。
-		
-	- 项目成员
-		
-		你可以很方便地为ShowDoc的项目添加、删除项目成员。项目成员可以对项目进行编辑，但不可转让或删除项目（只有项目创建者才有权限）
-- #### 编辑功能
-	- markdown编辑
-		
-		ShowDoc采用markdown编辑器，无论是编辑还是阅读体验都极佳很棒。如果你不了解Markdown，请在搜索引擎搜索"认识与入门 Markdown"
-	
-	- 模板插入
-	
-		在ShowDoc的编辑页面，点击编辑器上方的按钮可方便地插入API接口模板和数据字典模板。插入模板后，剩下的就是改动数据了，省去了很多编辑的力气。 
-	
-	- 历史版本
-	
-		ShowDoc为页面提供历史版本功能，你可以方便地把页面恢复到之前的版本。
-
-
-### 部署到自己的服务器
-
-
-- ShowDoc部署手册
-	
-	请参考：[http://blog.star7th.com/2016/05/2007.html](http://blog.star7th.com/2016/05/2007.html)
-
-### 使用在线的ShowDoc
-
-- 如果你没有自己的服务器，但又想使用ShowDoc作为分档分享工具，你可以使用在线的ShowDoc   [http://doc.star7th.com](http://doc.star7th.com/index.php/home/user/login)
-
-- http://doc.star7th.com 作为在线服务会长期维护，请放心托管你的文档数据，不用担心突然关站的问题。如对数据非常敏感的个人或企业，还是把ShowDoc部署到自己的服务器比较好。
-
-### 版权
-
-- ShowDoc遵循Apache2开源协议发布，并提供免费使用。  
-版权所有Copyright © 2016 by star7th  
-博客：[http://blog.star7th.com](http://blog.star7th.com)  
-邮箱：xing7th#gmail.com（把#改为@）   
-All rights reserved.
-
-### ShowDoc交流群
-
-- ShowDoc使用交流qq群
-	ShowDoc的使用者交流qq群：564671853
+ ShowDoc is issued complying with Apache2 Open Source License, and it is for free use. 
+ 
+ Copyright © 2016 by star7th 
+ 
+ 
+ E-mail: xing7th#gmail.com (change # into @) 
+ 
+ All rights reserved. 
+ 

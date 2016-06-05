@@ -62,9 +62,9 @@ class ItemController extends BaseController {
             }
 
 			if ($ret) {
-				$this->message("操作成功！",U('Home/Item/index'));		        
+				$this->message(L('operation_succeeded'),U('Home/Item/index'));		        
 			}else{
-				$this->message("操作失败！",U('Home/Item/index'));
+				$this->message(L('operation_failed'),U('Home/Item/index'));
 			}
 		}
     }
@@ -73,8 +73,16 @@ class ItemController extends BaseController {
     public function show(){
         $this->checkLogin(false);
         $item_id = I("item_id/d");
+        $item_domain = I("item_domain/s");
         $current_page_id = I("page_id/d");
-
+        //判断个性域名
+        if ($item_domain) {
+            $item_domain = mysql_escape_string($item_domain);
+            $item = D("Item")->where("item_domain = '$item_domain' ")->find();
+            if ($item['item_id']) {
+                $item_id = $item['item_id'] ;
+            }
+        }
         $keyword = I("keyword");
         $login_user = session("login_user");
         $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
@@ -137,7 +145,7 @@ class ItemController extends BaseController {
         $item_id =  I("item_id");
         $login_user = $this->checkLogin();
         if (!$this->checkItemCreator($login_user['uid'] , $item_id)) {
-            $this->message("你无权限");
+            $this->message(L('no_permissions'));
             return;
         }
         $this->assign("item_id" , $item_id);
@@ -155,7 +163,7 @@ class ItemController extends BaseController {
 
         if(! D("User")-> checkLogin($item['username'],$password)){
             $return['error_code'] = 10102 ;
-            $return['error_message'] = '密码错误' ;
+            $return['error_message'] = L('incorrect_password') ;
             $this->sendResult($return);
             return ;
         }
@@ -191,11 +199,11 @@ class ItemController extends BaseController {
                 header("location:".U("Home/Item/show").'&item_id='.$item_id);
             }else{
                 
-                $this->message("访问密码不正确");
+                $this->message(L('access_password_are_incorrect'));
             }
 
           }else{
-            $this->message("验证码不正确");
+            $this->message(L('verification_code_are_incorrect'));
           }
 
         }
@@ -208,7 +216,7 @@ class ItemController extends BaseController {
         $item_id =  I("item_id/d");
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->message("你无权限");
+            $this->message(L('no_permissions'));
             return;
         }
 

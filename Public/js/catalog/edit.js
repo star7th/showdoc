@@ -43,7 +43,7 @@ $(function(){
         "s": "home/catalog/secondCatList",
       },
       function(data) {
-        $("#parent_cat_id").html('<OPTION value="0">无</OPTION>');
+        $("#parent_cat_id").html('<OPTION value="0">'+lang["none"]+'</OPTION>');
         if (data.error_code == 0) {
           json = data.data;
           console.log(json);
@@ -82,9 +82,9 @@ $(function(){
             $("#cat_id").val('');
             $("#parent_cat_id").val('');
             secondCatList();
-            alert("保存成功！");
+            alert(lang["save_success"]);
           }else{
-            alert("保存失败！");
+            alert(lang["save_fail"]);
           }
           getCatList();
         },
@@ -96,7 +96,7 @@ $(function(){
 
   //删除目录
   $("#delete-cat").click(function(){
-    if(confirm('确认删除吗？')){
+    if(confirm(lang["confirm_to_delete"])){
         var cat_id = $("#cat_id").val();
         if (cat_id > 0 ) {
             $.post(
@@ -104,13 +104,13 @@ $(function(){
                 { "cat_id": cat_id  },
                 function(data){
                   if (data.error_code == 0) {
-                    alert("删除成功！");
+                    alert(lang["delete_success"]);
                     window.location.href="?s=home/catalog/edit&item_id="+item_id;
                   }else{
                     if (data.error_message) {
                       alert(data.error_message);
                     }else{
-                      alert("删除失败！");
+                      alert(lang["delete_fail"]);
                     }
                     
                   }

@@ -50,7 +50,7 @@ $(function(){
         trigger: 100,
         bottomOffset: 150,
         locationOffset: 100,
-        title: '回到顶部',
+        title: lang["back_to_top"] ,
         titleAsText: true,
         containerColor:"#08c",
     });
@@ -127,13 +127,20 @@ $(function(){
       if(!page_id)return;
       var item_id = $("#item_id").val();
       var base_url = $("#base_url").val();
+      var iframe_url =  base_url+"/home/page/index/page_id/"+page_id;
+
       $(".page-edit-link").show();
-      $("#page-content").attr("src" , base_url+"/home/page/index/page_id/"+page_id);
+      //$("#page-content").attr("src" , iframe_url);
       $("#edit-link").attr("href" , base_url+"/home/page/edit/page_id/"+page_id);
       $("#copy-link").attr("href" , base_url+"/home/page/edit/item_id/"+item_id+"/copy_page_id/"+page_id);
       $("#share-page-link").html("http://"+window.location.host+base_url+"/"+item_id+"&page_id="+page_id);
       $("#delete-link").attr("href" , base_url+"/home/page/delete/page_id/"+page_id);
       history.replaceState(null, null, "http://"+window.location.host+base_url+"/"+item_id+"&page_id="+page_id);
+      
+      var html = '<iframe id="page-content" width="100%" scrolling="yes"  height="100%" frameborder="0" style=" overflow:visible; height:100%;" name="main"  seamless ="seamless"src="'+iframe_url+'"></iframe>';
+      $(".iframe_content").html(html);
+      iFrameHeight();
+      
   }
 
   //分享项目
@@ -148,12 +155,28 @@ $(function(){
     return false;
   });
 
-  var ifr = document.getElementById('page-content')
+function iFrameHeight() { 
+  var ifr = document.getElementById('page-content');
   ifr.onload = function() {
-      var iDoc = ifr.contentDocument || ifr.document
-      var height = calcPageHeight(iDoc)
-      ifr.style.height = height + 'px'
+      var iDoc = ifr.contentDocument || ifr.document;
+      var height = calcPageHeight(iDoc);
+      ifr.style.height = height + 'px';
+
+      
+      if(!isMobile()){
+        //调节左侧栏背景的最小高度
+        if(height >  document.body.clientHeight){
+          $(".doc-left").css("min-height",(height+60) + 'px');
+        }else{
+          $(".doc-left").css("min-height",'100%');
+        }  
+      }
+
+      
   }
+ }
+
+
 
   // 计算页面的实际高度，iframe自适应会用到
   function calcPageHeight(doc) {
@@ -170,7 +193,7 @@ $(function(){
     },
     // 删除
     "Ctrl+D": function() {
-      if (confirm('确认删除吗？'))
+      if (confirm(lang["confirm_to_delete"]))
         location.href = $("#delete-link").attr('href');
     },
     // 新建页面

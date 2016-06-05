@@ -1,6 +1,6 @@
 var editormd;
 
-var json_table_data='|参数名|类型|说明|\n'+
+var json_table_data='|'+lang["params"]+'|'+lang["type"]+'|'+lang["description"]+'|\n'+
 		'|:-------|:-------|:-------|\n';
 
 $(function() {
@@ -16,7 +16,7 @@ $(function() {
         "s": "home/catalog/secondCatList",
       },
       function(data) {
-        $("#cat_id").html('<OPTION value="0">无</OPTION>');
+        $("#cat_id").html('<OPTION value="0">'+lang["none"]+'</OPTION>');
         if (data.error_code == 0) {
           json = data.data;
           console.log(json);
@@ -47,7 +47,7 @@ $(function() {
         "s": "home/catalog/childCatList",
       },
       function(data) {
-        $("#parent_cat_id").html('<OPTION value="0">无</OPTION>');
+        $("#parent_cat_id").html('<OPTION value="0">'+lang["none"]+'</OPTION>');
         if (data.error_code == 0) {
           json = data.data;
           console.log(json);
@@ -104,7 +104,7 @@ $(function() {
     height: 1000,
     syncScrolling: "single",
     path: DocConfig.pubile + "/editor.md/lib/",
-    placeholder: "本编辑器支持Markdown编辑，左边编写，右边预览",
+    placeholder: lang["editormd_placeholder"] ,
     imageUpload: true,
     imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp", "JPG", "JPEG", "GIF", "PNG", "BMP", "WEBP"],
     imageUploadURL: "?s=home/page/uploadImg",
@@ -143,7 +143,7 @@ $(function() {
 			Change($.parseJSON(datas));   
 		}
 		catch(e){
-			alert("json导入失败" + e);
+			alert(lang["json_fail"]  + e);
 		}
 		
 		//datas=processJSONImport(datas);
@@ -159,7 +159,7 @@ $(function() {
 		
 		editormd.insertValue(json_table_data);
 		
-		json_table_data='|键|类型|说明|\n'+
+		json_table_data='|'+lang["filed"]+'|'+lang["type"]+'|'+lang["description"]+'|\n'+
 		'|:-------|:-------|:-------|\n';
 		
 		
@@ -199,10 +199,10 @@ $(function() {
       },
       function(data) {
         if (data.error_code == 0) {
-          $.bootstrapGrowl("保存成功！");
+          $.bootstrapGrowl(lang["save_success"]);
           window.location.href = "?s=home/item/show&page_id=" + data.data.page_id + "&item_id=" + item_id;
         } else {
-          $.bootstrapGrowl("保存失败！");
+          $.bootstrapGrowl(lang["save_fail"]);
 
         }
         saving = false;

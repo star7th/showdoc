@@ -1,0 +1,44 @@
+
+**A brief description:** 
+
+- interface for registering
+
+**Request url：** 
+- ` http://xx.com/api/user/register `
+  
+**Method：**
+- POST 
+
+**Request params：** 
+
+|Param|Required|Type|Description|
+|:----    |:---|:----- |-----   |
+|username |yes  |string |your usernem   |
+|password |yes  |string | your password    |
+|name     |yes  |string | your name    |
+
+ **A sample of result **
+
+``` 
+  {
+    "error_code": 0,
+    "data": {
+      "uid": "1",
+      "username": "12154545",
+      "name": "Jim",
+      "groupid": 2 ,
+      "reg_time": "1436864169",
+      "last_login_time": "0",
+    }
+  }
+```
+
+ **Result params** 
+
+|Param|Type|Description|
+|:-----  |:-----|-----                           |
+|groupid |int   | none |
+
+ **Remarks** 
+
+- See the home page for more 

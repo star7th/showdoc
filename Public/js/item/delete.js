@@ -16,7 +16,7 @@ $(function(){
         {"item_id": item_id , "password": password  },
         function(data){
           if (data.error_code == 0) {
-            alert("删除成功！");
+            alert(lang["delete_success"]);
             window.location.href="?s=/home/item/index";
           }else{
             alert(data.error_message);

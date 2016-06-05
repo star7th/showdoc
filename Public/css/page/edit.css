@@ -116,6 +116,7 @@ body {
 }
 
 #s_number {
-    width: 120px;
+    width: 50px;
     margin-right: 20px;
+    height: 28px;
 }

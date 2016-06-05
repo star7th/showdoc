@@ -8,7 +8,7 @@ class AttornController extends BaseController {
         $item_id =  I("item_id");
         $login_user = $this->checkLogin();
         if (!$this->checkItemCreator($login_user['uid'] , $item_id)) {
-            $this->message("你无权限");
+            $this->message(L('no_permissions'));
             return;
         }
         $this->assign("item_id" , $item_id);
@@ -28,7 +28,7 @@ class AttornController extends BaseController {
 
         if(! D("User")-> checkLogin($item['username'],$password)){
             $return['error_code'] = 10102 ;
-            $return['error_message'] = '密码错误' ;
+            $return['error_message'] = L('incorrect_password') ;
             $this->sendResult($return);
             return ;
         }
@@ -37,7 +37,7 @@ class AttornController extends BaseController {
 
         if (!$member) {
             $return['error_code'] = 10201 ;
-            $return['error_message'] = '不存在此用户' ;
+            $return['error_message'] = L('user_does_not_exist') ;
             $this->sendResult($return);
             return ;
         }
