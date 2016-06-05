@@ -18,8 +18,8 @@ return array(
     'URL_MODEL' => 3 ,//URL兼容模式
     'URL_ROUTER_ON'   => true, 
     'URL_ROUTE_RULES'=>array(
-        ':domain\s$'               => 'Home/Item/Show?item_domain=:1',//item的个性域名
         ':id\d'               => 'Home/Item/Show?item_id=:1',
+        ':domain\s$'               => 'Home/Item/Show?item_domain=:1',//item的个性域名
         'uid/:id\d'               => 'Home/Item/showByUid?uid=:1',
     ),
     'URL_CASE_INSENSITIVE'=>true,
