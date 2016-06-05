@@ -116,6 +116,7 @@ return array(
     'inser_apidoc_template'=>'插入API接口模板',
     'inser_database_doc_template'=>'插入数据字典模板',
     'json_to_table'=>'JSON转参数表格',
+    'http_test_api'=>'在线HTTP请求测试',
     'json_to_table_description'=>'请粘贴一段json，程序将自动将json解析并生成参数表格。此功能适合用于快速编写API文档的返回参数表格',
     'confirm'=>'确定',
     'cancel'=>'取消',
@@ -126,6 +127,13 @@ return array(
     'recover_to_this_version'=>'恢复到此版本',
     'close'=>'关闭',
     'finish'=>'完成',
+    'api_test_title'=>'GET和POST测试',
+    'api_address_description'=>'接口地址(如：http://www.abc.com/api/login)',
+    'api_address'=>'接口地址',
+    'params_description'=>'参数(如：user_id=121&age=22&date=2016-06-02)',
+    'params'=>'参数',
+    'clear'=>'清除',
+    'result'=>'返回结果',
 
     //user
     'login'=>'登录',
@@ -173,5 +181,6 @@ return array(
     "no_delete_empty_catalog"=>'为了安全，不允许直接删除非空目录。请先删除或转移该目录下的所有页面',
     
     "default_title" =>'默认页面',
+
 
 );

@@ -1,0 +1,94 @@
+<include file="Common/header" />
+<style type="text/css">
+	input{
+		width: 100%;
+	}
+</style>
+<div id="layout" style="width: 70%;margin: auto;">
+	<form class="form-horizontal">
+		<h2 style="text-align: center;">{$Think.Lang.api_test_title}</h2>
+        <div class="control-group">
+          <div class="controls">
+            <select style="width: 100px;" id="method" >
+            	<option value="post">POST</option>
+            	<option value="get">GET</option>
+            </select>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+          	<label >{$Think.Lang.api_address_description}</label>
+            <input type="text" id="url"  placeholder="{$Think.Lang.api_address}" >
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+          	<label >{$Think.Lang.params_description})</label>
+            <input type="text" id="params" placeholder="{$Think.Lang.params}" >
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <button type="button" class="btn btn-primary" id="http-submit">{$Think.Lang.submit}</button>
+            <button type="reset"  class="btn btn-link" >{$Think.Lang.clear}</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+          	<label >{$Think.Lang.result}</label>
+			<textarea style="width: 100%;height: 300px;" id="http-response"></textarea>
+          </div>
+        </div>
+      </form>
+</div>
+<include file="Common/footer" />
+<script type="text/javascript">
+	$(function () {
+		//格式化json数据
+		function dump(arr,level) { 
+			 var dumped_text = ""; 
+			 if(!level) level = 0; 
+			 
+			 //The padding given at the beginning of the line. 
+			 var level_padding = ""; 
+			 for(var j=0;j<level+1;j++) level_padding += "     "; 
+			 if(typeof(arr) == 'object') { //Array/Hashes/Objects 
+			 	 var i=0;
+				 for(var item in arr) { 
+					 var value = arr[item]; 
+					 if(typeof(value) == 'object') { //If it is an array, 
+						 dumped_text += level_padding + "\"" + item + "\" : \{ \n"; 
+						 dumped_text += dump(value,level+1); 
+					 	 dumped_text +=level_padding +"\}";
+					 } else { 
+					 	dumped_text += level_padding + "\"" + item + "\" : \"" + value + "\""; 
+					 } 
+					 if(i<Object.getOwnPropertyNames(arr).length-1){
+					 	dumped_text+=", \n";
+					 }else{
+					 	dumped_text+=" \n";
+					 }
+					 i++;
+				 } 
+			 } else { //Stings/Chars/Numbers etc. 
+			 	dumped_text = "===>"+arr+"<===("+typeof(arr)+")"; 
+			 } 
+			 return dumped_text; 
+		} 
+		$("#http-submit").on('click',function () {
+			$.post("?s=home/page/ajaxHttpApi",{
+				url:$("#url").val(),
+				method:$("#method").val(),
+				params:$("#params").val()
+			},function (data) {
+				try{
+					var text="\{ \n"+dump(JSON.parse(data))+" \}";//整体加个大括号
+					$("#http-response").val(text);
+				}catch(e){
+					//非json数据直接显示
+					$("#http-response").val(data);
+				}
+			});
+		});
+	});
+</script>
