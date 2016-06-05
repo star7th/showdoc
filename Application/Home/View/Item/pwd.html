@@ -3,9 +3,9 @@
     <div class="container">
 
       <form class="form-signin" method="post">
-        <h3 class="form-signin-heading">请输入访问密码</h3>
-        <input type="password" class="input-block-level" name="password" placeholder="密码">
-        <input type="text" class="input-block-level"  name="v_code" placeholder="验证码">
+        <h3 class="form-signin-heading">{$Think.Lang.input_visit_password}</h3>
+        <input type="password" class="input-block-level" name="password" placeholder="{$Think.Lang.password}">
+        <input type="text" class="input-block-level"  name="v_code" placeholder="{$Think.Lang.verification_code}">
       <input type="hidden" id="item_id" name="item_id" value="{$item_id}">
 
         <div class="control-group">
@@ -13,8 +13,8 @@
             <img src="" id="v_code_img">
           </div>
         </div>
-        <button class="btn btn-large btn-primary" type="submit">提交</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('Home/User/login')}">登录/注册</a>      </form>
+        <button class="btn btn-large btn-primary" type="submit">{$Think.Lang.submit}</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('Home/User/login')}">{$Think.Lang.login_or_register}</a>      </form>
 
     </div> <!-- /container -->
 

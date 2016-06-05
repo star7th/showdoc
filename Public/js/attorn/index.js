@@ -14,7 +14,7 @@ $(function(){
         {"username": username ,"item_id": item_id , "password": password  },
         function(data){
           if (data.error_code == 0) {
-            alert("转让成功！");
+            alert(lang['attorn_success']);
             window.location.href="?s=/home/item/index";
           }else{
             alert(data.error_message);

@@ -10,7 +10,7 @@ class PageController extends BaseController {
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
         $login_user = $this->checkLogin(false);
         if (!$this->checkItemVisit($login_user['uid'] , $page['item_id'])) {
-            $this->message("你无权限");
+            $this->message(L('no_permissions'));
             return;
         }
         $Parsedown = new \Parsedown();
@@ -48,7 +48,7 @@ class PageController extends BaseController {
         //如果是复制接口
         elseif ($copy_page_id) {
             $copy_page = D("Page")->where(" page_id = '$copy_page_id' ")->find();
-            $page['page_title'] = $copy_page['page_title']."-副本";
+            $page['page_title'] = $copy_page['page_title']."-copy";
             $page['page_content'] = $copy_page['page_content'];
             $page['item_id'] = $copy_page['item_id'];
             $default_cat_id = $copy_page['cat_id'];
@@ -65,7 +65,7 @@ class PageController extends BaseController {
 
         
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->message("你无权限");
+            $this->message(L('no_permissions'));
             return;
         }
 
@@ -77,7 +77,8 @@ class PageController extends BaseController {
         }else{
             $default_second_cat_id = $default_cat_id;
         }
-
+        $this->assign("api_doc_templ" , 'MdTemplate/api-doc.'.LANG_SET);
+        $this->assign("database_doc_templ" , 'MdTemplate/database.'.LANG_SET);
         $this->assign("page" , $page);
         $this->assign("item_id" , $item_id);
         $this->assign("default_second_cat_id" , $default_second_cat_id);
@@ -91,7 +92,7 @@ class PageController extends BaseController {
     public function save(){
         $login_user = $this->checkLogin();
         $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
-        $page_title = I("page_title") ?I("page_title") : '默认页面';
+        $page_title = I("page_title") ?I("page_title") : L("default_title");
         $page_content = I("page_content");
         $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $item_id = I("item_id/d")? I("item_id/d") : 0;
@@ -99,7 +100,7 @@ class PageController extends BaseController {
 
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->message("你无权限");
+            $this->message(L('no_permissions'));
             return;
         }
 
@@ -167,7 +168,7 @@ class PageController extends BaseController {
 
         $login_user = $this->checkLogin();
         if (!$this->checkItemCreator($login_user['uid'] , $page['item_id']) && $login_user['uid'] != $page['author_uid']) {
-            $this->message("你无权限！此页面由".$page['author_username']."创建");
+            $this->message(L('no_permissions_to_delete_page',array("author_username"=>$page['author_username'])));
             return;
         }
 
@@ -179,9 +180,9 @@ class PageController extends BaseController {
 
         }
         if ($ret) {
-           $this->message("删除成功！",U("Home/item/show?item_id={$page['item_id']}"));
+           $this->message(L('delete_succeeded'),U("Home/item/show?item_id={$page['item_id']}"));
         }else{
-           $this->message("删除失败！",U("Home/item/show?item_id={$page['item_id']}"));
+           $this->message(L('delete_failed'),U("Home/item/show?item_id={$page['item_id']}"));
         }
     }
 

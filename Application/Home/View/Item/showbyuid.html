@@ -22,25 +22,25 @@
       <div class="masthead">
         <div class="btn-group pull-right">
         <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
-        更多
+        {$Think.Lang.more}
         <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
         <!-- dropdown menu links -->
           <if condition="$login_user">
-            <li><a href="{:U('Home/Item/Index')}">我的项目</a></li>
+            <li><a href="{:U('Home/Item/Index')}">{$Think.Lang.my_item}</a></li>
             <else />
-             <li><a href="{:U('Home/User/login')}">登录/注册</a></li> 
+             <li><a href="{:U('Home/User/login')}">{$Think.Lang.login_or_register}</a></li> 
           </if>
           
           
-          <li><a href="http://doc.star7th.com/3" target="_blank">关于ShowDoc</a></li>
+          <li><a href="http://doc.star7th.com/3" target="_blank">{$Think.Lang.about_showdoc}</a></li>
 
         </ul>
         </div>
 
         </ul>
-        <h3 class="muted">{$show_user.username}的所有公开项目</h3>
+        <h3 class="muted">{$show_user.username}{$Think.Lang.all_pubilc_item}</h3>
       </div>
 
       <hr>

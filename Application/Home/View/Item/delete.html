@@ -8,20 +8,20 @@
   <!-- 编辑框 -->
   <div class="cat-edit">
       <div class="modal-header">
-      <h4>删除项目</h4>
+      <h4>{$Think.Lang.delete_item}</h4>
       </div>
       <input type="hidden" id="item_id" value="{$item_id}">
       <div class="add-cat">
           <form class="form-horizontal">
             <div class="control-group">
-              <label class="control-label" for="inputEmail">验证你的身份</label>
+              <label class="control-label" for="inputEmail">{$Think.Lang.verify_your_identity}</label>
               <div class="controls">
-                <input type="password" id="password" placeholder="创建人登录密码" value="">
+                <input type="password" id="password" placeholder="{$Think.Lang.creator_password}" value="">
               </div>
             </div>
             <div class="control-group">
               <div class="controls">
-                <button type="submit" class="btn" id="save-cat">删除</button>
+                <button type="submit" class="btn" id="save-cat">{$Think.Lang.delete}</button>
               </div>
             </div>
           </form>
@@ -30,9 +30,9 @@
     </div>
 
     <div class="modal-footer">
-      <a href="#" class="btn exist-cat">关闭</a>
+      <a href="#" class="btn exist-cat">{$Think.Lang.close}</a>
     </div>
  </div>
 
  <include file="Common/footer" />
- <script src="__PUBLIC__/js/item/delete.js"></script>
+ <script src="__PUBLIC__/js/item/delete.js?v=dd"></script>

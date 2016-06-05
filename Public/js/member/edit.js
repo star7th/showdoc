@@ -40,7 +40,7 @@ $(function(){
         function(data){
           if (data.error_code == 0) {
             $("#username").val('');
-            alert("保存成功！");
+            alert(lang["save_success"]);
           }else{
             alert(data.error_message);
 
@@ -63,10 +63,10 @@ $(function(){
               { "username": username, "item_id" :item_id },
               function(data){
                 if (data.error_code == 0) {
-                  alert("删除成功！");
+                  alert(lang["delete_success"]);
                   getList();
                 }else{
-                  alert("删除失败！");
+                  alert(lang["delete_fail"]);
 
                 }
               },

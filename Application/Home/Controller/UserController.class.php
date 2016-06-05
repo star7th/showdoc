@@ -20,19 +20,19 @@ class UserController extends BaseController {
 			  		if ( ! D("User")->isExist($username) ) {
 						$ret = D("User")->register($username,$password);
 						if ($ret) {
-					      $this->message("注册成功！",U('Home/User/login'));					    
+					      $this->message(L('register_succeeded'),U('Home/User/login'));					    
 						}else{
-						  $this->message("用户名或密码不正确");
+						  $this->message(L('username_or_password_incorrect'));
 						}
 			  		}else{
-			  			$this->message("用户名已经存在啦！");
+			  			$this->message(L('username_exists'));
 			  		}
 
 			  	}else{
-			  		$this->message("两次输入的密码不一致！");
+			  		$this->message(L('code_much_the_same'));
 			  	}
 			  }else{
-				    $this->message("验证码不正确");
+				    $this->message(L('verification_code_are_incorrect'));
 			  }
 			  
 
@@ -52,7 +52,7 @@ class UserController extends BaseController {
 				if ($ret && $ret['cookie_token_expire'] > time() ) {
 					$login_user = $ret ;
 					session("login_user" , $login_user);
-					$this->message("自动登录成功！正在跳转...",U('Home/Item/index'));
+					$this->message(L('auto_login_succeeded'),U('Home/Item/index'));
 					exit();
 				}
 			}
@@ -73,9 +73,9 @@ class UserController extends BaseController {
 		      D("User")->where(" uid = '$ret[uid]' ")->save(array("last_login_time"=>time(),"cookie_token"=>$cookie_token,"cookie_token_expire"=>$cookie_token_expire));
 		      unset($ret['password']);
 
-	          $this->message("登录成功！",U('Home/Item/index'));		        
+	          $this->message(L('login_succeeded'),U('Home/Item/index'));		        
 		    }else{
-		      $this->message("用户名或密码不正确");
+		      $this->message(L('username_or_password_incorrect'));
 		    }
 		  }else{
 			  if ($v_code && $v_code == session('v_code')) {
@@ -88,13 +88,13 @@ class UserController extends BaseController {
 			      D("User")->where(" uid = '$ret[uid]' ")->save(array("last_login_time"=>time(),"cookie_token"=>$cookie_token,"cookie_token_expire"=>$cookie_token_expire));
 			      unset($ret['password']);
 
-		          $this->message("登录成功！",U('Home/Item/index'));		        
+		          $this->message(L('login_succeeded'),U('Home/Item/index'));		        
 			    }else{
-			      $this->message("用户名或密码不正确");
+			      $this->message(L('username_or_password_incorrect'));
 			    }
 
 			  }else{
-			    $this->message("验证码不正确");
+			    $this->message(L('verification_code_are_incorrect'));
 			  }	
 		  }
 		  
@@ -143,14 +143,14 @@ class UserController extends BaseController {
 			if ($ret) {
 					$ret = D("User")->updatePwd($user['uid'],$new_password);
 					if ($ret) {
-						$this->message("修改成功！",U("Home/Item/index"));
+						$this->message(L('modify_succeeded'),U("Home/Item/index"));
 					}else{
-						$this->message("修改失败！");
+						$this->message(L('modify_faild'));
 
 					}
 
 				}else{	
-					$this->message("原密码不正确");
+					$this->message(L('old_password_incorrect'));
 				}
 
 		}
@@ -161,6 +161,6 @@ class UserController extends BaseController {
 		$login_user = $this->checkLogin();
 		session("login_user" , NULL);
 		cookie('cookie_token',NULL);
-		$this->message("退出成功！",U('Home/index/index'));
+		$this->message(L('logout_succeeded'),U('Home/index/index'));
 	}
 }

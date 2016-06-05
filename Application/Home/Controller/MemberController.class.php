@@ -8,7 +8,7 @@ class MemberController extends BaseController {
         $item_id =  I("item_id");
         $login_user = $this->checkLogin();
         if (!$this->checkItemCreator($login_user['uid'] , $item_id)) {
-            $this->message("你无权限");
+            $this->message(L('no_permissions'));
             return;
         }
         $this->assign("item_id" , $item_id);
@@ -21,7 +21,7 @@ class MemberController extends BaseController {
         $item_id =  I("item_id/d");
         $login_user = $this->checkLogin();
         if (!$this->checkItemCreator($login_user['uid'] , $item_id)) {
-            $this->message("你无权限");
+            $this->message(L('no_permissions'));
             return;
         }
         $username = I("username");
@@ -29,7 +29,7 @@ class MemberController extends BaseController {
 
         if (!$member) {
             $return['error_code'] = 10201 ;
-            $return['error_message'] = '不存在此用户！' ;
+            $return['error_message'] =L('user_does_not_exist') ;
             $this->sendResult($return);
             return ;
         }
@@ -72,7 +72,7 @@ class MemberController extends BaseController {
         $item_id = I("item_id/d")? I("item_id/d") : 0;
         $login_user = $this->checkLogin();
         if (!$this->checkItemCreator($login_user['uid'] , $item_id)) {
-            $this->message("你无权限");
+            $this->message(L('no_permissions'));
             return;
         }
         $username = I("username")? I("username") : 0;

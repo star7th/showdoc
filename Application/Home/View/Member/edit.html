@@ -9,20 +9,20 @@
   <!-- 编辑框 -->
   <div class="cat-edit">
       <div class="modal-header">
-      <h4>新增成员</h4>
+      <h4>{$Think.Lang.new_member}</h4>
       </div>
       <input type="hidden" id="item_id" value="{$item_id}">
       <div class="add-cat">
           <form class="form-horizontal">
             <div class="control-group">
-              <label class="control-label" for="inputEmail">用户名</label>
+              <label class="control-label" for="inputEmail">{$Think.Lang.username}</label>
               <div class="controls">
-                <input type="text" id="username" placeholder="用户名" value="">
+                <input type="text" id="username" placeholder="{$Think.Lang.username}" value="">
               </div>
             </div>
             <div class="control-group">
               <div class="controls">
-                <button type="submit" class="btn" id="save-cat">保存</button>
+                <button type="submit" class="btn" id="save-cat">{$Think.Lang.save}</button>
               </div>
             </div>
           </form>
@@ -32,7 +32,7 @@
   <!-- 成员列表 -->
   <div class="cat-list">
     <div class="modal-header">
-    <h4>成员列表&nbsp;<small>（点击可删除）</small></h4>
+    <h4>{$Think.Lang.member_list}&nbsp;<small>（{$Think.Lang.click_to_delete}）</small></h4>
     </div>
     <div id="show-cat">
 
@@ -42,9 +42,9 @@
   </div>
 
     <div class="modal-footer">
-      <a href="#" class="btn exist-cat">关闭</a>
+      <a href="#" class="btn exist-cat">{$Think.Lang.close}</a>
     </div>
  </div>
 
  <include file="Common/footer" />
-<script src="__PUBLIC__/js/member/edit.js"></script>
+<script src="__PUBLIC__/js/member/edit.js?v=1"></script>

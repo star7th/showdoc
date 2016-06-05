@@ -6,9 +6,9 @@
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
           <if condition="$login_user">
-            <li ><a href="{:U('Home/Item/index')}">我的项目</a></li>
+            <li ><a href="{:U('Home/Item/index')}">{$Think.Lang.my_item}</a></li>
             <else />
-            <li ><a href="{:U('Home/User/login')}">登录/注册</a></li>
+            <li ><a href="{:U('Home/User/login')}">{$Think.Lang.login_or_register}</a></li>
           </if>
           
         </ul>
@@ -44,7 +44,7 @@
 		</div>
 		<p class="text-center">
 			<a class="btn btn-primary  btn-large" href="http://doc.star7th.com/2" target="_blank">Demo</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<a class="btn  btn-large" href="http://doc.star7th.com/3" target="_blank" >帮助教程&nbsp;<i class="icon-circle-arrow-right"></i></a>
+			<a class="btn  btn-large" href="http://doc.star7th.com/3" target="_blank" >{$Think.Lang.help}&nbsp;<i class="icon-circle-arrow-right"></i></a>
 		</p>
 
       <hr>
