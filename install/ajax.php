@@ -84,7 +84,7 @@ EOD;
 function user_mysql(){
         $db_host = $_POST["db_host"] ;
         $db_user = $_POST["db_user"] ;
-        $db_port = $_POST["db_port"] ;
+        $db_port = $_POST["db_port"] ? $_POST["db_port"] :3306 ;
         $db_name = $_POST["db_name"] ;
         $db_password = $_POST["db_password"] ;
 
@@ -92,9 +92,8 @@ function user_mysql(){
 
         //检测数据库配置是否能链接得上
 
-        $con = mysqli_connect($db_host.":".$db_port,$db_user,$db_password);
-        $r = mysqli_select_db($con, $db_name);
-        if (!$con || !$r) {
+        $con = mysqli_connect($db_host,$db_user,$db_password,$db_name,$db_port);
+        if (!$con ) {
            ajax_out("数据库链接错误，请检查配置信息是否填写正确",10002);
            exit();
         }
