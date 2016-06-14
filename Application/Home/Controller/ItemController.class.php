@@ -24,8 +24,17 @@ class ItemController extends BaseController {
             $this->assign("items" , $items);
             $this->assign("show_user" , $show_user);
             $this->assign("login_user" , $login_user);
-            $this->display();
+            
         }
+        if (LANG_SET == 'en-us') {
+            $help_url = "http://www.showdoc.cc/help-en";
+        }
+        else{
+            $help_url = "http://www.showdoc.cc/help";
+        }
+
+        $this->assign("help_url" , $help_url);
+        $this->display();
 
     }
 
@@ -43,7 +52,7 @@ class ItemController extends BaseController {
 			$item_domain = I("item_domain");
 
             if ($item_domain) {
-                $item = D("Item")->where("item_domain = '$item_domain' ")->find();
+                $item = D("Item")->where("item_domain = '$item_domain' and item_id !='$item_id' ")->find();
                 if ($item) {
                     //个性域名已经存在
                     $this->message(L('domain_already_exists'));
@@ -141,12 +150,22 @@ class ItemController extends BaseController {
                 }
             }
         }
-        $share_url = get_domain().__APP__.'/'.$item_id;
+
+        $domain = $item['item_domain'] ? $item['item_domain'] : $item['item_id'];
+        $share_url = get_domain().__APP__.'/'.$domain;
 
         $ItemPermn = $this->checkItemPermn($uid , $item_id) ;
 
         $ItemCreator = $this->checkItemCreator($uid , $item_id);
 
+        if (LANG_SET == 'en-us') {
+            $help_url = "http://www.showdoc.cc/help-en";
+        }
+        else{
+            $help_url = "http://www.showdoc.cc/help";
+        }
+
+        $this->assign("help_url" , $help_url);
         $this->assign("current_page_id" , $current_page_id);
         $this->assign("keyword" , $keyword);
         $this->assign("ItemPermn" , $ItemPermn);
