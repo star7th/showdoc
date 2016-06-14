@@ -1,5 +1,5 @@
 ﻿## 中文版教程：http://www.showdoc.cc/help
-***
+
 ### What is ShowDoc ?
 
 Whenever we take over a module or project which has been developed by other people, we always feel crazy watching at those codes without notes. Where is the document?! Where is the document?! **Show me the doc !!**
@@ -44,7 +44,7 @@ ShowDoc is a tool greatly applicable for an IT team to share documents online. I
   
    You can easily add or delete project members in the project of ShowDoc. Members of the project can edit the project, but they can not transfer or delete the project (only creator of the project has the permission).
    
- - #### Edit Function
+- #### Edit Function
   - Markdown Edit
   
    ShowDoc adopts Markdown Editor, and it is excellent both in editing and reading experience. If you know nothing about Markdown, please search “Learning and Introduction of Markdown” on the search engine.
