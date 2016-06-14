@@ -5,36 +5,40 @@
 ini_set("display_errors", "Off");
 error_reporting(E_ALL | E_STRICT);
 header("Content-type: text/html; charset=utf-8"); 
-
+include("common.php");
 if($f = file_get_contents("./install.lock")){
-	ajax_out("本程序已经安装过！如果要解除安装锁定，则可删除/install目录下的install.lock文件后再重新访问本页面",10099);
+	ajax_out(L("lock"),10099);
 }
 
 if(!new_is_writeable("./")){
-	ajax_out("请赋予 /install 目录以可写权限！",10098);
+	ajax_out(L("not_writable_install"),10098);
 }
 
 if(!new_is_writeable("../Public/Uploads")){
-	ajax_out("请赋予 /Public/Uploads/ 目录以可写权限！",10098);
+	ajax_out(L("not_writable_upload"),10098);
 }
 
 if(!new_is_writeable("../Application/Runtime")){
-	ajax_out("请赋予 /Application/Runtime 目录以可写权限！",10095);
+	ajax_out(L("not_writable_runtime"),10095);
 }
 
 if(!new_is_writeable("../Application/Common/Conf/config.php")){
-	ajax_out("请赋予 /Application/Common/Conf/config.php 文件以可写权限！",10094);
+	ajax_out(L("not_writable_config"),10094);
+}
+
+if(!new_is_writeable("../Application/Home/Conf/config.php")){
+	ajax_out(L("not_writable_home_config"),10098);
 }
 
 
 $db_type = $_POST["db_type"] ?  $_POST["db_type"] :"sqlite";
 if ($db_type == "sqlite") {
 	if(!new_is_writeable("../Sqlite")){
-		ajax_out("请赋予 /Sqlite 目录以可写权限！",10097);
+		ajax_out(L("not_writable_sqlite"),10097);
 	}
 
 	if(!new_is_writeable("../Sqlite/showdoc.db.php")){
-		ajax_out("请赋予 /Sqlite/showdoc.db.php 以可写权限！",10096);
+		ajax_out(L("not_writable_sqlite_db"),10096);
 	}
     user_sqlite();
 }
@@ -43,6 +47,7 @@ elseif ($db_type == "mysql") {
 }
 function user_sqlite(){
         clear_runtime();//清除缓存
+        write_home_config();
         $config = 
 <<<EOD
 <?php
@@ -66,6 +71,7 @@ return array(
     'URL_ROUTER_ON'   => true, 
     'URL_ROUTE_RULES'=>array(
         ':id\d'               => 'Home/Item/Show?item_id=:1',
+		':domain\s$'               => 'Home/Item/Show?item_domain=:1',//item的个性域名
         'uid/:id\d'               => 'Home/Item/showByUid?uid=:1',
     ),
     'URL_CASE_INSENSITIVE'=>true,
@@ -74,10 +80,10 @@ return array(
 EOD;
         $ret = file_put_contents("../Application/Common/Conf/config.php", $config);
         if ($ret) {
-        	file_put_contents("./install.lock","http://doc.star7th.com/");
-            ajax_out("安装成功！建议删除/install目录，以免安装脚本被再次执行。");
+        	file_put_contents("./install.lock","http://www.showdoc.cc/");
+            ajax_out(L("install_success"));
         }else{
-            ajax_out("安装失败，配置文件写入错误！",10001);
+            ajax_out(L("install_config_not_writable"),10001);
         }
 }
 
@@ -94,23 +100,25 @@ function user_mysql(){
 
         $con = mysqli_connect($db_host,$db_user,$db_password,$db_name,$db_port);
         if (!$con ) {
-           ajax_out("数据库链接错误，请检查配置信息是否填写正确",10002);
+           ajax_out(L("db_wrong"),10002);
            exit();
         }
         mysqli_query($con, "SET NAMES UTF8");
         $row = mysqli_fetch_array(mysqli_query($con, " SELECT COUNT(*) FROM user "));
         
         if ($row) {
-           ajax_out("检测到该数据库已经存在数据。请清理后再重试",10003);
+           ajax_out(L("db_has_data"),10003);
            exit();
         }
         
         //开始导入mysql数据库 
         $ret = import_mysql($con);
         if (!$ret) {
-           ajax_out("创建数据库表失败！",10004);
+           ajax_out(L("create_table_fail"),10004);
            exit();
-        }       
+        }
+
+        write_home_config();
 
         $config = "<?php ";
         $config .= "
@@ -134,6 +142,7 @@ return array(
     'URL_ROUTER_ON'   => true, 
     'URL_ROUTE_RULES'=>array(
         ':id\d'               => 'Home/Item/Show?item_id=:1',
+		':domain\s$'               => 'Home/Item/Show?item_domain=:1',//item的个性域名
         'uid/:id\d'               => 'Home/Item/showByUid?uid=:1',
     ),
     'URL_CASE_INSENSITIVE'=>true,
@@ -143,43 +152,12 @@ return array(
 
 
         if ($ret) {
-        	file_put_contents("./install.lock","http://doc.star7th.com/");
-            ajax_out("安装成功！建议删除/install目录，以免安装脚本被再次执行。");
+        	file_put_contents("./install.lock","http://www.showdoc.cc/");
+            ajax_out(L("install_success"));
         }else{
-            ajax_out("安装失败，配置文件写入错误！",10001);
+            ajax_out(L("install_config_not_writable"),10001);
         }
 }
-
-
-function ajax_out($message,$error_code = 0){
-        echo json_encode(array("error_code"=>$error_code,"message"=>$message));
-        exit();
-}
-
-function clear_runtime($path = "../Application/Runtime"){  
-    //给定的目录不是一个文件夹  
-    if(!is_dir($path)){  
-        return null;  
-    }  
-  
-    $fh = opendir($path);  
-    while(($row = readdir($fh)) !== false){  
-        //过滤掉虚拟目录  
-        if($row == '.' || $row == '..'|| $row == 'index.html'){  
-            continue;  
-        }  
-  
-        if(!is_dir($path.'/'.$row)){
-            unlink($path.'/'.$row);  
-        }  
-        clear_runtime($path.'/'.$row);  
-          
-    }  
-    //关闭目录句柄，否则出Permission denied  
-    closedir($fh);    
-    return true;  
-} 
-
 
 function import_mysql($con){
 
@@ -206,6 +184,7 @@ function import_mysql($con){
 	`uid` int(10) NOT NULL DEFAULT '0',
 	`username` varchar(50) NOT NULL DEFAULT '',
 	`password` varchar(50) NOT NULL DEFAULT '',
+	`item_domain` varchar(50) NOT NULL DEFAULT '',
 	`addtime` int(11) NOT NULL DEFAULT '0',
 	`last_update_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后更新时间',
 	PRIMARY KEY (`item_id`),
@@ -287,30 +266,24 @@ function import_mysql($con){
 
 }
 
-/**
- * 判断 文件/目录 是否可写（取代系统自带的 is_writeable 函数）
- *
- * @param string $file 文件/目录
- * @return boolean
- */
-function new_is_writeable($file) {
-	if (is_dir($file)){
-		$dir = $file;
-		if ($fp = @fopen("$dir/test.txt", 'w')) {
-			@fclose($fp);
-			@unlink("$dir/test.txt");
-			$writeable = 1;
-		} else {
-			$writeable = 0;
-		}
-	} else {
-		if ($fp = @fopen($file, 'a+')) {
-			@fclose($fp);
-			$writeable = 1;
-		} else {
-			$writeable = 0;
-		}
+function write_home_config(){
+	$lang = $_REQUEST['lang'] ? $_REQUEST['lang'] :"zh";
+	if ($lang == 'en') {
+		$DEFAULT_LANG = 'en-us';
+	}else{
+		$DEFAULT_LANG = 'zh-cn';
 	}
+        $config = "<?php ";
+        $config .= "
+return array(
+	//'配置项'=>'配置值'
+    'LANG_SWITCH_ON' => true,   // 开启语言包功能
+    'LANG_AUTO_DETECT' => false, // 自动侦测语言 开启多语言功能后有效
+    'DEFAULT_LANG' => '{$DEFAULT_LANG}', // 默认语言
+    'LANG_LIST'        => 'zh-cn,en-us', // 允许切换的语言列表 用逗号分隔
+    'VAR_LANGUAGE'     => 'l', // 默认语言切换变量
+);";
 
-	return $writeable;
+	$ret = file_put_contents("../Application/Home/Conf/config.php", $config);
+
 }
