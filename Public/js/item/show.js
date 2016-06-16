@@ -126,6 +126,7 @@ $(function(){
   function change_page(page_id){
       if(!page_id)return;
       var item_id = $("#item_id").val();
+      var item_domain = $("#item_domain").val();
       var base_url = $("#base_url").val();
       var iframe_url =  base_url+"/home/page/index/page_id/"+page_id;
 
@@ -133,9 +134,12 @@ $(function(){
       //$("#page-content").attr("src" , iframe_url);
       $("#edit-link").attr("href" , base_url+"/home/page/edit/page_id/"+page_id);
       $("#copy-link").attr("href" , base_url+"/home/page/edit/item_id/"+item_id+"/copy_page_id/"+page_id);
-      $("#share-page-link").html("http://"+window.location.host+base_url+"/"+item_id+"&page_id="+page_id);
       $("#delete-link").attr("href" , base_url+"/home/page/delete/page_id/"+page_id);
-      history.replaceState(null, null, "http://"+window.location.host+base_url+"/"+item_id+"&page_id="+page_id);
+      
+      var domain = item_domain ? item_domain : item_id ;
+      var cur_page_url =  window.location.protocol +"//"+window.location.host+base_url+"/"+domain+"&page_id="+page_id;
+      $("#share-page-link").html(cur_page_url);
+      history.replaceState(null, null, cur_page_url);
       
       var html = '<iframe id="page-content" width="100%" scrolling="yes"  height="100%" frameborder="0" style=" overflow:visible; height:100%;" name="main"  seamless ="seamless"src="'+iframe_url+'"></iframe>';
       $(".iframe_content").html(html);
