@@ -58,7 +58,7 @@ class ItemController extends BaseController {
                     $this->message(L('domain_already_exists'));
                     return false;
                 }
-                if(!ctype_alnum($item_domain)){
+                if(!ctype_alnum($item_domain) ||  is_numeric($item_domain) ){
                     //echo '个性域名只能是字母或数字的组合';exit;
                     $this->message(L('item_domain_illegal'));
                     return false;
