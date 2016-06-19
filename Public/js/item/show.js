@@ -138,7 +138,7 @@ $(function(){
       
       var domain = item_domain ? item_domain : item_id ;
       var cur_page_url =  window.location.protocol +"//"+window.location.host+base_url+"/"+domain;
-      if(cur_page_url.indexOf("?")){
+      if(base_url.indexOf("?")){
         cur_page_url += "&page_id="+page_id;
       }else{
         cur_page_url += "?page_id="+page_id;
