@@ -24,4 +24,6 @@ return array(
     ),
     'URL_CASE_INSENSITIVE'=>true,
     'SHOW_ERROR_MSG'        =>  true,    // 显示错误信息，这样在部署模式下也能显示错误
+    'STATS_CODE' =>'',  //可选，统计代码
+
 );
