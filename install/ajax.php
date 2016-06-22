@@ -76,6 +76,20 @@ return array(
     ),
     'URL_CASE_INSENSITIVE'=>true,
     'SHOW_ERROR_MSG'        =>  true,    // 显示错误信息，这样在部署模式下也能显示错误
+    'STATS_CODE' =>'',  //可选，统计代码
+    //上传文件到七牛的配置
+    'UPLOAD_SITEIMG_QINIU' => array(
+                    'maxSize' => 5 * 1024 * 1024,//文件大小
+                    'rootPath' => './',
+                    'saveName' => array ('uniqid', ''),
+                    'driver' => 'Qiniu',
+                    'driverConfig' => array (
+                            'secrectKey' => '', 
+                            'accessKey' => '',
+                            'domain' => '',
+                            'bucket' => '', 
+                        )
+                    ),
 );
 EOD;
         $ret = file_put_contents("../Application/Common/Conf/config.php", $config);
@@ -147,6 +161,20 @@ return array(
     ),
     'URL_CASE_INSENSITIVE'=>true,
     'SHOW_ERROR_MSG'        =>  true,    // 显示错误信息，这样在部署模式下也能显示错误
+    'STATS_CODE' =>'',  //可选，统计代码
+    //上传文件到七牛的配置
+    'UPLOAD_SITEIMG_QINIU' => array(
+                    'maxSize' => 5 * 1024 * 1024,//文件大小
+                    'rootPath' => './',
+                    'saveName' => array ('uniqid', ''),
+                    'driver' => 'Qiniu',
+                    'driverConfig' => array (
+                            'secrectKey' => '', 
+                            'accessKey' => '',
+                            'domain' => '',
+                            'bucket' => '', 
+                        )
+                    ),
 );";
         $ret = file_put_contents("../Application/Common/Conf/config.php", $config);
 
