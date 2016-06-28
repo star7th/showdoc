@@ -28,8 +28,8 @@ $(function() {
 
             cat_html += ' ">' + json[i].cat_name + '</OPTION>';
             $("#cat_id").append(cat_html);
-            getChildCatList();
           };
+          getChildCatList();
         };
 
       },
