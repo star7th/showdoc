@@ -38,10 +38,8 @@ $(function(){
     var default_parent_cat_id = $("#default_parent_cat_id").val();
     var item_id = $("#item_id").val();
     $.get(
-      "./", {
-        "item_id": item_id,
-        "s": "home/catalog/secondCatList",
-      },
+      "?s=home/catalog/secondCatList", 
+      {"item_id": item_id},
       function(data) {
         $("#parent_cat_id").html('<OPTION value="0">'+lang["none"]+'</OPTION>');
         if (data.error_code == 0) {
