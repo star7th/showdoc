@@ -74,7 +74,7 @@ $(function(){
     $(".page-edit-link").html('');
     $(".doc-left-newbar").html('');
     $(".iframe_content").css("padding-left","30px");
-    $(".iframe_content").css("max-width",'');
+    $(".iframe_content").css("width",'');
     $(".doc-left .nav-list li a i ").css("margin-left" , '10px');
     $(".search-input-append").css("width","100%");
     $(".search-query-input").css("width","70%");
