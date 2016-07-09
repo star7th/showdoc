@@ -74,6 +74,9 @@
   .iframe_content{
     padding-left: 20px;
     padding-right: 20px;
+    width: 80%;
+    max-width: 1000px;
+    margin: 0 auto;
   }
 
   .search-query-input{
