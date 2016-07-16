@@ -48,9 +48,10 @@ class UserController extends BaseController {
 			//如果有cookie记录，则自动登录
 			$cookie_token = cookie('cookie_token');
 			if ($cookie_token) {
-				$ret = D("User")->where("cookie_token = '%s' ",array($cookie_token))->find();
-				if ($ret && $ret['cookie_token_expire'] > time() ) {
-					$login_user = $ret ;
+				$ret = D("UserToken")->getToken($cookie_token);
+				if ($ret && $ret['token_expire'] > time() ) {
+					$login_user = D("User")->where("uid = $ret[uid]")->find();
+					unset($ret['password']);
 					session("login_user" , $login_user);
 					$this->message(L('auto_login_succeeded'),U('Home/Item/index'));
 					exit();
@@ -67,12 +68,9 @@ class UserController extends BaseController {
 		  	$ret = D("User")->checkLogin($username,$password);
 		    if ($ret) {
 		      session("login_user" , $ret );
-		      $cookie_token = md5(time().rand().'efeffthdh');
-		      $cookie_token_expire = time() + 60*60*24*90 ;
-	          cookie('cookie_token',$cookie_token,60*60*24*90);
-		      D("User")->where(" uid = '$ret[uid]' ")->save(array("last_login_time"=>time(),"cookie_token"=>$cookie_token,"cookie_token_expire"=>$cookie_token_expire));
+		      $token = D("UserToken")->createToken($ret['uid']);
+	          cookie('cookie_token',$token,60*60*24*90);//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
 		      unset($ret['password']);
-
 	          $this->message(L('login_succeeded'),U('Home/Item/index'));		        
 		    }else{
 		      $this->message(L('username_or_password_incorrect'));
@@ -82,10 +80,8 @@ class UserController extends BaseController {
 			    $ret = D("User")->checkLogin($username,$password);
 			    if ($ret) {
 			      session("login_user" , $ret );
-			      $cookie_token = md5(time().rand().'efeffthdh');
-			      $cookie_token_expire = time() + 60*60*24*90 ;
-		          cookie('cookie_token',$cookie_token,60*60*24*90);
-			      D("User")->where(" uid = '$ret[uid]' ")->save(array("last_login_time"=>time(),"cookie_token"=>$cookie_token,"cookie_token_expire"=>$cookie_token_expire));
+		      	  $token = D("UserToken")->createToken($ret['uid']);
+          		  cookie('cookie_token',$token,60*60*24*90);//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
 			      unset($ret['password']);
 
 		          $this->message(L('login_succeeded'),U('Home/Item/index'));		        

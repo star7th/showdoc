@@ -13,12 +13,12 @@ class BaseController extends Controller {
 		if ( ! session("login_user")) {
 			$cookie_token = cookie('cookie_token');
 			if ($cookie_token) {
-				$ret = D("User")->where("cookie_token = '%s' ",array($cookie_token))->find();
-				if ($ret && $ret['cookie_token_expire'] > time() ) {
-					$login_user = $ret ;
+				$ret = D("UserToken")->getToken($cookie_token);
+				if ($ret && $ret['token_expire'] > time() ) {
+					$login_user = D("User")->where("uid = $ret[uid]")->find();
+					unset($ret['password']);
 					session("login_user" , $login_user);
 					return $login_user ;
-
 				}
 			}
 			if ($redirect) {
