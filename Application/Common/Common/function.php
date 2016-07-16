@@ -119,4 +119,28 @@ function clear_runtime($path = RUNTIME_PATH){
     //关闭目录句柄，否则出Permission denied  
     closedir($fh);    
     return true;  
-}  
+}
+
+//获取ip
+function getIPaddress(){
+    $IPaddress='';
+    if (isset($_SERVER)){
+        if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])){
+            $IPaddress = $_SERVER["HTTP_X_FORWARDED_FOR"];
+        } else if (isset($_SERVER["HTTP_CLIENT_IP"])) {
+            $IPaddress = $_SERVER["HTTP_CLIENT_IP"];
+        } else {
+            $IPaddress = $_SERVER["REMOTE_ADDR"];
+        }
+    } else {
+        if (getenv("HTTP_X_FORWARDED_FOR")){
+            $IPaddress = getenv("HTTP_X_FORWARDED_FOR");
+        } else if (getenv("HTTP_CLIENT_IP")) {
+            $IPaddress = getenv("HTTP_CLIENT_IP");
+        } else {
+            $IPaddress = getenv("REMOTE_ADDR");
+        }
+    }
+    return $IPaddress;
+
+}

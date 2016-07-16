@@ -266,6 +266,18 @@ function import_mysql($con){
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='页面历史表' AUTO_INCREMENT=1 ";
 	mysqli_query($con, $sql);
 
+    $sql = "CREATE TABLE IF NOT EXISTS `user_token` (
+    `id` int(10) NOT NULL AUTO_INCREMENT,
+    `uid` int(10) NOT NULL DEFAULT '0',
+    `token` varchar(200) NOT NULL DEFAULT '',
+    `token_expire` int(11) NOT NULL DEFAULT '0' ,
+    `ip` varchar(200) NOT NULL DEFAULT '',
+    `addtime` int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `token` (`token`)
+    ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='' AUTO_INCREMENT=1 ";
+    mysqli_query($con, $sql);
+
 	//创建项目user表
 	$sql = "CREATE TABLE IF NOT EXISTS `user` (
 	`uid` int(10) NOT NULL AUTO_INCREMENT,

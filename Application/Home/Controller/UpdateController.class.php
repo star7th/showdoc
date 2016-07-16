@@ -11,7 +11,7 @@ class UpdateController extends BaseController {
         elseif (strtolower(C("DB_TYPE")) == 'sqlite' ) {
             $this->sqlite();
         }
-    	
+    	clear_runtime();
     }
     //升级mysql数据库  
     public function mysql(){
@@ -184,6 +184,18 @@ class UpdateController extends BaseController {
             }
         }
 
+        $sql = "CREATE TABLE IF NOT EXISTS `user_token` (
+        `id` int(10) NOT NULL AUTO_INCREMENT,
+        `uid` int(10) NOT NULL DEFAULT '0',
+        `token` varchar(200) NOT NULL DEFAULT '',
+        `token_expire` int(11) NOT NULL DEFAULT '0' ,
+        `ip` varchar(200) NOT NULL DEFAULT '',
+        `addtime` int(11) NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `token` (`token`)
+        ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='' AUTO_INCREMENT=1 ";
+        D("User")->execute($sql);
+
         echo "OK!";
     }
 
@@ -232,6 +244,16 @@ class UpdateController extends BaseController {
                 D("item")->execute($sql);
             }
         }
+        //创建user_token表
+        $sql = "CREATE TABLE IF NOT EXISTS `user_token` (
+        `id`  INTEGER PRIMARY KEY ,
+        `uid` int(10) NOT NULL DEFAULT '0',
+        `token` CHAR(200) NOT NULL DEFAULT '',
+        `token_expire` int(11) NOT NULL DEFAULT '0' ,
+        `ip` CHAR(200) NOT NULL DEFAULT '',
+        `addtime` int(11) NOT NULL DEFAULT '0'
+        )";
+        D("UserToken")->execute($sql);
 
         echo 'OK!';
     }
