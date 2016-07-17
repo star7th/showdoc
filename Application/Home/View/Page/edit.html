@@ -33,7 +33,16 @@
             </ul>
         </div>
         <div class="head-right pull-right">
-            <a href="#" class="btn btn-primary " id="save">{$Think.Lang.save}</a>
+            <!-- <a href="#" class="btn btn-primary " id="save">{$Think.Lang.save}</a> -->
+            <div class="btn-group" id="save-btn-group"> 
+                <button class="btn btn-primary" id="save">{$Think.Lang.save}</button>
+                <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul class="dropdown-menu" >
+                    <li><a href="#" id="add-page-comments">{$Think.Lang.add_page_comments}</a></li>
+                    <li><a href="#" id="save-to-templ">{$Think.Lang.save_to_templ}</a></li>
+                </ul>
+            </div>
+
             <a href="?s=home/item/show&item_id={$item_id}&page_id={$page.page_id}" class="btn cancel">{$Think.Lang.cancel}</a>
         </div>
     </header>
@@ -42,7 +51,8 @@
     <div class="btns">
         <button id="api-doc" tabindex="4" >{$Think.Lang.inser_apidoc_template}</button>
         <button id="database-doc" tabindex="5" >{$Think.Lang.inser_database_doc_template}</button>
-        <button id="jsons" tabindex="7" >{$Think.Lang.json_to_table}</button>
+        <button id="more-templ" tabindex="" >{$Think.Lang.more_templ}</button>
+        <button id="jsons" tabindex="7" style="margin-left: 100px;">{$Think.Lang.json_to_table}</button>
         <a href="{:U('Home/page/http_api')}" target="_blank" class="btn" >{$Think.Lang.http_test_api}</a>
     </div>
     <div id="editormd">
@@ -50,6 +60,7 @@
     </div>
     <input type="hidden" id="item_id" value="{$item_id}">
     <input type="hidden" id="page_id" value="{$page.page_id}">
+    <input type="hidden" id="page_comments" value="">
     <input type="hidden" id="default_second_cat_id" value="{$default_second_cat_id}">
     <input type="hidden" id="default_child_cat_id" value="{$default_child_cat_id}">
 </div>
@@ -78,6 +89,19 @@
     <div class="editormd-dialog-mask editormd-dialog-mask-bg"></div><div class="editormd-dialog-mask editormd-dialog-mask-con"></div>
 </div>
 
+ <div id="more-templ-modal" class="modal hide fade">
+  <div class="modal-header">
+    <h4>{$Think.Lang.saved_templ_list}</h4>
+  </div>
+  <table class="table table-hover" id="templ-table">
+
+
+  </table>
+
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">{$Think.Lang.close}</button>
+    </div>
+ </div>
 
 <include file="Common/footer" />
 <script src="__PUBLIC__/js/jquery.bootstrap-growl.min.js"></script>
@@ -92,7 +116,7 @@
 <script src="__PUBLIC__/editor.md/plugins/table-dialog/table-dialog.js"></script>
 <script src="__PUBLIC__/editor.md/plugins/reference-link-dialog/reference-link-dialog.js"></script>
 
-<script src="__PUBLIC__/js/page/edit.js?v=1.1.2thirdonm"></script>
+<script src="__PUBLIC__/js/page/edit.js?v=1.1.2thirdonmop"></script>
 <if condition="LANG_SET=='en-us'">
     <script src="__PUBLIC__/editor.md/languages/en.js"></script>
 </if>

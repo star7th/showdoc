@@ -5,6 +5,7 @@ class UpdateController extends BaseController {
     
  	//升级数据库
     public function db(){
+        clear_runtime();
     	if (strtolower(C("DB_TYPE")) == 'mysql' ) {
     		$this->mysql();
     	}
@@ -184,7 +185,7 @@ class UpdateController extends BaseController {
             }
         }
 
-        $sql = "CREATE TABLE IF NOT EXISTS `user_token` (
+        $sql = "CREATE TABLE IF NOT EXISTS `".C('DB_PREFIX')."user_token` (
         `id` int(10) NOT NULL AUTO_INCREMENT,
         `uid` int(10) NOT NULL DEFAULT '0',
         `token` varchar(200) NOT NULL DEFAULT '',
@@ -195,6 +196,48 @@ class UpdateController extends BaseController {
         KEY `token` (`token`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='' AUTO_INCREMENT=1 ";
         D("User")->execute($sql);
+
+        //创建template表
+        $sql = "CREATE TABLE IF NOT EXISTS `".C('DB_PREFIX')."template` (
+        `id` int(10) NOT NULL AUTO_INCREMENT,
+        `uid` int(10) NOT NULL DEFAULT '0',
+        `username` varchar(200) NOT NULL DEFAULT '',
+        `template_title` varchar(200) NOT NULL DEFAULT '' ,
+        `template_content` text NOT NULL DEFAULT '',
+        `addtime` int(11) NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `uid` (`uid`)
+        )ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='' AUTO_INCREMENT=1";
+        D("UserToken")->execute($sql);
+
+        //page表增加page_comments字段
+        $columns = M("Page")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'page_comments') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."page ADD page_comments varchar( 255 ) NOT NULL DEFAULT '' COMMENT '页面注释';";
+                D("Page")->execute($sql);
+            }
+        }
+        //page_history表增加page_comments字段
+        $columns = M("PageHistory")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'page_comments') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."page_history ADD page_comments varchar( 255 ) NOT NULL DEFAULT '' COMMENT '页面注释';";
+                D("PageHistory")->execute($sql);
+            }
+        }
 
         echo "OK!";
     }
@@ -254,6 +297,47 @@ class UpdateController extends BaseController {
         `addtime` int(11) NOT NULL DEFAULT '0'
         )";
         D("UserToken")->execute($sql);
+
+        //创建template表
+        $sql = "CREATE TABLE IF NOT EXISTS `template` (
+        `id`  INTEGER PRIMARY KEY ,
+        `uid` int(10) NOT NULL DEFAULT '0',
+        `username` CHAR(200) NOT NULL DEFAULT '',
+        `template_title` CHAR(200) NOT NULL DEFAULT '' ,
+        `template_content` text NOT NULL DEFAULT '',
+        `addtime` int(11) NOT NULL DEFAULT '0'
+        )";
+        D("UserToken")->execute($sql);
+
+        //page表增加page_comments字段
+        $columns = D("Page")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'page_comments') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."page ADD page_comments text NOT NULL DEFAULT ''  ;";
+                D("Page")->execute($sql);
+            }
+        }
+
+        //page_history 表增加page_comments字段
+        $columns = D("PageHistory")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'page_comments') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."page_history ADD page_comments text NOT NULL DEFAULT '';";
+                D("PageHistory")->execute($sql);
+            }
+        }
 
         echo 'OK!';
     }

@@ -80,7 +80,7 @@ $(function(){
             $("#cat_id").val('');
             $("#parent_cat_id").val('');
             secondCatList();
-            alert(lang["save_success"]);
+            //alert(lang["save_success"]);
           }else{
             alert(lang["save_fail"]);
           }
@@ -102,7 +102,7 @@ $(function(){
                 { "cat_id": cat_id  },
                 function(data){
                   if (data.error_code == 0) {
-                    alert(lang["delete_success"]);
+                    //alert(lang["delete_success"]);
                     window.location.href="?s=home/catalog/edit&item_id="+item_id;
                   }else{
                     if (data.error_message) {
