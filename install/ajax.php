@@ -238,7 +238,8 @@ function import_mysql($con){
 	`author_username` varchar(50) NOT NULL DEFAULT '' COMMENT '页面作者名字',
 	`item_id` int(10) NOT NULL DEFAULT '0',
 	`cat_id` int(10) NOT NULL DEFAULT '0',
-	`page_title` varchar(50) NOT NULL DEFAULT '',
+    `page_title` varchar(50) NOT NULL DEFAULT '',
+	`page_comments` varchar(255) NOT NULL DEFAULT '',
 	`page_content` text NOT NULL,
 	`s_number` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
 	`addtime` int(11) NOT NULL DEFAULT '0',
@@ -257,6 +258,7 @@ function import_mysql($con){
 	`item_id` int(10) NOT NULL DEFAULT '0',
 	`cat_id` int(10) NOT NULL DEFAULT '0',
 	`page_title` varchar(50) NOT NULL DEFAULT '',
+    `page_comments` varchar(255) NOT NULL DEFAULT '',
 	`page_content` text NOT NULL,
 	`s_number` int(10) NOT NULL DEFAULT '99' COMMENT '顺序号。数字越小越靠前。若此值全部相等时则按id排序',
 	`addtime` int(11) NOT NULL DEFAULT '0',
@@ -266,6 +268,7 @@ function import_mysql($con){
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='页面历史表' AUTO_INCREMENT=1 ";
 	mysqli_query($con, $sql);
 
+    //创建user_token表
     $sql = "CREATE TABLE IF NOT EXISTS `user_token` (
     `id` int(10) NOT NULL AUTO_INCREMENT,
     `uid` int(10) NOT NULL DEFAULT '0',
@@ -276,6 +279,19 @@ function import_mysql($con){
     PRIMARY KEY (`id`),
     KEY `token` (`token`)
     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='' AUTO_INCREMENT=1 ";
+    mysqli_query($con, $sql);
+
+    //创建template表
+    $sql = "CREATE TABLE IF NOT EXISTS `template` (
+    `id` int(10) NOT NULL AUTO_INCREMENT,
+    `uid` int(10) NOT NULL DEFAULT '0',
+    `username` varchar(200) NOT NULL DEFAULT '',
+    `template_title` varchar(200) NOT NULL DEFAULT '' ,
+    `template_content` text NOT NULL DEFAULT '',
+    `addtime` int(11) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `uid` (`uid`)
+    )ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='' AUTO_INCREMENT=1";
     mysqli_query($con, $sql);
 
 	//创建项目user表

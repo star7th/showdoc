@@ -23,5 +23,15 @@ lang["description"] = "Description";
 lang["editormd_placeholder"] = "Supports Markdown.the left side to edite, the right Preview";
 lang["json_fail"] = "JSON import failed";
 lang["filed"] = "filed";
-
+lang["none"] = "none";
+lang["save_templ_title"] = "Pealse set the title for the template you want to save";
+lang["saved_templ_msg1"] = "Template'";
+lang["saved_templ_msg2"] = "' is saved.When you create or edit a new page, click the 'More template' button, then you can use the template you save";
+lang["save_time"] = "Save time";
+lang["templ_title"] = "Template title";
+lang["operation"] = "Operation";
+lang["use_this_template"] = "Insert this template";
+lang["delete_this_template"] = "Delete template";
+lang["no_templ_msg"] = "<p><br>You have not saved any templates.<br>When you edit the page, click the 'save' button on the right click, select Save as template in the down menu .<br>When you create or edit a new page, click the 'More template' button, then you can use the template you save</p>";
+lang["add_page_comments_msg"] = "Please enter the page comments.It can be page update log , or other you want.It will be showed in page history version convenient for you to check the change of page";
 

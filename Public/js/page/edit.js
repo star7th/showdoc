@@ -1,5 +1,5 @@
 var editormd;
-
+var template_list ;
 var json_table_data='|'+lang["params"]+'|'+lang["type"]+'|'+lang["description"]+'|\n'+
 		'|:-------|:-------|:-------|\n';
 
@@ -179,6 +179,7 @@ $(function() {
     var page_id = $("#page_id").val();
     var item_id = $("#item_id").val();
     var page_title = $("#page_title").val();
+    var page_comments = $("#page_comments").val();
     var page_content = $("#page_content").val();
     var item_id = $("#item_id").val();
     var s_number = $("#s_number").val();
@@ -195,6 +196,7 @@ $(function() {
         "s_number": s_number,
         "page_content": page_content,
         "page_title": page_title,
+        "page_comments": page_comments,
         "item_id": item_id
       },
       function(data) {
@@ -253,7 +255,7 @@ function Change(data)
 		var type = typeof(value);
 		if(type == "object")
 		{
-			json_table_data+='| '+level_str+key+' |'+type+'  | 无 |\n';
+			json_table_data+='| '+level_str+key+' |'+type+'  | '+lang["none"]+' |\n';
 			if(value instanceof Array)
 			{
 				var j=level+1;
@@ -268,9 +270,101 @@ function Change(data)
 		}
 		else
 		{
-			json_table_data+='| '+key+' | '+type+'| 无 |\n';
+			json_table_data+='| '+key+' | '+type+'| '+lang["none"]+' |\n';
 		}
 	}
 }
 
 //{"Result":[{"name":"test1","list":{"pros":"prosfsf","ppps":{"images":[{"22":"22"}]}}}]}
+
+$("#save-to-templ").click(function(){
+  var template_title =prompt(lang["save_templ_title"],"");
+  if (template_title!=null && template_title!="")
+    {
+        var template_content = $("#page_content").val();
+        $.post(
+            "?s=home/template/save",
+            {"template_title":template_title,"template_content":template_content},
+            function(data){
+                if (data.error_code == 0) {
+                  alert(lang["saved_templ_msg1"]+template_title+lang["saved_templ_msg2"]);
+                } else {
+                  $.bootstrapGrowl(lang["save_fail"]);
+
+                }
+           },
+            "json"
+            );
+    }
+    $("#save-btn-group").removeClass("open");
+    return false;
+  });
+
+
+$("#more-templ").click(function(){
+        $.post(
+            "?s=home/template/getList",
+            {},
+            function(data){
+                if (data.error_code == 0) {
+                    var html = '<TR><td>'+lang["save_time"]+'</td><td>'+lang["templ_title"]+'</td><td>'+lang["operation"]+'</td></TR>';
+                    template_list = data.data;
+                    json = data.data;
+                    for (var i = 0; i < json.length; i++) {
+                        html += '<TR><td>'+json[i]['addtime']+'</td>';
+                        html += '<td>'+json[i]['template_title']+'</td>';
+                        html += '<td><a href="javascript:use_template('+json[i]['id']+')">'+lang["use_this_template"]+'</a> | <a href="javascript:delete_template('+json[i]['id']+')">'+lang["delete_this_template"]+'</a></td>';
+                        html +='</TR>';
+                    };
+                    $("#templ-table").html(html);
+                } else {
+                  //$.bootstrapGrowl("获取模板列表失败");
+                  $("#templ-table").html(lang["no_templ_msg"]);
+
+                }
+                $("#more-templ-modal").modal();
+           },
+            "json"
+            );
+    
+});
+
+//使用模板
+function use_template(id){
+    for (var i = 0; i < template_list.length; i++) {
+        if (id > 0 && id == template_list[i]['id']) {
+            editormd.insertValue(template_list[i]['template_content']);
+            $("#more-templ-modal").modal("hide");
+        };
+        
+    };
+    return false;
+}
+
+//删除模板
+function delete_template(id){
+    $.post(
+        "?s=home/template/delete",
+        {"id":id},
+        function(data){
+            if (data.error_code == 0) {
+                $("#more-templ").click();
+            } else {
+              $.bootstrapGrowl(lang["save_fail"]);
+            }
+       },
+        "json"
+        );
+    return false;
+}
+
+$("#add-page-comments").click(function(){
+  var page_comments =prompt(lang["add_page_comments_msg"],"");
+  if (page_comments!=null && page_comments!="")
+    {
+        $("#page_comments").val(page_comments);
+        $("#save").click();
+    }
+    $("#save-btn-group").removeClass("open");
+    return false;
+});
