@@ -137,6 +137,11 @@ return array(
     'params'=>'参数',
     'clear'=>'清除',
     'result'=>'返回结果',
+    'save_to_templ'=>'另存为模板',
+    'more_templ'=>'更多模板',
+    'saved_templ_list'=>'保存的模板列表',
+    'page_comments'=>'页面注释',
+    'add_page_comments'=>'保存前添加页面注释',
 
     //user
     'login'=>'登录',

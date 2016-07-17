@@ -161,6 +161,7 @@ class PageController extends BaseController {
         $login_user = $this->checkLogin();
         $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
         $page_title = I("page_title") ?I("page_title") : L("default_title");
+        $page_comments = I("page_comments") ?I("page_comments") :'';
         $page_content = I("page_content");
         $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $item_id = I("item_id/d")? I("item_id/d") : 0;
@@ -174,6 +175,7 @@ class PageController extends BaseController {
 
         $data['page_title'] = $page_title ;
         $data['page_content'] = $page_content ;
+        $data['page_comments'] = $page_comments ;
         $data['s_number'] = $s_number ;
         $data['item_id'] = $item_id ;
         $data['cat_id'] = $cat_id ;
@@ -190,6 +192,7 @@ class PageController extends BaseController {
                 'item_id'=>$page['item_id'],
                 'cat_id'=>$page['cat_id'],
                 'page_title'=>$page['page_title'],
+                'page_comments'=>$page['page_comments'],
                 'page_content'=>base64_encode( gzcompress($page['page_content'], 9)),
                 's_number'=>$page['s_number'],
                 'addtime'=>$page['addtime'],

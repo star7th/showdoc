@@ -137,6 +137,11 @@ return array(
     'params'=>'Params',
     'clear'=>'Clear',
     'result'=>'Result',
+    'save_to_templ'=>'Save as template',
+    'more_templ'=>'More template',
+    'saved_templ_list'=>'Template list you saved',
+    'page_comments'=>'Page comments',
+    'add_page_comments'=>'Add comments before save',
 
     //user
     'login'=>'Login',
