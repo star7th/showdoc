@@ -223,6 +223,8 @@ class ItemController extends BaseController {
     //输入访问密码
     public function pwd(){
         $item_id = I("item_id/d");
+        $CloseVerify = C('CloseVerify');
+        $this->assign('CloseVerify',$CloseVerify);
         if (!IS_POST) {
           $this->assign("item_id" , $item_id);
           $this->display ();
@@ -230,7 +232,7 @@ class ItemController extends BaseController {
         }else{
           $password = I("password");
           $v_code = I("v_code");
-          if ($v_code && $v_code == session('v_code')) {
+          if ( $CloseVerify ||  ( $v_code && $v_code == session('v_code') )) {
             $item = D("Item")->where("item_id = '$item_id' ")->find();
             if ($item['password'] == $password) {
                 session("visit_item_".$item_id , 1 );
