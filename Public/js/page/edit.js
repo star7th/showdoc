@@ -338,7 +338,6 @@ function use_template(id){
         };
         
     };
-    return false;
 }
 
 //删除模板
@@ -355,7 +354,6 @@ function delete_template(id){
        },
         "json"
         );
-    return false;
 }
 
 $("#add-page-comments").click(function(){
