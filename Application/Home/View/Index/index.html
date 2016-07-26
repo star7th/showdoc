@@ -1,65 +1,130 @@
-<include file="Common/header" />
-<link rel="stylesheet" href="__PUBLIC__/css/index.css" />
 
-    <div class="container-narrow">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+<title>ShowDoc</title>
+ <link rel="stylesheet" href="__PUBLIC__/bootstrap/css/bootstrap.min.css">
 
-      <div class="masthead">
-        <ul class="nav nav-pills pull-right">
-          <if condition="$login_user">
-            <li ><a href="{:U('Home/Item/index')}">{$Think.Lang.my_item}</a></li>
-            <else />
-            <li ><a href="{:U('Home/User/login')}">{$Think.Lang.login_or_register}</a></li>
-          </if>
-          
-        </ul>
-        <h3 class="muted">ShowDoc</h3>
-      </div>
+ <link rel="stylesheet" href="__PUBLIC__/css/jquery.fullPage.css">
+ <style>
+.section { text-align: center; font: 30px "Microsoft Yahei"; color: #fff;}
+.header{
+ padding-right: 100px;
+ padding-top: 30px;
+ font-size: 18px; 
+ position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    margin-bottom: 0;
+}
+.header a {
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+</style>
+</head>
 
-      <hr>
+<body>
+<div class="row header  ">
+  <div class="right pull-right">
+    <ul class="inline pull-right">
+	  <if condition="$login_user">
+	    <li ><a href="{:U('Home/Item/index')}">我的项目</a></li>
+	    <else />
+	    <li ><a href="{:U('Home/User/login')}">登录 / 注册 </a></li>
+	  </if>
+    </ul>
+    </div>  
+  </div>
 
-		<div id="myCarousel" class="carousel slide">
-		   <!-- 轮播（Carousel）指标 -->
-		   <ol class="carousel-indicators">
-		      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-		      <li data-target="#myCarousel" data-slide-to="1"></li>
-		      <li data-target="#myCarousel" data-slide-to="2"></li>
-		   </ol>   
-		   <!-- 轮播（Carousel）项目 -->
-		   <div class="carousel-inner">
-		      <div class="item active">
-		         <img src="__PUBLIC__/img/pic1.jpg" alt="First slide">
-		      </div>
-		      <div class="item">
-		         <img src="__PUBLIC__/img/pic2.jpg" alt="Second slide">
-		      </div>
- 		      <div class="item">
-		         <img src="__PUBLIC__/img/pic3.jpg" alt="Third slide">
-		      </div>
-		   </div>
-		   <!-- 轮播（Carousel）导航 -->
-		   <a class="carousel-control left" href="#myCarousel" 
-		      data-slide="prev">&lsaquo;</a>
-		   <a class="carousel-control right" href="#myCarousel" 
-		      data-slide="next">&rsaquo;</a>
-		</div>
-		<p class="text-center">
-			<a class="btn btn-primary  btn-large" href="{$demo_url}" target="_blank">Demo</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<a class="btn  btn-large" href="{$help_url}" target="_blank" >{$Think.Lang.help}&nbsp;<i class="icon-circle-arrow-right"></i></a>
-		</p>
+<div id="dowebok">
+    <div class="section">
+        <h1>ShowDoc</h1>
+        <br>
+        <p>一个非常适合IT团队的在线API文档、技术文档工具</p>
+        <br>
+        <p>
+            <a class="btn   btn-large " href="http://www.showdoc.cc/demo" target="_blank">示例</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn  btn-large" href="http://www.showdoc.cc/help" target="_blank" >帮助&nbsp;</i></a>
+        </p>
+    </div>
+    <div class="section">
+        <h1>API文档</h1>
+        <br>
+        <p> APP、web前端与服务器常用API来进行交互</p><p>用ShowDoc可以非常方便快速地编写出美观的API文档</p>
+        <br>
+    </div>
+    <div class="section">
+        <h1>数据字典</h1>
+        <br>
+        <p>好的数据字典可以很方便地向别人描述你的数据库结构<br>
+            <p>用ShowDoc可以编辑出美观的数字字典</p>
+        <br>
+    </div>
+    <div class="section">
+        <h1>说明文档</h1>
+        <br>
+        <p>你完全可以使用 ShowDoc来编写一些工具的说明书<br>也可以编写一些技术规范说明文档以供团队查阅</p>
+        <br>
+    </div>
 
-      <hr>
+    <div class="section">
+        <h1>团队协作</h1>
+        <br>
+        <p>团队权限管理机制让团队良好地协同编写文档</p>
+        <br>
+    </div>
 
+    <div class="section">
+        <h1>免费开源</h1>
+        <br>
+        <p>ShowDoc提供免费开源的版本<br>你可以选择将ShowDoc部署到你的服务器</p>
+        <br>
+    </div>
 
-      <div class="footer">
-        <p>&copy; Created By <a href="{$creator_url}" target="_blank">Star7th</a></p>
-      </div>
-
-    </div> <!-- /container -->
-
-
+    <div class="section">
+        <h1>在线托管</h1>
+        <br>
+        <p> www.showdoc.cc 提供安全稳定的在线文档托管服务<br></p><p>你可以放心地选择托管你的文档数据在云端</p>
+        <br>
+    </div>
+    <div class="section">
+        <h1></h1>
+        <br>
+        <p>超过2000+互联网团队正在使用ShowDoc</p>
+        <br>
+        <p>
+            <a class="btn   btn-large " href="http://www.showdoc.cc/home/user/register" target="_blank">立即体验</a>
+        </p>
+    </div>
+</div>
  <include file="Common/footer" />
- <script type="text/javascript">
+<script src="__PUBLIC__/js/jquery.fullPage.min.js"></script>
+<script>
+$(function(){
+    $('#dowebok').fullpage({
+        sectionsColor : ['#1bbc9b', '#4BBFC3', '#2C606A', '#f90','#7CBD9D','#A77DC2','#85CE92','#1bbc9b'],
+        navigation:true,
+    });
 
-    $("#myCarousel").carousel('cycle');
+    $(window).resize(function(){
+        autoScrolling();
+    });
 
- </script>
+    function autoScrolling(){
+        var $ww = $(window).width();
+        if($ww < 1024){
+            $.fn.fullpage.setAutoScrolling(false);
+        } else {
+            $.fn.fullpage.setAutoScrolling(true);
+        }
+    }
+
+    autoScrolling();
+});
+</script>
+</body>
+</html>
