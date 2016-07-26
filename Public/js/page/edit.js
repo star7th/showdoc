@@ -10,10 +10,10 @@ $(function() {
   function secondCatList() {
     var default_second_cat_id = $("#default_second_cat_id").val();
     var item_id = $("#item_id").val();
-    $.get(
-      "./", {
+    $.post(
+      "?s=home/catalog/secondCatList",
+      {
         "item_id": item_id,
-        "s": "home/catalog/secondCatList",
       },
       function(data) {
         $("#cat_id").html('<OPTION value="0">'+lang["none"]+'</OPTION>');
@@ -41,10 +41,9 @@ $(function() {
   function getChildCatList() {
     var cat_id = $("#cat_id").val();
     var default_child_cat_id = $("#default_child_cat_id").val();
-    $.get(
-      "./", {
-        "cat_id": cat_id,
-        "s": "home/catalog/childCatList",
+    $.post(
+      "?s=home/catalog/childCatList", {
+        "cat_id": cat_id
       },
       function(data) {
         $("#parent_cat_id").html('<OPTION value="0">'+lang["none"]+'</OPTION>');
