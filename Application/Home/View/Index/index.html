@@ -32,9 +32,9 @@
   <div class="right pull-right">
     <ul class="inline pull-right">
 	  <if condition="$login_user">
-	    <li ><a href="{:U('Home/Item/index')}">我的项目</a></li>
+	    <li ><a href="{:U('Home/Item/index')}">{$Think.lang.help}</a></li>
 	    <else />
-	    <li ><a href="{:U('Home/User/login')}">登录 / 注册 </a></li>
+	    <li ><a href="{:U('Home/User/login')}">{$Think.lang.index_login_or_register}</a></li>
 	  </if>
     </ul>
     </div>  
@@ -42,62 +42,61 @@
 
 <div id="dowebok">
     <div class="section">
-        <h1>ShowDoc</h1>
+        <h1>{$Think.lang.section_title1}</h1>
         <br>
-        <p>一个非常适合IT团队的在线API文档、技术文档工具</p>
+        <p>{$Think.lang.section_description1}</p>
         <br>
         <p>
-            <a class="btn   btn-large " href="http://www.showdoc.cc/demo" target="_blank">示例</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a class="btn  btn-large" href="http://www.showdoc.cc/help" target="_blank" >帮助&nbsp;</i></a>
+            <a class="btn   btn-large " href="{$demo_url}" target="_blank">{$Think.lang.demo}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn  btn-large" href="{$help_url}" target="_blank" >{$Think.lang.help}&nbsp;</i></a>
         </p>
     </div>
     <div class="section">
-        <h1>API文档</h1>
+        <h1>{$Think.lang.section_title2}</h1>
         <br>
-        <p> APP、web前端与服务器常用API来进行交互</p><p>用ShowDoc可以非常方便快速地编写出美观的API文档</p>
-        <br>
-    </div>
-    <div class="section">
-        <h1>数据字典</h1>
-        <br>
-        <p>好的数据字典可以很方便地向别人描述你的数据库结构<br>
-            <p>用ShowDoc可以编辑出美观的数字字典</p>
+        <p> {$Think.lang.section_description2}</p>
         <br>
     </div>
     <div class="section">
-        <h1>说明文档</h1>
+        <h1>{$Think.lang.section_title3}</h1>
         <br>
-        <p>你完全可以使用 ShowDoc来编写一些工具的说明书<br>也可以编写一些技术规范说明文档以供团队查阅</p>
+        <p>{$Think.lang.section_description3}</p>
         <br>
     </div>
-
     <div class="section">
-        <h1>团队协作</h1>
+        <h1>{$Think.lang.section_title4}</h1>
         <br>
-        <p>团队权限管理机制让团队良好地协同编写文档</p>
+        <p>{$Think.lang.section_description4}</p>
         <br>
     </div>
 
     <div class="section">
-        <h1>免费开源</h1>
+        <h1>{$Think.lang.section_title5}</h1>
         <br>
-        <p>ShowDoc提供免费开源的版本<br>你可以选择将ShowDoc部署到你的服务器</p>
+        <p>{$Think.lang.section_description5}</p>
         <br>
     </div>
 
     <div class="section">
-        <h1>在线托管</h1>
+        <h1>{$Think.lang.section_title6}</h1>
         <br>
-        <p> www.showdoc.cc 提供安全稳定的在线文档托管服务<br></p><p>你可以放心地选择托管你的文档数据在云端</p>
+        <p>{$Think.lang.section_description6}</p>
+        <br>
+    </div>
+
+    <div class="section">
+        <h1>{$Think.lang.section_title7}</h1>
+        <br>
+        <p>{$Think.lang.section_description7}</p>
         <br>
     </div>
     <div class="section">
         <h1></h1>
         <br>
-        <p>超过2000+互联网团队正在使用ShowDoc</p>
+        <p>{$Think.lang.section_description8}</p>
         <br>
         <p>
-            <a class="btn   btn-large " href="http://www.showdoc.cc/home/user/register" target="_blank">立即体验</a>
+            <a class="btn   btn-large " href="{:U('Home/User/register')}">{$Think.lang.section_title8}</a>
         </p>
     </div>
 </div>
