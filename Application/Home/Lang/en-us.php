@@ -24,8 +24,26 @@ return array(
 
     //index
     'help' => 'Help',
-    'login_or_register' => 'Login/Register',
+    'demo' => 'Demo',
+    'index_login_or_register' => 'Login / Register',
     'my_item' => 'My items',
+    'section_title1' => 'ShowDoc',
+    'section_description1' => ' A tool greatly applicable for an IT team',
+    'section_title2' => 'API Document',
+    'section_description2' => 'ShowDoc can compile exquisite API documents <br>in a very fast and convenient way',
+    'section_title3' => 'Data Dictionary',
+    'section_description3' => 'A good Data Dictionary can easily exhibit database structure to other people<br>ShowDoc can compile exquisite Data Dictionary',
+    'section_title4' => 'Explanation Document',
+    'section_description4' => 'You can absolutely use ShowDoc to compile the explanation documents for some tools',
+    'section_title5' => 'Team Work',
+    'section_description5' => 'Your team will work with ShowDoc together very well ',
+    'section_title6' => 'Open Source',
+    'section_description6' => 'ShowDoc is a free, open source tool that <br>you can deploy it to your own server',
+    'section_title7' => 'Hosted online',
+    'section_description7' => 'Www.showdoc.cc provide security and stability of the document hosting service',
+    'section_title8' => 'Try it now',
+    'section_description8' => 'Over 2000+ IT team is using ShowDoc',
+
 
     //Common message
     'redirect_message' => 'If your browser does not automatically jump, please click on this link.',
