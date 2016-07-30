@@ -287,7 +287,7 @@ function import_mysql($con){
     `uid` int(10) NOT NULL DEFAULT '0',
     `username` varchar(200) NOT NULL DEFAULT '',
     `template_title` varchar(200) NOT NULL DEFAULT '' ,
-    `template_content` text NOT NULL DEFAULT '',
+    `template_content` text NOT NULL ,
     `addtime` int(11) NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     KEY `uid` (`uid`)
