@@ -1,6 +1,6 @@
 <?php
 return array(
-  //index.php
+
   "install_title"=>'安装ShowDoc',
   "use_sqlite"=>'使用Sqlite数据库',
   "use_mysql"=>'使用Mysql数据库',
@@ -15,7 +15,7 @@ return array(
   "home"=>'进入网站首页',
   "FAQ"=>'常见问题',
 
-  //ajax.php
+
   "lock"=>'本程序已经安装过！如果要解除安装锁定，则可删除/install目录下的install.lock文件后再重新访问本页面',
   "not_writable_install"=>'请赋予 /install 目录以可写权限！',
   "not_writable_upload"=>'请赋予 /Public/Uploads/ 目录以可写权限！',
@@ -31,4 +31,5 @@ return array(
   "create_table_fail"=>'创建数据库表失败！',
   "install_config_not_writable"=>'安装失败，配置文件写入错误！',
 
+  "require_php_version" => "需要PHP5.3.0以上版本",
   );

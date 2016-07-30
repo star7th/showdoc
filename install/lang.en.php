@@ -1,6 +1,6 @@
 <?php
 return array(
-  //index.php
+  
   "install_title"=>'Install ShowDoc',
   "use_sqlite"=>'Use Sqlite Database',
   "use_mysql"=>'Use Mysql Database',
@@ -15,7 +15,7 @@ return array(
   "home"=>'Website Home',
   "FAQ"=>'FAQ',
 
-  //ajax.php
+  
   "lock"=>'ShowDoc has been installed！If you want to reinstall,please delete file /install/install.lock ',
   "not_writable_install"=>' Directory /install is not writable !',
   "not_writable_upload"=>'Directory /Public/Uploads/  is not writable !',
@@ -31,4 +31,5 @@ return array(
   "create_table_fail"=>'Fail to create table',
   "install_config_not_writable"=>'Fail to write config file',
 
+  "require_php_version" => "require PHP > 5.3.0 ",
   );

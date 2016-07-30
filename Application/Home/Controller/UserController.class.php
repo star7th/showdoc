@@ -157,6 +157,7 @@ class UserController extends BaseController {
 		$login_user = $this->checkLogin();
 		session("login_user" , NULL);
 		cookie('cookie_token',NULL);
+		session(null);
 		$this->message(L('logout_succeeded'),U('Home/index/index'));
 	}
 }

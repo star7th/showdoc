@@ -7,6 +7,78 @@
 // --------
 include("common.php");
 $cur_lang = $_REQUEST['lang'] ? $_REQUEST['lang'] :"zh";
+header("Content-type: text/html; charset=utf-8"); 
+
+// 检测PHP环境
+if(version_compare(PHP_VERSION,'5.3.0','<'))  die(L('require_php_version'));
+
+if($f = file_get_contents("./install.lock")){
+  echo L("lock").'<br>';
+  exit();
+}
+
+$go = 1 ;
+
+//检测文件权限
+if(!new_is_writeable("./")){
+  echo L("not_writable_install").'<br>';
+  $go = 0;
+}
+if(!new_is_writeable("../Public/Uploads")){
+  echo L("not_writable_upload").'<br>';
+  $go = 0;
+}
+if(!new_is_writeable("../Application/Runtime")){
+  echo L("not_writable_runtime").'<br>';
+  $go = 0;
+}
+if(!new_is_writeable("../Application/Common/Conf/config.php")){
+  echo L("not_writable_config").'<br>';
+  $go = 0;
+}
+if(!new_is_writeable("../Application/Home/Conf/config.php")){
+  echo L("not_writable_home_config").'<br>';
+  $go = 0;
+}
+
+//检查扩展
+if(!extension_loaded("gd")){
+  echo '请安装php-gd<br>';
+  $go = 0;
+}
+
+if(!extension_loaded("mcrypt")){
+  echo '请安装php-mcrypt<br>';
+  $go = 0;
+}
+
+if(!extension_loaded("mbstring")){
+  echo '请安装php-mbstring<br>';
+  $go = 0;
+}
+
+
+if(!extension_loaded("mysql")){
+  echo '请安装php-mysql<br>';
+  $go = 0;
+}
+
+if(!extension_loaded("PDO") && !extension_loaded("pdo") ){
+  echo '请安装php-pdo<br>';
+  $go = 0;
+}
+
+/*if(extension_loaded("sqlite") || extension_loaded("sqlite3")){
+  echo '请安装php-sqlite<br>';
+  $go = 0;
+}
+*/
+
+if (!$go) {
+  exit();
+}
+
+
 
 ?>
 
