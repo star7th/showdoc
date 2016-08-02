@@ -137,7 +137,7 @@ return array(
     'inser_apidoc_template'=>'插入API接口模板',
     'inser_database_doc_template'=>'插入数据字典模板',
     'json_to_table'=>'JSON转参数表格',
-    'http_test_api'=>'在线API测试',
+    'http_test_api'=>'在线测试API',
     'json_to_table_description'=>'请粘贴一段json，程序将自动将json解析并生成参数表格。此功能适合用于快速编写API文档的返回参数表格',
     'confirm'=>'确定',
     'cancel'=>'取消',
