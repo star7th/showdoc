@@ -50,7 +50,7 @@
 
         <foreach name="items" item="item">
           <li class="span3 text-center">
-            <a class="thumbnail" href="{:U('Home/Item/Show',array('item_id'=>$item['item_id']))}" target="_blank" title="{$item.item_description}">
+            <a class="thumbnail" href="{:U('Home/Item/show',array('item_id'=>$item['item_id']))}" target="_blank" title="{$item.item_description}">
               <p class="my-item">{$item.item_name}</p>
             </a>
           </li>     
