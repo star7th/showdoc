@@ -1,5 +1,5 @@
 <include file="Common/header" />
-<link rel="stylesheet" href="__PUBLIC__/css/page/edit.css?1.1third" />
+<link rel="stylesheet" href="__PUBLIC__/css/page/edit.css?1.1thirde" />
 <link rel="stylesheet" href="__PUBLIC__/editor.md/css/editormd.css" />
 <style type="text/css">
 
@@ -52,7 +52,17 @@
         <button id="api-doc" tabindex="5" >{$Think.Lang.inser_apidoc_template}</button>
         <button id="database-doc" tabindex="6" >{$Think.Lang.inser_database_doc_template}</button>
         <button id="more-templ" tabindex="7" >{$Think.Lang.more_templ}</button>
-        <button id="jsons" tabindex="8" style="margin-left: 100px;">{$Think.Lang.json_to_table}</button>
+<!--         <button id="jsons" tabindex="8" style="margin-left: 100px;">{$Think.Lang.json_to_table}</button> -->
+        <div class="btn-group" style="margin-left: 100px;">
+          <a class="btn dropdown-toggle" id="json-tools-btn" data-toggle="dropdown" tabindex="8" href="#">
+           {$Think.Lang.json_tools}
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+                <li><a id="jsons" >{$Think.Lang.json_to_table}</a></li>
+                <li><a id="beautify-json" >{$Think.Lang.beautify_json}</a></li>
+          </ul>
+        </div>
         <a href="http://runapi.showdoc.cc/" target="_blank" class="btn" tabindex="9" id="runapi">{$Think.Lang.http_test_api}</a>
     </div>
     <div id="editormd">
@@ -89,6 +99,23 @@
     <div class="editormd-dialog-mask editormd-dialog-mask-bg"></div><div class="editormd-dialog-mask editormd-dialog-mask-con"></div>
 </div>
 
+<div id="beautify-json-dialog" class="editormd-dialog editormd-preformatted-text-dialog" style="width: 780px; height: 540px;">
+
+    <div style="cursor: move;" class="editormd-dialog-header">
+        <strong class="editormd-dialog-title">{$Think.Lang.beautify_json}</strong>
+    </div>
+    <a class="fa fa-close editormd-dialog-close" href="javascript:closeDiv('#beautify-json-dialog');"></a>
+    <div class="editormd-dialog-container">
+        <textarea id="beautify-jsons-content" class="jsons" placeholder="{$Think.Lang.beautify_json_description}"></textarea>
+        
+        <div class="editormd-dialog-footer">
+            <button class="editormd-btn editormd-enter-btn">{$Think.Lang.confirm}</button>
+            <button class="editormd-btn editormd-cancel-btn" onclick="closeDiv('#beautify-json-dialog')">{$Think.Lang.cancel}</button>
+        </div>
+    </div>
+    <div class="editormd-dialog-mask editormd-dialog-mask-bg"></div><div class="editormd-dialog-mask editormd-dialog-mask-con"></div>
+</div>
+
  <div id="more-templ-modal" class="modal hide fade">
   <div class="modal-header">
     <h4>{$Think.Lang.saved_templ_list}</h4>
@@ -116,7 +143,7 @@
 <script src="__PUBLIC__/editor.md/plugins/table-dialog/table-dialog.js"></script>
 <script src="__PUBLIC__/editor.md/plugins/reference-link-dialog/reference-link-dialog.js"></script>
 
-<script src="__PUBLIC__/js/page/edit.js?v=1.1.2thirdonmopqrs"></script>
+<script src="__PUBLIC__/js/page/edit.js?v=1.1.2thirdonmopqrst"></script>
 <if condition="LANG_SET=='en-us'">
     <script src="__PUBLIC__/editor.md/languages/en.js"></script>
 </if>
