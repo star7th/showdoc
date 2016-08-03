@@ -9,7 +9,7 @@ $(function() {
   if (is_showdoc_online()) {
     set_text_color( "runapi" , "red");
   };
-
+  
   /*加载目录*/
   secondCatList();
 
@@ -129,11 +129,18 @@ $(function() {
     editormd.insertValue(tmpl);
   });
   
-   /*插入JSON*/
+   /*JSON转参数表格*/
   $("#jsons").click(function() {
 	  
    $("#json-templ").show();
 	
+  });
+
+   /*JSON格式美化*/
+  $("#beautify-json").click(function() {
+    
+   $("#beautify-json-dialog").show();
+  
   });
   
   
@@ -174,8 +181,55 @@ $(function() {
 	});
 	
 
+$("#beautify-json-dialog .editormd-enter-btn").click(function(){
+  var data = $("#beautify-json-dialog .jsons").val();
+      try{
+          var text="\n ``` \n \{ \n"+dump(JSON.parse(data))+" \} \n\n ```\n\n";//整体加个大括号
+          //$("#beautify-json-dialog .jsons").val(text);
+          $("#beautify-json-dialog .jsons").val("");
+          editormd.insertValue(text);
+      }catch(e){
+          //非json数据直接显示
+          //$("#beautify-json-dialog .jsons").val(data);
+          $("#beautify-json-dialog .jsons").val("");
+          editormd.insertValue(data);
+      }
+    $("#beautify-json-dialog").hide();
+
+});
 //{"dgfgdfg":"gdfgdfg"}
   
+//格式化json数据
+function dump(arr,level) { 
+     var dumped_text = ""; 
+     if(!level) level = 0; 
+     
+     //The padding given at the beginning of the line. 
+     var level_padding = ""; 
+     for(var j=0;j<level+1;j++) level_padding += "     "; 
+     if(typeof(arr) == 'object') { //Array/Hashes/Objects 
+         var i=0;
+         for(var item in arr) { 
+             var value = arr[item]; 
+             if(typeof(value) == 'object') { //If it is an array, 
+                 dumped_text += level_padding + "\"" + item + "\" : \{ \n"; 
+                 dumped_text += dump(value,level+1); 
+                 dumped_text +=level_padding +"\}";
+             } else { 
+                dumped_text += level_padding + "\"" + item + "\" : \"" + value + "\""; 
+             } 
+             if(i<Object.getOwnPropertyNames(arr).length-1){
+                dumped_text+=", \n";
+             }else{
+                dumped_text+=" \n";
+             }
+             i++;
+         } 
+     } else { //Stings/Chars/Numbers etc. 
+        dumped_text = "===>"+arr+"<===("+typeof(arr)+")"; 
+     } 
+     return dumped_text; 
+}
 
   /*保存*/
   var saving = false;
