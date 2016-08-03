@@ -153,6 +153,8 @@ return array(
     'api_address'=>'接口地址',
     'params_description'=>'参数(如：user_id=121&age=22&date=2016-06-02)',
     'params'=>'参数',
+    'api_cookies_description'=>'Cookies(如：token=121&tid=22)',
+    'api_cookies'=>'Cookies',
     'clear'=>'清除',
     'result'=>'返回结果',
     'save_to_templ'=>'另存为模板',

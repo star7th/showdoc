@@ -153,6 +153,8 @@ return array(
     'api_address'=>'Api address',
     'params_description'=>'Params(e.g:user_id=121&age=22&date=2016-06-02)',
     'params'=>'Params',
+    'api_cookies_description'=>'Cookies(e.g:token=121&tid=22)',
+    'api_cookies'=>'Cookies',
     'clear'=>'Clear',
     'result'=>'Result',
     'save_to_templ'=>'Save as template',
