@@ -107,6 +107,8 @@ $(function(){
         $(this).children("a").children('i').attr("class","icon-chevron-right");
       }
     };
+    //激活菜单
+    $(this).addClass("active");
     //获取对应的page_id
     page_id = $(this).children("a").attr("data-page-id");
     page_title = $(this).children("a")[0].innerText;

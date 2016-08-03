@@ -18,10 +18,10 @@
                 </li>
                 <li id="li_parent_cat">
                     {$Think.Lang.level_3_directory}：
-                    <select name="parent_cat_id" id="parent_cat_id" ></select>
+                    <select name="parent_cat_id" id="parent_cat_id" tabindex="3"></select>
                 </li>
                 <li>
-                    <input type="text" name="s_number" id="s_number" value="{$page.s_number}" placeholder="{$Think.Lang.s_number_explain}" title="{$Think.Lang.s_number_explain}"  tabindex="3" >
+                    <input type="text" name="s_number" id="s_number" value="{$page.s_number}" placeholder="{$Think.Lang.s_number_explain}" title="{$Think.Lang.s_number_explain}"  tabindex="4" >
                 </li>
                 <li>
                     <!-- 首次添加没有历史版本，不显示 -->
@@ -49,14 +49,14 @@
     <br>
     <!-- 插入模板的按钮组 -->
     <div class="btns">
-        <button id="api-doc" tabindex="4" >{$Think.Lang.inser_apidoc_template}</button>
-        <button id="database-doc" tabindex="5" >{$Think.Lang.inser_database_doc_template}</button>
-        <button id="more-templ" tabindex="" >{$Think.Lang.more_templ}</button>
-        <button id="jsons" tabindex="7" style="margin-left: 100px;">{$Think.Lang.json_to_table}</button>
-        <a href="{:U('Home/page/http_api')}" target="_blank" class="btn" >{$Think.Lang.http_test_api}</a>
+        <button id="api-doc" tabindex="5" >{$Think.Lang.inser_apidoc_template}</button>
+        <button id="database-doc" tabindex="6" >{$Think.Lang.inser_database_doc_template}</button>
+        <button id="more-templ" tabindex="7" >{$Think.Lang.more_templ}</button>
+        <button id="jsons" tabindex="8" style="margin-left: 100px;">{$Think.Lang.json_to_table}</button>
+        <a href="http://runapi.showdoc.cc/" target="_blank" class="btn" tabindex="9" >{$Think.Lang.http_test_api}</a>
     </div>
     <div id="editormd">
-        <textarea id="page_content" style="display:none;" tabindex="6" >{$page.page_content}</textarea>
+        <textarea id="page_content" style="display:none;" tabindex="10" >{$page.page_content}</textarea>
     </div>
     <input type="hidden" id="item_id" value="{$item_id}">
     <input type="hidden" id="page_id" value="{$page.page_id}">
