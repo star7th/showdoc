@@ -4,6 +4,12 @@ var json_table_data='|'+lang["params"]+'|'+lang["type"]+'|'+lang["description"]+
 		'|:-------|:-------|:-------|\n';
 
 $(function() {
+
+  //给按钮文字加上颜色，点击后则去掉颜色
+  if (is_showdoc_online()) {
+    set_text_color( "runapi" , "red");
+  };
+
   /*加载目录*/
   secondCatList();
 

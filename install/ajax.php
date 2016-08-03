@@ -6,7 +6,7 @@ ini_set("display_errors", "Off");
 error_reporting(E_ALL | E_STRICT);
 header("Content-type: text/html; charset=utf-8"); 
 include("common.php");
-if($f = file_get_contents("./install.lock")){
+if(file_exists('./install.lock') && $f = file_get_contents("./install.lock")){
 	ajax_out(L("lock"),10099);
 }
 
@@ -70,8 +70,8 @@ return array(
     'URL_MODEL' => 3 ,//URL兼容模式
     'URL_ROUTER_ON'   => true, 
     'URL_ROUTE_RULES'=>array(
-        ':id\d'               => 'Home/Item/Show?item_id=:1',
-		':domain\s$'               => 'Home/Item/Show?item_domain=:1',//item的个性域名
+        ':id\d'               => 'Home/Item/show?item_id=:1',
+		':domain\s$'               => 'Home/Item/show?item_domain=:1',//item的个性域名
         'uid/:id\d'               => 'Home/Item/showByUid?uid=:1',
     ),
     'URL_CASE_INSENSITIVE'=>true,
@@ -155,8 +155,8 @@ return array(
     'URL_MODEL' => 3 ,//URL兼容模式
     'URL_ROUTER_ON'   => true, 
     'URL_ROUTE_RULES'=>array(
-        ':id\d'               => 'Home/Item/Show?item_id=:1',
-		':domain\s$'               => 'Home/Item/Show?item_domain=:1',//item的个性域名
+        ':id\d'               => 'Home/Item/show?item_id=:1',
+		':domain\s$'               => 'Home/Item/show?item_domain=:1',//item的个性域名
         'uid/:id\d'               => 'Home/Item/showByUid?uid=:1',
     ),
     'URL_CASE_INSENSITIVE'=>true,
