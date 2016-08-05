@@ -58,11 +58,6 @@ if(!extension_loaded("mbstring")){
 }
 
 
-if(!extension_loaded("mysql")){
-  echo '请安装php-mysql<br>';
-  $go = 0;
-}
-
 if(!extension_loaded("PDO") && !extension_loaded("pdo") ){
   echo '请安装php-pdo<br>';
   $go = 0;
@@ -96,6 +91,9 @@ if (!$go) {
 	body {
 		font:14px/1.5 "Microsoft Yahei","微软雅黑",Tahoma,Arial,Helvetica,STHeiti;
 	}
+  .form-signin{
+    display: none;
+  }
     </style>
 
   </head>
@@ -151,33 +149,45 @@ if (!$go) {
  		};
  	});
 
- 	$("#start").click(function(){
- 		var db_type = $("#db_type").val();
- 		var db_host = $("#db_host").val();
- 		var db_port = $("#db_port").val();
- 		var db_name = $("#db_name").val();
+
+
+  function install(){
+    var db_type = $("#db_type").val();
+    var db_host = $("#db_host").val();
+    var db_port = $("#db_port").val();
+    var db_name = $("#db_name").val();
     var db_user = $("#db_user").val();
- 		var lang = $("#lang").val();
- 		var db_password = $("#db_password").val();
- 		$.post(
- 			'ajax.php',
- 			{"lang":lang,"db_type":db_type,"db_host":db_host,"db_port":db_port,"db_name":db_name,"db_user":db_user,"db_password":db_password},
- 			function(data){
- 				if (data.error_code === 0) {
- 					//安装成功
-			 		//alert(data.message);
+    var lang = $("#lang").val();
+    var db_password = $("#db_password").val();
+    $.post(
+      'ajax.php',
+      {"lang":lang,"db_type":db_type,"db_host":db_host,"db_port":db_port,"db_name":db_name,"db_user":db_user,"db_password":db_password},
+      function(data){
+        if (data.error_code === 0) {
+          //安装成功
+          //alert(data.message);
           var text = '<div><?php echo L("install_success_help");?></div><br>';
-			 		 text += '<div><a href="../" ><?php echo L("home");?></a></div>';
+           text += '<div><a href="../" ><?php echo L("home");?></a></div>';
            $(".form-signin").html(text);
- 				}else{
- 					alert(data.message);
- 				}
- 			},
- 			"json"
+             $(".form-signin").show();
 
- 			);
+        }else{
+          alert(data.message);
+        }
+      },
+      "json"
 
- 		return false;
- 	});
+      ); 
+  }
+
+  $("#start").click(function(){
+
+    install();
+    return false;
+  });
+
+  install();
+
  });
+
 </script>
