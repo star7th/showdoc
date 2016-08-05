@@ -105,7 +105,6 @@ class ItemController extends BaseController {
         $current_page_id = I("page_id/d");
         //判断个性域名
         if ($item_domain) {
-            $item_domain = mysql_escape_string($item_domain);
             $item = D("Item")->where("item_domain = '$item_domain' ")->find();
             if ($item['item_id']) {
                 $item_id = $item['item_id'] ;
@@ -122,7 +121,6 @@ class ItemController extends BaseController {
 
         //是否有搜索词
         if ($keyword) {
-            $keyword = mysql_escape_string($keyword);
             $pages = D("Page")->where("item_id = '$item_id' and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `s_number` asc  ")->select();
         
         }else{
