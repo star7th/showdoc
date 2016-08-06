@@ -57,6 +57,10 @@ if(!extension_loaded("mbstring")){
   $go = 0;
 }
 
+if(!extension_loaded("zlib")){
+  echo '请安装php-zlib<br>';
+  $go = 0;
+}
 
 if(!extension_loaded("PDO") && !extension_loaded("pdo") ){
   echo '请安装php-pdo<br>';
