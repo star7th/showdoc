@@ -5,7 +5,7 @@
     "description": "ShowDoc is a tool greatly applicable for an IT team to share documents online",
     "keywords": ["showdoc","documents","Api"],
     "homepage": "https://github.com/star7th/showdoc",
-    "versions":"dev"
+    "versions":"1.0.0",
     "license": "Apache-2.0",
     "authors": [
         {
@@ -15,7 +15,6 @@
             "role": "Developer"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.0"
     }
