@@ -1,0 +1,20 @@
+
+{
+    "name": "showdoc/showdoc",
+    "type": "project",
+    "description": "ShowDoc is a tool greatly applicable for an IT team to share documents online",
+    "keywords": ["showdoc","documents","Api"],
+    "homepage": "https://github.com/star7th/showdoc",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "star7th",
+            "email": "xing7th@gmail.com",
+            "homepage": "http://blog.star7th.com/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    }
+}
