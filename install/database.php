@@ -12,7 +12,7 @@ header("Content-type: text/html; charset=utf-8");
 // 检测PHP环境
 if(version_compare(PHP_VERSION,'5.3.0','<'))  die(L('require_php_version'));
 
-if($f = file_get_contents("./install.lock")){
+if(file_exists('./install.lock') && $f = file_get_contents("./install.lock")){
   echo L("lock").'<br>';
   exit();
 }
