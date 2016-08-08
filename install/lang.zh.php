@@ -21,7 +21,7 @@ return array(
   "not_writable_upload"=>'请赋予 /Public/Uploads/ 目录以可写权限！',
   "not_writable_runtime"=>'请赋予 /Application/Runtime 目录以可写权限！',
   "not_writable_config"=>'请赋予 /Application/Common/Conf/config.php 文件以可写权限！',
-  "not_writable_home_config"=>'请赋予 /Application/Home/Conf/config.php 文件以可写权限！',
+  "not_writable_home_config"=>'请赋予 /Application/Home/Conf/config.php 文件以可写权限！<br>(如果你确定赋予了文件权限但却一直看到此信息，则可考虑关闭selinux试试)',
   "not_writable_sqlite"=>'请赋予 /Sqlite 目录以可写权限！',
   "not_writable_sqlite_db"=>'请赋予 /Sqlite/showdoc.db.php 以可写权限！',
   "install_success"=>'安装成功！建议删除/install目录，以免安装脚本被再次执行。',
