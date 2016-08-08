@@ -1,0 +1,17 @@
+
+@charset "utf-8";
+  body {
+    font:14px/1.5 "Microsoft Yahei","微软雅黑",Tahoma,Arial,Helvetica,STHeiti;
+}
+
+.btn-primary{
+    background-color: #08c !important;
+    background-image: linear-gradient(to bottom,#08c,#08c);
+}
+.btn-primary:active{
+  background-color: #07c !important;
+}
+.btn-primary:hover{
+  background-color: #07c !important;
+  background-image: linear-gradient(to bottom,#07c,#07c);
+}
