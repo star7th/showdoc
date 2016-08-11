@@ -1,0 +1,22 @@
+
+h3{
+	font-size: 1.5em;
+}
+
+body{
+	overflow-x:hidden;overflow-y:hidden;
+	font-size: 1rem;
+	line-height: 1.7em;
+}
+
+p{
+	margin: 0 0 20px;
+	text-align: justify;
+	text-justify: inter-ideograph;
+	word-break: initial;
+	word-break: break-word;
+}
+
+li{
+	line-height: 30px;
+}
