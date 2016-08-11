@@ -5,7 +5,7 @@ class UpdateController extends BaseController {
     
  	//升级数据库
     public function db(){
-        clear_runtime();
+        $this->_clear_runtime();
     	if (strtolower(C("DB_TYPE")) == 'mysql' ) {
     		//$this->mysql();
             echo 'ShowDoc does not support mysql any more';
@@ -13,7 +13,7 @@ class UpdateController extends BaseController {
         elseif (strtolower(C("DB_TYPE")) == 'sqlite' ) {
             $this->sqlite();
         }
-    	clear_runtime();
+    	$this->_clear_runtime();
     }
     public function sqlite(){
         //catalog表增加parent_cat_id字段
@@ -115,10 +115,33 @@ class UpdateController extends BaseController {
         echo 'OK!';
     }
 
+    private function _clear_runtime($path = RUNTIME_PATH){  
+        //给定的目录不是一个文件夹  
+        if(!is_dir($path)){  
+            return null;  
+        }  
+      
+        $fh = opendir($path);  
+        while(($row = readdir($fh)) !== false){  
+            //过滤掉虚拟目录  
+            if($row == '.' || $row == '..'|| $row == 'index.html'){  
+                continue;  
+            }  
+      
+            if(!is_dir($path.'/'.$row)){
+                unlink($path.'/'.$row);  
+            }  
+            $this->_clear_runtime($path.'/'.$row);  
+              
+        }  
+        //关闭目录句柄，否则出Permission denied  
+        closedir($fh);    
+        return true;  
+    }
 
     //转移mysql的数据到sqlite
     public function toSqlite(){
-        clear_runtime();
+        $this->_clear_runtime();
         if (strtolower(C("DB_TYPE")) == 'mysql' ) {
             $this->mysql();
             $this->_moveTable("catalog");
@@ -144,7 +167,7 @@ class UpdateController extends BaseController {
         else{
             echo "mysql not found";
         }
-        clear_runtime();
+        $this->_clear_runtime();
     }
 
     //升级mysql数据库  
