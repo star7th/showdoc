@@ -119,6 +119,7 @@ class UpdateController extends BaseController {
     //转移mysql的数据到sqlite
     public function toSqlite(){
         clear_runtime();
+        $this->mysql();
         if (strtolower(C("DB_TYPE")) == 'mysql' ) {
             $this->mysql();
             $this->_moveTable("catalog");
