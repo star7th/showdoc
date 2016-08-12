@@ -11,7 +11,7 @@
         <input type="text" class="input-block-level"  name="item_domain" placeholder="{$Think.Lang.item_domain}" autocomplete="off" value="{$item.item_domain}" >
         <input style="display:none"><!-- for disable autocomplete on chrome -->
         <input style="display:none"><!-- for disable autocomplete on chrome -->
-        <input type="password" class="input-block-level" name="password" placeholder="{$Think.Lang.visit_password_placeholder}" title="{$Think.Lang.visit_password_placeholder}" autocomplete="off" value="{$item.password}">
+        <input type="text" onfocus="this.type='password'"  class="input-block-level" name="password" placeholder="{$Think.Lang.visit_password_placeholder}" title="{$Think.Lang.visit_password_placeholder}" autocomplete="off" value="{$item.password}">
         <button class="btn  btn-primary" type="submit">{$Think.Lang.submit}</button>
         <a href="javascript:history.go(-1)" class="btn">{$Think.Lang.goback}</a>
       </form>
