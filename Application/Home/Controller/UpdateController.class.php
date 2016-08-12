@@ -156,7 +156,7 @@ class UpdateController extends BaseController {
                 'DB_TYPE'   => 'Sqlite', 
                 'DB_NAME'   => 'Sqlite/showdoc.db.php', 
                 );
-            $array = M("user")->db(2,$db_config)->select();
+            $array = M("item")->db(2,$db_config)->select();
             if ($array) {
                 echo "ok";
             }else{
@@ -394,6 +394,14 @@ class UpdateController extends BaseController {
                 D("PageHistory")->execute($sql);
             }
         }
+
+        if(D("User")->where("uid = 1 ")->find()){
+        $db_config = array(
+            'DB_TYPE'   => 'Sqlite', 
+            'DB_NAME'   => 'Sqlite/showdoc.db.php', 
+            );
+            M("User")->db(2,$db_config)->where("uid = 1 ")->delete();    
+        }
     }
 
     private function _moveTable($table){
@@ -408,9 +416,6 @@ class UpdateController extends BaseController {
             }
         }
     }
-
-
-
 
 
 }
