@@ -29,7 +29,7 @@ $(function(){
 
 
   //根据屏幕宽度进行响应(应对移动设备的访问)
-  if( isMobile()){
+  if( isMobile()|| $(window).width() < 1000){
       AdaptToMobile();
   }
 
@@ -38,7 +38,7 @@ $(function(){
         AdaptToMobile();
     }
 
-    else if($(window).width() < 600){
+    else if($(window).width() < 1000){
         AdaptToMobile();
     }else{
       window.location.reload();
@@ -175,7 +175,7 @@ function iFrameHeight() { 
       ifr.style.height = height + 'px';
 
       
-      if(!isMobile()){
+      if(!isMobile()&& $(window).width() > 1000){
         //调节左侧栏背景的最小高度
         if(height >  document.body.clientHeight){
           $(".doc-left").css("min-height",(height+60) + 'px');
