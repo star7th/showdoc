@@ -6,6 +6,10 @@
 .cat-list{
   max-height: 250px;
 }
+.cat-content{
+    max-height: 195px;
+    overflow-y: auto;
+}
 </style>
  <div id="edit-cat" class="modal hide fade">
   <!-- 编辑框 -->
@@ -50,7 +54,7 @@
     <div class="modal-header">
     <h4>{$Think.Lang.catalog_list}&nbsp;<small>({$Think.Lang.click_to_edit})</small></h4>
     </div>
-    <div id="show-cat">
+    <div id="show-cat" class="cat-content">
 
     <br>
     <br>
