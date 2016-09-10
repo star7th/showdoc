@@ -36,3 +36,4 @@ lang["no_templ_msg"] = "<p><br>你尚未保存过任何模板。<br>你可以在
 lang["add_page_comments_msg"] = "请输入页面注释内容。可以填写你对页面的修改注释或者其它注释。添加后，在页面的历史版本处会显示每一个页面版本的注释，方便你查阅、追踪页面的修改";
 
 
+lang["confirm_to_delete_member"] = "确认要删除该成员？";

@@ -125,7 +125,7 @@ return array(
     'member_list'=>'member list',
     'click_to_delete'=>'Click to delete',
     'close'=>'Close',
-    
+    "member_group_id" => "Read-only(can read item ,but not edit or delete )",
     //page
     'input_page_title'=>'Please enter a page title',
     'level_2_directory'=>'Second-level catalog',
