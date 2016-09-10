@@ -237,5 +237,29 @@ class PageController extends BaseController {
 
     }
 
+    public function diff(){
+        $login_user = $this->checkLogin();
+        $page_history_id = I("page_history_id/d");
+        $page_id = I("page_id/d");
+
+        $page = D("Page")->where(" page_id = '$page_id' ")->find();
+        $cur_page_content = $page['page_content'];
+
+        $item_id = $page['item_id'] ?$page['item_id'] :$item_id;
+
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $this->message(L('no_permissions'));
+            return;
+        }
+
+        $page = D("PageHistory")->where(" page_history_id = '$page_history_id' ")->find();
+        $page_content = gzuncompress(base64_decode($page['page_content'])); 
+        $history_page_content = $page_content ? $page_content : $page['page_content'] ;
+        
+        $this->assign("cur_page_content" , $cur_page_content);
+        $this->assign("history_page_content" , $history_page_content);
+        $this->display(); 
+    }
+
 
 }

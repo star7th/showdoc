@@ -163,7 +163,9 @@ return array(
     'saved_templ_list'=>'Template list you saved',
     'page_comments'=>'Page comments',
     'add_page_comments'=>'Add comments before save',
-
+    'cur_page_content'=>'The latest version ',
+    'history_page_content'=>'History version',
+    'overview'=>'Overview',
     //user
     'login'=>'Login',
     'username'=>'Username',

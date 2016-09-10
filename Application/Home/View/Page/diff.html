@@ -1,0 +1,89 @@
+<include file="Common/header" />
+<link href="__PUBLIC__/diff/diffview.css" rel="stylesheet"> 
+
+<style type="text/css">
+body {
+	font-size: 12px;
+	font-family: Sans-Serif;
+}
+h2 {
+	margin: 0.5em 0 0.1em;
+	text-align: center;
+}
+.top {
+	text-align: center;
+}
+.textInput {
+	display: block;
+	width: 49%;
+	float: left;
+	display: none;
+}
+textarea {
+	width:100%;
+	height:300px;
+}
+label:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+.spacer {
+	margin-left: 10px;
+}
+.viewType {
+	font-size: 16px;
+	clear: both;
+	text-align: center;
+	padding: 1em;
+}
+#diffoutput {
+    width: 835px;
+    margin: 0 auto;
+}
+</style>
+
+<!-- <h1 class="top"><a href="http://github.com/cemerick/jsdifflib">jsdifflib</a> demo</h1> -->
+
+<div class="textInput">
+	<h2>{$Think.Lang.cur_page_content}</h2>
+	<textarea id="baseText">{$cur_page_content}</textarea>
+</div>
+<div class="textInput spacer">
+	<h2>{$Think.Lang.history_page_content}</h2>
+	<textarea id="newText">{$history_page_content}</textarea>
+</div>
+
+<div id="diffoutput"> </div>
+
+ <include file="Common/footer" />
+
+ <script src="__PUBLIC__/diff/diffview.js"></script> 
+ <script src="__PUBLIC__/diff/difflib.js"></script> 
+<script type="text/javascript">
+
+$(function(){
+	diffUsingJS(0);
+});
+
+function diffUsingJS(viewType) {
+	"use strict";
+	var byId = function (id) { return document.getElementById(id); },
+		base = difflib.stringAsLines(byId("baseText").value),
+		newtxt = difflib.stringAsLines(byId("newText").value),
+		sm = new difflib.SequenceMatcher(base, newtxt),
+		opcodes = sm.get_opcodes(),
+		diffoutputdiv = byId("diffoutput")
+
+	diffoutputdiv.innerHTML = "";
+
+	diffoutputdiv.appendChild(diffview.buildView({
+		baseTextLines: base,
+		newTextLines: newtxt,
+		opcodes: opcodes,
+		baseTextName: "{$Think.Lang.cur_page_content}",
+		newTextName: "{$Think.Lang.history_page_content}",
+		viewType: viewType
+	}));
+}
+
+</script>

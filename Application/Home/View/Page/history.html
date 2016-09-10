@@ -22,7 +22,7 @@
         <td>{$value.addtime}</td>
         <td>{$value.author_username}</td>
         <td>{$value.page_comments}</td>
-        <td><a href="?s=home/page/edit&page_id={$page_id}&page_history_id={$value.page_history_id}">{$Think.Lang.recover_to_this_version}</a></td>
+        <td> <a href="?s=home/page/diff&page_id={$page_id}&page_history_id={$value.page_history_id}" target="_blank">{$Think.Lang.overview}</a> | <a href="?s=home/page/edit&page_id={$page_id}&page_history_id={$value.page_history_id}">{$Think.Lang.recover_to_this_version}</a></td>
       </TR>
 
       </foreach>
