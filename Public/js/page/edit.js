@@ -110,6 +110,10 @@ $(function() {
     syncScrolling: "single",
     path: DocConfig.pubile + "/editor.md/lib/",
     placeholder: lang["editormd_placeholder"] ,
+    taskList        : true,
+    tex             : true,  // 默认不解析
+    flowChart       : true,  // 默认不解析
+    sequenceDiagram : true,  // 默认不解析
     imageUpload: true,
     imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp", "JPG", "JPEG", "GIF", "PNG", "BMP", "WEBP"],
     imageUploadURL: "?s=home/page/uploadImg",

@@ -1,6 +1,15 @@
 
 $(function(){
     hljs.initHighlightingOnLoad();
+    
+    var EditormdView = editormd.markdownToHTML("page_md_content", {
+      htmlDecode      : "style,script,iframe",  // you can filter tags decode
+      emoji           : true,
+      taskList        : true,
+      tex             : true,  // 默认不解析
+      flowChart       : true,  // 默认不解析
+      sequenceDiagram : true,  // 默认不解析
+    });
 
     //为所有table标签添加bootstap支持的表格类
     $("table").addClass("table table-bordered table-hover");
