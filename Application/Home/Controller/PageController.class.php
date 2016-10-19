@@ -14,7 +14,8 @@ class PageController extends BaseController {
             return;
         }
         $Parsedown = new \Parsedown();
-        $page['page_content'] = $Parsedown->text(htmlspecialchars_decode($page['page_content']));
+        $page['page_md_content'] = $page['page_content'];
+        //$page['page_html_content'] = $Parsedown->text(htmlspecialchars_decode($page['page_content']));
         $this->assign("page" , $page);
         $this->display();
     }

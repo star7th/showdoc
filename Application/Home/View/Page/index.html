@@ -1,18 +1,33 @@
 <include file="Common/header" />
 <link href="__PUBLIC__/highlight/default.min.css" rel="stylesheet"> 
-<link href="__PUBLIC__/css/page/index.css" rel="stylesheet"> 
+<link href="__PUBLIC__/css/page/index.css" rel="stylesheet">
 
 <h3 style="text-align: center;">{$page.page_title}</h3>
 <!-- 这里开始是内容 -->
-<div class="" style="padding-top:10px;">
 
-{$page.page_content}
+<div id="page_md_content" style="padding-top:10px;" ><textarea style="display:none;">
+{$page.page_md_content}</textarea></div>
 
-</div>
-
-
-
+<div id="page_html_content" style="display:none;">{$page.page_html_content}</div>
 
  <include file="Common/footer" />
- <script src="__PUBLIC__/highlight/highlight.min.js"></script> 
+ <script src="__PUBLIC__/highlight/highlight.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/marked.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/prettify.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/flowchart.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/raphael.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/underscore.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/sequence-diagram.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/jquery.flowchart.min.js"></script>
+ <script src="__PUBLIC__/editor.md/editormd.min.js"></script>
 <script src="__PUBLIC__/js/page/index.js"></script>
+<script type="text/javascript">
+	var EditormdView = editormd.markdownToHTML("page_md_content", {
+		htmlDecode      : "style,script,iframe",  // you can filter tags decode
+		emoji           : true,
+		taskList        : true,
+		tex             : true,  // 默认不解析
+		flowChart       : true,  // 默认不解析
+		sequenceDiagram : true,  // 默认不解析
+	});
+</script>
