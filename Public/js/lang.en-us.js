@@ -35,3 +35,4 @@ lang["delete_this_template"] = "Delete template";
 lang["no_templ_msg"] = "<p><br>You have not saved any templates.<br>When you edit the page, click the 'save' button on the right click, select Save as template in the down menu .<br>When you create or edit a new page, click the 'More template' button, then you can use the template you save</p>";
 lang["add_page_comments_msg"] = "Please enter the page comments.It can be page update log , or other you want.It will be showed in page history version convenient for you to check the change of page";
 
+lang["confirm_to_delete_member"] = "Sure to delete this member ?";

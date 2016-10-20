@@ -34,9 +34,10 @@ $(function(){
   //保存
   $("#save-cat").click(function(){
       var username = $("#username").val();
+      var member_group_id = $("#member_group_id").is(':checked') ? 0 : 1 ;
       $.post(
         "?s=/home/member/save",
-        {"username": username ,"item_id": item_id  },
+        {"username": username ,"item_id": item_id,"member_group_id": member_group_id   },
         function(data){
           if (data.error_code == 0) {
             $("#username").val('');
@@ -56,7 +57,9 @@ $(function(){
   //删除
   $('#show-cat').delegate('.single-cat','click', function(){
       var username = $(this).attr("data-username");
-
+        if (!confirm(lang['confirm_to_delete_member'])) {
+            return false;
+        }
       if (username) {
           $.post(
               "?s=/home/member/delete",

@@ -125,6 +125,7 @@ return array(
     'member_list'=>'成员列表',
     'click_to_delete'=>'点击可删除',
     'close'=>'关闭',
+    "member_group_id" => "只读(只能查看项目，不能修改/删除)",
     
     //page
     'input_page_title'=>'请输入页面标题',
@@ -163,6 +164,9 @@ return array(
     'saved_templ_list'=>'保存的模板列表',
     'page_comments'=>'页面注释',
     'add_page_comments'=>'保存前添加页面注释',
+    'cur_page_content'=>'当前最新版本',
+    'history_page_content'=>'历史版本',
+    'overview'=>'预览',
 
     //user
     'login'=>'登录',

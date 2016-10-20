@@ -125,7 +125,7 @@ return array(
     'member_list'=>'member list',
     'click_to_delete'=>'Click to delete',
     'close'=>'Close',
-    
+    "member_group_id" => "Read-only(can read item ,but not edit or delete )",
     //page
     'input_page_title'=>'Please enter a page title',
     'level_2_directory'=>'Second-level catalog',
@@ -163,7 +163,9 @@ return array(
     'saved_templ_list'=>'Template list you saved',
     'page_comments'=>'Page comments',
     'add_page_comments'=>'Add comments before save',
-
+    'cur_page_content'=>'The latest version ',
+    'history_page_content'=>'History version',
+    'overview'=>'Overview',
     //user
     'login'=>'Login',
     'username'=>'Username',

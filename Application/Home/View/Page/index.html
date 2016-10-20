@@ -1,18 +1,21 @@
 <include file="Common/header" />
 <link href="__PUBLIC__/highlight/default.min.css" rel="stylesheet"> 
-<link href="__PUBLIC__/css/page/index.css" rel="stylesheet"> 
-
+<link href="__PUBLIC__/css/page/index.css?v=1.12" rel="stylesheet">
 <h3 style="text-align: center;">{$page.page_title}</h3>
 <!-- 这里开始是内容 -->
-<div class="" style="padding-top:10px;">
+<div id="page_md_content" ><textarea style="display:none;">
+{$page.page_md_content}</textarea></div>
 
-{$page.page_content}
-
-</div>
-
-
-
+<div id="page_html_content" style="display:none;">{$page.page_html_content}</div>
 
  <include file="Common/footer" />
- <script src="__PUBLIC__/highlight/highlight.min.js"></script> 
-<script src="__PUBLIC__/js/page/index.js"></script>
+ <script src="__PUBLIC__/highlight/highlight.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/marked.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/prettify.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/flowchart.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/raphael.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/underscore.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/sequence-diagram.min.js"></script>
+ <script src="__PUBLIC__/editor.md/lib/jquery.flowchart.min.js"></script>
+ <script src="__PUBLIC__/editor.md/editormd.min.js"></script>
+<script src="__PUBLIC__/js/page/index.js?a=12"></script>

@@ -19,6 +19,7 @@ class MemberController extends BaseController {
     //保存
     public function save(){
         $item_id =  I("item_id/d");
+        $member_group_id =  I("member_group_id/d");
         $login_user = $this->checkLogin();
         if (!$this->checkItemCreator($login_user['uid'] , $item_id)) {
             $this->message(L('no_permissions'));
@@ -37,6 +38,7 @@ class MemberController extends BaseController {
         $data['username'] = $member['username'] ;
         $data['uid'] = $member['uid'] ;
         $data['item_id'] = $item_id ;
+        $data['member_group_id'] = $member_group_id ;
         $data['addtime'] = time() ;
         
 
@@ -67,7 +69,7 @@ class MemberController extends BaseController {
         }
     }
 
-    //删除目录
+    //删除成员
     public function delete(){
         $item_id = I("item_id/d")? I("item_id/d") : 0;
         $login_user = $this->checkLogin();

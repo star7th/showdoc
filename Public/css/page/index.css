@@ -16,3 +16,15 @@ p{
 li{
 	line-height: 30px;
 }
+
+.hljs{
+	padding: 0px;
+}
+
+.linenums li{
+	list-style-type:none;
+}
+
+#page_md_content{
+	padding-top:10px;
+}
