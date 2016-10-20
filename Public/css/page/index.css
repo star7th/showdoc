@@ -17,12 +17,9 @@ li{
 	line-height: 30px;
 }
 
-.hljs{
-	padding: 0px;
-}
-
 .linenums li{
 	list-style-type:none;
+	line-height: 20px;
 }
 
 #page_md_content{
