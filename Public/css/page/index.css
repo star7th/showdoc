@@ -25,3 +25,7 @@ li{
 #page_md_content{
 	padding-top:10px;
 }
+
+.hljs{
+	padding:0.2em;
+}
