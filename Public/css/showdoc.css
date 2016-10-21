@@ -15,3 +15,21 @@
   background-color: #07c !important;
   background-image: linear-gradient(to bottom,#07c,#07c);
 }
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar
+{
+    width: 7px;
+    height: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb
+{
+    background-color: rgba(0, 0, 0, 0.3);
+    -webkit-border-radius:6px;
+    -moz-border-radius: 6px;
+    -ms-border-radius: 6px;
+    -o-border-radius: 6px;
+    border-radius: 6px;
+}
