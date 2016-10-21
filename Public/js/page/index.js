@@ -13,6 +13,9 @@ $(function(){
 
     //为所有table标签添加bootstap支持的表格类
     $("table").addClass("table table-bordered table-hover");
+    $.each($('table'), function() {
+        $(this).prop('outerHTML', '<div style="width: 100%;overflow-x: auto;">'+$(this).prop('outerHTML')+'</div>');
+    });
 
       //超链接都在新窗口打开
     $('a[href^="http"]').each(function() {
