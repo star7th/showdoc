@@ -1,5 +1,5 @@
 <include file="Common/header" />
-<link rel="stylesheet" href="__PUBLIC__/css/item/show.css?1.1d.1thddde" />
+<link rel="stylesheet" href="__PUBLIC__/css/item/show.css?1.1d.1thdddef" />
 
 
 <div class="doc-head row" >
@@ -10,7 +10,7 @@
       <if condition="$ItemPermn">
       <li>
           <div class="btn-group ">
-            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+            <a class="btn btn-link dropdown-toggle" data-toggle="dropdown" href="#">
               {$Think.Lang.item}
               <span class="caret"></span>
             </a>
@@ -26,7 +26,7 @@
               <li><a href="{:U('Home/Item/delete',array('item_id'=>$item['item_id']))}">{$Think.Lang.delete}</a></li>
             </if>
 
-            <li><a href="{:U('Home/Item/index')}">{$Think.Lang.more_item}</a></li>
+            <li><a href="{:U('Home/Item/index')}">{$Think.Lang.goback}</a></li>
           </ul>
       </li>
       <else />
