@@ -141,8 +141,12 @@
     <h3>{$Think.Lang.share}</h3>
   </div>
   <div class="modal-body">
-    <p>{$Think.Lang.item_address}：<code>{$share_url}</code></p>
-    <p>{$Think.Lang.copy_address_to_your_friends}</p>
+  <div class="modal-body" style="text-align: center;">
+    <p>{$Think.Lang.item_address}：<code id="share-item-link">{$share_url}</code>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="copy-item-link">复制链接</a>
+  </p>
+    <p style="border-bottom: 1px solid #eee;"><img  alt="二维码" style="width:114px;height:114px;" src="?s=home/common/qrcode&size=3&url={$share_url}"> </p>
+  </div>
+
   </div>
 </div>
 
@@ -152,13 +156,21 @@
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h3>{$Think.Lang.share_page}</h3>
   </div>
-  <div class="modal-body">
-    <p>{$Think.Lang.page_address}：<code id="share-page-link"></code></p>
-    <p>{$Think.Lang.copy_address_to_your_friends}</p>
+  <div class="modal-body" style="text-align: center;">
+    <p>项目页面地址：<code id="share-page-link"></code>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="copy-page-link">复制链接</a>
+  </p>
+      <p style="border-bottom: 1px solid #eee;"><img  alt="二维码" id="qr-page-link" style="width:114px;height:114px;" src="?s=home/common/qrcode&size=3&url="> </p>
+      
+    <p >单页面地址：<code id="share-single-link"></code>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="copy-single-link">复制链接</a>
+    </p>
+      <p style="border-bottom: 1px solid #eee;"><img  alt="二维码" id="qr-single-link" style="width:114px;height:114px;" src="?s=home/common/qrcode&size=3&url="> </p>
+   <p><a href="http://www.showdoc.cc/page/63882" target="_blank">项目页面地址和单页面地址有什么区别？</a></p><p>
+    </p>
   </div>
 </div>
 <script src="__PUBLIC__/js/jquery.bootstrap-growl.min.js"></script>
 <script src="__PUBLIC__/js/jquery.goup.min.js"></script>
 <script src="__PUBLIC__/js/jquery.hotkeys.js"></script>
+<script src="__PUBLIC__/jquery.zclip/jquery.zclip.js"></script>
 
 <script src="__PUBLIC__/js/item/show.js?v=1.2121"></script>

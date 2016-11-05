@@ -222,7 +222,10 @@ class ItemController extends BaseController {
     public function pwd(){
         $item_id = I("item_id/d");
         $CloseVerify = C('CloseVerify');
+        $refer_url = I('refer_url');
+        //var_dump(urldecode($refer_url));
         $this->assign('CloseVerify',$CloseVerify);
+        $this->assign('refer_url',$refer_url);
         if (!IS_POST) {
           $this->assign("item_id" , $item_id);
           $this->display ();
@@ -234,7 +237,12 @@ class ItemController extends BaseController {
             $item = D("Item")->where("item_id = '$item_id' ")->find();
             if ($item['password'] == $password) {
                 session("visit_item_".$item_id , 1 );
-                header("location:".U("Home/Item/show").'&item_id='.$item_id);
+                if ($refer_url) {
+                    header("location:".base64_decode($refer_url));
+                }else{
+                    header("location:".U("Home/Item/show").'&item_id='.$item_id);
+                }
+                
             }else{
                 
                 $this->message(L('access_password_are_incorrect'));
