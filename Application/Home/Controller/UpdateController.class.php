@@ -112,7 +112,7 @@ class UpdateController extends BaseController {
             }
         }
 
-        //item_member表增加level字段
+        //item_member表增加member_group_id字段
         $columns = M("ItemMember")->getDbFields();
         if ($columns) {
             $has_it = 0 ;//是否存在该字段
@@ -124,6 +124,21 @@ class UpdateController extends BaseController {
             if ($has_it === 0) {
                 $sql = "ALTER TABLE ".C('DB_PREFIX')."item_member ADD member_group_id INT( 1 ) NOT NULL DEFAULT '1'  ;";
                 D("ItemMember")->execute($sql);
+            }
+        }
+
+        //item表增加item_type字段
+        $columns = M("Item")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'item_type') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD item_type INT( 1 ) NOT NULL DEFAULT '1'  ;";
+                D("Item")->execute($sql);
             }
         }
 
