@@ -74,6 +74,7 @@ return array(
     'add_an_item'=>'添加一个新项目',
     'new_item'=>'新建项目',
     'share_my_home'=>'分享我的主页',
+    'feedback' => "反馈",
     'home_address'=>'主页地址',
     'home_address_description'=>'别人访问您的主页时，将可以看到您的所有公开项目（但没有新建项目等权限）。你可以复制地址给你的好友',
     //item/pwd
