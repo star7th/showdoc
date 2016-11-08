@@ -1,4 +1,4 @@
-* {
+ï»¿* {
 
 
 
@@ -206,7 +206,7 @@ body {
 
 
 
-    font-family: "Microsoft YaHei", "Î¢ÈíÑÅºÚ", Helvetica, Tahoma, STXihei, "»ªÎÄÏ¸ºÚ", STHeiti, "Helvetica Neue", Helvetica, Tahoma, "Droid Sans", "wenquanyi micro hei", FreeSans, Arimo, Arial, SimSun, "ËÎÌå", Heiti, "ºÚÌå", sans-serif; 
+    font-family: "Microsoft YaHei", "å¾®è½¯é›…é»‘", Helvetica, Tahoma, STXihei, "åæ–‡ç»†é»‘", STHeiti, "Helvetica Neue", Helvetica, Tahoma, "Droid Sans", "wenquanyi micro hei", FreeSans, Arimo, Arial, SimSun, "å®‹ä½“", Heiti, "é»‘ä½“", sans-serif; 
 
 
 
@@ -484,5 +484,8 @@ body {
 
 }
 
+ol.linenums li {
+    list-style-type: none !important;
+}
 
 
