@@ -87,7 +87,7 @@ class BaseController extends Controller {
 	}
 
 	//判断某用户是否有项目访问权限（公开项目的话所有人可访问，私有项目则项目成员、项目创建者和访问密码输入者可访问）
-	protected function checkItemVisit($uid , $item_id){
+	protected function checkItemVisit($uid , $item_id, $refer_url= ''){
 		if (session("visit_item_".$item_id)) {
 			return true;
 		}
@@ -106,7 +106,7 @@ class BaseController extends Controller {
 		$item = D("Item")->where("item_id = '%d' ",array($item_id))->find();
 		if ($item['password']) {
 			//跳转到输入访问密码框
-			header("location:".U("Home/item/pwd",array("item_id"=>$item_id)));
+			header("location:".U("Home/item/pwd",array("item_id"=>$item_id,"refer_url"=>base64_encode($refer_url))));
 		}else{
 			session("visit_item_".$item_id , 1 );
 			return true;

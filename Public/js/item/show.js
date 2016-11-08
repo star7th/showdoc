@@ -29,7 +29,7 @@ $(function(){
 
 
   //根据屏幕宽度进行响应(应对移动设备的访问)
-  if( isMobile()|| $(window).width() < 1000){
+  if( isMobile() || $(window).width() < 1000){
       AdaptToMobile();
   }
 
@@ -148,7 +148,12 @@ $(function(){
       }
       $("#share-page-link").html(cur_page_url);
       history.replaceState(null, null, cur_page_url);
-      
+      var single_page_url = window.location.protocol +"//"+window.location.host+base_url+"/page/"+page_id;
+      $("#share-single-link").html(single_page_url);
+
+      $("#qr-page-link").attr("src","?s=home/common/qrcode&size=3&url="+cur_page_url);
+      $("#qr-single-link").attr("src","?s=home/common/qrcode&size=3&url="+single_page_url);
+
       var html = '<iframe id="page-content" width="100%" scrolling="yes"  height="100%" frameborder="0" style=" overflow:visible; height:100%;" name="main"  seamless ="seamless"src="'+iframe_url+'"></iframe>';
       $(".iframe_content").html(html);
       iFrameHeight();
@@ -158,12 +163,54 @@ $(function(){
   //分享项目
   $("#share").click(function(){
     $("#share-modal").modal();
+      //延迟绑定分享事件
+        setTimeout(function(){
+          $('#copy-item-link').zclip(
+          {
+            path: DocConfig.pubile +'/jquery.zclip/ZeroClipboard.swf',
+            copy:function()
+            {
+              return $('#share-item-link').html();
+            },
+            afterCopy: function() {
+              show_top_msg("已经成功复制到剪切板",2000);
+            }
+          });
+
+        },500);
     return false;
   });
 
   //分享页面
   $("#share-page").click(function(){
     $("#share-page-modal").modal();
+      //延迟绑定分享事件
+        setTimeout(function(){
+          $('#copy-page-link').zclip(
+          {
+            path: DocConfig.pubile +'/jquery.zclip/ZeroClipboard.swf',
+            copy:function()
+            {
+              return $('#share-page-link').html();
+            },
+            afterCopy: function() {
+              show_top_msg("已经成功复制到剪切板",2000);
+            }
+          });
+
+          $('#copy-single-link').zclip(
+          {
+            path:DocConfig.pubile +'/jquery.zclip/ZeroClipboard.swf',
+            copy:function()
+            {
+              return $('#share-single-link').html();
+            },
+            afterCopy: function() {
+              show_top_msg("已经成功复制到剪切板",2000);
+            }
+          });
+        },500);
+
     return false;
   });
 
@@ -175,7 +222,7 @@ function iFrameHeight() { 
       ifr.style.height = height + 'px';
 
       
-      if(!isMobile()&& $(window).width() > 1000){
+      if(!isMobile() && $(window).width() > 1000){
         //调节左侧栏背景的最小高度
         if(height >  document.body.clientHeight){
           $(".doc-left").css("min-height",(height+60) + 'px');
@@ -228,7 +275,7 @@ function iFrameHeight() { 
       });
     });
   }
-    
+
 })
 
 
