@@ -1,12 +1,10 @@
 <?php
 return array(
     //'配置项'=>'配置值'
-    //使用sqlite数据库（ShowDoc默认）
+    //使用sqlite数据库
     'DB_TYPE'   => 'Sqlite', 
     'DB_NAME'   => 'Sqlite/showdoc.db.php', 
-    //使用mysql数据库
-    //'DB_TYPE'   => 'mysql', 
-    //'DB_NAME'   => 'showdoc',
+    //showdoc不再支持mysql http://www.showdoc.cc/help?page_id=31990
     'DB_HOST'   => 'localhost',
     'DB_USER'   => 'showdoc', 
     'DB_PWD'    => 'showdoc123456',

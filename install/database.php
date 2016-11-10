@@ -189,7 +189,7 @@ if (!$go) {
     install();
     return false;
   });
-
+  //showdoc不再支持mysql，所以不再让用户选择数据库，而是直接跳过去.
   install();
 
  });
