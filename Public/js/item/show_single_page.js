@@ -78,7 +78,7 @@ $(function(){
 
     $("table thead tr").css({"background-color":"#08c","color":"#fff"});
     $("table tr").each(function(){
-    if($(this).find("td").eq(1).html()=="object")
+    if($(this).find("td").eq(1).html()=="object" || $(this).find("td").eq(1).html()=="array[object]")
     {
       $(this).css({"background-color":"#99CC99","color":"#000"});
     }
