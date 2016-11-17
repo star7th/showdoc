@@ -188,7 +188,10 @@ $(function() {
 $("#beautify-json-dialog .editormd-enter-btn").click(function(){
   var data = $("#beautify-json-dialog .jsons").val();
       try{
-          var text="\n ``` \n \{ \n"+dump(JSON.parse(data))+" \} \n\n ```\n\n";//整体加个大括号
+          data = data.replace(/(^\s*)|(\s*$)/g,"");
+          op1 = data.substr(0, 1) == "[" ? "[":"{";
+          op2 = (op1 == "[") ? "]":"}";
+          var text="\n ``` \n "+op1+" \n"+dump(JSON.parse(data))+" "+op2+" \n\n ```\n\n";//整体加个大括号
           //$("#beautify-json-dialog .jsons").val(text);
           $("#beautify-json-dialog .jsons").val("");
           editormd.insertValue(text);
