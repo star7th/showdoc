@@ -84,6 +84,10 @@ function output_word($data,$fileName=''){
 			{  
 				border: solid #CCC 1px;  
 			}  
+			.codestyle{
+				word-break: break-all;
+				background:silver;mso-highlight:silver;
+			}
 		</style>
         <meta name=ProgId content=Word.Document>
         <meta name=Generator content="Microsoft Word 11">
@@ -93,7 +97,7 @@ function output_word($data,$fileName=''){
     
     $filepath = tmpfile();
 	$data = str_replace("<thead>\n<tr>","<thead><tr style='background-color: rgb(0, 136, 204); color: rgb(255, 255, 255);'>",$data);
-	$data = str_replace("<pre><code>","<table width='100%' style='background:silver;mso-highlight:silver'><pre><code>",$data);
+	$data = str_replace("<pre><code>","<table width='100%' class='codestyle'><pre><code>",$data);
 	$data = str_replace("</code></pre>","</code></pre></table>",$data);
     $len = strlen($data);
     fwrite($filepath, $data);
