@@ -286,7 +286,7 @@ function dump(arr,level) {
 		$(".editormd-preview-container table thead tr").css({"background-color":"#08c","color":"#fff"});
     $(".editormd-preview-container table tr").eq(0).css({"background-color":"#08c","color":"#fff"});
 		$(".editormd-preview-container table tr").each(function(){
-			if($(this).find("td").eq(1).html()=="object")
+			if($(this).find("td").eq(1).html()=="object" || $(this).find("td").eq(1).html()=="array[object]")
 			{
 				$(this).css({"background-color":"#99CC99","color":"#000"});
 			}

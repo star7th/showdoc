@@ -73,6 +73,22 @@ function output_word($data,$fileName=''){
         xmlns="http://www.w3.org/TR/REC-html40">
         <head><meta http-equiv=Content-Type content="text/html;  
         charset=utf-8">
+		<style type="text/css">
+			table  
+			{  
+				border-collapse: collapse;
+				border: none;  
+				width: 100%;  
+			}  
+			td  
+			{  
+				border: solid #CCC 1px;  
+			}  
+			.codestyle{
+				word-break: break-all;
+				background:silver;mso-highlight:silver;
+			}
+		</style>
         <meta name=ProgId content=Word.Document>
         <meta name=Generator content="Microsoft Word 11">
         <meta name=Originator content="Microsoft Word 11">
@@ -80,6 +96,9 @@ function output_word($data,$fileName=''){
         <body>'.$data.'</body></html>';
     
     $filepath = tmpfile();
+	$data = str_replace("<thead>\n<tr>","<thead><tr style='background-color: rgb(0, 136, 204); color: rgb(255, 255, 255);'>",$data);
+	$data = str_replace("<pre><code>","<table width='100%' class='codestyle'><pre><code>",$data);
+	$data = str_replace("</code></pre>","</code></pre></table>",$data);
     $len = strlen($data);
     fwrite($filepath, $data);
     header("Content-type: application/octet-stream");
