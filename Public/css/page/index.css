@@ -24,11 +24,13 @@ li{
 
 #page_md_content{
 	padding-top:10px;
+	word-break: break-all;
 }
 
 .hljs{
 	padding:0.2em;
 }
+
 
 #page_title{
     text-align: left;
