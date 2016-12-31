@@ -95,7 +95,7 @@ return array(
 EOD;
         $ret = file_put_contents("../Application/Common/Conf/config.php", $config);
         if ($ret) {
-        	file_put_contents("./install.lock","http://www.showdoc.cc/");
+        	file_put_contents("./install.lock","https://www.showdoc.cc/");
             ajax_out(L("install_success"));
         }else{
             ajax_out(L("install_config_not_writable"),10001);

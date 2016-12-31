@@ -8,7 +8,7 @@ class UpdateController extends BaseController {
         $this->_clear_runtime();
     	if (strtolower(C("DB_TYPE")) == 'mysql' ) {
     		//$this->mysql();
-            echo 'ShowDoc does not support mysql any more . http://www.showdoc.cc/help?page_id=31990 ';
+            echo 'ShowDoc does not support mysql any more . https://www.showdoc.cc/help?page_id=31990 ';
     	}
         elseif (strtolower(C("DB_TYPE")) == 'sqlite' ) {
             $this->sqlite();

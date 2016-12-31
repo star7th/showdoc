@@ -11,7 +11,7 @@ return array(
   "db_password"=>' Database Password',
   "sqlite_tips"=>'Sqlite has supported by PHP and you just need to click the Go buttun',
   "go"=>'Go',
-  "install_success_help"=>'Installation success!Please delete the /install directory, avoid the script to be executed again.<br><a href="http://www.showdoc.cc/help-en" target="_blank">http://www.showdoc.cc/help-en</a>',
+  "install_success_help"=>'Installation success!Please delete the /install directory, avoid the script to be executed again.<br><a href="https://www.showdoc.cc/help-en" target="_blank">https://www.showdoc.cc/help-en</a>',
   "home"=>'Website Home',
   "FAQ"=>'FAQ',
 

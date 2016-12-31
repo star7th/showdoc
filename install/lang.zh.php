@@ -11,7 +11,7 @@ return array(
   "db_password"=>'数据库密码',
   "sqlite_tips"=>'PHP内置支持Sqlite数据库，你无须再配置数据库，直接点击开始即可',
   "go"=>'开始',
-  "install_success_help"=>'安装成功！建议删除/install目录，以免安装脚本被再次执行。若再遇到问题，可参考ShowDoc帮助文档：<a href="http://www.showdoc.cc/help" target="_blank">http://www.showdoc.cc/help</a>',
+  "install_success_help"=>'安装成功！建议删除/install目录，以免安装脚本被再次执行。若再遇到问题，可参考ShowDoc帮助文档：<a href="https://www.showdoc.cc/help" target="_blank">https://www.showdoc.cc/help</a>',
   "home"=>'进入网站首页',
   "FAQ"=>'常见问题',
 
