@@ -1,4 +1,4 @@
-﻿## 中文版教程：https://www.showdoc.cc/help
+﻿## 中文版教程：https://www.showdoc.cc/help 
 
 ### What is ShowDoc ?
 
