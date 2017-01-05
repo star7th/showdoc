@@ -134,8 +134,7 @@ class ItemController extends BaseController {
         $current_page_id = I("page_id/d");
         //判断个性域名
         if ($item_domain) {
-            $item_domain = \SQLite3::escapeString($item_domain) ;
-            $item = D("Item")->where("item_domain = '$item_domain' ")->find();
+            $item = D("Item")->where("item_domain = '%s'",array($item_domain))->find();
             if ($item['item_id']) {
                 $item_id = $item['item_id'] ;
             }
