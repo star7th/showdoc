@@ -142,6 +142,14 @@ class UpdateController extends BaseController {
             }
         }
 
+        //创建options表
+        $sql = "CREATE TABLE IF NOT EXISTS `options` (
+        `option_id`  INTEGER PRIMARY KEY ,
+        `option_name` CHAR(200) NOT NULL UNIQUE ,
+        `option_value` CHAR(200) NOT NULL 
+        )";
+        D("UserToken")->execute($sql);
+
 
         echo 'OK!';
     }
