@@ -56,7 +56,7 @@ class ItemController extends BaseController {
             $item_type = I("item_type");
 
             if ($item_domain) {
-                $item = D("Item")->where("item_domain = '$item_domain' and item_id !='$item_id' ")->find();
+                $item = D("Item")->where("item_domain = '%s' and item_id !='%s' ",array($item_domain,$item_id))->find();
                 if ($item) {
                     //个性域名已经存在
                     $this->message(L('domain_already_exists'));
