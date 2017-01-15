@@ -83,7 +83,7 @@ class ItemController extends BaseController {
                 }
                 return ;
             }
-                        if ($item_id > 0 ) {
+            if ($item_id > 0 ) {
                 $data = array(
                     "item_name" => $item_name ,
                     "item_domain" => $item_domain ,
@@ -433,5 +433,13 @@ class ItemController extends BaseController {
         $this->sendResult($items);
     }
 
+    public function setting(){
+        $login_user = $this->checkLogin();
+        $item_id = I("item_id/d");  
+        $uid = $login_user['uid'] ;
+        $this->checkItemPermn($uid , $item_id) ; 
+        $this->assign("item_id",$item_id);
+        $this->display();
+    }
 
 }

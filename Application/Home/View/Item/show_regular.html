@@ -1,6 +1,5 @@
 <include file="Common/header" />
-<link rel="stylesheet" href="__PUBLIC__/css/item/show.css?1.1d.1thdddef" />
-
+<link rel="stylesheet" href="__PUBLIC__/css/item/show.css?1.1d.1thdddefg" />
 
 <div class="doc-head row" >
   <div class="left "><h2>{$item.item_name}</h2></div>
@@ -20,10 +19,7 @@
              <li><a href="{:U('Home/Item/word',array('item_id'=>$item['item_id']))}">{$Think.Lang.export}</a></li>
 
              <if condition="$ItemCreator">
-              <li><a href="{:U('Home/Item/add',array('item_id'=>$item['item_id']))}">{$Think.Lang.update_info}</a></li>          
-              <li><a href="{:U('Home/Member/edit',array('item_id'=>$item['item_id']))}">{$Think.Lang.manage_members}</a></li>
-              <li><a href="{:U('Home/Attorn/index',array('item_id'=>$item['item_id']))}">{$Think.Lang.attorn}</a></li>
-              <li><a href="{:U('Home/Item/delete',array('item_id'=>$item['item_id']))}">{$Think.Lang.delete}</a></li>
+              <li><a href="{:U('Home/Item/setting',array('item_id'=>$item['item_id']))}">项目设置</a></li>          
             </if>
 
             <li><a href="{:U('Home/Item/index')}">{$Think.Lang.goback}</a></li>
@@ -116,10 +112,22 @@
       <div class='page-edit-link pull-right hide'>
         <ul class="inline">
           <if condition="$ItemPermn">
-            <li><a href="" id="share-page" title="{$Think.Lang.share_address_to_your_friends}">{$Think.Lang.share}</a></li>
-            <li><a href="" id="copy-link" title="{$Think.Lang.copy_interface_to_new}">{$Think.Lang.copy}</a></li>
-            <li><a href="" id="edit-link" title="{$Think.Lang.edit_interface}">{$Think.Lang.edit}</a></li>
-            <li><a href="" title="{$Think.Lang.delete_interface}" onclick="return confirm('{$Think.Lang.comfirm_delete}');return false;" id="delete-link">{$Think.Lang.delete}</a></li>
+            <li><a class="btn btn-link" href="" id="share-page" title="{$Think.Lang.share_address_to_your_friends}">{$Think.Lang.share}</a></li>
+                  <li><a class="btn btn-link" href="" id="edit-link" title="{$Think.Lang.edit_interface}">{$Think.Lang.edit}</a></li>
+            <li>
+              <div class="btn-group">
+                  <a class="btn btn-link dropdown-toggle" data-toggle="dropdown" href="#">
+                    更多              <span class="caret"></span>
+                  </a>
+                <ul class="dropdown-menu">
+                <!-- dropdown menu links -->
+                  <li><a href="" id="copy-link" title="{$Think.Lang.copy_interface_to_new}">{$Think.Lang.copy}</a></li>
+
+                  <li><a href="" title="{$Think.Lang.delete_interface}" onclick="return confirm('{$Think.Lang.comfirm_delete}');return false;" id="delete-link">{$Think.Lang.delete}</a></li>
+
+                </ul>
+              </div>
+            </li>
           <else />
             <li></li>
             <li></li>
@@ -173,4 +181,4 @@
 <script src="__PUBLIC__/js/jquery.hotkeys.js"></script>
 <script src="__PUBLIC__/jquery.zclip/jquery.zclip.js"></script>
 
-<script src="__PUBLIC__/js/item/show.js?v=1.2121"></script>
+<script src="__PUBLIC__/js/item/show.js?v=1.21212345678"></script>

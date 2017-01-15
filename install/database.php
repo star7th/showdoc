@@ -32,6 +32,12 @@ if(!new_is_writeable("../Application/Runtime")){
   echo L("not_writable_runtime").'<br>';
   $go = 0;
 }
+
+if(!new_is_writeable("../server/Application/Runtime")){
+  echo L("not_writable_server_runtime").'<br>';
+  $go = 0;
+}
+
 if(!new_is_writeable("../Application/Common/Conf/config.php")){
   echo L("not_writable_config").'<br>';
   $go = 0;

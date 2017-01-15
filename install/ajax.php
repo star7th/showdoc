@@ -22,6 +22,10 @@ if(!new_is_writeable("../Application/Runtime")){
 	ajax_out(L("not_writable_runtime"),10095);
 }
 
+if(!new_is_writeable("../server/Application/Runtime")){
+    ajax_out(L("not_writable_server_runtime"),10095);
+}
+
 if(!new_is_writeable("../Application/Common/Conf/config.php")){
 	ajax_out(L("not_writable_config"),10094);
 }
