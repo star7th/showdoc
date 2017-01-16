@@ -25,6 +25,10 @@ class UserTokenModel extends BaseModel {
 	}
 
 	public function getToken($token){
-		return $this->where("token='$token'")->find();
+		return $this->where("token='%s'",array($token))->find();
+	}
+
+	public function setLastTime($token){
+		return $this->where("token='%s'",array($token))->save(array("last_check_time"=>time()));
 	}
 }

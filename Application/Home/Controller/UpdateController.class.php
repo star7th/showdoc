@@ -8,7 +8,7 @@ class UpdateController extends BaseController {
         $this->_clear_runtime();
     	if (strtolower(C("DB_TYPE")) == 'mysql' ) {
     		//$this->mysql();
-            echo 'ShowDoc does not support mysql any more . http://www.showdoc.cc/help?page_id=31990 ';
+            echo 'ShowDoc does not support mysql any more . https://www.showdoc.cc/help?page_id=31990 ';
     	}
         elseif (strtolower(C("DB_TYPE")) == 'sqlite' ) {
             $this->sqlite();
@@ -141,6 +141,26 @@ class UpdateController extends BaseController {
                 D("Item")->execute($sql);
             }
         }
+
+        //创建options表
+        $sql = "CREATE TABLE IF NOT EXISTS `options` (
+        `option_id`  INTEGER PRIMARY KEY ,
+        `option_name` CHAR(200) NOT NULL UNIQUE ,
+        `option_value` CHAR(200) NOT NULL 
+        )";
+        D("UserToken")->execute($sql);
+
+        //创建item_token表
+        $sql = "CREATE TABLE IF NOT EXISTS `item_token` (
+        `id`  INTEGER PRIMARY KEY ,
+        `item_id` int(11) NOT NULL DEFAULT '0' ,
+        `api_key` CHAR(200) NOT NULL UNIQUE ,
+        `api_token` CHAR(200) NOT NULL ,
+        `addtime` int(11) NOT NULL DEFAULT '0' ,
+        `last_check_time` int(11) NOT NULL DEFAULT '0' 
+        )";
+        D("UserToken")->execute($sql);
+
 
 
         echo 'OK!';

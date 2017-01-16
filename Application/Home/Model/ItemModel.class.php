@@ -46,7 +46,7 @@ class ItemModel extends BaseModel {
         unset($json);
         if ($item) {
             if ($item['item_domain']) {
-                $item2 = D("Item")->where("item_domain = '$item[item_domain]'  ")->find();
+                $item2 = D("Item")->where("item_domain = '%s'  ".array($item['item_domain']))->find();
                 if ($item2) {
                     //个性域名已经存在
                     return false;

@@ -139,7 +139,12 @@
   .doc-right{ width: 1600px;} 
 }
 
-
+.page-edit-link .btn-link{
+  padding-right: 4px;
+  padding-left: 4px;
+  margin-right: 0px;
+  margin-left: 0px;
+}
 
 
 

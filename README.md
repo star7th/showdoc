@@ -1,4 +1,4 @@
-﻿## 中文版教程：http://www.showdoc.cc/help
+﻿## 中文版教程：https://www.showdoc.cc/help 
 
 ### What is ShowDoc ?
 
@@ -12,15 +12,15 @@ ShowDoc is a tool greatly applicable for an IT team to share documents online. I
 
 ### What can it be used for?
 
-- #### API Document （ [Demo](http://www.showdoc.cc/demo-en)）
+- #### API Document （ [Demo](https://www.showdoc.cc/demo-en)）
  
  With the development of mobile Internet, BaaS (Backend as a Service) becomes more and more popular. The Server end provides API, and the APP end or Webpage frontend can invoke data conveniently. Using ShowDoc can compile exquisite API documents in a very fast and convenient way.
 
-- #### Data Dictionary （ [Demo](http://www.showdoc.cc/demo-en)）
+- #### Data Dictionary （ [Demo](https://www.showdoc.cc/demo-en)）
  
  A good Data Dictionary can easily exhibit database structure to other people, such as definition of each field and the like.
 
-- #### Explanation Document （ [Demo](http://www.showdoc.cc/help-en)）
+- #### Explanation Document （ [Demo](https://www.showdoc.cc/help-en)）
  
  You can absolutely use ShowDoc to compile the explanation documents for some tools, as well as to compile some technical specifications explanation documents for the team to look up.
  
@@ -61,7 +61,7 @@ ShowDoc is a tool greatly applicable for an IT team to share documents online. I
 ### Deploy It to Your Own Server
  - ShowDoc Deploy Manual
   
-     Please refer to:[http://www.showdoc.cc/help-en?page_id=16975](http://www.showdoc.cc/help-en?page_id=16975)
+     Please refer to:[https://www.showdoc.cc/help-en?page_id=16975](https://www.showdoc.cc/help-en?page_id=16975)
   
 
 ### Copyright 
