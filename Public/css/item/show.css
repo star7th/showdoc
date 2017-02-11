@@ -146,28 +146,9 @@
   margin-left: 0px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.show_cut_title{
+  white-space:nowrap;
+  text-overflow:ellipsis; 
+  -o-text-overflow:ellipsis; 
+  overflow:hidden
+}

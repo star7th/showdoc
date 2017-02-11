@@ -1,5 +1,5 @@
 <include file="Common/header" />
-<link rel="stylesheet" href="__PUBLIC__/css/item/show.css?1.1d.1thdddefg" />
+<link rel="stylesheet" href="__PUBLIC__/css/item/show.css?1.1d.1thdddefgh" />
 
 <div class="doc-head row" >
   <div class="left "><h2>{$item.item_name}</h2></div>
@@ -64,7 +64,7 @@
         <foreach name="catalogs" item="catalog">
 
         
-          <li><a href="#"><i class="icon-chevron-right"></i>{$catalog.cat_name}</a>
+          <li><a class="show_cut_title" href="#" title="{$catalog.cat_name}"><i class="icon-chevron-right"></i>{$catalog.cat_name}</a>
             <ul class="child-ul nav-list hide">
               <!-- 二级目录的页面们 -->
               <foreach name="catalog.pages" item="catalog_page">
@@ -72,7 +72,7 @@
               </foreach>
               <!-- 二级目录的子目录们（三级目录） -->
                 <foreach name="catalog.catalogs" item="catalog3">   
-                  <li class="third-child-catalog"><a href="#"><i class="icon-chevron-right"></i>{$catalog3.cat_name}</a>
+                  <li class="third-child-catalog"><a <a class="show_cut_title" href="#" title="{$catalog3.cat_name}"><i class="icon-chevron-right"></i>{$catalog3.cat_name}</a>
                     <ul class="child-ul nav-list hide">
                       <!-- 二级目录的页面们 -->
                       <foreach name="catalog3.pages" item="catalog3_page">
