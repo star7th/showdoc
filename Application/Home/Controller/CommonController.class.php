@@ -13,4 +13,19 @@ class CommonController extends BaseController {
         $object->png($url, false, 3 , $size, 2);             
     }
 
+    public function checkForUpdate(){
+    	$option_data = D("Options")->where("option_name='version' ")->find();
+    	$post_data = array(
+    		"version" => $option_data['option_value'] ,
+    		);
+    	$version = $option_data['option_value'];
+        // TODO 此功能是留着检测更新用的。未完成。代码有空再写吧
+    	//$url = "https://www.showdoc.cc/";
+    	//$result = http_post($url , $post_data);
+    	//$version_num = str_replace("v", '', $num);
+    	//$result = version_compare($version_num, "2.1.5",'<');
+    	//echo $result;
+
+    }
+
 }

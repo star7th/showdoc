@@ -139,30 +139,16 @@
   .doc-right{ width: 1600px;} 
 }
 
+.page-edit-link .btn-link{
+  padding-right: 4px;
+  padding-left: 4px;
+  margin-right: 0px;
+  margin-left: 0px;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.show_cut_title{
+  white-space:nowrap;
+  text-overflow:ellipsis; 
+  -o-text-overflow:ellipsis; 
+  overflow:hidden
+}

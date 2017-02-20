@@ -22,6 +22,10 @@ if(!new_is_writeable("../Application/Runtime")){
 	ajax_out(L("not_writable_runtime"),10095);
 }
 
+if(!new_is_writeable("../server/Application/Runtime")){
+    ajax_out(L("not_writable_server_runtime"),10095);
+}
+
 if(!new_is_writeable("../Application/Common/Conf/config.php")){
 	ajax_out(L("not_writable_config"),10094);
 }
@@ -95,7 +99,7 @@ return array(
 EOD;
         $ret = file_put_contents("../Application/Common/Conf/config.php", $config);
         if ($ret) {
-        	file_put_contents("./install.lock","http://www.showdoc.cc/");
+        	file_put_contents("./install.lock","https://www.showdoc.cc/");
             ajax_out(L("install_success"));
         }else{
             ajax_out(L("install_config_not_writable"),10001);

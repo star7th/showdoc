@@ -11,7 +11,7 @@ class BaseController extends Controller {
 
 	public function checkLogin($redirect = true){
     	if (strtolower(C("DB_TYPE")) == 'mysql' ) {
-            echo 'ShowDoc does not support mysql any more . http://www.showdoc.cc/help?page_id=31990 ';
+            echo 'ShowDoc does not support mysql any more . https://www.showdoc.cc/help?page_id=31990 ';
             clear_runtime();
             exit();
     	}

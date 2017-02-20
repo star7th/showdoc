@@ -23,7 +23,7 @@
               <input type="radio" name="item_type" id="item_type2" value="2" <?php if($item['item_type'] == 2 )echo 'checked'?>>
               单页项目
               &nbsp;
-              <a href="http://www.showdoc.cc/page/65391" target="_blank"><i class="icon-question-sign"></i></a>
+              <a href="https://www.showdoc.cc/page/65391" target="_blank"><i class="icon-question-sign"></i></a>
 
             </label>
         </div>
@@ -31,7 +31,7 @@
 
         <input type="text" class="input-block-level" id="item_name" name="item_name" placeholder="{$Think.Lang.item_name}" autocomplete="off" value="{$item.item_name}" >
         <input type="text" class="input-block-level" id="item_description" name="item_description" placeholder="{$Think.Lang.item_description}" autocomplete="off" value="{$item.item_description}">
-        <input type="text" class="input-block-level"  name="item_domain" placeholder="{$Think.Lang.item_domain}" autocomplete="off" value="{$item.item_domain}" >
+        <input type="text" style="display:none" class="input-block-level"  name="item_domain" placeholder="{$Think.Lang.item_domain}" autocomplete="off" value="{$item.item_domain}" >
         <input style="display:none"><!-- for disable autocomplete on chrome -->
         <input style="display:none"><!-- for disable autocomplete on chrome -->
         <input type="text" onfocus="this.type='password'" id="password" class="input-block-level" name="password" placeholder="{$Think.Lang.visit_password_placeholder}" title="{$Think.Lang.visit_password_placeholder}" autocomplete="off" value="{$item.password}">

@@ -32,6 +32,12 @@ if(!new_is_writeable("../Application/Runtime")){
   echo L("not_writable_runtime").'<br>';
   $go = 0;
 }
+
+if(!new_is_writeable("../server/Application/Runtime")){
+  echo L("not_writable_server_runtime").'<br>';
+  $go = 0;
+}
+
 if(!new_is_writeable("../Application/Common/Conf/config.php")){
   echo L("not_writable_config").'<br>';
   $go = 0;
@@ -128,7 +134,7 @@ if (!$go) {
         <br>
         <div>
         	 <button class="btn btn-large btn-primary " id="start" type="submit"><?php echo L("go");?>&nbsp;&nbsp;<i class="icon-circle-arrow-right"></i></button>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.showdoc.cc/help?page_id=16118" target="_blank"><?php echo L("FAQ");?></a>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.showdoc.cc/help?page_id=16118" target="_blank"><?php echo L("FAQ");?></a>
         </div>
       </form>
 
