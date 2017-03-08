@@ -3,12 +3,11 @@ namespace Home\Controller;
 use Think\Controller;
 class IndexController extends BaseController {
     public function index(){
-
-        if(!file_exists('./Application/Common/Conf/config.php')){
+        $tmp = @file_get_contents('./Application/Common/Conf/config.php');
+        if (strstr($tmp, "showdoc not install")) {
             header("location:./install");
             exit();
         }
-
     	$this->checkLogin(false);
     	$login_user = session("login_user");
     	$this->assign("login_user" ,$login_user);

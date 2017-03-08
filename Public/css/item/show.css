@@ -152,3 +152,8 @@
   -o-text-overflow:ellipsis; 
   overflow:hidden
 }
+
+.left-dropdown-menu{
+  left: auto;
+   right: 0;
+}

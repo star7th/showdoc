@@ -50,8 +50,7 @@ class UserController extends BaseController {
 			if ($cookie_token) {
 				$ret = D("UserToken")->getToken($cookie_token);
 				if ($ret && $ret['token_expire'] > time() ) {
-					$login_user = D("User")->where("uid = $ret[uid]")->find();
-					unset($ret['password']);
+					$login_user = D("User")->where(['uid' => $ret['uid']])->field('password', true)->find();
 					session("login_user" , $login_user);
 					$this->message(L('auto_login_succeeded'),U('Home/Item/index'));
 					exit();
