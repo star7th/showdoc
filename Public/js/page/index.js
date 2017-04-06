@@ -17,12 +17,12 @@ $(function(){
         $(this).prop('outerHTML', '<div style="width: 100%;overflow-x: auto;">'+$(this).prop('outerHTML')+'</div>');
     });
 
-      //不含本机域名的超链接都在新窗口打开
+      //不是本项目的超链接都在新窗口打开
     $('a[href^="http"]').each(function() {
           $(this).attr('target', '_blank');
           $(this).click(function(){
             var target_url = $(this).attr("href") ;
-            if (target_url.indexOf(window.location.host) > -1 ){
+            if (target_url.indexOf(window.top.location.host + window.top.location.pathname) > -1 ){
                 window.top.location.href = target_url;
                 return false;
             }
@@ -30,7 +30,7 @@ $(function(){
           });
 
     });
-    
+
     if (!isMobile()) {
       $("th").css("min-width","77px");
     };
