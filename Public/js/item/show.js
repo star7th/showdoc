@@ -19,6 +19,10 @@ $(function(){
         if ($(this).parent('.child-ul')) {
             $(this).parent('.child-ul').show();
             $(this).parent('.child-ul').parent('li').children("a").children('i').attr("class","icon-chevron-down");
+            if($(this).parent('.child-ul').parent().parent('.child-ul')){
+              $(this).parent('.child-ul').parent().parent('.child-ul').show(); 
+              $(this).parent('.child-ul').parent().parent('.child-ul').parent('li').children("a").children('i').attr("class","icon-chevron-down"); 
+            }
         };
           if (page_id != '' && page_id !='#') {
               change_page(page_id)
