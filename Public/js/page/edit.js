@@ -344,28 +344,29 @@ function Change(data)
 //{"Result":[{"name":"test1","list":{"pros":"prosfsf","ppps":{"images":[{"22":"22"}]}}}]}
 
 $("#save-to-templ").click(function(){
-  var template_title =prompt(lang["save_templ_title"],"");
-  if (template_title!=null && template_title!="")
-    {
-        var template_content = $("#page_content").val();
-        $.post(
-            "?s=home/template/save",
-            {"template_title":template_title,"template_content":template_content},
-            function(data){
-                if (data.error_code == 0) {
-                  alert(lang["saved_templ_msg1"]+template_title+lang["saved_templ_msg2"]);
-                } else {
-                  $.bootstrapGrowl(lang["save_fail"]);
+      layer.prompt({title: lang["save_templ_title"]}, function(template_title, index){
+      if (template_title!=null && template_title!="")
+        {
+            var template_content = $("#page_content").val();
+            $.post(
+                "?s=home/template/save",
+                {"template_title":template_title,"template_content":template_content},
+                function(data){
+                    if (data.error_code == 0) {
+                      layer.close(index);
+                      layer.alert(lang["saved_templ_msg1"]+template_title+lang["saved_templ_msg2"]);
+                    } else {
+                      $.bootstrapGrowl(lang["save_fail"]);
 
-                }
-           },
-            "json"
-            );
-    }
-    $("#save-btn-group").removeClass("open");
-    return false;
+                    }
+               },
+                "json"
+                );
+        }
+        $("#save-btn-group").removeClass("open");
+        return false;
+      });
   });
-
 
 $("#more-templ").click(function(){
         $.post(
@@ -383,12 +384,13 @@ $("#more-templ").click(function(){
                         html +='</TR>';
                     };
                     $("#templ-table").html(html);
+                    $("#more-templ-modal").modal();
                 } else {
                   //$.bootstrapGrowl("获取模板列表失败");
-                  $("#templ-table").html(lang["no_templ_msg"]);
+                  $("#more-templ-modal").modal("hide");
+                  layer.alert(lang["no_templ_msg"]);
 
                 }
-                $("#more-templ-modal").modal();
            },
             "json"
             );
