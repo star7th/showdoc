@@ -24,11 +24,8 @@
             <ul class="dropdown-menu">
             <!-- dropdown menu links -->
                <li><a href="{:U('Home/Item/word',array('item_id'=>$item['item_id']))}">{$Think.Lang.export}</a></li>
-               <if condition="$ItemCreator">
-                <li><a href="{:U('Home/Item/add',array('item_id'=>$item['item_id']))}">{$Think.Lang.update_info}</a></li>          
-                <li><a href="{:U('Home/Member/edit',array('item_id'=>$item['item_id']))}">{$Think.Lang.manage_members}</a></li>
-                <li><a href="{:U('Home/Attorn/index',array('item_id'=>$item['item_id']))}">{$Think.Lang.attorn}</a></li>
-                <li><a href="{:U('Home/Item/delete',array('item_id'=>$item['item_id']))}">{$Think.Lang.delete}</a></li>
+             <if condition="$ItemCreator">
+                <li><a href="{:U('Home/Item/setting',array('item_id'=>$item['item_id']))}">项目设置</a></li>          
               </if>
               <li><a href="{:U('Home/Item/index')}" >{$Think.Lang.goback}</a></li>
             </ul>
