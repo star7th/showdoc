@@ -157,7 +157,7 @@ $(function(){
 
       $("#qr-page-link").attr("src","?s=home/common/qrcode&size=3&url="+cur_page_url);
       $("#qr-single-link").attr("src","?s=home/common/qrcode&size=3&url="+single_page_url);
-
+      $(".show_page_info").data("page_id",page_id);
       var html = '<iframe id="page-content" width="100%" scrolling="yes"  height="100%" frameborder="0" style=" overflow:visible; height:100%;" name="main"  seamless ="seamless"src="'+iframe_url+'"></iframe>';
       $(".iframe_content").html(html);
       iFrameHeight();
@@ -280,6 +280,21 @@ function iFrameHeight() { 
     });
   }
 
+  $(".show_page_info").click(function(){
+    var page_id =  $(this).data("page_id") ;
+    $.post(
+      DocConfig.server+"/api/page/info",
+      {page_id,page_id},
+      function(data){
+        var html = "<p>最后编辑时间："+data.data.addtime+"</p><p>编辑人："+data.data.author_username+"</p>";
+         layer.alert(html);
+      },
+      "json"
+
+      );
+    return false;
+  });
+  
 })
 
 
