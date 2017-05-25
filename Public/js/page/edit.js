@@ -434,3 +434,65 @@ $("#add-page-comments").click(function(){
     $("#save-btn-group").removeClass("open");
     return false;
 });
+
+/** 粘贴上传图片 **/
+document.getElementById("editormd").addEventListener('paste', function(e) {
+    var clipboard = e.clipboardData;
+    for(var i=0,len=clipboard.items.length; i<len; i++) {
+        if(clipboard.items[i].kind == 'file' || clipboard.items[i].type.indexOf('image') > -1) {
+            var imageFile = clipboard.items[i].getAsFile();
+            var form = new FormData;
+            form.append('t', 'ajax-uploadpic');
+            form.append('editormd-image-file', imageFile);
+            var layer_index = {};
+            var callback = function(type, data){
+                type = type || 'before';
+                var $the = $('#content');
+                switch(type){
+                    // 开始上传
+                    case 'before':
+                       layer_index = layer.load(1, {
+                        shade: [0.1,'#fff'] //0.1透明度的白色背景
+                      });
+                        break;
+                    // 服务器返回错误
+                    case 'error':
+                        $the.attr('disabled', false);
+                        layer.close(layer_index);
+                        layer.alert('图片上传失败');
+                        break;
+                    // 上传成功
+                    case 'success':
+                        $the.attr('disabled', false);
+                        layer.close(layer_index);
+                        if (data.success == 1 ) {
+                            var value = '![]('+data.url+')';
+                           editormd.insertValue(value); 
+                        }else{
+                          layer.alert(data.message);
+                        }
+                        
+                        break;
+                }
+            };
+            $.ajax({
+                url: "?s=home/page/uploadImg",
+                type: "POST",
+                dataType: "json",
+                data: form,
+                processData: false,
+                contentType: false,
+                beforeSend: function() {
+                    callback('before');
+                },
+                error: function() {
+                    callback('error');
+                },
+                success: function(data) {
+                    callback('success', data);
+                }
+            })
+            e.preventDefault();
+        }
+    }
+});
