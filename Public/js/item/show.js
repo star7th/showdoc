@@ -284,7 +284,7 @@ function iFrameHeight() { 
     var page_id =  $(this).data("page_id") ;
     $.post(
       DocConfig.server+"/api/page/info",
-      {page_id,page_id},
+      {"page_id":page_id},
       function(data){
         var html = "<p>最后编辑时间："+data.data.addtime+"</p><p>编辑人："+data.data.author_username+"</p>";
          layer.alert(html);
