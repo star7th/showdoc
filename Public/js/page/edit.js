@@ -391,34 +391,6 @@ $(function() {
 
   });
 
-  //使用模板
-  function use_template(id) {
-    for (var i = 0; i < template_list.length; i++) {
-      if (id > 0 && id == template_list[i]['id']) {
-        editormd.insertValue(template_list[i]['template_content']);
-        $("#more-templ-modal").modal("hide");
-      };
-
-    };
-  }
-
-  //删除模板
-  function delete_template(id) {
-    $.post(
-      "?s=home/template/delete", {
-        "id": id
-      },
-      function(data) {
-        if (data.error_code == 0) {
-          $("#more-templ").click();
-        } else {
-          $.bootstrapGrowl(lang["save_fail"]);
-        }
-      },
-      "json"
-    );
-  }
-
   $("#add-page-comments").click(function() {
     var page_comments = prompt(lang["add_page_comments_msg"], "");
     if (page_comments != null && page_comments != "") {
@@ -498,3 +470,31 @@ $(function() {
 
   
 });
+
+  //使用模板
+  function use_template(id) {
+    for (var i = 0; i < template_list.length; i++) {
+      if (id > 0 && id == template_list[i]['id']) {
+        editormd.insertValue(template_list[i]['template_content']);
+        $("#more-templ-modal").modal("hide");
+      };
+
+    };
+  }
+
+  //删除模板
+  function delete_template(id) {
+    $.post(
+      "?s=home/template/delete", {
+        "id": id
+      },
+      function(data) {
+        if (data.error_code == 0) {
+          $("#more-templ").click();
+        } else {
+          $.bootstrapGrowl(lang["save_fail"]);
+        }
+      },
+      "json"
+    );
+  }
