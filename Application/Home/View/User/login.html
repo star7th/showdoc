@@ -8,7 +8,7 @@
         <input type="text" class="input-block-level"  name="username" placeholder="{$Think.Lang.username}">
         <input type="password" class="input-block-level" name="password" placeholder="{$Think.Lang.password}">
         <if  condition="$CloseVerify != 1">
-        <input type="text" class="input-block-level"  name="v_code" placeholder="{$Think.Lang.verification_code}">
+        <input type="text" class="input-block-level"  autocomplete="off" name="v_code" placeholder="{$Think.Lang.verification_code}">
         <div class="control-group">
           <div class="controls">
             <img src="#" id="v_code_img">
