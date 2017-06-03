@@ -169,8 +169,13 @@ class PageController extends BaseController {
                D("PageHistory")->where(" page_id = '$page_id' and page_history_id < ".$ret[19]['page_history_id'] )->delete();
             }
 
-            //更新项目时间
-            D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));
+            //如果是单页项目，则将页面标题设置为项目名
+            $item_array = D("Item")->where(" item_id = '$item_id' ")->find();
+            if ($item_array['item_type'] == 2 ) {
+                D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time(),"item_name"=>$page_title));
+            }else{
+                D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));
+            }
 
             $return = D("Page")->where(" page_id = '$page_id' ")->find();
         }else{
@@ -239,6 +244,9 @@ class PageController extends BaseController {
     //上传图片
     public function uploadImg(){
         $qiniu_config = C('UPLOAD_SITEIMG_QINIU') ;
+        if ($_FILES['editormd-image-file']['name'] == 'blob') {
+            $_FILES['editormd-image-file']['name'] .= '.jpg';
+        }
         if (!empty($qiniu_config['driverConfig']['secrectKey'])) {
           //上传到七牛
           $Upload = new \Think\Upload(C('UPLOAD_SITEIMG_QINIU'));

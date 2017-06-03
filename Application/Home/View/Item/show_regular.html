@@ -111,8 +111,8 @@
       <!-- 编辑栏 -->
       <div class='page-edit-link pull-right hide'>
         <ul class="inline">
-          <if condition="$ItemPermn">
             <li><a class="btn btn-link" href="" id="share-page" title="{$Think.Lang.share_address_to_your_friends}">{$Think.Lang.share}</a></li>
+          <if condition="$ItemPermn">
                   <li><a class="btn btn-link" href="" id="edit-link" title="{$Think.Lang.edit_interface}">{$Think.Lang.edit}</a></li>
             <li>
               <div class="btn-group">
@@ -122,15 +122,14 @@
                 <ul class="dropdown-menu left-dropdown-menu">
                 <!-- dropdown menu links -->
                   <li><a href="" id="copy-link" title="{$Think.Lang.copy_interface_to_new}">{$Think.Lang.copy}</a></li>
-
+                  <li><a href="" data-page_id= "0" class="show_page_info" title="详情">详情</a></li>
                   <li><a href="" title="{$Think.Lang.delete_interface}" onclick="return confirm('{$Think.Lang.comfirm_delete}');return false;" id="delete-link">{$Think.Lang.delete}</a></li>
 
                 </ul>
               </div>
             </li>
           <else />
-            <li></li>
-            <li></li>
+              <li><a href="" data-page_id= "0" class="show_page_info" title="详情">详情</a></li>
         </if>
         </ul>
       </div>
@@ -176,9 +175,11 @@
     </p>
   </div>
 </div>
+
+
 <script src="__PUBLIC__/js/jquery.bootstrap-growl.min.js"></script>
 <script src="__PUBLIC__/js/jquery.goup.min.js"></script>
 <script src="__PUBLIC__/js/jquery.hotkeys.js"></script>
 <script src="__PUBLIC__/jquery.zclip/jquery.zclip.js"></script>
 
-<script src="__PUBLIC__/js/item/show.js?v=1.21212345678901"></script>
+<script src="__PUBLIC__/js/item/show.js?v=1.212123456789012"></script>

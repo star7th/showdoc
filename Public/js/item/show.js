@@ -157,7 +157,7 @@ $(function(){
 
       $("#qr-page-link").attr("src","?s=home/common/qrcode&size=3&url="+cur_page_url);
       $("#qr-single-link").attr("src","?s=home/common/qrcode&size=3&url="+single_page_url);
-
+      $(".show_page_info").data("page_id",page_id);
       var html = '<iframe id="page-content" width="100%" scrolling="yes"  height="100%" frameborder="0" style=" overflow:visible; height:100%;" name="main"  seamless ="seamless"src="'+iframe_url+'"></iframe>';
       $(".iframe_content").html(html);
       iFrameHeight();
@@ -280,6 +280,43 @@ function iFrameHeight() { 
     });
   }
 
+  $(".show_page_info").click(function(){
+    var page_id =  $(this).data("page_id") ;
+    $.post(
+      DocConfig.server+"/api/page/info",
+      {"page_id":page_id},
+      function(data){
+        var html = "<p>最后编辑时间："+data.data.addtime+"</p><p>编辑人："+data.data.author_username+"</p>";
+         layer.alert(html);
+      },
+      "json"
+
+      );
+    return false;
+  });
+  
+  //监听来自iframe的消息。如果传递图片url过来则默认打开之
+  window.addEventListener('message', function(e){
+     var img_url =e.data;
+      var json = {
+          "title": "", //相册标题
+          "id": 123, //相册id
+          "start": 0, //初始显示的图片序号，默认0
+          "data": [   //相册包含的图片，数组格式
+              {
+                "alt": "",
+                "pid": 666, //图片id
+                "src": img_url, //原图地址
+                "thumb": img_url //缩略图地址
+              }
+            ]
+          }
+        layer.photos({
+          photos: json
+          ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+        });
+  }, false);
+  
 })
 
 

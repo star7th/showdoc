@@ -82,7 +82,7 @@ $(function(){
             secondCatList();
             //alert(lang["save_success"]);
           }else{
-            alert(lang["save_fail"]);
+            layer.alert(lang["save_fail"]);
           }
           getCatList();
         },
@@ -94,7 +94,7 @@ $(function(){
 
   //删除目录
   $("#delete-cat").click(function(){
-    if(confirm(lang["confirm_to_delete"])){
+    layer.confirm(lang["confirm_to_delete"],{},function(){
         var cat_id = $("#cat_id").val();
         if (cat_id > 0 ) {
             $.post(
@@ -106,9 +106,9 @@ $(function(){
                     window.location.href="?s=home/catalog/edit&item_id="+item_id;
                   }else{
                     if (data.error_message) {
-                      alert(data.error_message);
+                      layer.alert(data.error_message);
                     }else{
-                      alert(lang["delete_fail"]);
+                      layer.alert(lang["delete_fail"]);
                     }
                     
                   }
@@ -116,7 +116,7 @@ $(function(){
                 "json"
               );
         }
-    }
+      });
 
       return false;
   })
