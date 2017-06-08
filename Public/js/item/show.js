@@ -157,8 +157,8 @@ $(function(){
       var single_page_url = window.location.protocol +"//"+window.location.host+base_url+"/page/"+page_id;
       $("#share-single-link").html(single_page_url);
 
-      $("#qr-page-link").attr("src","?s=home/common/qrcode&size=3&url="+cur_page_url);
-      $("#qr-single-link").attr("src","?s=home/common/qrcode&size=3&url="+single_page_url);
+      $("#qr-page-link").attr("src","?s=home/common/qrcode&size=3&url="+encodeURIComponent(cur_page_url));
+      $("#qr-single-link").attr("src","?s=home/common/qrcode&size=3&url="+encodeURIComponent(single_page_url));
       $(".show_page_info").data("page_id",page_id);
       var html = '<iframe id="page-content" width="100%" scrolling="yes"  height="100%" frameborder="0" style=" overflow:visible; height:100%;" name="main"  seamless ="seamless"src="'+iframe_url+'"></iframe>';
       $(".iframe_content").html(html);
