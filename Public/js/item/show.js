@@ -24,9 +24,11 @@ $(function(){
               $(this).parent('.child-ul').parent().parent('.child-ul').parent('li').children("a").children('i').attr("class","icon-chevron-down"); 
             }
         };
-          if (page_id != '' && page_id !='#') {
-              change_page(page_id)
-          };
+        page_title = $(this).children("a")[0].innerText;
+        document.title = page_title + " - ShowDoc";
+        if (page_id != '' && page_id !='#') {
+            change_page(page_id)
+        };
       };
     })
   }
