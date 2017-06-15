@@ -299,7 +299,11 @@ function iFrameHeight() { 
   
   //监听来自iframe的消息。如果传递图片url过来则默认打开之
   window.addEventListener('message', function(e){
-     var img_url =e.data;
+      if(e.origin != window.location.origin) return;
+      if (e.data.meessage_type != 'img_url') {
+        return ;
+      }
+     var img_url =e.data.img_url;
       var json = {
           "title": "", //相册标题
           "id": 123, //相册id
@@ -318,8 +322,6 @@ function iFrameHeight() { 
           ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
         });
   }, false);
-  
-})
 
 
 
