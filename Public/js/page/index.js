@@ -70,7 +70,8 @@ $(function(){
 
       }else{
         //如果在iframe里，则直接传url给父窗口
-        top.postMessage(img_url, '*');
+        var message ={"img_url":img_url,"meessage_type":"img_url"};
+        top.postMessage(message, window.location.origin);
       }
 
     });
