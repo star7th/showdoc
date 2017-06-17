@@ -1,0 +1,20 @@
+server:
+  build: .
+#  extends:
+#    file: ../base-service.yml
+#    service: common
+#  command: cfrun /startApp.sh
+#  privileged: true
+#  net: host
+  ports:
+    - 4999:80
+# environment:
+#   - test=true
+  volumes:
+#    - /var/www/html/Public/Uploads
+#    - /var/www/html/Application/Common/Conf
+#    - /var/www/html/Application/Home/Conf
+#    - /var/www/html/Application/Runtime
+#    - /var/www/html/server/Application/Runtime 
+#    - /var/www/html/install 
+    - /data/volumes/showdocdb:/var/www/html/Sqlite
