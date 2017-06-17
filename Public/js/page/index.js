@@ -32,7 +32,7 @@ $(function(){
     });
 
     if (!isMobile()) {
-      $("th").css("min-width","77px");
+      $("th").css({"min-width":"36px","white-space":"nowrap"});
     };
 
     $("table thead tr").css({"background-color":"#08c","color":"#fff"});

@@ -22,7 +22,7 @@ $(function() {
     $(this).attr('target', '_blank');
   });
   if (!isMobile()) {
-    $("th").css("min-width", "77px");
+    $("th").css({"min-width":"36px","white-space":"nowrap"});
   };
 
   //lightbox
