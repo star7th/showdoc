@@ -8,13 +8,13 @@ server:
 #  net: host
   ports:
     - 4999:80
-# environment:
-#   - test=true
+#  environment:
+#    - CONTEXT_PATH=/showdoc
   volumes:
-#    - /var/www/html/Public/Uploads
-#    - /var/www/html/Application/Common/Conf
-#    - /var/www/html/Application/Home/Conf
-#    - /var/www/html/Application/Runtime
-#    - /var/www/html/server/Application/Runtime 
-#    - /var/www/html/install 
-    - /data/volumes/showdocdb:/var/www/html/Sqlite
+    - /data/volumes/showdocdb:/showdoc/Sqlite
+#    - /showdoc/Public/Uploads
+#    - /showdoc/Application/Common/Conf
+#    - /showdoc/Application/Home/Conf
+#    - /showdoc/Application/Runtime
+#    - /showdoc/server/Application/Runtime 
+#    - /showdoc/install 

@@ -11,10 +11,11 @@ trubo=libjpeg62-turbo-dev && \
     && docker-php-ext-install -j$(nproc) gd mcrypt  && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY ./ /var/www/html/
+COPY ./ /showdoc/
 
 RUN \
-cd /var/www/html/  && \
+rm -rf /var/www/html && ln -s /showdoc /var/www/html && \
+cd /showdoc/  && \
 cp ./Sqlite/showdoc.db.php ./showdoc.db.php && \
 chown www-data install && \
 chown -R www-data  Sqlite  Public/Uploads  Application/Runtime  server/Application/Runtime \
@@ -22,8 +23,8 @@ chown -R www-data  Sqlite  Public/Uploads  Application/Runtime  server/Applicati
  ln -s $(pwd)/startApp.sh /usr/bin/startApp.sh && \
  chmod -R  700  composer.json docker-compose.yml Dockerfile startApp.sh 
 
-VOLUME [ "/var/www/html/Sqlite","/var/www/html/install","/var/www/html/Public/Uploads" \
-	,"/var/www/html/Application/Runtime","/var/www/html/server/Application/Runtime" \
-       ,"/var/www/html/Application/Common/Conf","/var/www/html/Application/Home/Conf" ]
+VOLUME [ "/showdoc/Sqlite","/showdoc/install","/showdoc/Public/Uploads" \
+	,"/showdoc/Application/Runtime","/showdoc/server/Application/Runtime" \
+       ,"/showdoc/Application/Common/Conf","/showdoc/Application/Home/Conf" ]
 
 CMD ["startApp.sh"]
