@@ -270,7 +270,26 @@ class ItemController extends BaseController {
         }else{
             $this->sendError(10101);
         }
-
-
     }
+
+    //置顶项目
+    public function top(){
+        $login_user = $this->checkLogin();
+
+        $item_id = I("item_id/d");
+        $action = I("action");
+
+        if ($action == 'top') {
+            $ret = D("ItemTop")->add(array("item_id"=>$item_id,"uid"=>$login_user['uid'],"addtime"=>time()));
+        }
+        elseif ($action == 'cancel') {
+            $ret = D("ItemTop")->where(" uid = '$login_user[uid]' and item_id = '$item_id' ")->delete();
+        }
+        if ($ret) {
+            $this->sendResult(array());
+        }else{
+            $this->sendError(10101);
+        }
+    }
+    
 }

@@ -161,6 +161,14 @@ class UpdateController extends BaseController {
         )";
         D("UserToken")->execute($sql);
 
+        //创建item_top表
+        $sql = "CREATE TABLE IF NOT EXISTS `item_top` (
+        `id`  INTEGER PRIMARY KEY ,
+        `item_id` int(11) NOT NULL DEFAULT '0' ,
+        `uid` int(11) NOT NULL DEFAULT '0' ,
+        `addtime` int(11) NOT NULL DEFAULT '0' 
+        )";
+        D("UserToken")->execute($sql);
 
 
         echo 'OK!';

@@ -1,5 +1,5 @@
 <include file="Common/header" />
-<link rel="stylesheet" href="__PUBLIC__/css/item/index.css?v=1.2" />
+<link rel="stylesheet" href="__PUBLIC__/css/item/index.css?v=1.234" />
     <div class="container-narrow">
 
       <div class="masthead">
@@ -30,14 +30,23 @@
 
         <foreach name="items" item="item">
           <li class="span3 text-center">
-            <a class="thumbnail" href="{:U('Home/Item/show',array('item_id'=>$item['item_id']))}" title="{$item.item_description}">
+            <a class="thumbnail item-thumbnail" href="{:U('Home/Item/show',array('item_id'=>$item['item_id']))}" title="{$item.item_description}">
+              <span class="item-setting" data-src="{:U('/home/item/setting',array('item_id'=>$item[item_id]))}"  title="项目设置">
+                <i class="icon-wrench" ></i>
+              </span>
+
+              <if condition="$item['top']">
+                  <span class="item-top" data-action="cancel" data-item_id="{$item.item_id}" title="取消置顶"><i class="icon-arrow-down" ></i></span>
+              <else />
+                  <span class="item-top" data-action="top" data-item_id="{$item.item_id}" title="置顶项目"><i class="icon-arrow-up"  ></i></span>
+              </if>
               <p class="my-item">{$item.item_name}</p>
             </a>
           </li>     
         </foreach>
 
         <li class="span3 text-center">
-          <a class="thumbnail" href="{:U('Home/Item/add')}" title="{$Think.Lang.add_an_item}添加一个新项目">
+          <a class="thumbnail " href="{:U('Home/Item/add')}" title="{$Think.Lang.add_an_item}添加一个新项目">
             <p class="my-item ">{$Think.Lang.new_item}&nbsp;<i class="icon-plus"></i></p>
           </a>
         </li>
@@ -61,7 +70,4 @@
 
 
  <include file="Common/footer" />
- <script type="text/javascript">
-
-
- </script>
+ <script src="__PUBLIC__/js/item/index.js?v=1"></script>
