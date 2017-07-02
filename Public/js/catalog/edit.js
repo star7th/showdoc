@@ -13,13 +13,22 @@ $(function(){
         "?s=home/catalog/catList",
         { "item_id": item_id },
         function(data){
-          $("#show-cat").html('');
+          $("#show-second-cat").html('');
+          $("#show-third-cat").html('');
           if (data.error_code == 0) {
             json = data.data;
             console.log(json);
             for (var i = 0; i < json.length; i++) {
-                cat_html ='<a class="badge badge-info single-cat " href="?s=home/catalog/edit&cat_id='+json[i].cat_id+'&item_id='+json[i].item_id+'">'+json[i].cat_name+'&nbsp;<i class="icon-edit"></i></a>';
-                $("#show-cat").append(cat_html);
+                if (json[i].level == 2  ) {
+                  cat_html ='<a class="badge badge-info single-cat " href="?s=home/catalog/edit&cat_id='+json[i].cat_id+'&item_id='+json[i].item_id+'">'+json[i].cat_name+'&nbsp;<i class="icon-edit"></i></a>';
+                  $("#show-second-cat").append(cat_html);
+                };
+
+                if (json[i].level == 3  ) {
+                  cat_html ='<a class="badge badge-info single-cat " href="?s=home/catalog/edit&cat_id='+json[i].cat_id+'&item_id='+json[i].item_id+'">'+json[i].cat_name+'&nbsp;<i class="icon-edit"></i></a>';
+                  $("#show-third-cat").append(cat_html);
+                };
+
             };
 
 
