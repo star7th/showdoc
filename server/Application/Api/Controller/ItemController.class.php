@@ -132,7 +132,35 @@ class ItemController extends BaseController {
 
         $this->sendResult($return);
     }
+    //归档项目
+    public function archive(){
+        $login_user = $this->checkLogin();
 
+        $item_id = I("item_id/d");
+        $password = I("password");
+
+        $item  = D("Item")->where("item_id = '$item_id' ")->find();
+
+        if(!$this->checkItemCreator($login_user['uid'] , $item['item_id'])){
+            $this->sendError(10303);
+            return ;
+        }
+
+        if(! D("User")-> checkLogin($item['username'],$password)){
+            $this->sendError(10208);
+            return ;
+        }
+
+        $return = D("Item")->where("item_id = '$item_id' ")->save(array("is_archived"=>1));
+
+        if (!$return) {
+            $this->sendError(10101);
+        }else{
+            $this->sendResult($return);
+        }
+
+        
+    }
     public function getKey(){
         $login_user = $this->checkLogin();
 

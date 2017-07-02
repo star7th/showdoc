@@ -92,7 +92,7 @@
       <!-- 新建栏 -->
       <div class="doc-left-newbar">
 
-        <if condition="$ItemPermn">
+        <if condition="$ItemPermn && !$item['is_archived']">
           <div><a href="{:U('Home/Page/edit',array('item_id'=>$item['item_id'],'type'=>'new'))}" id="new-like"><i class="icon-plus"></i>&nbsp;{$Think.Lang.new_page}</a></div>
           <div><a href="{:U('Home/Catalog/edit',array('item_id'=>$item['item_id']))}" id="dir-like" ><i class="icon-folder-open"></i>{$Think.Lang.new_catalog}</a></div>
 
@@ -112,7 +112,7 @@
       <div class='page-edit-link pull-right hide'>
         <ul class="inline">
             <li><a class="btn btn-link" href="" id="share-page" title="{$Think.Lang.share_address_to_your_friends}">{$Think.Lang.share}</a></li>
-          <if condition="$ItemPermn">
+          <if condition="$ItemPermn && !$item['is_archived']">
                   <li><a class="btn btn-link" href="" id="edit-link" title="{$Think.Lang.edit_interface}">{$Think.Lang.edit}</a></li>
             <li>
               <div class="btn-group">
