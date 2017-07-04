@@ -14,7 +14,9 @@
         <li><a href="#" id="share">分享</a></li> 
         <if condition="$ItemPermn">
 
-        <li><a href="?s=/home/page/edit/page_id/{$page.page_id}">编辑</a></li>
+            <if condition="!$item['is_archived']">
+                <li><a href="?s=/home/page/edit/page_id/{$page.page_id}">编辑</a></li>
+              </if>
         <li>
             <div class="btn-group ">
               <a class="btn btn-link dropdown-toggle" data-toggle="dropdown" href="#">
