@@ -34,10 +34,11 @@ docker cp star7th-showdoc:${SHOWDOC_HOME}/Sqlite ${backup_dir}
 #!/bin/bash
 set -e
 
+SHOWDOC_VERSION=1.5.1
 SHOWDOC_HOME="/var/www/html"
 
 container_name="star7th-showdoc"
-backup_file_prefix=`date +%s_%Y_%m_%d_1.5.2_showdoc_backup`
+backup_file_prefix=`date +%s_%Y_%m_%d_${SHOWDOC_VERSION}_showdoc_backup`
 backup_filename="${backup_file_prefix}.tar"
 
 backup_dir="~/showdoc"
