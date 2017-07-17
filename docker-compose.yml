@@ -1,0 +1,9 @@
+version: '2'
+
+services:
+  showdoc:
+    container_name: star7th-showdoc
+    restart: always
+    image: star7th/showdoc:1.5.1
+    ports:
+    - "4999:80"
