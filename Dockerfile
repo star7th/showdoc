@@ -1,7 +1,7 @@
 FROM php:5.6-apache
 MAINTAINER xing7th@gmail.com
 
-ENV SHOWDOC_VERSION=1.5.2 \
+ENV SHOWDOC_VERSION=1.5.1 \
     SHOWDOC_HOME="/var/www/html"
 
 COPY ./ ${SHOWDOC_HOME}
