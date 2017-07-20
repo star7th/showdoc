@@ -42,7 +42,7 @@ return array(
     'section_title7' => 'Hosted online',
     'section_description7' => 'Www.showdoc.cc provide security and stability of the document hosting service',
     'section_title8' => 'Try it now',
-    'section_description8' => 'Over 2000+ IT team is using ShowDoc',
+    'section_description8' => 'Over 6000+ IT team is using ShowDoc',
 
 
     //Common message

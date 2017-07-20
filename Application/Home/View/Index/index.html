@@ -42,63 +42,65 @@
 
 <div id="dowebok">
     <div class="section">
-        <img src="__PUBLIC__/logo/b_64.png" alt="">
-        <h1>{$Think.lang.section_title1}</h1>
-        <br>
-        <p>{$Think.lang.section_description1}</p>
-        <br>
-        <p>
-            <a class="btn   btn-large " href="{$demo_url}" target="_blank">{$Think.lang.demo}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a class="btn  btn-large" href="{$help_url}" target="_blank" >{$Think.lang.help}&nbsp;</i></a>
-        </p>
-    </div>
-    <div class="section">
-        <h1>{$Think.lang.section_title2}</h1>
-        <br>
-        <p> {$Think.lang.section_description2}</p>
-        <br>
-    </div>
-    <div class="section">
-        <h1>{$Think.lang.section_title3}</h1>
-        <br>
-        <p>{$Think.lang.section_description3}</p>
-        <br>
-    </div>
-    <div class="section">
-        <h1>{$Think.lang.section_title4}</h1>
-        <br>
-        <p>{$Think.lang.section_description4}</p>
-        <br>
-    </div>
+        <div class="slide">
+            <img src="__PUBLIC__/logo/b_64.png" alt="">
+            <h1>{$Think.lang.section_title1}</h1>
+            <br>
+            <p>{$Think.lang.section_description1}</p>
+            <br>
+            <p>
+                <a class="btn   btn-large " href="{$demo_url}" target="_blank">{$Think.lang.demo}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a class="btn  btn-large" href="{$help_url}" target="_blank" >{$Think.lang.help}&nbsp;</i></a>
+            </p>
+        </div>
+        <div class="slide">
+            <h1>{$Think.lang.section_title2}</h1>
+            <br>
+            <p> {$Think.lang.section_description2}</p>
+            <br>
+        </div>
+        <div class="slide">
+            <h1>{$Think.lang.section_title3}</h1>
+            <br>
+            <p>{$Think.lang.section_description3}</p>
+            <br>
+        </div>
+        <div class="slide">
+            <h1>{$Think.lang.section_title4}</h1>
+            <br>
+            <p>{$Think.lang.section_description4}</p>
+            <br>
+        </div>
 
-    <div class="section">
-        <h1>{$Think.lang.section_title5}</h1>
-        <br>
-        <p>{$Think.lang.section_description5}</p>
-        <br>
-    </div>
+        <div class="slide">
+            <h1>{$Think.lang.section_title5}</h1>
+            <br>
+            <p>{$Think.lang.section_description5}</p>
+            <br>
+        </div>
 
-    <div class="section">
-        <h1>{$Think.lang.section_title6}</h1>
-        <br>
-        <p>{$Think.lang.section_description6}</p>
-        <br>
-    </div>
+        <div class="slide">
+            <h1>{$Think.lang.section_title6}</h1>
+            <br>
+            <p>{$Think.lang.section_description6}</p>
+            <br>
+        </div>
 
-    <div class="section">
-        <h1>{$Think.lang.section_title7}</h1>
-        <br>
-        <p>{$Think.lang.section_description7}</p>
-        <br>
-    </div>
-    <div class="section">
-        <h1></h1>
-        <br>
-        <p>{$Think.lang.section_description8}</p>
-        <br>
-        <p>
-            <a class="btn   btn-large " href="{:U('Home/User/register')}">{$Think.lang.section_title8}</a>
-        </p>
+        <div class="slide">
+            <h1>{$Think.lang.section_title7}</h1>
+            <br>
+            <p>{$Think.lang.section_description7}</p>
+            <br>
+        </div>
+        <div class="slide">
+            <h1></h1>
+            <br>
+            <p>{$Think.lang.section_description8}</p>
+            <br>
+            <p>
+                <a class="btn   btn-large " href="{:U('Home/User/register')}">{$Think.lang.section_title8}</a>
+            </p>
+        </div>
     </div>
 </div>
  <include file="Common/footer" />
@@ -107,7 +109,7 @@
 $(function(){
     $('#dowebok').fullpage({
         sectionsColor : ['#1bbc9b', '#4BBFC3', '#2C606A', '#f90','#7CBD9D','#A77DC2','#85CE92','#1bbc9b'],
-        navigation:true,
+        navigation:false,
     });
 
     $(window).resize(function(){

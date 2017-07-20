@@ -40,9 +40,9 @@ return array(
     'section_title6' => '免费开源',
     'section_description6' => 'ShowDoc提供免费开源的版本<br>你可以选择将ShowDoc部署到你的服务器',
     'section_title7' => '在线托管',
-    'section_description7' => 'www.showdoc.cc 提供安全稳定的在线文档托管服务<br>你可以放心地选择托管你的文档数据在云端',
+    'section_description7' => '<a href="https://www.showdoc.cc" target="_blank">www.showdoc.cc</a> 提供安全稳定的在线文档托管服务<br>你可以放心地选择托管你的文档数据在云端',
     'section_title8' => '立即体验',
-    'section_description8' => '超过2000+互联网团队正在使用ShowDoc',
+    'section_description8' => '超过6000+互联网团队正在使用ShowDoc',
 
 
     //Common message

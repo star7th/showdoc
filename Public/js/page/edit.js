@@ -112,6 +112,7 @@ $(function() {
     tex: true, // 默认不解析
     flowChart: true, // 默认不解析
     sequenceDiagram: true, // 默认不解析
+    htmlDecode : "style,script,iframe|on*",//解析html
     imageUpload: true,
     imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp", "JPG", "JPEG", "GIF", "PNG", "BMP", "WEBP"],
     imageUploadURL: "?s=home/page/uploadImg",
