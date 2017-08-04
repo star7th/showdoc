@@ -220,7 +220,11 @@ $(function() {
           dumped_text += dump(value, level + 1);
           dumped_text += level_padding + "\}";
         } else {
-          dumped_text += level_padding + "\"" + item + "\" : \"" + value + "\"";
+          if (typeof(value) == "number") {
+            dumped_text += level_padding + "\"" + item + "\" : " + value ;
+          }else{
+            dumped_text += level_padding + "\"" + item + "\" : \"" + value + "\"";
+          }
         }
         if (i < Object.getOwnPropertyNames(arr).length - 1) {
           dumped_text += ", \n";
