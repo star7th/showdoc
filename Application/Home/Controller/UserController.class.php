@@ -22,7 +22,7 @@ class UserController extends BaseController {
 						if ($ret) {
 					      $this->message(L('register_succeeded'),U('Home/User/login'));					    
 						}else{
-						  $this->message(L('username_or_password_incorrect'));
+						  $this->message('register fail');
 						}
 			  		}else{
 			  			$this->message(L('username_exists'));
