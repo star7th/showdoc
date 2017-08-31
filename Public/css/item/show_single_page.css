@@ -67,3 +67,7 @@ body{
 .tool-bar .btn-link{
   padding: 0px;
 }
+.linenums li {
+    list-style-type: none;
+    line-height: 20px;
+}
