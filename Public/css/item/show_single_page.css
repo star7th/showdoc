@@ -71,3 +71,13 @@ body{
     list-style-type: none;
     line-height: 20px;
 }
+
+.markdown-body pre {
+    background-color: #fcfcfc;
+    border: 1px solid #e1e1e8;
+}
+
+.hljs{
+  padding:0.2em;
+  background-color: #fcfcfc;
+}
