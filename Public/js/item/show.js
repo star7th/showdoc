@@ -289,7 +289,7 @@ function iFrameHeight() { 
       {"page_id":page_id},
       function(data){
         var html = "<p>最后编辑时间："+data.data.addtime+"</p><p>编辑人："+data.data.author_username+"</p>";
-         layer.alert(html);
+         $.alert(html);
       },
       "json"
 
@@ -317,7 +317,7 @@ function iFrameHeight() { 
               }
             ]
           }
-        layer.photos({
+        $.photos({
           photos: json
           ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
         });

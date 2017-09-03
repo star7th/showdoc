@@ -26,7 +26,7 @@ $(function(){
             $("#item_domain").val(data.data.item_domain);
             $("#password").val(data.data.password);
           }else{
-            layer.alert(data.error_message);
+            $.alert(data.error_message);
           }
         },
         "json"
@@ -46,10 +46,10 @@ $(function(){
         {"item_id":item_id,"item_name":item_name,"item_description":item_description,"item_domain":item_domain,"password":password},
         function(data){
           if (data.error_code === 0 ) {
-            layer.msg('保存成功',{"time":1000});
+            $.msg('保存成功',{"time":1000});
             get_base_info() ;
           }else{
-            layer.alert(data.error_message);
+            $.alert(data.error_message);
           }
         },
         "json"
@@ -74,14 +74,14 @@ $(function(){
         {"username": username ,"item_id": item_id , "password": password  },
         function(data){
           if (data.error_code == 0) {
-            layer.msg('转让成功，正在跳转回主页..',{"time":3000});
+            $.msg('转让成功，正在跳转回主页..',{"time":3000});
             //跳转
             setTimeout(function(){
               window.location.href="?s=/home/item/index";
             },3000)
             
           }else{
-            layer.alert(data.error_message);
+            $.alert(data.error_message);
           }
         },
         "json"
@@ -105,14 +105,14 @@ $(function(){
         {"item_id": item_id , "password": password  },
         function(data){
           if (data.error_code == 0) {
-            layer.msg('删除成功，正在跳转回主页..',{"time":3000});
+            $.msg('删除成功，正在跳转回主页..',{"time":3000});
             //跳转
             setTimeout(function(){
               window.location.href="?s=/home/item/index";
             },3000)
             
           }else{
-            layer.alert(data.error_message);
+            $.alert(data.error_message);
           }
         },
         "json"
@@ -154,7 +154,7 @@ $(function(){
 
             };
           }else{
-            layer.alert(data.error_message);
+            $.alert(data.error_message);
           }
         },
         "json"
@@ -174,11 +174,11 @@ $(function(){
             $('#member-modal').modal('hide');
             $("#member_username").val('');
             $("#member_group_id").removeAttr("checked");
-            layer.msg('添加成功',{"time":1000});
+            $.msg('添加成功',{"time":1000});
             get_member_list();
             
           }else{
-            layer.alert(data.error_message);
+            $.alert(data.error_message);
           }
         },
         "json"
@@ -190,17 +190,17 @@ $(function(){
     //删除成员
     $("#member-list").on("click",'.member-delete',function(){
       var item_member_id = $(this).data("id");
-      layer.confirm("确定删除成员吗",{},function(){
+      $.confirm("确定删除成员吗",{},function(){
           $.post(
             DocConfig.server+"/api/member/delete",
             {"item_id": item_id , "item_member_id": item_member_id  },
             function(data){
               if (data.error_code == 0) {
-                layer.msg('删除成功',{"time":1000});
+                $.msg('删除成功',{"time":1000});
                 get_member_list();
                 
               }else{
-                layer.alert(data.error_message);
+                $.alert(data.error_message);
               }
             },
             "json"
@@ -225,10 +225,10 @@ $(function(){
         {"item_id": item_id , "password": password  },
         function(data){
           if (data.error_code == 0) {
-            layer.msg('归档成功',{"time":3000});
+            $.msg('归档成功',{"time":3000});
             $('#archive-item-modal').modal('hide');
           }else{
-            layer.alert(data.error_message);
+            $.alert(data.error_message);
           }
         },
         "json"
@@ -249,7 +249,7 @@ $(function(){
             $("#api_key").html(data.data.api_key);
             $("#api_token").html(data.data.api_token);
           }else{
-            layer.alert(data.error_message);
+            $.alert(data.error_message);
           }
         },
         "json"
@@ -267,7 +267,7 @@ $(function(){
             $("#api_key").html(data.data.api_key);
             $("#api_token").html(data.data.api_token);
           }else{
-            layer.alert(data.error_message);
+            $.alert(data.error_message);
           }
         },
         "json"

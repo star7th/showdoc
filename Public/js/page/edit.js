@@ -341,7 +341,7 @@ $(function() {
   //{"Result":[{"name":"test1","list":{"pros":"prosfsf","ppps":{"images":[{"22":"22"}]}}}]}
 
   $("#save-to-templ").click(function() {
-    layer.prompt({
+    $.prompt({
       title: lang["save_templ_title"]
     }, function(template_title, index) {
       if (template_title != null && template_title != "") {
@@ -353,8 +353,8 @@ $(function() {
           },
           function(data) {
             if (data.error_code == 0) {
-              layer.close(index);
-              layer.alert(lang["saved_templ_msg1"] + template_title + lang["saved_templ_msg2"]);
+              $.closeDialog(index);
+              $.alert(lang["saved_templ_msg1"] + template_title + lang["saved_templ_msg2"]);
             } else {
               $.bootstrapGrowl(lang["save_fail"]);
 
@@ -387,7 +387,7 @@ $(function() {
         } else {
           //$.bootstrapGrowl("获取模板列表失败");
           $("#more-templ-modal").modal("hide");
-          layer.alert(lang["no_templ_msg"]);
+          $.alert(lang["no_templ_msg"]);
 
         }
       },
@@ -429,18 +429,18 @@ $(function() {
               // 服务器返回错误
             case 'error':
               $the.attr('disabled', false);
-              layer.close(layer_index);
-              layer.alert('图片上传失败');
+              layer.closeDialog(layer_index);
+              $.alert('图片上传失败');
               break;
               // 上传成功
             case 'success':
               $the.attr('disabled', false);
-              layer.close(layer_index);
+              layer.closeDialog(layer_index);
               if (data.success == 1) {
                 var value = '![](' + data.url + ')';
                 editormd.insertValue(value);
               } else {
-                layer.alert(data.message);
+                $.alert(data.message);
               }
 
               break;

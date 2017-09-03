@@ -82,7 +82,7 @@ $(".export-submit").click(function(){
             var url = DocConfig.server+'/api/export/word_cat&item_id='+item_id+'&cat_id='+cat_id ;
             window.location.href = url;
         }else{
-            layer.alert("请选择要导出的目录");
+            $.alert("请选择要导出的目录");
         }
     }
 
