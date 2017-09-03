@@ -16,7 +16,7 @@
           <ul class="dropdown-menu left-dropdown-menu">
           <!-- dropdown menu links -->
             <li><a href="#" id="share">{$Think.Lang.share}</a></li>
-             <li><a href="{:U('Home/Item/word',array('item_id'=>$item['item_id']))}">{$Think.Lang.export}</a></li>
+             <li><a href="{:U('Home/Item/export',array('item_id'=>$item['item_id']))}">{$Think.Lang.export}</a></li>
 
              <if condition="$ItemCreator">
               <li><a href="{:U('Home/Item/setting',array('item_id'=>$item['item_id']))}">项目设置</a></li>          
