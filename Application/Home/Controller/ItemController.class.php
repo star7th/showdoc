@@ -356,10 +356,21 @@ class ItemController extends BaseController {
 
     //导出word
     public function export(){
-        $item_id = I("item_id/d");
-        $url = 'server/index.php?s=/api/export/word&item_id='.$item_id ;
-        header("location:{$url}");
-        //$this->display();
+        $login_user = $this->checkLogin();
+        $item_id = I("item_id/d");  
+        $uid = $login_user['uid'] ;
+        $this->checkItemPermn($uid , $item_id) ; 
+
+        $item = D("Item")->where("item_id = '$item_id' ")->find();
+
+        //对于单页项目，直接导出。对于普通项目，则让其选择目录
+        if ($item['item_type'] == 2 ) {
+            $url = 'server/index.php?s=/api/export/word&item_id='.$item_id ;
+            header("location:{$url}");
+        }else{
+            $this->assign("item_id",$item_id);
+            $this->display();
+        }
     }
 
     public function itemList(){

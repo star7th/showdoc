@@ -1,0 +1,57 @@
+<include file="Common/header" />
+<link rel="stylesheet" href="__PUBLIC__/css/login.css" />
+<style type="text/css">
+.choose_type{
+    margin-bottom: 30px;
+    text-align: center;
+}
+.inline{
+    display: inline;
+}
+</style>
+    <div class="container">
+
+      <form class="form-signin" method="post">
+        <input type="hidden" id="item_id" name="item_id" value="{$item_id}">
+        <div class="choose_type">
+            <label class="radio inline">
+              <input type="radio" name="item_type" id="item_type1" value="1" checked="checked">
+              导出全部
+            </label>
+            <label class="radio inline">
+              <input type="radio" name="item_type" id="item_type2" value="2" >
+              按目录导出
+            </label>
+        </div>
+
+
+        <div >
+            <label class="inline">二级目录：</label>
+            <select class="inline level_2_directory" disabled="disabled">
+                <option >  全部 </option>
+            </select>
+        </div>
+        <div >
+            <label class="inline">三级目录：</label>
+            <select class="inline level_3_directory" disabled="disabled">
+                <option>  全部 </option>
+            </select>
+        </div>
+        <!--  
+        <div >
+            <label class="inline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;页面：</label>
+            <select class="inline page" disabled="disabled">
+                <option>  全部 </option>
+            </select>
+        </div>
+        -->
+        <br>
+        <button class="btn  btn-primary export-submit" type="submit">{$Think.Lang.submit}</button>
+        <a href="javascript:history.go(-1)" class="btn">{$Think.Lang.goback}</a>
+      </form>
+
+    </div> <!-- /container -->
+
+
+ <include file="Common/footer" />
+<script src="__PUBLIC__/js/item/export.js"></script>
