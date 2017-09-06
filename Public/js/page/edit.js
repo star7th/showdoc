@@ -429,13 +429,13 @@ $(function() {
               // 服务器返回错误
             case 'error':
               $the.attr('disabled', false);
-              layer.closeDialog(layer_index);
+              $.closeDialog(layer_index);
               $.alert('图片上传失败');
               break;
               // 上传成功
             case 'success':
               $the.attr('disabled', false);
-              layer.closeDialog(layer_index);
+              $.closeDialog(layer_index);
               if (data.success == 1) {
                 var value = '![](' + data.url + ')';
                 editormd.insertValue(value);
