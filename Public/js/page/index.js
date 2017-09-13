@@ -4,7 +4,7 @@ $(function(){
     
     var EditormdView = editormd.markdownToHTML("page_md_content", {
       htmlDecode      : "style,script,iframe",  // you can filter tags decode
-      emoji           : true,
+      emoji           : false,
       taskList        : true,
       tex             : true,  // 默认不解析
       flowChart       : true,  // 默认不解析
