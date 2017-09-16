@@ -3,7 +3,7 @@
 
     <div class="container">
 
-      <form class="form-signin" method="post">
+      <form class="form-signin myform" method="post" action="server/index.php?s=api/user/register">
         <h3 class="form-signin-heading">{$Think.Lang.register_new_account}</h3>
         <input type="text" class="input-block-level" name="username" placeholder="{$Think.Lang.username_description}">
         <input type="password" class="input-block-level" name="password"  placeholder="{$Think.Lang.password}">
@@ -23,8 +23,8 @@
     </div> <!-- /container -->
 
 
- <include file="Common/footer" />
-
+<include file="Common/footer" />
+<script src="__PUBLIC__/js/jquery.form.min.js"></script>
  <script type="text/javascript">
  $(function(){
     $("#v_code_img").attr("src" , DocConfig.pubile+'/verifyCode.php');
@@ -32,6 +32,25 @@
       var v_code_img = $("#v_code_img").attr("src");
       $("#v_code_img").attr('src' ,v_code_img+'?'+Date.parse(new Date()) );
     }); 
+
+    //上传表单参数
+    var ajax_option = {
+      dataType:"json",
+      beforeSubmit:function(){
+
+      },
+      success:function(res){
+        if (res.error_code === 0) {
+          window.location.href = "?s=/home/item/index";
+        }else{
+          $.alert(res.error_message);
+          $("#v_code_img").click();
+        }
+      }
+    };
+
+    $('.myform').ajaxForm(ajax_option); 
+
  });
 
 </script>
