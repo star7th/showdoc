@@ -75,6 +75,9 @@ $(function(){
     $(".doc-left").css("width",'100%');
     $(".doc-left").css("height",'initial');
     $(".doc-left").css("min-height",'0px');
+    $(".doc-left").css("position",'static');
+    $(".doc-right").css("margin-top",'0px');
+    $(".doc-right").css("margin-left",'0px');
     $(".doc-right").removeClass("span12");
     $(".doc-head .right").hide();
     $(".page-edit-link").html('');
@@ -225,19 +228,7 @@ function iFrameHeight() { 
   ifr.onload = function() {
       var iDoc = ifr.contentDocument || ifr.document;
       var height = calcPageHeight(iDoc);
-      ifr.style.height = height + 'px';
-
-      
-      if(!isMobile() && $(window).width() > 1000){
-        //调节左侧栏背景的最小高度
-        if(height >  document.body.clientHeight){
-          $(".doc-left").css("min-height",(height+60) + 'px');
-        }else{
-          $(".doc-left").css("min-height",'100%');
-        }  
-      }
-
-      
+      ifr.style.height = height + 'px'; 
   }
  }
 
