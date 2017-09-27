@@ -25,6 +25,7 @@ $(function(){
             $("#item_description").val(data.data.item_description);
             $("#item_domain").val(data.data.item_domain);
             $("#password").val(data.data.password);
+            $("#password").attr('type','password');
           }else{
             $.alert(data.error_message);
           }
