@@ -3,8 +3,8 @@
 
     <div class="container">
 
-      <form class="form-signin myform" method="post" action="server/index.php?s=/api/user/login">
-        <h3 class="form-signin-heading">{$Think.Lang.login}</h3>
+      <form class="form-signin myform card" method="post" action="server/index.php?s=/api/user/login">
+        <h3 class="form-signin-heading heading">{$Think.Lang.login}</h3>
         <input type="text" class="input-block-level"  name="username" placeholder="{$Think.Lang.username}">
         <input type="password" class="input-block-level" name="password" placeholder="{$Think.Lang.password}">
         <if  condition="$CloseVerify != 1">
@@ -15,8 +15,11 @@
           </div>
         </div>
         </if>
-        <button class="btn btn-large btn-primary" type="submit">{$Think.Lang.login}</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="?s=/home/user/register">{$Think.Lang.no_account}</a>
+
+        <button class="btn btn-large btn-primary btn-block" type="submit">{$Think.Lang.login}</button>
+        <div class="form-group" style="text-align:center;margin-top:15px;">
+            <a href="?s=/home/user/register">{$Think.Lang.no_account}</a>
+        </div>
       </form>
 
     </div> <!-- /container -->

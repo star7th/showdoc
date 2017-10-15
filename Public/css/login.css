@@ -32,3 +32,21 @@ body {
 .container{
   margin-top: 5%;
 }
+
+.card{
+    width: 330px;
+    position  : absolute;
+    top       : 50%;
+    left      : 50%;
+    transform : translate(-50%,-50%);
+    padding-top: 30px;
+    padding-left: 45px;
+    padding-right: 45px;
+    padding-bottom: 30px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.heading{
+    text-align: center;
+    padding-bottom: 20px

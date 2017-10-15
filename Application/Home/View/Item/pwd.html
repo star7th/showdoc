@@ -2,8 +2,8 @@
 <link rel="stylesheet" href="__PUBLIC__/css/login.css" />
     <div class="container">
 
-            <form class="form-signin myform" method="post" action="server/index.php?s=/api/item/pwd">
-        <h3 class="form-signin-heading">{$Think.Lang.input_visit_password}</h3>
+            <form class="form-signin myform card" method="post" action="server/index.php?s=/api/item/pwd">
+        <h3 class="form-signin-heading heading">{$Think.Lang.input_visit_password}</h3>
         <input type="hidden" id="item_id" name="item_id" value="{$item_id}">
         <input type="password" class="input-block-level" name="password" placeholder="{$Think.Lang.password}">
         <input type="hidden"  name="refer_url" value="{$refer_url}">
@@ -15,9 +15,12 @@
           </div>
         </div>
         </if>
-        <button class="btn btn-large btn-primary" type="submit">{$Think.Lang.submit}</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('Home/User/login')}">{$Think.Lang.login_or_register}</a>      </form>
-
+        <button class="btn btn-large btn-primary btn-block" type="submit">{$Think.Lang.submit}</button>
+     
+        <div class="form-group" style="text-align:center;margin-top:15px;">
+            <a href="{:U('Home/User/login')}">{$Think.Lang.login_or_register}</a>
+        </div>
+         </form>
     </div> <!-- /container -->
 
 
