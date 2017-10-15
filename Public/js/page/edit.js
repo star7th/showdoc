@@ -269,6 +269,7 @@ $(function() {
       function(data) {
         if (data.error_code == 0) {
           $.bootstrapGrowl(lang["save_success"]);
+          localStorage.removeItem("page_content");
           window.location.href = "?s=home/item/show&page_id=" + data.data.page_id + "&item_id=" + item_id;
         } else {
           $.bootstrapGrowl(lang["save_fail"]);
@@ -472,6 +473,28 @@ $(function() {
   $("#editormd").on("mouseover", '[name=editormd-image-file]', function(){
     $(this).attr("accept","image/png,image/jpg,image/jpeg,imge/bmp,image/gif")
   });
+
+  //定时保存文本内容到localStorage
+  setInterval(function(){
+      localStorage.page_content= $("#page_content").val() ;
+  }, 60000);
+
+  //检测是否有定时保存的内容
+  if (localStorage.page_content && localStorage.page_content.length > 0) {
+    $.confirm("检测到有上次编辑时自动保存的草稿。是否自动填充上次的草稿内容？",
+      {},
+      function(){
+        editormd.clear();
+        editormd.insertValue(localStorage.page_content);
+        $.closeAll();
+        localStorage.removeItem("page_content");
+      },
+      function(){
+        localStorage.removeItem("page_content");
+      }
+
+    )
+  };
 
   
 });
