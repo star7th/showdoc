@@ -240,9 +240,7 @@ $(function() {
   }
 
   /*保存*/
-  var saving = false;
   $("#save").click(function() {
-    if (saving) return false;
     var page_id = $("#page_id").val();
     var item_id = $("#item_id").val();
     var page_title = $("#page_title").val();
@@ -255,7 +253,7 @@ $(function() {
     if (parent_cat_id > 0) {
       cat_id = parent_cat_id;
     };
-    saving = true;
+    $("#save").html('保存中...').attr('disabled','disabled');
     $.post(
       "?s=home/page/save", {
         "page_id": page_id,
@@ -268,14 +266,13 @@ $(function() {
       },
       function(data) {
         if (data.error_code == 0) {
-          $.bootstrapGrowl(lang["save_success"]);
           localStorage.removeItem("page_content");
           window.location.href = "?s=home/item/show&page_id=" + data.data.page_id + "&item_id=" + item_id;
         } else {
-          $.bootstrapGrowl(lang["save_fail"]);
+          $.alert(lang["save_fail"]);
+          $("#save").html('保存').removeAttr('disabled');
 
         }
-        saving = false;
       },
       'json'
     )
@@ -357,7 +354,7 @@ $(function() {
               $.closeDialog(index);
               $.alert(lang["saved_templ_msg1"] + template_title + lang["saved_templ_msg2"]);
             } else {
-              $.bootstrapGrowl(lang["save_fail"]);
+              $.alert(lang["save_fail"]);
 
             }
           },
@@ -386,7 +383,7 @@ $(function() {
           $("#templ-table").html(html);
           $("#more-templ-modal").modal();
         } else {
-          //$.bootstrapGrowl("获取模板列表失败");
+          //$.alert("获取模板列表失败");
           $("#more-templ-modal").modal("hide");
           $.alert(lang["no_templ_msg"]);
 
@@ -520,7 +517,7 @@ $(function() {
         if (data.error_code == 0) {
           $("#more-templ").click();
         } else {
-          $.bootstrapGrowl(lang["save_fail"]);
+          $.alert(lang["save_fail"]);
         }
       },
       "json"
