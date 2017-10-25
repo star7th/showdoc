@@ -2,10 +2,15 @@
     height: 100%;
   }
   .doc-head{
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     padding-left: 10px;
     border-bottom: 1px solid #eee;
+    position: fixed;
+    width: 100%;
+    background-color: #FFFFFF;
+    z-index: 999;
+    height: 40px;
   }
 
   .doc-head .left{
@@ -14,20 +19,24 @@
   }
 
   .doc-head .right{
-    padding-top: 15px;
+    padding-top: 10px;
     padding-right: 40px;
   }
   .doc-left{
     width: 240px;
-    position: relative;
-    padding-top: 10px;
-    min-height: 100%;
+    margin-top: 51px;
+    height: calc(100% - 60px);
     border-right-color: rgb(221, 221, 221);
     border-right-width: 1px;
     border-right-style: solid;
     overflow-y: auto;
     display: block;
-    background: rgb(245, 245, 245);
+    /*background: rgb(245, 245, 245);*/
+    position: fixed;
+  }
+  
+  .doc-left .form-search{
+    padding-top: 15px;
   }
 
   .doc-left ul li{
@@ -42,7 +51,10 @@
     text-shadow: 0 -1px 0 rgba(0,0,0,0.2);
     background-color: #08c;
   }
-
+  .doc-right{
+    margin-top: 81px;
+    margin-left: 260px;
+  }
   .child-ul{
       list-style: none;
       padding-left: 10px;
@@ -63,9 +75,9 @@
   }
 
   .doc-left-newbar{
-    float: right;
-    margin-right: 20px;
-    margin-top: 20px;
+    /*float: right;*/
+    margin-left: 180px;
+    margin-top: 10px;
   }
 
   .page-edit-link{

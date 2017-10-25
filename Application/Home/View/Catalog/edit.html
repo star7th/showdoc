@@ -4,12 +4,12 @@
   margin: 5px;
 }
 .cat-list{
-  max-height: 250px;
+  max-height: 300px;
 }
-.cat-content{
-    max-height: 195px;
-    overflow-y: auto;
-}
+.cat-content,.second-cat-content,.third-cat-content{
+     max-height: 95px;
+     overflow-y: auto;
+ }
 </style>
  <div id="edit-cat" class="modal hide fade">
   <!-- 编辑框 -->
@@ -52,13 +52,19 @@
   <!-- 目录列表 -->
   <div class="cat-list">
     <div class="modal-header">
-    <h4>{$Think.Lang.catalog_list}&nbsp;<small>({$Think.Lang.click_to_edit})</small></h4>
+    <!-- <h4>{$Think.Lang.catalog_list}&nbsp;</h4> -->
     </div>
-    <div id="show-cat" class="cat-content">
 
-    <br>
-    <br>
+    <div style="margin-left:10px;">
+      <h5>二级目录列表<small>({$Think.Lang.click_to_edit})</small></h5>
+      <div id="show-second-cat"  class="second-cat-content">
+      </div>
+      <h5>三级目录列表<small>({$Think.Lang.click_to_edit})</small></h5>
+      <div id="show-third-cat"  class="third-cat-content">
+      </div>
     </div>
+
+
   </div>
 
     <div class="modal-footer">
@@ -68,4 +74,4 @@
 
 <input type="hidden" id="default_parent_cat_id"  value="{$default_parent_cat_id}">
  <include file="Common/footer" />
- <script src="__PUBLIC__/js/catalog/edit.js?v=1.1.10thirde"></script>
+ <script src="__PUBLIC__/js/catalog/edit.js?v=1.1.10thirde1"></script>

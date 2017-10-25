@@ -4178,8 +4178,8 @@
     // 使用国外的CDN，加载速度有时会很慢，或者自定义URL
     // You can custom KaTeX load url.
     editormd.katexURL  = {
-        css : "//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min",
-        js  : "//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min"
+        css : "//cdn.staticfile.org/KaTeX/0.3.0/katex.min",
+        js  : "//cdn.staticfile.org/KaTeX/0.3.0/katex.min"
     };
     
     editormd.kaTeXLoaded = false;
@@ -4470,10 +4470,18 @@
         
         var eventType  = mouseEventType;
 
-        try {
-            document.createEvent("TouchEvent");
+        var userAgentInfo = navigator.userAgent;
+        var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
+        var flag = true;
+        for (var v = 0; v < Agents.length; v++) {
+            if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                flag = false;
+                break;
+            }
+        }
+        if(!flag){
             eventType = touchEventType;
-        } catch(e) {}
+        }
 
         return eventType;
     };

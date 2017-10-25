@@ -40,7 +40,7 @@ return array(
     'section_title6' => '免费开源',
     'section_description6' => 'ShowDoc提供免费开源的版本<br>你可以选择将ShowDoc部署到你的服务器',
     'section_title7' => '在线托管',
-    'section_description7' => '<a href="https://www.showdoc.cc" target="_blank">www.showdoc.cc</a> 提供安全稳定的在线文档托管服务<br>你可以放心地选择托管你的文档数据在云端',
+    'section_description7' => 'www.showdoc.cc 提供安全稳定的在线文档托管服务<br>你可以放心地选择托管你的文档数据在云端',
     'section_title8' => '立即体验',
     'section_description8' => '超过6000+互联网团队正在使用ShowDoc',
 
@@ -74,7 +74,6 @@ return array(
     'add_an_item'=>'添加一个新项目',
     'new_item'=>'新建项目',
     'share_my_home'=>'分享我的主页',
-    'feedback' => "反馈",
     'home_address'=>'主页地址',
     'home_address_description'=>'别人访问您的主页时，将可以看到您的所有公开项目（但没有新建项目等权限）。你可以复制地址给你的好友',
     //item/pwd
@@ -126,7 +125,7 @@ return array(
     'member_list'=>'成员列表',
     'click_to_delete'=>'点击可删除',
     'close'=>'关闭',
-    "member_group_id" => "只读(只能查看项目，不能修改/删除)",
+    "member_group_id" => "只读",
     
     //page
     'input_page_title'=>'请输入页面标题',

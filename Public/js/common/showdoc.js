@@ -108,3 +108,8 @@ function delCookie (NameOfCookie)
     stackup_spacing: 10 // spacing between consecutively stacked growls.
   });
  }
+
+//关闭Div
+function closeDiv(target) {
+	$(target).hide();
+}

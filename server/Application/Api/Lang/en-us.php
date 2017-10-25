@@ -74,7 +74,6 @@ return array(
     'add_an_item'=>'Add an item',
     'new_item'=>'New item',
     'share_my_home'=>'Share my home',
-    'feedback' => "feedback",
     'home_address'=>'Home address',
     'home_address_description'=>'The others will be able to see all of your public items When he visits your home page.You can copy the address to your friends.',
     //item/pwd

@@ -29,6 +29,7 @@ li{
 
 .hljs{
 	padding:0.2em;
+	background-color: #fcfcfc;
 }
 
 
@@ -37,4 +38,9 @@ li{
     border-bottom: 1px solid #d9d9d9;
     padding-top: 30px;
     padding-bottom: 20px
+}
+
+.markdown-body pre {
+	background-color: #fcfcfc;
+	border: 1px solid #e1e1e8;
 }

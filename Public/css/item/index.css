@@ -35,3 +35,17 @@ margin-top: 60px;
 .masthead h3{
   color: #333;
 }
+
+.item-setting{
+  float:right;
+  margin-right:15px;
+  margin-top:5px;
+  display: none;
+}
+
+.item-top{
+  float:right;
+  margin-right:5px;
+  margin-top:5px;
+  display: none;
+}

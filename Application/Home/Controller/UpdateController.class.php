@@ -161,6 +161,29 @@ class UpdateController extends BaseController {
         )";
         D("UserToken")->execute($sql);
 
+        //创建item_top表
+        $sql = "CREATE TABLE IF NOT EXISTS `item_top` (
+        `id`  INTEGER PRIMARY KEY ,
+        `item_id` int(11) NOT NULL DEFAULT '0' ,
+        `uid` int(11) NOT NULL DEFAULT '0' ,
+        `addtime` int(11) NOT NULL DEFAULT '0' 
+        )";
+        D("UserToken")->execute($sql);
+
+        //item表增加is_archived字段
+        $columns = M("Item")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'is_archived') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD is_archived INT( 1 ) NOT NULL DEFAULT '0'  ;";
+                D("Item")->execute($sql);
+            }
+        }
 
 
         echo 'OK!';

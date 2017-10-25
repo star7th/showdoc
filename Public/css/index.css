@@ -33,3 +33,6 @@ body {
 .marketing p + h4 {
   margin-top: 28px;
 }
+.markdown-body pre {
+  background-color: #f0f0f0;
+}

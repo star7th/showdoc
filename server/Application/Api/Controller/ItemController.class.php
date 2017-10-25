@@ -132,7 +132,35 @@ class ItemController extends BaseController {
 
         $this->sendResult($return);
     }
+    //归档项目
+    public function archive(){
+        $login_user = $this->checkLogin();
 
+        $item_id = I("item_id/d");
+        $password = I("password");
+
+        $item  = D("Item")->where("item_id = '$item_id' ")->find();
+
+        if(!$this->checkItemCreator($login_user['uid'] , $item['item_id'])){
+            $this->sendError(10303);
+            return ;
+        }
+
+        if(! D("User")-> checkLogin($item['username'],$password)){
+            $this->sendError(10208);
+            return ;
+        }
+
+        $return = D("Item")->where("item_id = '$item_id' ")->save(array("is_archived"=>1));
+
+        if (!$return) {
+            $this->sendError(10101);
+        }else{
+            $this->sendResult($return);
+        }
+
+        
+    }
     public function getKey(){
         $login_user = $this->checkLogin();
 
@@ -270,7 +298,59 @@ class ItemController extends BaseController {
         }else{
             $this->sendError(10101);
         }
+    }
 
+    //置顶项目
+    public function top(){
+        $login_user = $this->checkLogin();
+
+        $item_id = I("item_id/d");
+        $action = I("action");
+
+        if ($action == 'top') {
+            $ret = D("ItemTop")->add(array("item_id"=>$item_id,"uid"=>$login_user['uid'],"addtime"=>time()));
+        }
+        elseif ($action == 'cancel') {
+            $ret = D("ItemTop")->where(" uid = '$login_user[uid]' and item_id = '$item_id' ")->delete();
+        }
+        if ($ret) {
+            $this->sendResult(array());
+        }else{
+            $this->sendError(10101);
+        }
+    }
+    
+    //验证访问密码
+    public function pwd(){
+        $item_id = I("item_id/d");
+        $password = I("password");
+        $v_code = I("v_code");
+        $refer_url = I('refer_url');
+
+        //检查用户输错密码的次数。如果超过一定次数，则需要验证 验证码
+        $key= 'item_pwd_fail_times_'.$item_id;
+        if(!D("VerifyCode")->_check_times($key,10)){
+            if (!$v_code || $v_code != session('v_code')) {
+                $this->sendError(10206,L('verification_code_are_incorrect'));
+                return;
+            }
+        }
+
+        $item = D("Item")->where("item_id = '$item_id' ")->find();
+        if ($item['password'] == $password) {
+            session("visit_item_".$item_id , 1 );
+            $this->sendResult(array("refer_url"=>base64_decode($refer_url))); 
+        }else{
+            D("VerifyCode")->_ins_times($key);//输错密码则设置输错次数
+            
+            if(D("VerifyCode")->_check_times($key,10)){
+                $error_code = 10307 ;
+            }else{
+                $error_code = 10308 ;
+            }
+            $this->sendError($error_code,L('access_password_are_incorrect'));
+        }
 
     }
+
 }

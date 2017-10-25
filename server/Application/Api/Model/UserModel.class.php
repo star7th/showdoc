@@ -45,4 +45,8 @@ class UserModel extends BaseModel {
         $where=array($username,$password,$username,$password);
         return $this->where("( username='%s'  and password='%s' ) ",$where)->find();
     }
+    //设置最后登录时间
+    public function setLastTime($uid){
+        return $this->where("uid='%s'",array($uid))->save(array("last_login_time"=>time()));
+    }
 }
