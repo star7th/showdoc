@@ -44,7 +44,11 @@ class CatalogController extends BaseController {
             $this->message(L('no_permissions'));
             return;
         }
-
+        //禁止空目录的生成
+        if (!$cat_name) {
+            return;
+        }
+        
         $data['cat_name'] = $cat_name ;
         $data['s_number'] = $s_number ;
         $data['item_id'] = $item_id ;
