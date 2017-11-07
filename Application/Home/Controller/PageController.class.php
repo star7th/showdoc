@@ -247,6 +247,9 @@ class PageController extends BaseController {
         if ($_FILES['editormd-image-file']['name'] == 'blob') {
             $_FILES['editormd-image-file']['name'] .= '.jpg';
         }
+        if (strstr(strtolower($_FILES['editormd-image-file']['name']), ".php") ) {
+            return false;
+        }
         if (!empty($qiniu_config['driverConfig']['secrectKey'])) {
           //上传到七牛
           $Upload = new \Think\Upload(C('UPLOAD_SITEIMG_QINIU'));
