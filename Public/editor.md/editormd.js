@@ -3863,6 +3863,10 @@
                     return el[0].outerHTML + text;
                 });
             }
+            else if (attrs === "filterXSS")
+            {
+                html = filterXSS(html);
+            }
             else
             {
                 html = html.replace(htmlTagRegex, function($1, $2, $3, $4) {
