@@ -112,7 +112,7 @@ $(function() {
     tex: true, // 默认不解析
     flowChart: true, // 默认不解析
     sequenceDiagram: true, // 默认不解析
-    htmlDecode : "style,script,iframe|onerror,onclick,title,onmouseover,onmouseout,style,onblur,oninvalid,onkeydown,onkeypress,onkeyup,onmousewheel,oncanplay,onloadstart,onload,onplay,onplaying,onprogress,ondrag,onmousedown,onmouseup,onformchange,oncontextmenu,oninput,onresize,onhaschange,onunload,on*",//解析html
+    htmlDecode : "style,script,iframe|filterXSS",//解析html
     imageUpload: true,
     imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp", "JPG", "JPEG", "GIF", "PNG", "BMP", "WEBP"],
     imageUploadURL: "?s=home/page/uploadImg",
