@@ -26,7 +26,7 @@ class UserController extends BaseController {
                   $this->sendResult(array()); 
 
                 }else{
-                    $this->sendError(10101,L('username_or_password_incorrect'));
+                    $this->sendError(10101,'register fail');
                 }
             }else{
                 $this->sendError(10101,L('username_exists'));
