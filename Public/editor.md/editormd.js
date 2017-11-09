@@ -3832,8 +3832,23 @@
         if (typeof attrs !== "undefined")
         {
             var htmlTagRegex = /\<(\w+)\s*([^\>]*)\>([^\>]*)\<\/(\w+)\>/ig;
-
-            if (attrs === "*")
+            if(attrs === 'filterXSS'){
+                var tags = ['a','abbr','address',
+                'area','article','aside','audio','b','bdi','bdo','big','blockquote','br','caption','center','cite','code','col','colgroup','dd','del','details','div','dl','dt','em','font','footer','h1','h2','h3','h4','h5','h6','header','hr','i','img','ins','li','mark','nav','ol','p','pre','s','section','small','span','sub','sup','strong','table','tbody','td','tfoot','th','thead','tr','tt','u','ul','video','input'],
+                    tagAttrs = ['target','title','shape','coords','href','alt','autoplay','controls','loop','preload','src','dir','cite','align','valign','span','width','height','datetime','open','color','size','face','border','rowspan','colspan','style','class','id','name','type','checked','disabled'],
+                    whiteList = (function(){
+                        var result = {};
+                        for(var i=0,len=tags.length; i<len; i++){
+                            result[tags[i]] = tagAttrs;
+                        };
+                        return result;
+                    })();
+                html = filterXSS(html,{
+                    whiteList:whiteList
+                });
+                //html = filterXSS(html);
+                //console.log(html)
+            }else if (attrs === "*")
             {
                 html = html.replace(htmlTagRegex, function($1, $2, $3, $4, $5) {
                     return "<" + $2 + ">" + $4 + "</" + $5 + ">";
@@ -3862,10 +3877,6 @@
 
                     return el[0].outerHTML + text;
                 });
-            }
-            else if (attrs === "filterXSS")
-            {
-                html = filterXSS(html);
             }
             else
             {
