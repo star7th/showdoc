@@ -3,7 +3,8 @@ $(function(){
     hljs.initHighlightingOnLoad();
     
     var EditormdView = editormd.markdownToHTML("page_md_content", {
-      htmlDecode      : "style,script,iframe|filterXSS",  // you can filter tags decode
+      htmlDecode:"style,script,iframe|filterXSS",
+      //htmlDecode      : "style,script,iframe|onerror,onclick,title,onmouseover,onmouseout,style,onblur,oninvalid,onkeydown,onkeypress,onkeyup,onmousewheel,oncanplay,onloadstart,onload,onplay,onplaying,onprogress,ondrag,onmousedown,onmouseup,onformchange,oncontextmenu,oninput,onresize,onhaschange,onunload,on*",  // you can filter tags decode
       emoji           : false,
       taskList        : true,
       tex             : true,  // 默认不解析

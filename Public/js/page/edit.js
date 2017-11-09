@@ -1,4 +1,4 @@
-var editormd;
+var editormdExample;
 var template_list;
 var json_table_data = '|' + lang["params"] + '|' + lang["type"] + '|' + lang["description"] + '|\n' +
   '|:-------|:-------|:-------|\n';
@@ -24,7 +24,6 @@ $(function() {
         $("#cat_id").html('<OPTION value="0">' + lang["none"] + '</OPTION>');
         if (data.error_code == 0) {
           json = data.data;
-          console.log(json);
           for (var i = 0; i < json.length; i++) {
             cat_html = '<OPTION value="' + json[i].cat_id + '" ';
             if (default_second_cat_id == json[i].cat_id) {
@@ -54,7 +53,6 @@ $(function() {
         $("#parent_cat_id").html('<OPTION value="0">' + lang["none"] + '</OPTION>');
         if (data.error_code == 0) {
           json = data.data;
-          console.log(json);
           for (var i = 0; i < json.length; i++) {
             cat_html = '<OPTION value="' + json[i].cat_id + '" ';
             if (default_child_cat_id == json[i].cat_id) {
@@ -85,7 +83,7 @@ $(function() {
   initEditorOutsideKeys();
 
   function initEditorOutsideKeys() {
-    if (!editormd) return;
+    if (!editormdExample) return;
     var $doc = $(document);
     $.each(keyMap, function(key, fn) {
       $doc.on('keydown', null, key.replace('-', '+'), function(e) {
@@ -102,17 +100,19 @@ $(function() {
   }
 
   /*初始化编辑器*/
-  editormd = editormd("editormd", {
+  editormdExample = editormd("editormd", {
     width: "90%",
     height: 1000,
     syncScrolling: "single",
     path: DocConfig.pubile + "/editor.md/lib/",
     placeholder: lang["editormd_placeholder"],
+    saveHTMLToTextarea:true,
     taskList: true,
     tex: true, // 默认不解析
     flowChart: true, // 默认不解析
     sequenceDiagram: true, // 默认不解析
-    htmlDecode : "style,script,iframe|filterXSS",//解析html
+    htmlDecode:"style,script,iframe|filterXSS",
+    //htmlDecode : "style,script,iframe|onerror,onclick,title,onmouseover,onmouseout,style,onblur,oninvalid,onkeydown,onkeypress,onkeyup,onmousewheel,oncanplay,onloadstart,onload,onplay,onplaying,onprogress,ondrag,onmousedown,onmouseup,onformchange,oncontextmenu,oninput,onresize,onhaschange,onunload,on*",//解析html
     imageUpload: true,
     imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp", "JPG", "JPEG", "GIF", "PNG", "BMP", "WEBP"],
     imageUploadURL: "?s=home/page/uploadImg",
@@ -124,12 +124,12 @@ $(function() {
   /*插入API接口模板*/
   $("#api-doc").click(function() {
     var tmpl = $("#api-doc-templ").html();
-    editormd.insertValue(tmpl);
+    editormdExample.insertValue(tmpl);
   });
   /*插入数据字典模板*/
   $("#database-doc").click(function() {
     var tmpl = $("#database-doc-templ").html();
-    editormd.insertValue(tmpl);
+    editormdExample.insertValue(tmpl);
   });
 
   /*JSON转参数表格*/
@@ -170,7 +170,7 @@ $(function() {
 
 
 
-    editormd.insertValue(json_table_data);
+    editormdExample.insertValue(json_table_data);
 
     json_table_data = '|' + lang["filed"] + '|' + lang["type"] + '|' + lang["description"] + '|\n' +
       '|:-------|:-------|:-------|\n';
@@ -191,12 +191,12 @@ $(function() {
       var text = "\n ``` \n " + op1 + " \n" + dump(JSON.parse(data)) + " " + op2 + " \n\n ```\n\n"; //整体加个大括号
       //$("#beautify-json-dialog .jsons").val(text);
       $("#beautify-json-dialog .jsons").val("");
-      editormd.insertValue(text);
+      editormdExample.insertValue(text);
     } catch (e) {
       //非json数据直接显示
       //$("#beautify-json-dialog .jsons").val(data);
       $("#beautify-json-dialog .jsons").val("");
-      editormd.insertValue(data);
+      editormdExample.insertValue(data);
     }
     $("#beautify-json-dialog").hide();
 
@@ -436,7 +436,7 @@ $(function() {
               $.closeDialog(layer_index);
               if (data.success == 1) {
                 var value = '![](' + data.url + ')';
-                editormd.insertValue(value);
+                editormdExample.insertValue(value);
               } else {
                 $.alert(data.message);
               }
@@ -481,8 +481,8 @@ $(function() {
     $.confirm("检测到有上次编辑时自动保存的草稿。是否自动填充上次的草稿内容？",
       {},
       function(){
-        editormd.clear();
-        editormd.insertValue(localStorage.page_content);
+        editormdExample.clear();
+        editormdExample.insertValue(localStorage.page_content);
         $.closeAll();
         localStorage.removeItem("page_content");
       },
@@ -500,7 +500,7 @@ $(function() {
   function use_template(id) {
     for (var i = 0; i < template_list.length; i++) {
       if (id > 0 && id == template_list[i]['id']) {
-        editormd.insertValue(template_list[i]['template_content']);
+        editormdExample.insertValue(template_list[i]['template_content']);
         $("#more-templ-modal").modal("hide");
       };
 
