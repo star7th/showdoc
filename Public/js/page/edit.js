@@ -17,7 +17,7 @@ $(function() {
     var default_second_cat_id = $("#default_second_cat_id").val();
     var item_id = $("#item_id").val();
     $.post(
-      "?s=home/catalog/secondCatList", {
+      DocConfig.server+"/api/catalog/secondCatList", {
         "item_id": item_id,
       },
       function(data) {
@@ -47,7 +47,7 @@ $(function() {
     var cat_id = $("#cat_id").val();
     var default_child_cat_id = $("#default_child_cat_id").val();
     $.post(
-      "?s=home/catalog/childCatList", {
+      DocConfig.server+"/api/catalog/childCatList", {
         "cat_id": cat_id
       },
       function(data) {

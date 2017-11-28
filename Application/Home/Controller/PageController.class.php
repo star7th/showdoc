@@ -195,31 +195,6 @@ class PageController extends BaseController {
         
     }
 
-    //删除页面
-    public function delete(){
-        $page_id = I("page_id/d")? I("page_id/d") : 0;
-        $page = D("Page")->where(" page_id = '$page_id' ")->find();
-
-        $login_user = $this->checkLogin();
-        if (!$this->checkItemCreator($login_user['uid'] , $page['item_id']) && $login_user['uid'] != $page['author_uid']) {
-            $this->message(L('no_permissions_to_delete_page',array("author_username"=>$page['author_username'])));
-            return;
-        }
-
-        if ($page) {
-            
-            $ret = D("Page")->where(" page_id = '$page_id' ")->delete();
-            //更新项目时间
-            D("Item")->where(" item_id = '$page[item_id]' ")->save(array("last_update_time"=>time()));
-
-        }
-        if ($ret) {
-           $this->message(L('delete_succeeded'),U("Home/item/show?item_id={$page['item_id']}"));
-        }else{
-           $this->message(L('delete_failed'),U("Home/item/show?item_id={$page['item_id']}"));
-        }
-    }
-
     //历史版本
     public function history(){
         $page_id = I("page_id/d") ? I("page_id/d") : 0 ;

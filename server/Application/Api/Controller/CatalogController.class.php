@@ -58,5 +58,85 @@ class CatalogController extends BaseController {
         }      
     }
 
+    //保存目录
+    public function save(){
+        $cat_name = I("cat_name");
+        $s_number = I("s_number/d") ? I("s_number/d") : 99 ;
+        $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
+        $parent_cat_id = I("parent_cat_id/d")? I("parent_cat_id/d") : 0;
+        $item_id =  I("item_id/d");
 
+        $login_user = $this->checkLogin();
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $this->sendError(10303);
+            return;
+        }
+        //禁止空目录的生成
+        if (!$cat_name) {
+            return;
+        }
+        
+        $data['cat_name'] = $cat_name ;
+        $data['s_number'] = $s_number ;
+        $data['item_id'] = $item_id ;
+        $data['parent_cat_id'] = $parent_cat_id ;
+        if ($parent_cat_id > 0 ) {
+           $data['level'] = 3;
+        }else{
+            $data['level'] = 2;
+        }
+
+        if ($cat_id > 0 ) {
+            
+            $ret = D("Catalog")->where(" cat_id = '$cat_id' ")->save($data);
+            $return = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+
+        }else{
+            $data['addtime'] = time();
+            $cat_id = D("Catalog")->add($data);
+            $return = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+            
+        }
+        if (!$return) {
+            $return['error_code'] = 10103 ;
+            $return['error_message'] = 'request  fail' ;
+        }
+        $this->sendResult($return);
+        
+    }
+
+    //删除目录
+    public function delete(){
+        $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
+        $cat = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+        $item_id = $cat['item_id'];
+        
+        $login_user = $this->checkLogin();
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $return['error_code'] = -1 ;
+            $return['error_message'] = L('no_permissions');
+            $this->sendResult($return);
+            return;
+        }
+
+        if (D("Page")->where(" cat_id = '$cat_id' ")->find() || D("Catalog")->where(" parent_cat_id = '$cat_id' ")->find()) {
+            $return['error_code'] = -1 ;
+            $return['error_message'] = L('no_delete_empty_catalog') ;
+            $this->sendResult($return);
+            return;
+        }
+
+        if ($cat_id > 0 ) {
+            
+            $ret = D("Catalog")->where(" cat_id = '$cat_id' ")->delete();
+
+        }
+        if ($ret) {
+           $this->sendResult($ret);
+        }else{
+            $return['error_code'] = -1 ;
+            $return['error_message'] = 'request  fail' ;
+            $this->sendResult($return);
+        }
+    }
 }
