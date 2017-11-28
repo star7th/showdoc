@@ -255,7 +255,7 @@ $(function() {
     };
     $("#save").html('保存中...').attr('disabled','disabled');
     $.post(
-      "?s=home/page/save", {
+      DocConfig.server+"/api/page/save", {
         "page_id": page_id,
         "cat_id": cat_id,
         "s_number": s_number,
