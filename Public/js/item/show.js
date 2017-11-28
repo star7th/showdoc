@@ -146,7 +146,7 @@ $(function(){
       //$("#page-content").attr("src" , iframe_url);
       $("#edit-link").attr("href" , base_url+"/home/page/edit/page_id/"+page_id);
       $("#copy-link").attr("href" , base_url+"/home/page/edit/item_id/"+item_id+"/copy_page_id/"+page_id);
-      $("#delete-link").attr("href" , base_url+"/home/page/delete/page_id/"+page_id);
+      $("#delete-link").data("page_id",page_id);
       
       var domain = item_domain ? item_domain : item_id ;
       var cur_page_url =  window.location.protocol +"//"+window.location.host+base_url+"/"+domain;
@@ -249,8 +249,7 @@ function iFrameHeight() { 
     },
     // 删除
     "Ctrl+D": function() {
-      if (confirm(lang["confirm_to_delete"]))
-        location.href = $("#delete-link").attr('href');
+      $("#delete-link").click();
     },
     // 新建页面
     "Ctrl+F1": function() {
@@ -287,9 +286,68 @@ function iFrameHeight() { 
       );
     return false;
   });
-  
-  //监听来自iframe的消息。如果传递图片url过来则默认打开之
-  window.addEventListener('message', function(e){
+
+  //删除页面
+  $("#delete-link").click(function(){
+    var page_id =  $(this).data("page_id") ;
+    $.confirm(lang["confirm_to_delete"],{},function(){
+      $.post(
+        DocConfig.server+"/api/page/delete",
+        {"page_id":page_id},
+        function(data){
+                  if (data.error_code == 0) {
+                    $.alert(lang["delete_success"],function(){
+                      window.location.reload();
+                    });
+                    
+                  }else{
+                    if (data.error_message) {
+                      $.alert(data.error_message);
+                    }else{
+                      $.alert(lang["delete_fail"]);
+                    }
+                    
+                  }
+          
+        },
+        "json"
+
+        );
+    });
+
+    return false;
+  });
+
+  $("#delete-link").click(function(){
+    var page_id =  $(this).data("page_id") ;
+    $.confirm(lang["confirm_to_delete"],{},function(){
+      $.post(
+        DocConfig.server+"/api/page/delete",
+        {"page_id":page_id},
+        function(data){
+                  if (data.error_code == 0) {
+                    $.alert(lang["delete_success"],function(){
+                      window.location.reload();
+                    });
+                    
+                  }else{
+                    if (data.error_message) {
+                      $.alert(data.error_message);
+                    }else{
+                      $.alert(lang["delete_fail"]);
+                    }
+                    
+                  }
+          
+        },
+        "json"
+
+        );
+    });
+
+    return false;
+  });
+    window.addEventListener('message', function(e){
       if(e.origin != window.location.origin) return;
       if (e.data.meessage_type != 'img_url') {
         return ;
