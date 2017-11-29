@@ -2,6 +2,35 @@
 namespace Api\Controller;
 use Think\Controller;
 class ItemController extends BaseController {
+    
+    //我的项目列表
+    public function myList(){
+        $login_user = $this->checkLogin();        
+        $items  = D("Item")->field("item_id,item_name,last_update_time,item_description")->where("uid = '$login_user[uid]' or item_id in ( select item_id from ".C('DB_PREFIX')."item_member where uid = '$login_user[uid]' ) ")->order("item_id asc")->select();
+        //读取需要置顶的项目
+        $top_items = D("ItemTop")->where("uid = '$login_user[uid]'")->select();
+        if ($top_items) {
+            $top_item_ids = array() ;
+            foreach ($top_items as $key => $value) {
+                $top_item_ids[] = $value['item_id'];
+            }
+            foreach ($items as $key => $value) {
+                $items[$key]['top'] = 0 ;
+                if (in_array($value['item_id'], $top_item_ids) ) {
+                    $items[$key]['top'] = 1 ;
+                    $tmp = $items[$key] ;
+                    unset($items[$key]);
+                    array_unshift($items,$tmp) ;
+                }
+            }
+
+            $items = array_values($items);
+        }
+
+        $items = $items ? $items : array();
+        $this->sendResult($items);
+
+    }
 
     //项目详情
     public function detail(){

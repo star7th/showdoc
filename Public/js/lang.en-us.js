@@ -14,7 +14,8 @@ lang["delete_fail"] = "Delete fail";
 
 //item
 lang["back_to_top"] = "Back to top";
-
+lang["new_item"] = "New item";
+lang["add_an_item"] = "add an item";
 
 //page/edite
 lang["params"] = "Params";

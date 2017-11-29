@@ -14,7 +14,8 @@ lang["delete_fail"] = "删除失败！";
 
 //item
 lang["back_to_top"] = "回到顶部";
-
+lang["new_item"] = "新建项目";
+lang["add_an_item"] = "新建一个新的项目";
 
 //page/edite
 lang["params"] = "参数名";
