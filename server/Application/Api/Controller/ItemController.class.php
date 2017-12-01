@@ -382,4 +382,86 @@ class ItemController extends BaseController {
 
     }
 
+    public function itemList(){
+        $login_user = $this->checkLogin();        
+        $items  = D("Item")->where("uid = '$login_user[uid]' ")->select();
+        $items = $items ? $items : array();
+        $this->sendResult($items);
+    }
+
+    //新建项目
+    public function add(){
+        $login_user = $this->checkLogin();
+        $item_name = I("item_name");
+        $item_domain = I("item_domain") ? I("item_domain") : '';
+        $copy_item_id = I("copy_item_id");
+        $password = I("password");
+        $item_description = I("item_description");
+        $item_type = I("item_type");
+
+        if ($item_domain) {
+            
+            if(!ctype_alnum($item_domain) ||  is_numeric($item_domain) ){
+                //echo '个性域名只能是字母或数字的组合';exit;
+                $this->sendError(10305);
+                return false;
+            }
+
+            $item = D("Item")->where("item_domain = '%s'  ",array($item_domain))->find();
+            if ($item) {
+                //个性域名已经存在
+                $this->sendError(10304);
+                return false;
+            }
+        }
+        
+        //如果是复制项目
+        if ($copy_item_id > 0) {
+            if (!$this->checkItemPermn($login_user['uid'] , $copy_item_id)) {
+                $this->sendError(10103);
+                return;
+            }
+            $ret = D("Item")->copy($copy_item_id,$login_user['uid'],$item_name,$item_description,$password,$item_domain);
+            if ($ret) {
+                $this->sendResult(array());             
+            }else{
+                $this->sendError(10101);
+            }
+            return ;
+        }
+        
+        $insert = array(
+            "uid" => $login_user['uid'] ,
+            "username" => $login_user['username'] ,
+            "item_name" => $item_name ,
+            "password" => $password ,
+            "item_description" => $item_description ,
+            "item_domain" => $item_domain ,
+            "item_type" => $item_type ,
+            "addtime" =>time()
+            );
+        $item_id = D("Item")->add($insert);
+
+        if ($item_id) {
+            //如果是单页应用，则新建一个默认页
+            if ($item_type == 2 ) {
+                $insert = array(
+                    'author_uid' => $login_user['uid'] ,
+                    'author_username' => $login_user['username'],
+                    "page_title" => $item_name ,
+                    "item_id" => $item_id ,
+                    "cat_id" => 0 ,
+                    "page_content" => '欢迎使用showdoc。点击右上方的编辑按钮进行编辑吧！' ,
+                    "addtime" =>time()
+                    );
+                $page_id = D("Page")->add($insert);
+            }
+            $this->sendResult(array());               
+        }else{
+            $this->sendError(10101);
+        }
+        
+    }
+
+
 }

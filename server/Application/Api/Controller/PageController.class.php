@@ -9,7 +9,7 @@ class PageController extends BaseController {
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
         $login_user = $this->checkLogin(false);
         if (!$this->checkItemVisit($login_user['uid'] , $page['item_id'])) {
-            $this->sendError(10303);
+            $this->sendError(10103);
             return;
         }
         $page = $page ? $page : array();
@@ -57,7 +57,7 @@ class PageController extends BaseController {
 
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->sendError(10303);
+            $this->sendError(10103);
             return;
         }
 

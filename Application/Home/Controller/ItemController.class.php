@@ -40,89 +40,7 @@ class ItemController extends BaseController {
     //新建项目
     public function add(){
         $login_user = $this->checkLogin();
-        $item_id = I("item_id/d");
-        if (!IS_POST) {
-          $item = D("Item")->where("item_id = '$item_id' ")->find();
-          $this->assign("item" , $item);
-          $this->display ();
-
-        }else{
-            $item_name = I("item_name");
-            $item_domain = I("item_domain") ? I("item_domain") : '';
-            $copy_item_id = I("copy_item_id");
-            $password = I("password");
-            $item_description = I("item_description");
-            $item_type = I("item_type");
-
-            if ($item_domain) {
-                $item = D("Item")->where("item_domain = '%s' and item_id !='%s' ",array($item_domain,$item_id))->find();
-                if ($item) {
-                    //个性域名已经存在
-                    $this->message(L('domain_already_exists'));
-                    return false;
-                }
-                if(!ctype_alnum($item_domain) ||  is_numeric($item_domain) ){
-                    //echo '个性域名只能是字母或数字的组合';exit;
-                    $this->message(L('item_domain_illegal'));
-                    return false;
-                }
-            }
-            
-            //如果是复制项目
-            if ($copy_item_id > 0) {
-                if (!$this->checkItemPermn($login_user['uid'] , $copy_item_id)) {
-                    $this->message(L('no_permissions'));
-                    return;
-                }
-                $ret = D("Item")->copy($copy_item_id,$login_user['uid'],$item_name,$item_description,$password,$item_domain);
-                if ($ret) {
-                    $this->message(L('operation_succeeded'),U('Home/Item/index'));              
-                }else{
-                    $this->message(L('operation_failed'),U('Home/Item/index'));
-                }
-                return ;
-            }
-            if ($item_id > 0 ) {
-                $data = array(
-                    "item_name" => $item_name ,
-                    "item_domain" => $item_domain ,
-                    "password" => $password ,
-                    "item_description" => $item_description ,
-                    );
-                $ret = D("Item")->where("item_id = '$item_id' ")->save($data);
-            }else{
-                $insert = array(
-                    "uid" => $login_user['uid'] ,
-                    "username" => $login_user['username'] ,
-                    "item_name" => $item_name ,
-                    "password" => $password ,
-                    "item_description" => $item_description ,
-                    "item_domain" => $item_domain ,
-                    "item_type" => $item_type ,
-                    "addtime" =>time()
-                    );
-                $item_id = D("Item")->add($insert);
-            }
-
-            if ($item_id) {
-                //如果是单页应用，则新建一个默认页
-                if ($item_type == 2 ) {
-                    $insert = array(
-                        'author_uid' => $login_user['uid'] ,
-                        'author_username' => $login_user['username'],
-                        "page_title" => $item_name ,
-                        "item_id" => $item_id ,
-                        "cat_id" => 0 ,
-                        "page_content" => '欢迎使用showdoc。点击右上方的编辑按钮进行编辑吧！' ,
-                        "addtime" =>time()
-                        );
-                    D("Page")->add($insert);
-                }
-                $this->message(L('operation_succeeded'),U('Home/Item/index'));              
-            }else{
-                $this->message(L('operation_failed'),U('Home/Item/index'));
-            }
-        }
+        $this->display ();
     }
 
     //根据项目类型展示项目
@@ -351,13 +269,6 @@ class ItemController extends BaseController {
             $this->assign("item_id",$item_id);
             $this->display();
         }
-    }
-
-    public function itemList(){
-        $login_user = $this->checkLogin();        
-        $items  = D("Item")->where("uid = '$login_user[uid]' ")->select();
-        $items = $items ? $items : array();
-        $this->sendResult($items);
     }
 
     public function setting(){

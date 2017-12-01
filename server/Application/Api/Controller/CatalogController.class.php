@@ -8,7 +8,7 @@ class CatalogController extends BaseController {
         $login_user = $this->checkLogin();
         $item_id = I("item_id/d");
         if (!$this->checkItemVisit($login_user['uid'] , $item_id)) {
-            $this->sendError(10303);
+            $this->sendError(10103);
             return ;
         }
         if ($item_id > 0 ) {
@@ -28,7 +28,7 @@ class CatalogController extends BaseController {
         $login_user = $this->checkLogin();
         $item_id = I("item_id/d");
         if (!$this->checkItemVisit($login_user['uid'] , $item_id)) {
-            $this->sendError(10303);
+            $this->sendError(10103);
             return ;
         }
         if ($item_id > 0 ) {
@@ -68,7 +68,7 @@ class CatalogController extends BaseController {
 
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->sendError(10303);
+            $this->sendError(10103);
             return;
         }
         //禁止空目录的生成

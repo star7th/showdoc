@@ -11,16 +11,15 @@
 </style>
     <div class="container">
 
-      <form class="form-signin" method="post">
-        <input type="hidden" id="item_id" name="item_id" value="{$item.item_id}">
+      <form class="form-signin myform" method="post"  action="server/index.php?s=/api/item/add">
         <!-- <h3 class="form-signin-heading">新建项目</h3> -->
         <div class="choose_type">
             <label class="radio inline">
-              <input type="radio" name="item_type" id="item_type1" value="1" <?php if(!$item['item_type'] || $item['item_type'] == 1 )echo 'checked'?> >
+              <input type="radio" name="item_type" id="item_type1" value="1" checked >
               常规项目
             </label>
             <label class="radio inline">
-              <input type="radio" name="item_type" id="item_type2" value="2" <?php if($item['item_type'] == 2 )echo 'checked'?>>
+              <input type="radio" name="item_type" id="item_type2" value="2" >
               单页项目
               &nbsp;
               <a href="https://www.showdoc.cc/page/65391" target="_blank"><i class="icon-question-sign"></i></a>
@@ -52,6 +51,7 @@
 
 
  <include file="Common/footer" />
+ <script src="__PUBLIC__/js/jquery.form.min.js"></script>
  <script type="text/javascript">
  var password = $("#password").val();
  if (password) {
@@ -90,7 +90,7 @@ $("#show_copy").change(function(){
 function get_item_list(){
     //获取已有项目列表
     $.get(
-            "?s=/home/item/itemList",
+            DocConfig.server+"/api/item/itemList",
             {},
             function(data){
              if (data.error_code === 0) {
@@ -119,4 +119,25 @@ $("#choose_item").change(function(){
     $("#password").val(password);
 
 });
+
+
+//上传表单参数
+var ajax_option = {
+  dataType:"json",
+  beforeSubmit:function(){
+
+  },
+  success:function(res){
+    if (res.error_code === 0) {
+      window.location.href = "?s=/home/item/index";
+    }else{
+      $.alert(res.error_message);
+    }
+
+    return false;
+  }
+};
+
+$('.myform').ajaxForm(ajax_option); 
+
  </script>
