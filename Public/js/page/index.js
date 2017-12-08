@@ -1,5 +1,31 @@
 
 $(function(){
+
+  var page_id = $("#page_id").val() ;
+
+  layer_index = layer.load(1, {
+    shade: [0.1, '#fff'] //0.1透明度的白色背景
+  });
+
+    $.ajax({ 
+        type: "get", 
+        url: DocConfig.server+"/api/page/info&page_id="+page_id, 
+        cache:false, 
+        async:false, 
+        dataType:  "json" , 
+        success: function(data){ 
+          if (data.error_code === 0 ) {
+            $("#page_md_content textarea").html(data.data.page_content);
+            $("#page_title").html(data.data.page_title);
+            $("#doc-title").html(data.data.page_title);
+          }else{
+            $.alert(data.error_message)
+          }
+          layer.closeAll();
+        } 
+
+    });
+
     hljs.initHighlightingOnLoad();
     
     var EditormdView = editormd.markdownToHTML("page_md_content", {

@@ -7,20 +7,7 @@ class PageController extends BaseController {
     public function index(){
         import("Vendor.Parsedown.Parsedown");
         $page_id = I("page_id/d");
-        $page = D("Page")->where(" page_id = '$page_id' ")->find();
-        $login_user = $this->checkLogin(false);
-        if (!$this->checkItemVisit($login_user['uid'] , $page['item_id'])) {
-            $this->message(L('no_permissions'));
-            return;
-        }
-
-        $ItemPermn = $this->checkItemPermn($login_user['uid'] , $page['item_id']) ;
-        $ItemCreator = $this->checkItemCreator($login_user['uid'],$page['item_id']);
-		$page['page_md_content'] = $page['page_content'];
-
-        //$Parsedown = new \Parsedown();
-        //$page['page_content'] = $Parsedown->text(htmlspecialchars_decode($page['page_content']));
-        $this->assign("page" , $page);
+        $this->assign("page_id" , $page_id);
         $this->display();
     }
 
@@ -41,6 +28,7 @@ class PageController extends BaseController {
         $page['page_md_content'] = $page['page_content'];
         //$page['page_html_content'] = $Parsedown->text(htmlspecialchars_decode($page['page_content']));
         $this->assign("page" , $page);
+        $this->assign("page_id" , $page_id);
         $this->assign("login_user" , $login_user);
         $this->display();
     }

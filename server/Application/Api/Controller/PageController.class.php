@@ -7,6 +7,11 @@ class PageController extends BaseController {
     public function info(){
         $page_id = I("page_id/d");
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
+        if (!$page) {
+            sleep(1);
+            $this->sendError(10101);
+            return false;
+        }
         $login_user = $this->checkLogin(false);
         if (!$this->checkItemVisit($login_user['uid'] , $page['item_id'])) {
             $this->sendError(10103);
@@ -14,7 +19,7 @@ class PageController extends BaseController {
         }
         $page = $page ? $page : array();
         if ($page) {
-           unset($page['page_content']);
+           //unset($page['page_content']);
            $page['addtime'] = date("Y-m-d H:i:s",$page['addtime']);
         }
         $this->sendResult($page);
