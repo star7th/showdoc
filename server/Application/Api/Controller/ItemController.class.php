@@ -2,7 +2,150 @@
 namespace Api\Controller;
 use Think\Controller;
 class ItemController extends BaseController {
-    
+
+
+    //单个项目信息
+    public function info(){
+        $this->checkLogin(false);
+        $item_id = I("item_id/d");
+        $item_domain = I("item_domain/s");
+        $current_page_id = I("page_id/d");
+        //判断个性域名
+        if ($item_domain) {
+            $item = D("Item")->where("item_domain = '%s'",array($item_domain))->find();
+            if ($item['item_id']) {
+                $item_id = $item['item_id'] ;
+            }
+        }
+        $login_user = session("login_user");
+        $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
+            
+        if(!$this->checkItemVisit($uid , $item_id)){
+            $this->sendError(10303);
+            return ;
+        } 
+
+
+        $item = D("Item")->where("item_id = '$item_id' ")->find();
+        if (!$item) {
+            sleep(1);
+            $this->sendError(10101,'项目不存在或者已删除');
+            return false;
+        }
+        if ($item['item_type'] == 1 ) {
+            $this->_show_regular_item($item);
+        }
+        elseif ($item['item_type'] == 2 ) {
+            $this->_show_single_page_item($item);
+        }else{
+           $this->_show_regular_item($item); 
+        }
+        
+
+    }
+
+    //展示常规项目
+    private function _show_regular_item($item){
+        $item_id = $item['item_id'];
+
+        $current_page_id = I("page_id/d");
+        $keyword = I("keyword");
+
+        $login_user = session("login_user");
+        $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
+            
+        //是否有搜索词
+        if ($keyword) {
+            $keyword = \SQLite3::escapeString($keyword) ;
+            $pages = D("Page")->where("item_id = '$item_id' and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+        
+        }else{
+            //获取所有父目录id为0的页面
+            $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+            //获取所有二级目录
+            $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->order(" `s_number` asc  ")->select();
+            if ($catalogs) {
+                foreach ($catalogs as $key => &$catalog) {
+                    //该二级目录下的所有子页面
+                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+                    $catalog['pages'] = $temp ? $temp: array();
+
+                    //该二级目录下的所有子目录
+                    $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
+                    $catalog['catalogs'] = $temp ? $temp: array();
+                    if($catalog['catalogs']){
+                        //获取所有三级目录的子页面
+                        foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
+                            //该二级目录下的所有子页面
+                            $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+                            $catalog3['pages'] = $temp ? $temp: array();
+                        }                        
+                    }               
+                }
+            }
+        }
+
+        $domain = $item['item_domain'] ? $item['item_domain'] : $item['item_id'];
+        $share_url = get_domain().__APP__.'/'.$domain;
+
+        $ItemPermn = $this->checkItemPermn($uid , $item_id) ;
+
+        $ItemCreator = $this->checkItemCreator($uid , $item_id);
+
+        if (LANG_SET == 'en-us') {
+            $help_url = "https://www.showdoc.cc/help-en";
+        }
+        else{
+            $help_url = "https://www.showdoc.cc/help";
+        }
+        $menu =array(
+            "pages" => $pages ,
+            "catalogs" => $catalogs ,
+            ) ;
+
+        $return = array(
+            "item_id"=>$item_id ,
+            "current_page_id"=>$current_page_id ,
+            "item_type"=>1 ,
+            "menu"=>$menu ,
+
+            );
+        $this->sendResult($return);
+    }
+
+    //展示单页项目
+    private function _show_single_page_item($item){
+        $item_id = $item['item_id'];
+
+        $current_page_id = I("page_id/d");
+
+        $login_user = session("login_user");
+        $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
+
+        //获取页面
+        $page = D("Page")->where(" item_id = '$item_id' ")->find();
+
+        $domain = $item['item_domain'] ? $item['item_domain'] : $item['item_id'];
+        $share_url = get_domain().__APP__.'/'.$domain;
+
+        $ItemPermn = $this->checkItemPermn($uid , $item_id) ;
+
+        $ItemCreator = $this->checkItemCreator($uid , $item_id);
+
+        $menu = array() ;
+        $menu['pages'] = $page ;
+        $return = array(
+            "item_id"=>$item_id ,
+            "current_page_id"=>$current_page_id ,
+            "unread_count"=>$unread_count ,
+            "item_type"=>2 ,
+            "menu"=>$menu ,
+
+            );
+        $this->sendResult($return);
+    }
+
+
     //我的项目列表
     public function myList(){
         $login_user = $this->checkLogin();        
