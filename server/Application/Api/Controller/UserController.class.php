@@ -75,5 +75,34 @@ class UserController extends BaseController {
         }
         
     }
+    
+    //获取用户信息
+    public function info(){
+        $login_user = $this->checkLogin();
+        $uid = $login_user['uid'] ;
+        $field = "uid,username,email,email_verify,name,avatar,avatar_small" ;
+        $info = D("User")->where(" uid = '$uid' ")->field($field)->find();
+        $this->sendResult($info); 
+    }
+
+    //通过旧密码验证来更新用户密码
+    public function resetPassword(){
+        $login_user = $this->checkLogin();
+        $username = $login_user['username'];
+        $password = I("password");
+        $new_password = I("new_password");
+        $ret = D("User")->checkLogin($username,$password);
+        if ($ret) {
+                $ret = D("User")->updatePwd($login_user['uid'],$new_password);
+                if ($ret) {
+                    $this->sendResult(array());
+                }else{
+                    $this->sendError(10101,L('modify_faild'));
+                }
+
+        }else{  
+            $this->sendError(10101,L('old_password_incorrect'));
+        }
+    }
 
 }
