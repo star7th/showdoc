@@ -5,7 +5,7 @@ class IndexController extends BaseController {
     public function index(){
         $tmp = @file_get_contents('./Application/Common/Conf/config.php');
         if (strstr($tmp, "showdoc not install")) {
-            header("location:./install");
+            header("location:./install/");
             exit();
         }
     	$this->checkLogin(false);
