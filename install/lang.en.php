@@ -25,6 +25,8 @@ return array(
   "not_writable_home_config"=>'File Application/Home/Conf/config.php is not writable !',
   "not_writable_sqlite"=>'Directory Sqlite is not writable !',
   "not_writable_sqlite_db"=>'File Sqlite/showdoc.db.php is not writable !',
+  "not_writable_web_docconfig"=>'File web/index.html is not writable !',
+  "not_writable_web_src_docconfig"=>'File web_src/index.html is not writable !',
   "install_success"=>'Installation success!Please delete the /install directory, avoid the script to be executed again',
   "install_config_not_writable"=>'Fail to write config file ',
   "db_wrong"=>'Database connection error',

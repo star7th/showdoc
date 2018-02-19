@@ -52,6 +52,7 @@ elseif ($db_type == "mysql") {
 function user_sqlite(){
         clear_runtime();//清除缓存
         write_home_config();
+        write_js_lang();
         $config = 
 <<<EOD
 <?php
@@ -127,4 +128,21 @@ return array(
 
 	$ret = file_put_contents("../Application/Home/Conf/config.php", $config);
 
+}
+
+function write_js_lang(){
+    $lang = $_REQUEST['lang'] ? $_REQUEST['lang'] :"zh";
+    if ($lang == 'en') {
+       replace_file_content("../web/index.html","zh-cn","en") ;
+       replace_file_content("../web_src/index.html","zh-cn","en") ;
+    }
+    
+}
+
+function replace_file_content($file , $from ,$to ){
+    $content = file_get_contents($file);
+    $content2 = str_replace($from,$to,$content);
+    if ($content2) {
+        file_put_contents($file,$content2);
+    }
 }

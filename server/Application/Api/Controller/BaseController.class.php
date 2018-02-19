@@ -4,6 +4,11 @@ use Think\Controller;
 class BaseController extends Controller {
 
 	public function checkLogin($redirect = true){
+
+		//debug
+		//$login_user = D("User")->where("username = 'showdoc' ")->find();
+		//session("login_user" , $login_user);
+		
 		if ( ! session("login_user")) {
 			$cookie_token = cookie('cookie_token');
 			if ($cookie_token) {
@@ -37,7 +42,9 @@ class BaseController extends Controller {
 			$result['error_code'] = 0 ;
 			$result['data'] = $array ;
 		}
-		//header('Access-Control-Allow-Origin: *');//允许跨域请求
+		//header('Access-Control-Allow-Origin: http://127.0.0.1:8080');//允许跨域请求
+		//header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
+		//header('Access-Control-Allow-Credentials : true');//允许跨域请求
 		echo json_encode($result);
 
 		//如果开启API调试模式，则记录请求参数和返回结果

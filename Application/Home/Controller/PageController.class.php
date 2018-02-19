@@ -13,8 +13,13 @@ class PageController extends BaseController {
 
     //展示单个页面
     public function single(){
-        import("Vendor.Parsedown.Parsedown");
         $page_id = I("page_id/d");
+
+        //跳转到web目录
+        header("location:./web/#/page/".$page_id);
+        exit();
+
+        import("Vendor.Parsedown.Parsedown");
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
         $login_user = $this->checkLogin(false);
         if (!$this->checkItemVisit($login_user['uid'] , $page['item_id'],$_SERVER['REQUEST_URI'])) {
