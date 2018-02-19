@@ -197,7 +197,7 @@ export default {
     bind_item_even(){
 
       //这里偷个懒，直接用jquery来操作DOM。因为老版本的代码就是基于jquery的，所以复制过来稍微改下
-      $s([`//cdn.bootcss.com/jquery/2.1.3/jquery.min.js`],()=>{
+      $s(["static/jquery.min.js"],()=>{
 
           //当鼠标放在项目上时将浮现设置和置顶图标
           $(".item-thumbnail").mouseover(function(){

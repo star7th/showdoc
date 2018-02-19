@@ -79,7 +79,7 @@ export default {
   mounted() {
     
     //加载依赖""
-    $s([`//cdn.bootcss.com/jquery/2.1.3/jquery.min.js`,
+    $s([`${this.editorPath}/../jquery.min.js`,
     	`${this.editorPath}/lib/raphael.min.js`,
     	`${this.editorPath}/lib/flowchart.min.js`,
 
@@ -97,7 +97,7 @@ export default {
 	        this.initEditor();
 	      });
 
-	      $s("//cdn.bootcss.com/highlight.js/9.1.0/highlight.min.js", () => {
+	      $s(`${this.editorPath}/../highlight/highlight.min.js`, () => {
 	        hljs.initHighlightingOnLoad();
 	      });
 
