@@ -48,7 +48,7 @@ export default {
 	position: fixed; 
 	cursor: pointer; 
 	bottom: 50px; 
-	right: 100px; 
+	right: 5%; 
 	font-size: 50px;
 	color: #409EFF;
 }

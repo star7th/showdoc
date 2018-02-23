@@ -162,20 +162,23 @@
     AdaptToMobile(){
       this.hide_menu();
       this.show_page_bar = false;
-      var element = document.getElementById('page_content_main') ;
-      element.style.width = '95%' ; 
+
     },
     show_menu(){
         var element = document.getElementById('left-side') ;
         element.style.display = 'block' ;
         var element = document.getElementById('right-side') ;
         element.style.marginLeft = '300px'; 
+        var element = document.getElementById('page_content_main') ;
+        element.style.width = '700px' ; 
     },
     hide_menu(){
         var element = document.getElementById('left-side') ;
         element.style.display = 'none';
         var element = document.getElementById('right-side') ;
         element.style.marginLeft = '0px'; 
+        var element = document.getElementById('page_content_main') ;
+        element.style.width = '95%' ; 
     },
     switch_menu(){
       var element = document.getElementById('left-side') ;
