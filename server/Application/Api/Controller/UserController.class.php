@@ -6,7 +6,7 @@ class UserController extends BaseController {
 
     //注册
     public function register(){
-        $username = I("username");
+        $username = trim(I("username"));
         $password = I("password");
         $confirm_password = I("confirm_password");
         $v_code = I("v_code");
