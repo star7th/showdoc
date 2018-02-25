@@ -10,7 +10,7 @@ class IndexController extends BaseController {
         }
 
         //跳转到web目录
-        header("location:./web/index.html#/");
+        header("location:./web/#/");
         exit();
 
     	$this->checkLogin(false);
