@@ -45,6 +45,10 @@ li{
   list-style-type:none;
 }
 
+.markdown-body li{
+  list-style-type:disc;
+}
+
 .text-center{
   text-align: center;
 }

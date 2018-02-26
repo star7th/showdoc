@@ -130,7 +130,20 @@
     },
   },
   mounted () {
-    
+    var that = this ;
+    document.onkeydown=function(e){  //对整个页面文档监听 其键盘快捷键
+      var keyNum=window.event ? e.keyCode :e.which;  //获取被按下的键值 
+      if (keyNum == 69 && e.ctrlKey) {  //Ctrl +e 为编辑
+        that.edit_page();
+        e.preventDefault();
+      };
+
+      if (keyNum == 46 && e.ctrlKey) {  //Ctrl +del 为删除
+        that.delete_page();
+        e.preventDefault();
+      };
+
+    }
   }
 };
 </script>

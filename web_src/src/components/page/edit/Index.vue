@@ -417,6 +417,7 @@ export default {
   },
 
   mounted () {
+    var that = this ;
     this.page_id = this.$route.params.page_id ;
     this.copy_page_id = this.$route.query.copy_page_id ? this.$route.query.copy_page_id : '' ;
     
@@ -430,7 +431,14 @@ export default {
       this.content = this.$t("welcome_use_showdoc") ;
     }
     this.get_cat2(this.$route.params.item_id);
-
+    
+    document.onkeydown=function(e){  //对整个页面文档监听 其键盘快捷键
+      var keyNum=window.event ? e.keyCode :e.which;  //获取被按下的键值 
+      if (keyNum == 83 && e.ctrlKey) {  //Ctrl +S 为保存
+        that.save();
+        e.preventDefault();
+      };
+    }
     
   }
 }
