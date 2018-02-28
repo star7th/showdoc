@@ -65,12 +65,12 @@ if(!extension_loaded("gd")){
   echo '请安装php-gd<br>';
   $go = 0;
 }
-
+/*
 if(!extension_loaded("mcrypt")){
   echo '请安装php-mcrypt<br>';
   $go = 0;
 }
-
+*/
 if(!extension_loaded("mbstring")){
   echo '请安装php-mbstring<br>';
   $go = 0;
