@@ -229,6 +229,17 @@ export default {
 　　　　　　// 获取当前图片地址
           that.imgSrc = img_url;
         });
+        
+        //表格头颜色
+        $("#"+this.id+" table thead tr").css("background-color","#409eff") ;
+        $("#"+this.id+" table thead tr").css("color","#fff") ;
+
+        //代码块美化
+        $("#"+this.id+" .linenums").css("padding-left","0px") ;
+        $("#"+this.id+" .linenums li").css("list-style-type","none") ;
+        $("#"+this.id+" .linenums li").css("background-color","#fcfcfc") ;
+        $("#"+this.id+" pre").css("background-color","#fcfcfc") ;
+        $("#"+this.id+" pre").css("border","1px solid #e1e1e8") ;
     },
   }
 };
