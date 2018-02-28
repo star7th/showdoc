@@ -110,7 +110,13 @@ export default {
           .then(function (response) {
             if (response.data.error_code === 0 ) {
               var Info = response.data.data ;
-              that.catalogs_level_2 = Info ;
+              
+              //创建上级目录选项
+              var Info2 = Info.slice(0) ;
+              var no_cat = {"cat_id":0 ,"cat_name":that.$t("none")} ;
+              Info2.unshift(no_cat);
+              that.catalogs_level_2 = Info2 ;
+              
               var cat_array = [] ;
               for (var i = 0; i < Info.length; i++) {
                 
