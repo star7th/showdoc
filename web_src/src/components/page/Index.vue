@@ -42,7 +42,7 @@
       background-color: #fff;
       border-bottom: 1px solid #d9d9d9;
       margin-bottom: 20px;
-      width: 700px;
+      width: 800px;
       min-height: 500px;
       margin-left: auto;
       margin-right: auto;
