@@ -221,7 +221,7 @@ export default {
 
         });
 
-        $("th").css("width","150px");
+        $("th").css("width","180px");
         //图片点击放大
         $("#"+this.id+" img").click(function(){
           var  img_url = $(this).attr("src");
