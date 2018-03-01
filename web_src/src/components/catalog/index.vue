@@ -5,7 +5,7 @@
     <el-container>
       <el-card class="center-card">
 
-      <el-button  type="text" class="add-cat" @click="dialogFormVisible = true">{{$t('add_cat')}}</el-button>
+      <el-button  type="text" class="add-cat" @click="add_cat">{{$t('add_cat')}}</el-button>
       <el-button type="text" class="goback-btn" @click="goback">{{$t('goback')}}</el-button>
        <el-table align="left"
             :data="catalogs"
@@ -204,6 +204,11 @@ export default {
               
             }); 
           })
+
+      },
+      add_cat(){
+        this.MyForm = [] ;
+        this.dialogFormVisible = true;
 
       },
       goback(){
