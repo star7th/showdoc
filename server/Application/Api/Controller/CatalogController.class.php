@@ -105,6 +105,11 @@ class CatalogController extends BaseController {
             return;
         }
         
+        if ($parent_cat_id &&  $parent_cat_id == $cat_id) {
+            $this->sendError(10101,"上级目录不能选择自身");
+            return;
+        }
+        
         $data['cat_name'] = $cat_name ;
         $data['s_number'] = $s_number ;
         $data['item_id'] = $item_id ;
