@@ -240,6 +240,9 @@ export default {
         $("#"+this.id+" .linenums li").css("background-color","#fcfcfc") ;
         $("#"+this.id+" pre").css("background-color","#fcfcfc") ;
         $("#"+this.id+" pre").css("border","1px solid #e1e1e8") ;
+        
+        $("#"+this.id+" code").css("color","#d14");
+        
     },
   }
 };
