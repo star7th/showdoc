@@ -170,7 +170,7 @@
         var element = document.getElementById('right-side') ;
         element.style.marginLeft = '300px'; 
         var element = document.getElementById('page_content_main') ;
-        element.style.width = '700px' ; 
+        element.style.width = '800px' ; 
     },
     hide_menu(){
         var element = document.getElementById('left-side') ;
@@ -231,7 +231,7 @@
   }
 
   .page_content_main{
-    width:700px;
+    width:800px;
     margin: 0 auto ;
     height: 50%;
   }
