@@ -441,7 +441,7 @@ class ItemController extends BaseController {
 
         //如果传送了三级目录
         if ($cat_name_sub) {
-            $cat_name_sub_array = D("Catalog")->where(" item_id = '$item_id' and level = 3 and cat_name = '%s' ",array($cat_name_sub))->find();
+            $cat_name_sub_array = D("Catalog")->where(" item_id = '$item_id' and level = 3 and cat_name = '%s'  and parent_cat_id = '%s' ",array($cat_name_sub,$cat_name_array['cat_id']))->find();
             //如果不存在则新建
             if (!$cat_name_sub_array) {
                 $add_data = array(
@@ -452,7 +452,7 @@ class ItemController extends BaseController {
                     "level" => 3 
                     );
                 D("Catalog")->add($add_data);
-                $cat_name_sub_array = D("Catalog")->where(" item_id = '$item_id' and level = 3 and cat_name = '%s' ",array($cat_name_sub))->find();
+                $cat_name_sub_array = D("Catalog")->where(" item_id = '$item_id' and level = 3 and cat_name = '%s' and parent_cat_id = '%s' ",array($cat_name_sub,$cat_name_array['cat_id']))->find();
             }
         }
 
