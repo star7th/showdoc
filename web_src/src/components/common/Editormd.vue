@@ -187,14 +187,9 @@ export default {
             $(this).prop('outerHTML', '<div style="width: 100%;overflow-x: auto;">'+$(this).prop('outerHTML')+'</div>');
         });
 
-        //不是本项目的超链接都在新窗口打开
+        //超链接都在新窗口打开
         $("#"+this.id+' a[href^="http"]').each(function() {
-              var target_url = $(this).attr("href") ;
-              if (target_url.indexOf(window.top.location.host ) > -1 ){
-
-              }else{
-                $(this).attr('target', '_blank');
-              } 
+          $(this).attr('target', '_blank');
 
         });
 
