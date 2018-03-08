@@ -125,12 +125,12 @@
       }
         var that = this ;
         var url = DocConfig.server+'/api/page/info';
-        var loading = that.$loading({target:".page_content_main",fullscreen:false});
+        //var loading = that.$loading({target:".page_content_main",fullscreen:false});
         var params = new URLSearchParams();
         params.append('page_id',  page_id);
         that.axios.post(url, params)
           .then(function (response) {
-            loading.close();
+            //loading.close();
             if (response.data.error_code === 0 ) {
               that.content = response.data.data.page_content ;
               
