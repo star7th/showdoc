@@ -25,6 +25,8 @@ return array(
   "not_writable_home_config"=>'请赋予 Application/Home/Conf/config.php 文件以可写权限！<br>(如果你确定赋予了文件权限但却一直看到此信息，则可考虑关闭selinux试试)',
   "not_writable_sqlite"=>'请赋予 Sqlite 目录以可写权限！',
   "not_writable_sqlite_db"=>'请赋予 Sqlite/showdoc.db.php 以可写权限！',
+  "not_writable_web_docconfig"=>'请赋予 web/index.html 以可写权限！',
+  "not_writable_web_src_docconfig"=>'请赋予 web_src/index.html 以可写权限！',
   "install_success"=>'安装成功！建议删除install目录，以免安装脚本被再次执行。',
   "install_config_not_writable"=>'安装失败，配置文件写入错误！',
   "db_wrong"=>'数据库链接错误，请检查配置信息是否填写正确',

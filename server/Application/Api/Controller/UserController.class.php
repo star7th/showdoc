@@ -6,7 +6,7 @@ class UserController extends BaseController {
 
     //注册
     public function register(){
-        $username = I("username");
+        $username = trim(I("username"));
         $password = I("password");
         $confirm_password = I("confirm_password");
         $v_code = I("v_code");
@@ -80,7 +80,7 @@ class UserController extends BaseController {
     public function info(){
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        $field = "uid,username,email,email_verify,name,avatar,avatar_small" ;
+        $field = "uid,username,email,name,avatar,avatar_small" ;
         $info = D("User")->where(" uid = '$uid' ")->field($field)->find();
         $this->sendResult($info); 
     }
@@ -103,6 +103,16 @@ class UserController extends BaseController {
         }else{  
             $this->sendError(10101,L('old_password_incorrect'));
         }
+    }
+    
+    //退出登录
+    public function logout(){
+        $login_user = $this->checkLogin();
+        D("UserToken")->where(" uid = '$login_user[uid]' ")->save(array("token_expire"=>0));
+        session("login_user" , NULL);
+        cookie('cookie_token',NULL);
+        session(null);
+        $this->sendResult(array());
     }
 
 }

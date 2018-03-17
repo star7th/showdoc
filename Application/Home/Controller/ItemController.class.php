@@ -6,6 +6,9 @@ class ItemController extends BaseController {
     public function index(){
         $login_user = $this->checkLogin();        
 
+        //跳转到web目录
+        header("location:./web/#/item/index");
+        exit();
         
         $share_url = get_domain().__APP__.'/uid/'.$login_user['uid'];
 
@@ -49,6 +52,7 @@ class ItemController extends BaseController {
         $item_id = I("item_id/d");
         $item_domain = I("item_domain/s");
         $current_page_id = I("page_id/d");
+
         //判断个性域名
         if ($item_domain) {
             $item = D("Item")->where("item_domain = '%s'",array($item_domain))->find();
@@ -56,6 +60,12 @@ class ItemController extends BaseController {
                 $item_id = $item['item_id'] ;
             }
         }
+
+        //跳转到web目录
+        header("location:./web/#/".$item_id."?page_id=".$current_page_id);
+        exit();
+        
+        
         $login_user = session("login_user");
         $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
             

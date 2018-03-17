@@ -194,3 +194,11 @@ function http_post($url, $param) {
     curl_close ( $oCurl );
     return $sContent;
 }
+
+function compress_string($string){
+    return base64_encode( gzcompress($string, 9)) ;
+}
+
+function uncompress_string($string){
+    return  gzuncompress(base64_decode($string));  
+}

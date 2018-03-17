@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>ShowDoc</title>
+	<meta name="keywords" content="在线API文档 技术文档 数据字典 在线手册" />
+	<meta name="description" content="一个非常适合IT团队的在线API文档、技术文档工具。你可以使用Showdoc来编写在线API文档、技术文档、数据字典、在线手册" />
+  <script type="text/javascript">
+    //挂在window下的全局配置
+    window.DocConfig = {
+      //"server":'http://127.0.0.1/showdoc/server/index.php?s=',
+      "server": window.location.protocol +'//'+ window.location.host + window.location.pathname+ '../server/index.php?s=',
+      //"lang" :'en'
+      "lang" :'zh-cn'
+  }
+  </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
+
+<!-- <script src="http://192.168.0.101:8082/target/target-script-min.js#anonymous"></script> -->

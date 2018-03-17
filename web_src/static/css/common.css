@@ -1,0 +1,62 @@
+
+body{
+  margin: 0;
+}
+
+.grey-bg{
+  background-color: rgb(250, 250, 250);
+}
+#app {
+    font: 14px/1.5 "Microsoft Yahei", 微软雅黑, Tahoma, Arial, Helvetica, STHeiti;
+}
+
+a {
+  color: #409eff;
+  text-decoration: none;
+}
+
+.center-card{
+    width: 300px;
+    position  : absolute;
+    top       : 50%;
+    left      : 50%;
+    transform : translate(-50%,-50%);
+    padding-top: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 0px;
+    box-sizing: border-box;
+}
+
+.pull-right{
+  float: right;
+}
+
+.pull-left{
+  float: left;
+}
+
+.el-dropdown-link{
+  cursor: pointer;
+  color: #409eff;
+}
+
+li{
+  list-style-type:none;
+}
+
+.markdown-body li{
+  list-style-type:disc;
+}
+
+.text-center{
+  text-align: center;
+}
+
+.text-left{
+  text-align: left;
+}
+
+.block{
+  display: block;
+}

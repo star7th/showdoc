@@ -7,9 +7,12 @@ class ItemController extends BaseController {
     //单个项目信息
     public function info(){
         $this->checkLogin(false);
-        $item_id = I("item_id/d");
+        $item_id = I("item_id");
         $item_domain = I("item_domain/s");
         $current_page_id = I("page_id/d");
+        if (! is_numeric($item_id)) {
+            $item_domain = $item_id ;
+        }
         //判断个性域名
         if ($item_domain) {
             $item = D("Item")->where("item_domain = '%s'",array($item_domain))->find();
@@ -19,12 +22,11 @@ class ItemController extends BaseController {
         }
         $login_user = session("login_user");
         $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
-            
+        
         if(!$this->checkItemVisit($uid , $item_id)){
             $this->sendError(10303);
             return ;
         } 
-
 
         $item = D("Item")->where("item_id = '$item_id' ")->find();
         if (!$item) {
@@ -40,19 +42,19 @@ class ItemController extends BaseController {
         }else{
            $this->_show_regular_item($item); 
         }
-        
-
     }
 
     //展示常规项目
     private function _show_regular_item($item){
         $item_id = $item['item_id'];
 
-        $current_page_id = I("page_id/d");
+        $default_page_id = I("default_page_id/d");
         $keyword = I("keyword");
+        $default_cat_id2 = $default_cat_id3 = 0 ;
 
         $login_user = session("login_user");
         $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
+        $is_login =   $uid > 0 ? true :false;
             
         //是否有搜索词
         if ($keyword) {
@@ -92,6 +94,21 @@ class ItemController extends BaseController {
 
         $ItemCreator = $this->checkItemCreator($uid , $item_id);
 
+        //如果带了默认展开的页面id，则获取该页面所在的二级目录和三级目录
+        if ($default_page_id) {
+            $page = D("Page")->where(" page_id = '$default_page_id' ")->find();
+            if ($page) {
+                $default_cat_id3 = $page['cat_id'] ;
+                $cat2 = D("Catalog")->where(" cat_id = '$default_cat_id3' and parent_cat_id > 0  ")->find();
+                if ($cat2) {
+                    $default_cat_id2 = $cat2['parent_cat_id'];
+                }else{
+                    $default_cat_id2 = $default_cat_id3;
+                    $default_cat_id3 = 0 ;
+                }
+            }
+        }
+
         if (LANG_SET == 'en-us') {
             $help_url = "https://www.showdoc.cc/help-en";
         }
@@ -105,9 +122,17 @@ class ItemController extends BaseController {
 
         $return = array(
             "item_id"=>$item_id ,
-            "current_page_id"=>$current_page_id ,
+            "item_domain"=>$item['item_domain'] ,
+            "is_archived"=>$item['is_archived'] ,
+            "default_page_id"=>(string)$default_page_id ,
+            "default_cat_id2"=>$default_cat_id2 ,
+            "default_cat_id3"=>$default_cat_id3 ,
+            "unread_count"=>$unread_count ,
             "item_type"=>1 ,
             "menu"=>$menu ,
+            "is_login"=>$is_login,
+            "ItemPermn"=>$ItemPermn ,
+            "ItemCreator"=>$ItemCreator ,
 
             );
         $this->sendResult($return);
@@ -121,7 +146,7 @@ class ItemController extends BaseController {
 
         $login_user = session("login_user");
         $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
-
+        $is_login =   $uid > 0 ? true :false;
         //获取页面
         $page = D("Page")->where(" item_id = '$item_id' ")->find();
 
@@ -136,10 +161,15 @@ class ItemController extends BaseController {
         $menu['pages'] = $page ;
         $return = array(
             "item_id"=>$item_id ,
+            "item_domain"=>$item['item_domain'] ,
+            "is_archived"=>$item['is_archived'] ,
             "current_page_id"=>$current_page_id ,
             "unread_count"=>$unread_count ,
             "item_type"=>2 ,
             "menu"=>$menu ,
+            "is_login"=>$is_login,
+            "ItemPermn"=>$ItemPermn ,
+            "ItemCreator"=>$ItemCreator ,
 
             );
         $this->sendResult($return);
@@ -411,7 +441,7 @@ class ItemController extends BaseController {
 
         //如果传送了三级目录
         if ($cat_name_sub) {
-            $cat_name_sub_array = D("Catalog")->where(" item_id = '$item_id' and level = 3 and cat_name = '%s' ",array($cat_name_sub))->find();
+            $cat_name_sub_array = D("Catalog")->where(" item_id = '$item_id' and level = 3 and cat_name = '%s'  and parent_cat_id = '%s' ",array($cat_name_sub,$cat_name_array['cat_id']))->find();
             //如果不存在则新建
             if (!$cat_name_sub_array) {
                 $add_data = array(
@@ -422,7 +452,7 @@ class ItemController extends BaseController {
                     "level" => 3 
                     );
                 D("Catalog")->add($add_data);
-                $cat_name_sub_array = D("Catalog")->where(" item_id = '$item_id' and level = 3 and cat_name = '%s' ",array($cat_name_sub))->find();
+                $cat_name_sub_array = D("Catalog")->where(" item_id = '$item_id' and level = 3 and cat_name = '%s' and parent_cat_id = '%s' ",array($cat_name_sub,$cat_name_array['cat_id']))->find();
             }
         }
 

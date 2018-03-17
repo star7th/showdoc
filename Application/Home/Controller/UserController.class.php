@@ -6,6 +6,11 @@ class UserController extends BaseController {
 
 	//注册
 	public function register(){
+
+        //跳转到web目录
+        header("location:./web/#/user/register");
+        exit();
+
 		if (!IS_POST) {
 			  $this->assign('CloseVerify',C('CloseVerify'));
 			  $this->display ();
@@ -44,6 +49,12 @@ class UserController extends BaseController {
 	//登录
 	public function login()
 	{
+
+        //跳转到web目录
+        header("location:./web/#/user/login");
+        exit();
+        
+
 		if (!IS_POST) {
 			//如果有cookie记录，则自动登录
 			$cookie_token = cookie('cookie_token');

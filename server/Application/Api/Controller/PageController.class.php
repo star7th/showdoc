@@ -129,4 +129,104 @@ class PageController extends BaseController {
         $this->sendResult($return);
         
     }
+
+
+    //历史版本列表
+    public function history(){
+        $login_user = $this->checkLogin(false);
+        $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
+        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        if (!$this->checkItemVisit($login_user['uid'] , $page['item_id'])) {
+            $this->sendError(10103);
+            return;
+        }
+
+        $PageHistory = D("PageHistory")->where("page_id = '$page_id' ")->order(" addtime desc")->limit(10)->select();
+
+        if ($PageHistory) {
+            foreach ($PageHistory as $key => &$value) {
+                $value['addtime'] = date("Y-m-d H:i:s" , $value['addtime']);
+                $page_content = uncompress_string($value['page_content']);
+                if (!empty($page_content)) {
+                    $value['page_content'] = htmlspecialchars_decode($page_content) ;
+                }
+            }
+
+            $this->sendResult($PageHistory);
+        }else{
+            $this->sendResult(array());
+        }
+                
+
+    }
+
+    //返回当前页面和历史某个版本的页面以供比较
+    public function diff(){
+        $page_id = I("page_id/d");
+        $page_history_id = I("page_history_id/d");
+        if (!$page_id) {
+            return false;
+        }
+        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        if (!$page) {
+            sleep(1);
+            $this->sendError(10101);
+            return false;
+        }
+        $login_user = $this->checkLogin(false);
+        if (!$this->checkItemVisit($login_user['uid'] , $page['item_id'])) {
+            $this->sendError(10103);
+            return;
+        }
+
+        $history_page = D("PageHistory")->where(" page_history_id = '$page_history_id' ")->find();
+        $page_content = uncompress_string($history_page['page_content']); 
+        $history_page['page_content'] = $page_content ? $page_content : $history_page['page_content'] ;
+
+        $this->sendResult(array("page"=>$page,"history_page"=>$history_page));
+    }
+
+
+    //上传图片
+    public function uploadImg(){
+        $login_user = $this->checkLogin();
+        $item_id = I("item_id/d") ? I("item_id/d") : 0 ;
+        $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
+
+        
+        if ($_FILES['editormd-image-file']['name'] == 'blob') {
+            $_FILES['editormd-image-file']['name'] .= '.jpg';
+        }
+        
+        if (strstr(strtolower($_FILES['editormd-image-file']['name']), ".php") ) {
+            return false;
+        }
+
+        $qiniu_config = C('UPLOAD_SITEIMG_QINIU') ;
+        if (!empty($qiniu_config['driverConfig']['secrectKey'])) {
+          //上传到七牛
+          $Upload = new \Think\Upload(C('UPLOAD_SITEIMG_QINIU'));
+          $info = $Upload->upload($_FILES);
+          $url = $info['editormd-image-file']['url'] ;
+          if ($ret) {
+              echo json_encode(array("url"=>$url,"success"=>1));
+          }
+        }else{
+            $upload = new \Think\Upload();// 实例化上传类
+            $upload->maxSize  = 3145728 ;// 设置附件上传大小
+            $upload->allowExts  = array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
+            $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
+            $upload->savePath = '';// 设置附件上传子目录
+            $info = $upload->upload() ;
+            if(!$info) {// 上传错误提示错误信息
+              $this->error($upload->getError());
+              return;
+            }else{// 上传成功 获取上传文件信息
+              $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['editormd-image-file']['savepath'].$info['editormd-image-file']['savename'] ;
+              echo json_encode(array("url"=>$url,"success"=>1));
+            }
+        }
+
+    }
+
 }
