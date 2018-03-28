@@ -22,7 +22,7 @@ class UserController extends BaseController {
                     session("login_user" , $ret );
                     $token = D("UserToken")->createToken($ret['uid']);
                     cookie('cookie_token',$token,60*60*24*90);//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
-
+                    session('v_code',null) ;
                   $this->sendResult(array()); 
 
                 }else{
