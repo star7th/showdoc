@@ -154,17 +154,22 @@ export default {
             localStorage.page_content= that.getMarkdown() ;
         }, 60000);
 
-        //检测是否有定时保存的内容
-        var page_content = localStorage.page_content ;
-        if (page_content && page_content.length > 0) {
-          localStorage.removeItem("page_content");
-          that.$confirm(that.$t('draft_tips'),
-          ).then(()=>{
-              that.clear() ;
-              that.insertValue(page_content) ;
-              localStorage.removeItem("page_content");
-            });
-        };
+      //检测是否有定时保存的内容
+      var page_content = localStorage.page_content ;
+      if (page_content && page_content.length > 0) {
+        localStorage.removeItem("page_content");
+        that.$confirm(that.$t('draft_tips'),'',{
+          showClose:false
+        }
+        ).then(()=>{
+            that.clear() ;
+            that.insertValue(page_content) ;
+            localStorage.removeItem("page_content");
+          }).catch(()=>{
+            localStorage.removeItem("page_content");
+          });
+      };
+
     },
     //关闭前提示
     beforeunloadHandler(e){
