@@ -399,7 +399,8 @@ function I($name,$default='',$filter=null,$datas=null) {
     }else{ // 变量默认值
         $data       =    isset($default)?$default:null;
     }
-    is_array($data) && array_walk_recursive($data,'think_filter');
+    is_array($data) && array_walk_recursive($data,'
+    ');
     return $data;
 }
 
@@ -1539,8 +1540,10 @@ function think_filter(&$value){
 	// TODO 其他安全过滤
 
 	// 过滤查询特殊字符
-    if(preg_match('/^(EXP|NEQ|GT|EGT|LT|ELT|OR|XOR|LIKE|NOTLIKE|NOT BETWEEN|NOTBETWEEN|BETWEEN|NOTIN|NOT IN|IN)$/i',$value)){
+    if(preg_match('/^(EXP|NEQ|GT|EGT|LT|ELT|OR|XOR|LIKE|NOTLIKE|NOT BETWEEN|NOTBETWEEN|BETWEEN|NOTIN|NOT IN|IN|BIND)$/i', $value)) {
+
         $value .= ' ';
+
     }
 }
 
