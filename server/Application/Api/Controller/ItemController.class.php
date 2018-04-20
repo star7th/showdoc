@@ -406,29 +406,8 @@ class ItemController extends BaseController {
     }
 
     public function updateByApi(){
-        $api_key = I("api_key");
-        $api_token = I("api_token");
-        $cat_name = I("cat_name");
-        $cat_name_sub = I("cat_name_sub");
-        $page_title = I("page_title");
-        $page_content = I("page_content");
-        $s_number = I("s_number") ? I("s_number") : 99;
-
-        $item_id = D("ItemToken")->check($api_key , $api_token);
-        if (!$item_id) {
-            //没验证通过
-            $this->sendError(10306);
-            return false;
-        }
-
-        $page_id = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name,$cat_name_sub,$s_number);
-
-        if ($page_id) {
-            $ret = D("Page")->where(" page_id = '$page_id' ")->find();
-            $this->sendResult($ret);
-        }else{
-            $this->sendError(10101);
-        }
+        //转到Open控制器的updateItem方法
+        R('Open/updateItem');
     }
 
     //置顶项目

@@ -178,5 +178,25 @@ class ItemModel extends BaseModel {
     public function copy($item_id,$uid,$item_name= '',$item_description= '',$item_password = '',$item_domain){
         return $this->import($this->export($item_id),$uid,$item_name,$item_description,$item_password,$item_domain);
     }
+
+    //清空项目内容，但不删除项目也不删除项目成员关系
+    public function empty_content($item_id){
+        D("Page")->where("item_id = '$item_id' ")->delete();
+        D("Page")->partitionTable($item_id)->where("item_id = '$item_id' ")->delete();
+        D("Catalog")->where("item_id = '$item_id' ")->delete();
+        D("PageHistory")->partitionTable(1)->where("item_id = '$item_id' ")->delete();
+        D("PageHistory")->partitionTable(2)->where("item_id = '$item_id' ")->delete();
+        D("PageHistory")->partitionTable(3)->where("item_id = '$item_id' ")->delete();
+        D("PageHistory")->partitionTable(4)->where("item_id = '$item_id' ")->delete();
+        D("PageHistory")->partitionTable(5)->where("item_id = '$item_id' ")->delete();
+        D("PageHistory")->partitionTable(6)->where("item_id = '$item_id' ")->delete();
+        D("PageHistory")->partitionTable(7)->where("item_id = '$item_id' ")->delete();
+        D("PageHistory")->partitionTable(8)->where("item_id = '$item_id' ")->delete();
+        D("PageHistory")->partitionTable(9)->where("item_id = '$item_id' ")->delete();
+        D("PageHistory")->partitionTable(10)->where("item_id = '$item_id' ")->delete();
+        //删除菜单缓存
+        $redis = init_redis() ;
+        $redis->delete('showdoc_menu_cache_item_id_'.$item_id);
+    }
     
 }
