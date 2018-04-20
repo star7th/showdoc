@@ -38,4 +38,18 @@ class ItemTokenModel extends BaseModel {
 	public function setLastTime($item_id){
 		return $this->where("item_id='$item_id'")->save(array("last_check_time"=>time()));
 	}
+
+	//检查token。如果检测通过则返回item_id
+	public function check($api_key , $api_token){
+        $ret = $this->getTokenByKey($api_key);
+        if ($ret && $ret['api_token'] == $api_token) {
+            $item_id = $ret['item_id'] ;
+            $this->setLastTime($item_id);
+            return $item_id ;
+        }else{
+            return false;
+        }
+	}
+
+	
 }
