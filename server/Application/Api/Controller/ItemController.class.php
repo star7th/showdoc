@@ -636,5 +636,13 @@ class ItemController extends BaseController {
         
     }
 
+    //搜索API
+    public function search(){
+        $keyword = I("keyword");
+        $keyword = \SQLite3::escapeString($keyword) ;
+        $pages = D("Page")->where("page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+        $this->sendResult($pages);
+    }
+
 
 }
