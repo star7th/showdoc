@@ -38,6 +38,11 @@
                   </el-select>
 
               </el-form-item>
+              
+              <el-form-item label="" style="text-align: left;margin-bottom:5px;margin-left:15px;margin-top:-25px;">
+                  <a target="_bank"  href="https://www.showdoc.cc/page/312209902620725">{{$t('auto_db')}}</a>
+                  &nbsp;&nbsp;&nbsp;
+              </el-form-item>
 
                <el-form-item label="" >
                 <el-button type="primary" style="width:100%;" @click="onSubmit" >{{$t('submit')}}</el-button>

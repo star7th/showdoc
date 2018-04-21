@@ -21,6 +21,9 @@
       <p >
         <span v-html="$t('open_api_tips2')"></span>
       </p>
+      <p >
+        <span v-html="$t('open_api_tips3')"></span>
+      </p>
   </div>
 </template>
 

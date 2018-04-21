@@ -123,7 +123,7 @@ export default {
           if (this.type == 'editor'){
             this.instance = editorMD(this.id, this.editorConfig);
             //草稿
-            this.draft();
+            //this.draft(); 鉴于草稿功能未完善。先停掉。
             //window.addEventListener('beforeunload', e => this.beforeunloadHandler(e));
           } else {
             this.instance = editorMD.markdownToHTML(this.id, this.editorConfig);

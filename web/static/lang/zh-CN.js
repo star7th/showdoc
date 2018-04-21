@@ -79,6 +79,8 @@ exports.default = {
     'goback' : '返回',
     'copy_exists_item' : '复制已存在项目',
     'please_choose' : '请选择',
+    'auto_db' : '我要自动生成数据字典',
+
 
     //item/pwd
     'input_visit_password' : '请输入访问密码',
@@ -121,7 +123,8 @@ exports.default = {
     "reset_token":"重新生成api_token",
     "open_api_tips1":"showdoc开放文档编辑的API，供使用者更加方便地操作文档数据。<br>利用开放API，你可以自动化地完成很多事",
     "open_api_tips2":'关于API详细用法，请参考我们的<a target="_bank" href="https://www.showdoc.cc/page/102098">API文档</a>',
-    
+    "open_api_tips3":'如果你想自动化生成数据字典，则可参考<a target="_bank" href="https://www.showdoc.cc/page/312209902620725">这篇文档</a>',
+
     //item/show
     'item':'项目',
     'share':'分享',

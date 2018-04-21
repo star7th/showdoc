@@ -77,6 +77,7 @@ exports.default = {
     'visit_password_placeholder' : 'password(Optional: private project required)',
     'copy_exists_item' : 'copy exists item',
     'please_choose' : 'please select',
+    'auto_db' : 'Auto data dictionary',
 
     //item/pwd
     'input_visit_password' : 'input visit password',
@@ -119,7 +120,7 @@ exports.default = {
     "reset_token":"reset token",
     "open_api_tips1":"showdoc开放文档编辑的API，供使用者更加方便地操作文档数据。<br>利用开放API，你可以自动化地完成很多事",
     "open_api_tips2":'关于API详细用法，请参考我们的<a target="_bank" href="https://www.showdoc.cc/page/102098">API文档</a>',
-    
+    "open_api_tips3":'如果你想自动化生成数据字典，则可参考<a target="_bank" href="https://www.showdoc.cc/page/312209902620725">这篇文档</a>',
     //item/show
     'item':'item',
     'share':'share',
