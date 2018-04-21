@@ -210,7 +210,7 @@ class CatalogController extends BaseController {
 
         
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->message(L('no_permissions'));
+            $this->sendError(10101,L('no_permissions'));
             return;
         }
 
