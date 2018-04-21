@@ -37,6 +37,7 @@ class OpenController extends BaseController {
         $table_info = I("table_info");
         $table_detail = I("table_detail");
         $s_number = I("s_number") ? I("s_number") : 99;
+        $cat_name = I("cat_name") ? I("cat_name") : '';
         header( 'Content-Type:text/html;charset=utf-8 ');
         
         $item_id = D("ItemToken")->check($api_key , $api_token);
@@ -52,7 +53,7 @@ class OpenController extends BaseController {
             foreach ($tables as $key => $value) {
                 $page_title = $value['table_name'] ;
                 $page_content = $value['markdown'] ;
-                $result = D("Page")->update_by_content($item_id,$page_title,$page_content);
+                $result = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name);
             }
         }
 
