@@ -276,6 +276,7 @@ export default {
       var url = DocConfig.server+'/api/catalog/getDefaultCat';
       var params = new URLSearchParams();
       params.append('page_id',  this.page_id);
+      params.append('item_id',  that.$route.params.item_id);
       params.append('copy_page_id',  this.copy_page_id);
 
       that.axios.post(url, params)
