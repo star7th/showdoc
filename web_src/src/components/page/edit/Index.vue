@@ -241,6 +241,8 @@ export default {
           if (response.data.error_code === 0 ) {
             //that.$message.success("加载成功");
             that.cat2 = response.data.data ;
+            var no_cat = {"cat_id":'' ,"cat_name":" "} ;
+            that.cat2.unshift(no_cat);
             that.get_default_cat();
           }else{
             that.$alert(response.data.error_message);
