@@ -112,7 +112,7 @@ class OpenController extends BaseController {
                 $markdown = '';
                 $markdown .= "- {$value['table_comment']} \n \n" ;
                 $markdown .= "|字段|类型|允许空|默认|注释| \n ";
-                $markdown .= "|:----    |:-------    |:--- |-- -|------      | \n ";
+                $markdown .= "|:----    |:-------    |:--- |----|------      | \n ";
                 foreach ($value['columns'] as $key2 => $value2) {
                     $markdown .= "|{$value2['column_name']} |{$value2['column_type']} |{$value2['is_nullable']} | {$value2['default']} | {$value2['column_comment']}  | \n ";
                 }
