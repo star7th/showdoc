@@ -76,8 +76,9 @@ class OpenController extends BaseController {
                     continue;
                 }
                 $array2 = explode("\t", $value);
+                $table_name = str_replace(PHP_EOL, '', $array2[0]); 
                 $tables[$array2[0]] = array(
-                    "table_name" => $array2[0] ,
+                    "table_name" => $table_name ,
                     "table_comment" => $array2[1] ,
                     );
             }
