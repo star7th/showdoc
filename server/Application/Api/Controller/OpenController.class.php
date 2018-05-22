@@ -39,6 +39,7 @@ class OpenController extends BaseController {
         $s_number = I("s_number") ? I("s_number") : 99;
         $cat_name = I("cat_name") ? I("cat_name") : '';
         header( 'Content-Type:text/html;charset=utf-8 ');
+        $cat_name = str_replace(PHP_EOL, '', $cat_name);
         
         $item_id = D("ItemToken")->check($api_key , $api_token);
         if (!$item_id) {
