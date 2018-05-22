@@ -45,8 +45,12 @@ li{
   list-style-type:none;
 }
 
-.markdown-body li{
+.markdown-body ul li{
   list-style-type:disc;
+}
+
+.markdown-body ol li{
+  list-style-type:decimal;
 }
 
 .text-center{
