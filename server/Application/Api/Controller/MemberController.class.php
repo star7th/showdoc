@@ -22,7 +22,13 @@ class MemberController extends BaseController {
             $this->sendError(10209);
             return ;
         }
+        
+        $if_exit = D("ItemMember")->where(" uid = '$member[uid]' and item_id = '$item_id' ")->find();
 
+        if ($if_exit) {
+            $this->sendError(10101,"该用户已经是项目成员");
+            return ;
+        }
         $data['username'] = $member['username'] ;
         $data['uid'] = $member['uid'] ;
         $data['item_id'] = $item_id ;
