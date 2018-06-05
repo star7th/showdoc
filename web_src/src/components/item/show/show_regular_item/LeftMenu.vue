@@ -22,7 +22,8 @@
                   <i class="el-icon-plus" @click="new_page"></i>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" :content="$t('new_catalog')" placement="right">
-                  <i class="el-icon-message" @click="mamage_catalog"></i>
+                 <!--  <i class="el-icon-message" @click="mamage_catalog"></i> -->
+                  <img src="static/images/folder.png" @click="mamage_catalog" class="icon-folder">
             </el-tooltip>      
           </div>
 
@@ -35,7 +36,7 @@
         <!-- 目录开始 -->
       <el-submenu  v-if="menu.catalogs.length" v-for="(catalog2 ,catalog_index) in menu.catalogs" :index="catalog2.cat_id" :key="catalog2.cat_id">
         <!-- 二级目录名 -->
-        <template slot="title"><i class="el-icon-message"></i>{{catalog2.cat_name}}</template>
+        <template slot="title"> <img src="static/images/folder.png"  class="icon-folder menu-icon-folder ">{{catalog2.cat_name}}</template>
 
         <!-- 二级目录的页面 -->
         <el-menu-item-group v-if="catalog2.pages" v-for="(page2 ,page2_index) in catalog2.pages" :key="page2.page_id">
@@ -158,5 +159,15 @@
 }
 .el-menu{
   border-right:none;
+}
+.icon-folder{
+  width: 18px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.menu-icon-folder{
+  margin-right: 5px;
+  margin-top: -5px;
 }
 </style>
