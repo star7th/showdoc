@@ -7,7 +7,7 @@ RUN  \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
-        libpng12-dev \
+        libpng-dev \
     && docker-php-ext-install -j$(nproc) gd mcrypt
 
 
