@@ -208,7 +208,7 @@ class PageController extends BaseController {
           $Upload = new \Think\Upload(C('UPLOAD_SITEIMG_QINIU'));
           $info = $Upload->upload($_FILES);
           $url = $info['editormd-image-file']['url'] ;
-          if ($ret) {
+          if ($url) {
               echo json_encode(array("url"=>$url,"success"=>1));
           }
         }else{
