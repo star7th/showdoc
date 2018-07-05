@@ -31,7 +31,6 @@ exports.default = {
     'register_new_account':'register',
     'forget_password':'forget password',
     'username_description':'username/email',
-    'password':'password',
     'password_again':'input password again',
     'verification_code':'verification code',
     'register':'register',

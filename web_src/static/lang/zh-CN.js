@@ -31,7 +31,6 @@ exports.default = {
     'register_new_account':'注册新账号',
     'forget_password':'忘记密码',
     'username_description':'用户名/邮箱',
-    'password':'密码',
     'password_again':'再次输入密码',
     'verification_code':'验证码',
     'register':'注册',
