@@ -5,6 +5,8 @@ class ExportController extends BaseController {
 
     //导出整个项目为word
     public function word(){
+    	set_time_limit(1000);
+    	ini_set('memory_limit','800M'); 
         import("Vendor.Parsedown.Parsedown");
         $Parsedown = new \Parsedown();
         $item_id =  I("item_id/d");
