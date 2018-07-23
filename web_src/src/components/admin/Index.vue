@@ -143,12 +143,12 @@ export default {
           var params = new URLSearchParams();
           that.axios.post(url, params)
             .then(function (response) {
-              if (response.data.url) {
+              if (response.data.data.url) {
                   that.$message({
                     showClose: true,
                     duration:10000,
                     dangerouslyUseHTMLString: true,
-                    message: '<a target="_blank" href="'+response.data.url+'">'+response.data.title+'</a>'
+                    message: '<a target="_blank" href="'+response.data.data.url+'">'+response.data.data.title+'</a>'
                   });
               };
 

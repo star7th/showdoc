@@ -91,11 +91,12 @@ class AdminUserController extends BaseController {
 
     //检测showdoc版本更新
     public function checkUpdate(){
-        header('Access-Control-Allow-Origin: *');//允许跨域请求
-        header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
-        header('Access-Control-Allow-Credentials : true');//允许跨域请求
-        
-        //echo '{"version":"3.0","title":"检测到新版本，点击查看","description":"略","url":"https://www.showdoc.cc/page/14"}';
+        //获取当前版本
+        $text = file_get_contents("../composer.json");
+        $composer = json_decode($text, true);
+        $version = $composer['version'] ;
+        $url = "https://www.showdoc.cc/server/api/open/checkUpdate?version={$version}";
+        echo http_post($url);
     }
 
 }
