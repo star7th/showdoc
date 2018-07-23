@@ -17,7 +17,7 @@ import PageEdit from '@/components/page/edit/Index'
 import PageDiff from '@/components/page/Diff'
 import Catalog from '@/components/catalog/Index'
 import Notice from '@/components/notice/Index'
-
+import Admin from '@/components/admin/Index'
 
 Vue.use(Router)
 
@@ -107,6 +107,11 @@ export default new Router({
       path: '/notice/index',
       name: 'Notice',
       component: Notice
+    },
+    {
+      path: '/admin/index',
+      name: 'Admin',
+      component: Admin
     },
   ]
 })

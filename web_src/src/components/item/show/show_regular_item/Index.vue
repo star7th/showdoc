@@ -18,6 +18,7 @@
 
             <div class="header-right">
               <!-- 登录的事情下 -->
+               <router-link v-if="item_info.is_login" to="/item/index" >{{$t('goback')}} </router-link>
               <el-dropdown @command="dropdown_callback" v-if="item_info.is_login">
                 <span class="el-dropdown-link">
                   {{$t('item')}}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -26,7 +27,6 @@
                   <el-dropdown-item :command="share_item">{{$t('share')}}</el-dropdown-item>
                   <router-link :to="'/item/export/'+item_info.item_id" v-if="item_info.ItemPermn"><el-dropdown-item>{{$t('export')}}</el-dropdown-item></router-link>
                   <router-link :to="'/item/setting/'+item_info.item_id"  v-if="item_info.ItemCreator"><el-dropdown-item>{{$t('item_setting')}}</el-dropdown-item></router-link>
-                  <router-link to="/item/index"><el-dropdown-item >{{$t('goback')}}</el-dropdown-item></router-link>
                 </el-dropdown-menu>
               </el-dropdown>
 

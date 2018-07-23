@@ -29,6 +29,21 @@ class BaseController extends Controller {
 			return  session("login_user") ;
 		}
 	}
+	
+	//检查是否是管理员
+	public function checkAdmin($redirect = true){
+		$login_user = session("login_user") ;
+		if ($login_user) {
+			if ($login_user['groupid'] == 1 ) {
+				return true ;
+			}
+		}
+		if ($redirect) {
+			$this->sendError(10103);
+			exit();
+		}
+		return false;
+	}
 
 	/**
 	 * 返回json结果

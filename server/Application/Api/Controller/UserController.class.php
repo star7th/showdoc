@@ -80,7 +80,7 @@ class UserController extends BaseController {
     public function info(){
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        $field = "uid,username,email,name,avatar,avatar_small" ;
+        $field = "uid,username,email,name,avatar,avatar_small,groupid" ;
         $info = D("User")->where(" uid = '$uid' ")->field($field)->find();
         $this->sendResult($info); 
     }

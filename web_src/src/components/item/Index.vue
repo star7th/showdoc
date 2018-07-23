@@ -11,6 +11,8 @@
           </div>
           <div class="header-btn-group pull-right">
             <el-button type="text"  @click="feedback">{{$t("feedback")}}</el-button>
+            
+            <router-link to="/admin/index" v-if="isAdmin">&nbsp;&nbsp;&nbsp;{{$t("management_backstage")}}</router-link>
             &nbsp;&nbsp;&nbsp;
             <el-dropdown @command="dropdown_callback">
               <span class="el-dropdown-link">
@@ -161,7 +163,8 @@ export default {
   data() {
     return {
       currentDate: new Date(),
-      itemList:{}
+      itemList:{},
+      isAdmin:false
     };
   },
   methods:{
@@ -258,7 +261,18 @@ export default {
             
           });
     },
+    
+    user_info(){
+        var that = this ;
+        this.get_user_info(function(response){
+          if (response.data.error_code === 0 ) {
+            if (response.data.data.groupid == 1 ) {
+              that.isAdmin = true ;
+            };
+          }
+        });
 
+    },
     dropdown_callback(data){
       if (data) {
         data();
@@ -267,6 +281,7 @@ export default {
   },
   mounted () {
     this.get_item_list();
+    this.user_info();
     
   },
   beforeDestroy(){

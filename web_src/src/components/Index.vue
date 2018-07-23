@@ -72,7 +72,7 @@
               <h2></h2>
               <p>{{$t("section_description8")}}</p>
             <p>
-               <el-button><router-link to="/user/register">{{$t("section_title8")}}</router-link></el-button>
+               <el-button><router-link to="/user/login">{{$t("section_title8")}}</router-link></el-button>
             </p>
           </div>
         </el-carousel-item>
@@ -108,7 +108,7 @@ export default {
   mounted () {
     var that = this ;
     this.getHeight();
-    that.link = '/user/register';
+    that.link = '/user/login';
     that.link_text = that.$t("index_login_or_register");
     this.get_user_info(function(response){
       if (response.data.error_code === 0 ) {

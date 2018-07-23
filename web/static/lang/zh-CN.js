@@ -211,6 +211,12 @@ exports.default = {
 
     //其他
     "back_to_top":'回到顶部',
-    'draft_tips':"检测到有上次编辑时自动保存的草稿。是否自动填充上次的草稿内容？"
+    'draft_tips':"检测到有上次编辑时自动保存的草稿。是否自动填充上次的草稿内容？",
 
+    //管理后台
+    "management_backstage":"管理后台" ,
+    "user_management":"用户管理" ,
+    "item_management":"项目管理" ,
+    "add_user":"新增用户" ,
+    "search":"查询" ,
 };

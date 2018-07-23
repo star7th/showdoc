@@ -185,6 +185,12 @@ class UpdateController extends BaseController {
             }
         }
 
+        //管理员账户和权限
+        if(D("User")->where("username = 'showdoc' ")->find()){
+            D("User")->where("username = 'showdoc' ")->save(array("groupid"=> 1)) ;
+        }else{
+             D("User")->add(array('username'=>"showdoc" ,"groupid"=>1,'password'=>"a89da13684490eb9ec9e613f91d24d00" , 'reg_time'=>time()));
+        }
 
         echo 'OK!';
     }

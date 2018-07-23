@@ -206,6 +206,13 @@ exports.default = {
 
     //其他
     "back_to_top":'back to top',
-    'draft_tips':"A draft that is automatically saved when you have the last editor was detected. Do you automatically fill in the last draft?"
+    'draft_tips':"A draft that is automatically saved when you have the last editor was detected. Do you automatically fill in the last draft?",
+
+    //管理后台
+    "management_backstage":"backstage" ,
+    "user_management":"users" ,
+    "item_management":"items" ,
+    "add_user":"add user" ,
+    "search":"search" ,
 
 };

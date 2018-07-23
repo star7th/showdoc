@@ -49,4 +49,15 @@ class UserModel extends BaseModel {
     public function setLastTime($uid){
         return $this->where("uid='%s'",array($uid))->save(array("last_login_time"=>time()));
     }
+
+    //删除用户
+    public function delete_user($uid){
+        D("ItemMember")->where("uid = '$uid' ")->delete();
+        D("UserToken")->where("uid = '$uid' ")->delete();
+        D("Template")->where("uid = '$uid' ")->delete();
+        D("ItemTop")->where("uid = '$uid' ")->delete();
+        $return = D("User")->where("uid = '$uid' ")->delete();
+        return $return ;
+    }
+
 }
