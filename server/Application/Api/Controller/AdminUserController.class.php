@@ -95,8 +95,8 @@ class AdminUserController extends BaseController {
         $text = file_get_contents("../composer.json");
         $composer = json_decode($text, true);
         $version = $composer['version'] ;
-        $url = "https://www.showdoc.cc/server/api/open/checkUpdate?version={$version}";
-        echo http_post($url);
+        $url = "https://www.showdoc.cc/server/api/open/checkUpdate";
+        echo http_post($url,array("version"=>$version));
     }
 
 }
