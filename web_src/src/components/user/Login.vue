@@ -90,8 +90,17 @@ export default {
       }
   },
   mounted() {
+    var that = this ;
     /*给body添加类，设置背景色*/
     document.getElementsByTagName("body")[0].className="grey-bg";
+    this.get_user_info(function(response){
+      if (response.data.error_code === 0 ) {
+        let redirect = decodeURIComponent(that.$route.query.redirect || '/item/index');
+        that.$router.replace({
+          path: redirect
+        });
+      }
+    });
   },
   beforeDestroy(){
     /*去掉添加的背景色*/
