@@ -13,7 +13,7 @@ class AdminUserController extends BaseController {
         $username = I("username");
         $where = " 1 = 1 ";
         if ($username) {
-            $username = mysql_escape_string($username);
+            $username = \SQLite3::escapeString($username);
            $where .= " and username like '%{$username}%' ";
         }
         $Users = D("User")->where($where)->page($page ,$count)->order(" uid desc  ")->select();

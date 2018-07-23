@@ -14,11 +14,11 @@ class AdminItemController extends BaseController {
         $username = I("username");
         $where = " 1 = 1 ";
         if ($item_name) {
-            $item_name = mysql_escape_string($item_name);
+            $item_name = \SQLite3::escapeString($item_name);
            $where .= " and item_name like '%{$item_name}%' ";
         }
         if ($username) {
-            $username = mysql_escape_string($username);
+            $username = \SQLite3::escapeString($username);
            $where .= " and username like '%{$username}%' ";
         }
         $items = D("Item")->where($where)->order(" addtime desc  ")->page($page ,$count)->select();
