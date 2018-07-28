@@ -3,7 +3,7 @@
     "name": "showdoc/showdoc",
     "type": "project",
     "description": "ShowDoc is a tool greatly applicable for an IT team to share documents online",
-    "keywords": ["showdoc","documents","Api"],
+    "keywords": ["Showdoc","documents","Api"],
     "homepage": "https://github.com/star7th/showdoc",
     "version":"v2.2.0",
     "license": "Apache-2.0",
