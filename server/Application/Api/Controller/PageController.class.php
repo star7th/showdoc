@@ -65,6 +65,10 @@ class PageController extends BaseController {
             $this->sendError(10103);
             return;
         }
+        if (!$page_content) {
+            $this->sendError(10103,"不允许保存空内容，请随便写点什么");
+            return;
+        }
 
         $data['page_title'] = $page_title ;
         $data['page_content'] = $page_content ;
