@@ -380,7 +380,7 @@ export default {
             });
             localStorage.removeItem("page_content");
             if (page_id <= 0 ) {
-              that.$router.push({path:'/'+item_id,query:{page_id:response.data.data.page_id}}) ; 
+              that.$router.push({path:'/page/edit/'+item_id+'/'+response.data.data.page_id}) ;
             };
           }else{
             that.$alert(response.data.error_message);
