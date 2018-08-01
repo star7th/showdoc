@@ -4,7 +4,7 @@
 
     <el-container>
           <el-card class="center-card">
-            <el-form  status-icon  label-width="0px" class="demo-ruleForm">
+            <el-form  status-icon  label-width="0px" class="demo-ruleForm" @keyup.enter.native="onSubmit">
               <h2>重置密码</h2>
               <el-form-item label="" >
                 <el-input type="text" auto-complete="off" placeholder="绑定的邮箱" v-model="email"></el-input>

@@ -4,7 +4,7 @@
 
     <el-container>
           <el-card class="center-card">
-            <el-form  status-icon  label-width="0px" class="demo-ruleForm">
+            <el-form  status-icon  label-width="0px" class="demo-ruleForm" @keyup.enter.native="onSubmit">
               <h2>重置密码</h2>
               <el-form-item label="" >
                 <el-input type="password" auto-complete="off" placeholder="请输入新密码" v-model="new_password"></el-input>
