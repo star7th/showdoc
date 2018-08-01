@@ -62,7 +62,7 @@
                 };
               };
               that.item_info = json ;
-              document.title = "ShowDoc--"+that.item_info.item_name ;
+              document.title = that.item_info.item_name +"--ShowDoc";
               if (json.unread_count > 0 ) {
                 that.$message({
                   showClose: true,
