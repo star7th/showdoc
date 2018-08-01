@@ -234,6 +234,7 @@
     width:800px;
     margin: 0 auto ;
     height: 50%;
+    overflow: visible;
   }
 
   .right-side{

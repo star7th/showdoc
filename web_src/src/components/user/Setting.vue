@@ -5,7 +5,7 @@
     <el-container>
           <el-card class="center-card">
           <template>
-            <el-button type="text" class="goback-btn " ><router-link to="/item/index">{{$t('goback')}}</router-link></el-button>
+            <router-link class="goback-btn "to="/item/index">{{$t('goback')}}</router-link>
             <el-tabs  value="first" type="card">
             
               <el-tab-pane :label="$t('modify_password')" name="first">

@@ -5,7 +5,7 @@
     <el-container>
           <el-card class="center-card">
           <template>
-            <el-button type="text" class="goback-btn " ><span class="feedback" @click="feedback">反馈</span><router-link to="/item/index">返回</router-link></el-button>
+            <el-button type="text" class="goback-btn "  @click="feedback" ><span class="feedback">反馈</span></el-button><router-link to="/item/index">返回</router-link>
             <el-tabs  value="first" type="card">
               <el-tab-pane label="我的消息" name="first">
 

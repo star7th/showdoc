@@ -15,7 +15,7 @@ import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 import myZhLocale from '../static/lang/zh-CN'
 import myEnLocale from '../static/lang/en'
 import 'url-search-params-polyfill'
-
+import "babel-polyfill";
 
 Vue.use(util);
 Vue.config.productionTip = false

@@ -81,6 +81,7 @@
   
   .el-main {
     margin-left: 200px;
+    overflow: visible;
   }
   
   body > .el-container {
