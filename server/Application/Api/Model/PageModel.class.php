@@ -8,7 +8,7 @@ use Api\Model\BaseModel;
 class PageModel extends BaseModel {
 
     //根据内容更新页面
-    public function update_by_content($item_id,$page_title,$page_content,$cat_name,$cat_name_sub,$s_number = 99){
+    public function update_by_content($item_id,$page_title,$page_content,$cat_name='',$cat_name_sub='',$s_number = 99){
         //如果传送了二级目录
         if ($cat_name) {
             $cat_name_array = D("Catalog")->where(" item_id = '$item_id' and level = 2 and cat_name = '%s' ",array($cat_name))->find();
