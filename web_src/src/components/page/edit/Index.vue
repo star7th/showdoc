@@ -34,7 +34,7 @@
                   <!-- <el-dropdown-item>保存前添加注释</el-dropdown-item> -->
                 </el-dropdown-menu>
               </el-dropdown>
-            <el-button type="" size="medium" @click="goback">{{$t('cancel')}}</el-button>
+            <el-button type="" size="medium" @click="goback">{{$t('goback')}}</el-button>
           </el-form-item>
         </el-form>
 
@@ -366,15 +366,20 @@ export default {
       params.append('item_id',  item_id);
       params.append('s_number',  that.s_number);
       params.append('page_title',  that.title);
-      params.append('page_content',  content);
+      params.append('page_content',  encodeURIComponent(content));
+      params.append('is_urlencode',  1);
       params.append('cat_id',  cat_id);
       that.axios.post(url, params)
         .then(function (response) {
           loading.close();
           if (response.data.error_code === 0 ) {
-            //that.$message.success("加载成功");
+            that.$message({
+              showClose: true,
+              message: that.$t("save_success"),
+              type: 'success'
+            });
             localStorage.removeItem("page_content");
-            that.$router.push({path:'/'+item_id,query:{page_id:response.data.data.page_id}}) ; 
+            //that.$router.push({path:'/'+item_id,query:{page_id:response.data.data.page_id}}) ; 
           }else{
             that.$alert(response.data.error_message);
           }

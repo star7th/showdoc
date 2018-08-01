@@ -53,6 +53,7 @@ class PageController extends BaseController {
     public function save(){
         $login_user = $this->checkLogin();
         $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
+        $is_urlencode = I("is_urlencode/d") ? I("is_urlencode/d") : 0 ; //页面内容是否经过了转义
         $page_title = I("page_title") ?I("page_title") : L("default_title");
         $page_comments = I("page_comments") ?I("page_comments") :'';
         $page_content = I("page_content");
@@ -69,7 +70,9 @@ class PageController extends BaseController {
             $this->sendError(10103,"不允许保存空内容，请随便写点什么");
             return;
         }
-
+        if ($is_urlencode) {
+            $page_content = urldecode($page_content);
+        }
         $data['page_title'] = $page_title ;
         $data['page_content'] = $page_content ;
         $data['page_comments'] = $page_comments ;

@@ -195,6 +195,7 @@ exports.default = {
     'save_time':'save time' ,
     'insert_templ':'insert',
     'delete_templ':'delete',
+    'save_success':'save success',
 
     //catalog
     'add_cat':'add catalog',
