@@ -4,7 +4,7 @@
 
     <el-container>
           <el-card class="center-card">
-            <el-form  status-icon  label-width="0px" class="demo-ruleForm">
+            <el-form  status-icon  label-width="0px" class="demo-ruleForm" @keyup.enter.native="onSubmit">
               <h2>{{$t('input_visit_password')}}</h2>
 
               <el-form-item label="" >
