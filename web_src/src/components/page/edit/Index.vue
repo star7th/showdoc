@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="hello" @keydown.ctrl.83.prevent="save" @keydown.meta.83.prevent="save">
     <Header> </Header>
 
     <el-container class="container-narrow">
@@ -507,13 +507,6 @@ export default {
     /** 监听粘贴上传图片 **/
     document.addEventListener('paste', this.upload_paste_img);
     
-    document.onkeydown=function(e){  //对整个页面文档监听 其键盘快捷键
-      var keyNum=window.event ? e.keyCode :e.which;  //获取被按下的键值 
-      if (keyNum == 83 && e.ctrlKey) {  //Ctrl +S 为保存
-        that.save();
-        e.preventDefault();
-      };
-    }
     
   },
 
