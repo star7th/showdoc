@@ -3,11 +3,35 @@ namespace Api\Controller;
 use Think\Controller;
 class BaseController extends Controller {
 
+	//是否开启本地调试
+	private $is_local_debug;
+
+    public function __construct()
+    {
+		//是否开启本地调试。
+		$this->is_local_debug = 0 ;
+
+		//做一个检测，以免这个配置更新到线上。
+		if (
+			$this->is_local_debug > 0 
+			&&$_SERVER['HTTP_HOST'] != '127.0.0.1' 
+			&& $_SERVER['HTTP_HOST'] != 'wu.com' 
+			&& strpos($_SERVER['HTTP_HOST'], "192.168") == false
+		){
+			$this->sendError("-1001","非本地环境禁止开通调试。请通知管理员关闭调试模式");
+			exit();
+		}
+
+    }
+
+
 	public function checkLogin($redirect = true){
 
 		//debug
-		//$login_user = D("User")->where("username = 'showdoc' ")->find();
-		//session("login_user" , $login_user);
+		if ($this->is_local_debug > 0 ) {
+			$login_user = D("User")->where("username = 'showdoc' ")->find();
+			session("login_user" , $login_user);
+		}
 		
 		if ( ! session("login_user")) {
 			$cookie_token = cookie('cookie_token');
@@ -57,9 +81,12 @@ class BaseController extends Controller {
 			$result['error_code'] = 0 ;
 			$result['data'] = $array ;
 		}
-		//header('Access-Control-Allow-Origin: http://127.0.0.1:8080');//允许跨域请求
-		//header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
-		//header('Access-Control-Allow-Credentials : true');//允许跨域请求
+		
+		if ($this->is_local_debug > 0 ) {
+			header('Access-Control-Allow-Origin: *');//允许跨域请求
+			header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
+			header('Access-Control-Allow-Credentials : true');//允许跨域请求
+		}
 		echo json_encode($result);
 
 		//如果开启API调试模式，则记录请求参数和返回结果
