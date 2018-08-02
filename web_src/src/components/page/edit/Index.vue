@@ -429,64 +429,62 @@ export default {
     },
 
     /** 粘贴上传图片 **/
-    on_paste(){
+    upload_paste_img(e){
       var that = this;
       var url = DocConfig.server+'/api/page/uploadImg';
-      document.addEventListener('paste', function(e) {
-        var clipboard = e.clipboardData;
-        for (var i = 0, len = clipboard.items.length; i < len; i++) {
-          if (clipboard.items[i].kind == 'file' || clipboard.items[i].type.indexOf('image') > -1) {
-            var imageFile = clipboard.items[i].getAsFile();
-            var form = new FormData;
-            form.append('t', 'ajax-uploadpic');
-            form.append('editormd-image-file', imageFile);
-            var loading = '';
-            var callback = function(type, data) {
-              type = type || 'before';
-              switch (type) {
-                // 开始上传
-                case 'before':
-                  loading = that.$loading();
-                  break;
-                  // 服务器返回错误
-                case 'error':
-                  loading.close();
-                  that.$alert('图片上传失败');
-                  break;
-                  // 上传成功
-                case 'success':
-                  loading.close();
-                  if (data.success == 1) {
-                    var value = '![](' + data.url + ')';
-                    that.insertValue(value);
-                  } else {
-                    that.$alert(data.message);
-                  }
+      var clipboard = e.clipboardData;
+      for (var i = 0, len = clipboard.items.length; i < len; i++) {
+        if (clipboard.items[i].kind == 'file' || clipboard.items[i].type.indexOf('image') > -1) {
+          var imageFile = clipboard.items[i].getAsFile();
+          var form = new FormData;
+          form.append('t', 'ajax-uploadpic');
+          form.append('editormd-image-file', imageFile);
+          var loading = '';
+          var callback = function(type, data) {
+            type = type || 'before';
+            switch (type) {
+              // 开始上传
+              case 'before':
+                loading = that.$loading();
+                break;
+                // 服务器返回错误
+              case 'error':
+                loading.close();
+                that.$alert('图片上传失败');
+                break;
+                // 上传成功
+              case 'success':
+                loading.close();
+                if (data.success == 1) {
+                  var value = '![](' + data.url + ')';
+                  that.insertValue(value);
+                } else {
+                  that.$alert(data.message);
+                }
 
-                  break;
-              }
-            };
-            $.ajax({
-              url: url,
-              type: "POST",
-              dataType: "json",
-              data: form,
-              processData: false,
-              contentType: false,
-              beforeSend: function() {
-                callback('before');
-              },
-              error: function() {
-                callback('error');
-              },
-              success: function(data) {
-                callback('success', data);
-              }
-            })
-            e.preventDefault();
-          }
+                break;
+            }
+          };
+          $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            data: form,
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+              callback('before');
+            },
+            error: function() {
+              callback('error');
+            },
+            success: function(data) {
+              callback('success', data);
+            }
+          })
+          e.preventDefault();
         }
-      });
+      }
     }
   },
 
@@ -505,8 +503,9 @@ export default {
       this.content = this.$t("welcome_use_showdoc") ;
     }
     this.get_cat2(this.$route.params.item_id);
-    
-    that.on_paste();
+
+    /** 监听粘贴上传图片 **/
+    document.addEventListener('paste', this.upload_paste_img);
     
     document.onkeydown=function(e){  //对整个页面文档监听 其键盘快捷键
       var keyNum=window.event ? e.keyCode :e.which;  //获取被按下的键值 
@@ -516,6 +515,13 @@ export default {
       };
     }
     
+  },
+
+  beforeDestroy(){
+    
+    //解除对粘贴上传图片的监听
+    document.removeEventListener('paste', this.upload_paste_img);
+    alert("message")
   }
 }
 </script>
