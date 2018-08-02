@@ -183,6 +183,7 @@ export default {
       currentDate: new Date(),
       itemList:{},
       content:"",
+      tmp_content:'',
       title:"",
       item_id:0,
       cat2:[],
@@ -217,8 +218,9 @@ export default {
             if (response.data.error_code === 0 ) {
               //that.$message.success("加载成功");
               that.content = response.data.data.page_content ;
+              that.tmp_content = response.data.data.page_content ;
               setTimeout(function(){
-                that.insertValue(that.content ,1) ;
+                that.insertValue(that.tmp_content ,1) ;
               },500);
               that.title = response.data.data.page_title ;
               that.item_id = response.data.data.item_id ;
