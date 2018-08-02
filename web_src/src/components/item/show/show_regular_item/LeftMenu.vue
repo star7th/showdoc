@@ -170,4 +170,14 @@
   margin-right: 5px;
   margin-top: -5px;
 }
+
+.el-menu-item, .el-submenu__title{
+    height: 46px;
+    line-height: 46px;
+}
+.el-submenu .el-menu-item {
+    height: 40px;
+    line-height: 40px;
+}
+
 </style>
