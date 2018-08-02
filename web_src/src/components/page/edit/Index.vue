@@ -217,6 +217,9 @@ export default {
             if (response.data.error_code === 0 ) {
               //that.$message.success("加载成功");
               that.content = response.data.data.page_content ;
+              setTimeout(function(){
+                that.insertValue(that.content ,1) ;
+              },500);
               that.title = response.data.data.page_title ;
               that.item_id = response.data.data.item_id ;
               that.s_number = response.data.data.s_number ;
