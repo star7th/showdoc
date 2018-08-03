@@ -135,7 +135,7 @@ export default {
 
     //插入数据到编辑器中。插入到光标处
     insertValue(insertContent){
-      this.instance.insertValue($("<div/>").html(insertContent).text());
+      this.instance.insertValue(this.html_decode(insertContent));
     },
 
     getMarkdown(){
@@ -244,6 +244,21 @@ export default {
         $("#"+this.id+" code").css("color","#d14");
         
     },
+
+
+    //转义
+    html_decode(str){   
+      var s = "";   
+      if (str.length == 0) return "";   
+      s = str.replace(/&gt;/g, "&");   
+      s = s.replace(/&lt;/g, "<");   
+      s = s.replace(/&gt;/g, ">");   
+      s = s.replace(/&nbsp;/g, " ");   
+      s = s.replace(/&#39;/g, "\'");   
+      s = s.replace(/&quot;/g, "\"");   
+      //s = s.replace(/<br>/g, "\n");   
+      return s;   
+    }
   }
 };
 </script>
