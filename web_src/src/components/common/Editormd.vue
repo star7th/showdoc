@@ -135,7 +135,7 @@ export default {
 
     //插入数据到编辑器中。插入到光标处
     insertValue(insertContent){
-      this.instance.insertValue(insertContent);
+      this.instance.insertValue($("<div/>").html(insertContent).text());
     },
 
     getMarkdown(){
