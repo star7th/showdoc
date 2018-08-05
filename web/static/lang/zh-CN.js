@@ -1,5 +1,3 @@
-'use strict';
-
 exports.__esModule = true;
 exports.default = {
     //index
@@ -200,6 +198,8 @@ exports.default = {
     'save_time':'保存时间' ,
     'insert_templ':'插入此模板',
     'delete_templ':'删除模板',
+    'save_success':'保存成功',
+
 
     //catalog
     'add_cat':'添加目录',

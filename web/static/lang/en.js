@@ -1,5 +1,3 @@
-'use strict';
-
 exports.__esModule = true;
 exports.default = {
     //index
@@ -195,6 +193,7 @@ exports.default = {
     'save_time':'save time' ,
     'insert_templ':'insert',
     'delete_templ':'delete',
+    'save_success':'save success',
 
     //catalog
     'add_cat':'add catalog',
