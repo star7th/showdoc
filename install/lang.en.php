@@ -11,7 +11,7 @@ return array(
   "db_password"=>' Database Password',
   "sqlite_tips"=>'Sqlite has supported by PHP and you just need to click the Go buttun',
   "go"=>'Go',
-  "install_success_help"=>'Installation success!The password of the default administrator account is showdoc/123456 ,After login, you can see the management backstage access in the upper right corner.In addition, it is strongly recommended to modify the administrator\'s initial password .<br>More help :<a href="https://www.showdoc.cc/help-en" target="_blank">https://www.showdoc.cc/help-en</a>',
+  "install_success_help"=>'Installation success!The password of the default administrator account is showdoc/123456 ,After login, you can see the management backstage access in the upper right corner.In addition, it is strongly recommended to modify the administrator password .<br>More help :<a href="https://www.showdoc.cc/help-en" target="_blank">https://www.showdoc.cc/help-en</a>',
   "home"=>'Website Home',
   "FAQ"=>'FAQ',
 
