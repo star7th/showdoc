@@ -28,21 +28,17 @@ if(!new_is_writeable("../Public/Uploads")){
   echo L("not_writable_upload").'<br>';
   $go = 0;
 }
-if(!new_is_writeable("../Application/Runtime")){
-  echo L("not_writable_runtime").'<br>';
-  $go = 0;
-}
 
 if(!new_is_writeable("../server/Application/Runtime")){
   echo L("not_writable_server_runtime").'<br>';
   $go = 0;
 }
 
-if(!new_is_writeable("../Application/Common/Conf/config.php")){
+if(!new_is_writeable("../server/Application/Common/Conf/config.php")){
   echo L("not_writable_config").'<br>';
   $go = 0;
 }
-if(!new_is_writeable("../Application/Home/Conf/config.php")){
+if(!new_is_writeable("../server/Application/Home/Conf/config.php")){
   echo L("not_writable_home_config").'<br>';
   $go = 0;
 }

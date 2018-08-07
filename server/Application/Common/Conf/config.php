@@ -14,6 +14,13 @@ return array(
     'DB_DEBUG'  =>  TRUE, // 数据库调试模式 开启后可以记录SQL日志
     'URL_HTML_SUFFIX' => '',//url伪静态后缀
     'URL_MODEL' => 3 ,//URL兼容模式
+    'URL_ROUTER_ON'   => true, 
+    'URL_ROUTE_RULES'=>array(
+        ':id\d'               => 'Home/Item/show?item_id=:1',
+        ':domain\s$'               => 'Home/Item/show?item_domain=:1',//item的个性域名
+        'uid/:id\d'               => 'Home/Item/showByUid?uid=:1',
+        'page/:id\d'               => 'Home/Page/single?page_id=:1',
+    ),
     'URL_CASE_INSENSITIVE'=>true,
     'SHOW_ERROR_MSG'        =>  true,    // 显示错误信息，这样在部署模式下也能显示错误
     'STATS_CODE' =>'',  //可选，统计代码

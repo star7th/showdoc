@@ -1,4 +1,0 @@
-<?php
-//showdoc not install 
-//
-//

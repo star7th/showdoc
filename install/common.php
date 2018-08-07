@@ -45,7 +45,7 @@ function new_is_writeable($file) {
   return $writeable;
 }
 
-function clear_runtime($path = "../Application/Runtime"){  
+function clear_runtime($path = "../server/Application/Runtime"){  
     //给定的目录不是一个文件夹  
     if(!is_dir($path)){  
         return null;  
