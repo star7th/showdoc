@@ -87,5 +87,16 @@ class PageModel extends BaseModel {
         return $page_id ;
     }
 
-	
+   //软删除页面
+   public function softDeletePage($page_id){
+      $ret = M("Page")->where(" page_id = '$page_id' ")->save(array("is_del"=>1 ,"addtime"=>time()));
+      return $ret;
+   }
+
+   //删除页面
+   public function deletePage($page_id){
+      $ret = M("Page")->where(" page_id = '$page_id' ")->delete();
+      return $ret;
+   }
+
 }

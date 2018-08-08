@@ -87,7 +87,12 @@ export default {
       change_v_code_img(){
         var rand = '&rand='+Math.random();
         this.v_code_img += rand ;
+      },
+      script_cron(){
+        var url = DocConfig.server+'/api/ScriptCron/run';
+        this.axios.get(url);
       }
+
   },
   mounted() {
     var that = this ;
@@ -101,6 +106,8 @@ export default {
         });
       }
     });
+
+    this.script_cron();
   },
   beforeDestroy(){
     /*去掉添加的背景色*/

@@ -19,13 +19,13 @@ class ExportController extends BaseController {
         $item = D("Item")->where("item_id = '$item_id' ")->find();
 
         //获取所有父目录id为0的页面
-        $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `s_number` asc  ")->select();
+        $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' and is_del = 0")->order(" `s_number` asc  ")->select();
         //获取所有二级目录
         $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->order(" `s_number` asc  ")->select();
         if ($catalogs) {
             foreach ($catalogs as $key => &$catalog) {
                 //该二级目录下的所有子页面
-                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
+                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->select();
                 $catalog['pages'] = $temp ? $temp: array();
 
                 //该二级目录下的所有子目录
@@ -35,7 +35,7 @@ class ExportController extends BaseController {
                     //获取所有三级目录的子页面
                     foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
                         //该二级目录下的所有子页面
-                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->order(" `s_number` asc  ")->select();
+                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->select();
                         $catalog3['pages'] = $temp ? $temp: array();
                     }                        
                 }               
@@ -113,7 +113,7 @@ class ExportController extends BaseController {
         $catalog = D("Catalog")->where("item_id = '$item_id' and cat_id = '$cat_id' and level =2 ")->order(" `s_number` asc  ")->find();
         if (!empty($catalog)) {
                 //该二级目录下的所有子页面
-                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
+                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->select();
                 $catalog['pages'] = $temp ? $temp: array();
 
                 //该二级目录下的所有子目录
@@ -123,7 +123,7 @@ class ExportController extends BaseController {
                     //获取所有三级目录的子页面
                     foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
                         //该二级目录下的所有子页面
-                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->order(" `s_number` asc  ")->select();
+                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->select();
                         $catalog3['pages'] = $temp ? $temp: array();
                     }                        
                 } 
@@ -132,7 +132,7 @@ class ExportController extends BaseController {
             $catalog = D("Catalog")->where("item_id = '$item_id' and cat_id = '$cat_id' and level =3 ")->order(" `s_number` asc  ")->find();
             if (!empty($catalog)) {
                     //该三级目录下的所有子页面
-                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
+                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->select();
                     $catalog['pages'] = $temp ? $temp: array();
             }
         }

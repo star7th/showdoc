@@ -12,7 +12,7 @@ class AdminItemController extends BaseController {
         $page = I("page/d");
         $count = I("count/d");
         $username = I("username");
-        $where = " 1 = 1 ";
+        $where = " is_del = 0 ";
         if ($item_name) {
             $item_name = \SQLite3::escapeString($item_name);
            $where .= " and item_name like '%{$item_name}%' ";
@@ -54,7 +54,7 @@ class AdminItemController extends BaseController {
         $login_user = $this->checkLogin();
         $this->checkAdmin();
         $item_id = I("item_id/d");
-        $return = D("Item")->delete_item($item_id);
+        $return = D("Item")->soft_delete_item($item_id);
         if (!$return) {
             $this->sendError(10101);
         }else{

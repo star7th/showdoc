@@ -29,7 +29,7 @@ class ItemController extends BaseController {
         } 
 
         $item = D("Item")->where("item_id = '$item_id' ")->find();
-        if (!$item) {
+        if (!$item || $item['is_del'] == 1) {
             sleep(1);
             $this->sendError(10101,'项目不存在或者已删除');
             return false;
@@ -63,13 +63,13 @@ class ItemController extends BaseController {
         
         }else{
             //获取所有父目录id为0的页面
-            $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+            $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' and is_del = 0")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
             //获取所有二级目录
             $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->order(" `s_number` asc  ")->select();
             if ($catalogs) {
                 foreach ($catalogs as $key => &$catalog) {
                     //该二级目录下的所有子页面
-                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
                     $catalog['pages'] = $temp ? $temp: array();
 
                     //该二级目录下的所有子目录
@@ -79,7 +79,7 @@ class ItemController extends BaseController {
                         //获取所有三级目录的子页面
                         foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
                             //该二级目录下的所有子页面
-                            $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+                            $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
                             $catalog3['pages'] = $temp ? $temp: array();
                         }                        
                     }               
@@ -181,7 +181,15 @@ class ItemController extends BaseController {
     //我的项目列表
     public function myList(){
         $login_user = $this->checkLogin();        
-        $items  = D("Item")->field("item_id,item_name,last_update_time,item_description")->where("uid = '$login_user[uid]' or item_id in ( select item_id from ".C('DB_PREFIX')."item_member where uid = '$login_user[uid]' ) ")->order("item_id asc")->select();
+        $items  = D("Item")->field("item_id,item_name,last_update_time,item_description,is_del")->where("uid = '$login_user[uid]' or item_id in ( select item_id from ".C('DB_PREFIX')."item_member where uid = '$login_user[uid]' ) ")->order("item_id asc")->select();
+        
+        foreach ($items as $key => $value) {
+            //如果项目已标识为删除
+            if ($value['is_del'] == 1) {
+                unset($items[$key]);
+            }
+        }
+
         //读取需要置顶的项目
         $top_items = D("ItemTop")->where("uid = '$login_user[uid]'")->select();
         if ($top_items) {
@@ -198,11 +206,9 @@ class ItemController extends BaseController {
                     array_unshift($items,$tmp) ;
                 }
             }
-
-            $items = array_values($items);
         }
 
-        $items = $items ? $items : array();
+        $items = $items ? array_values($items) : array();
         $this->sendResult($items);
 
     }
@@ -323,11 +329,7 @@ class ItemController extends BaseController {
         }
 
 
-        D("Page")->where("item_id = '$item_id' ")->delete();
-        D("Catalog")->where("item_id = '$item_id' ")->delete();
-        D("PageHistory")->where("item_id = '$item_id' ")->delete();
-        D("ItemMember")->where("item_id = '$item_id' ")->delete();
-        $return = D("Item")->where("item_id = '$item_id' ")->delete();
+        $return = D("Item")->soft_delete_item($item_id);
 
         if (!$return) {
             $this->sendError(10101);
