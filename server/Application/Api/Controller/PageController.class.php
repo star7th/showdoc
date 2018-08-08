@@ -7,7 +7,7 @@ class PageController extends BaseController {
     public function info(){
         $page_id = I("page_id/d");
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
-        if (!$page) {
+        if (!$page  || $page['is_del'] == 1) {
             sleep(1);
             $this->sendError(10101);
             return false;
@@ -37,7 +37,7 @@ class PageController extends BaseController {
 
         if ($page) {
             
-            $ret = D("Page")->where(" page_id = '$page_id' ")->delete();
+            $ret = D("Page")->softDeletePage($page_id);
             //更新项目时间
             D("Item")->where(" item_id = '$page[item_id]' ")->save(array("last_update_time"=>time()));
 

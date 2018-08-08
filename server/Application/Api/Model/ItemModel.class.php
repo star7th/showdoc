@@ -189,4 +189,9 @@ class ItemModel extends BaseModel {
 
     }
     
+    //软删除项目
+    public function soft_delete_item($item_id){
+        return $this->where("item_id = '$item_id' ")->save(array("is_del"=>1 ,"last_update_time"=>time()));
+    }
+
 }
