@@ -68,6 +68,8 @@ function write_home_config(){
         $config .= "
 return array(
 	//'配置项'=>'配置值'
+    'DB_TYPE'   => 'Sqlite', 
+    'DB_NAME'   => './Sqlite/showdoc.db.php', 
     'LANG_SWITCH_ON' => true,   // 开启语言包功能
     'LANG_AUTO_DETECT' => false, // 自动侦测语言 开启多语言功能后有效
     'DEFAULT_LANG' => '{$DEFAULT_LANG}', // 默认语言

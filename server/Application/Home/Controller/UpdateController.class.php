@@ -192,6 +192,36 @@ class UpdateController extends BaseController {
              D("User")->add(array('username'=>"showdoc" ,"groupid"=>1,'password'=>"a89da13684490eb9ec9e613f91d24d00" , 'reg_time'=>time()));
         }
 
+        //item表增加is_del字段
+        $columns = M("Item")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'is_del') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD is_del INT( 1 ) NOT NULL DEFAULT '0'  ;";
+                D("Item")->execute($sql);
+            }
+        }
+
+        //page表增加is_del字段
+        $columns = M("Page")->getDbFields();
+        if ($columns) {
+            $has_it = 0 ;//是否存在该字段
+            foreach ($columns as $key => $value) {
+                if ($value == 'is_del') {
+                    $has_it = 1 ;
+                }
+            }
+            if ($has_it === 0) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."page ADD is_del INT( 1 ) NOT NULL DEFAULT '0'  ;";
+                D("Page")->execute($sql);
+            }
+        }
+
         echo 'OK!';
     }
 
