@@ -57,7 +57,7 @@ class PageModel extends BaseModel {
         }
 
         if ($page_content) {
-            $page_array = D("Page")->where(" item_id = '$item_id'  and cat_id = '$cat_id'  and page_title ='%s' ",array($page_title))->find();
+            $page_array = D("Page")->where(" item_id = '$item_id' and is_del = 0  and cat_id = '$cat_id'  and page_title ='%s' ",array($page_title))->find();
             //如果不存在则新建
             if (!$page_array) {
                 $add_data = array(
