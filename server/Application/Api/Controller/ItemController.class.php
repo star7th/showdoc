@@ -189,7 +189,7 @@ class ItemController extends BaseController {
                 unset($items[$key]);
             }
         }
-
+        $items = array_values($items);
         //读取需要置顶的项目
         $top_items = D("ItemTop")->where("uid = '$login_user[uid]'")->select();
         if ($top_items) {
