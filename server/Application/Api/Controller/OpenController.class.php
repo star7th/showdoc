@@ -66,6 +66,12 @@ class OpenController extends BaseController {
         
     }
 
+    //通过注释生成api文档
+    public function fromComments(){
+        R("FromComments/generate");
+    }
+
+    
     private function _analyze_db_structure_to_array($table_info , $table_detail){
         $tables = array();
 
