@@ -40,7 +40,7 @@
               </el-form-item>
               
               <el-form-item label="" style="text-align: left;margin-bottom:5px;margin-left:15px;margin-top:-25px;">
-                  <a target="_bank"  href="https://www.showdoc.cc/page/312209902620725">{{$t('auto_db')}}</a>
+                  <el-button type="text" @click="auto_doc">我要自动生成文档</el-button>
                   &nbsp;&nbsp;&nbsp;
               </el-form-item>
 
@@ -130,7 +130,16 @@ export default {
             }
             
           });
-      },
+    },
+    auto_doc(){
+      var msg = '<p>如果你想自动化生成API文档，则可参考<a target="_bank" href="https://www.showdoc.cc/page/741656402509783">API文档</a></p>';
+      msg += '<p>如果你想自动化生成数据字典，则可参考<a target="_bank" href="https://www.showdoc.cc/page/312209902620725">数据字典</a></p>';
+      msg += '<p>如果你更自由地生成自己所需要的格式，则可参考<a target="_bank" href="https://www.showdoc.cc/page/102098">开放API</a></p>';
+      this.$alert(msg, {
+          dangerouslyUseHTMLString: true
+        });
+    }
+    
   },
   mounted() {
     this.get_item_list();
