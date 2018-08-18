@@ -5,7 +5,7 @@
 
     <el-container class="container-narrow">
 
-      <el-dialog :title="$t('history_version')" :visible.sync="dialogTableVisible">
+      <el-dialog :title="$t('history_version')" :modal="is_modal"  :visible.sync="dialogTableVisible">
         <el-table :data="content">
           <el-table-column property="addtime" :label="$t('update_time')" width="170"></el-table-column>
           <el-table-column property="author_username" :label="$t('update_by_who')" ></el-table-column>
@@ -14,7 +14,7 @@
             width="150">
             <template slot-scope="scope">
               <el-button @click="preview_diff(scope.row)" type="text" size="small">{{$t('overview')}}</el-button>
-              <el-button type="text" size="small" @click="recover(scope.row)">{{$t('recover_to_this_version')}}</el-button>
+              <el-button v-if="is_show_recover_btn"  type="text" size="small" @click="recover(scope.row)">{{$t('recover_to_this_version')}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -36,6 +36,9 @@
 export default {
   props:{
     callback:'',
+    page_id:'',
+    is_modal:true,
+    is_show_recover_btn:true,
   },
   data () {
     return {
@@ -52,7 +55,8 @@ export default {
         var that = this ;
         var url = DocConfig.server+'/api/page/history';
         var params = new URLSearchParams();
-        params.append('page_id',  that.$route.params.page_id);
+        let page_id = this.page_id ? this.page_id: that.$route.params.page_id ;
+        params.append('page_id',  page_id);
         that.axios.post(url, params)
           .then(function (response) {
             if (response.data.error_code === 0 ) {
@@ -87,7 +91,7 @@ export default {
 
     preview_diff(row){
       var page_history_id = row['page_history_id'] ;
-      var page_id = this.$route.params.page_id
+      let page_id = this.page_id ? this.page_id: this.$route.params.page_id ;
       var url = '#/page/diff/'+page_id+'/'+page_history_id;
       window.open(url);
     }

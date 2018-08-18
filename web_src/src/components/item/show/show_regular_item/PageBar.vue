@@ -20,6 +20,7 @@
             <el-dropdown-menu slot="dropdown">
               <router-link :to="'/page/edit/'+item_id+'/0?copy_page_id='+page_id"><el-dropdown-item>{{$t('copy')}}</el-dropdown-item></router-link>
               <el-dropdown-item :command="show_page_info">{{$t('detail')}}</el-dropdown-item>
+              <el-dropdown-item :command="ShowHistoryVersion">{{$t('history_version')}}</el-dropdown-item>
               <el-dropdown-item :command="delete_page">{{$t('delete')}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -50,6 +51,9 @@
     </span>
   </el-dialog>
 
+    <!-- 历史版本 -->
+    <HistoryVersion :page_id="page_id" :is_show_recover_btn="false" :is_modal="false" callback="insertValue" ref="HistoryVersion"></HistoryVersion>
+
   </div>
 </template>
 
@@ -62,7 +66,7 @@
 </style>
 
 <script>
-
+  import HistoryVersion from '@/components/page/edit/HistoryVersion'
   export default {
   props:{
     item_id:'',
@@ -80,7 +84,7 @@
       }
     },
   components:{
-
+    HistoryVersion
   },
   methods:{
     edit_page(){
@@ -104,6 +108,12 @@
     show_page_info(){
       var html ="本页面由 "+this.page_info.author_username+' 于 '+this.page_info.addtime+' 更新';
       this.$alert(html);
+    },
+    
+    //展示历史版本
+    ShowHistoryVersion(){
+        let childRef = this.$refs.HistoryVersion ;//获取子组件
+        childRef.show() ; 
     },
 
     delete_page(){
