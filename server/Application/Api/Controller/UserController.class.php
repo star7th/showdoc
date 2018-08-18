@@ -85,6 +85,15 @@ class UserController extends BaseController {
         $this->sendResult($info); 
     }
 
+    //获取所有用户名
+    public function allUser(){
+        $login_user = $this->checkLogin();
+        $uid = $login_user['uid'] ;
+        $field = "username as value" ;
+        $info = D("User")->field($field)->select();
+        $this->sendResult($info); 
+    }
+
     //通过旧密码验证来更新用户密码
     public function resetPassword(){
         $login_user = $this->checkLogin();

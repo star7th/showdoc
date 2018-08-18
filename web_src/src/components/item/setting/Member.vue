@@ -31,7 +31,11 @@
     <el-dialog :visible.sync="dialogFormVisible" :modal="false" top="10vh">
       <el-form >
           <el-form-item label="" >
-            <el-input  :placeholder="$t('input_target_member')" v-model="MyForm.username"></el-input>
+            <el-autocomplete  
+            :placeholder="$t('input_target_member')"  
+            v-model="MyForm.username" 
+            :fetch-suggestions="querySearch" 
+            ></el-autocomplete>
           </el-form-item>
           <el-form-item label="" class="readonly-checkbox" >
             <el-checkbox v-model="MyForm.is_readonly">{{$t('readonly')}}</el-checkbox>
@@ -66,7 +70,7 @@ export default {
       },
       members:[],
       dialogFormVisible:false,
-      
+      all_user:[]
     }
 
   },
@@ -86,9 +90,6 @@ export default {
               that.$alert(response.data.error_message);
             }
             
-          })
-          .catch(function (error) {
-            console.log(error);
           });
       },
       MyFormSubmit() {
@@ -142,11 +143,36 @@ export default {
             }); 
           })
 
+      },
+      get_all_user(){
+        var that = this ;
+        var url = DocConfig.server+'/api/user/allUser';
+        that.axios.post(url)
+          .then(function (response) {
+            if (response.data.error_code === 0 ) {
+              that.all_user = response.data.data
+            }else{
+              that.$alert(response.data.error_message);
+            }
+            
+          });
+      },
+      querySearch(queryString, cb) {
+        var all_user = this.all_user;
+        var results = queryString ? all_user.filter(this.createFilter(queryString)) : all_user;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (all_user) => {
+          return (all_user.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        } 
       }
   },
 
   mounted(){
     this.get_members();
+    this.get_all_user();
   }
 }
 </script>
