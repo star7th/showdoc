@@ -144,7 +144,7 @@ export default {
           var params = new URLSearchParams();
           that.axios.post(url, params)
             .then(function (response) {
-              if (response.data.data.url) {
+              if (response && response.data && response.data.data && response.data.data.url) {
                   that.$message({
                     showClose: true,
                     duration:10000,
