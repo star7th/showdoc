@@ -52,12 +52,14 @@ export default {
       password: '',
       v_code: '',
       v_code_img:DocConfig.server+'/api/common/verify',
-      show_v_code:false
+      show_v_code:false,
+      is_show_alert:false
     }
 
   },
   methods: {
       onSubmit() {
+          if (this.is_show_alert) { return ;};
           //this.$message.success(this.username);
           var that = this ;
           var url = DocConfig.server+'/api/user/login';
@@ -79,7 +81,13 @@ export default {
                   that.show_v_code = true ;
                   that.change_v_code_img() ;
                 };
-                that.$alert(response.data.error_message);
+                that.is_show_alert = true ;
+                that.$alert(response.data.error_message,{callback:function(){
+                 setTimeout(function(){
+                    that.is_show_alert = false;
+                 },500);
+                 
+                }});
               }
               
             });
