@@ -263,6 +263,7 @@
     margin-top: 5px;
     margin-left: -15px;
     cursor: pointer;
+    position: fixed;
   }
 
 </style>
