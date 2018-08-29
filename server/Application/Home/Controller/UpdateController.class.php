@@ -222,7 +222,7 @@ class UpdateController extends BaseController {
             }
         }
 
-        echo 'OK!';
+        echo "OK!\n";
     }
 
     private function _clear_runtime($path = RUNTIME_PATH){  
