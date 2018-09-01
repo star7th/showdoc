@@ -141,7 +141,13 @@ export default {
     getMarkdown(){
       return this.instance.getMarkdown();
     },
+    editor_unwatch(){
+      return this.instance.unwatch();
+    },
 
+    editor_watch(){
+      return this.instance.watch();
+    },
     clear(){
       return this.instance.clear();
     },

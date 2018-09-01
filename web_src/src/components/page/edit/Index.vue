@@ -220,6 +220,14 @@ export default {
               setTimeout(function(){
                 that.insertValue(that.content ,1) ;
               },500);
+              setTimeout(function(){
+                //如果长度大于3000,则关闭预览
+                if (that.content.length > 3000) {
+                  that.editor_unwatch();
+                }else{
+                  that.editor_watch();
+                }
+              },1000);
               that.title = response.data.data.page_title ;
               that.item_id = response.data.data.item_id ;
               that.s_number = response.data.data.s_number ;
@@ -322,7 +330,17 @@ export default {
     insert_database_template(){
       this.insertValue(this.$refs.database_doc_templ.innerHTML ) ;
     },
-
+    //关闭预览
+    editor_unwatch(){
+      let childRef = this.$refs.Editormd ;//获取子组件
+      childRef.editor_unwatch();
+      this.$alert("检测到本页面内容比较多，showdoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。")
+    },
+    //
+    editor_watch(){
+      let childRef = this.$refs.Editormd ;//获取子组件
+      childRef.editor_watch();
+    },
     //json转参数表格
     ShowJsonToTable(){
         let childRef = this.$refs.JsonToTable ;//获取子组件
