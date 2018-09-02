@@ -78,7 +78,11 @@
     height: calc(100% - 60px);
     position: absolute;
   }
-  
+
+  .el-menu{
+    border-right: 0px;
+  }
+
   .el-main {
     margin-left: 200px;
     overflow: visible;
@@ -108,9 +112,8 @@
   .header_title{
     float: left;
     padding-right: 35px;
-    padding-left: 24px;
+    padding-left: 25px;
     font-size: 20px;
-    border-right:1px solid #ddd;
     background-color: rgb(84, 92, 100);
     color: #fff;
   }
