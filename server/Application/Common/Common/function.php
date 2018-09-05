@@ -96,7 +96,7 @@ function output_word($data,$fileName=''){
         <body>'.$data.'</body></html>';
     
     $filepath = tmpfile();
-    $data = str_replace("<thead>\n<tr>","<thead><tr style='background-color: rgb(0, 136, 204); color: rgb(255, 255, 255);'>",$data);
+    $data = str_replace("<thead>\n<tr>","<thead><tr style='background-color: rgb(128, 128, 128); color: rgb(255, 255, 255);'>",$data);
     $data = str_replace("<pre><code>","<table width='100%' class='codestyle'><pre><code>",$data);
     $data = str_replace("</code></pre>","</code></pre></table>",$data);
     $len = strlen($data);
