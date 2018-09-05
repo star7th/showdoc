@@ -10,7 +10,8 @@ web_src/yarn-error.log*
 web_src//test/unit/coverage/
 web_src//test/e2e/reports/
 web_src/selenium-debug.log
-
+Sqlite/showdoc.db.php
+*/config.php
 # Editor directories and files
 web_src/.idea
 web_src/.vscode
