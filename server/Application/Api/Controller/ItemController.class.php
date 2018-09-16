@@ -449,7 +449,7 @@ class ItemController extends BaseController {
                 return;
             }
         }
-
+        session('v_code',null) ;
         $item = D("Item")->where("item_id = '$item_id' ")->find();
         if ($item['password'] == $password) {
             session("visit_item_".$item_id , 1 );

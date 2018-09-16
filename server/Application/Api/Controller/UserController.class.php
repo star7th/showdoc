@@ -11,6 +11,7 @@ class UserController extends BaseController {
         $confirm_password = I("confirm_password");
         $v_code = I("v_code");
         if (C('CloseVerify') || $v_code && $v_code == session('v_code') ) {
+        session('v_code',null) ;
         if ( $password != '' && $password == $confirm_password) {
 
             if ( ! D("User")->isExist($username) ) {
@@ -22,7 +23,6 @@ class UserController extends BaseController {
                     session("login_user" , $ret );
                     $token = D("UserToken")->createToken($ret['uid']);
                     cookie('cookie_token',$token,60*60*24*90);//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
-                    session('v_code',null) ;
                   $this->sendResult(array()); 
 
                 }else{
@@ -53,7 +53,7 @@ class UserController extends BaseController {
                 return;
             }
         }
-
+        session('v_code',null) ;
         $ret = D("User")->checkLogin($username,$password);
         if ($ret) {
           unset($ret['password']);

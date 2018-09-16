@@ -78,6 +78,7 @@ export default {
                 //that.$message.success("注册成功");
                 that.$router.push({path:'/item/index'});
               }else{
+                that.change_v_code_img() ;
                 that.$alert(response.data.error_message);
               }
               
