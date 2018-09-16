@@ -110,6 +110,8 @@ export default {
               if (response.data.error_code === 0 ) {
                 that.dialogFormVisible = false;
                 that.get_members() ;
+                that.MyForm.username = '';
+                that.MyForm.is_readonly = false;
               }else{
                 that.$alert(response.data.error_message);
               }

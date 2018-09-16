@@ -62,7 +62,7 @@
         <TemplateList :callback="insertValue" ref="TemplateList"></TemplateList>
 
         <!-- 历史版本 -->
-        <HistoryVersion :callback="insertValue" ref="HistoryVersion"></HistoryVersion>
+        <HistoryVersion :callback="insertValue" :is_show_recover_btn="true"  ref="HistoryVersion"></HistoryVersion>
 
         <!-- Json转表格 组件 -->
         <JsonToTable   :callback="insertValue" ref="JsonToTable" ></JsonToTable>
