@@ -36,13 +36,13 @@ class AdminUserController extends BaseController {
         }
     }
 
-    //删除项目
+    //删除用户
     public function deleteUser(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
         $uid = I("uid/d");
 
-        if (D("Item")->where("uid = '$uid' ")->find()) {
+        if (D("Item")->where("uid = '$uid' and is_del = 0 ")->find()) {
            $this->sendError(10101,"该用户名下还有项目，不允许删除。请先将其项目删除或者重新分配/转让"); 
            return ;
         }
