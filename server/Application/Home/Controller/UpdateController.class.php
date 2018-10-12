@@ -3,63 +3,38 @@ namespace Home\Controller;
 use Think\Controller;
 class UpdateController extends BaseController {
     
- 	//升级数据库
+    //升级数据库
     public function db(){
         $this->_clear_runtime();
-    	if (strtolower(C("DB_TYPE")) == 'mysql' ) {
-    		//$this->mysql();
+        if (strtolower(C("DB_TYPE")) == 'mysql' ) {
+            //$this->mysql();
             echo 'ShowDoc does not support mysql any more . https://www.showdoc.cc/help?page_id=31990 ';
-    	}
+        }
         elseif (strtolower(C("DB_TYPE")) == 'sqlite' ) {
             $this->sqlite();
         }
-    	$this->_clear_runtime();
+        $this->_clear_runtime();
     }
     public function sqlite(){
         //catalog表增加parent_cat_id字段
-        $columns = M("catalog")->getDbFields();
-        if ($columns) {
-            $has_it = 0 ;//是否存在该字段
-            foreach ($columns as $key => $value) {
-                if ($value == 'parent_cat_id') {
-                    $has_it = 1 ;
-                }
-            }
-            if ($has_it === 0) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."catalog ADD parent_cat_id INT( 10 ) NOT NULL DEFAULT '0' ;";
-                D("catalog")->execute($sql);
-            }
+        if (!$this->_is_column_exist("catalog","parent_cat_id")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."catalog ADD parent_cat_id INT( 10 ) NOT NULL DEFAULT '0' ;";
+            D("catalog")->execute($sql);
         }
 
         //catalog表增加level字段
-        $columns = M("catalog")->getDbFields();
-        if ($columns) {
-            $has_it = 0 ;//是否存在该字段
-            foreach ($columns as $key => $value) {
-                if ($value == 'level') {
-                    $has_it = 1 ;
-                }
-            }
-            if ($has_it === 0) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."catalog ADD level INT( 10 ) NOT NULL DEFAULT '2'  ;";
-                D("catalog")->execute($sql);
-            }
+        if (!$this->_is_column_exist("catalog","level")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."catalog ADD level INT( 10 ) NOT NULL DEFAULT '2'  ;";
+            D("catalog")->execute($sql);
         }
 
+
         //item表增加item_domain字段
-        $columns = M("item")->getDbFields();
-        if ($columns) {
-            $has_it = 0 ;//是否存在该字段
-            foreach ($columns as $key => $value) {
-                if ($value == 'item_domain') {
-                    $has_it = 1 ;
-                }
-            }
-            if ($has_it === 0) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD item_domain text NOT NULL DEFAULT '';";
-                D("item")->execute($sql);
-            }
+        if (!$this->_is_column_exist("item","item_domain")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD item_domain text NOT NULL DEFAULT '';";
+            D("catalog")->execute($sql);
         }
+
         //创建user_token表
         $sql = "CREATE TABLE IF NOT EXISTS `user_token` (
         `id`  INTEGER PRIMARY KEY ,
@@ -83,63 +58,30 @@ class UpdateController extends BaseController {
         D("UserToken")->execute($sql);
 
         //page表增加page_comments字段
-        $columns = D("Page")->getDbFields();
-        if ($columns) {
-            $has_it = 0 ;//是否存在该字段
-            foreach ($columns as $key => $value) {
-                if ($value == 'page_comments') {
-                    $has_it = 1 ;
-                }
-            }
-            if ($has_it === 0) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."page ADD page_comments text NOT NULL DEFAULT ''  ;";
-                D("Page")->execute($sql);
-            }
+        if (!$this->_is_column_exist("page","page_comments")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."page ADD page_comments text NOT NULL DEFAULT ''  ;";
+            D("catalog")->execute($sql);
         }
+
 
         //page_history 表增加page_comments字段
-        $columns = D("PageHistory")->getDbFields();
-        if ($columns) {
-            $has_it = 0 ;//是否存在该字段
-            foreach ($columns as $key => $value) {
-                if ($value == 'page_comments') {
-                    $has_it = 1 ;
-                }
-            }
-            if ($has_it === 0) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."page_history ADD page_comments text NOT NULL DEFAULT '';";
-                D("PageHistory")->execute($sql);
-            }
+        if (!$this->_is_column_exist("PageHistory","page_comments")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."page_history ADD page_comments text NOT NULL DEFAULT '';";
+            D("catalog")->execute($sql);
         }
+
 
         //item_member表增加member_group_id字段
-        $columns = M("ItemMember")->getDbFields();
-        if ($columns) {
-            $has_it = 0 ;//是否存在该字段
-            foreach ($columns as $key => $value) {
-                if ($value == 'member_group_id') {
-                    $has_it = 1 ;
-                }
-            }
-            if ($has_it === 0) {
+        if (!$this->_is_column_exist("ItemMember","member_group_id")) {
                 $sql = "ALTER TABLE ".C('DB_PREFIX')."item_member ADD member_group_id INT( 1 ) NOT NULL DEFAULT '1'  ;";
                 D("ItemMember")->execute($sql);
-            }
         }
 
+
         //item表增加item_type字段
-        $columns = M("Item")->getDbFields();
-        if ($columns) {
-            $has_it = 0 ;//是否存在该字段
-            foreach ($columns as $key => $value) {
-                if ($value == 'item_type') {
-                    $has_it = 1 ;
-                }
-            }
-            if ($has_it === 0) {
+        if (!$this->_is_column_exist("Item","item_type")) {
                 $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD item_type INT( 1 ) NOT NULL DEFAULT '1'  ;";
-                D("Item")->execute($sql);
-            }
+                D("ItemMember")->execute($sql);
         }
 
         //创建options表
@@ -171,19 +113,11 @@ class UpdateController extends BaseController {
         D("UserToken")->execute($sql);
 
         //item表增加is_archived字段
-        $columns = M("Item")->getDbFields();
-        if ($columns) {
-            $has_it = 0 ;//是否存在该字段
-            foreach ($columns as $key => $value) {
-                if ($value == 'is_archived') {
-                    $has_it = 1 ;
-                }
-            }
-            if ($has_it === 0) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD is_archived INT( 1 ) NOT NULL DEFAULT '0'  ;";
-                D("Item")->execute($sql);
-            }
+        if (!$this->_is_column_exist("Item","is_archived")) {
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD item_type INT( 1 ) NOT NULL DEFAULT '1'  ;";
+                D("ItemMember")->execute($sql);
         }
+
 
         //管理员账户和权限
         if(D("User")->where("username = 'showdoc' ")->find()){
@@ -193,37 +127,34 @@ class UpdateController extends BaseController {
         }
 
         //item表增加is_del字段
-        $columns = M("Item")->getDbFields();
-        if ($columns) {
-            $has_it = 0 ;//是否存在该字段
-            foreach ($columns as $key => $value) {
-                if ($value == 'is_del') {
-                    $has_it = 1 ;
-                }
-            }
-            if ($has_it === 0) {
+        if (!$this->_is_column_exist("Item","is_del")) {
                 $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD is_del INT( 1 ) NOT NULL DEFAULT '0'  ;";
-                D("Item")->execute($sql);
-            }
+                D("ItemMember")->execute($sql);
         }
 
         //page表增加is_del字段
-        $columns = M("Page")->getDbFields();
-        if ($columns) {
-            $has_it = 0 ;//是否存在该字段
-            foreach ($columns as $key => $value) {
-                if ($value == 'is_del') {
-                    $has_it = 1 ;
-                }
-            }
-            if ($has_it === 0) {
+        if (!$this->_is_column_exist("Page","is_del")) {
                 $sql = "ALTER TABLE ".C('DB_PREFIX')."page ADD is_del INT( 1 ) NOT NULL DEFAULT '0'  ;";
-                D("Page")->execute($sql);
-            }
+                D("ItemMember")->execute($sql);
         }
+
 
         echo "OK!\n";
     }
+
+    private function _is_column_exist($table , $column){
+        $has_it = false ;//是否存在该字段
+        $columns = M($table)->getDbFields();
+        if ($columns) {
+            foreach ($columns as $key => $value) {
+                if ($value == $column) {
+                    $has_it = true ;
+                }
+            }
+        }
+        return $has_it ;
+    }
+
 
     private function _clear_runtime($path = RUNTIME_PATH){  
         //给定的目录不是一个文件夹  
