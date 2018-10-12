@@ -22,6 +22,9 @@ class BaseController extends Controller {
 			exit();
 		}
 
+		//检测数据库文件是否有可写权限
+		$this->checkDbWhitable();
+
     }
 
 
@@ -186,6 +189,17 @@ class BaseController extends Controller {
 			return true;
 		}
 
+	}
+	//检查数据库文件是否可写
+	protected function checkDbWhitable(){
+		$file = C("DB_NAME") ;
+	    if ( $fp = @fopen($file, 'a+')) {
+	       @fclose($fp);
+	       return true ;
+	    } else {
+	    	$this->sendError("10103","Sqlite/showdoc.db.php文件不可写");
+	    	exit();
+	    }
 	}
 
 
