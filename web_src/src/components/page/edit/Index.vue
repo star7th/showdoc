@@ -334,7 +334,13 @@ export default {
     editor_unwatch(){
       let childRef = this.$refs.Editormd ;//获取子组件
       childRef.editor_unwatch();
-      this.$alert("检测到本页面内容比较多，showdoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。")
+      if ( sessionStorage.getItem("page_id_unwatch_"+this.page_id) ) {
+
+      }else{
+        this.$alert("检测到本页面内容比较多，showdoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。");
+         sessionStorage.setItem("page_id_unwatch_"+this.page_id,1)
+      }
+
     },
     //
     editor_watch(){
