@@ -157,6 +157,7 @@ exports.default = {
 
     //page
     'title':'标题',
+    'catalog':'目录',
     'level_2_directory':'二级目录',
     'level_3_directory':'三级目录',
     's_number':'序号',

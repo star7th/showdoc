@@ -10,7 +10,7 @@ class CatalogModel extends BaseModel {
 	//获取目录列表。如果isGroup参数为true，则按分组返回
 	public function getList($item_id,$isGroup = false ){
         if ($item_id > 0 ) {
-            $ret = $this->where(" item_id = '%d' ",array($item_id))->order(" 's_number', cat_id asc  ")->select();
+            $ret = $this->where(" item_id = '%d' ",array($item_id))->order(" s_number, cat_id asc  ")->select();
         }
         if ($ret) {
 	        foreach ($ret as $key => $value) {

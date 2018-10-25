@@ -179,6 +179,96 @@ class ItemModel extends BaseModel {
         return $this->import($this->export($item_id),$uid,$item_name,$item_description,$item_password,$item_domain);
     }
 
+    //获取菜单结构
+    public function getMemu($item_id){
+            //获取所有父目录id为0的页面
+            $all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+            $pages = array() ;
+            if ($all_pages) {
+                foreach ($all_pages as $key => $value) {
+                    if ($value['cat_id']) {
+                        # code...
+                    }else{
+                        $pages[] = $value ;
+                    }
+                }
+            }
+            
+            //获取该项目下的所有目录
+            $all_catalogs = D("Catalog")->where("item_id = '$item_id' ")->order(" `s_number` asc  ")->select();
+
+            //获取所有二级目录
+            $catalogs = array() ;
+            if ($all_catalogs) {
+                foreach ($all_catalogs as $key => $value) {
+                    if ($value['level'] == 2 ) {
+                        $catalogs[] = $value;
+                    }
+                }
+            }
+            if ($catalogs) {
+                foreach ($catalogs as $key => &$catalog2) {
+                    //该二级目录下的所有子页面
+                    $catalog2['pages'] = $this->_getPageByCatId($catalog2['cat_id'],$all_pages);
+
+                    //该二级目录下的所有子目录
+                    $catalog2['catalogs'] =  $this->_getCatByCatId($catalog2['cat_id'],$all_catalogs);
+                    if($catalog2['catalogs']){
+                        //获取所有三级目录的子页面
+                        foreach ($catalog2['catalogs'] as $key3 => &$catalog3) {
+                            //该三级目录下的所有子页面
+                            $catalog3['pages'] = $this->_getPageByCatId($catalog3['cat_id'],$all_pages);
+
+                            //该三级目录下的所有子目录
+                            $catalog3['catalogs'] =  $this->_getCatByCatId($catalog3['cat_id'],$all_catalogs);
+                            if($catalog3['catalogs']){
+                                //获取所有三级目录的子页面
+                                foreach ($catalog3['catalogs'] as $key4 => &$catalog4) {
+                                    //该三级目录下的所有子页面
+                                    $catalog4['pages'] = $this->_getPageByCatId($catalog4['cat_id'],$all_pages);
+                                }                        
+                            }
+
+                        }                        
+                    }             
+                }
+            }
+            $menu = array(
+                "pages" =>$pages,
+                "catalogs" =>$catalogs,
+                );
+            unset($pages);
+            unset($catalogs);
+            return $menu;
+    }
+    
+    //获取某个目录下的所有页面
+    private function _getPageByCatId($cat_id ,$all_pages){
+        $pages = array() ;
+        if ($all_pages) {
+            foreach ($all_pages as $key => $value) {
+                if ($value['cat_id'] == $cat_id) {
+                    $pages[] = $value ;
+                }
+            }
+        }
+        return $pages;
+    }
+
+    //获取某个目录下的所有子目录
+    private function _getCatByCatId($cat_id ,$all_catalogs){
+        $cats = array() ;
+        if ($all_catalogs) {
+            foreach ($all_catalogs as $key => $value) {
+                if ($value['parent_cat_id'] == $cat_id) {
+                    $cats[] = $value ;
+                }
+            }
+        }
+        return $cats;
+    }
+
+
     //删除项目
     public function delete_item($item_id){
         D("Page")->where("item_id = '$item_id' ")->delete();

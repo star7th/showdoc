@@ -9,16 +9,13 @@
           <el-form-item :label="$t('title')+' : '">
             <el-input  placeholder="" v-model="title"></el-input>
           </el-form-item>
-          <el-form-item :label="$t('level_2_directory')+' : '" >
-            <el-select  :placeholder="$t('optional')" class="cat" v-model="cat_id2" @change="get_cat3">
-              <el-option v-if="cat2" v-for="cat in cat2 " :key="cat.cat_name" :label="cat.cat_name" :value="cat.cat_id"></el-option>
+
+          <el-form-item :label="$t('catalog')+' : '" >
+            <el-select  :placeholder="$t('optional')" class="cat" v-model="cat_id">
+              <el-option v-if="belong_to_catalogs" v-for="cat in belong_to_catalogs " :key="cat.cat_name" :label="cat.cat_name" :value="cat.cat_id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('level_3_directory')+' : '" >
-            <el-select  :placeholder="$t('optional')" class="cat" v-model="cat_id3">
-              <el-option v-if="cat3" v-for="cat in cat3 " :label="cat.cat_name" :key="cat.cat_name" :value="cat.cat_id"></el-option>
-            </el-select>
-          </el-form-item>
+
           <el-form-item :label="$t('s_number')+' : '">
             <el-input  :placeholder="$t('optional')" class="num" v-model="s_number"></el-input>
           </el-form-item>
@@ -156,7 +153,7 @@
   }
 
   .cat{
-    width: 130px;
+    width: 200px;
   }
 
   .num{
@@ -185,15 +182,47 @@ export default {
       content:"",
       title:"",
       item_id:0,
-      cat2:[],
-      cat_id2:'',
-      cat3:[],
-      cat_id3:'',
+      cat_id:'',
       s_number:'',
       page_id:'',
       copy_page_id:'',
 
     };
+  },
+  computed: {
+
+    //新建/编辑页面时供用户选择的归属目录列表
+    belong_to_catalogs:function(){
+        var Info = this.catalogs.slice(0);
+        var cat_array = [] ;
+        for (var i = 0; i < Info.length; i++) {
+          cat_array.push(Info[i]);
+          var sub = Info[i]['sub'] ;
+          if (sub.length > 0 ) {
+            for (var j = 0; j < sub.length; j++) {
+              cat_array.push( {
+                "cat_id":sub[j]['cat_id'] ,
+                "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']
+              });
+
+              var sub_sub = sub[j]['sub'] ;
+              if (sub_sub.length > 0 ) {
+                for (var k = 0; k < sub_sub.length; k++) {
+                  cat_array.push( {
+                    "cat_id":sub_sub[k]['cat_id'] ,
+                    "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']+' / ' + sub_sub[k]['cat_name']
+                  });
+                };
+              };
+
+            };
+          };
+        };
+        var no_cat = {"cat_id":'' ,"cat_name":this.$t("none")} ;
+        cat_array.unshift(no_cat);
+        return cat_array;
+
+    }
   },
   components:{
     Editormd,
@@ -241,46 +270,26 @@ export default {
           });
     },
 
-    //获取二级目录
-    get_cat2(item_id){
+    //获取所有目录
+    get_catalog(item_id){
       var that = this ;
-      var url = DocConfig.server+'/api/catalog/secondCatList';
+      var url = DocConfig.server+'/api/catalog/catListGroup';
       var params = new URLSearchParams();
       params.append('item_id',  item_id);
       that.axios.post(url, params)
         .then(function (response) {
           if (response.data.error_code === 0 ) {
-            //that.$message.success("加载成功");
-            that.cat2 = response.data.data ;
-            var no_cat = {"cat_id":'' ,"cat_name":" "} ;
-            that.cat2.unshift(no_cat);
+            var Info = response.data.data ;
+
+            that.catalogs =  Info;
             that.get_default_cat();
           }else{
             that.$alert(response.data.error_message);
           }
           
-        });
-    },
-    //获取三级目录
-    get_cat3(cat_id,callback){
-      var that = this ;
-      var url = DocConfig.server+'/api/catalog/childCatList';
-      var params = new URLSearchParams();
-      params.append('cat_id',  cat_id);
-      that.axios.post(url, params)
-        .then(function (response) {
-          if (response.data.error_code === 0 ) {
-            //that.$message.success("加载成功");
-            that.cat_id3 = '';
-            that.cat3 = response.data.data ;
-            if(callback){
-              callback();
-            }
-
-          }else{
-            that.$alert(response.data.error_message);
-          }
-          
+        })
+        .catch(function (error) {
+          console.log(error);
         });
     },
     //获取默认该选中的目录
@@ -297,10 +306,7 @@ export default {
           if (response.data.error_code === 0 ) {
             //that.$message.success("加载成功");
             var json = response.data.data ;
-            that.cat_id2 = json.default_cat_id2 ;
-            that.get_cat3(json.default_cat_id2,function(){
-              that.cat_id3 = json.default_cat_id3 ;
-            }) ;
+            that.cat_id = json.default_cat_id ;
 
           }else{
             that.$alert(response.data.error_message);
@@ -378,13 +384,7 @@ export default {
       var loading = that.$loading();
       let childRef = this.$refs.Editormd ;
       var content = childRef.getMarkdown() ;
-      var cat_id = 0 ;
-      if (that.cat_id2 > 0 ) {
-        cat_id = that.cat_id2 ;
-      };     
-      if (that.cat_id3 > 0 ) {
-        cat_id = that.cat_id3 ;
-      };
+      var cat_id = this.cat_id ;
       var item_id = that.$route.params.item_id ;
       var page_id = that.$route.params.page_id ;
       var url = DocConfig.server+'/api/page/save';
@@ -526,7 +526,7 @@ export default {
       this.item_id = this.$route.params.item_id ;
       this.content = this.$t("welcome_use_showdoc") ;
     }
-    this.get_cat2(this.$route.params.item_id);
+    this.get_catalog(this.$route.params.item_id);
 
     /** 监听粘贴上传图片 **/
     document.addEventListener('paste', this.upload_paste_img);

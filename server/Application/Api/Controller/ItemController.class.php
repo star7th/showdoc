@@ -55,36 +55,17 @@ class ItemController extends BaseController {
         $login_user = session("login_user");
         $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
         $is_login =   $uid > 0 ? true :false;
-            
+        $menu = array(
+            "pages" =>array(),
+            "catalogs" =>array(),
+            );
         //是否有搜索词
         if ($keyword) {
             $keyword = \SQLite3::escapeString($keyword) ;
             $pages = D("Page")->where("item_id = '$item_id' and is_del = 0  and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
-        
+            $menu['pages'] = $pages ? $pages : array();
         }else{
-            //获取所有父目录id为0的页面
-            $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' and is_del = 0")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
-            //获取所有二级目录
-            $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->order(" `s_number` asc  ")->select();
-            if ($catalogs) {
-                foreach ($catalogs as $key => &$catalog) {
-                    //该二级目录下的所有子页面
-                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
-                    $catalog['pages'] = $temp ? $temp: array();
-
-                    //该二级目录下的所有子目录
-                    $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
-                    $catalog['catalogs'] = $temp ? $temp: array();
-                    if($catalog['catalogs']){
-                        //获取所有三级目录的子页面
-                        foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
-                            //该二级目录下的所有子页面
-                            $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
-                            $catalog3['pages'] = $temp ? $temp: array();
-                        }                        
-                    }               
-                }
-            }
+            $menu = D("Item")->getMemu($item_id) ;
         }
 
         $domain = $item['item_domain'] ? $item['item_domain'] : $item['item_id'];
@@ -94,11 +75,19 @@ class ItemController extends BaseController {
 
         $ItemCreator = $this->checkItemCreator($uid , $item_id);
 
-        //如果带了默认展开的页面id，则获取该页面所在的二级目录和三级目录
+        //如果带了默认展开的页面id，则获取该页面所在的二级目录/三级目录/四级目录
         if ($default_page_id) {
             $page = D("Page")->where(" page_id = '$default_page_id' ")->find();
             if ($page) {
-                $default_cat_id3 = $page['cat_id'] ;
+                $default_cat_id4 = $page['cat_id'] ;
+                $cat1 = D("Catalog")->where(" cat_id = '$default_cat_id4' and parent_cat_id > 0  ")->find();
+                if ($cat1) {
+                    $default_cat_id3 = $cat1['parent_cat_id'];
+                }else{
+                    $default_cat_id3 = $default_cat_id4;
+                    $default_cat_id4 = 0 ;
+                }
+
                 $cat2 = D("Catalog")->where(" cat_id = '$default_cat_id3' and parent_cat_id > 0  ")->find();
                 if ($cat2) {
                     $default_cat_id2 = $cat2['parent_cat_id'];
@@ -115,10 +104,7 @@ class ItemController extends BaseController {
         else{
             $help_url = "https://www.showdoc.cc/help";
         }
-        $menu =array(
-            "pages" => $pages ,
-            "catalogs" => $catalogs ,
-            ) ;
+
 
         $return = array(
             "item_id"=>$item_id ,
@@ -128,6 +114,7 @@ class ItemController extends BaseController {
             "default_page_id"=>(string)$default_page_id ,
             "default_cat_id2"=>$default_cat_id2 ,
             "default_cat_id3"=>$default_cat_id3 ,
+            "default_cat_id4"=>$default_cat_id4 ,
             "unread_count"=>$unread_count ,
             "item_type"=>1 ,
             "menu"=>$menu ,

@@ -39,7 +39,7 @@
         <template slot="title"> <img src="static/images/folder.png"  class="icon-folder menu-icon-folder ">{{catalog2.cat_name}}</template>
 
         <!-- 二级目录的页面 -->
-        <el-menu-item-group v-if="catalog2.pages" v-for="(page2 ,page2_index) in catalog2.pages" :key="page2.page_id">
+        <el-menu-item-group v-if="catalog2.pages" v-for="(page2 ,page2_index) in catalog2.pages"  :key="page2.page_id">
           <el-menu-item :index="page2.page_id">{{page2.page_title}}</el-menu-item>
         </el-menu-item-group>
 
@@ -47,10 +47,20 @@
         <el-submenu  v-if="catalog2.catalogs.length" v-for="(catalog3 ,catalog_index3) in catalog2.catalogs" :index="catalog3.cat_id" :key="catalog3.cat_id">
           <template slot="title">{{catalog3.cat_name}}</template>
           <!-- 三级目录的页面 -->
-          <el-menu-item  v-if="catalog3.pages" v-for="(page3 ,page3_index) in catalog3.pages" :index="page3.page_id" :key="page3.page_id">{{page3.page_title}}</el-menu-item>
+          <el-menu-item  v-if="catalog3.pages" v-for="(page3 ,page3_index) in catalog3.pages"  :index="page3.page_id" :key="page3.page_id">{{page3.page_title}}</el-menu-item>
+
+            <!-- 三级目录下的四级目录 -->
+            <el-submenu  v-if="catalog3.catalogs.length" v-for="(catalog4 ,catalog_index4) in catalog3.catalogs" :index="catalog4.cat_id" :key="catalog4.cat_id">
+              <template slot="title">{{catalog4.cat_name}}</template>
+              <!-- 四级目录的页面 -->
+              <el-menu-item  v-if="catalog4.pages" v-for="(page4 ,page4_index) in catalog4.pages" :index="page4.page_id"  :key="page4.page_id">{{page4.page_title}}</el-menu-item>
+            </el-submenu>
+
         </el-submenu>
 
-        
+
+
+
       </el-submenu>
 
     </el-menu>
@@ -115,7 +125,10 @@
     //默认展开页面
     if (item_info.default_page_id > 0 ) {
       that.select_menu(item_info.default_page_id);
-      if (item_info.default_cat_id3) {
+      if (item_info.default_cat_id4) {
+        that.openeds = [ item_info.default_cat_id4,item_info.default_cat_id3, item_info.default_cat_id2, item_info.default_page_id]; 
+      }
+      else if (item_info.default_cat_id3) {
         that.openeds = [ item_info.default_cat_id3, item_info.default_cat_id2, item_info.default_page_id]; 
       }
       else if (item_info.default_cat_id2) {

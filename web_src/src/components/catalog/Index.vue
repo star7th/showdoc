@@ -8,7 +8,7 @@
       <el-button  type="text" class="add-cat" @click="add_cat">{{$t('add_cat')}}</el-button>
       <el-button type="text" class="goback-btn" @click="goback">{{$t('goback')}}</el-button>
        <el-table align="left"
-            :data="catalogs"
+            :data="catalogs_table"
              height="400"
              :row-class-name="tableRowClassName"
             style="width: 100%">
@@ -47,7 +47,7 @@
             <el-form-item :label="$t('parent_cat_name')+' : '" >
               <el-select v-model="MyForm.parent_cat_id" :placeholder="$t('none')">
                   <el-option
-                    v-for="item in catalogs_level_2"
+                    v-for="item in parent_catalogs"
                     :key="item.cat_id"
                     :label="item.cat_name"
                     :value="item.cat_id">
@@ -92,6 +92,61 @@ export default {
     }
 
   },
+  computed: {
+    //表格形式展示目录数据
+    catalogs_table:function(){
+        var Info = this.catalogs.slice(0);
+        var cat_array = [] ;
+        for (var i = 0; i < Info.length; i++) {
+          Info[i]['cat_name'] = Info[i]['cat_name'];
+          cat_array.push(Info[i]);
+          var sub = Info[i]['sub'] 
+          if (sub.length > 0 ) {
+            for (var j = 0; j < sub.length; j++) {
+              cat_array.push( {
+                "cat_id":sub[j]['cat_id'] ,
+                "parent_cat_id":sub[j]['parent_cat_id'] ,
+                "s_number":sub[j]['s_number'] ,
+                "cat_name":' -- ' + sub[j]['cat_name']
+              });
+              var sub2 = sub[j]['sub'] ;
+              for (var k = 0; k < sub2.length; k++) {
+                cat_array.push( {
+                  "cat_id":sub2[k]['cat_id'] ,
+                  "s_number":sub2[k]['s_number'] ,
+                  "parent_cat_id":sub2[k]['parent_cat_id'] ,
+                  "cat_name":' ----- ' + sub2[k]['cat_name']
+                });
+              };
+
+            };
+          };
+          
+        };
+        return cat_array;
+    },
+    //新建/编辑目录时供用户选择的上级目录列表
+    parent_catalogs:function(){
+        var Info = this.catalogs.slice(0);
+        var cat_array = [] ;
+        for (var i = 0; i < Info.length; i++) {
+          cat_array.push(Info[i]);
+          var sub = Info[i]['sub'] 
+          if (sub.length > 0 ) {
+            for (var j = 0; j < sub.length; j++) {
+              cat_array.push( {
+                "cat_id":sub[j]['cat_id'] ,
+                "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']
+              });
+            };
+          };
+        };
+        var no_cat = {"cat_id":0 ,"cat_name":this.$t("none")} ;
+        cat_array.push(no_cat);
+        return cat_array;
+
+    }
+  },
   methods: {
 
       tableRowClassName({row, rowIndex}) {
@@ -110,27 +165,7 @@ export default {
           .then(function (response) {
             if (response.data.error_code === 0 ) {
               var Info = response.data.data ;
-              
-              //创建上级目录选项
-              var Info2 = Info.slice(0) ;
-              var no_cat = {"cat_id":0 ,"cat_name":that.$t("none")} ;
-              Info2.unshift(no_cat);
-              that.catalogs_level_2 = Info2 ;
-              
-              var cat_array = [] ;
-              for (var i = 0; i < Info.length; i++) {
-                
-                Info[i]['cat_name'] = Info[i]['cat_name'];
-                cat_array.push(Info[i]);
-                if (Info[i]['sub'].length > 0 ) {
-                  for (var j = 0; j < Info[i]['sub'].length; j++) {
-                    Info[i]['sub'][j]['cat_name'] = ' -- ' + Info[i]['sub'][j]['cat_name'];
-                    cat_array.push(Info[i]['sub'][j]);
-                  };
-                };
-                
-              };
-              that.catalogs =  cat_array;
+              that.catalogs =  Info;
             }else{
               that.$alert(response.data.error_message);
             }
@@ -171,6 +206,7 @@ export default {
          temp = JSON.parse(JSON.stringify(row));  
         if (temp.cat_name) {
           temp.cat_name = temp.cat_name.replace(' -- ','');
+          temp.cat_name = temp.cat_name.replace(' ----- ','');
         };
         if (temp.parent_cat_id == '0') {
           temp.parent_cat_id = '';

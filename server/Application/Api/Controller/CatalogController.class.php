@@ -59,10 +59,15 @@ class CatalogController extends BaseController {
 
     //获取二级目录的子目录列表，即三级目录列表（如果存在的话）
     public function childCatList(){
+        $login_user = $this->checkLogin();
         $cat_id = I("cat_id/d");
         if ($cat_id > 0 ) {
             $row = D("Catalog")->where(" cat_id = '$cat_id' ")->find() ;
             $item_id = $row['item_id'] ;
+            if (!$this->checkItemVisit($login_user['uid'] , $item_id)) {
+                $this->sendError(10103);
+                return ;
+            }
             $ret =  D("Catalog")->getChlid($item_id , $cat_id);
         }
         if ($ret) {
@@ -100,7 +105,8 @@ class CatalogController extends BaseController {
         $data['item_id'] = $item_id ;
         $data['parent_cat_id'] = $parent_cat_id ;
         if ($parent_cat_id > 0 ) {
-           $data['level'] = 3;
+            $row = D("Catalog")->where(" cat_id = '$parent_cat_id' ")->find() ;
+            $data['level'] = $row['level'] +1 ;
         }else{
             $data['level'] = 2;
         }
@@ -199,15 +205,7 @@ class CatalogController extends BaseController {
             return;
         }
 
-        $Catalog = D("Catalog")->where(" cat_id = '$default_cat_id' ")->find();
-        if ($Catalog['parent_cat_id']) {
-            $default_cat_id2 = $Catalog['parent_cat_id'];
-            $default_cat_id3 = $default_cat_id;
-
-        }else{
-            $default_cat_id2 = $default_cat_id;
-        }
-        $this->sendResult(array("default_cat_id2"=>$default_cat_id2 , "default_cat_id3"=>$default_cat_id3));
+        $this->sendResult(array("default_cat_id"=>$default_cat_id ));
     }
 
 
