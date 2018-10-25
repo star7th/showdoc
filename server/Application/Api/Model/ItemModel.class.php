@@ -195,7 +195,7 @@ class ItemModel extends BaseModel {
             return $data ;
     }
 
-    public function getContent($item_id , $page_field ="*" , $catalog_field ="*"){
+    public function getContent($item_id , $page_field ="*" , $catalog_field ="*" , $uncompress = 0 ){
             //获取所有父目录id为0的页面
             $all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" `s_number` asc  ")->field($page_field)->select();
             $pages = array() ;

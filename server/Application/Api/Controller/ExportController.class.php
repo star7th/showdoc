@@ -5,11 +5,12 @@ class ExportController extends BaseController {
 
     //导出整个项目为word
     public function word(){
-    	set_time_limit(1000);
-    	ini_set('memory_limit','800M'); 
+        set_time_limit(100);
+        ini_set('memory_limit','800M');
         import("Vendor.Parsedown.Parsedown");
         $Parsedown = new \Parsedown();
         $item_id =  I("item_id/d");
+        $cat_id =  I("cat_id/d");
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
             $this->message(L('no_permissions'));
@@ -18,29 +19,37 @@ class ExportController extends BaseController {
 
         $item = D("Item")->where("item_id = '$item_id' ")->find();
 
-        //获取所有父目录id为0的页面
-        $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' and is_del = 0")->order(" `s_number` asc  ")->select();
-        //获取所有二级目录
-        $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->order(" `s_number` asc  ")->select();
-        if ($catalogs) {
-            foreach ($catalogs as $key => &$catalog) {
-                //该二级目录下的所有子页面
-                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->select();
-                $catalog['pages'] = $temp ? $temp: array();
 
-                //该二级目录下的所有子目录
-                $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
-                $catalog['catalogs'] = $temp ? $temp: array();
-                if($catalog['catalogs']){
-                    //获取所有三级目录的子页面
-                    foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
-                        //该二级目录下的所有子页面
-                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->select();
-                        $catalog3['pages'] = $temp ? $temp: array();
-                    }                        
-                }               
+        $menu = D("Item")->getContent($item_id,"*","*",1);
+        if ($cat_id) {
+            foreach ($menu['catalogs'] as $key => $value) {
+                if ($cat_id == $value['cat_id']) {
+                    $pages = $value['pages'] ;
+                    $catalogs = $value['catalogs'] ;
+                }else{
+                    if ($value['catalogs']) {
+                        foreach ($value['catalogs'] as $key2 => $value2) {
+                            if ($cat_id == $value2['cat_id']) {
+                                $pages = $value2['pages'] ;
+                                $catalogs = $value2['catalogs'] ;
+                            }
+                        }
+                        if ($value2['catalogs']) {
+                            foreach ($value2['catalogs'] as $key3 => $value3) {
+                                if ($cat_id == $value3['cat_id']) {
+                                    $pages = $value3['pages'] ;
+                                    $catalogs = $value3['catalogs'] ;
+                                }
+                            }
+                        }
+                    }
+                }
             }
+        }else{
+            $pages = $menu['pages'] ;
+            $catalogs = $menu['catalogs'] ;
         }
+
 
         $data = '';
         $parent = 1;
@@ -84,6 +93,26 @@ class ExportController extends BaseController {
                                         $child2 ++;
                                     }
                                 }
+
+                                if ($value3['catalogs']) {
+                                    $parent3 = 1 ;
+                                    foreach ($value3['catalogs'] as $key4 => $value4) {
+                                        $data .= "<h2>{$parent}.{$parent2}.{$parent3}、{$value4['cat_name']}</h2>";
+                                        $data .= '<div style="margin-left:20px;">';
+                                            $child3 = 1 ;
+                                            if ($value4['pages']) {
+                                                foreach ($value4['pages'] as $page4) {
+                                                    $data .= "<h3>{$parent}.{$parent2}.{$child2}.{$child3}、{$page4['page_title']}</h3>";
+                                                    $data .= '<div style="margin-left:30px;">';
+                                                        $data .= htmlspecialchars_decode($Parsedown->text($page4['page_content']));
+                                                    $data .= '</div>';
+                                                    $child3 ++;
+                                                }
+                                            }
+                                        $data .= '</div>';
+                                        $parent3 ++;
+                                    }
+                                }
                             $data .= '</div>';
                             $parent2 ++;
                         }
@@ -96,103 +125,5 @@ class ExportController extends BaseController {
         output_word($data,$item['item_name']);
     }
 
-    //把指定目录导出为word
-    public function word_cat(){
-        import("Vendor.Parsedown.Parsedown");
-        $Parsedown = new \Parsedown();
-        $item_id =  I("item_id/d");
-        $cat_id =  I("cat_id/d");
-        $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->message(L('no_permissions'));
-            return;
-        }
-
-        $item = D("Item")->where("item_id = '$item_id' ")->find();
-        //获取指定目录。先按照目录是二级目录的逻辑来处理
-        $catalog = D("Catalog")->where("item_id = '$item_id' and cat_id = '$cat_id' and level =2 ")->order(" `s_number` asc  ")->find();
-        if (!empty($catalog)) {
-                //该二级目录下的所有子页面
-                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->select();
-                $catalog['pages'] = $temp ? $temp: array();
-
-                //该二级目录下的所有子目录
-                $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
-                $catalog['catalogs'] = $temp ? $temp: array();
-                if($catalog['catalogs']){
-                    //获取所有三级目录的子页面
-                    foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
-                        //该二级目录下的所有子页面
-                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->select();
-                        $catalog3['pages'] = $temp ? $temp: array();
-                    }                        
-                } 
-        }else{
-            //获取指定目录。按照目录是三级目录的逻辑来处理
-            $catalog = D("Catalog")->where("item_id = '$item_id' and cat_id = '$cat_id' and level =3 ")->order(" `s_number` asc  ")->find();
-            if (!empty($catalog)) {
-                    //该三级目录下的所有子页面
-                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' and is_del = 0")->order(" `s_number` asc  ")->select();
-                    $catalog['pages'] = $temp ? $temp: array();
-            }
-        }
-
-
-        $data = '';
-        $parent = 1;
-        //var_export($catalog);exit();
-        $data .= "<h1>{$catalog['cat_name']}</h1>";
-        $data .= '<div style="margin-left:20px;">';
-            $child = 1 ;
-            if ($catalog['pages']) {
-                foreach ($catalog['pages'] as $page) {
-                    $data .= "<h2>{$child}、{$page['page_title']}</h2>";
-                    $data .= '<div style="margin-left:20px;">';
-                        $data .= htmlspecialchars_decode($Parsedown->text($page['page_content']));
-                    $data .= '</div>';
-                    $child ++;
-                }
-            }
-            if ($catalog['catalogs']) {
-                $parent2 = 1 ;
-                foreach ($catalog['catalogs'] as $key3 => $value3) {
-                    $data .= "<h2>{$parent2}、{$value3['cat_name']}</h2>";
-                    $data .= '<div style="margin-left:20px;">';
-                        $child2 = 1 ;
-                        if ($value3['pages']) {
-                            foreach ($value3['pages'] as $page3) {
-                                $data .= "<h3>{$parent2}.{$child2}、{$page3['page_title']}</h3>";
-                                $data .= '<div style="margin-left:30px;">';
-                                    $data .= htmlspecialchars_decode($Parsedown->text($page3['page_content']));
-                                $data .= '</div>';
-                                $child2 ++;
-                            }
-                        }
-                    $data .= '</div>';
-                    $parent2 ++;
-                }
-            }
-        $data .= '</div>';
-
-        output_word($data,$item['item_name']);
-
-    }
-
-    //把指定页面导出为word
-    public function word_page(){
-        import("Vendor.Parsedown.Parsedown");
-        $Parsedown = new \Parsedown();
-        $item_id =  I("item_id/d");
-        $page_id =  I("page_id/d");
-        $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->message(L('no_permissions'));
-            return;
-        }
-        $temp = D("Page")->where("page_id = '$page_id' ")->order(" `s_number` asc  ")->find();
-        $page= $temp ? $temp: array();
-        $data = htmlspecialchars_decode($Parsedown->text($page['page_content']));
-        output_word($data,$page['page_title']);
-    }
 
 }

@@ -13,16 +13,11 @@
 
 
               <el-form-item label="" >
-                  <el-select :disabled="export_type > 1 ? false :true" :placeholder="$t('select_cat_2')" class="cat" v-model="cat_id2" @change="get_cat3">
-                    <el-option  v-if="cat2" v-for="cat in cat2 " :key="cat.cat_name" :label="cat.cat_name" :value="cat.cat_id"></el-option>
+                  <el-select :disabled="export_type > 1 ? false :true" :placeholder="$t('catalog')" class="cat" v-model="cat_id" >
+                    <el-option  v-if="computed_catalogs" v-for="cat in computed_catalogs " :key="cat.cat_name" :label="cat.cat_name" :value="cat.cat_id"></el-option>
                   </el-select>
               </el-form-item>
 
-              <el-form-item label="" >
-                <el-select :disabled="export_type > 1 ? false :true" :placeholder="$t('select_cat_3')" class="cat" v-model="cat_id3">
-                  <el-option v-if="cat3" v-for="cat in cat3 " :label="cat.cat_name" :key="cat.cat_name" :value="cat.cat_id"></el-option>
-                </el-select>
-              </el-form-item>
 
 
                <el-form-item label="" >
@@ -51,51 +46,62 @@ export default {
   },
   data () {
     return {
-      cat2:[],
-      cat_id2:'',
-      cat3:[],
-      cat_id3:'',
+      catalogs:[],
+      cat_id:'',
       export_type:'1',
       item_id:0,
 
     }
 
   },
+  computed: {
+
+    //新建/编辑页面时供用户选择的归属目录列表
+    computed_catalogs:function(){
+        var Info = this.catalogs.slice(0);
+        var cat_array = [] ;
+        for (var i = 0; i < Info.length; i++) {
+          cat_array.push(Info[i]);
+          var sub = Info[i]['sub'] ;
+          if (sub.length > 0 ) {
+            for (var j = 0; j < sub.length; j++) {
+              cat_array.push( {
+                "cat_id":sub[j]['cat_id'] ,
+                "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']
+              });
+
+              var sub_sub = sub[j]['sub'] ;
+              if (sub_sub.length > 0 ) {
+                for (var k = 0; k < sub_sub.length; k++) {
+                  cat_array.push( {
+                    "cat_id":sub_sub[k]['cat_id'] ,
+                    "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']+' / ' + sub_sub[k]['cat_name']
+                  });
+                };
+              };
+
+            };
+          };
+        };
+        var no_cat = {"cat_id":'' ,"cat_name":this.$t("none")} ;
+        cat_array.unshift(no_cat);
+        return cat_array;
+
+    }
+  },
   methods: {
-    //获取二级目录
-    get_cat2(item_id){
+    //获取所有目录
+    get_catalog(item_id){
       var that = this ;
-      var url = DocConfig.server+'/api/catalog/secondCatList';
+      var url = DocConfig.server+'/api/catalog/catListGroup';
       var params = new URLSearchParams();
       params.append('item_id',  item_id);
       that.axios.post(url, params)
         .then(function (response) {
           if (response.data.error_code === 0 ) {
-            //that.$message.success("加载成功");
-            that.cat2 = response.data.data ;
-            
-          }else{
-            that.$alert(response.data.error_message);
-          }
-          
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
-    //获取三级目录
-    get_cat3(cat_id){
-      var that = this ;
-      var url = DocConfig.server+'/api/catalog/childCatList';
-      var params = new URLSearchParams();
-      params.append('cat_id',  cat_id);
-      that.axios.post(url, params)
-        .then(function (response) {
-          if (response.data.error_code === 0 ) {
-            //that.$message.success("加载成功");
-            that.cat_id3 = '';
-            that.cat3 = response.data.data ;
-            
+            var Info = response.data.data ;
+
+            that.catalogs =  Info;
           }else{
             that.$alert(response.data.error_message);
           }
@@ -106,23 +112,11 @@ export default {
         });
     },
     onSubmit() {
-        var val= this.export_type ;
-        if (val == 1 ) {
-            var url = DocConfig.server+'/api/export/word&item_id='+this.item_id ;
-            window.location.href = url;
-        }
-        else if (val == 2) {
-            var cat_id2 = this.cat_id2;
-            var cat_id3 = this.cat_id3;
-
-            if (cat_id2 > 0 ) {
-                var cat_id = cat_id3 > 0 ? cat_id3 : cat_id2 ;
-                var url = DocConfig.server+'/api/export/word_cat&item_id='+this.item_id+'&cat_id='+cat_id ;
-                window.location.href = url;
-            }else{
-                this.$alert("请选择目录");
-            }
-        }
+        if (this.export_type ==1 ) {
+          this.cat_id = ''
+        };
+        var url = DocConfig.server+'/api/export/word&item_id='+this.item_id+'&cat_id='+this.cat_id ;
+        window.location.href = url;
       },
     goback(){
       this.$router.go(-1);
@@ -130,7 +124,7 @@ export default {
 
   },
   mounted() {
-    this.get_cat2(this.$route.params.item_id);
+    this.get_catalog(this.$route.params.item_id);
     this.item_id = this.$route.params.item_id ;
     /*给body添加类，设置背景色*/
     document.getElementsByTagName("body")[0].className="grey-bg";
