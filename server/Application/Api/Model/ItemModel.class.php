@@ -6,36 +6,9 @@ class ItemModel extends BaseModel {
 
     public function export($item_id){
         $item = D("Item")->where("item_id = '$item_id' ")->field(" item_type, item_name ,item_description,password ")->find();
-        //获取所有父目录id为0的页面
-        $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" `s_number` asc  ")->select();
-        //获取所有二级目录
-        $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->field("cat_id, cat_name ,level,s_number ")->order(" `s_number` asc  ")->select();
-        if ($catalogs) {
-            foreach ($catalogs as $key => &$catalog) {
-                //该二级目录下的所有子页面
-                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" `s_number` asc  ")->select();
-                $catalog['pages'] = $temp ? $temp: array();
-                //该二级目录下的所有子目录
-                $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->field(" cat_id,cat_name ,level,s_number ")->order(" `s_number` asc  ")->select();
-                $catalog['catalogs'] = $temp ? $temp: array();
-                if($catalog['catalogs']){
-                    //获取所有三级目录的子页面
-                    foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
-                        //该二级目录下的所有子页面
-                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" `s_number` asc  ")->select();
-                        $catalog3['pages'] = $temp ? $temp: array();
-                        unset($catalog3['cat_id']);
-                    }                        
-                }
-                unset($catalog['cat_id']);               
-            }
-        }
-        $item['pages'] = array(
-            "pages" =>$pages,
-            "catalogs" =>$catalogs,
-            );
-        unset($pages);
-        unset($catalogs);
+        $page_field = "page_title ,cat_id,page_content,s_number,page_comments";
+        $catalog_field = "cat_id,cat_name ,parent_cat_id,level,s_number";
+        $item['pages'] = $this->getContent($item_id , $page_field , $catalog_field ); 
         $item['members'] = D("ItemMember")->where("item_id = '$item_id' ")->field(" member_group_id ,uid,username ")->select();
         return  json_encode($item);
         
@@ -150,6 +123,41 @@ class ItemModel extends BaseModel {
                                         unset($page_data);
                                         unset($value4);
                                     }
+                                }
+
+                                //判断是否存在四级目录
+                                if ($value3['catalogs']) {
+                                        foreach ($value3['catalogs'] as $key5 => &$value5) {
+                                            $catalog_data = array(
+                                                "cat_name" => $value5['cat_name'],
+                                                "level" => $value5['level'],
+                                                "s_number" => $value5['s_number'],
+                                                "parent_cat_id" => $cat_id2,
+                                                "item_id" => $item_id,
+                                                "addtime" =>time(),
+                                                );
+                                            $cat_id3 = D("Catalog")->add($catalog_data);
+                                            //四级目录的页面们
+                                            if ($value5['pages']) {
+                                                foreach ($value5['pages'] as $key6 => &$value6) {
+                                                    $page_data = array(
+                                                        "author_uid"=>$userInfo['uid'],
+                                                        "author_username"=>$userInfo['username'],
+                                                        "page_title" =>$value6['page_title'],
+                                                        "page_content" =>$value6['page_content'],
+                                                        "s_number" =>$value6['s_number'],
+                                                        "page_comments" =>$value6['page_comments'],
+                                                        "item_id" => $item_id,
+                                                        "cat_id" => $cat_id3 ,
+                                                        "addtime" =>time(),
+                                                        );
+                                                    D("Page")->add($page_data);
+                                                    unset($page_data);
+                                                    unset($value6);
+                                                }
+                                            }
+                                         unset($value3);
+                                        }
                                 }
                              unset($value3);
                             }
