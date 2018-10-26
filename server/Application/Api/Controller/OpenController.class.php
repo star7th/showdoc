@@ -7,7 +7,7 @@ class OpenController extends BaseController {
     public function updateItem(){
         $api_key = I("api_key");
         $api_token = I("api_token");
-        $cat_name = I("cat_name");
+        $cat_name = I("cat_name")?I("cat_name"):'';
         $cat_name_sub = I("cat_name_sub");
         $page_title = I("page_title");
         $page_content = I("page_content");
@@ -20,7 +20,12 @@ class OpenController extends BaseController {
             return false;
         }
 
-        $page_id = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name,$cat_name_sub,$s_number);
+        //兼容之前的cat_name_sub参数
+        if ($cat_name_sub) {
+            $cat_name = $cat_name .'/'.$cat_name_sub ;
+        }
+
+        $page_id = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name,$s_number);
 
         if ($page_id) {
             $ret = D("Page")->where(" page_id = '$page_id' ")->find();
@@ -40,7 +45,6 @@ class OpenController extends BaseController {
         $cat_name = I("cat_name") ? I("cat_name") : '';
         header( 'Content-Type:text/html;charset=utf-8 ');
         $cat_name = str_replace(PHP_EOL, '', $cat_name);
-        
         $item_id = D("ItemToken")->check($api_key , $api_token);
         if (!$item_id) {
             //没验证通过
@@ -50,11 +54,10 @@ class OpenController extends BaseController {
 
         $tables = $this->_analyze_db_structure_to_array($table_info ,$table_detail);
         if (!empty($tables)) {
-            //D("Item")->empty_content($item_id); //清空内容
             foreach ($tables as $key => $value) {
                 $page_title = $value['table_name'] ;
                 $page_content = $value['markdown'] ;
-                $result = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name);
+                $result = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name,$s_number);
             }
         }
 
@@ -63,6 +66,8 @@ class OpenController extends BaseController {
         }else{
             echo "失败\n";
         }
+
+        //$this->_record_log();
         
     }
 

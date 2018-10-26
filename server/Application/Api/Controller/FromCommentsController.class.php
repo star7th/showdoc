@@ -43,9 +43,8 @@ class FromCommentsController extends BaseController {
         $page_title = $array['title'];
         $page_content = $page_content;
         $cat_name = $array['cat_name'];
-        $cat_name_sub = $array['cat_name_sub'];
         $s_number = $array['s_number'] ? $array['s_number'] : 99;
-        $page_id = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name,$cat_name_sub,$s_number);
+        $page_id = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name,$s_number);
         if ($page_id) {
             $ret = D("Page")->where(" page_id = '$page_id' ")->find();
             return $ret;
@@ -69,10 +68,7 @@ class FromCommentsController extends BaseController {
         $array['url'] = $this->parse_one_line("url" , $content);
 
         //解析目录
-        $catalog = $this->parse_one_line("catalog" , $content);
-        $catalog_array = explode('/', $catalog);
-        $array['cat_name'] = $catalog_array[0] ;
-        $array['cat_name_sub'] = !empty($catalog_array[1])? $catalog_array[1] : '';
+        $array['cat_name']= $this->parse_one_line("catalog" , $content);
 
         //解析返回内容
         $return = $this->parse_one_line("return" , $content);
