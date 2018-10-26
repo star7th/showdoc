@@ -152,6 +152,7 @@ exports.default = {
 
     //page
     'title':'title',
+    'catalog':'catalog',
     'level_2_directory':'level 2 catalog',
     'level_3_directory':'level 3 catalog',
     's_number':'order',
