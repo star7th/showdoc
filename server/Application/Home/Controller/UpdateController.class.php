@@ -138,6 +138,52 @@ class UpdateController extends BaseController {
                 D("ItemMember")->execute($sql);
         }
 
+        //创建team表
+        $sql = "CREATE TABLE IF NOT EXISTS `team` (
+        `id`  INTEGER PRIMARY KEY ,
+        `team_name` CHAR(200) NOT NULL DEFAULT '',
+        `uid` int(11) NOT NULL DEFAULT '0' ,
+        `username` CHAR(200) NOT NULL DEFAULT '',
+        `addtime` int(11) NOT NULL DEFAULT '0' ,
+        `last_update_time` int(11) NOT NULL DEFAULT '0' 
+        )";
+        D("User")->execute($sql);
+
+        //创建team_item表
+        $sql = "CREATE TABLE IF NOT EXISTS `team_item` (
+        `id`  INTEGER PRIMARY KEY ,
+        `team_id` int(11) NOT NULL DEFAULT '0' ,
+        `item_id` int(11) NOT NULL DEFAULT '0' ,
+        `addtime` int(11) NOT NULL DEFAULT '0' ,
+        `last_update_time` int(11) NOT NULL DEFAULT '0' 
+        )";
+        D("User")->execute($sql);
+
+        //创建team_item_member表
+        $sql = "CREATE TABLE IF NOT EXISTS `team_item_member` (
+        `id`  INTEGER PRIMARY KEY ,
+        `team_id` int(11) NOT NULL DEFAULT '0' ,
+        `item_id` int(11) NOT NULL DEFAULT '0' ,
+        `member_group_id` int(11) NOT NULL DEFAULT '0' ,
+        `member_uid` int(11) NOT NULL DEFAULT '0' ,
+        `member_username` CHAR(200) NOT NULL DEFAULT '',
+        `addtime` int(11) NOT NULL DEFAULT '0' ,
+        `last_update_time` int(11) NOT NULL DEFAULT '0' 
+        )";
+        D("User")->execute($sql);
+
+        //创建team_member表
+        $sql = "CREATE TABLE IF NOT EXISTS `team_member` (
+        `id`  INTEGER PRIMARY KEY ,
+        `team_id` int(11) NOT NULL DEFAULT '0' ,
+        `member_uid` int(11) NOT NULL DEFAULT '0' ,
+        `member_username` CHAR(200) NOT NULL DEFAULT '',
+        `addtime` int(11) NOT NULL DEFAULT '0' ,
+        `last_update_time` int(11) NOT NULL DEFAULT '0' 
+        )";
+        D("User")->execute($sql);
+
+
 
         echo "OK!\n";
     }
