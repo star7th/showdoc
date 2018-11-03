@@ -60,7 +60,7 @@ class TeamItemController extends BaseController {
         
     }
 
-    //获取列表
+    //根据项目来获取其绑定的团队列表
     public function getList(){
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
@@ -84,6 +84,33 @@ class TeamItemController extends BaseController {
             $this->sendResult(array());
         }
     }
+    
+    //根据团队来获取项目列表
+    public function getListByTeam(){
+        $login_user = $this->checkLogin();
+        $uid = $login_user['uid'] ;
+
+        $team_id = I("team_id/d");
+
+        $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
+        if (!$teamInfo) {
+            $this->sendError(10209,"无此团队或者你无管理此团队的权限");
+            return ;
+        } 
+
+        $sql  = "select item.*,team_item.team_id , team_item.id as id from item left join team_item on item.item_id = team_item.item_id where team_item.team_id = '$team_id' and item.is_del = 0 ";
+        $ret = D("Item")->query($sql);
+
+        if ($ret) {
+            foreach ($ret as $key => &$value) {
+                $value['addtime'] = date("Y-m-d H:i:s" , $value['addtime']);
+            }
+           $this->sendResult($ret);
+        }else{
+            $this->sendResult(array());
+        }
+    }
+
 
     //删除
     public function delete(){

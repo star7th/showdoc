@@ -123,7 +123,7 @@ class BaseController extends Controller {
 		$this->sendResult($array);
 	}
 
-	//判断某用户是否有项目管理权限（项目成员member_group_id为1，以及 项目创建者）
+	//判断某用户是否有项目管理权限（项目成员member_group_id为1，是项目所在团队的成员并且成员权限为1 ，以及 项目创建者）
 	protected function checkItemPermn($uid , $item_id){
 
 		if (!$uid) {
@@ -144,6 +144,13 @@ class BaseController extends Controller {
 			session("mamage_item_".$item_id , 1 );
 			return true;
 		}
+
+		$ItemMember = D("TeamItemMember")->where("item_id = '%d' and member_uid = '%d' and member_group_id = 1 ",array($item_id,$uid))->find();
+		if ($ItemMember) {
+			session("mamage_item_".$item_id , 1 );
+			return true;
+		}
+
 		return false;
 	}
 
@@ -177,6 +184,12 @@ class BaseController extends Controller {
 
 		$ItemMember = D("ItemMember")->where("item_id = '%d' and uid = '%d'  ",array($item_id,$uid))->find();
 		if ($ItemMember) {
+			session("visit_item_".$item_id , 1 );
+			return true;
+		}
+		
+		$TeamItemMember = D("TeamItemMember")->where("item_id = '%d' and member_uid = '%d'  ",array($item_id,$uid))->find();
+		if ($TeamItemMember) {
 			session("visit_item_".$item_id , 1 );
 			return true;
 		}

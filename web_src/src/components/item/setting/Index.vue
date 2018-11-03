@@ -117,7 +117,8 @@ export default {
 .center-card{
   text-align: center;
   width: 600px;
-  height: 500px;
+  min-height: 500px;
+  max-height: 700px;
 }
 
 .infoForm{

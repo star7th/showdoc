@@ -18,6 +18,9 @@ import PageDiff from '@/components/page/Diff'
 import Catalog from '@/components/catalog/Index'
 import Notice from '@/components/notice/Index'
 import Admin from '@/components/admin/Index'
+import Team from '@/components/Team/Index'
+import TeamMember from '@/components/Team/Member'
+import TeamItem from '@/components/Team/Item'
 
 Vue.use(Router)
 

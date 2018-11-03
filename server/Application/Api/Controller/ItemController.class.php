@@ -7,7 +7,7 @@ class ItemController extends BaseController {
     //单个项目信息
     public function info(){
         $this->checkLogin(false);
-        $item_id = I("item_id");
+        $item_id = I("item_id/d");
         $item_domain = I("item_domain/s");
         $current_page_id = I("page_id/d");
         if (! is_numeric($item_id)) {
@@ -168,7 +168,21 @@ class ItemController extends BaseController {
     //我的项目列表
     public function myList(){
         $login_user = $this->checkLogin();        
-        $items  = D("Item")->field("item_id,item_name,last_update_time,item_description,is_del")->where("uid = '$login_user[uid]' or item_id in ( select item_id from ".C('DB_PREFIX')."item_member where uid = '$login_user[uid]' ) ")->order("item_id asc")->select();
+        $member_item_ids = array(-1) ; 
+        $item_members = D("ItemMember")->where("uid = '$login_user[uid]'")->select();
+        if ($item_members) {
+            foreach ($item_members as $key => $value) {
+                $member_item_ids[] = $value['item_id'] ;
+            }
+        }
+        $team_item_members = D("TeamItemMember")->where("member_uid = '$login_user[uid]'")->select();
+        if ($team_item_members) {
+            foreach ($team_item_members as $key => $value) {
+                $member_item_ids[] = $value['item_id'] ;
+            }
+        }
+        $items  = D("Item")->field("item_id,item_name,item_domain,item_type,last_update_time,item_description,is_del")->where("uid = '$login_user[uid]' or item_id in ( ".implode(",", $member_item_ids)." ) ")->order("item_id asc")->select();
+        
         
         foreach ($items as $key => $value) {
             //如果项目已标识为删除

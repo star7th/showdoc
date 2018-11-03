@@ -44,6 +44,12 @@ class TeamController extends BaseController {
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {
+                //获取该团队成员数
+                $value['memberCount'] = D("TeamMember")->where(" team_id = '$value[id]' ")->count();
+
+                //获取该团队涉及项目数
+                $value['itemCount'] = D("TeamItem")->where(" team_id = '$value[id]' ")->count();
+
                 $value['addtime'] = date("Y-m-d H:i:s" , $value['addtime']);
             }
            $this->sendResult($ret);

@@ -290,6 +290,9 @@ class ItemModel extends BaseModel {
         D("Page")->where("item_id = '$item_id' ")->delete();
         D("Catalog")->where("item_id = '$item_id' ")->delete();
         D("PageHistory")->where("item_id = '$item_id' ")->delete();
+        D("ItemMember")->where("item_id = '$item_id' ")->delete();
+        D("TeamItem")->where("item_id = '$item_id' ")->delete();
+        D("TeamItemMember")->where("item_id = '$item_id' ")->delete();
         return D("Item")->where("item_id = '$item_id' ")->delete();
 
     }

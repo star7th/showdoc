@@ -11,8 +11,8 @@
           </div>
           <div class="header-btn-group pull-right">
             <el-button type="text"  @click="feedback">{{$t("feedback")}}</el-button>
-            
-            <router-link to="/admin/index" v-if="isAdmin">&nbsp;&nbsp;&nbsp;{{$t("management_backstage")}}</router-link>
+            <router-link to="/team/index" >&nbsp;&nbsp;&nbsp;{{$t('team_mamage')}}</router-link>
+            <router-link to="/admin/index" v-if="isAdmin">&nbsp;&nbsp;&nbsp;{{$t('background')}}</router-link>
             &nbsp;&nbsp;&nbsp;
             <el-dropdown @command="dropdown_callback">
               <span class="el-dropdown-link">
