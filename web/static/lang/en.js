@@ -238,5 +238,6 @@ exports.default = {
     "team_name":"team name",
     "memberCount":"memberCount",
     "itemCount":"itemCount",
+    "empty_team_tips":"Welcome to the team management function. This function is well suited for collaborative management of Team leader for multi person and cross team projects. Please click the top left button to add the team. After adding teams, team members can be added or deleted at any time, allocated to different projects in batches, and members'rights can be set in different projects. Compared with simple membership management mode, team management function can add and delete personnel in batches, which is more convenient for complex team cooperation.",
 
 };

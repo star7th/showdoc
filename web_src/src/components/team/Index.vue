@@ -8,6 +8,7 @@
       <el-button  type="text" class="add-cat" @click="addTeam">{{$t('add_team')}}</el-button>
       <el-button type="text" class="goback-btn" @click="goback">{{$t('goback')}}</el-button>
        <el-table align="left"
+            :empty-text="$t('empty_team_tips')"
             :data="list"
              height="400"
             style="width: 100%">
