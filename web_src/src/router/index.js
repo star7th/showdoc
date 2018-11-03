@@ -116,5 +116,20 @@ export default new Router({
       name: 'Admin',
       component: Admin
     },
+    {
+      path: '/team/index',
+      name: 'Team',
+      component: Team
+    }, 
+    {
+      path: '/team/member/:team_id',
+      name: 'TeamMember',
+      component: TeamMember
+    },
+    {
+      path: '/team/item/:team_id',
+      name: 'TeamItem',
+      component: TeamItem
+    },
   ]
 })
