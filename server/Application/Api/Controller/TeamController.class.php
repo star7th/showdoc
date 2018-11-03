@@ -66,6 +66,9 @@ class TeamController extends BaseController {
             $ret = D("Team")->where(" id = '$id' and uid = '$login_user[uid]'")->delete();
         }
         if ($ret) {
+            D("TeamItem")->where(" team_id = '$id' ")->delete();
+            D("TeamItemMember")->where(" team_id = '$id' ")->delete();
+            D("TeamMember")->where(" team_id = '$id' ")->delete();
            $this->sendResult($ret);
         }else{
             $return['error_code'] = 10103 ;
