@@ -79,8 +79,7 @@ class PageModel extends BaseModel {
                 $cat_name_sub_sub_array = D("Catalog")->where(" item_id = '$item_id' and level = 4 and cat_name = '%s'  and parent_cat_id = '%s' ",array($cat_name_sub_sub,$cat_name_sub_array['cat_id']))->find();
             }
         }
-        //目录id
-        $cat_id = 0 ;
+
         if ($cat_name_array && $cat_name_array['cat_id'] > 0 ) {
             $cat_id = $cat_name_array['cat_id'] ;
         }
