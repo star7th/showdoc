@@ -88,7 +88,7 @@ class FromCommentsController extends BaseController {
 
         $array['remark'] = $this->parse_one_line("remark" , $content);
 
-        $array['number'] = $this->parse_one_line("number" , $content);
+        $array['s_number'] = $this->parse_one_line("number" , $content);
 
 
         return $array ;
