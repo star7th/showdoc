@@ -30,17 +30,19 @@
   <el-dialog
     :title="$t('share_page')"
     :visible.sync="dialogVisible"
-    width="500px"
+    width="600px"
     :modal="false"
     class="text-center"
     >
     
     <p>{{$t('item_page_address')}} : <code >{{share_page_link}}</code>
     </p>
+    <p><a href="javascript:;" class="home-phone-butt" v-clipboard:copyhttplist="copyText1" v-clipboard:success="onCopy">{{$t('copy_link')}}</a></p>
         <p style="border-bottom: 1px solid #eee;"><img  id="qr-page-link" style="width:114px;height:114px;" :src="qr_page_link"> </p>
         
       <p >{{$t('single_page_address')}} : <code id="share-single-link">{{share_single_link}}</code>
       </p>
+        <p><a href="javascript:;" class="home-phone-butt" v-clipboard:copyhttplist="copyText2" v-clipboard:success="onCopy">{{$t('copy_link')}}</a></p>
         <p style="border-bottom: 1px solid #eee;"><img  id="qr-single-link" style="width:114px;height:114px;" :src="qr_single_link"> </p>
      <p><a href="https://www.showdoc.cc/page/63882" target="_blank">{{$t('page_diff_tips')}}</a></p><p>
       </p>
@@ -71,7 +73,8 @@
   props:{
     item_id:'',
     page_id:'',
-    page_info:{}
+    page_info:{},
+    item_info:'',
   },
     data() {
       return {
@@ -80,7 +83,9 @@
         qr_page_link:"#",
         qr_single_link:"#",
         share_page_link:"",
-        share_single_link:""
+        share_single_link:"",
+        copyText1:'',
+        copyText2:'',
       }
     },
   components:{
@@ -99,6 +104,8 @@
       this.qr_page_link = DocConfig.server +'/api/common/qrcode&size=3&url='+encodeURIComponent(this.share_page_link);
       this.qr_single_link = DocConfig.server +'/api/common/qrcode&size=3&url='+encodeURIComponent(this.share_single_link);
       this.dialogVisible = true;
+      this.copyText1 = this.item_info.item_name+' - '+this.page_info.page_title+"\r\n"+ this.share_page_link;
+      this.copyText2 = this.page_info.page_title+"\r\n"+ this.share_single_link;
     },
     dropdown_callback(data){
       if (data) {
@@ -137,6 +144,9 @@
           }
         }); 
       });
+    },
+    onCopy(){
+      this.$message(this.$t("copy_success"));
     },
   },
   mounted () {

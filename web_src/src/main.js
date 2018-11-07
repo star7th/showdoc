@@ -16,6 +16,8 @@ import myZhLocale from '../static/lang/zh-CN'
 import myEnLocale from '../static/lang/en'
 import 'url-search-params-polyfill'
 import "babel-polyfill";
+import VueClipboard from 'vue-clipboard2';
+
 
 Vue.use(util);
 Vue.config.productionTip = false
@@ -23,6 +25,7 @@ Vue.component('Header', Header);
 Vue.component('Footer', Footer);
 Vue.use(ElementUI)
 Vue.use(VueI18n)
+Vue.use(VueClipboard)
 
 //多语言相关
 var allZhLocale = Object.assign(zhLocale,myZhLocale);

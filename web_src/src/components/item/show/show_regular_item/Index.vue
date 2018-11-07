@@ -56,7 +56,7 @@
         </el-container>
 
         <div class="page-bar" v-show="show_page_bar && item_info.ItemPermn && item_info.is_archived < 1 " >
-          <PageBar v-if="page_id" :page_id="page_id" :item_id='item_info.item_id' :page_info="page_info"></PageBar>
+          <PageBar v-if="page_id" :page_id="page_id" :item_id='item_info.item_id' :item_info='item_info'  :page_info="page_info"></PageBar>
         </div>
         
       </el-container>
@@ -66,12 +66,13 @@
   <el-dialog
     title="分享项目"
     :visible.sync="dialogVisible"
-    width="400px"
+    width="600px"
     :modal="false"
     class="text-center"
     >
     
     <p>项目地址：<code >{{share_item_link}}</code></p>
+    <p><a href="javascript:;" class="home-phone-butt" v-clipboard:copyhttplist="copyText" v-clipboard:success="onCopy">{{$t('copy_link')}}</a></p>
         <p style="border-bottom: 1px solid #eee;"><img id="" style="width:114px;height:114px;" :src="qr_item_link"> </p>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="dialogVisible = false">{{$t('confirm')}}</el-button>
@@ -104,7 +105,8 @@
         share_item_link:'',
         qr_item_link:'',
         page_info:'',
-        show_page_bar:true
+        show_page_bar:true,
+        copyText:"",
       }
     },
   components:{
@@ -157,6 +159,7 @@
       this.share_item_link =  this.getRootPath()+"#/"+this.item_info.item_id  ;
       this.qr_item_link = DocConfig.server +'/api/common/qrcode&size=3&url='+encodeURIComponent(this.share_item_link);
       this.dialogVisible = true;
+      this.copyText = this.item_info.item_name+"  -- ShowDoc \r\n"+ this.share_item_link;
     },
     //根据屏幕宽度进行响应(应对移动设备的访问)
     AdaptToMobile(){
@@ -189,7 +192,11 @@
 
       }
 
-    }
+    },
+    onCopy(){
+      this.$message(this.$t("copy_success"));
+    },
+    
   },
   mounted () {
     //根据屏幕宽度进行响应(应对移动设备的访问)

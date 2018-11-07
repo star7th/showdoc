@@ -36,12 +36,13 @@
   <el-dialog
     :title="$t('share')"
     :visible.sync="dialogVisible"
-    width="400px"
+    width="600px"
     :modal="false"
     class="text-center"
     >
     
     <p>{{$t('item_address')}} :  <code >{{share_item_link}}</code></p>
+    <p><a href="javascript:;" class="home-phone-butt" v-clipboard:copyhttplist="copyText" v-clipboard:success="onCopy">{{$t('copy_link')}}</a></p>
         <p style="border-bottom: 1px solid #eee;"><img   id="" style="width:114px;height:114px;" :src="qr_item_link"> </p>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="dialogVisible = false">{{$t('confirm')}}</el-button>
@@ -143,7 +144,8 @@ export default {
       page_id:'',
       dialogVisible:false,
       share_item_link:'',
-      qr_item_link:''
+      qr_item_link:'',
+      copyText:'',
     };
   },
   components:{
@@ -185,7 +187,7 @@ export default {
       this.share_item_link =  this.getRootPath()+"#/"+this.item_info.item_id  ;
       this.qr_item_link = DocConfig.server +'/api/common/qrcode&size=3&url='+encodeURIComponent(this.share_item_link);
       this.dialogVisible = true;
-      
+      this.copyText = this.item_info.item_name+"  -- ShowDoc \r\n"+ this.share_item_link;
     },
     AdaptToMobile(){
       var doc_container = document.getElementById('doc-container') ;
@@ -193,6 +195,9 @@ export default {
       doc_container.style.padding = '5px';
       var header = document.getElementById('header') ;
       header.style.height = '10px';
+    },
+    onCopy(){
+      this.$message(this.$t("copy_success"));
     }
   },
   mounted () {
