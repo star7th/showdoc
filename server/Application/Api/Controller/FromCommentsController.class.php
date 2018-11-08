@@ -20,7 +20,7 @@ class FromCommentsController extends BaseController {
             return false;
         }
 
-        $p = '/\/\*\*([\s\S])*?\*\//' ;
+        $p = "|/\*\*([\s\S]*)\*/|U";
         preg_match_all($p, $content , $matches) ;
         if ($matches && $matches[0]) {
             foreach ($matches[0] as $key => $value) {
