@@ -126,7 +126,7 @@ export default {
             };
             this.form.register_open =   response.data.data.register_open > 0 ? true :false ;
             this.form.ldap_open =   response.data.data.ldap_open > 0 ? true :false ;
-            this.form.ldap_form =   response.data.data.ldap_form  ;
+            this.form.ldap_form =   response.data.data.ldap_form ? response.data.data.ldap_form : this.form.ldap_form ;
           }else{
             this.$alert(response.data.error_message);
           }
