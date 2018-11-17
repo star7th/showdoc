@@ -11,7 +11,7 @@ class AdminSettingController extends BaseController {
         $ldap_open = intval(I("ldap_open")) ;
         $ldap_form = I("ldap_form") ;
         D("Options")->set("register_open" ,$register_open) ;
-        D("Options")->set("ldap_open" ,$ldap_open) ;
+        
 
         if ($ldap_open) {
 
@@ -43,7 +43,7 @@ class AdminSettingController extends BaseController {
             }
             D("Options")->set("ldap_form" , json_encode( $ldap_form)) ;
         }
-
+        D("Options")->set("ldap_open" ,$ldap_open) ;
         $this->sendResult(array());
 
     }
