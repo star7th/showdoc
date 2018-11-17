@@ -249,4 +249,10 @@ exports.default = {
     "copy_link":"复制链接",
     "copy_success":"复制成功",
     
+    "user_manage":"用户管理",
+    "item_manage":"项目管理",
+    "web_setting":"站点设置",
+    "register_open_label":"开放用户注册",
+    "ldap_open_label":"启用ldap登录",
+
 };
