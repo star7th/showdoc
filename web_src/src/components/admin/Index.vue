@@ -20,11 +20,15 @@
           active-text-color="#ffd04b">
           <el-menu-item index="1">
             <i class="el-icon-info"></i>
-            <span slot="title">{{$t('user_management')}}</span>
+            <span slot="title">{{$t('user_manage')}}</span>
           </el-menu-item>
           <el-menu-item index="2">
             <i class="el-icon-tickets"></i>
-            <span slot="title">{{$t('item_management')}}</span>
+            <span slot="title">{{$t('item_manage')}}</span>
+          </el-menu-item>
+          <el-menu-item index="3">
+            <i class="el-icon-tickets"></i>
+            <span slot="title">{{$t('web_setting')}}</span>
           </el-menu-item>
         </el-menu>
 
@@ -34,7 +38,7 @@
 
             <User v-if="open_menu_index == 1 "> </User>
             <Item v-if="open_menu_index == 2 "> </Item> 
-            
+             <Setting v-if="open_menu_index == 3 "> </Setting> 
 
         </el-main>
           <el-footer>
@@ -122,6 +126,7 @@
 <script>
 import Item from '@/components/admin/item/Index'
 import User from '@/components/admin/user/Index'
+import Setting from '@/components/admin/setting/Index'
 
 export default {
   data() {
@@ -132,6 +137,7 @@ export default {
   components:{
     Item,
     User,
+     Setting,
   },
   methods:{
     select_menu(index,indexPath){

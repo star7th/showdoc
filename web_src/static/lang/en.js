@@ -242,4 +242,10 @@ exports.default = {
 
     "copy_link":"copy link",
     "copy_success":"copy success",
+
+    "user_manage":"user manage",
+    "item_manage":"item manage",
+    "web_setting":"web setting",
+    "register_open_label":"register open",
+    "ldap_open_label":"ldap login",
 };

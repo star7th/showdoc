@@ -25,6 +25,13 @@ class BaseController extends Controller {
 		//检测数据库文件是否有可写权限
 		$this->checkDbWhitable();
 
+		//为了兼容纯json请求
+		if (strstr($_SERVER['CONTENT_TYPE'],"json")) {
+			$json = file_get_contents('php://input');
+			$array = json_decode($json,1);
+			$_POST = array_merge($_POST,$array) ;
+		}
+		
     }
 
 

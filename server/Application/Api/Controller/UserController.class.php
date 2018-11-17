@@ -10,6 +10,11 @@ class UserController extends BaseController {
         $password = I("password");
         $confirm_password = I("confirm_password");
         $v_code = I("v_code");
+        $register_open = D("Options")->get("register_open" ) ;
+        if ($register_open === '0') {
+           $this->sendError(10101,"管理员已关闭注册");
+           return ;
+        }
         if (C('CloseVerify') || $v_code && $v_code == session('v_code') ) {
         session('v_code',null) ;
         if ( $password != '' && $password == $confirm_password) {
@@ -55,6 +60,10 @@ class UserController extends BaseController {
         }
         session('v_code',null) ;
         $ret = D("User")->checkLogin($username,$password);
+        //如果失败则尝试ldap登录
+        if (!$ret) {
+            $ret = D("User")->checkLdapLogin($username,$password);
+        }
         if ($ret) {
           unset($ret['password']);
           session("login_user" , $ret );
