@@ -64,7 +64,10 @@
       <el-dialog :visible.sync="dialogFormVisible" :modal="false" top="10vh">
       <el-form >
           <el-form-item label="" >
-            <el-input  :placeholder="$t('input_target_member')" v-model="MyForm.username"></el-input>
+            <el-autocomplete
+              :placeholder="$t('input_target_member')" v-model="MyForm.username"
+              :fetch-suggestions="getAllUser"
+            ></el-autocomplete>
           </el-form-item>
           <el-form-item label="" class="readonly-checkbox" >
             <el-checkbox v-model="MyForm.is_readonly">{{$t('readonly')}}</el-checkbox>
@@ -363,7 +366,24 @@ export default {
               }
               
           });
-      }
+      },
+      getAllUser(queryString,cb){
+        var that = this ;
+        var url = DocConfig.server+'/api/user/allUser';
+        var params = new URLSearchParams();
+        if (!queryString) {queryString = ''};
+        params.append('username', queryString);
+        that.axios.post(url, params)
+          .then(function (response) {
+            if (response.data.error_code === 0 ) {
+              var Info = response.data.data
+              cb(Info);
+            }else{
+              that.$alert(response.data.error_message);
+            }
+            
+          });
+      },
   },
 
   mounted(){

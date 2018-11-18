@@ -98,8 +98,15 @@ class UserController extends BaseController {
     public function allUser(){
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
+        $username = I("username");
         $field = "username as value" ;
-        $info = D("User")->field($field)->select();
+        $username = \SQLite3::escapeString($username) ;
+        if ($username) {
+            $where = " username like '%{$username}%'" ;
+        }else{
+            $where = ' 1 = 1 ';
+        }
+        $info = D("User")->where($where)->field($field)->select();
         $this->sendResult($info); 
     }
 

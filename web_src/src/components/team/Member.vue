@@ -37,7 +37,10 @@
             <el-dialog :visible.sync="dialogFormVisible"  width="300px">
                     <el-form >
                         <el-form-item :label="$t('member_username')+':'" >
-                           <el-input   v-model="MyForm.member_username"></el-input>
+                            <el-autocomplete
+                              v-model="MyForm.member_username"
+                              :fetch-suggestions="getAllUser"
+                            ></el-autocomplete>
                         </el-form-item>
                     </el-form>
 
@@ -139,12 +142,30 @@ export default {
       },
       goback(){
         this.$router.push({path:"/team/index"})
-      }
+      },
+      getAllUser(queryString,cb){
+        var that = this ;
+        var url = DocConfig.server+'/api/user/allUser';
+        var params = new URLSearchParams();
+        if (!queryString) {queryString = ''};
+        params.append('username', queryString);
+        that.axios.post(url, params)
+          .then(function (response) {
+            if (response.data.error_code === 0 ) {
+              var Info = response.data.data
+              cb(Info);
+            }else{
+              that.$alert(response.data.error_message);
+            }
+            
+          });
+      },
   },
 
   mounted(){
     this.team_id = this.$route.params.team_id; 
     this.geList();
+    thi.getAllUser()
   }
 }
 </script>
