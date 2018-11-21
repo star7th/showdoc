@@ -27,29 +27,29 @@
       <div v-if="form.ldap_open" style="margin-left:50px" >
 
         <el-form-item label="ldap host">
-           <el-input v-model="form.ldap_form.host" placeholder=""  class="form-el"></el-input>
+           <el-input v-model="form.ldap_form.host"   class="form-el"></el-input>
         </el-form-item>
 
         <el-form-item label="ldap port">
-          <el-input v-model="form.ldap_form.port" placeholder="" style="width:90px"></el-input>
+          <el-input v-model="form.ldap_form.port"  style="width:90px"></el-input>
         </el-form-item>
 
 
 
         <el-form-item label="ldap base dn ">
-          <el-input v-model="form.ldap_form.base_dn" placeholder="" class="form-el" placeholder="例如 dc=showdoc,dc=com"></el-input>
+          <el-input v-model="form.ldap_form.base_dn"  class="form-el" placeholder="例如 dc=showdoc,dc=com"></el-input>
         </el-form-item>
 
         <el-form-item label="ldap bind dn ">
-          <el-input v-model="form.ldap_form.bind_dn" placeholder="" class="form-el" placeholder="cn=admin,dc=showdoc,dc=com"></el-input>
+          <el-input v-model="form.ldap_form.bind_dn"  class="form-el" placeholder="cn=admin,dc=showdoc,dc=com"></el-input>
         </el-form-item>
 
         <el-form-item label="ldap bind password ">
-          <el-input v-model="form.ldap_form.bind_password" placeholder="" class="form-el" placeholder="例如 123456"></el-input>
+          <el-input v-model="form.ldap_form.bind_password"  class="form-el" placeholder="例如 123456"></el-input>
         </el-form-item>
 
         <el-form-item label="ldap version">
-            <el-select v-model="form.ldap_form.version" placeholder="" class="form-el">
+            <el-select v-model="form.ldap_form.version"  class="form-el">
               <el-option label="3" value="3"></el-option>
               <el-option label="2" value="2"></el-option>
             </el-select>
@@ -57,7 +57,7 @@
 
         <!-- 
         <el-form-item label="作为用户名的属性">
-          <el-input v-model="form.ldap_form.uid_field" placeholder=""class="form-el" placeholder="例如 sAMAccountName"></el-input>
+          <el-input v-model="form.ldap_form.uid_field" class="form-el" placeholder="例如 sAMAccountName"></el-input>
         </el-form-item>
         -->
       </div>
