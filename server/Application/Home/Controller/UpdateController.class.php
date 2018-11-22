@@ -114,7 +114,7 @@ class UpdateController extends BaseController {
 
         //item表增加is_archived字段
         if (!$this->_is_column_exist("Item","is_archived")) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD is_archived INT( 1 ) NOT NULL DEFAULT '1'  ;";
+                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD is_archived INT( 0 ) NOT NULL DEFAULT '1'  ;";
                 D("ItemMember")->execute($sql);
         }
 
