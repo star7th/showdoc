@@ -96,7 +96,16 @@ class AdminUserController extends BaseController {
         $composer = json_decode($text, true);
         $version = $composer['version'] ;
         $url = "https://www.showdoc.cc/server/api/open/checkUpdate";
-        echo http_post($url,array("version"=>$version));
+        $ch = curl_init();
+        $timeout = 2;
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt ( $ch, CURLOPT_POST, true );
+        curl_setopt ( $ch, CURLOPT_POSTFIELDS, "version={$version}" );
+        curl_setopt($ch,CURLOPT_URL,$url);
+        $sContent = curl_exec($ch);
+        curl_close($ch);
+        echo $sContent  ;
     }
 
 }
