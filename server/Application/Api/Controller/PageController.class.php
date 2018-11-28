@@ -87,6 +87,10 @@ class PageController extends BaseController {
             
             //在保存前先把当前页面的版本存档
             $page = D("Page")->where(" page_id = '$page_id' ")->find();
+            if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+                $this->sendError(10103);
+                return;
+            }
             $insert_history = array(
                 'page_id'=>$page['page_id'],
                 'item_id'=>$page['item_id'],
