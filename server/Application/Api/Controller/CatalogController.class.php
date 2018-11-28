@@ -112,7 +112,12 @@ class CatalogController extends BaseController {
         }
 
         if ($cat_id > 0 ) {
-            
+            $cat = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+            $item_id = $cat['item_id']; 
+            if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+                $this->sendError(10103);
+                return;
+            }
             //如果一个目录已经是别的目录的父目录，那么它将无法再转为level4目录
             if (D("Catalog")->where(" parent_cat_id = '$cat_id' ")->find() && $data['level'] == 4 ) {
                 $this->sendError(10101,"该目录含有子目录，不允许转为底层目录。");
