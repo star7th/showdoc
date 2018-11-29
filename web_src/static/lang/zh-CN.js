@@ -255,4 +255,7 @@ exports.default = {
     "register_open_label":"开放用户注册",
     "ldap_open_label":"启用ldap登录",
 
+    "name":"姓名",
+    "name_tips":"推荐使用真实姓名",
+
 };

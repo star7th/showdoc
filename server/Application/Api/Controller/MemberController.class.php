@@ -57,7 +57,7 @@ class MemberController extends BaseController {
             return ;
         } 
         if ($item_id > 0 ) {
-            $ret = D("ItemMember")->where(" item_id = '$item_id' ")->order(" addtime asc  ")->select();
+            $ret = D("ItemMember")->where(" item_id = '$item_id' ")->join(" left join user on user.uid = item_member.uid")->field("item_member.* , user.name as name")->order(" addtime asc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {

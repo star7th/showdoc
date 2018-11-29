@@ -69,7 +69,7 @@ class TeamMemberController extends BaseController {
         }
 
         if ($login_user['uid'] > 0 ) {
-            $ret = D("TeamMember")->where(" team_id = '$team_id' ")->order(" addtime desc  ")->select();
+            $ret = D("TeamMember")->where(" team_id = '$team_id' ")->join(" left join user on user.uid = team_member.member_uid")->field("team_member.* , user.name as name")->order(" addtime desc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {

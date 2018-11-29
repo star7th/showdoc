@@ -188,7 +188,17 @@ export default {
           });
     },
     feedback(){
-      window.open('https://github.com/star7th/showdoc/issues');
+      if (DocConfig.lang =='en') {
+        window.open('https://github.com/star7th/showdoc/issues');
+      }else{
+        var msg = "你正在使用免费开源版showdoc，如有问题或者建议，请到github提issue：";
+        msg += "<a href='https://github.com/star7th/showdoc/issues' target='_blank'>https://github.com/star7th/showdoc/issues</a><br>";
+        msg += "如果你觉得showdoc好用，不妨给开源项目点一个star。良好的关注度和参与度有助于开源项目的长远发展。";
+        this.$alert(msg, {
+            dangerouslyUseHTMLString: true
+        });
+      }
+
     },
     item_top_class(top){
       if (top) {

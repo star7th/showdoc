@@ -140,4 +140,17 @@ class UserController extends BaseController {
         $this->sendResult(array());
     }
 
+
+    public function updateInfo(){
+        $user = $this->checkLogin();
+        $uid = $user['uid'];
+        $name = I("name");
+
+        D("User")->where(" uid = '$uid' ")->save(array("name"=>$name));
+        $this->sendResult(array());
+
+    }
+
+
+
 }

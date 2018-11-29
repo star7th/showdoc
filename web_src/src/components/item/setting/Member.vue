@@ -15,6 +15,11 @@
             width="100">
           </el-table-column>
           <el-table-column
+            prop="name"
+            :label="$t('name')"
+            >
+          </el-table-column>
+          <el-table-column
             prop="addtime"
             :label="$t('add_time')"
             width="160">

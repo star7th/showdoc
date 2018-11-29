@@ -43,7 +43,7 @@ exports.default = {
     'status_2':'未验证',
     'status_3':'未绑定',
     'binding':'绑定',
-    'modify':'修改',
+    'modify':'modify',
     'modify_password':'modify password',
     'old_password':'old password',
     'new_password':'new password',
@@ -248,4 +248,7 @@ exports.default = {
     "web_setting":"web setting",
     "register_open_label":"register open",
     "ldap_open_label":"ldap login",
+
+    "name":"name",
+    "name_tips":"your real name",
 };

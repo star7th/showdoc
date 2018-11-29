@@ -16,6 +16,11 @@
               >
             </el-table-column>
             <el-table-column
+              prop="name"
+              :label="$t('name')"
+              >
+            </el-table-column>
+            <el-table-column
               prop="addtime"
               :label="$t('addtime')"
               >
@@ -23,7 +28,7 @@
 
             <el-table-column
               prop=""
-              width="180"
+              width="50"
               :label="$t('operation')">
               <template slot-scope="scope">
                 <el-button @click="deleteTeamMember(scope.row.id)" type="text" size="small">{{$t('delete')}}</el-button>
