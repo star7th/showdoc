@@ -227,7 +227,21 @@ export default {
 
         });
 
-        $("th").css("width","180px");
+        //获取内容总长度
+        var contentWidth = $("#"+this.id+" p").width() ;
+        contentWidth = contentWidth ? contentWidth : 722;
+        //表格列 的宽度
+        $("#"+this.id+" table").each(function(i){
+          var $v =$(this).get(0) ;//原生dom对象
+          var num = $v.rows.item(0).cells.length ; //表格的列数
+          var colWidth = Math.floor(contentWidth/num) -2 ;
+          if (num <= 5) {
+            $(this).find("th").css("width",colWidth.toString()+"px");
+          }
+          
+        });
+
+        
         //图片点击放大
         $("#"+this.id+" img").click(function(){
           var  img_url = $(this).attr("src");
