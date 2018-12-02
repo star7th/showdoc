@@ -170,7 +170,6 @@ export default {
   mounted(){
     this.team_id = this.$route.params.team_id; 
     this.geList();
-    thi.getAllUser()
   }
 }
 </script>
