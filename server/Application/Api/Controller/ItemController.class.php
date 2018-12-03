@@ -7,7 +7,7 @@ class ItemController extends BaseController {
     //单个项目信息
     public function info(){
         $this->checkLogin(false);
-        $item_id = I("item_id/d");
+        $item_id = I("item_id/s");
         $item_domain = I("item_domain/s");
         $current_page_id = I("page_id/d");
         if (! is_numeric($item_id)) {
@@ -28,7 +28,7 @@ class ItemController extends BaseController {
             return ;
         } 
 
-        $item = D("Item")->where("item_id = '$item_id' ")->find();
+        $item = D("Item")->where("item_id = '%d' ",array($item_id))->find();
         if (!$item || $item['is_del'] == 1) {
             sleep(1);
             $this->sendError(10101,'项目不存在或者已删除');
