@@ -24,7 +24,13 @@ class TeamMemberController extends BaseController {
             $this->sendError(10209);
             return ;
         }
+        $if_exit = D("TeamMember")->where(" member_uid = '$memberInfo[uid]' and team_id = '$team_id' ")->find();
 
+        if ($if_exit) {
+            $this->sendError(10101,"该用户已经是成员");
+            return ;
+        }
+        
         $data['team_id'] = $team_id ;
         $data['member_uid'] = $memberInfo['uid'] ;
         $data['member_username'] = $memberInfo['username'] ;
