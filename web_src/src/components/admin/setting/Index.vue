@@ -55,11 +55,10 @@
             </el-select>
         </el-form-item>
 
-        <!-- 
-        <el-form-item label="作为用户名的属性">
+        <el-form-item label="login">
           <el-input v-model="form.ldap_form.uid_field" class="form-el" placeholder="例如 sAMAccountName"></el-input>
         </el-form-item>
-        -->
+       
       </div>
 
 

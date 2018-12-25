@@ -35,7 +35,7 @@ class AdminSettingController extends BaseController {
             $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
             $data = ldap_get_entries($ldap_conn, $result);
             for ($i=0; $i<$data["count"]; $i++) {
-                $ldap_user = $data[$i]["cn"][0] ;
+                $ldap_user = $data[$i][$ldap_form["uid_field"]][0] ;
                 //如果该用户不在数据库里，则帮助其注册
                 if(!D("User")->isExist($ldap_user)){
                     D("User")->register($ldap_user,$ldap_user.time());
@@ -95,7 +95,7 @@ class AdminSettingController extends BaseController {
             $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
             $data = ldap_get_entries($ldap_conn, $result);
             for ($i=0; $i<$data["count"]; $i++) {
-                $ldap_user = $data[$i]["cn"][0] ;
+                $ldap_user = $data[$i][$ldap_form["uid_field"]][0] ;
                 $dn = $data[$i]["dn"] ;
                 if ($ldap_user == $username) {
                     //如果该用户不在数据库里，则帮助其注册
