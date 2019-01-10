@@ -18,7 +18,7 @@ class MemberController extends BaseController {
         $username = I("username");
         $member = D("User")->where(" username = '%s' ",array($username))->find();
 
-        if (!$member) {
+        if (!$username || !$member) {
             $this->sendError(10209);
             return ;
         }
