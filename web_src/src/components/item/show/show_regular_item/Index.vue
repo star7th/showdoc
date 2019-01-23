@@ -47,6 +47,9 @@
              <div class="doc-title-box"  v-if="page_id">
                 <span id="doc-title-span" class="dn"></span>
                 <h2 id="doc-title">{{page_title}}</h2>
+                <el-badge :value="attachment_count" class="item"  id="attachment" v-if="attachment_count"   @click.native="ShowAttachment" >
+                  <i class="el-icon-upload"></i> 
+                </el-badge>
             </div>
               <Editormd v-bind:content="content" type="html"  v-if="page_id" ></Editormd>
 
@@ -79,6 +82,11 @@
     </span>
   </el-dialog>
 
+    <!-- 附件列表 -->
+    <AttachmentList callback="" :item_id="page_info.item_id" :manage="false" :page_id="page_info.page_id" ref="AttachmentList"></AttachmentList>
+
+
+
     <Footer> </Footer>
     
   </div>
@@ -91,6 +99,9 @@
   import BackToTop from '@/components/common/BackToTop'
   import LeftMenu from '@/components/item/show/show_regular_item/LeftMenu'
   import PageBar from '@/components/item/show/show_regular_item/PageBar'
+  import AttachmentList from '@/components/page/edit/AttachmentList'
+
+
   export default {
     props:{
       item_info:'',
@@ -107,13 +118,15 @@
         page_info:'',
         show_page_bar:true,
         copyText:"",
+        attachment_count:'',
       }
     },
   components:{
     Editormd,
     LeftMenu,
     PageBar,
-    BackToTop
+    BackToTop,
+    AttachmentList
   },
   methods:{
     //获取页面内容
@@ -138,6 +151,7 @@
               
               that.page_title = response.data.data.page_title ;
               that.page_info = response.data.data ;
+              that.attachment_count = response.data.data.attachment_count > 0 ?  response.data.data.attachment_count  :'' ;
               //切换变量让它重新加载、渲染子组件
               that.page_id = 0 ;
               that.$nextTick(() => {
@@ -195,6 +209,10 @@
     },
     onCopy(){
       this.$message(this.$t("copy_success"));
+    },
+    ShowAttachment(){
+        let childRef = this.$refs.AttachmentList ;//获取子组件
+        childRef.show() ; 
     },
     
   },
@@ -272,5 +290,13 @@
     cursor: pointer;
     position: fixed;
   }
-
+  #attachment{
+    float: right;
+    font-size: 25px;
+    margin-top: -40px;
+    margin-right: 5px;
+    cursor:pointer;
+    color: #abd1f1;
+  }
+  
 </style>

@@ -48,6 +48,10 @@
             </el-dropdown>
           <el-button type="" size="medium" @click="ShowRunApi">{{$t('http_test_api')}}</el-button>
 
+          <el-badge :value="attachment_count" class="item">
+            <el-button type="" size="medium" @click="ShowAttachment">{{$t('attachment')}}</el-button>
+          </el-badge>
+
           </el-row>
 
       <Editormd v-bind:content="content" v-if="content" ref="Editormd"  type="editor" ></Editormd>
@@ -66,6 +70,11 @@
 
         <!-- Json格式化 -->
         <JsonBeautify :callback="insertValue" ref="JsonBeautify"></JsonBeautify>
+
+
+        <!-- 附件列表 -->
+        <AttachmentList :callback="insertValue" :item_id="item_id" :manage="true" :page_id="page_id" ref="AttachmentList"></AttachmentList>
+
 
       </el-container>
     <Footer> </Footer>
@@ -173,6 +182,7 @@ import JsonToTable from '@/components/common/JsonToTable'
 import JsonBeautify from '@/components/common/JsonBeautify'
 import TemplateList from '@/components/page/edit/TemplateList'
 import HistoryVersion from '@/components/page/edit/HistoryVersion'
+import AttachmentList from '@/components/page/edit/AttachmentList'
 
 export default {
   data () {
@@ -186,6 +196,7 @@ export default {
       s_number:'',
       page_id:'',
       copy_page_id:'',
+      attachment_count:'',
 
     };
   },
@@ -229,7 +240,8 @@ export default {
     JsonToTable,
     JsonBeautify,
     TemplateList,
-    HistoryVersion
+    HistoryVersion,
+    AttachmentList
   },
   methods:{
     //获取页面内容
@@ -260,6 +272,7 @@ export default {
               that.title = response.data.data.page_title ;
               that.item_id = response.data.data.item_id ;
               that.s_number = response.data.data.s_number ;
+              that.attachment_count = response.data.data.attachment_count > 0 ? "..." :'' ;
             }else{
               that.$alert(response.data.error_message);
             }
@@ -408,6 +421,7 @@ export default {
             localStorage.removeItem("page_content");
             if (page_id <= 0 ) {
               that.$router.push({path:'/page/edit/'+item_id+'/'+response.data.data.page_id}) ;
+              that.page_id = response.data.data.page_id ;
             };
           }else{
             that.$alert(response.data.error_message);
@@ -451,7 +465,11 @@ export default {
             });
        });
     },
-
+    //附件
+    ShowAttachment(){
+        let childRef = this.$refs.AttachmentList ;//获取子组件
+        childRef.show() ; 
+    },
     /** 粘贴上传图片 **/
     upload_paste_img(e){
       var that = this;

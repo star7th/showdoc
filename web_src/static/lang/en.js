@@ -251,4 +251,12 @@ exports.default = {
 
     "name":"name",
     "name_tips":"your real name",
+
+    "attachment":"attachment",
+    "upload":"upload",
+    "upload_file":"upload file",
+    "file_name":"file name",
+    "download":"download",
+    "file_size_tips":"less than 4M",
+
 };

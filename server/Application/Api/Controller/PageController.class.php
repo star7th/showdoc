@@ -21,6 +21,8 @@ class PageController extends BaseController {
         if ($page) {
            //unset($page['page_content']);
            $page['addtime'] = date("Y-m-d H:i:s",$page['addtime']);
+           //判断是否包含附件信息
+           $page['attachment_count'] = D("UploadFile")->where("page_id = '$page_id' ")->count();
         }
         $this->sendResult($page);
     }
@@ -238,6 +240,102 @@ class PageController extends BaseController {
             }
         }
 
+    }
+
+    //上传附件
+    public function upload(){
+        $login_user = $this->checkLogin();
+        $item_id = I("item_id/d") ? I("item_id/d") : 0 ;
+        $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
+        $uploadFile = $_FILES['file'] ;
+ 
+        if (!$page_id) {
+            $this->sendError(10103,"请至少先保存一次页面内容");
+            return;
+        }
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $this->sendError(10103);
+            return;
+        }
+
+        if (strstr(strtolower($uploadFile['name']), ".php") ) {
+            return false;
+        }
+
+        $upload = new \Think\Upload();// 实例化上传类
+        $upload->maxSize  = 4145728 ;// 设置附件上传大小
+        $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
+        $upload->savePath = '';// 设置附件上传子目录
+        $info = $upload->upload() ;
+        if(!$info) {// 上传错误提示错误信息
+          $this->error($upload->getError());
+          return;
+        }else{// 上传成功 获取上传文件信息
+          $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['file']['savepath'].$info['file']['savename'] ;
+          $insert = array(
+            "uid" => $login_user['uid'],
+            "item_id" => $item_id,
+            "page_id" => $page_id,
+            "display_name" => $uploadFile['name'],
+            "file_type" => $uploadFile['type'],
+            "file_size" => $uploadFile['size'],
+            "real_url" => $url,
+            "addtime" => time(),
+            );
+          $ret = D("UploadFile")->add($insert);
+
+          echo json_encode(array("url"=>$url,"success"=>1));
+        }
+
+    }
+
+    public function uploadList(){
+        $login_user = $this->checkLogin();
+        $item_id = I("item_id/d") ? I("item_id/d") : 0 ;
+        $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
+        if (!$page_id) {
+            $this->sendError(10103,"请至少先保存一次页面内容");
+            return;
+        }
+        $return = array() ;
+        $files = D("UploadFile")->where("page_id = '$page_id' ")->order("addtime desc")->select();
+        if ($files) {
+            $item_id = $files[0]['item_id'] ;
+            if (!$this->checkItemVisit($login_user['uid'] , $item_id)) {
+                $this->sendError(10103);
+                return;
+            }
+            foreach ($files as $key => $value) {
+                $return[] = array(
+                    "file_id"=>$value['file_id'],
+                    "display_name"=>$value['display_name'],
+                    "url"=>$value['real_url'],
+                    "addtime"=> date("Y-m-d H:i:s" , $value['addtime'] ),
+                    );
+            }
+
+        }
+        $this->sendResult($return);
+
+    }
+
+    //删除已上传文件
+    public function deleteUploadFile(){
+        $login_user = $this->checkLogin();
+        $file_id = I("file_id/d") ? I("file_id/d") : 0 ;
+
+        $file = D("UploadFile")->where("file_id = '$file_id' ")->find();
+        $item_id = $file['item_id'] ;
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $this->sendError(10103);
+            return;
+        }
+        $ret = D("Page")->deleteFile($file_id);
+        if ($ret) {
+            $this->sendResult(array());
+        }else{
+            $this->sendError(10101,"删除失败");
+        }
     }
 
 }

@@ -195,6 +195,7 @@ class UpdateController extends BaseController {
         `item_id` int(11) NOT NULL DEFAULT '0' ,
         `visit_times` int(11) NOT NULL DEFAULT '0' ,
         `addtime` int(11) NOT NULL DEFAULT '0' ,
+        `real_url` CHAR(200) NOT NULL DEFAULT '',
         `last_update_time` int(11) NOT NULL DEFAULT '0' 
         )";
         D("User")->execute($sql);
