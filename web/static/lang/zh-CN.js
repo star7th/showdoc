@@ -258,4 +258,11 @@ exports.default = {
     "name":"姓名",
     "name_tips":"推荐使用真实姓名",
 
+    "attachment":"附件",
+    "upload":"上传",
+    "upload_file":"上传文件",
+    "file_name":"文件名",
+    "download":"下载",
+    "file_size_tips":"文件大小在4M内",
+    
 };
