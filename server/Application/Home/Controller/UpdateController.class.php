@@ -183,6 +183,22 @@ class UpdateController extends BaseController {
         )";
         D("User")->execute($sql);
 
+        //创建upload_file表
+        $sql = "CREATE TABLE IF NOT EXISTS `upload_file` (
+        `file_id`  INTEGER PRIMARY KEY ,
+        `sign` CHAR(200) NOT NULL DEFAULT '',
+        `display_name` CHAR(200) NOT NULL DEFAULT '',
+        `file_type` CHAR(200) NOT NULL DEFAULT '',
+        `file_size` CHAR(200) NOT NULL DEFAULT '',
+        `uid` int(11) NOT NULL DEFAULT '0' ,
+        `page_id` int(11) NOT NULL DEFAULT '0' ,
+        `item_id` int(11) NOT NULL DEFAULT '0' ,
+        `visit_times` int(11) NOT NULL DEFAULT '0' ,
+        `addtime` int(11) NOT NULL DEFAULT '0' ,
+        `last_update_time` int(11) NOT NULL DEFAULT '0' 
+        )";
+        D("User")->execute($sql);
+
 
 
         echo "OK!\n";
