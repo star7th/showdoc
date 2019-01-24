@@ -45,6 +45,7 @@
                             <el-autocomplete
                               v-model="MyForm.member_username"
                               :fetch-suggestions="getAllUser"
+                              v-if="dialogFormVisible"
                             ></el-autocomplete>
                         </el-form-item>
                     </el-form>
