@@ -102,7 +102,7 @@ class ExportController extends BaseController {
                                             $child3 = 1 ;
                                             if ($value4['pages']) {
                                                 foreach ($value4['pages'] as $page4) {
-                                                    $data .= "<h3>{$parent}.{$parent2}.{$child2}.{$child3}、{$page4['page_title']}</h3>";
+                                                    $data .= "<h3>{$parent}.{$parent2}.{$parent3}.{$child3}、{$page4['page_title']}</h3>";
                                                     $data .= '<div style="margin-left:30px;">';
                                                         $data .= htmlspecialchars_decode($Parsedown->text($page4['page_content']));
                                                     $data .= '</div>';
