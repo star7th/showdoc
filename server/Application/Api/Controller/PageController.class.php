@@ -38,7 +38,7 @@ class PageController extends BaseController {
         }
 
         if ($page) {
-            
+
             $ret = D("Page")->softDeletePage($page_id);
             //更新项目时间
             D("Item")->where(" item_id = '$page[item_id]' ")->save(array("last_update_time"=>time()));
@@ -86,7 +86,7 @@ class PageController extends BaseController {
         $data['author_username'] = $login_user['username'];
 
         if ($page_id > 0 ) {
-            
+
             //在保存前先把当前页面的版本存档
             $page = D("Page")->where(" page_id = '$page_id' ")->find();
             if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
@@ -127,7 +127,7 @@ class PageController extends BaseController {
 
             $return = D("Page")->where(" page_id = '$page_id' ")->find();
         }else{
-            
+
             $page_id = D("Page")->add($data);
 
             //更新项目时间
@@ -140,7 +140,7 @@ class PageController extends BaseController {
             $return['error_message'] = 'request  fail' ;
         }
         $this->sendResult($return);
-        
+
     }
 
 
@@ -169,7 +169,7 @@ class PageController extends BaseController {
         }else{
             $this->sendResult(array());
         }
-                
+
 
     }
 
@@ -193,7 +193,7 @@ class PageController extends BaseController {
         }
 
         $history_page = D("PageHistory")->where(" page_history_id = '$page_history_id' ")->find();
-        $page_content = uncompress_string($history_page['page_content']); 
+        $page_content = uncompress_string($history_page['page_content']);
         $history_page['page_content'] = $page_content ? $page_content : $history_page['page_content'] ;
 
         $this->sendResult(array("page"=>$page,"history_page"=>$history_page));
@@ -206,11 +206,11 @@ class PageController extends BaseController {
         $item_id = I("item_id/d") ? I("item_id/d") : 0 ;
         $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
 
-        
+
         if ($_FILES['editormd-image-file']['name'] == 'blob') {
             $_FILES['editormd-image-file']['name'] .= '.jpg';
         }
-        
+
         if (strstr(strtolower($_FILES['editormd-image-file']['name']), ".php") ) {
             return false;
         }
@@ -226,7 +226,7 @@ class PageController extends BaseController {
           }
         }else{
             $upload = new \Think\Upload();// 实例化上传类
-            $upload->maxSize  = 3145728 ;// 设置附件上传大小
+            $upload->maxSize  = D("Options")->get("upload_setting_open") > 0 && D("Options")->get("uploadImg_maxSize") ? D("Options")->get("uploadImg_maxSize") : C('UPLOAD_SETTING')['img'] ; ;// 设置附件上传大小
             $upload->allowExts  = array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
             $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
             $upload->savePath = '';// 设置附件上传子目录
@@ -248,7 +248,7 @@ class PageController extends BaseController {
         $item_id = I("item_id/d") ? I("item_id/d") : 0 ;
         $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
         $uploadFile = $_FILES['file'] ;
- 
+
         if (!$page_id) {
             $this->sendError(10103,"请至少先保存一次页面内容");
             return;
@@ -263,7 +263,7 @@ class PageController extends BaseController {
         }
 
         $upload = new \Think\Upload();// 实例化上传类
-        $upload->maxSize  = 4145728 ;// 设置附件上传大小
+        $upload->maxSize  = D("Options")->get("upload_setting_open") > 0 && D("Options")->get("uploadFile_maxSize") ? D("Options")->get("uploadFile_maxSize") : C('UPLOAD_SETTING')['file'] ;// 设置附件上传大小
         $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
         $upload->savePath = '';// 设置附件上传子目录
         $info = $upload->upload() ;

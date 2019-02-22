@@ -15,7 +15,7 @@
           ref="uploadFile"
           v-if="manage"
           >
-          <el-button size="small" type="primary">{{$t('upload_file')}}</el-button><small>&nbsp;&nbsp;&nbsp;{{$t('file_size_tips')}}</small>
+          <el-button size="small" type="primary">{{$t('upload_file')}}</el-button><small>&nbsp;&nbsp;&nbsp;{{$t('file_size_tips')+uploadFile_maxSize+'M'}}</small>
         </el-upload>
 
         <el-table :data="content">
@@ -58,10 +58,11 @@ export default {
       content: [],
       dialogTableVisible: false,
       uploadUrl:DocConfig.server+'/api/page/upload',
+      uploadFile_maxSize:'',
     };
   },
   components:{
-    
+
   },
   computed:{
     uploadData:function(){
@@ -72,6 +73,17 @@ export default {
     }
   },
   methods:{
+    get_fileMaxSize(){
+      var that = this ;
+      var url = DocConfig.server+'/api/adminSetting/getUploadSetting';
+      var params = new URLSearchParams();
+      that.axios.post(url,params)
+        .then(function(response){
+          if (response.data.error_code === 0) {
+            that.uploadFile_maxSize = response.data.data.uploadFile_maxSize;
+          }
+        })
+    },
     get_content(){
         var that = this ;
         var url = DocConfig.server+'/api/page/uploadList';
@@ -84,12 +96,12 @@ export default {
               //that.$message.success("加载成功");
               var json = response.data.data ;
               that.content = response.data.data ;
-              
+              that.get_fileMaxSize();
             }else{
               that.dialogTableVisible = false;
               that.$alert(response.data.error_message);
             }
-            
+
           });
     },
     show(){
@@ -118,11 +130,11 @@ export default {
           .then(function (response) {
             if (response.data.error_code === 0 ) {
                 that.get_content();
-              
+
             }else{
               that.$alert(response.data.error_message);
             }
-            
+
           })
 
       });
@@ -132,13 +144,13 @@ export default {
     },
     clearFiles(){
         let childRef = this.$refs.uploadFile ;//获取子组件
-        childRef.clearFiles() ; 
+        childRef.clearFiles() ;
         this.get_content();
     }
 
   },
   mounted () {
-    
+
 
   }
 }

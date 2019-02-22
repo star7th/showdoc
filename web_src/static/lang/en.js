@@ -257,6 +257,10 @@ exports.default = {
     "upload_file":"upload file",
     "file_name":"file name",
     "download":"download",
-    "file_size_tips":"less than 4M",
+    "file_size_tips":"less than ",
+    "upload_setting":"open upload setting",
+    "file_maxSize":"file max size",
+    "img_maxSize":"image max size",
+    "upload_setting_tips":"please changes your upload file size for nginx or apache"
 
 };

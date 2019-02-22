@@ -2,11 +2,11 @@
 return array(
     //'配置项'=>'配置值'
     //使用sqlite数据库
-    'DB_TYPE'   => 'Sqlite', 
-    'DB_NAME'   => '../Sqlite/showdoc.db.php', 
+    'DB_TYPE'   => 'Sqlite',
+    'DB_NAME'   => '../Sqlite/showdoc.db.php',
     //showdoc不再支持mysql http://www.showdoc.cc/help?page_id=31990
     'DB_HOST'   => 'localhost',
-    'DB_USER'   => 'showdoc', 
+    'DB_USER'   => 'showdoc',
     'DB_PWD'    => 'showdoc123456',
     'DB_PORT'   => 3306, // 端口
     'DB_PREFIX' => '', // 数据库表前缀
@@ -14,7 +14,7 @@ return array(
     'DB_DEBUG'  =>  TRUE, // 数据库调试模式 开启后可以记录SQL日志
     'URL_HTML_SUFFIX' => '',//url伪静态后缀
     'URL_MODEL' => 3 ,//URL兼容模式
-    'URL_ROUTER_ON'   => true, 
+    'URL_ROUTER_ON'   => true,
     'URL_ROUTE_RULES'=>array(
         ':id\d'               => 'Home/Item/show?item_id=:1',
         ':domain\s$'               => 'Home/Item/show?item_domain=:1',//item的个性域名
@@ -33,10 +33,16 @@ return array(
                     'saveName' => array ('uniqid', ''),
                     'driver' => 'Qiniu',
                     'driverConfig' => array (
-                            'secrectKey' => '', 
+                            'secrectKey' => '',
                             'accessKey' => '',
                             'domain' => '',
-                            'bucket' => '', 
+                            'bucket' => '',
                         )
                     ),
+    //上传默认配置（数据库有值时取数据库的）
+    'UPLOAD_SETTING' => array(
+        'state' => 0,//开启上传配置状态，1开启，0关闭
+        'img' => 4 * 1024 * 1024,//图片 1mb=1024kb 1kb =1024bit
+        'file' => 4 * 1024 * 1024//文件
+    ),
 );

@@ -248,7 +248,7 @@ exports.default = {
 
     "copy_link":"复制链接",
     "copy_success":"复制成功",
-    
+
     "user_manage":"用户管理",
     "item_manage":"项目管理",
     "web_setting":"站点设置",
@@ -263,6 +263,10 @@ exports.default = {
     "upload_file":"上传文件",
     "file_name":"文件名",
     "download":"下载",
-    "file_size_tips":"文件大小在4M内",
-    
+    "file_size_tips":"文件大小不能大于",
+    "upload_setting":"开启上传设置",
+    "file_maxSize":"允许文件大小",
+    "img_maxSize":"允许图片大小",
+    "upload_setting_tips":"请自行修改nginx或者apache的可上传文件大小"
+
 };
