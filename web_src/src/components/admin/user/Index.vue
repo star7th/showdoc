@@ -45,7 +45,7 @@
         label="操作">
           <template slot-scope="scope">
             <el-button @click="click_password(scope.row)" type="text" size="small">修改密码</el-button>
-            <el-button @click="delete_user(scope.row)" type="text" size="small">删除</el-button>
+            <el-button @click="delete_user(scope.row)" v-if="scope.row.groupid != 1" type="text" size="small">删除</el-button>
           </template>
       </el-table-column>
     </el-table>

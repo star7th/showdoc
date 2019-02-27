@@ -67,6 +67,9 @@ class UserModel extends BaseModel {
             if (!$ldap_open) {
                 return false;
             }
+            if (!$ldap_form['user_field']) {
+                $ldap_form['user_field'] = 'cn';
+            }
             $ldap_conn = ldap_connect($ldap_form['host'], $ldap_form['port']);//建立与 LDAP 服务器的连接
             if (!$ldap_conn) {
                return false;
@@ -80,7 +83,7 @@ class UserModel extends BaseModel {
             $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
             $data = ldap_get_entries($ldap_conn, $result);
             for ($i=0; $i<$data["count"]; $i++) {
-                $ldap_user = $data[$i]["cn"][0] ;
+                $ldap_user = $data[$i][$ldap_form['user_field']][0] ;
                 $dn = $data[$i]["dn"] ;
                 if ($ldap_user == $username) {
                     //如果该用户不在数据库里，则帮助其注册

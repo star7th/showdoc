@@ -55,11 +55,11 @@
             </el-select>
         </el-form-item>
 
-        <!-- 
-        <el-form-item label="作为用户名的属性">
-          <el-input v-model="form.ldap_form.uid_field" class="form-el" placeholder="例如 sAMAccountName"></el-input>
+        
+        <el-form-item label="ldap user filed">
+          <el-input v-model="form.ldap_form.user_field" class="form-el" placeholder="例如 cn"></el-input>
         </el-form-item>
-        -->
+       
       </div>
 
 
@@ -97,7 +97,7 @@ export default {
           "base_dn":'',
           "bind_dn":'',
           "bind_password":'',
-          "uid_field":'sAMAccountName',
+          "user_field":'',
         }
       }
     };
