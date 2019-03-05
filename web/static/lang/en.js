@@ -25,7 +25,7 @@ exports.default = {
     //user
     'login':'Login',
     'username':'Username',
-    'password':'Passwod',
+    'password':'Password',
     'register_new_account':'register',
     'forget_password':'forget password',
     'username_description':'username/email',
