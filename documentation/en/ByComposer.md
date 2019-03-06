@@ -21,8 +21,8 @@ Then flollow the "New installation" guide to install ShowDoc .After that ,move d
 ```
 rm showdoc/Sqlite/showdoc.db.php
 cp showdoc_backup/Sqlite/showdoc.db.php  showdoc/Sqlite/showdoc.db.php
-rm showdoc/Public/Uploads/
-cp showdoc_backup/Public/Uploads/ showdoc/Public/
+rm -r showdoc/Public/Uploads/
+cp -r showdoc_backup/Public/Uploads/ showdoc/Public/
 ```
 Open your browser and visit 
 http://your-domain.com/showdoc/index.php?s=/home/update/db (change to your servser's address) to update db.
