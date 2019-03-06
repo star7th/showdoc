@@ -1,6 +1,6 @@
 ﻿### Introduction 
 
- About ShowDoc , Please refer to [../../README.md](README.md)
+ About ShowDoc , Please refer to [/README.md](README.md)
  
 ### Environment dependence
 
