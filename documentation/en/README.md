@@ -61,7 +61,7 @@ ShowDoc is a tool greatly applicable for an IT team to share documents online. I
 ### Deploy It to Your Own Server
  - ShowDoc Deploy Manual
   
-     Please refer to:[documentation/en/DeployManual.md](documentation/en/DeployManual.md)
+     Please refer to:[DeployManual.md](DeployManual.md)
   
 
 ### Copyright 
