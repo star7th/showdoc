@@ -256,7 +256,7 @@ export default {
 
         //代码块美化
         $("#"+this.id+" .linenums").css("padding-left","5px") ;
-        $("#"+this.id+" .linenums li").css("list-style-type","none") ;
+        //$("#"+this.id+" .linenums li").css("list-style-type","none") ;
         $("#"+this.id+" .linenums li").css("background-color","#fcfcfc") ;
         $("#"+this.id+" pre").css("background-color","#fcfcfc") ;
         $("#"+this.id+" pre").css("border","1px solid #e1e1e8") ;
