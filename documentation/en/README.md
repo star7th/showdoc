@@ -71,7 +71,7 @@ ShowDoc is a tool greatly applicable for an IT team to share documents online. I
  Copyright ©  star7th 
  
  
- E-mail: xing7th#gmail.com (change # into @) 
+ E-mail: [xing7th](mailto:xing7th@gmail.com)
  
  All rights reserved. 
  
