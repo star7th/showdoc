@@ -1,44 +1,44 @@
-﻿#### 技术栈说明
+#### Technical stack description
 
-前端：Vue + ElementUI
-后端：为了兼容低版本的php运行环境（兼容至5.3），使用的是保守的ThinkPHP3.2.3框架
-数据库：showdoc自带文件型数据库（/Sqlite/showdoc.db.php)，不需要用户手动安装数据库
+Frontend: Vue + ElementUI
+Backend: In order to be compatible with the low-level php runtime environment (compatible with 5.3), the conservative ThinkPHP 3.2.3 framework is used.
+Database: ShowDoc comes with a file database (/Sqlite/showdoc.db.php), no need to manually install the database
 
-#### 开发前准备
+#### Preparation before development
 
-开发机器需要先安装好PHP环境和NodeJS环境
-下载代码并放置到PHP环境下的www目录
-先在浏览器通过地址访问，以便完成showdoc的初始化安装（如已安装过则忽略）
-在命令行里进入showdoc的web_src目录，执行npm install 以安装依赖。（若无npm，你则先要安装NodeJS环境）
+Developing a machine requires first installing the PHP environment and the NodeJS environment.
+Download the code and place it in the www directory under the PHP environment
+First access in the browser through the address, in order to complete the initial installation of ShowDoc (if it has been installed, ignore it)
+Go to ShowDoc's web_src directory on the command line and execute npm install to install the dependencies. (If there is no npm, you must first install the NodeJS environment)
 
 
-#### 前端开发
+#### Front-end development
 
-执行npm run dev 以启用调式模式，通过访问 localhost:8080 便可以实时看到改动的效果。请使用代理以便请求后端API的时候代理到PHP服务端。
-需要执行npm run build 才会最终打包生效。打包后的静态文件会在/web目录下
+Execute npm run dev to enable the mode, and you can see the effect of the changes in real time by accessing localhost:8080. Please use a proxy to proxy to the PHP server when requesting the backend API.
+The npm run build needs to be executed before the final package takes effect. The packaged static files will be in the /web directory.
 
-主要涉及到的目录和文件：
+Mainly related to the directories and files:
 ```
-web_src/src/components   //页面组件基本都放在这里
-web_src/src/router       //页面路由。可以根据url定位到组件
-web_src/static           //静态资源目录
-web_src/static/lang      //前端语言包
-```
-
-#### 后端开发
-
-主要涉及到的目录和文件
-
-```
-server/Application/Api/              //应用目录，基本所有后台api都放在这里
-server/Application/Runtime/Logs      //如果有错误日志，会直接打印出浏览器或者打印到这里
-Public/Uploads                       //上传的图片放置在此处
-server/Application/Api/Lang          //后端语言包
+Web_src/src/components //page components are basically placed here
+Web_src/src/router // page routing. Can target components based on url
+Web_src/static // static resource directory
+Web_src/static/lang // front-end language pack
 ```
 
+#### Backend development
 
-#### 其它说明
+Mainly related directories and files
 
-二次开发后请尊重开源协议，保留版权标识和链接
-如开发了好用的功能，不妨贡献到官方github代码仓库以分享给大家用
-showdoc往后升级可能会覆盖你原有的二次开发。如果想兼容，最好提交到官方仓库成为官方功能。
+```
+Server/Application/Api/ //Application directory, basically all background apis are placed here
+Server/Application/Runtime/Logs //If there is an error log, it will print out the browser directly or print it here.
+Public/Uploads //The uploaded image is placed here
+Server/Application/Api/Lang //Backend language pack
+```
+
+
+#### other instructions
+
+Please respect the open-source agreement after the second development, retain the copyright-logo and link
+If you have developed useful features, you may wish to contribute to the official GitHub code repository for sharing with everyone.
+The upgrade of ShowDoc may overwrite your original secondary development. If you want to be compatible, it is best to submit it to the official warehouse to become an official function.
