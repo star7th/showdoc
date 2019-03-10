@@ -16,8 +16,9 @@
   Or manually download the code from https://github.com/star7th/showdoc/releases
  
  - Make these writable
+ Example: `sudo chmod -R 777 server/showdoc/install
   
-       `/install`, `/Application/Runtime ` ,`/Public/Uploads`,`/Sqlite`,`/Sqlite/showdoc.db.php`
+  `/install`, `/Application/Runtime ` ,`/Public/Uploads`,`/Sqlite`,`/Sqlite/showdoc.db.php`
    
  - Windows sever
     
@@ -27,7 +28,8 @@
  
      `http://your-domain.com/install/`
    
- -  Default user : showdoc(password:123456)
+ -  Default Admin Username : showdoc
+                  Password : 123456
    
 - #### Upgrade 
 
