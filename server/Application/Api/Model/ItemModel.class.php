@@ -183,7 +183,7 @@ class ItemModel extends BaseModel {
         return $item_id;
     }
 
-    public function copy($item_id,$uid,$item_name= '',$item_description= '',$item_password = '',$item_domain){
+    public function copy($item_id,$uid,$item_name= '',$item_description= '',$item_password = '',$item_domain=''){
         return $this->import($this->export($item_id),$uid,$item_name,$item_description,$item_password,$item_domain);
     }
 
