@@ -29,7 +29,7 @@
         </div>
         <div id="doc-body" >
 
-        <div id="page_md_content" ><Editormd v-bind:content="content" v-if="content" type="html"></Editormd></div>
+        <div id="page_md_content"  class="page_content_main"><Editormd v-bind:content="content" v-if="content" type="html"></Editormd></div>
         </div>
 
       </div>
@@ -131,6 +131,7 @@
 <script>
 import Editormd from '@/components/common/Editormd'
 import BackToTop from '@/components/common/BackToTop'
+import Toc from '@/components/common/Toc'
 
 export default {
   props:{
@@ -150,7 +151,8 @@ export default {
   },
   components:{
     Editormd,
-    BackToTop
+    BackToTop,
+    Toc
   },
   methods:{
 

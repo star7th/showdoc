@@ -10,11 +10,12 @@
         </div>
         <div id="doc-body" >
 
-        <div id="page_md_content" ><Editormd v-bind:content="content" v-if="content" type="html"></Editormd></div>
+        <div id="page_md_content"  class="page_content_main" ><Editormd v-bind:content="content" v-if="content" type="html"></Editormd></div>
         </div>
 
       </div>
       <BackToTop></BackToTop>
+      <Toc  v-if="page_id" > </Toc>
     <Footer> </Footer>
     <div class=""></div>
   </div>
@@ -97,6 +98,7 @@
 <script>
 import Editormd from '@/components/common/Editormd'
 import BackToTop from '@/components/common/BackToTop'
+import Toc from '@/components/common/Toc'
 
 export default {
   data () {
@@ -104,12 +106,14 @@ export default {
       currentDate: new Date(),
       itemList:{},
       content:"",
-      page_title:''
+      page_title:'',
+      page_id:0,
     };
   },
   components:{
     Editormd,
-    BackToTop
+    BackToTop,
+    Toc
   },
   methods:{
     get_page_content(){
@@ -125,7 +129,7 @@ export default {
               //that.$message.success("加载成功");
               that.content = response.data.data.page_content ;
               that.page_title = response.data.data.page_title ;
-
+              that.page_id = response.data.data.page_id ;
             }
             else if (response.data.error_code === 10307 || response.data.error_code === 10303 ) {
               //需要输入密码
