@@ -65,6 +65,7 @@
       </el-container>
 
       <BackToTop  > </BackToTop>
+      <Toc  v-if="page_id" > </Toc>
 
   <el-dialog
     title="分享项目"
@@ -97,6 +98,7 @@
 <script>
   import Editormd from '@/components/common/Editormd'
   import BackToTop from '@/components/common/BackToTop'
+  import Toc from '@/components/common/Toc'
   import LeftMenu from '@/components/item/show/show_regular_item/LeftMenu'
   import PageBar from '@/components/item/show/show_regular_item/PageBar'
   import AttachmentList from '@/components/page/edit/AttachmentList'
@@ -126,6 +128,7 @@
     LeftMenu,
     PageBar,
     BackToTop,
+    Toc,
     AttachmentList
   },
   methods:{
