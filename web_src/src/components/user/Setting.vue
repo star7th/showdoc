@@ -11,7 +11,7 @@
                   </el-form-item>
                   <!-- 
                   <el-form-item :label="$t('email')+':'" >
-                       <span>{{emailForm.email}}({{emailForm.status}})</span> <a href="javasript:;" @click="dialogEmailFormVisible = true">{{$t("modify")}}</a>
+                       <span>{{emailForm.email}}({{emailForm.status}})</span> <a href="javascript:;" @click="dialogEmailFormVisible = true">{{$t("modify")}}</a>
                   </el-form-item>
                   -->
                   <el-form-item :label="$t('name')+':'" >
@@ -19,7 +19,7 @@
                   </el-form-item>
 
                   <el-form-item :label="$t('password')+':'">
-                      <a href="javasript:;" @click="dialogPasswordFormVisible = true">{{$t("modify")}}</a>
+                      <a href="javascript:;" @click="dialogPasswordFormVisible = true">{{$t("modify")}}</a>
                   </el-form-item>
 
                     <el-button type="primary" style="width:100%;" @click="formSubmit" >{{$t('submit')}}</el-button>
