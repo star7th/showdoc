@@ -265,4 +265,20 @@ exports.default = {
     "download":"下载",
     "file_size_tips":"文件大小在4M内",
     
+    "confirm_cat_delete" :"确认删除目录吗？此操作会把该目录下的所有页面一并删除，请谨慎操作。",
+
+    "userrole":"用户角色",
+    "reg_time":"注册时间",
+    "last_login_time":"最后登录时间",
+    "administrator":"管理员",
+    "ordinary_users":"普通用户",
+    "owner":"所有者",
+    "privacy":"私密性",
+    "link":"链接",
+    "private":"密码访问",
+    "public":"公开访问",
+    "register_open":"开放用户注册",
+    "long_page_tips":"检测到本页面内容比较多，showdoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。",
+
+    
 };

@@ -258,5 +258,21 @@ exports.default = {
     "file_name":"File name",
     "download":"Download",
     "file_size_tips":"Less than 4MB",
+    
+    "confirm_cat_delete" :"Are you sure you want to delete the directory? This action will delete all the pages in this directory. Please be careful.",
 
+    "userrole":"User role",
+    "reg_time":"Registration time",
+    "last_login_time":"Last login time",
+    "administrator":"Administrator",
+    "ordinary_users":"Ordinary users",
+    "owner":"Owner",
+    "privacy":"Privacy",
+    "link":"link",
+    "private":"private",
+    "public":"public",
+    "register_open":"Open registration",
+    "long_page_tips":'The content of this page was detected to be more, and showdoc temporarily shut down the HTML real-time preview function to prevent the page from getting stuck due to too much content. You can find the preview button in the edit bar and open it manually.',
+
+    
 };
