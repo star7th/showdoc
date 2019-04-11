@@ -6,7 +6,7 @@ Make sure your environment has Docker installed before installation. The Docker 
 # The original official image installation command (Chinese mainland users do not recommend direct use of the original image, you can use the following accelerated image)
 Docker pull star7th/showdoc
 
-# Image Installation Command (Remember to execute the Docker tag command after installation to rename)
+# Chinese Image Installation Command (Remember to execute the Docker tag command after installation to rename)
 Docker pull registry.docker-cn.com/star7th/showdoc
 Docker tag registry.docker-cn.com/star7th/showdoc:latest star7th/showdoc:latest
 

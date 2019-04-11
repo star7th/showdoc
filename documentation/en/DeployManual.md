@@ -12,11 +12,11 @@
 
 - #### New installation
  
- - If you are familiar with the command line, you can install ShowDoc [by Composer](ByComposer.md "by Composer").
-  Or manually download the code from https://github.com/star7th/showdoc/releases
+ - Manually download the code from https://github.com/star7th/showdoc/
  
  - Make these writable
- Example: `sudo chmod -R 777 server/showdoc/install
+
+  Example: `sudo chmod -R 777 server/showdoc/install`
   
   `/install`, `/Application/Runtime ` ,`/Public/Uploads`,`/Sqlite`,`/Sqlite/showdoc.db.php`
    
@@ -28,13 +28,14 @@
  
      `http://your-domain.com/install/`
    
- -  Default Admin Username : showdoc
-                  Password : 123456
+ -  Default Admin 
+
+   Username : showdoc
+   Password : 123456
    
 - #### Upgrade 
 
- - If you are familiar with the command line, you can update ShowDoc [by Composer](http://www.showdoc.cc/help-en?page_id=32344 "by Composer").
-  Or manually download the code from https://github.com/star7th/showdoc/releases
+ - Manually download the code from https://github.com/star7th/showdoc/
  - Backup your codes via: `mv showdoc  showdoc_backup`
  - Dowload new codes and decompression it to a new directory.Copy `/Sqlite/*` and `/Public/Uploads/*` from old directory to new directory
  

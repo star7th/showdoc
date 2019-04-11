@@ -1,9 +1,9 @@
 ### Foreword
  The automatic script script uses Docker to install the runtime environment for Linux servers. If your server does not have a Docker service, the script will try to install it. The process of installing Docker may be a bit slow. If you have already installed docker, the script will omit some of the steps to speed up the ShowDoc installation.
  
-When the script fails to install Docker, you can manually install Docker before executing the script. If you still have Docker installed, you can (un/re-)install and debug it step by step according to this tutorial: https://www.showdoc.cc/help?page_id=65610
+When the script fails to install Docker, you can manually install Docker before executing the script. If you still have Docker installed, you can (un/re-)install and debug it step by step according to this tutorial: [ByDocker.md](https://github.com/star7th/showdoc/blob/master/documentation/en/ByDocker.md)
 
-If the server system itself does not support Docker, you can only run ShowDoc by manually installing the PHP environment: https://www.showdoc.cc/help?page_id=13732
+If the server system itself does not support Docker, you can only run ShowDoc by manually installing the PHP environment:  [DeployManual.md](https://github.com/star7th/showdoc/blob/master/documentation/en/DeployManual.md)
 
 
 ### Instructions
@@ -28,6 +28,10 @@ You can open ShowDoc by opening http://your-domain.com:4999 (replace your-domain
 
 For issues or suggestions on ShowDoc, please go to https://github.com/star7th/showdoc for an issue.
 
+### Development & Contribution
+
+Please refer to: [Development&Contribution.md](https://github.com/star7th/showdoc/blob/master/documentation/en/Development&Contribution.md)
+
 
 ### Upgrade from manual mode to automatic script mode
 If you have previously installed ShowDoc manually, consider upgrading to this automatic scripting method. After upgrading to the script mode, you can use the automation features of the script, such as upgrading to the latest version, restarting, uninstalling, and so on.
@@ -42,8 +46,11 @@ Upgrade method:
  ```
  Chmod 777 -R /showdoc_data/html
  ./showdoc update
+
  ```
- 
+
+
+
  
 ### Other commands
 
