@@ -3,10 +3,10 @@
 <div class="hello">
 <el-form :inline="true"  class="demo-form-inline">
   <el-form-item label="">
-    <el-input v-model="item_name" placeholder="项目名"></el-input>
+    <el-input v-model="item_name" :placeholder="$t('item_name')"></el-input>
   </el-form-item>
   <el-form-item label="">
-    <el-input v-model="username" placeholder="所有者"></el-input>
+    <el-input v-model="username" :placeholder="$t('owner')" ></el-input>
   </el-form-item>
 <!--   <el-form-item label="活动区域">
     <el-select v-model="formInline.region" placeholder="活动区域">
@@ -15,7 +15,7 @@
     </el-select>
   </el-form-item> -->
   <el-form-item>
-    <el-button  @click="onSubmit">查询</el-button>
+    <el-button  @click="onSubmit">{{$t('search')}}</el-button>
   </el-form-item>
 </el-form>
 
@@ -24,47 +24,46 @@
       style="width: 100%">
       <el-table-column
         prop="item_name"
-        label="项目名"
+        :label="$t('item_name')"
         width="140">
       </el-table-column>
       <el-table-column
         prop="item_description"
-        label="项目描述"
+        :label="$t('item_description')"
         width="140">
       </el-table-column>
       <el-table-column
         prop="password"
-        label="私密性"
+        :label="$t('privacy')"
         :formatter="formatPrivacy"
         width="80">
       </el-table-column>
 
       <el-table-column
         prop="item_id"
-        label="访问链接"
+        :label="$t('link')"
         width="100">
           <template slot-scope="scope">
-            <el-button @click="jump_to_item(scope.row)" type="text" size="small">查看</el-button>
+            <el-button @click="jump_to_item(scope.row)" type="text" size="small">{{$t('link')}}</el-button>
           </template>
       </el-table-column>
       <el-table-column
         prop="username"
-        label="所有者"
+        :label="$t('onwer')"
         width="160">
       </el-table-column>
       <el-table-column
-        prop="member_num"
-        label="成员数"
+        :label="$t('memberCount')"
         width="80">
       </el-table-column>
       <el-table-column
         prop="addtime"
-        label="创建时间"
+        :label="$t('add_time')"
         width="160">
       </el-table-column>
       <el-table-column
         prop="item_domain"
-        label="操作">
+        :label="$t('operation')">
           <template slot-scope="scope">
             <el-button  @click="click_attorn_item(scope.row)" type="text" size="small">{{$t('attorn')}}</el-button>
             <el-button @click="delete_item(scope.row)" type="text" size="small">{{$t('delete')}}</el-button>
@@ -148,9 +147,9 @@ export default {
     formatPrivacy(row, column){
       if (row ) {
         if (row.password.length > 0 ) {
-          return "密码访问";
+          return this.$t('private');
         }else{
-          return "公开访问";
+          return this.$t('public');
         }
       };
     },

@@ -145,6 +145,75 @@
 
 </div>
 
+<div id="api-doc-templ-en"  ref="api_doc_templ_en" style="display:none">
+    
+**Brief description:** 
+
+- User Registration Interface
+
+
+**Request URL：** 
+- ` http://xx.com/api/user/register `
+  
+**Method:**
+- POST 
+
+**Parameter:** 
+
+|Parameter name|Required|Type|Explain|
+|:----    |:---|:----- |-----   |
+|username |Yes  |string |Your username   |
+|password |Yes  |string | Your password    |
+|name     |No  |string | Your name    |
+
+ **Return example**
+
+``` 
+  {
+    "error_code": 0,
+    "data": {
+      "uid": "1",
+      "username": "12154545",
+      "name": "harry",
+      "groupid": 2 ,
+      "reg_time": "1436864169",
+      "last_login_time": "0",
+    }
+  }
+```
+
+ **Return parameter description** 
+
+|Parameter name|Type|Explain|
+|:-----  |:-----|-----                           |
+|groupid |int   |  .|
+
+ **Remark** 
+
+- For more error code returns, see the error code description on the home page
+
+
+
+</div>
+<div id="database-doc-templ-en" ref="database_doc_templ_en" style="display:none">
+    
+-  User table , to store user information
+
+
+
+|Field|Type|Empty|Default|Explain|
+|:----    |:-------    |:--- |-- -|------      |
+|uid    |int(10)     |No |  |             |
+|username |varchar(20) |No |    |     |
+|password |varchar(50) |No   |    |       |
+|name     |varchar(15) |No   |    |         |
+|reg_time |int(11)     |No   | 0  |    . |
+
+- Remark : no
+
+
+</div>
+
   </div>
 </template>
 
@@ -342,12 +411,22 @@ export default {
 
     //插入api模板
     insert_api_template(){
-      this.insertValue(this.$refs.api_doc_templ.innerHTML ) ;
+      if (DocConfig.lang == 'zh-cn') {
+        var val = this.$refs.api_doc_templ.innerHTML ;
+      }else{
+        var val = this.$refs.api_doc_templ_en.innerHTML ;
+      }
+      this.insertValue(val ) ;
     },
 
     //插入数据字典模板
     insert_database_template(){
-      this.insertValue(this.$refs.database_doc_templ.innerHTML ) ;
+      if (DocConfig.lang == 'zh-cn') {
+        var val = this.$refs.database_doc_templ.innerHTML ;
+      }else{
+        var val = this.$refs.database_doc_templ_en.innerHTML ;
+      }
+      this.insertValue(val) ;
     },
     //关闭预览
     editor_unwatch(){
@@ -356,7 +435,7 @@ export default {
       if ( sessionStorage.getItem("page_id_unwatch_"+this.page_id) ) {
 
       }else{
-        this.$alert("检测到本页面内容比较多，showdoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。");
+        this.$alert(this.$t("long_page_tips"));
          sessionStorage.setItem("page_id_unwatch_"+this.page_id,1)
       }
 

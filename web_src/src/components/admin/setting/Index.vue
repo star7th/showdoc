@@ -5,7 +5,7 @@
 
       </el-form-item>
 
-      <el-form-item label="开放用户注册">
+      <el-form-item :label="$t('register_open')">
         <el-switch v-model="form.register_open"></el-switch>
       </el-form-item>
       <!-- 待支持

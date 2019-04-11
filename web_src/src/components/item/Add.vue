@@ -9,7 +9,7 @@
               <el-form-item label="" >
               <el-radio v-model="item_type" label="1">{{$t('item_type1')}}</el-radio>
               <el-radio v-model="item_type" label="2">{{$t('item_type2')}}</el-radio>
-              &nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.showdoc.cc/page/65391" target="_blank"><i class="el-icon-question"></i></a>
+              &nbsp;&nbsp;&nbsp;&nbsp;<a v-if="lang =='zh-cn'" href="https://www.showdoc.cc/page/65391" target="_blank"><i class="el-icon-question"></i></a>
               </el-form-item>
 
 
@@ -39,7 +39,7 @@
 
               </el-form-item>
               
-              <el-form-item label="" style="text-align: left;margin-bottom:5px;margin-left:15px;margin-top:-25px;">
+              <el-form-item v-if="lang =='zh-cn'" label="" style="text-align: left;margin-bottom:5px;margin-left:15px;margin-top:-25px;">
                   <el-button type="text" @click="auto_doc">我要自动生成文档</el-button>
                   &nbsp;&nbsp;&nbsp;
               </el-form-item>
@@ -77,7 +77,8 @@ export default {
       password: '',
       show_copy:false,
       itemList:{},
-      copy_item_id:""
+      copy_item_id:"",
+      lang:'',
 
     }
 
@@ -142,6 +143,7 @@ export default {
     
   },
   mounted() {
+    this.lang = DocConfig.lang ;
     this.get_item_list();
     /*给body添加类，设置背景色*/
     document.getElementsByTagName("body")[0].className="grey-bg";

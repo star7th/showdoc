@@ -21,31 +21,31 @@
       style="width: 100%">
       <el-table-column
         prop="username"
-        label="用户名"
+        :label="$t('username')"
         width="200">
       </el-table-column>
       <el-table-column
         prop="groupid"
-        label="用户角色"
+        :label="$t('userrole')"
         :formatter="formatGroup"
-        width="100">
+        width="150">
       </el-table-column>
       <el-table-column
         prop="reg_time"
-        label="注册时间"
+        :label="$t('reg_time')"
         width="160">
       </el-table-column>
       <el-table-column
         prop="last_login_time"
-        label="最后登录时间"
+        :label="$t('last_login_time')"
         width="160">
       </el-table-column>
       <el-table-column
         prop="item_domain"
-        label="操作">
+        :label="$t('operation')">
           <template slot-scope="scope">
-            <el-button @click="click_password(scope.row)" type="text" size="small">修改密码</el-button>
-            <el-button @click="delete_user(scope.row)" v-if="scope.row.groupid != 1" type="text" size="small">删除</el-button>
+            <el-button @click="click_password(scope.row)" type="text" size="small">{{$t('modify_password')}}</el-button>
+            <el-button @click="delete_user(scope.row)" v-if="scope.row.groupid != 1" type="text" size="small">{{$t('delete')}}</el-button>
           </template>
       </el-table-column>
     </el-table>
@@ -63,7 +63,7 @@
   <el-dialog :visible.sync="dialogVisible" :modal="false" width="300px">
     <el-form >
         <el-form-item label="" >
-          <el-input type="password"  placeholder="新密码" v-model="Form.new_password"></el-input>
+          <el-input type="password"  :placeholder="$t('new_password')" v-model="Form.new_password"></el-input>
         </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -75,10 +75,10 @@
   <el-dialog :visible.sync="dialogAddVisible" :modal="false" width="300px">
     <el-form >
         <el-form-item label="" >
-          <el-input type="text"  placeholder="登录名" v-model="addForm.username"></el-input>
+          <el-input type="text" :placeholder="$t('username')" v-model="addForm.username"></el-input>
         </el-form-item>
         <el-form-item label="" >
-          <el-input type="password"  placeholder="密码" v-model="addForm.password"></el-input>
+          <el-input type="password" :placeholder="$t('password')" v-model="addForm.password"></el-input>
         </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -145,13 +145,13 @@ export default {
     formatGroup(row, column){
       if (row ) {
         if (row.groupid == 1 ) {
-          return "管理员";
+          return this.$t("administrator");
         }
         else if (row.groupid == 2 ) {
-          return "普通用户";
+          return this.$t("ordinary_users");
         }
         else{
-          return "未知";
+          return "";
         }
       };
     },
@@ -181,7 +181,7 @@ export default {
             that.axios.post(url, params)
               .then(function (response) {
                 if (response.data.error_code === 0 ) {
-                  that.$message.success("删除成功");
+                  that.$message.success("success");
                   that.get_user_list();
                   that.username = '';
                 }else{
