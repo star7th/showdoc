@@ -98,5 +98,43 @@ class CatalogModel extends BaseModel {
 
 		return $return ;
 	}
+
+
+	//删除目录以及下面的所有页面/子目录
+	public function deleteCat($cat_id){
+		if (!$cat_id) {
+			return false;
+		}
+		//如果有子目录的话，递归把子目录清了
+		$cat = $this->where(" parent_cat_id = '$cat_id' ")->find();
+		if ($cat) {
+			$this->deleteCat($cat['cat_id']);
+		}
+		//获取当前目录信息
+		$cat = $this->where(" cat_id = '$cat_id' ")->find();
+		$item_id = $cat['item_id'];
+		$all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->field("page_id,cat_id")->select();
+        $pages = array() ;
+        if ($all_pages) {
+            foreach ($all_pages as $key => $value) {
+                if ($value['cat_id'] == $cat_id) {
+                    $pages[] = $value ;
+                }
+            }
+        }
+        
+        if ($pages) {
+        	foreach ($pages as $key => $value) {
+        		D("Page")->softDeletePage($value['page_id']);
+        	}
+        }
+        $this->where(" cat_id = '$cat_id' ")->delete();
+
+        return true ;
+
+	}
+
+
 	
+
 }

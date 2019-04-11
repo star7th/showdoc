@@ -155,16 +155,9 @@ class CatalogController extends BaseController {
             return;
         }
 
-        if (D("Page")->where(" cat_id = '$cat_id' and is_del = 0")->find() || D("Catalog")->where(" parent_cat_id = '$cat_id' ")->find()) {
-            $return['error_code'] = -1 ;
-            $return['error_message'] = L('no_delete_empty_catalog') ;
-            $this->sendResult($return);
-            return;
-        }
-
         if ($cat_id > 0 ) {
             
-            $ret = D("Catalog")->where(" cat_id = '$cat_id' ")->delete();
+            $ret = D("Catalog")->deleteCat($cat_id);
 
         }
         if ($ret) {

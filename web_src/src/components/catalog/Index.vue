@@ -221,7 +221,7 @@ export default {
           var that = this ;
           var url = DocConfig.server+'/api/catalog/delete';
 
-          this.$confirm(that.$t('confirm_delete'), ' ', {
+          this.$confirm(that.$t('confirm_cat_delete'), ' ', {
             confirmButtonText: that.$t('confirm'),
             cancelButtonText: that.$t('cancel'),
             type: 'warning'

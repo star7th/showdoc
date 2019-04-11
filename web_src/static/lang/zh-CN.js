@@ -265,4 +265,5 @@ exports.default = {
     "download":"下载",
     "file_size_tips":"文件大小在4M内",
     
+    "confirm_cat_delete" :"确认删除目录吗？此操作会把该目录下的所有页面一并删除，请谨慎操作。",
 };

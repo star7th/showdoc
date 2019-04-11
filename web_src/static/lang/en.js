@@ -258,5 +258,6 @@ exports.default = {
     "file_name":"File name",
     "download":"Download",
     "file_size_tips":"Less than 4MB",
-
+    
+    "confirm_cat_delete" :"Are you sure you want to delete the directory? This action will delete all the pages in this directory. Please be careful.",
 };
