@@ -200,6 +200,14 @@ class UpdateController extends BaseController {
         )";
         D("User")->execute($sql);
 
+        //创建item_sort表
+        $sql = "CREATE TABLE IF NOT EXISTS `item_sort` (
+        `id`  INTEGER PRIMARY KEY ,
+        `uid` int(10) NOT NULL DEFAULT '0',
+        `item_sort_data` text NOT NULL DEFAULT '',
+        `addtime` int(11) NOT NULL DEFAULT '0'
+        )";
+        D("UserToken")->execute($sql);
 
 
         echo "OK!\n";

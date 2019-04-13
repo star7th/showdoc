@@ -17,6 +17,7 @@ import myEnLocale from '../static/lang/en'
 import 'url-search-params-polyfill'
 import "babel-polyfill";
 import VueClipboard from 'vue-clipboard2';
+import VueDND from 'awe-dnd'
 
 
 Vue.use(util);
@@ -26,6 +27,8 @@ Vue.component('Footer', Footer);
 Vue.use(ElementUI)
 Vue.use(VueI18n)
 Vue.use(VueClipboard)
+Vue.use(VueDND)
+
 
 //多语言相关
 var allZhLocale = Object.assign(zhLocale,myZhLocale);

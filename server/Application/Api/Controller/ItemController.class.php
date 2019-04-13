@@ -209,9 +209,39 @@ class ItemController extends BaseController {
             }
         }
 
+        //读取项目顺序
+        $item_sort = D("ItemSort")->where("uid = '$login_user[uid]'")->find();
+        if ($item_sort) {
+            $item_sort_data = json_decode(htmlspecialchars_decode($item_sort['item_sort_data']) , true) ;
+            //var_dump($item_sort_data);
+            foreach ($items as $key => &$value) {
+                //如果item_id有设置了序号，则赋值序号。没有则默认填上0
+                if ($item_sort_data[$value['item_id']]) {
+                    $value['s_number'] = $item_sort_data[$value['item_id']] ;
+                }else{
+                    $value['s_number'] = 0 ;
+                }
+            }
+            $items = $this->_sort_by_key($items , 's_number' ) ;
+        }
+
+
         $items = $items ? array_values($items) : array();
         $this->sendResult($items);
 
+    }
+
+    private function _sort_by_key($array , $mykey){
+        for ($i=0; $i < count($array) ; $i++) { 
+            for ($j = $i + 1 ; $j < count($array) ; $j++) {
+                if ($array[$i][$mykey] > $array[$j][$mykey] ) {
+                    $tmp = $array[$i] ;
+                    $array[$i] = $array[$j] ;
+                    $array[$j] = $tmp ;
+                }
+            }
+        }
+        return $array;
     }
 
     //项目详情
@@ -547,6 +577,23 @@ class ItemController extends BaseController {
             $this->sendError(10101);
         }
         
+    }
+
+    //保存项目排序
+    public function sort(){
+        $login_user = $this->checkLogin();
+
+        $data = I("data");
+
+        D("ItemSort")->where(" uid = '$login_user[uid]' ")->delete();
+
+        $ret = D("ItemSort")->add(array("item_sort_data"=>$data,"uid"=>$login_user['uid'],"addtime"=>time()));
+
+        if ($ret) {
+            $this->sendResult(array());
+        }else{
+            $this->sendError(10101);
+        }
     }
 
 

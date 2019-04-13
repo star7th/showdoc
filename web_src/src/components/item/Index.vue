@@ -35,7 +35,9 @@
         <div class="container-thumbnails">
           <ul class="thumbnails" id="item-list" v-if="itemList">
 
-              <li class=" text-center"  v-for="item in itemList">
+              <li class=" text-center"  v-for="item in itemList"
+                 v-dragging="{ item: item, list: itemList, group: 'item' }"
+              >
                 <router-link class="thumbnail item-thumbnail"  :to="'/' +  (item.item_domain ? item.item_domain:item.item_id )" title="">
                   <span class="item-setting " @click.prevent="click_item_setting(item.item_id)" :title="$t('item_setting')" >
                     <i class="el-icon-setting"></i>
@@ -215,8 +217,8 @@ export default {
           //当鼠标放在项目上时将浮现设置和置顶图标
           $(".item-thumbnail").mouseover(function(){
             $(this).find(".item-setting").show();
-            $(this).find(".item-top").show();
-            $(this).find(".item-down").show();
+            //$(this).find(".item-top").show();
+            //$(this).find(".item-down").show();
           });
 
           //当鼠标离开项目上时将隐藏设置和置顶图标
@@ -288,11 +290,50 @@ export default {
         data();
       };
     },
+
+
+    sort_item(data){
+      var that = this ;
+      var url = DocConfig.server+'/api/item/sort';
+      var params = new URLSearchParams();
+      params.append('data', JSON.stringify(data));
+      that.axios.post(url, params)
+        .then(function (response) {
+          if (response.data.error_code === 0 ) {
+            //that.get_item_list();
+            //window.location.reload();
+
+          }else{
+            that.$alert(response.data.error_message,'',{
+              callback:function(){
+                window.location.reload();
+              }
+            });
+            
+          }
+          
+        });
+    },
+    dragging(){
+      this.$dragging.$off('dragged',true);
+      this.$dragging.$on('dragged', ({ value }) => {
+        //console.log(value);
+        let data = {};
+        for (var i = 0; i < value['list'].length; i++) {
+          let key = value['list'][i]['item_id'] ;
+          data[key] = i + 1  ;
+        };
+        this.sort_item(data);
+      })
+    }
+
   },
   mounted () {
     this.get_item_list();
     this.user_info();
-    
+    this.dragging();
+
+
   },
   beforeDestroy(){
     this.$message.closeAll();
