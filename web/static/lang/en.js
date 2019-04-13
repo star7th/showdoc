@@ -219,7 +219,7 @@ exports.default = {
     "team_mamage":'Manage Team(s)',
     "background":'Background',
     "distribution_to_team":'Distribution item',
-    "back_to_team":'Backck to team',
+    "back_to_team":'Back to team',
     "check_item":'Check item',
     "unassign":'Unassign',
     "go_to_new_an_item":'New item',
