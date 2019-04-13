@@ -158,14 +158,34 @@ export default {
         that.axios.post(url, params)
           .then(function (response) {
             if (response.data.error_code === 0 ) {
-              var Info = response.data.data
-              cb(Info);
+              var Info = response.data.data ;
+              var newInfo = [];
+              //过滤掉已经是成员的用户
+              for (var i = 0; i < Info.length; i++) {
+                let isMember = that.isMember(Info[i]['value']);
+                if (!isMember) {
+                  newInfo.push(Info[i]);
+                };
+              };
+              cb(newInfo);
             }else{
               that.$alert(response.data.error_message);
             }
             
           });
       },
+
+      //判断某个用户是否已经是会员
+      isMember(username){
+        let list = this.list ;
+        for (var i = 0; i < list.length; i++) {
+          if (list[i]['member_username'] == username) {
+            return true ;
+          };
+          
+        };
+        return false;
+      }
   },
 
   mounted(){
