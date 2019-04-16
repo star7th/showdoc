@@ -274,5 +274,8 @@ exports.default = {
     "register_open":"Open registration",
     "long_page_tips":'The content of this page was detected to be more, and showdoc temporarily shut down the HTML real-time preview function to prevent the page from getting stuck due to too much content. You can find the preview button in the edit bar and open it manually.',
 
-    
+    "item_exit":"Exit item",
+    "confirm_exit_item":"Are you sure to exit this item?",
+
+       
 };

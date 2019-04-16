@@ -181,13 +181,18 @@ class ItemController extends BaseController {
                 $member_item_ids[] = $value['item_id'] ;
             }
         }
-        $items  = D("Item")->field("item_id,item_name,item_domain,item_type,last_update_time,item_description,is_del")->where("uid = '$login_user[uid]' or item_id in ( ".implode(",", $member_item_ids)." ) ")->order("item_id asc")->select();
+        $items  = D("Item")->field("item_id,uid,item_name,item_domain,item_type,last_update_time,item_description,is_del")->where("uid = '$login_user[uid]' or item_id in ( ".implode(",", $member_item_ids)." ) ")->order("item_id asc")->select();
         
         
-        foreach ($items as $key => $value) {
+        foreach ($items as $key => &$value) {
             //如果项目已标识为删除
             if ($value['is_del'] == 1) {
                 unset($items[$key]);
+            }
+            if ($value['uid'] == $login_user['uid']) {
+               $value['creator'] = 1 ;
+            }else{
+                $value['creator'] = 0 ;
             }
         }
         $items = array_values($items);
@@ -596,5 +601,26 @@ class ItemController extends BaseController {
         }
     }
 
+    public function exitItem(){
 
+        $login_user = $this->checkLogin();
+
+        $item_id = I("item_id/d");
+
+        //判断，如果是处于团队中，则提示他去请团队管理者把ta从团队中删除
+        $row = D("TeamItemMember")->join(" left join team on team.id = team_item_member.team_id ")->where("item_id = '$item_id' and member_uid ='$login_user[uid]' ")->find();
+        if ($row) {
+           $this->sendError(10101,"你目前处于团队'{$row[team_name]}'中。你可以请'{$row[username]}'把你从团队成员中删除");
+           return ;
+        }
+        //如果不是处于团队中，仅仅是项目成员，则直接删除
+        $ret = D("ItemMember")->where("item_id = '$item_id' and uid ='$login_user[uid]' ")->delete();
+
+        if ($ret) {
+           $this->sendResult(array());
+        }else{
+            $this->sendError(10101);
+        }
+    }
+    
 }

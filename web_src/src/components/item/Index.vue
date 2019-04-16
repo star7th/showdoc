@@ -39,11 +39,11 @@
                  v-dragging="{ item: item, list: itemList, group: 'item' }"
               >
                 <router-link class="thumbnail item-thumbnail"  :to="'/' +  (item.item_domain ? item.item_domain:item.item_id )" title="">
-                  <span class="item-setting " @click.prevent="click_item_setting(item.item_id)" :title="$t('item_setting')" >
+                  <span class="item-setting " @click.prevent="click_item_setting(item.item_id)" :title="$t('item_setting')" v-if="item.creator" >
                     <i class="el-icon-setting"></i>
                   </span>
-                  <span class="item-top " @click.prevent="click_item_top(item.item_id,item.top)" :title="item.top ? $t('cancel_item_top'):$t('item_top')" >
-                    <i :class="item_top_class(item.top)"></i>
+                  <span class="item-exit" @click.prevent="click_item_exit(item.item_id)" :title="$t('item_exit')" v-if="! item.creator">
+                    <i class="el-icon-close"></i>
                   </span>
                   <p class="my-item">{{item.item_name}}</p>
                 </router-link>
@@ -142,11 +142,11 @@
     display: none;
   }
 
-  .item-top{
+  .item-exit{
     float:right;
     margin-right:5px;
     margin-top:5px;
-   display: none;
+    display: none;
   }
 
   .thumbnails li a i{
@@ -154,6 +154,14 @@
     font-weight: bold;
     margin-left: 5px;
   }
+
+  .item-thumbnail:hover .item-setting {
+    display: block;
+  }
+  .item-thumbnail:hover .item-exit {
+    display: block;
+  }
+
 
 </style>
 
@@ -182,7 +190,7 @@ export default {
               //that.$message.success("加载成功");
               var json = response.data.data ;
               that.itemList = json ;
-              that.bind_item_even();
+              //that.bind_item_even();
             }else{
               that.$alert(response.data.error_message);
             }
@@ -234,26 +242,25 @@ export default {
     click_item_setting(item_id){
        this.$router.push({path:'/item/setting/'+item_id});
     },
-    click_item_top(item_id ,old_top){
-      if (old_top) {
-        var action = 'cancel'; 
-      }else{
-        var action = 'top'; 
-      }
+    click_item_exit(item_id){
       var that = this ;
-      var url = DocConfig.server+'/api/item/top';
-      var params = new URLSearchParams();
-      params.append('action', action);
-      params.append('item_id', item_id);
-      that.axios.post(url, params)
-        .then(function (response) {
-          if (response.data.error_code === 0 ) {
-            that.get_item_list();
-          }else{
-            that.$alert(response.data.error_message);
-          }
-          
-        });
+      this.$confirm(that.$t('confirm_exit_item'), ' ', {
+        confirmButtonText: that.$t('confirm'),
+        cancelButtonText: that.$t('cancel'),
+        type: 'warning'
+      }).then(() => {
+        var url = DocConfig.server+'/api/item/exitItem';
+        var params = new URLSearchParams();
+        params.append('item_id', item_id);
+        that.axios.post(url, params)
+          .then(function (response) {
+            if (response.data.error_code === 0 ) {
+              window.location.reload();
+            }else{
+              that.$alert(response.data.error_message);
+            }
+          });
+      })
     },
     logout(){
         var that = this ;

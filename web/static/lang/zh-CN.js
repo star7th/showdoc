@@ -280,5 +280,7 @@ exports.default = {
     "register_open":"开放用户注册",
     "long_page_tips":"检测到本页面内容比较多，showdoc暂时关闭了html实时预览功能，以防止过多内容造成页面卡顿。你可以在编辑栏中找到预览按钮进行手动打开。",
 
-    
+
+    "item_exit":"退出项目",
+    "confirm_exit_item":"你确定要退出该项目吗?",   
 };
