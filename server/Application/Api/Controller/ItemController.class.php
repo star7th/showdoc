@@ -184,16 +184,17 @@ class ItemController extends BaseController {
         $items  = D("Item")->field("item_id,uid,item_name,item_domain,item_type,last_update_time,item_description,is_del")->where("uid = '$login_user[uid]' or item_id in ( ".implode(",", $member_item_ids)." ) ")->order("item_id asc")->select();
         
         
-        foreach ($items as $key => &$value) {
+        foreach ($items as $key => $value) {
+            if ($value['uid'] == $login_user['uid']) {
+               $items[$key]['creator'] = 1 ;
+            }else{
+               $items[$key]['creator'] = 0 ;
+            }
             //如果项目已标识为删除
             if ($value['is_del'] == 1) {
                 unset($items[$key]);
             }
-            if ($value['uid'] == $login_user['uid']) {
-               $value['creator'] = 1 ;
-            }else{
-                $value['creator'] = 0 ;
-            }
+
         }
         $items = array_values($items);
         //读取需要置顶的项目
