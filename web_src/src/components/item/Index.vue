@@ -32,11 +32,21 @@
       </el-container>
 
       <el-container class="container-narrow">
-        <div class="container-thumbnails">
-          <ul class="thumbnails" id="item-list" v-if="itemList">
 
-              <li class=" text-center"  v-for="item in itemList"
-                 v-dragging="{ item: item, list: itemList, group: 'item' }"
+        <div class="container-thumbnails">
+
+          <div class="search-box-div" v-if="itemList.length > 9">
+              <el-input 
+                class="search-box"
+                v-model="keyword">
+                <i slot="prefix" class="el-input__icon el-icon-search"></i>
+              </el-input>
+          </div>
+
+          <ul class="thumbnails" id="item-list" v-if="itemListByKeyword">
+
+              <li class=" text-center"  v-for="item in itemListByKeyword"
+                 v-dragging="{ item: item, list: itemListByKeyword, group: 'item' }"
               >
                 <router-link class="thumbnail item-thumbnail"  :to="'/' +  (item.item_domain ? item.item_domain:item.item_id )" title="">
                   <span class="item-setting " @click.prevent="click_item_setting(item.item_id)" :title="$t('item_setting')" v-if="item.creator" >
@@ -87,7 +97,6 @@
   }
 
   .container-thumbnails{
-    margin: 0 auto;
     margin-top: 30px;
     max-width: 700px;
   }
@@ -162,6 +171,10 @@
     display: block;
   }
 
+  .search-box-div{
+    width: 190px;
+    margin-left: 60px;
+  }
 
 </style>
 
@@ -174,8 +187,24 @@ export default {
     return {
       currentDate: new Date(),
       itemList:{},
-      isAdmin:false
+      isAdmin:false,
+      keyword:''
     };
+  },
+  computed:{
+    itemListByKeyword:function(){
+      if (!this.keyword) {
+        return this.itemList ;
+      };
+      let itemListByKeyword = [] ;
+      for (var i = 0; i < this.itemList.length; i++) {
+        if (this.itemList[i]['item_name'].indexOf(this.keyword) > -1 ) {
+          itemListByKeyword.push(this.itemList[i]);
+        };
+        
+      };
+      return itemListByKeyword ;
+    }
   },
   methods:{
     get_item_list(){
