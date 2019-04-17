@@ -283,4 +283,6 @@ exports.default = {
 
     "item_exit":"退出项目",
     "confirm_exit_item":"你确定要退出该项目吗?",   
+
+     "insert":"插入",
 };
