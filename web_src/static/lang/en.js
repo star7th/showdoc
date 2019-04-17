@@ -277,5 +277,7 @@ exports.default = {
     "item_exit":"Exit item",
     "confirm_exit_item":"Are you sure to exit this item?",
 
+     "insert":"Insert",
+
        
 };

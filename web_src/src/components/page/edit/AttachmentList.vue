@@ -26,6 +26,7 @@
             width="150">
             <template slot-scope="scope">
               <el-button @click="downloadFile(scope.row)" type="text" size="small">{{$t('download')}}</el-button>
+              <el-button @click="insertFile(scope.row)" type="text" size="small">{{$t('insert')}}</el-button>
               <el-button type="text" size="small" @click="deleteFile(scope.row)" v-if="manage">{{$t('delete')}}</el-button>
             </template>
           </el-table-column>
@@ -134,6 +135,11 @@ export default {
         let childRef = this.$refs.uploadFile ;//获取子组件
         childRef.clearFiles() ; 
         this.get_content();
+    },
+    insertFile(row){
+        var val = '['+row['display_name']+']('+row['url']+' "['+row['display_name']+'")';
+        this.callback(val);
+        this.dialogTableVisible = false;
     }
 
   },
