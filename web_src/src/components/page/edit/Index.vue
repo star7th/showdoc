@@ -497,7 +497,10 @@ export default {
               message: that.$t("save_success"),
               type: 'success'
             });
-            localStorage.removeItem("page_content");
+
+            //删除草稿
+            that.deleteDraft();
+
             if (page_id <= 0 ) {
               that.$router.push({path:'/page/edit/'+item_id+'/'+response.data.data.page_id}) ;
               that.page_id = response.data.data.page_id ;
@@ -513,7 +516,6 @@ export default {
         }, 20000);
     },
     goback(){
-      localStorage.removeItem("page_content");
       var url = '/'+this.$route.params.item_id;
       this.$router.push({path:url,query:{page_id:this.$route.params.page_id}}) ; 
     },
@@ -606,6 +608,42 @@ export default {
           e.preventDefault();
         }
       }
+    },
+    //草稿
+    draft(){
+      var that = this ;
+      var pkey = "page_content_"+this.page_id ;
+        //定时保存文本内容到localStorage
+        setInterval(()=>{
+          let childRef = this.$refs.Editormd ;
+          var content = childRef.getMarkdown() ;
+            localStorage.setItem(pkey , content);
+        }, 30*1000);
+
+        //检测是否有定时保存的内容
+        var page_content = localStorage.getItem(pkey);
+        if (page_content && page_content.length > 0) {
+          localStorage.removeItem(pkey);
+          that.$confirm(that.$t('draft_tips'),'',{
+            showClose:false
+          }
+          ).then(()=>{
+              that.insertValue(page_content , true) ;
+              localStorage.removeItem(pkey);
+            }).catch(()=>{
+              localStorage.removeItem(pkey);
+            });
+        };
+    },
+
+    //遍历删除草稿
+    deleteDraft(){
+      for(var i=0; i<localStorage.length;i++){
+          var name = localStorage.key(i) ;
+          if (name.indexOf("page_content_") > -1) {
+            localStorage.removeItem(name)
+          };
+      }
     }
   },
 
@@ -624,6 +662,8 @@ export default {
       this.content = this.$t("welcome_use_showdoc") ;
     }
     this.get_catalog(this.$route.params.item_id);
+    
+    this.draft();
 
     /** 监听粘贴上传图片 **/
     document.addEventListener('paste', this.upload_paste_img);
