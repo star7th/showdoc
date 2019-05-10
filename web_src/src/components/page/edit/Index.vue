@@ -266,13 +266,16 @@ export default {
       page_id:'',
       copy_page_id:'',
       attachment_count:'',
-
+      catalogs:[]
     };
   },
   computed: {
 
     //新建/编辑页面时供用户选择的归属目录列表
     belong_to_catalogs:function(){
+        if (!this.catalogs || this.catalogs.length <=0 ) {
+          return [];
+        };
         var Info = this.catalogs.slice(0);
         var cat_array = [] ;
         for (var i = 0; i < Info.length; i++) {
