@@ -71,7 +71,7 @@ exports.default = {
     'item_domain' : '(可选)个性域名',
     'item_domain_illegal' : '个性域名只能是字母或数字的组合',
     'domain_already_exists' : '个性域名已经存在',
-    'visit_password_placeholder' : '访问密码（可选，私密项目请设置密码）',
+    'visit_password_placeholder' : '访问密码',
     'submit' : '提交',
     'goback' : '返回',
     'copy_exists_item' : '复制已存在项目',
@@ -285,4 +285,8 @@ exports.default = {
     "confirm_exit_item":"你确定要退出该项目吗?",   
 
      "insert":"插入",
+
+    "Open_item":"公开项目",
+    "private_item":"私密项目",
+    "private_item_passwrod":"私密项目请设置访问密码",
 };

@@ -71,7 +71,7 @@ exports.default = {
     'item_domain' : 'Personalized domain name (optional)',
     'item_domain_illegal' : 'Personalized domain names can only be a combination of letters or numbers',
     'domain_already_exists' : 'Personal domain name already exists',
-    'visit_password_placeholder' : 'Password (optional: private project required)',
+    'visit_password_placeholder' : 'Password',
     'copy_exists_item' : 'Copy existing item',
     'please_choose' : 'Please select',
     'auto_db' : 'Auto data dictionary',
@@ -277,7 +277,11 @@ exports.default = {
     "item_exit":"Exit item",
     "confirm_exit_item":"Are you sure to exit this item?",
 
-     "insert":"Insert",
+    "insert":"Insert",
+
+    "Open_item":"public item",
+    "private_item":"private item",
+    "private_item_passwrod":"Please set a password for private item",
 
        
 };
