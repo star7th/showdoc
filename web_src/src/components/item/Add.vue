@@ -23,7 +23,12 @@
 
 
               <el-form-item label="" >
-                <el-input type="password" auto-complete="off" v-model="password"  :placeholder="$t('visit_password_placeholder')"></el-input>
+                <el-radio v-model="isOpenItem" :label="true">{{$t('Open_item')}}</el-radio>
+                <el-radio v-model="isOpenItem" :label="false">{{$t('private_item')}}</el-radio>
+              </el-form-item>
+
+              <el-form-item label="" v-show="!isOpenItem" >
+                  <el-input type="password" auto-complete="off" v-model="password"  :placeholder="$t('visit_password_placeholder')"></el-input>
               </el-form-item>
 
               <el-form-item label="" class="text-left">
@@ -79,6 +84,7 @@ export default {
       itemList:{},
       copy_item_id:"",
       lang:'',
+      isOpenItem:true,
 
     }
 
@@ -113,7 +119,10 @@ export default {
     onSubmit() {
         var that = this ;
         var url = DocConfig.server+'/api/item/add';
-
+        if (!this.isOpenItem && !this.password) {
+          that.$alert(that.$t("private_item_passwrod"));
+          return false;
+        };
         var params = new URLSearchParams();
         params.append('item_type', this.item_type);
         params.append('item_name', this.item_name);
