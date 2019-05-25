@@ -123,6 +123,9 @@ export default {
           that.$alert(that.$t("private_item_passwrod"));
           return false;
         };
+        if (this.isOpenItem) {
+          this.password = '';
+        }; 
         var params = new URLSearchParams();
         params.append('item_type', this.item_type);
         params.append('item_name', this.item_name);

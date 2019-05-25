@@ -9,8 +9,13 @@
         <el-input type="text" auto-complete="off" v-model="infoForm.item_description" placeholder="" ></el-input>
       </el-form-item>
 
-      <el-form-item :label="$t('visit_password')+':'">
-        <el-input type="password" auto-complete="off" :placeholder="$t('visit_password_description')" v-model="infoForm.password"></el-input>
+      <el-form-item label="" >
+        <el-radio v-model="isOpenItem" :label="true">{{$t('Open_item')}}</el-radio>
+        <el-radio v-model="isOpenItem" :label="false">{{$t('private_item')}}</el-radio>
+      </el-form-item>
+
+      <el-form-item :label="$t('visit_password')+':'" v-show="!isOpenItem">
+            <el-input type="password" auto-complete="off"  v-model="infoForm.password"></el-input>
       </el-form-item>
 
        <el-form-item label="" >
@@ -33,7 +38,8 @@ export default {
     return {
       infoForm:{
 
-      }
+      },
+      isOpenItem:true,
     }
 
   },
@@ -48,6 +54,9 @@ export default {
           .then(function (response) {
             if (response.data.error_code === 0 ) {
               var Info = response.data.data
+              if (Info.password) {
+                that.isOpenItem = false;
+              };
               that.infoForm =  Info;
             }else{
               that.$alert(response.data.error_message);
@@ -61,7 +70,13 @@ export default {
       FormSubmit() {
           var that = this ;
           var url = DocConfig.server+'/api/item/update';
-
+          if (!this.isOpenItem && !this.infoForm.password) {
+            that.$alert(that.$t("private_item_passwrod"));
+            return false;
+          };
+          if (this.isOpenItem) {
+            this.infoForm.password = '';
+          };
           var params = new URLSearchParams();
           params.append('item_id',  that.$route.params.item_id);
           params.append('item_name', this.infoForm.item_name);
