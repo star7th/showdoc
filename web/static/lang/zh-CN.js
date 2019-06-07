@@ -10,7 +10,7 @@ exports.default = {
     'section_title2' : 'API文档',
     'section_description2' : ' APP、web前端与服务器常用API来进行交互<br>用ShowDoc可以非常方便快速地编写出美观的API文档',
     'section_title3' : '数据字典',
-    'section_description3' : '好的数据字典可以很方便地向别人描述你的数据库结构<br>用ShowDoc可以编辑出美观的数字字典',
+    'section_description3' : '好的数据字典可以很方便地向别人描述你的数据库结构<br>用ShowDoc可以编辑出美观的数据字典',
     'section_title4' : '说明文档',
     'section_description4' : '你完全可以使用 ShowDoc来编写一些工具的说明书<br>也可以编写一些技术规范说明文档以供团队查阅',
     'section_title5' : '团队协作',
