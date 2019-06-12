@@ -27,7 +27,7 @@ class UserController extends BaseController {
                     unset($ret['password']);
                     session("login_user" , $ret );
                     $token = D("UserToken")->createToken($ret['uid']);
-                    cookie('cookie_token',$token,60*60*24*90);//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
+                    cookie('cookie_token',$token,array('expire'=>60*60*24*90,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
                   $this->sendResult(array()); 
 
                 }else{
@@ -69,7 +69,7 @@ class UserController extends BaseController {
           session("login_user" , $ret );
           D("User")->setLastTime($ret['uid']);
           $token = D("UserToken")->createToken($ret['uid']);
-          cookie('cookie_token',$token,60*60*24*90);//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
+          cookie('cookie_token',$token,array('expire'=>60*60*24*90,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
           $this->sendResult(array());               
         }else{
             D("VerifyCode")->_ins_times($key);//输错密码则设置输错次数
