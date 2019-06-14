@@ -25,6 +25,11 @@
         width="200">
       </el-table-column>
       <el-table-column
+        prop="name"
+        :label="$t('name')"
+        >
+      </el-table-column>
+      <el-table-column
         prop="groupid"
         :label="$t('userrole')"
         :formatter="formatGroup"
