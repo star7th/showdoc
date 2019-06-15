@@ -90,6 +90,15 @@ class FromCommentsController extends BaseController {
 
         $array['s_number'] = $this->parse_one_line("number" , $content);
 
+        //如果请求参数是json，则生成请求示例
+        $json_param = $this->parse_one_line("json_param" , $content);
+        $json_param = htmlspecialchars_decode($json_param);
+        //判断是否是json数据
+        if (!is_null(json_decode($json_param))) {
+            //格式化下
+            $json_param = $this->indent_json($json_param);
+        }
+        $array['json_param'] = $json_param ; 
 
         return $array ;
     }
@@ -195,17 +204,35 @@ class FromCommentsController extends BaseController {
 - ` '.$array['url'].' `
   
 **请求方式：**
-- '.$array['method'].' 
+- '.$array['method'].' ';
+
+if ($array['json_param']) {
+$content .= '
+
+
+ **请求参数示例**
+
+``` 
+'.$array['json_param'].'
+```
+
+';
+
+}
+
+if ($array['param']) {
+$content .='
 
 **参数：** 
 
 |参数名|是否必选|类型|说明|
 |:----    |:---|:----- |-----   |'."\n";
-if ($array['param']) {
     foreach ($array['param'] as $key => $value) {
          $content .= '|'.$value[0].' |'.$value[1].'  |'.$value[2].' |'.$value[3].' |'."\n";
     }
 }
+
+
 
 $content .= '
  **返回示例**
