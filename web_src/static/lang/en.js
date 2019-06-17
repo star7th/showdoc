@@ -283,5 +283,7 @@ exports.default = {
     "private_item":"private item",
     "private_item_passwrod":"Please set a password for private item",
 
-       
+    "create_sigle_page":"I want to create a single page address",
+    "create_sigle_page_tips":"When you just want to share a page and not the whole project, you can choose to share a single page address. After sharing, your friends will only see a single page, can not browse the catalog menu, and can not switch to other pages to view.",
+
 };

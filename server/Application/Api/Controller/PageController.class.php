@@ -23,6 +23,14 @@ class PageController extends BaseController {
            $page['addtime'] = date("Y-m-d H:i:s",$page['addtime']);
            //判断是否包含附件信息
            $page['attachment_count'] = D("UploadFile")->where("page_id = '$page_id' ")->count();
+
+           $singlePage = M("SinglePage")->where(" page_id = '%d' ",array($page_id))->limit(1)->find();
+           if ($singlePage) {
+                $page['unique_key'] =  $singlePage['unique_key'] ;
+           }else{
+                $page['unique_key'] = '' ;
+           }
+
         }
         $this->sendResult($page);
     }
@@ -337,5 +345,65 @@ class PageController extends BaseController {
             $this->sendError(10101,"删除失败");
         }
     }
+
+
+    //创建单页
+    public function createSinglePage(){
+        $page_id = I("page_id/d");
+        $isCreateSiglePage = I("isCreateSiglePage");
+        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        if (!$page || $page['is_del'] == 1) {
+            sleep(1);
+            $this->sendError(10101);
+            return false;
+        }
+        $login_user = $this->checkLogin(false);
+        if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+            $this->sendError(10103);
+            return;
+        }
+        D("SinglePage")->where(" page_id = '$page_id' ")->delete();
+        $unique_key = md5(time().rand()."gbgdhbdgtfgfK3@bv45342regdhbdgtfgftghsdg");
+        $add = array(
+            "unique_key" => $unique_key ,
+            "page_id" => $page_id ,
+            );
+        if ($isCreateSiglePage == 'true') { //这里的布尔值被转成字符串了
+           D("SinglePage")->add($add);
+           $this->sendResult($add);
+        }else{
+            $this->sendResult(array());
+        }
+        
+    }
+
+    //页面详情
+    public function infoByKey(){
+        $unique_key = I("unique_key");
+        if (!$unique_key) {
+            return false;
+        }
+        $singlePage = M("SinglePage")->where(" unique_key = '%s' ",array($unique_key))->find();
+        $page_id = $singlePage['page_id'];
+
+        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        if (!$page || $page['is_del'] == 1) {
+            sleep(1);
+            $this->sendError(10101);
+            return false;
+        }
+        $login_user = $this->checkLogin(false);
+        $page = $page ? $page : array();
+        if ($page) {
+           unset($page['item_id']);
+           unset($page['cat_id']);
+           $page['addtime'] = date("Y-m-d H:i:s",$page['addtime']);
+           //判断是否包含附件信息
+           $page['attachment_count'] = D("UploadFile")->where("page_id = '$page_id' ")->count();
+
+        }
+        $this->sendResult($page);
+    }
+
 
 }

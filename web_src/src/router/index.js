@@ -92,6 +92,11 @@ export default new Router({
       component: PageIndex
     },
     {
+      path: '/p/:unique_key',
+      name: 'PageIndex',
+      component: PageIndex
+    },
+    {
       path: '/page/edit/:item_id/:page_id',
       name: 'PageEdit',
       component: PageEdit

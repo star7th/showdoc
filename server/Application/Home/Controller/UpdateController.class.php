@@ -209,6 +209,13 @@ class UpdateController extends BaseController {
         )";
         D("UserToken")->execute($sql);
 
+        //创建single_page表
+        $sql = "CREATE TABLE IF NOT EXISTS `single_page` (
+        `id`  INTEGER PRIMARY KEY ,
+        `unique_key` CHAR(200) NOT NULL DEFAULT '',
+        `page_id` int(11) NOT NULL DEFAULT '0'
+        )";
+        D("UserToken")->execute($sql);
 
         echo "OK!\n";
     }

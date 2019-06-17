@@ -119,10 +119,16 @@ export default {
     get_page_content(){
         var that = this ;
         var page_id = that.$route.params.page_id ;
-        var url = DocConfig.server+'/api/page/info';
-
+        var unique_key = that.$route.params.unique_key ;
+        if (unique_key) {
+          var url = DocConfig.server+'/api/page/infoByKey';
+        }else{
+          var url = DocConfig.server+'/api/page/info';
+        }
+        
         var params = new URLSearchParams();
         params.append('page_id', page_id );
+        params.append('unique_key', unique_key );
         that.axios.post(url, params)
           .then(function (response) {
             if (response.data.error_code === 0 ) {

@@ -289,4 +289,9 @@ exports.default = {
     "Open_item":"公开项目",
     "private_item":"私密项目",
     "private_item_passwrod":"私密项目请设置访问密码",
+
+    "create_sigle_page":"我要创建单页面地址",
+    "create_sigle_page_tips":"当仅仅想分享某个页面、而不想分享整个项目的时候，你可以选择分享单页面地址。分享出去后，你的好友将仅仅只看到单个页面，无法浏览目录菜单，也无法切换到其他页面查看。",
+
+
 };
