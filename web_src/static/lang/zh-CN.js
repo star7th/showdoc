@@ -20,7 +20,7 @@ exports.default = {
     'section_title7' : '在线托管',
     'section_description7'  :'www.showdoc.cc 提供安全稳定的在线文档托管服务<br>你可以放心地选择托管你的文档数据在云端',
     'section_title8' : '立即体验',
-    'section_description8' : '超过6000+互联网团队正在使用ShowDoc',
+    'section_description8' : '超过10000+互联网团队正在使用ShowDoc',
 
     //user
     'login':'登录',
