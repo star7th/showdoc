@@ -271,7 +271,7 @@ class PageController extends BaseController {
         }
 
         $upload = new \Think\Upload();// 实例化上传类
-        $upload->maxSize  = 4145728 ;// 设置附件上传大小
+        $upload->maxSize  = 4145728000 ;// 设置附件上传大小
         $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
         $upload->savePath = '';// 设置附件上传子目录
         $info = $upload->upload() ;
