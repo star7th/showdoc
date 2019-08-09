@@ -20,7 +20,7 @@ exports.default = {
     'section_title7' : 'Hosted online',
     'section_description7' : 'Www.showdoc.cc provide security and stability of the document hosting service',
     'section_title8' : 'Try it now',
-    'section_description8' : 'Over 6000+ IT team is using ShowDoc',
+    'section_description8' : 'Over 10000+ IT team is using ShowDoc',
 
     //user
     'login':'Login',
@@ -196,6 +196,7 @@ exports.default = {
     'insert_templ':'Insert',
     'delete_templ':'Delete',
     'save_success':'Save success',
+    'paste_insert_table': 'Insert table from paste',
 
     //catalog
     'add_cat':'Add catalog',
