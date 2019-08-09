@@ -62,7 +62,7 @@
                 };
               };
               that.item_info = json ;
-              document.title = that.item_info.item_name +"--ShowDoc";
+              document.title = that.item_info.item_name +" -- 文档中心";
               if (json.unread_count > 0 ) {
                 that.$message({
                   showClose: true,
@@ -103,7 +103,7 @@
     this.$message.closeAll();
     /*去掉添加的背景色*/
     document.body.removeAttribute("class","grey-bg");
-    document.title = "ShowDoc" ;
+    document.title = "文档中心" ;
   }
 };
 </script>
