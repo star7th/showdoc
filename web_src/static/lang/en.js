@@ -196,6 +196,7 @@ exports.default = {
     'insert_templ':'Insert',
     'delete_templ':'Delete',
     'save_success':'Save success',
+    'paste_insert_table': 'Insert table from paste',
 
     //catalog
     'add_cat':'Add catalog',

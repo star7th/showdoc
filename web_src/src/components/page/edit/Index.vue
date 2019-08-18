@@ -39,6 +39,8 @@
           <el-button type="" size="medium" @click="insert_api_template">{{$t('insert_apidoc_template')}}</el-button>
           <el-button type="" size="medium" @click="insert_database_template">{{$t('insert_database_doc_template')}}</el-button>
           <el-button type="" size="medium" @click.native="ShowTemplateList">{{$t('more_templ')}}</el-button>
+          <el-button type="" size="medium" @click.native="ShowPasteTable">{{$t('paste_insert_table')}}</el-button>
+          
             <el-dropdown split-button type="" style="margin-left:100px;" size="medium" trigger="hover" >
               {{$t('json_tools')}}
               <el-dropdown-menu slot="dropdown">
@@ -74,6 +76,10 @@
 
         <!-- 附件列表 -->
         <AttachmentList :callback="insertValue" :item_id="item_id" :manage="true" :page_id="page_id" ref="AttachmentList"></AttachmentList>
+
+        <!-- 粘贴插入表格 -->
+        <PasteTable :callback="insertValue" :item_id="item_id" :manage="true" :page_id="page_id" ref="PasteTable"></PasteTable>
+        
 
 
       </el-container>
@@ -252,6 +258,8 @@ import JsonBeautify from '@/components/common/JsonBeautify'
 import TemplateList from '@/components/page/edit/TemplateList'
 import HistoryVersion from '@/components/page/edit/HistoryVersion'
 import AttachmentList from '@/components/page/edit/AttachmentList'
+import PasteTable from '@/components/page/edit/PasteTable'
+
 
 export default {
   data () {
@@ -313,7 +321,8 @@ export default {
     JsonBeautify,
     TemplateList,
     HistoryVersion,
-    AttachmentList
+    AttachmentList,
+    PasteTable
   },
   methods:{
     //获取页面内容
@@ -466,6 +475,11 @@ export default {
     ShowTemplateList(){
         let childRef = this.$refs.TemplateList ;//获取子组件
         childRef.show() ; 
+    },
+    //粘贴插入表格
+    ShowPasteTable(){
+        let childRef = this.$refs.PasteTable ;//获取子组件
+        childRef.dialogFormVisible = true ;
     },
 
     //展示历史版本

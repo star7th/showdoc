@@ -201,6 +201,7 @@ exports.default = {
     'insert_templ':'插入此模板',
     'delete_templ':'删除模板',
     'save_success':'保存成功',
+    'paste_insert_table': '粘贴插入表格',
 
 
     //catalog
