@@ -169,6 +169,7 @@ exports.default = {
     'insert_apidoc_template':'插入API接口模板',
     'insert_database_doc_template':'插入数据字典模板',
     'json_tools':'JSON工具',
+    'format_tools':'格式工具',
     'json_to_table':'JSON转参数表格',
     'beautify_json':'JSON格式化',
     'beautify_json_description':'请粘贴一段json，程序将自动以美观的方式格式化显示',
@@ -202,7 +203,7 @@ exports.default = {
     'delete_templ':'删除模板',
     'save_success':'保存成功',
     'paste_insert_table': '粘贴插入表格',
-
+    'paste_insert_table_tips':'你可以从网页或者excel中复制表格，然后粘贴在此处。粘贴并确定后，程序将自动把源表格转为markdown格式的表格。注：复制excel后，请鼠标右击，粘贴为纯文本。否则会当做图片上传。',
 
     //catalog
     'add_cat':'添加目录',

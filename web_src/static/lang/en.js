@@ -164,6 +164,7 @@ exports.default = {
     'insert_apidoc_template':'Insert ApiDoc template',
     'insert_database_doc_template':'Insert DatabaseDoc template',
     'json_tools':'Json tools',
+    'format_tools':'Format tools',
     'json_to_table':'JSON to table',
     'beautify_json':'JSON beautify',
     'beautify_json_description':'Please paste a JSON script, the program will automatically format the display in an elegant way.',
@@ -197,7 +198,7 @@ exports.default = {
     'delete_templ':'Delete',
     'save_success':'Save success',
     'paste_insert_table': 'Insert table from paste',
-
+    'paste_insert_table_tips':'Paste (Ctrl + V) below an existing table data copied (Ctrl + C) from a spreadsheet (e.g. Microsoft Excel), a text document, a Markdown code, or even a website.',
     //catalog
     'add_cat':'Add catalog',
     'cat_name':'Catalog name',

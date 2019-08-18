@@ -39,13 +39,13 @@
           <el-button type="" size="medium" @click="insert_api_template">{{$t('insert_apidoc_template')}}</el-button>
           <el-button type="" size="medium" @click="insert_database_template">{{$t('insert_database_doc_template')}}</el-button>
           <el-button type="" size="medium" @click.native="ShowTemplateList">{{$t('more_templ')}}</el-button>
-          <el-button type="" size="medium" @click.native="ShowPasteTable">{{$t('paste_insert_table')}}</el-button>
           
             <el-dropdown split-button type="" style="margin-left:100px;" size="medium" trigger="hover" >
-              {{$t('json_tools')}}
+              {{$t('format_tools')}}
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native="ShowJsonToTable">{{$t('json_to_table')}}</el-dropdown-item>
                 <el-dropdown-item @click.native="ShowJsonBeautify">{{$t('beautify_json')}}</el-dropdown-item>
+                <el-dropdown-item @click.native="ShowPasteTable">{{$t('paste_insert_table')}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           <el-button type="" size="medium" @click="ShowRunApi">{{$t('http_test_api')}}</el-button>

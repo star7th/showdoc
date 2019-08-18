@@ -7,7 +7,7 @@
 
       <el-dialog :title="$t('paste_insert_table')" :modal="is_modal"  :visible.sync="dialogFormVisible">
         <el-form >
-		  	<el-input type="textarea" class="dialoContent" placeholder="Paste (Ctrl + V) below an existing table data copied (Ctrl + C) from a spreadsheet (e.g. Microsoft Excel), a text document, a Markdown code, or even a website." :rows="10" v-model="content"></el-input>
+		  	<el-input type="textarea" class="dialoContent" :placeholder="$t('paste_insert_table_tips')" :rows="10" v-model="content"></el-input>
 		  </el-form>
 		  <div slot="footer" class="dialog-footer">
 		    <el-button @click="dialogFormVisible = false">{{$t('cancel')}}</el-button>
