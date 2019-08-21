@@ -67,12 +67,12 @@ class ExportController extends BaseController {
         if ($catalogs) {
             foreach ($catalogs as $key => $value) {
                 $data .= "<h1>{$parent}、{$value['cat_name']}</h1>";
-                $data .= '<div style="margin-left:20px;">';
+                $data .= '<div style="margin-left:0px;">';
                     $child = 1 ;
                     if ($value['pages']) {
                         foreach ($value['pages'] as $page) {
                             $data .= "<h2>{$parent}.{$child}、{$page['page_title']}</h2>";
-                            $data .= '<div style="margin-left:20px;">';
+                            $data .= '<div style="margin-left:0px;">';
                                 $data .= htmlspecialchars_decode($Parsedown->text($page['page_content']));
                             $data .= '</div>';
                             $child ++;
@@ -87,7 +87,7 @@ class ExportController extends BaseController {
                                 if ($value3['pages']) {
                                     foreach ($value3['pages'] as $page3) {
                                         $data .= "<h3>{$parent}.{$parent2}.{$child2}、{$page3['page_title']}</h3>";
-                                        $data .= '<div style="margin-left:30px;">';
+                                        $data .= '<div style="margin-left:0px;">';
                                             $data .= htmlspecialchars_decode($Parsedown->text($page3['page_content']));
                                         $data .= '</div>';
                                         $child2 ++;
@@ -98,7 +98,7 @@ class ExportController extends BaseController {
                                     $parent3 = 1 ;
                                     foreach ($value3['catalogs'] as $key4 => $value4) {
                                         $data .= "<h2>{$parent}.{$parent2}.{$parent3}、{$value4['cat_name']}</h2>";
-                                        $data .= '<div style="margin-left:20px;">';
+                                        $data .= '<div style="margin-left:0px;">';
                                             $child3 = 1 ;
                                             if ($value4['pages']) {
                                                 foreach ($value4['pages'] as $page4) {
