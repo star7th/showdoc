@@ -590,7 +590,7 @@ class ItemController extends BaseController {
         $login_user = $this->checkLogin();
 
         $data = I("data");
-
+        D("ItemSort")->where(" uid = '$login_user[uid]' ")->delete();
         $ret = D("ItemSort")->add(array("item_sort_data"=>$data,"uid"=>$login_user['uid'],"addtime"=>time()),array(),true);
 
         if ($ret) {
