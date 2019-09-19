@@ -242,12 +242,12 @@ class PageController extends BaseController {
             $upload->allowExts  = array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
             $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
             $upload->savePath = '';// 设置附件上传子目录
-            $info = $upload->upload() ;
+            $info = $upload->uploadOne($_FILES['editormd-image-file']) ;
             if(!$info) {// 上传错误提示错误信息
               $this->error($upload->getError());
               return;
             }else{// 上传成功 获取上传文件信息
-              $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['editormd-image-file']['savepath'].$info['editormd-image-file']['savename'] ;
+              $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['savepath'].$info['savename'] ;
               echo json_encode(array("url"=>$url,"success"=>1));
             }
         }
@@ -282,12 +282,12 @@ class PageController extends BaseController {
         $upload->maxSize  = 4145728000 ;// 设置附件上传大小
         $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
         $upload->savePath = '';// 设置附件上传子目录
-        $info = $upload->upload() ;
+        $info = $upload->uploadOne($uploadFile) ;
         if(!$info) {// 上传错误提示错误信息
           $this->error($upload->getError());
           return;
         }else{// 上传成功 获取上传文件信息
-          $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['file']['savepath'].$info['file']['savename'] ;
+          $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['savepath'].$info['savename'] ;
           $insert = array(
             "uid" => $login_user['uid'],
             "item_id" => $item_id,
