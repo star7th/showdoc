@@ -219,6 +219,10 @@ class PageController extends BaseController {
             $_FILES['editormd-image-file']['name'] .= '.jpg';
         }
         
+        if (!$_FILES['editormd-image-file']) {
+           return false;
+        }
+        
         if (strstr(strtolower($_FILES['editormd-image-file']['name']), ".php") ) {
             return false;
         }
@@ -265,7 +269,11 @@ class PageController extends BaseController {
             $this->sendError(10103);
             return;
         }
-
+        
+        if (!$uploadFile) {
+           return false;
+        }
+        
         if (strstr(strtolower($uploadFile['name']), ".php") ) {
             return false;
         }
