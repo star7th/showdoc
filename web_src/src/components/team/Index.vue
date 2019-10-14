@@ -194,4 +194,8 @@ export default {
   background: #f0f9eb;
 }
 
+.el-table__empty-text{
+  text-align: left;
+}
+
 </style>
