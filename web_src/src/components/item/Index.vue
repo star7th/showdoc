@@ -80,7 +80,7 @@
 
   .container-narrow{
     margin: 0 auto;
-    max-width: 700px;
+    max-width: 1000px;
   }
 
   .masthead{
@@ -98,7 +98,7 @@
 
   .container-thumbnails{
     margin-top: 30px;
-    max-width: 700px;
+    max-width: 1000px;
   }
 
   .my-item{
