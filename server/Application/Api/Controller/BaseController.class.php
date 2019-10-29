@@ -44,7 +44,7 @@ class BaseController extends Controller {
 		}
 		
 		if ( ! session("login_user")) {
-			$cookie_token = cookie('cookie_token');
+			$cookie_token = I("user_token") ? I("user_token") : cookie('cookie_token');
 			if ($cookie_token) {
 				$ret = D("UserToken")->getToken($cookie_token);
 				if ($ret && $ret['token_expire'] > time() ) {

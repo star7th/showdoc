@@ -85,6 +85,47 @@ class UserController extends BaseController {
         
     }
     
+    //登录2
+    public function loginByVerify(){
+        $username = I("username");
+        $password = I("password");
+        $captcha_id = I("captcha_id");
+        $captcha = I("captcha");
+        
+        if ( !D("Captcha")->check($captcha_id , $captcha) ) {
+            $this->sendError(10206,L('verification_code_are_incorrect'));
+            return;
+        }
+        $ret = D("User")->checkLogin($username,$password);
+        //如果失败则尝试ldap登录
+        if (!$ret) {
+            $ret = D("User")->checkLdapLogin($username,$password);
+        }
+        
+        if ($ret) {
+          unset($ret['password']);
+          session("login_user" , $ret );
+          D("User")->setLastTime($ret['uid']);
+          $token = D("UserToken")->createToken($ret['uid']);
+          $this->sendResult(array(
+            "uid" => $ret['uid'] ,
+            "username" => $ret['username'] ,
+            "name" => $ret['name'] ,
+            "groupid" => $ret['groupid'] ,
+            "avatar" => $ret['avatar'] ,
+            "avatar_small" => $ret['avatar_small'] ,
+            "email" => $ret['email'] ,
+            "email_verify" => $ret['email_verify'] ,
+            "user_token" => $token ,
+            )); 
+
+        }else{
+            $this->sendError(10204,L('username_or_password_incorrect'));
+            return;
+        }
+        
+    }
+    
     //获取用户信息
     public function info(){
         $login_user = $this->checkLogin();
