@@ -125,7 +125,59 @@ class UserController extends BaseController {
         }
         
     }
-    
+
+    //注册2
+    public function registerByVerify(){
+        $username = trim(I("username"));
+        $password = I("password");
+        $confirm_password = I("confirm_password");
+        $captcha_id = I("captcha_id");
+        $captcha = I("captcha");
+        $register_open = D("Options")->get("register_open" ) ;
+        if ($register_open === '0') {
+           $this->sendError(10101,"管理员已关闭注册");
+           return ;
+        }
+        if ( !D("Captcha")->check($captcha_id , $captcha) ) {
+            $this->sendError(10206,L('verification_code_are_incorrect'));
+            return;
+        }
+        if ( $password != '' && $password == $confirm_password) {
+
+            if ( ! D("User")->isExist($username) ) {
+                $new_uid = D("User")->register($username,$password);
+                if ($new_uid) {
+                    //设置自动登录
+                    $ret = D("User")->where("uid = '$new_uid' ")->find() ;
+                    unset($ret['password']);
+                    session("login_user" , $ret );
+                    $token = D("UserToken")->createToken($ret['uid']);
+                    cookie('cookie_token',$token,array('expire'=>60*60*24*90,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
+                    
+                    $this->sendResult(array(
+                        "uid" => $ret['uid'] ,
+                        "username" => $ret['username'] ,
+                        "name" => $ret['name'] ,
+                        "groupid" => $ret['groupid'] ,
+                        "avatar" => $ret['avatar'] ,
+                        "avatar_small" => $ret['avatar_small'] ,
+                        "email" => $ret['email'] ,
+                        "user_token" => $token ,
+                    ));
+
+                }else{
+                    $this->sendError(10101,'register fail');
+                }
+            }else{
+                $this->sendError(10101,L('username_exists'));
+            }
+
+        }else{
+            $this->sendError(10101,L('code_much_the_same'));
+        }
+
+    }
+
     //获取用户信息
     public function info(){
         $login_user = $this->checkLogin();
