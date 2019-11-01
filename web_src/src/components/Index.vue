@@ -146,7 +146,8 @@ export default {
       font-weight: bold;
   }
   .slide{
-    width: 700px;
+    width:100%;
+    max-width: 700px;
     position  : absolute;
     top       : 50%;
     left      : 50%;
@@ -156,6 +157,12 @@ export default {
     padding-right: 15px;
     padding-bottom: 0px;
     box-sizing: border-box;
+  }
+
+  @media only screen and (max-width: 800px) {
+    .slide p {
+      font-size: 14px;
+    }
   }
 
 </style>
