@@ -83,6 +83,10 @@ class FromCommentsController extends BaseController {
         //解析请求参数
         $array['param'] = $this->parse_muti_line('param' , $content);
 
+        //解析请求header
+        $array['header'] = $this->parse_muti_line('header' , $content);
+
+
         //解析返回参数
         $array['return_param'] = $this->parse_muti_line('return_param' , $content);
 
@@ -205,6 +209,18 @@ class FromCommentsController extends BaseController {
   
 **请求方式：**
 - '.$array['method'].' ';
+
+if ($array['header']) {
+$content .='
+
+**Header：** 
+
+|Header名|是否必选|类型|说明|
+|:----    |:---|:----- |-----   |'."\n";
+    foreach ($array['header'] as $key => $value) {
+         $content .= '|'.$value[0].' |'.$value[1].'  |'.$value[2].' |'.$value[3].' |'."\n";
+    }
+}
 
 if ($array['json_param']) {
 $content .= '
