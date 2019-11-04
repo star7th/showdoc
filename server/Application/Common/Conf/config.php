@@ -26,6 +26,7 @@ return array(
     'STATS_CODE' =>'',  //可选，统计代码
     'TMPL_CACHE_ON' => false,//禁止模板编译缓存
     'HTML_CACHE_ON' => false,//禁止静态缓存
+    'TMPL_EXCEPTION_FILE' => '../Public/exception.tpl' , //错误模版
     //上传文件到七牛的配置
     'UPLOAD_SITEIMG_QINIU' => array(
                     'maxSize' => 5 * 1024 * 1024,//文件大小
