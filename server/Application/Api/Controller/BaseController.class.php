@@ -44,7 +44,7 @@ class BaseController extends Controller {
 		}
 		
 		if ( ! session("login_user")) {
-			$cookie_token = cookie('cookie_token');
+			$cookie_token = I("user_token") ? I("user_token") : cookie('cookie_token');
 			if ($cookie_token) {
 				$ret = D("UserToken")->getToken($cookie_token);
 				if ($ret && $ret['token_expire'] > time() ) {
@@ -97,6 +97,14 @@ class BaseController extends Controller {
 			header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
 			header('Access-Control-Allow-Credentials: true');//允许跨域请求
 		}
+
+		//来自Html5Plus的应用允许跨域
+		if (strstr($_SERVER['HTTP_USER_AGENT'], "Html5Plus") ) {
+			header('Access-Control-Allow-Origin: *');//允许跨域请求
+			header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
+			header('Access-Control-Allow-Credentials : true');//允许跨域请求
+		}
+
 		echo json_encode($result);
 
 		//如果开启API调试模式，则记录请求参数和返回结果
@@ -117,6 +125,14 @@ class BaseController extends Controller {
 	//返回错误提示
 	protected function sendError($error_code , $error_message = ''){
 		$error_code = $error_code ? $error_code : 10103 ;
+		
+		//来自Html5Plus的应用允许跨域
+		if (strstr($_SERVER['HTTP_USER_AGENT'], "Html5Plus") ) {
+			header('Access-Control-Allow-Origin: *');//允许跨域请求
+			header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
+			header('Access-Control-Allow-Credentials : true');//允许跨域请求
+		}
+
 		if (!$error_message) {
 			$error_codes = C("error_codes");
 			foreach ($error_codes as $key => $value) {
