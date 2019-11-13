@@ -5,7 +5,7 @@
       <el-container>
 
         <el-aside class="el-aside" id="left-side">
-            <LeftMenu :get_page_content="get_page_content" :item_info="item_info" :search_item="search_item" v-if="item_info" ></LeftMenu>
+            <LeftMenu :get_page_content="get_page_content" :keyword="keyword" :item_info="item_info" :search_item="search_item" v-if="item_info" ></LeftMenu>
         </el-aside>
         
         <el-container class="right-side" id="right-side">
@@ -52,7 +52,7 @@
                   <i class="el-icon-upload"></i> 
                 </el-badge>
             </div>
-              <Editormd v-bind:content="content" type="html"  v-if="page_id" ></Editormd>
+              <Editormd v-bind:content="content" type="html" :keyword="keyword"  v-if="page_id" ></Editormd>
 
           </el-main>
 
@@ -108,7 +108,8 @@
   export default {
     props:{
       item_info:'',
-      search_item:''
+      search_item:'',
+      keyword:''
     },
     data() {
       return {

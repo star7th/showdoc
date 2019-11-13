@@ -33,6 +33,10 @@ export default {
       type:String,
       default: 'editor'
     },
+    keyword: {
+      type:String,
+      default: ''
+    },
     id: {
       type: String,
       default: 'editor-md'
@@ -91,6 +95,7 @@ export default {
 	      `${this.editorPath}/lib/underscore.min.js`,
 		    `${this.editorPath}/lib/sequence-diagram.min.js`,
 		    `${this.editorPath}/lib/jquery.flowchart.min.js`,
+        `${this.editorPath}/lib/jquery.mark.min.js`,
 	    ], () => {
 	       
 	      $s(`${this.editorPath}/editormd.js`, () => {
@@ -262,6 +267,9 @@ export default {
         $("#"+this.id+" pre").css("border","1px solid #e1e1e8") ;
         
         $("#"+this.id+" code").css("color","#d14");
+
+        //高亮关键字
+        if(this.keyword)$("#"+this.id).mark(this.keyword);
         
     },
 

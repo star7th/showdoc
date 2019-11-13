@@ -75,11 +75,11 @@
   props:{
     get_page_content:'',
     item_info:'',
-    search_item:''
+    search_item:'',
+    keyword:'',
   },
     data() {
       return {
-        keyword:'',
         openeds:[],
         menu:''
       }

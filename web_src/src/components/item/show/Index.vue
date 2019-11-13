@@ -3,7 +3,7 @@
     <Header> </Header>
     
     <!-- 展示常规项目 -->
-    <ShowRegularItem :item_info="item_info" :search_item="search_item" v-if="item_info && item_info.item_type == 1 "> 
+    <ShowRegularItem :item_info="item_info" :search_item="search_item" :keyword="keyword" v-if="item_info && item_info.item_type == 1 "> 
 
     </ShowRegularItem>
     
@@ -26,6 +26,7 @@
     data() {
       return {
         item_info:'' ,
+        keyword:'',
       }
     },
   components:{
@@ -92,6 +93,7 @@
     },
     search_item(keyword){
       this.item_info = '';
+      this.keyword = keyword ;
       this.get_item_menu(keyword);
     }
   },
