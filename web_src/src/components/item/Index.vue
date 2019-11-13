@@ -36,11 +36,12 @@
         <div class="container-thumbnails">
 
           <div class="search-box-div" v-if="itemList.length > 9">
-              <el-input 
-                class="search-box"
-                v-model="keyword">
-                <i slot="prefix" class="el-input__icon el-icon-search"></i>
-              </el-input>
+              <div class="search-box el-input el-input--prefix">
+                <input autocomplete="off" type="text" rows="2" validateevent="true" class="el-input__inner" v-model="keyword">
+                <span class="el-input__prefix">
+                  <i class="el-input__icon el-icon-search"></i>
+                </span>
+              </div>
           </div>
 
           <ul class="thumbnails" id="item-list" v-if="itemListByKeyword">
