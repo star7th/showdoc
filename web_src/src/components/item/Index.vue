@@ -20,7 +20,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item><router-link to="/user/setting">{{$t("personal_setting")}}</router-link></el-dropdown-item>
-                <el-dropdown-item><a target="_blank"  href="https://www.showdoc.cc/app">App</a></el-dropdown-item>
+                <el-dropdown-item><a target="_blank"  href="https://www.showdoc.cc/app">Apps</a></el-dropdown-item>
                 <el-dropdown-item><a target="_blank"  href="http://runapi.showdoc.cc/">RunApi</a></el-dropdown-item>
                 <el-dropdown-item :command="logout">{{$t("logout")}}</el-dropdown-item>
               </el-dropdown-menu>
