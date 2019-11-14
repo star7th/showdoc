@@ -9,8 +9,12 @@ class AdminSettingController extends BaseController {
         $this->checkAdmin();
         $register_open = intval(I("register_open")) ;
         $ldap_open = intval(I("ldap_open")) ;
+        $home_page = intval(I("home_page")) ;
+        $home_item = intval(I("home_item")) ;
         $ldap_form = I("ldap_form") ;
         D("Options")->set("register_open" ,$register_open) ;
+        D("Options")->set("home_page" ,$home_page) ;
+        D("Options")->set("home_item" ,$home_item) ;
         
 
         if ($ldap_open) {
@@ -61,6 +65,8 @@ class AdminSettingController extends BaseController {
         $ldap_open = D("Options")->get("ldap_open" ) ;
         $register_open = D("Options")->get("register_open" ) ;
         $ldap_form = D("Options")->get("ldap_form" ) ;
+        $home_page = D("Options")->get("home_page" ) ;
+        $home_item = D("Options")->get("home_item" ) ;
         $ldap_form = json_decode($ldap_form,1);
         //如果强等于false，那就是尚未有数据。关闭注册应该是有数据且数据为字符串0
         if ($register_open === false) {
@@ -69,6 +75,8 @@ class AdminSettingController extends BaseController {
             $array = array(
                 "ldap_open"=>$ldap_open ,
                 "register_open"=>$register_open ,
+                "home_page"=>$home_page ,
+                "home_item"=>$home_item ,
                 "ldap_form"=>$ldap_form ,
                 );
             $this->sendResult($array);

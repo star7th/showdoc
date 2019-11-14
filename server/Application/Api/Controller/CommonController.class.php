@@ -77,5 +77,16 @@ class CommonController extends BaseController {
       ImageDestroy($im);
 
     }
+
+    //获取网站首页配置
+    public function homePageSetting(){
+        $home_page = D("Options")->get("home_page" ) ;
+        $home_item = D("Options")->get("home_item" ) ;
+        $array = array(
+            "home_page"=>$home_page ,
+            "home_item"=>$home_item ,
+            );
+        $this->sendResult($array);
+    }
     
 }

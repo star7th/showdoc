@@ -12,14 +12,22 @@
       <el-form-item label="所有人可以新建项目">
         <el-switch v-model="form.register_open"></el-switch>
       </el-form-item>
-
+       -->
       <el-form-item label="网站首页设置为">
           <el-select v-model="form.home_page" placeholder="请选择">
             <el-option label="全屏介绍页" value="1"></el-option>
-            <el-option label="展示全站项目" value="2"></el-option>
+            <el-option label="跳转到登录页" value="2"></el-option>
+            <el-option label="跳转到某个项目" value="3"></el-option>
+            <!-- <el-option label="展示全站项目" value="4"></el-option> -->
           </el-select>
       </el-form-item>
-      -->
+
+      <el-form-item label="跳转到项目" v-show="form.home_page == 3">
+          <el-select v-model="form.home_item" placeholder="请选择">
+            <el-option v-for="item in itemList" :label="item.item_name" :value="item.item_id"></el-option>
+          </el-select>
+      </el-form-item>
+
       <el-form-item :label="$t('ldap_open_label')">
         <el-switch v-model="form.ldap_open"></el-switch>
       </el-form-item>
@@ -98,8 +106,10 @@ export default {
           "bind_dn":'',
           "bind_password":'',
           "user_field":'',
-        }
-      }
+        },
+        home_item:''
+      },
+      itemList:[],
     };
   },
   methods:{
@@ -126,16 +136,38 @@ export default {
             };
             this.form.register_open =   response.data.data.register_open > 0 ? true :false ;
             this.form.ldap_open =   response.data.data.ldap_open > 0 ? true :false ;
+            this.form.home_page =   response.data.data.home_page > 0 ? response.data.data.home_page :1 ;
+            this.form.home_item =   response.data.data.home_item > 0 ? response.data.data.home_item :'' ;
             this.form.ldap_form =   response.data.data.ldap_form ? response.data.data.ldap_form : this.form.ldap_form ;
           }else{
             this.$alert(response.data.error_message);
           }
           
         });
-    }
+    },
+    get_item_list(){
+        var that = this ;
+        var url = DocConfig.server+'/api/adminItem/getList';
+
+        var params = new URLSearchParams();
+        params.append('page', 1);
+        params.append('count', 1000);
+        that.axios.post(url, params)
+          .then(function (response) {
+            if (response.data.error_code === 0 ) {
+              //that.$message.success("加载成功");
+              var json = response.data.data ;
+              that.itemList = json.items ;
+            }else{
+              that.$alert(response.data.error_message);
+            }
+            
+          });
+    },
 
   },
   mounted () {
+    this.get_item_list();
     this.loadConfig();
   },
   beforeDestroy(){

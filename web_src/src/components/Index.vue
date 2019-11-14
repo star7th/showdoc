@@ -103,11 +103,35 @@ export default {
           var winHeight = document.body.clientHeight;
        }
         this.height = winHeight+'px' ;
-      }
+      },
+    homePageSetting(){
+      var url = DocConfig.server+'/api/common/homePageSetting';
+      this.axios.post(url, this.form)
+        .then( (response) =>{
+          if (response.data.error_code === 0 ) {
+            if (response.data.data.home_page == 2) {
+              //跳转到登录页面
+              this.$router.replace({
+                path: "/user/login"
+              });
+            };
+            if (response.data.data.home_page == 3 && response.data.data.home_item ) {
+              //跳转到指定项目
+              this.$router.replace({
+                path: "/"+response.data.data.home_item 
+              });
+            };
+
+          }
+          
+        });
+    },
+
   },
   mounted () {
     var that = this ;
     this.getHeight();
+    this.homePageSetting();
     that.link = '/user/login';
     that.link_text = that.$t("index_login_or_register");
     this.get_user_info(function(response){
