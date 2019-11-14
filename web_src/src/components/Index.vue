@@ -5,7 +5,7 @@
       <div class="row header  ">
         <div class="right pull-right">
           <ul class="inline pull-right">
-          <li ><router-link :to="link">{{link_text}}</router-link></li>
+          <li ><router-link :to="link">{{link_text}}</router-link> &nbsp;&nbsp;&nbsp;<a target="_blank"  href="https://www.showdoc.cc/app">App</a></li>
                 </ul>
           </div>  
         </div>
@@ -155,7 +155,7 @@ export default {
   }
 
   .header{
-   padding-right: 100px;
+   padding-right: 50px;
    padding-top: 30px;
    font-size: 18px; 
    position: fixed;
