@@ -13,17 +13,17 @@
         <el-switch v-model="form.register_open"></el-switch>
       </el-form-item>
        -->
-      <el-form-item label="网站首页设置为">
-          <el-select v-model="form.home_page" placeholder="请选择">
-            <el-option label="全屏介绍页" value="1"></el-option>
-            <el-option label="跳转到登录页" value="2"></el-option>
-            <el-option label="跳转到某个项目" value="3"></el-option>
+      <el-form-item :label="$t('home_page')">
+          <el-select v-model="form.home_page" :placeholder="$t('please_choose')">
+            <el-option :label="$t('full_page')" value="1"></el-option>
+            <el-option :label="$t('login_page')" value="2"></el-option>
+            <el-option :label="$t('jump_to_an_item')" value="3"></el-option>
             <!-- <el-option label="展示全站项目" value="4"></el-option> -->
           </el-select>
       </el-form-item>
 
-      <el-form-item label="跳转到项目" v-show="form.home_page == 3">
-          <el-select v-model="form.home_item" placeholder="请选择">
+      <el-form-item :label="$t('jump_to_item')" v-show="form.home_page == 3">
+          <el-select v-model="form.home_item" :placeholder="$t('please_choose')">
             <el-option v-for="item in itemList" :label="item.item_name" :value="item.item_id"></el-option>
           </el-select>
       </el-form-item>

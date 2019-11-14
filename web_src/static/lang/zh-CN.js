@@ -295,5 +295,9 @@ exports.default = {
     "create_sigle_page":"我要创建单页面地址",
     "create_sigle_page_tips":"当仅仅想分享某个页面、而不想分享整个项目的时候，你可以选择分享单页面地址。分享出去后，你的好友将仅仅只看到单个页面，无法浏览目录菜单，也无法切换到其他页面查看。",
 
-
+    "home_page":"网站首页",
+    "full_page":"全屏介绍页面",
+    "login_page":"跳转到登录页面",
+    "jump_to_an_item":"跳转到某个项目",
+    "jump_to_item":"跳转到项目",
 };

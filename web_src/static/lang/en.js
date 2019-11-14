@@ -287,5 +287,11 @@ exports.default = {
 
     "create_sigle_page":"I want to create a single page address",
     "create_sigle_page_tips":"When you just want to share a page and not the whole project, you can choose to share a single page address. After sharing, your friends will only see a single page, can not browse the catalog menu, and can not switch to other pages to view.",
+    
+    "home_page":"Website home page",
+    "full_page":"Full page",
+    "login_page":"jump to login page",
+    "jump_to_an_item":"jump to an item",
+    "jump_to_item":"choose item",
 
 };
