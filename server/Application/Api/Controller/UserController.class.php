@@ -49,7 +49,10 @@ class UserController extends BaseController {
         $username = I("username");
         $password = I("password");
         $v_code = I("v_code");
-
+        if (!$password) {
+                $this->sendError(10206,"no empty password");
+                return;
+        }
         //检查用户输错密码的次数。如果超过一定次数，则需要验证 验证码
         $key= 'login_fail_times_'.$username;
         if(!D("VerifyCode")->_check_times($key)){
