@@ -5,7 +5,7 @@
       <div class="row header  ">
         <div class="right pull-right">
           <ul class="inline pull-right">
-          <li ><router-link :to="link">{{link_text}}</router-link> &nbsp;&nbsp;&nbsp;<a target="_blank"  href="https://www.showdoc.cc/app">App</a></li>
+          <li ><router-link :to="link">{{link_text}}</router-link> &nbsp;&nbsp;&nbsp;<a target="_blank" v-if="lang =='zh-cn'" href="https://www.showdoc.cc/app">App</a></li>
                 </ul>
           </div>  
         </div>
@@ -91,7 +91,8 @@ export default {
     return {
       height: '',
       link:'',
-      link_text:''
+      link_text:'',
+      lang:""
     }
   },
   methods:{
@@ -130,6 +131,7 @@ export default {
   },
   mounted () {
     var that = this ;
+    this.lang = DocConfig.lang ;
     this.getHeight();
     this.homePageSetting();
     that.link = '/user/login';
