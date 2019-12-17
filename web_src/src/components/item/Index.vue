@@ -115,7 +115,7 @@
     }
 
   .thumbnails li a{
-    color: #777;
+    color: #444;
     font-weight: bold;
     height: 100px;
     width: 180px;
@@ -145,6 +145,7 @@
     -o-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
     list-style: none;
+    background-color: #ffffff;
   }
 
   .item-setting{
@@ -373,12 +374,11 @@ export default {
     this.user_info();
     this.dragging();
     this.lang = DocConfig.lang ;
-
+    this.set_bg_grey();
   },
   beforeDestroy(){
     this.$message.closeAll();
-    /*去掉添加的背景色*/
-    document.body.removeAttribute("class","grey-bg");
+    this.unset_bg_grey();
   }
 }
 </script>
