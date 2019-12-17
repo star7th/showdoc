@@ -48,7 +48,6 @@ label:hover {
   padding: 1em;
 }
 #diffoutput {
-    width: 835px;
     margin: 0 auto;
 }
 
@@ -131,7 +130,11 @@ export default {
       
     })
 
-
+    this.set_bg_grey();
+  },
+  beforeDestroy(){
+    this.unset_bg_grey();
   }
+  
 }
 </script>
