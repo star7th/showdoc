@@ -157,10 +157,8 @@ export default {
   mounted() {
     this.lang = DocConfig.lang ;
     this.get_item_list();
-    this.set_bg_grey();
   },
   beforeDestroy(){
-    this.unset_bg_grey();
   }
 }
 </script>

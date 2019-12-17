@@ -374,11 +374,9 @@ export default {
     this.user_info();
     this.dragging();
     this.lang = DocConfig.lang ;
-    this.set_bg_grey();
   },
   beforeDestroy(){
     this.$message.closeAll();
-    this.unset_bg_grey();
   }
 }
 </script>

@@ -194,11 +194,9 @@ export default {
   mounted(){
     
     this.get_user_info();
-    this.set_bg_grey();
   },
 
   beforeDestroy(){
-    this.unset_bg_grey();
   }
   
 }

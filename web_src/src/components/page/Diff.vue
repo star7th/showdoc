@@ -130,10 +130,8 @@ export default {
       
     })
 
-    this.set_bg_grey();
   },
   beforeDestroy(){
-    this.unset_bg_grey();
   }
   
 }

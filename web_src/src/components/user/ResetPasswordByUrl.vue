@@ -69,10 +69,8 @@ export default {
       }
   },
   mounted() {
-    this.set_bg_grey();
   },
   beforeDestroy(){
-    this.unset_bg_grey();
   }
 }
 </script>
