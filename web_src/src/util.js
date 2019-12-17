@@ -46,5 +46,15 @@ export default{
           });
     }
 
+    Vue.prototype.set_bg_grey = function(){
+        /*给body添加类，设置背景色*/
+        document.getElementsByTagName("body")[0].className="grey-bg";
+    }
+
+    Vue.prototype.unset_bg_grey = function(){
+      /*去掉添加的背景色*/
+      document.body.removeAttribute("class","grey-bg");
+    }
+
   }
 }
