@@ -167,12 +167,11 @@ export default {
   },
   mounted () {
     this.check_upadte();
-    
+    this.unset_bg_grey();
   },
   beforeDestroy(){
     this.$message.closeAll();
-    /*去掉添加的背景色*/
-    document.body.removeAttribute("class","grey-bg");
+    this.set_bg_grey();
   }
 }
 </script>
