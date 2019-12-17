@@ -194,13 +194,11 @@ export default {
   mounted(){
     
     this.get_user_info();
-    /*给body添加类，设置背景色*/
-    document.getElementsByTagName("body")[0].className="grey-bg";
+    this.set_bg_grey();
   },
 
   beforeDestroy(){
-    /*去掉添加的背景色*/
-    document.body.removeAttribute("class","grey-bg");
+    this.unset_bg_grey();
   }
   
 }
@@ -216,7 +214,7 @@ export default {
 .center-card{
   text-align: center;
   width: 600px;
-  height: 500px;
+  height: 400px;
 }
 
 .goback-btn{

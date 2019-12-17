@@ -105,7 +105,7 @@ export default {
   mounted() {
     var that = this ;
     /*给body添加类，设置背景色*/
-    document.getElementsByTagName("body")[0].className="grey-bg";
+    this.set_bg_grey();
     this.get_user_info(function(response){
       if (response.data.error_code === 0 ) {
         let redirect = decodeURIComponent(that.$route.query.redirect || '/item/index');
@@ -118,8 +118,7 @@ export default {
     this.script_cron();
   },
   beforeDestroy(){
-    /*去掉添加的背景色*/
-    document.body.removeAttribute("class","grey-bg");
+    this.unset_bg_grey();
   }
 }
 </script>

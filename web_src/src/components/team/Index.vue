@@ -161,6 +161,10 @@ export default {
 
   mounted(){
     this.geList();
+    this.set_bg_grey();
+  },
+  beforeDestroy(){
+    this.unset_bg_grey();
   }
 }
 </script>

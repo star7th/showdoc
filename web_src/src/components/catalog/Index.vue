@@ -255,6 +255,11 @@ export default {
 
   mounted(){
     this.get_catalog();
+    this.set_bg_grey();
+  },
+  
+  beforeDestroy(){
+    this.unset_bg_grey();
   }
 }
 </script>
