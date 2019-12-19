@@ -60,7 +60,7 @@
             </el-dialog>
 
       <!-- 成员权限弹窗 -->
-      <el-dialog :visible.sync="dialogFormTeamMemberVisible" :modal="false" top="10vh" :title="$t('adjust_member_authority')" >
+      <el-dialog :visible.sync="dialogFormTeamMemberVisible"  top="10vh" :title="$t('adjust_member_authority')" >
 
            <el-table align="left"
                 :empty-text="$t('team_member_empty_tips')"
@@ -286,13 +286,13 @@ export default {
 
 .center-card{
   text-align: left;
-  width: 600px;
-  height: 500px;
+  width: 800px;
+  height: 600px;
 }
 
 .goback-btn{
   z-index: 999;
-  margin-left: 300px;
+  margin-left: 500px;
 }
 </style>
 

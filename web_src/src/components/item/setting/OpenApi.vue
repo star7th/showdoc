@@ -111,7 +111,7 @@ export default {
 
 .infoForm{
   width:470px;
-  margin-left: 20px;
+  margin-left: 90px;
   margin-top: 30px;
 }
 

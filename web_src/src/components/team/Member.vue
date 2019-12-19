@@ -208,13 +208,13 @@ export default {
 
 .center-card{
   text-align: left;
-  width: 600px;
-  height: 500px;
+  width: 800px;
+  height: 600px;
 }
 
 .goback-btn{
   z-index: 999;
-  margin-left: 350px;
+  margin-left: 550px;
 }
 </style>
 

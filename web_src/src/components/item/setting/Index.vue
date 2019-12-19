@@ -109,9 +109,9 @@ export default {
 
 .center-card{
   text-align: center;
-  width: 600px;
-  min-height: 500px;
-  max-height: 700px;
+  width: 800px;
+  min-height: 600px;
+  max-height: 800px;
 }
 
 .infoForm{
@@ -122,6 +122,6 @@ export default {
 
 .goback-btn{
   z-index: 999;
-  margin-left: 500px;
+  margin-left: 600px;
 }
 </style>

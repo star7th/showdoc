@@ -1,5 +1,6 @@
 <template>
   <div class="hello">
+    <p style="height:40px;"></p>
     <p>
       <el-tooltip :content="$t('attorn_tips')" placement="top-start">
         <el-button class="a_button"  @click="dialogAttornVisible = true" >{{$t('attorn')}}</el-button>
@@ -17,7 +18,7 @@
       </el-tooltip>   
     </p>  
 
-    <el-dialog :visible.sync="dialogAttornVisible" :modal="false">
+    <el-dialog :visible.sync="dialogAttornVisible" :modal="false"  width="300px">
       <el-form >
           <el-form-item label="" >
             <el-input  :placeholder="$t('attorn_username')" v-model="attornForm.username"></el-input>
@@ -32,7 +33,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogArchiveVisible" :modal="false">
+    <el-dialog :visible.sync="dialogArchiveVisible" :modal="false"  width="300px">
       <el-form >
           <el-form-item label="" >
             <el-input type="password" :placeholder="$t('input_login_password')" v-model="archiveForm.password"></el-input>
@@ -49,7 +50,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogDeleteVisible" :modal="false">
+    <el-dialog :visible.sync="dialogDeleteVisible" :modal="false"  width="300px">
       <el-form >
           <el-form-item label="" >
             <el-input type="password" :placeholder="$t('input_login_password')"  v-model="deleteForm.password">></el-input>

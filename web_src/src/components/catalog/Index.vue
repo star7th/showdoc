@@ -15,12 +15,12 @@
             <el-table-column
               prop="cat_name"
               :label="$t('cat_name')"
-              width="160">
+              >
             </el-table-column>
             <el-table-column
               prop="addtime"
               :label="$t('add_time')"
-              width="160">
+              >
             </el-table-column>
             <el-table-column
               prop="s_number"
@@ -275,13 +275,13 @@ export default {
 
 .center-card{
   text-align: left;
-  width: 600px;
-  height: 500px;
+  width: 800px;
+  height: 600px;
 }
 
 .goback-btn{
   z-index: 999;
-  margin-left: 400px;
+  margin-left: 600px;
 }
 </style>
 

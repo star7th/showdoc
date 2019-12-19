@@ -223,7 +223,7 @@ export default {
 .infoForm{
   width: 350px;
   margin: 0 auto ;
-  margin-top: 30px;
+  margin-top: 50px;
   text-align: left;
 }
 </style>

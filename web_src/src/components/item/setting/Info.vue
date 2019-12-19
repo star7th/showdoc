@@ -120,8 +120,8 @@ export default {
 
 .infoForm{
   width:350px;
-  margin-left: 60px;
-  margin-top: 30px;
+  margin-left: 160px;
+  margin-top: 60px;
 }
 
 .goback-btn{

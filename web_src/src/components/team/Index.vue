@@ -20,7 +20,7 @@
             <el-table-column
               prop="memberCount"
               :label="$t('memberCount')"
-              width="80">
+              >
               <template slot-scope="scope">
                   <router-link :to="'/team/member/'+scope.row.id" >{{scope.row.memberCount}}</router-link>
               </template>
@@ -34,7 +34,6 @@
             </el-table-column>
             <el-table-column
               prop=""
-              width="200"
               :label="$t('operation')">
               <template slot-scope="scope">
                 <el-button @click="$router.push({path:'/team/member/'+scope.row.id})" type="text" size="small">{{$t('member')}}</el-button>
@@ -180,13 +179,13 @@ export default {
 
 .center-card{
   text-align: left;
-  width: 600px;
-  height: 500px;
+  width: 800px;
+  height: 600px;
 }
 
 .goback-btn{
   z-index: 999;
-  margin-left: 400px;
+  margin-left: 600px;
 }
 </style>
 
