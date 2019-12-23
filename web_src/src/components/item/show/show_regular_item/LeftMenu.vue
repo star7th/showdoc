@@ -235,12 +235,15 @@
 
 }
 
-/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+/*隐藏滚动条*/
 .hide-scrollbar ::-webkit-scrollbar
 {
-    width: 1px;
-    height: 1px;
-    background-color: #fafafa;
+   display: none;
+}
+/*隐藏滚动条*/
+.hide-scrollbar
+{
+    -ms-overflow-style: none;
 }
 
 .header-left-btn{
