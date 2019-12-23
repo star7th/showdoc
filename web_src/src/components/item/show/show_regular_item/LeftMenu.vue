@@ -1,7 +1,10 @@
 <template>
-  <div class="hello">
+  <div :class=" hideScrollbar ? 'hide-scrollbar' : '' ">
     <i class="el-icon-menu header-left-btn" v-if="show_menu_btn" id="header-left-btn" @click="show_menu"></i>
-    <el-aside class="el-aside" id="left-side-menu" width="240px">
+    <i class="el-icon-menu header-left-btn" v-if="show_menu_btn" id="header-left-btn" @click="show_menu"></i>
+    <el-aside class="el-aside" id="left-side-menu" width="240px"
+     @mouseover.native="hideScrollbar = false" @mouseout.native="hideScrollbar = true" 
+     >
       <el-menu  @select="select_menu"
         background-color="#fafafa"
         text-color=""
@@ -72,7 +75,8 @@
       return {
         openeds:[],
         menu:'',
-        show_menu_btn:false
+        show_menu_btn:false,
+         hideScrollbar:true
       }
     },
   components:{
@@ -232,7 +236,7 @@
 }
 
 /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
-::-webkit-scrollbar
+.hide-scrollbar ::-webkit-scrollbar
 {
     width: 1px;
     height: 1px;
