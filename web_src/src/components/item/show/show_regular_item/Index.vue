@@ -1,92 +1,42 @@
 <template>
   <div class="hello">
     <Header> </Header>
-
-      <el-container>
-
-        <el-aside class="el-aside" id="left-side">
-            <LeftMenu :get_page_content="get_page_content" :keyword="keyword" :item_info="item_info" :search_item="search_item" v-if="item_info" ></LeftMenu>
-        </el-aside>
-        
-        <el-container class="right-side" id="right-side">
- 
-
-          <el-header >
-            <div class="header-left">
-                 <i class="el-icon-menu header-left-btn" id="header-left-btn" @click="switch_menu"></i>
-            </div> 
-
-            <div class="header-right">
-              <!-- 登录的事情下 -->
-               <router-link v-if="item_info.is_login" to="/item/index" >{{$t('goback')}} </router-link>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-              <el-dropdown @command="dropdown_callback" v-if="item_info.is_login">
-                <span class="el-dropdown-link">
-                  {{$t('item')}}<i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item :command="share_item">{{$t('share')}}</el-dropdown-item>
-                  <router-link :to="'/item/export/'+item_info.item_id" v-if="item_info.ItemPermn"><el-dropdown-item>{{$t('export')}}</el-dropdown-item></router-link>
-                  <router-link :to="'/item/setting/'+item_info.item_id"  v-if="item_info.ItemCreator"><el-dropdown-item>{{$t('item_setting')}}</el-dropdown-item></router-link>
-                </el-dropdown-menu>
-              </el-dropdown>
-
-              <!-- 非登录的情况下 -->
-
-              <div v-if="!item_info.is_login">
-                  <router-link to="/user/login">{{$t('login_or_register')}}</router-link>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <a href="https://www.showdoc.cc/help" target="_blank">{{$t('about_showdoc')}}</a>
-              </div>
-
-            </div> 
+      <div id="header"></div>
 
 
-          </el-header>
-          
-          <el-main class="page_content_main" id="page_content_main">
-             <div class="doc-title-box"  v-if="page_id">
-                <span id="doc-title-span" class="dn"></span>
-                <h2 id="doc-title">{{page_title}}</h2>
-                <el-badge :value="attachment_count" class="item"  id="attachment" v-if="attachment_count"   @click.native="ShowAttachment" >
-                  <i class="el-icon-upload"></i> 
-                </el-badge>
-            </div>
-              <Editormd v-bind:content="content" type="html" :keyword="keyword"  v-if="page_id" ></Editormd>
 
-          </el-main>
+      <div class="container doc-container" id="doc-container">
 
-          
-        </el-container>
 
-        <div class="page-bar" v-show="show_page_bar && item_info.ItemPermn && item_info.is_archived < 1 " >
-          <PageBar v-if="page_id" :page_id="page_id" :item_id='item_info.item_id' :item_info='item_info'  :page_info="page_info"></PageBar>
+        <div id="left-side">
+            <LeftMenu  ref="leftMenu" :get_page_content="get_page_content" :keyword="keyword" :item_info="item_info" :search_item="search_item" v-if="item_info" ></LeftMenu>
         </div>
-        
-      </el-container>
+
+
+        <div id="right-side" >
+
+           <div class="doc-title-box" id="doc-title-box">
+              <span id="doc-title-span" class="dn"></span>
+              <h2 id="doc-title">{{page_title}}</h2>
+          </div>
+          <div id="doc-body" >
+
+          <div id="page_md_content" class="page_content_main"><Editormd v-bind:content="content" v-if="page_id" type="html" :keyword="keyword"></Editormd></div>
+          </div>
+
+            <OpBar v-if="show_page_bar"  :page_id="page_id" :item_id='item_info.item_id' :item_info='item_info'  :page_info="page_info"  > </OpBar>
+
+        </div>
+
+
+      </div>
 
       <BackToTop  > </BackToTop>
       <Toc  v-if="page_id" > </Toc>
 
-  <el-dialog
-    title="分享项目"
-    :visible.sync="dialogVisible"
-    width="600px"
-    :modal="false"
-    class="text-center"
-    >
-    
-    <p>项目地址：<code >{{share_item_link}}</code></p>
-    <p><a href="javascript:;" class="home-phone-butt" v-clipboard:copyhttplist="copyText" v-clipboard:success="onCopy">{{$t('copy_link')}}</a></p>
-        <p style="border-bottom: 1px solid #eee;"><img id="" style="width:114px;height:114px;" :src="qr_item_link"> </p>
-    <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="dialogVisible = false">{{$t('confirm')}}</el-button>
-    </span>
-  </el-dialog>
 
-    <!-- 附件列表 -->
-    <AttachmentList callback="" :item_id="page_info.item_id" :manage="false" :page_id="page_info.page_id" ref="AttachmentList"></AttachmentList>
-
+        <!-- 附件列表 -->
+        <AttachmentList callback="" :item_id="page_info.item_id" :manage="false" :page_id="page_info.page_id" ref="AttachmentList"></AttachmentList>
 
 
     <Footer> </Footer>
@@ -99,11 +49,10 @@
 <script>
   import Editormd from '@/components/common/Editormd'
   import BackToTop from '@/components/common/BackToTop'
-  import Toc from '@/components/common/Toc'
+  import Toc from '@/components/item/show/show_regular_item/Toc'
   import LeftMenu from '@/components/item/show/show_regular_item/LeftMenu'
-  import PageBar from '@/components/item/show/show_regular_item/PageBar'
+  import OpBar from '@/components/item/show/show_regular_item/OpBar'
   import AttachmentList from '@/components/page/edit/AttachmentList'
-
 
   export default {
     props:{
@@ -128,7 +77,7 @@
   components:{
     Editormd,
     LeftMenu,
-    PageBar,
+    OpBar,
     BackToTop,
     Toc,
     AttachmentList
@@ -169,49 +118,20 @@
             
           });
     },
-    dropdown_callback(data){
-      if (data) {
-        data();
-      };
-    },
-    share_item(){
-      this.share_item_link =  this.getRootPath()+"#/"+this.item_info.item_id  ;
-      this.qr_item_link = DocConfig.server +'/api/common/qrcode&size=3&url='+encodeURIComponent(this.share_item_link);
-      this.dialogVisible = true;
-      this.copyText = this.item_info.item_name+"  -- ShowDoc \r\n"+ this.share_item_link;
-    },
     //根据屏幕宽度进行响应(应对移动设备的访问)
     AdaptToMobile(){
-      this.hide_menu();
+      let childRef = this.$refs.leftMenu ;//获取子组件
+      childRef.hide_menu();
       this.show_page_bar = false;
+      var doc_container = document.getElementById('doc-container') ;
+      doc_container.style.width = '95%';
+      doc_container.style.padding = '5px';
+      var header = document.getElementById('header') ;
+      header.style.height = '10px';
+      var docTitle = document.getElementById('doc-title-box') ;
+      docTitle.style.marginTop = '30px';
+    },
 
-    },
-    show_menu(){
-        var element = document.getElementById('left-side') ;
-        element.style.display = 'block' ;
-        var element = document.getElementById('right-side') ;
-        element.style.marginLeft = '300px'; 
-        var element = document.getElementById('page_content_main') ;
-        element.style.width = '800px' ; 
-    },
-    hide_menu(){
-        var element = document.getElementById('left-side') ;
-        element.style.display = 'none';
-        var element = document.getElementById('right-side') ;
-        element.style.marginLeft = '0px'; 
-        var element = document.getElementById('page_content_main') ;
-        element.style.width = '95%' ; 
-    },
-    switch_menu(){
-      var element = document.getElementById('left-side') ;
-      if (element.style.display == 'none') {
-        this.show_menu();
-      }else{
-        this.hide_menu();
-
-      }
-
-    },
     onCopy(){
       this.$message(this.$t("copy_success"));
     },
@@ -219,7 +139,6 @@
         let childRef = this.$refs.AttachmentList ;//获取子组件
         childRef.show() ; 
     },
-    
   },
   mounted () {
     //根据屏幕宽度进行响应(应对移动设备的访问)
@@ -228,37 +147,13 @@
         this.AdaptToMobile();
       });
     }
+    this.set_bg_grey();
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-  .header-right{
-    color: #333;
-    line-height: 40px;
-    text-align: right; 
-    font-size: 12px;
-    /*border: 1px solid #eee;*/
-  }
-  .header-right .el-dropdown-link{
-    margin-right: 20px;
-  }
-  .el-aside {
-    color: #333;
-    position:fixed;
-    height: calc(100% - 20px);
-    background-color: rgb(250, 250, 250);
-    border-right: solid 1px #e6e6e6;
-  }
-  .page-bar{
-    color: #333;
-    position:fixed;
-    top: 100px;
-    right: 10px;
-    width: 100px;
-  }
 
   .page_content_main{
     width:800px;
@@ -267,34 +162,11 @@
     overflow: visible;
   }
 
-  .right-side{
-    margin-left:300px;
-  }
-
-  .doc-title-box{
-      height: auto;
-      margin: 30px 30px 10px 30px;
-      width: auto;
-      border-bottom: 1px solid #ebebeb;
-      padding-bottom: 10px;
-  }
   .editormd-html-preview{
     width: 95%;
     font-size: 16px;
   }
 
-  .header-left{
-    float: left;
-    
-  }
-
-  .header-left-btn{
-    font-size: 20px;
-    margin-top: 5px;
-    margin-left: -15px;
-    cursor: pointer;
-    position: fixed;
-  }
   #attachment{
     float: right;
     font-size: 25px;
@@ -303,5 +175,75 @@
     cursor:pointer;
     color: #abd1f1;
   }
-  
+
+  #page_md_content{
+      padding: 10px 10px 90px 10px;
+      overflow: hidden;
+      font-size: 11pt;
+      line-height: 1.7;
+      color: #333;
+  }
+
+  .doc-container {
+      position: static;
+      -webkit-box-shadow: 0px 1px 6px #ccc;
+      -moz-box-shadow: 0px 1px 6px #ccc;
+      -ms-box-shadow: 0px 1px 6px #ccc;
+      -o-box-shadow: 0px 1px 6px #ccc;
+      box-shadow: 0px 1px 6px #ccc;
+      background-color: #fff;
+      border-bottom: 1px solid #d9d9d9;
+      margin-bottom: 20px;
+      width: 800px;
+      min-height: 750px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 20px;
+  }
+
+  #header{
+    height: 80px;
+  }
+
+  #doc-body{
+    width: 95%;
+    margin: 0 auto;
+    background-color: #fff;
+  }
+
+  .doc-title-box{
+      height: auto;
+      width: auto;
+      border-bottom: 1px solid #ebebeb;
+      padding-bottom: 10px;
+      width: 90%;
+      margin: 10px auto;
+  }
+
+
+  pre ol{
+    list-style: none;
+  }
+
+  .markdown-body pre {
+    background-color: #f7f7f9;
+    border: 1px solid #e1e1e8;
+  }
+  .hljs{
+    background-color: #f7f7f9;
+  }
+  .tool-bar{
+    margin-top: -38px;
+  }
+  .editormd-html-preview, .editormd-preview-container{
+    padding: 0px;
+    font-size: 14px;
+  }
+
+
+
+
+
+
+
 </style>
