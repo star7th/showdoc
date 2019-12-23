@@ -219,7 +219,7 @@
       width: auto;
       border-bottom: 1px solid #ebebeb;
       padding-bottom: 10px;
-      width: 90%;
+      width: 95%;
       margin: 10px auto;
   }
 
