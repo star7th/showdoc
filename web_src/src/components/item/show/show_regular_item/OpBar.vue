@@ -183,7 +183,7 @@
     share_page(){
       var page_id = this.page_id > 0 ? this.page_id : 0 ;
       let path = this.item_domain ? this.item_domain : this.item_id ;
-      this.share_page_link = this.getRootPath()+"/"+path+'?page_id='+page_id ;
+      this.share_page_link = this.getRootPath()+"#/"+path+'?page_id='+page_id ;
       //this.share_single_link= this.getRootPath()+"/page/"+page_id ;
       this.qr_page_link = DocConfig.server +'/api/common/qrcode&size=3&url='+encodeURIComponent(this.share_page_link);
       //this.qr_single_link = DocConfig.server +'/api/common/qrcode&size=3&url='+encodeURIComponent(this.share_single_link);
@@ -245,7 +245,7 @@
           if (response.data.error_code === 0 ) {
             var unique_key = response.data.data.unique_key ;
             if (unique_key) {
-              that.share_single_link = that.getRootPath()+"/p/"+unique_key ;
+              that.share_single_link = that.getRootPath()+"#/p/"+unique_key ;
             }else{
               that.share_single_link = '';
             }
