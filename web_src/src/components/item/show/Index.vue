@@ -103,8 +103,6 @@
   },
   beforeDestroy(){
     this.$message.closeAll();
-    /*去掉添加的背景色*/
-    document.body.removeAttribute("class","grey-bg");
     document.title = "ShowDoc" ;
   }
 };
