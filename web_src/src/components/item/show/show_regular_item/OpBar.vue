@@ -269,12 +269,12 @@
     showMoreAction(){
       this.showMore = true ;
       var element = document.getElementById('page_md_content').getElementsByClassName('open-list');
-      element[0].style.top = '320px';
+      element[0].style.top = '330px';
     },
     hideMoreAction(){
       this.showMore = false ;
       var element = document.getElementById('page_md_content').getElementsByClassName('open-list');
-      element[0].style.top = '220px';
+      element[0].style.top = '230px';
     },
 
   },

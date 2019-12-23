@@ -82,8 +82,8 @@ export default {
 <style >
 .page_content_main .markdown-toc {
     position: fixed;
-    bottom: 15px;
-    right: 15px;
+    top: 230px;
+    margin-left: 800px;
     min-width: 32px;
     min-height: 32px;
     cursor: pointer;
