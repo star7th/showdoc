@@ -31,7 +31,7 @@
                     <i class="el-icon-plus" @click="new_page"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" :content="$t('new_catalog')" placement="left">
-                    <img src="/static/images/folder.png" @click="mamage_catalog" class="icon-folder">
+                    <img src="static/images/folder.png" @click="mamage_catalog" class="icon-folder">
               </el-tooltip>
               <el-tooltip class="item" effect="dark" :content="$t('edit_page')" placement="top">
                     <i class="el-icon-edit" @click="edit_page"></i>
