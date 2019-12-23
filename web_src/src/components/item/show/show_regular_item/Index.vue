@@ -18,6 +18,9 @@
            <div class="doc-title-box" id="doc-title-box">
               <span id="doc-title-span" class="dn"></span>
               <h2 id="doc-title">{{page_title}}</h2>
+              <el-badge :value="attachment_count" class="item"  id="attachment" v-if="attachment_count"   @click.native="ShowAttachment" >
+                <i class="el-icon-upload"></i> 
+              </el-badge>
           </div>
           <div id="doc-body" >
 
