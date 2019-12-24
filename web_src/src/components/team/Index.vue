@@ -197,6 +197,8 @@ export default {
 
 .el-table__empty-text{
   text-align: left;
+  line-height: 30px;
+  margin-top: 20px;
 }
 
 </style>
