@@ -127,7 +127,7 @@
       childRef.hide_menu();
       this.show_page_bar = false;
       var doc_container = document.getElementById('doc-container') ;
-      doc_container.style.width = '95%';
+      doc_container.style.width = '100%';
       doc_container.style.padding = '5px';
       var header = document.getElementById('header') ;
       header.style.height = '10px';
