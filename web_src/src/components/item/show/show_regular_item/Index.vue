@@ -219,8 +219,9 @@
       width: auto;
       border-bottom: 1px solid #ebebeb;
       padding-bottom: 10px;
-      width: 95%;
+      width: 100%;
       margin: 10px auto;
+      text-align: center;
   }
 
 
