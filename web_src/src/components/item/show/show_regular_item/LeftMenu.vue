@@ -182,7 +182,6 @@
     margin-left: -266px;
     margin-top: -20px;
     height: calc(100% - 90px);
-    overflow-x:hidden;
 
   }
 .el-input-group__append button.el-button{
