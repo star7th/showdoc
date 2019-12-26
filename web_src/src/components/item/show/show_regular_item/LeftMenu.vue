@@ -3,7 +3,7 @@
     <i class="el-icon-menu header-left-btn" v-if="show_menu_btn" id="header-left-btn" @click="show_menu"></i>
     <i class="el-icon-menu header-left-btn" v-if="show_menu_btn" id="header-left-btn" @click="show_menu"></i>
     <el-aside class="el-aside" id="left-side-menu" width="240px"
-     @mouseover.native="hideScrollbar = false" @mouseout.native="hideScrollbar = true" 
+     @mouseenter.native="hideScrollbar = false" @mouseleave.native="hideScrollbar = true" 
      >
       <el-menu  @select="select_menu"
         background-color="#fafafa"
