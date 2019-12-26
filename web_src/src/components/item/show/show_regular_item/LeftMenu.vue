@@ -2,7 +2,7 @@
   <div :class=" hideScrollbar ? 'hide-scrollbar' : '' ">
     <i class="el-icon-menu header-left-btn" v-if="show_menu_btn" id="header-left-btn" @click="show_menu"></i>
     <i class="el-icon-menu header-left-btn" v-if="show_menu_btn" id="header-left-btn" @click="show_menu"></i>
-    <el-aside class="el-aside" id="left-side-menu" width="240px"
+    <el-aside class="el-aside" id="left-side-menu" width="260px"
      @mouseenter.native="hideScrollbar = false" @mouseleave.native="hideScrollbar = true" 
      >
       <el-menu  @select="select_menu"
@@ -42,13 +42,13 @@
           <el-submenu  v-if="catalog2.catalogs.length" v-for="(catalog3 ,catalog_index3) in catalog2.catalogs" :index="catalog3.cat_id" :key="catalog3.cat_id">
             <template slot="title"><img src="static/images/folder.png">{{catalog3.cat_name}}</template>
             <!-- 三级目录的页面 -->
-            <el-menu-item  v-if="catalog3.pages" v-for="(page3 ,page3_index) in catalog3.pages"  :index="page3.page_id" :key="page3.page_id"><i class="el-icon-document"></i><span :title="page3.page_title">{{page3.page_title}}</span> </el-menu-item>
+            <el-menu-item  v-if="catalog3.pages" v-for="(page3 ,page3_index) in catalog3.pages"  :index="page3.page_id" :key="page3.page_id"><span :title="page3.page_title">{{page3.page_title}}</span> </el-menu-item>
 
               <!-- 三级目录下的四级目录 -->
               <el-submenu  v-if="catalog3.catalogs.length" v-for="(catalog4 ,catalog_index4) in catalog3.catalogs" :index="catalog4.cat_id" :key="catalog4.cat_id">
                 <template slot="title"><img src="static/images/folder.png">{{catalog4.cat_name}}</template>
                 <!-- 四级目录的页面 -->
-                <el-menu-item  v-if="catalog4.pages" v-for="(page4 ,page4_index) in catalog4.pages"  :index="page4.page_id" :key="page4.page_id"><i class="el-icon-document"></i><span :title="page4.page_title">{{page4.page_title}}</span></el-menu-item>
+                <el-menu-item  v-if="catalog4.pages" v-for="(page4 ,page4_index) in catalog4.pages"  :index="page4.page_id" :key="page4.page_id"><span :title="page4.page_title">{{page4.page_title}}</span></el-menu-item>
               </el-submenu>
 
           </el-submenu>
@@ -178,8 +178,7 @@
   #left-side-menu {
     color: #333;
     position: fixed;
-    width: 240px;
-    margin-left: -266px;
+    margin-left: -283px;
     margin-top: -20px;
     height: calc(100% - 90px);
 
