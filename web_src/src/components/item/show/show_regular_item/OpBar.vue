@@ -1,6 +1,26 @@
 <template>
   <div class="hello">
-        <div class="op-bar">
+        <div v-if="show_menu_btn" id="header-right-btn" >
+            <el-dropdown  trigger="click" @command="handleCommand">
+              <span class="el-dropdown-link">
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="goback">{{$t('goback')}}</el-dropdown-item>
+                <el-dropdown-item command="share">{{$t('share')}}</el-dropdown-item>
+                <el-dropdown-item v-if="item_info.ItemPermn" command="new_page">{{$t('new_page')}}</el-dropdown-item>
+                <el-dropdown-item v-if="item_info.ItemPermn" command="new_catalog">{{$t('new_catalog')}}</el-dropdown-item>
+                <el-dropdown-item v-if="item_info.ItemPermn" command="edit_page">{{$t('edit_page')}}</el-dropdown-item>
+                <el-dropdown-item v-if="item_info.ItemPermn" command="copy">{{$t('copy')}}</el-dropdown-item>
+                <el-dropdown-item v-if="item_info.ItemPermn" command="ShowHistoryVersion">{{$t('history_version')}}</el-dropdown-item>
+                <el-dropdown-item v-if="item_info.ItemPermn" command="export">{{$t('export')}}</el-dropdown-item>
+                <el-dropdown-item v-if="item_info.ItemPermn" command="delete_page">{{$t('delete_interface')}}</el-dropdown-item>
+
+              </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+
+        <div class="op-bar" v-if="show_op_bar">
 
              <span v-if="!item_info.is_login">
                 <el-tooltip class="item" effect="dark" v-if="lang =='zh-cn'" :content="$t('about_showdoc')" placement="left">
@@ -31,7 +51,7 @@
                     <i class="el-icon-plus" @click="new_page"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" :content="$t('new_catalog')" placement="left">
-                    <img src="static/images/folder.png" @click="mamage_catalog" class="icon-folder">
+                    <i class="el-icon-folder" @click="mamage_catalog"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" :content="$t('edit_page')" placement="top">
                     <i class="el-icon-edit" @click="edit_page"></i>
@@ -144,6 +164,19 @@
     color: #333;
   }
 
+  #header-right-btn{
+    font-size: 20px;
+    top: 20px;
+    right: 5%;
+    cursor: pointer;
+    position: fixed;
+  }
+
+  .el-dropdown-link{
+    color: #000;
+    font-weight: bolder;
+  }
+
 </style>
 
 <script>
@@ -168,7 +201,9 @@
         copyText2:'',
         isCreateSiglePage:false,
         showMore:false,
-        lang:""
+        lang:"",
+        show_menu_btn:false,
+        show_op_bar:true
       }
     },
   components:{
@@ -276,7 +311,38 @@
       var element = document.getElementById('page_md_content').getElementsByClassName('open-list');
       element[0].style.top = '230px';
     },
-
+    handleCommand(command) {
+      switch(command){
+        case 'goback':
+            this.$router.push({path:"/item/index"})
+            break;
+        case 'share':
+            this.share_page();
+            break;
+        case 'new_page':
+            this.new_page();
+            break;
+        case 'new_catalog':
+            this.mamage_catalog();
+            break;
+        case 'edit_page':
+            this.edit_page();
+            break;
+        case 'ShowHistoryVersion':
+            this.ShowHistoryVersion();
+            break;
+        case 'copy':
+            this.$router.push({path:'/page/edit/'+this.item_info.item_id+'/0?copy_page_id='+this.page_id})
+            break; 
+        case 'export':
+            this.$router.push({path:"/item/export/"+this.item_info.item_id})
+            break;
+        case 'delete_page':
+            this.delete_page();
+            break;    
+      }
+    }
+    
   },
   mounted () {
     var that = this ;
@@ -298,6 +364,17 @@
       };
 
     }
+
+    if ( this.isMobile() || ( window.screen.width< 1300 && !this.item_info.is_login ) ) {
+        this.show_menu_btn = false ;
+        this.show_op_bar = false;
+    }
+    if (this.isMobile() || ( window.screen.width< 1300 && this.item_info.is_login ) ) {
+        this.show_menu_btn = true ;
+        this.show_op_bar = false;
+    }
+
+
 
   }
 };

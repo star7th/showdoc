@@ -27,7 +27,7 @@
           <div id="page_md_content" class="page_content_main"><Editormd v-bind:content="content" v-if="page_id" type="html" :keyword="keyword"></Editormd></div>
           </div>
 
-            <OpBar v-if="show_page_bar"  :page_id="page_id" :item_id='item_info.item_id' :item_info='item_info'  :page_info="page_info"  > </OpBar>
+            <OpBar   :page_id="page_id" :item_id='item_info.item_id' :item_info='item_info'  :page_info="page_info"  > </OpBar>
 
         </div>
 
@@ -72,7 +72,6 @@
         share_item_link:'',
         qr_item_link:'',
         page_info:'',
-        show_page_bar:true,
         copyText:"",
         attachment_count:'',
       }
@@ -90,7 +89,7 @@
     get_page_content(page_id){
       if (page_id <= 0 ) {return;};
       //根据屏幕宽度进行响应(应对移动设备的访问)
-      if( this.isMobile() ||  window.screen.width< 1000){
+      if( this.isMobile() ||  window.screen.width< 1300){
         this.$nextTick(() => {
           this.AdaptToMobile();
         });
@@ -129,7 +128,7 @@
       childRef.hide_menu();
       this.show_page_bar = false;
       var doc_container = document.getElementById('doc-container') ;
-      doc_container.style.width = '100%';
+      doc_container.style.width = '95%';
       doc_container.style.padding = '5px';
       var header = document.getElementById('header') ;
       header.style.height = '10px';
@@ -147,7 +146,7 @@
   },
   mounted () {
     //根据屏幕宽度进行响应(应对移动设备的访问)
-    if( this.isMobile() ||  window.screen.width< 1000){
+    if( this.isMobile() ||  window.screen.width< 1300){
       this.$nextTick(() => {
         this.AdaptToMobile();
       });
