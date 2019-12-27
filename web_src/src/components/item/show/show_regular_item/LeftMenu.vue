@@ -2,7 +2,7 @@
   <div :class=" hideScrollbar ? 'hide-scrollbar' : '' ">
     <i class="el-icon-menu header-left-btn" v-if="show_menu_btn" id="header-left-btn" @click="show_menu"></i>
     <i class="el-icon-menu header-left-btn" v-if="show_menu_btn" id="header-left-btn" @click="show_menu"></i>
-    <el-aside class="el-aside" id="left-side-menu" width="260px"
+    <el-aside  :class="menuMarginLeft"  id="left-side-menu" :width="asideWidth"
      @mouseenter.native="hideScrollbar = false" @mouseleave.native="hideScrollbar = true" 
      >
       <el-menu  @select="select_menu"
@@ -42,7 +42,7 @@
           <el-submenu  v-if="catalog2.catalogs.length" v-for="(catalog3 ,catalog_index3) in catalog2.catalogs" :index="catalog3.cat_id" :key="catalog3.cat_id">
             <template slot="title"><img src="static/images/folder.png">{{catalog3.cat_name}}</template>
             <!-- 三级目录的页面 -->
-            <el-menu-item  v-if="catalog3.pages" v-for="(page3 ,page3_index) in catalog3.pages"  :index="page3.page_id" :key="page3.page_id"><span :title="page3.page_title">{{page3.page_title}}</span> </el-menu-item>
+            <el-menu-item  v-if="catalog3.pages" v-for="(page3 ,page3_index) in catalog3.pages"  :index="page3.page_id" :key="page3.page_id"><i class="el-icon-document"></i><span :title="page3.page_title">{{page3.page_title}}</span> </el-menu-item>
 
               <!-- 三级目录下的四级目录 -->
               <el-submenu  v-if="catalog3.catalogs.length" v-for="(catalog4 ,catalog_index4) in catalog3.catalogs" :index="catalog4.cat_id" :key="catalog4.cat_id">
@@ -75,8 +75,10 @@
       return {
         openeds:[],
         menu:'',
-        show_menu_btn:false,
-         hideScrollbar:true
+          show_menu_btn:false,
+          hideScrollbar:true,
+          asideWidth:"250px",
+          menuMarginLeft:"menu-margin-left1"
       }
     },
   components:{
@@ -132,9 +134,7 @@
         var element = document.getElementById('page_md_content') ;
         element.style.width = '95%' ; 
     },
-    AdaptToMobile(){
 
-    }
 
   },
   mounted () {
@@ -155,12 +155,11 @@
       };
     }
 
-    //根据屏幕宽度进行响应(应对移动设备的访问)
-    if( this.isMobile() ||  window.screen.width< 1000){
-      this.$nextTick(() => {
-        this.AdaptToMobile();
-      });
-    }
+    //如果是大屏幕且存在两层以上目录，则把侧边栏调大
+    if ( window.screen.width > 1600  && this.menu.catalogs && this.menu.catalogs.length > 0 && this.menu.catalogs[0].catalogs && this.menu.catalogs[0].catalogs.length > 0 ) {
+        this.asideWidth = "300px";
+        this.menuMarginLeft = 'menu-margin-left2';
+    };
 
 
   }
@@ -178,11 +177,17 @@
   #left-side-menu {
     color: #333;
     position: fixed;
-    margin-left: -283px;
     margin-top: -20px;
     height: calc(100% - 90px);
 
   }
+  .menu-margin-left1{
+    margin-left: -273px;
+  }
+  .menu-margin-left2{
+    margin-left: -323px;
+  }
+
 .el-input-group__append button.el-button{
     background-color: #ffffffa3;
 
