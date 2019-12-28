@@ -41,7 +41,7 @@ class RecycleController extends BaseController {
             D("Page")->where(" page_id = '$page_id' ")->save(array("is_del"=>0 ,"cat_id"=>0));
             $ret = D("Recycle")->where(" item_id = '$item_id' and page_id = '$page_id' ")->delete();
         }
-        $this->sendResult();
+        $this->sendResult(array());
     }
 
 
