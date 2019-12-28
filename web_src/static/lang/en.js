@@ -174,7 +174,6 @@ exports.default = {
     'cancel':'Cancel',
     'update_time':'Update time',
     'update_by_who':'Update by ',
-    'operation':'Operation',
     'recover_to_this_version':'Recover',
     'close':'Close',
     'finish':'Finish',
@@ -293,5 +292,14 @@ exports.default = {
     "login_page":"jump to login page",
     "jump_to_an_item":"jump to an item",
     "jump_to_item":"choose item",
+
+    "recycle":"recycle",
+    "recycle_tips":"The deleted page will go to the recycle bin. The content in the recycle bin for more than 3 days will be automatically selected by the system and cleaned up when appropriate",
+    "page_title":"Page title",
+    "deleter":"Delete Account",
+    "del_time":"Delete time",
+    "recover":"recover",
+    "recover_tips":"Are you sure to recover? The recovered page will appear in the item root",
+
 
 };

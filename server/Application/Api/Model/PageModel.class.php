@@ -126,6 +126,17 @@ class PageModel extends BaseModel {
 
    //软删除页面
    public function softDeletePage($page_id){
+      //放入回收站
+      $login_user = session('login_user');
+      $page = D("Page")->field("item_id,page_title")->where(" page_id = '$page_id' ")->find() ;
+      D("Recycle")->add(array(
+        "item_id" =>$page['item_id'],
+        "page_id" =>$page_id,
+        "page_title" =>$page['page_title'],
+        "del_by_uid" =>$login_user['uid'],
+        "del_by_username" =>$login_user['username'],
+        "del_time" =>time()
+        ));
       $ret = M("Page")->where(" page_id = '$page_id' ")->save(array("is_del"=>1 ,"addtime"=>time()));
       return $ret;
    }

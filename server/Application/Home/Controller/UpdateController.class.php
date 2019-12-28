@@ -226,6 +226,17 @@ class UpdateController extends BaseController {
         )";
         D("User")->execute($sql);
 
+        //创建recycle表
+        $sql = "CREATE TABLE IF NOT EXISTS `recycle` (
+        `id`  INTEGER PRIMARY KEY ,
+        `item_id` int(11) NOT NULL DEFAULT '0',
+        `page_id` int(11) NOT NULL DEFAULT '0',
+        `page_title` CHAR(200) NOT NULL DEFAULT '',
+        `del_by_uid` int(11) NOT NULL DEFAULT '0',
+        `del_by_username` CHAR(200) NOT NULL DEFAULT '',
+        `del_time` int(11) NOT NULL DEFAULT '0'
+        )";
+        D("User")->execute($sql);
 
         echo "OK!\n";
     }

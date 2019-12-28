@@ -366,6 +366,10 @@ export default {
         };
         this.sort_item(data);
       })
+    },
+    script_cron(){
+      var url = DocConfig.server+'/api/ScriptCron/run';
+      this.axios.get(url);
     }
 
   },
@@ -374,6 +378,7 @@ export default {
     this.user_info();
     this.dragging();
     this.lang = DocConfig.lang ;
+    this.script_cron();
   },
   beforeDestroy(){
     this.$message.closeAll();

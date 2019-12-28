@@ -34,6 +34,15 @@
 
             </el-tab-pane>
 
+            <el-tab-pane :label="$t('recycle')" name="five">
+
+                  <Recycle > </Recycle >
+                  
+                </el-form>
+
+            </el-tab-pane>
+
+
             </el-tabs>
           </template>
           </el-card>
@@ -50,13 +59,16 @@ import Info from '@/components/item/setting/Info'
 import Member from '@/components/item/setting/Member'
 import Advanced from '@/components/item/setting/Advanced'
 import OpenApi from '@/components/item/setting/OpenApi'
+import Recycle from '@/components/item/setting/Recycle'
+
 export default {
   name: 'Login',
   components : {
     Info,
     Member,
     Advanced,
-    OpenApi
+    OpenApi,
+    Recycle
   },
   data () {
     return {
