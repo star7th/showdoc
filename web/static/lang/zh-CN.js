@@ -179,7 +179,6 @@ exports.default = {
     'cancel':'取消',
     'update_time':'修改时间',
     'update_by_who':'修改人',
-    'operation':'操作',
     'recover_to_this_version':'恢复到此版本',
     'close':'关闭',
     'finish':'完成',
@@ -300,4 +299,13 @@ exports.default = {
     "login_page":"跳转到登录页面",
     "jump_to_an_item":"跳转到某个项目",
     "jump_to_item":"跳转到项目",
+
+    "recycle":"回收站",
+    "recycle_tips":"被删除的页面会进入回收站。在回收站超过3天的内容将被系统自动选择合适时候清理掉",
+    "page_title":"页面标题",
+    "deleter":"删除账号",
+    "del_time":"删除时间",
+    "recover":"恢复",
+    "recover_tips":"确认恢复吗？恢复的页面将出现在项目根目录",
+
 };
