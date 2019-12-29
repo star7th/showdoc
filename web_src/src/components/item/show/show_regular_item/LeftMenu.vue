@@ -155,8 +155,8 @@
       };
     }
 
-    //如果是大屏幕且存在两层以上目录，则把侧边栏调大
-    if ( window.screen.width > 1600  && this.menu.catalogs && this.menu.catalogs.length > 0 && this.menu.catalogs[0].catalogs && this.menu.catalogs[0].catalogs.length > 0 ) {
+    //如果是大屏幕且存在目录，则把侧边栏调大
+    if ( window.screen.width >= 1600  && this.menu.catalogs && this.menu.catalogs.length > 0 ) {
         this.asideWidth = "300px";
         this.menuMarginLeft = 'menu-margin-left2';
     };
