@@ -1,5 +1,5 @@
 <template>
-  <div :class=" hideScrollbar ? 'hide-scrollbar' : '' ">
+  <div :class=" hideScrollbar ? 'hide-scrollbar' : 'normal-scrollbar' ">
     <i class="el-icon-menu header-left-btn" v-if="show_menu_btn" id="header-left-btn" @click="show_menu"></i>
     <i class="el-icon-menu header-left-btn" v-if="show_menu_btn" id="header-left-btn" @click="show_menu"></i>
     <el-aside  :class="menuMarginLeft"  id="left-side-menu" :width="asideWidth"
@@ -266,15 +266,23 @@
       background-color: #fafafa !important;
   }
 
-  #left-side-menu .el-submenu__title{
+  .hide-scrollbar .el-submenu__title{
     font-size: 12px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  #left-side-menu li{
-    white-space: nowrap;
+  .hide-scrollbar li{
+    white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .normal-scrollbar .el-submenu__title{
+    font-size: 12px;
+  }
+  .normal-scrollbar li{
+    font-size: 12px;
+  }
+
 </style>
