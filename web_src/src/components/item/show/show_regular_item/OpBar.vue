@@ -365,11 +365,11 @@
 
     }
 
-    if ( this.isMobile() || ( window.screen.width< 1300 && !this.item_info.is_login ) ) {
+    if ( this.isMobile() || ( window.innerWidth< 1300 && !this.item_info.is_login ) ) {
         this.show_menu_btn = false ;
         this.show_op_bar = false;
     }
-    if (this.isMobile() || ( window.screen.width< 1300 && this.item_info.is_login ) ) {
+    if (this.isMobile() || ( window.innerWidth< 1300 && this.item_info.is_login ) ) {
         this.show_menu_btn = true ;
         this.show_op_bar = false;
     }

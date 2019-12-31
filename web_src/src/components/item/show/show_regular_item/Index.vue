@@ -89,7 +89,7 @@
     get_page_content(page_id){
       if (page_id <= 0 ) {return;};
       //根据屏幕宽度进行响应(应对移动设备的访问)
-      if( this.isMobile() ||  window.screen.width< 1300){
+      if( this.isMobile() ||  window.innerWidth< 1300){
         this.$nextTick(() => {
           this.AdaptToMobile();
         });
@@ -146,7 +146,7 @@
   },
   mounted () {
     //根据屏幕宽度进行响应(应对移动设备的访问)
-    if( this.isMobile() ||  window.screen.width< 1300){
+    if( this.isMobile() ||  window.innerWidth< 1300){
       this.$nextTick(() => {
         this.AdaptToMobile();
       });
