@@ -65,7 +65,7 @@
 
         
         <el-form-item label="ldap user filed">
-          <el-input v-model="form.ldap_form.user_field" class="form-el" placeholder="例如 cn"></el-input>
+          <el-input v-model="form.ldap_form.user_field" class="form-el" placeholder="例如 cn 或者 sAMAccountName"></el-input>
         </el-form-item>
        
       </div>
