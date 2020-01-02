@@ -692,6 +692,7 @@ export default {
     
     //解除对粘贴上传图片的监听
     document.removeEventListener('paste', this.upload_paste_img);
+    this.$message.closeAll();
   }
 }
 </script>
