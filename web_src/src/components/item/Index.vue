@@ -47,26 +47,26 @@
           </div>
 
           <ul class="thumbnails" id="item-list" v-if="itemListByKeyword">
-
-              <li class=" text-center"  v-for="item in itemListByKeyword"
-                 v-dragging="{ item: item, list: itemListByKeyword, group: 'item' }"
-              >
-                <router-link class="thumbnail item-thumbnail"  :to="'/' +  (item.item_domain ? item.item_domain:item.item_id )" title="">
-                  <span class="item-setting " @click.prevent="click_item_setting(item.item_id)" :title="$t('item_setting')" v-if="item.creator" >
-                    <i class="el-icon-setting"></i>
-                  </span>
-                  <span class="item-exit" @click.prevent="click_item_exit(item.item_id)" :title="$t('item_exit')" v-if="! item.creator">
-                    <i class="el-icon-close"></i>
-                  </span>
-                  <p class="my-item">{{item.item_name}}</p>
-                </router-link>
-              </li>
-
-              <li class=" text-center"  >
-                <router-link class="thumbnail item-thumbnail"  to="/item/add" title="">
-                  <p class="my-item">{{$t('new_item')}}<i class="el-icon-plus"></i></p>
-                </router-link>
-              </li>
+                <draggable v-model="itemListByKeyword" tag="span" group="item"  @end="endMove">
+                  <li class=" text-center"  v-for="item in itemListByKeyword"
+                     v-dragging="{ item: item, list: itemListByKeyword, group: 'item' }"
+                  >
+                    <router-link class="thumbnail item-thumbnail"  :to="'/' +  (item.item_domain ? item.item_domain:item.item_id )" title="">
+                      <span class="item-setting " @click.prevent="click_item_setting(item.item_id)" :title="$t('item_setting')" v-if="item.creator" >
+                        <i class="el-icon-setting"></i>
+                      </span>
+                      <span class="item-exit" @click.prevent="click_item_exit(item.item_id)" :title="$t('item_exit')" v-if="! item.creator">
+                        <i class="el-icon-close"></i>
+                      </span>
+                      <p class="my-item">{{item.item_name}}</p>
+                    </router-link>
+                  </li>
+                </draggable>
+                <li class=" text-center"  >
+                  <router-link class="thumbnail item-thumbnail"  to="/item/add" title="">
+                    <p class="my-item">{{$t('new_item')}}<i class="el-icon-plus"></i></p>
+                  </router-link>
+                </li>
 
           </ul>
         </div>
@@ -108,7 +108,7 @@
     margin: 40px 5px;
   }
 
-  .thumbnails>li {
+  .thumbnails li {
       float: left;
       margin-bottom: 20px;
       margin-left: 20px;
@@ -183,10 +183,14 @@
 </style>
 
 <script>
+import draggable from 'vuedraggable'
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs');
 }
 export default {
+  components: {
+      draggable,
+  },
   data() {
     return {
       currentDate: new Date(),
@@ -341,7 +345,7 @@ export default {
       that.axios.post(url, params)
         .then(function (response) {
           if (response.data.error_code === 0 ) {
-            //that.get_item_list();
+            that.get_item_list();
             //window.location.reload();
 
           }else{
@@ -355,17 +359,24 @@ export default {
           
         });
     },
-    dragging(){
-      this.$dragging.$off('dragged',true);
-      this.$dragging.$on('dragged', ({ value }) => {
-        //console.log(value);
-        let data = {};
-        for (var i = 0; i < value['list'].length; i++) {
-          let key = value['list'][i]['item_id'] ;
-          data[key] = i + 1  ;
-        };
-        this.sort_item(data);
-      })
+    exchangeArray( data ,  i , j ){
+      let tmp = data[i];
+      data[i] = data[j];
+      data[j] = tmp ;
+      return data;
+    },
+    endMove(evt){
+      let data = {} ;
+      let list = this.exchangeArray( this.itemList , evt['oldIndex'] , evt['newIndex']  ) ;
+      this.itemList = [] ;
+      this.$nextTick(()=>{
+        this.itemList = list ;
+      });
+      for (var i = 0; i < list.length; i++) {
+        let key = list[i]['item_id'] ;
+        data[key] = i + 1  ;
+      };
+      this.sort_item(data);
     },
     script_cron(){
       var url = DocConfig.server+'/api/ScriptCron/run';
@@ -376,7 +387,6 @@ export default {
   mounted () {
     this.get_item_list();
     this.user_info();
-    this.dragging();
     this.lang = DocConfig.lang ;
     this.script_cron();
   },
