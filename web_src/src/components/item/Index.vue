@@ -364,10 +364,10 @@ export default {
           
         });
     },
-    exchangeArray( data ,  i , j ){
-      let tmp = data[i];
-      data[i] = data[j];
-      data[j] = tmp ;
+    exchangeArray( data ,  oldIndex , newIndex ){
+      let tmp = data[oldIndex];
+      data.splice(oldIndex,1);
+      data.splice(newIndex , 0, tmp);
       return data;
     },
     endMove(evt){
