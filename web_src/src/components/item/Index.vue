@@ -47,7 +47,7 @@
           </div>
 
           <ul class="thumbnails" id="item-list" v-if="itemListByKeyword">
-                <draggable v-model="itemListByKeyword" tag="span" group="item"  @end="endMove">
+                <draggable v-model="itemListByKeyword" tag="span" group="item"  @end="endMove" ghostClass="sortable-chosen">
                   <li class=" text-center"  v-for="item in itemListByKeyword"
                      v-dragging="{ item: item, list: itemListByKeyword, group: 'item' }"
                   >
@@ -178,6 +178,11 @@
   .search-box-div{
     width: 190px;
     margin-left: 60px;
+  }
+
+  .sortable-chosen .item-thumbnail{
+    color: #ffffff;
+    background-color: #ffffff;
   }
 
 </style>
