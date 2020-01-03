@@ -301,5 +301,8 @@ exports.default = {
     "recover":"recover",
     "recover_tips":"Are you sure to recover? The recovered page will appear in the item root",
 
+    "cat_tips":"Drag to sort",
+    "cat_limite_tips":"Only up to three levels of directories are supported",
+
 
 };
