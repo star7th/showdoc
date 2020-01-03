@@ -307,5 +307,12 @@ exports.default = {
     "del_time":"删除时间",
     "recover":"恢复",
     "recover_tips":"确认恢复吗？恢复的页面将出现在项目根目录",
+    
+    "cat_tips":"可拖动以排序",
+    "cat_limite_tips":"showdoc只支持最多三层目录，请优化目录结构",
 
+
+    "sort_pages":"页面排序",
+    "sort_pages_tips":"选择特定的目录后，你可以对该目录下的页面进行拖动排序",
+    
 };
