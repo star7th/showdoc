@@ -88,12 +88,7 @@
     //获取页面内容
     get_page_content(page_id){
       if (page_id <= 0 ) {return;};
-      //根据屏幕宽度进行响应(应对移动设备的访问)
-      if( this.isMobile() ||  window.innerWidth< 1300){
-        this.$nextTick(() => {
-          this.AdaptToMobile();
-        });
-      }
+        this.adaptScreen();
         var that = this ;
         var url = DocConfig.server+'/api/page/info';
         //var loading = that.$loading({target:".page_content_main",fullscreen:false});
@@ -123,7 +118,7 @@
           });
     },
     //根据屏幕宽度进行响应(应对移动设备的访问)
-    AdaptToMobile(){
+    adaptToMobile(){
       let childRef = this.$refs.leftMenu ;//获取子组件
       childRef.hide_menu();
       this.show_page_bar = false;
@@ -133,9 +128,32 @@
       var header = document.getElementById('header') ;
       header.style.height = '10px';
       var docTitle = document.getElementById('doc-title-box') ;
+      docTitle.style.marginTop = '40px';
+    },
+    //根据屏幕宽度进行响应。应对小屏幕pc设备(如笔记本)的访问
+    adaptToSmallpc(){
+      var doc_container = document.getElementById('doc-container') ;
+      doc_container.style.width = 'calc( 95% - 300px )';
+      doc_container.style.marginLeft = '300px';
+      doc_container.style.padding = '20px';
+      var header = document.getElementById('header') ;
+      header.style.height = '20px';
+      var docTitle = document.getElementById('doc-title-box') ;
       docTitle.style.marginTop = '30px';
     },
-
+    //响应式
+    adaptScreen(){
+      this.$nextTick(() => {
+        //根据屏幕宽度进行响应(应对移动设备的访问)
+        if( this.isMobile() ||  window.innerWidth < 1300){
+          if (window.innerWidth < 1300 && window.innerWidth > 1100) {
+            this.adaptToSmallpc();
+          }else{
+            this.adaptToMobile();
+          }
+        }
+      });
+    },
     onCopy(){
       this.$message(this.$t("copy_success"));
     },
@@ -145,12 +163,8 @@
     },
   },
   mounted () {
-    //根据屏幕宽度进行响应(应对移动设备的访问)
-    if( this.isMobile() ||  window.innerWidth< 1300){
-      this.$nextTick(() => {
-        this.AdaptToMobile();
-      });
-    }
+
+    this.adaptScreen();
     this.set_bg_grey();
   }
 };

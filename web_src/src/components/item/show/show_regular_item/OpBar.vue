@@ -3,7 +3,7 @@
         <div v-if="show_menu_btn" id="header-right-btn" >
             <el-dropdown  trigger="click" @command="handleCommand">
               <span class="el-dropdown-link">
-                <i class="el-icon-arrow-down el-icon--right"></i>
+                <i class="el-icon-caret-bottom el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="goback">{{$t('goback')}}</el-dropdown-item>
@@ -166,7 +166,7 @@
 
   #header-right-btn{
     font-size: 20px;
-    top: 20px;
+    top: 15px;
     right: 5%;
     cursor: pointer;
     position: fixed;
@@ -174,6 +174,7 @@
 
   .el-dropdown-link{
     color: #000;
+    font-size: 18px;
     font-weight: bolder;
   }
 
