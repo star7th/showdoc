@@ -69,7 +69,7 @@ class PageController extends BaseController {
         $page_content = I("page_content");
         $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $item_id = I("item_id/d")? I("item_id/d") : 0;
-        $s_number = I("s_number/d")? I("s_number/d") : 99;
+        $s_number = I("s_number/d")? I("s_number/d") : '';
 
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
@@ -86,7 +86,7 @@ class PageController extends BaseController {
         $data['page_title'] = $page_title ;
         $data['page_content'] = $page_content ;
         $data['page_comments'] = $page_comments ;
-        $data['s_number'] = $s_number ;
+        if($s_number)$data['s_number'] = $s_number ;
         $data['item_id'] = $item_id ;
         $data['cat_id'] = $cat_id ;
         $data['addtime'] = time();

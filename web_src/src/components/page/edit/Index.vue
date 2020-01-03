@@ -491,10 +491,12 @@ export default {
     },
     //展示页面排序
     ShowSortPage(){
-        let childRef = this.$refs.SortPage ;//获取子组件
-        childRef.show() ; 
+        this.save(()=>{
+          let childRef = this.$refs.SortPage ;//获取子组件
+          childRef.show() ; 
+        });
     },
-    save(){
+    save(callback){
       var that = this ;
       var loading = that.$loading();
       let childRef = this.$refs.Editormd ;
@@ -506,7 +508,6 @@ export default {
       var params = new URLSearchParams();
       params.append('page_id',  page_id);
       params.append('item_id',  item_id);
-      params.append('s_number',  that.s_number);
       params.append('page_title',  that.title);
       params.append('page_content',  encodeURIComponent(content));
       params.append('is_urlencode',  1);
@@ -515,11 +516,18 @@ export default {
         .then(function (response) {
           loading.close();
           if (response.data.error_code === 0 ) {
-            that.$message({
-              showClose: true,
-              message: that.$t("save_success"),
-              type: 'success'
-            });
+
+              if (typeof callback == 'function') {
+                callback();
+              }else{
+                that.$message({
+                  showClose: true,
+                  message: that.$t("save_success"),
+                  type: 'success'
+                });
+              }
+
+
 
             //删除草稿
             that.deleteDraft();

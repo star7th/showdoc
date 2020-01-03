@@ -22,12 +22,18 @@
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ node.label }}</span>
             <span class="right-bar">
+
               <el-button
                 type="text"
                 size="mini"
                  class="el-icon-edit"
                 @click.stop="edit(node, data)">
-                
+              </el-button>
+              <el-button
+                type="text"
+                size="mini"
+                 class="el-icon-document"
+                @click.stop="showSortPage(node, data)">
               </el-button>
               <el-button
                 type="text"
@@ -66,17 +72,19 @@
       </el-dialog>
     </el-container>
 
+    <SortPage :callback="insertValue" :belong_to_catalogs="belong_to_catalogs" :item_id="item_id"  :cat_id="curl_cat_id" ref="SortPage"></SortPage>
+
     <Footer> </Footer>
   </div>
 </template>
 
 <script>
 
-
+import SortPage from '@/components/page/edit/SortPage'
 export default {
   name: 'Login',
   components : {
-    
+    SortPage
   },
   data () {
     return {
@@ -89,10 +97,12 @@ export default {
       catalogs:[],
       dialogFormVisible:false,
       treeData: [],
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        }
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      item_id:'',
+      curl_cat_id:''
     }
 
   },
@@ -117,7 +127,43 @@ export default {
         cat_array.push(no_cat);
         return cat_array;
 
+    },
+    //新建/编辑页面时供用户选择的归属目录列表
+    belong_to_catalogs:function(){
+        if (!this.catalogs || this.catalogs.length <=0 ) {
+          return [];
+        };
+        var Info = this.catalogs.slice(0);
+        var cat_array = [] ;
+        for (var i = 0; i < Info.length; i++) {
+          cat_array.push(Info[i]);
+          var sub = Info[i]['sub'] ;
+          if (sub.length > 0 ) {
+            for (var j = 0; j < sub.length; j++) {
+              cat_array.push( {
+                "cat_id":sub[j]['cat_id'] ,
+                "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']
+              });
+
+              var sub_sub = sub[j]['sub'] ;
+              if (sub_sub.length > 0 ) {
+                for (var k = 0; k < sub_sub.length; k++) {
+                  cat_array.push( {
+                    "cat_id":sub_sub[k]['cat_id'] ,
+                    "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']+' / ' + sub_sub[k]['cat_name']
+                  });
+                };
+              };
+
+            };
+          };
+        };
+        var no_cat = {"cat_id":'' ,"cat_name":this.$t("none")} ;
+        cat_array.unshift(no_cat);
+        return cat_array;
+
     }
+
   }, 
   methods: {
       get_catalog(){
@@ -324,12 +370,19 @@ export default {
           
         };
         return treeData2 ;
-      }
+      },
+      //展示页面排序
+      showSortPage(node, data){
+          this.curl_cat_id = data.id;
+          let childRef = this.$refs.SortPage ;//获取子组件
+          childRef.show() ; 
+      },
 
   },
 
   mounted(){
     this.get_catalog();
+    this.item_id = this.$route.params.item_id ;
   },
   
   beforeDestroy(){

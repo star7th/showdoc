@@ -139,6 +139,9 @@ export default {
   watch:{
     cat_id:function(){
       this.get_pages();
+    },
+    dialogTableVisible:function(){
+      this.get_pages();
     }
   },
   mounted () {
