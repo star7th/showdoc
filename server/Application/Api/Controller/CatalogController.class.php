@@ -213,4 +213,18 @@ class CatalogController extends BaseController {
     }
 
 
+    //获取某个目录下所有页面的标题
+    public function getPagesBycat(){
+        $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
+        $item_id =  I("item_id/d");
+        $login_user = $this->checkLogin();
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $this->sendError(10103);
+            return ;
+        }
+        $return = D("Page")->where("cat_id = '$cat_id' and  item_id = '$item_id' and is_del = 0  ")->field("page_id , page_title,s_number")->order("`s_number` asc , `page_id` asc")->select();
+        $this->sendResult($return);
+
+    }
+
 }

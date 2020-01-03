@@ -308,4 +308,7 @@ exports.default = {
     "recover":"恢复",
     "recover_tips":"确认恢复吗？恢复的页面将出现在项目根目录",
 
+    "sort_pages":"页面排序",
+    "sort_pages_tips":"选择特定的目录后，你可以对该目录下的页面进行拖动排序",
+    
 };

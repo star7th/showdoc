@@ -16,8 +16,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item :label="$t('s_number')+' : '">
-            <el-input  :placeholder="$t('optional')" class="num" v-model="s_number"></el-input>
+          <el-form-item label="" >
+            <el-button type="text" @click="ShowSortPage">{{$t('sort_pages')}}</el-button>
           </el-form-item>
           <el-form-item label="" >
             <el-button type="text" @click="ShowHistoryVersion">{{$t('history_version')}}</el-button>
@@ -80,8 +80,9 @@
         <!-- 粘贴插入表格 -->
         <PasteTable :callback="insertValue" :item_id="item_id" :manage="true" :page_id="page_id" ref="PasteTable"></PasteTable>
         
-
-
+        <!-- 页面排序 -->
+        <SortPage :callback="insertValue" :belong_to_catalogs="belong_to_catalogs" :item_id="item_id" :page_id="page_id" :cat_id="cat_id" ref="SortPage"></SortPage>
+        
       </el-container>
     <Footer> </Footer>
     <div class=""></div>
@@ -259,7 +260,7 @@ import TemplateList from '@/components/page/edit/TemplateList'
 import HistoryVersion from '@/components/page/edit/HistoryVersion'
 import AttachmentList from '@/components/page/edit/AttachmentList'
 import PasteTable from '@/components/page/edit/PasteTable'
-
+import SortPage from '@/components/page/edit/SortPage'
 
 export default {
   data () {
@@ -322,7 +323,8 @@ export default {
     TemplateList,
     HistoryVersion,
     AttachmentList,
-    PasteTable
+    PasteTable,
+    SortPage
   },
   methods:{
     //获取页面内容
@@ -487,7 +489,11 @@ export default {
         let childRef = this.$refs.HistoryVersion ;//获取子组件
         childRef.show() ; 
     },
-
+    //展示页面排序
+    ShowSortPage(){
+        let childRef = this.$refs.SortPage ;//获取子组件
+        childRef.show() ; 
+    },
     save(){
       var that = this ;
       var loading = that.$loading();

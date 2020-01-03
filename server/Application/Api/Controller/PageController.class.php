@@ -413,5 +413,27 @@ class PageController extends BaseController {
         $this->sendResult($page);
     }
 
+    //同一个目录下的页面排序
+    public function sort(){
+        $pages = I("pages");
+        $item_id = I("item_id/d");
+        $login_user = $this->checkLogin();
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $this->sendError(10103);
+            return ;
+        }
+        $ret = '';
+        $data_array = json_decode(htmlspecialchars_decode($pages) , true) ;
+        if ($data_array) {
+            foreach ($data_array as $key => $value) {
+                $ret = D("Page")->where(" page_id = '$key' and item_id = '$item_id' ")->save(array(
+                    "s_number" => $value ,
+                    ));
+            }
+        }
+
+        $this->sendResult(array());
+    }
+
 
 }

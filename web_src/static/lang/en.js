@@ -301,5 +301,7 @@ exports.default = {
     "recover":"recover",
     "recover_tips":"Are you sure to recover? The recovered page will appear in the item root",
 
+    "sort_pages":"Sort Pages",
+    "sort_pages_tips":"After selecting a specific catalog, you can drag and sort the pages in that catalog",
 
 };
