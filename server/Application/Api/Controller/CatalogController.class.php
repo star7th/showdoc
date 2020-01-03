@@ -80,7 +80,7 @@ class CatalogController extends BaseController {
     //保存目录
     public function save(){
         $cat_name = I("cat_name");
-        $s_number = I("s_number/d") ? I("s_number/d") : 99 ;
+        $s_number = I("s_number/d") ? I("s_number/d") : '' ;
         $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $parent_cat_id = I("parent_cat_id/d")? I("parent_cat_id/d") : 0;
         $item_id =  I("item_id/d");
@@ -101,7 +101,7 @@ class CatalogController extends BaseController {
         }
         
         $data['cat_name'] = $cat_name ;
-        $data['s_number'] = $s_number ;
+        if($s_number)$data['s_number'] = $s_number ;
         $data['item_id'] = $item_id ;
         $data['parent_cat_id'] = $parent_cat_id ;
         if ($parent_cat_id > 0 ) {
@@ -210,6 +210,34 @@ class CatalogController extends BaseController {
         }
 
         $this->sendResult(array("default_cat_id"=>$default_cat_id ));
+    }
+
+    //批量更新
+    public function batUpdate(){
+        $cats = I("cats");
+        $item_id = I("item_id/d");
+        $login_user = $this->checkLogin();
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $this->sendError(10103);
+            return ;
+        }
+        $ret = '';
+        $data_array = json_decode(htmlspecialchars_decode($cats) , true) ;
+        if ($data_array) {
+            foreach ($data_array as $key => $value) {
+                if ($value['cat_name']) {
+                    $ret = D("Catalog")->where(" cat_id = '$value[cat_id]' and item_id = '$item_id' ")->save(array(
+                        "cat_name" => $value['cat_name'] ,
+                        "parent_cat_id" => $value['parent_cat_id'] ,
+                        "level" => $value['level'] ,
+                        "s_number" => $value['s_number'] ,
+                        ));
+                }
+
+            }
+        }
+
+        $this->sendResult(array());
     }
 
 

@@ -304,4 +304,8 @@ exports.default = {
     "sort_pages":"Sort Pages",
     "sort_pages_tips":"After selecting a specific catalog, you can drag and sort the pages in that catalog",
 
+    "cat_tips":"Drag to sort",
+    "cat_limite_tips":"Only up to three levels of directories are supported",
+
+
 };
