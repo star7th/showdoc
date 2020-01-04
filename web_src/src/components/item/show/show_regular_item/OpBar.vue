@@ -26,7 +26,9 @@
                 <el-tooltip class="item" effect="dark" :content="$t('index_login_or_register')" placement="top">
                       <router-link to="/user/login"><i class="el-icon-user" ></i></router-link>
                 </el-tooltip>
-
+                <el-tooltip class="item" effect="dark" :content="$t('detail')" placement="top">
+                      <i class="el-icon-info" @click="show_page_info"></i>
+                </el-tooltip>
                 <el-tooltip class="item" effect="dark" v-if="lang =='zh-cn'" :content="$t('about_showdoc')" placement="top">
                 <a href="https://www.showdoc.cc/help" target="_blank"><i class="el-icon-arrow-right" ></i></a>
                 </el-tooltip>
@@ -42,6 +44,10 @@
 
                 <el-tooltip class="item" effect="dark" :content="$t('share')" placement="top">
                       <i class="el-icon-share" @click="share_page"></i>
+                </el-tooltip>
+                
+                <el-tooltip v-if="! item_info.ItemPermn" class="item" effect="dark" :content="$t('detail')" placement="top">
+                      <i class="el-icon-info" @click="show_page_info"></i>
                 </el-tooltip>
 
              </span>
