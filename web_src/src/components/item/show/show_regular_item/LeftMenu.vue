@@ -17,6 +17,8 @@
               @keyup.enter.native="input_keyword"
               :placeholder="$t('input_keyword')"
               class="search-box"
+              :clearable="true"
+              @clear="search_item()"
               v-model="keyword">
              
             </el-input>
@@ -264,6 +266,7 @@
 <style type="text/css">
   #left-side-menu .el-input__inner{
       background-color: #fafafa !important;
+      padding-right:10px;
   }
 
   .hide-scrollbar .el-submenu__title{
@@ -283,6 +286,11 @@
   }
   .normal-scrollbar li{
     font-size: 12px;
+  }
+  
+  #left-side-menu .el-input__suffix{
+    right: 25px;
+    padding-right:10px;
   }
 
 </style>
