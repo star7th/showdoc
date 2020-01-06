@@ -14,7 +14,7 @@ export default {
       status: false,
       scrollTop: 0,
       timer: null,
-      speed:30
+      speed:0
     }
   },
   mounted () {
