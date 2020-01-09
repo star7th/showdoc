@@ -61,8 +61,9 @@ class ItemController extends BaseController {
             );
         //是否有搜索词
         if ($keyword) {
+            $keyword = strtolower ($keyword) ;
             $keyword = \SQLite3::escapeString($keyword) ;
-            $pages = D("Page")->where("item_id = '$item_id' and is_del = 0  and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+            $pages = D("Page")->where("item_id = '$item_id' and is_del = 0  and ( lower(page_title) like '%{$keyword}%' or lower(page_content) like '%{$keyword}%' ) ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
             $menu['pages'] = $pages ? $pages : array();
         }else{
             $menu = D("Item")->getMemu($item_id) ;
