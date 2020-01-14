@@ -5,7 +5,7 @@
 
     <el-container class="container-narrow">
 
-      <el-dialog :title="$t('templ_list')" :visible.sync="dialogTableVisible">
+      <el-dialog :title="$t('templ_list')" :visible.sync="dialogTableVisible" :close-on-click-modal="false">
         <el-table :data="content">
           <el-table-column property="addtime" :label="$t('save_time')" width="170"></el-table-column>
           <el-table-column property="template_title" :label="$t('templ_title')" ></el-table-column>

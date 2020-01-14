@@ -66,7 +66,7 @@
         </el-table>
 
       <!-- 添加单个成员弹窗 -->
-      <el-dialog :visible.sync="dialogFormVisible" :modal="false" top="10vh">
+      <el-dialog :visible.sync="dialogFormVisible" :modal="false" top="10vh" :close-on-click-modal="false">
       <el-form >
           <el-form-item label="" >
             <el-autocomplete
@@ -90,7 +90,7 @@
       </el-dialog>
 
       <!-- 添加团队弹窗 -->
-      <el-dialog :visible.sync="dialogFormTeamVisible" :modal="false" top="10vh">
+      <el-dialog :visible.sync="dialogFormTeamVisible" :modal="false" top="10vh" :close-on-click-modal="false">
       <el-form >
           <el-form-item label="选择团队" >
             <el-select  class="" v-model="MyForm2.team_id">
@@ -107,7 +107,7 @@
       </el-dialog>
 
       <!-- 成员权限弹窗 -->
-      <el-dialog :visible.sync="dialogFormTeamMemberVisible" :modal="false" top="10vh" :title="$t('adjust_member_authority')" width="90%">
+      <el-dialog :visible.sync="dialogFormTeamMemberVisible" :modal="false" top="10vh" :title="$t('adjust_member_authority')" width="90%" :close-on-click-modal="false">
 
            <el-table align="left"
                 :empty-text="$t('team_member_empty_tips')"

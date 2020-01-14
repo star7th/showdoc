@@ -18,7 +18,7 @@
       </el-tooltip>   
     </p>  
 
-    <el-dialog :visible.sync="dialogAttornVisible" :modal="false"  width="300px">
+    <el-dialog :visible.sync="dialogAttornVisible" :modal="false"  width="300px" :close-on-click-modal="false">
       <el-form >
           <el-form-item label="" >
             <el-input  :placeholder="$t('attorn_username')" v-model="attornForm.username"></el-input>
@@ -33,7 +33,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogArchiveVisible" :modal="false"  width="300px">
+    <el-dialog :visible.sync="dialogArchiveVisible" :modal="false"  width="300px" :close-on-click-modal="false">
       <el-form >
           <el-form-item label="" >
             <el-input type="password" :placeholder="$t('input_login_password')" v-model="archiveForm.password"></el-input>
@@ -50,7 +50,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogDeleteVisible" :modal="false"  width="300px">
+    <el-dialog :visible.sync="dialogDeleteVisible" :modal="false"  width="300px" :close-on-click-modal="false">
       <el-form >
           <el-form-item label="" >
             <el-input type="password" :placeholder="$t('input_login_password')"  v-model="deleteForm.password">></el-input>

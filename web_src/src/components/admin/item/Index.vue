@@ -81,7 +81,7 @@
       </el-pagination>
   </div>
 
-  <el-dialog :visible.sync="dialogAttornVisible" :modal="false" width="300px">
+  <el-dialog :visible.sync="dialogAttornVisible" :close-on-click-modal="false" width="300px">
     <el-form >
         <el-form-item label="" >
           <el-input  :placeholder="$t('attorn_username')" v-model="attornForm.username"></el-input>

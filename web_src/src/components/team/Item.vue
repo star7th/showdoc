@@ -38,7 +38,7 @@
 
             </el-card>
 
-            <el-dialog :visible.sync="dialogFormVisible"  width="300px">
+            <el-dialog :visible.sync="dialogFormVisible"  width="300px" :close-on-click-modal="false">
                     <el-form >
                         <el-select size="mini" v-model="MyForm.item_id"  :placeholder="$t('please_choose')">
                           <el-option
@@ -60,7 +60,7 @@
             </el-dialog>
 
       <!-- 成员权限弹窗 -->
-      <el-dialog :visible.sync="dialogFormTeamMemberVisible"  top="10vh" :title="$t('adjust_member_authority')" >
+      <el-dialog :visible.sync="dialogFormTeamMemberVisible"  top="10vh" :title="$t('adjust_member_authority')" :close-on-click-modal="false">
 
            <el-table align="left"
                 :empty-text="$t('team_member_empty_tips')"

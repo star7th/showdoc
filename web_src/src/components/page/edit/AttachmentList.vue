@@ -5,7 +5,7 @@
 
     <el-container class="container-narrow">
 
-      <el-dialog :title="$t('attachment')" :visible.sync="dialogTableVisible" >
+      <el-dialog :title="$t('attachment')" :visible.sync="dialogTableVisible" :close-on-click-modal="false">
         <el-upload
           class="upload-file"
           :action="uploadUrl"

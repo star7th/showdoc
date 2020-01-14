@@ -46,7 +46,7 @@
 
 
             </el-card>
-            <el-dialog :visible.sync="dialogFormVisible"  width="300px">
+            <el-dialog :visible.sync="dialogFormVisible"  width="300px" :close-on-click-modal="false">
               <el-form >
                   <el-form-item :label="$t('team_name')+':'" >
                      <el-input   v-model="MyForm.team_name"></el-input>

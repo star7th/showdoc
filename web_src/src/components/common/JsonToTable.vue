@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-dialog :title="$t('json_to_table')" :visible.sync="dialogFormVisible">
+		<el-dialog :title="$t('json_to_table')" :visible.sync="dialogFormVisible" :close-on-click-modal="false">
 		  <el-form >
 		  	<el-input type="textarea" class="dialoContent" :placeholder="$t('json_to_table_description')" :rows="10" v-model="content"></el-input>
 		  </el-form>

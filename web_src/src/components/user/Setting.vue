@@ -30,7 +30,7 @@
     </el-container>
 
     <!-- 修改email弹窗 -->
-    <el-dialog :visible.sync="dialogEmailFormVisible" top="10vh" width="300px">
+    <el-dialog :visible.sync="dialogEmailFormVisible" top="10vh" width="300px" :close-on-click-modal="false">
       <el-form class="emailForm">
           <el-form-item label="" >
             <el-input type="text" auto-complete="off" :placeholder="$t('input_email')" v-model="emailForm.email"></el-input>
@@ -47,7 +47,7 @@
     </el-dialog>
 
     <!-- 修改密码弹窗 -->
-    <el-dialog :visible.sync="dialogPasswordFormVisible" top="10vh" width="300px">
+    <el-dialog :visible.sync="dialogPasswordFormVisible" top="10vh" width="300px" :close-on-click-modal="false">
       <el-form class="emailForm">
             <el-form-item label="" >
               <el-input type="password" auto-complete="off" :placeholder="$t('old_password')" v-model="passwordForm.password"></el-input>

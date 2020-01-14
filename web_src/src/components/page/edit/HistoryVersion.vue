@@ -5,7 +5,7 @@
 
     <el-container class="container-narrow">
 
-      <el-dialog :title="$t('history_version')" :modal="is_modal"  :visible.sync="dialogTableVisible">
+      <el-dialog :title="$t('history_version')" :modal="is_modal"  :visible.sync="dialogTableVisible" :close-on-click-modal="false">
         <el-table :data="content">
           <el-table-column property="addtime" :label="$t('update_time')" width="170"></el-table-column>
           <el-table-column property="author_username" :label="$t('update_by_who')" ></el-table-column>

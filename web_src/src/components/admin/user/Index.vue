@@ -65,7 +65,7 @@
       </el-pagination>
   </div>
 
-  <el-dialog :visible.sync="dialogVisible" :modal="false" width="300px">
+  <el-dialog :visible.sync="dialogVisible" :close-on-click-modal="false" width="300px">
     <el-form >
         <el-form-item label="" >
           <el-input type="password"  :placeholder="$t('new_password')" v-model="Form.new_password"></el-input>
@@ -77,7 +77,7 @@
     </div>
   </el-dialog>
 
-  <el-dialog :visible.sync="dialogAddVisible" :modal="false" width="300px">
+  <el-dialog :visible.sync="dialogAddVisible" :close-on-click-modal="false" width="300px">
     <el-form >
         <el-form-item label="" >
           <el-input type="text" :placeholder="$t('username')" v-model="addForm.username"></el-input>

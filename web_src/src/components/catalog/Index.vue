@@ -48,7 +48,7 @@
 
 
       </el-card>
-      <el-dialog :visible.sync="dialogFormVisible"  width="300px">
+      <el-dialog :visible.sync="dialogFormVisible"  width="300px" :close-on-click-modal="false">
         <el-form >
             <el-form-item :label="$t('cat_name')+' : '" >
               <el-input  :placeholder="$t('input_cat_name')" v-model="MyForm.cat_name"></el-input>

@@ -5,7 +5,7 @@
 
     <el-container class="container-narrow">
 
-      <el-dialog :title="$t('paste_insert_table')" :modal="is_modal"  :visible.sync="dialogFormVisible">
+      <el-dialog :title="$t('paste_insert_table')" :modal="is_modal"  :visible.sync="dialogFormVisible" :close-on-click-modal="false">
         <el-form >
 		  	<el-input type="textarea" class="dialoContent" :placeholder="$t('paste_insert_table_tips')" :rows="10" v-model="content"></el-input>
 		  </el-form>

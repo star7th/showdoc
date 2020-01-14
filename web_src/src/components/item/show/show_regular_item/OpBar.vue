@@ -110,7 +110,7 @@
     :title="$t('share_page')"
     :visible.sync="dialogVisible"
     width="600px"
-    :modal="false"
+    :close-on-click-modal="false"
     >
     
     <p>{{$t('item_page_address')}} : <code >{{share_page_link}}</code>

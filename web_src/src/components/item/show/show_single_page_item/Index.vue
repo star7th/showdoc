@@ -37,7 +37,7 @@
     :title="$t('share')"
     :visible.sync="dialogVisible"
     width="600px"
-    :modal="false"
+    :close-on-click-modal="false"
     class="text-center"
     >
     

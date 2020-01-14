@@ -5,7 +5,7 @@
 
     <el-container class="container-narrow">
 
-      <el-dialog :title="$t('sort_pages')" :modal="is_modal" :visible.sync="dialogTableVisible" >
+      <el-dialog :title="$t('sort_pages')" :modal="is_modal" :visible.sync="dialogTableVisible" :close-on-click-modal="false">
         <div class="dialog-body">
           <p class="tips" >{{$t('sort_pages_tips')}}</p>
           <el-select  :placeholder="$t('optional')" class="select-cat" v-model="cat_id">
