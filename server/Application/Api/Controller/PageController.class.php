@@ -162,7 +162,7 @@ class PageController extends BaseController {
             return;
         }
 
-        $PageHistory = D("PageHistory")->where("page_id = '$page_id' ")->order(" addtime desc")->limit(10)->select();
+        $PageHistory = D("PageHistory")->where("page_id = '$page_id' ")->order(" addtime desc")->limit(20)->select();
 
         if ($PageHistory) {
             foreach ($PageHistory as $key => &$value) {
