@@ -10,8 +10,11 @@
 
   </div>
 </template>
-<style scoped>
+<style>
 
+.editormd-preview-container{
+  min-height: 60%;
+}
 
 </style>
 <script>
