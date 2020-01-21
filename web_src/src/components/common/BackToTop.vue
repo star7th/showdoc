@@ -14,7 +14,7 @@ export default {
       status: false,
       scrollTop: 0,
       timer: null,
-      speed:0
+      speed:50
     }
   },
   mounted () {
@@ -28,7 +28,7 @@ export default {
     gototop () {
       let _t = this;
       _t.timer = setInterval(function(){
-        _t.scrollTop -= 100
+        _t.scrollTop -= 2000
         if (_t.scrollTop < 100) {
           _t.scrollTop = 0;
           _t.status = false;
