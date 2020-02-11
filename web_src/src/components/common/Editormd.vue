@@ -99,6 +99,7 @@ export default {
 		    `${this.editorPath}/lib/sequence-diagram.min.js`,
 		    `${this.editorPath}/lib/jquery.flowchart.min.js`,
         `${this.editorPath}/lib/jquery.mark.min.js`,
+        `${this.editorPath}/lib/plantuml.js`,
 	    ], () => {
 	       
 	      $s(`${this.editorPath}/editormd.js`, () => {

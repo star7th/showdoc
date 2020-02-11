@@ -45,7 +45,23 @@
 	if (typeof ($) === "undefined") {
 		return ;
 	}
-    
+
+    $.fn.extend({
+            //tag@a:plantuml
+            plantuml:function() {
+                var previewContainer = $(this);
+                previewContainer.find("pre:has(.lang-plantuml)").each(function(){
+                    var $uml = $(this);
+                    var lines = [];
+                    $uml.find('.lang-plantuml').each(function(){
+                        lines.push($(this).text());
+                    });
+                    var img = '<img src="'+plantuml_imgsrc(lines.join("\n"))+'"><br>'
+                    $uml.replaceWith(img);
+                });         
+         }
+    });
+
     /**
      * editormd
      * 
@@ -1530,6 +1546,8 @@
                 }
                 
                 previewContainer.find(".flowchart").flowChart(); 
+                //tag@a:plantuml
+                previewContainer.plantuml();
             }
 
             if (settings.sequenceDiagram) {
@@ -4018,6 +4036,8 @@
         {
             if (settings.flowChart) {
                 div.find(".flowchart").flowChart(); 
+                //tag@a:plantuml
+                $(div).plantuml();
             }
 
             if (settings.sequenceDiagram) {
