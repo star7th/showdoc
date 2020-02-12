@@ -383,6 +383,18 @@
 
 
 
+  },
+  watch:{
+    page_info:function(){
+      if (this.page_info.unique_key) {
+        this.isCreateSiglePage = true ;
+        this.share_single_link = this.getRootPath()+"/p/"+this.page_info.unique_key ;
+      }else{
+        this.isCreateSiglePage = false ;
+        this.share_single_link = '' ;
+      }
+    }
   }
+  
 };
 </script>
