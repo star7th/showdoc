@@ -98,13 +98,6 @@ class BaseController extends Controller {
 			header('Access-Control-Allow-Credentials: true');//允许跨域请求
 		}
 
-		//来自Html5Plus的应用允许跨域
-		if (strstr($_SERVER['HTTP_USER_AGENT'], "Html5Plus") ) {
-			header('Access-Control-Allow-Origin: *');//允许跨域请求
-			header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie');
-			header('Access-Control-Allow-Credentials : true');//允许跨域请求
-		}
-
 		echo json_encode($result);
 
 		//如果开启API调试模式，则记录请求参数和返回结果
