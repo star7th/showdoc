@@ -235,7 +235,7 @@ export default {
               that.itemList = json ;
               //that.bind_item_even();
             }else{
-              that.$alert(response.data.error_message);
+              //that.$alert(response.data.error_message);
             }
             
           });
