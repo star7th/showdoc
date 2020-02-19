@@ -5,7 +5,7 @@
       <div class="row header  ">
         <div class="right pull-right">
           <ul class="inline pull-right">
-          <li ><router-link :to="link">{{link_text}}</router-link> &nbsp;&nbsp;&nbsp;<a target="_blank" v-if="lang =='zh-cn'" href="https://www.showdoc.cc/app">App</a></li>
+          <li ><router-link :to="link">{{link_text}}</router-link> &nbsp;&nbsp;&nbsp;<a target="_blank" v-if="lang =='zh-cn'" href="https://www.showdoc.cc/clients">客户端</a></li>
                 </ul>
           </div>  
         </div>
