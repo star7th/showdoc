@@ -10,21 +10,35 @@
               <h2 class="muted"><img src="static/logo/b_64.png" style="width:50px;height:50px;margin-bottom:-10px;" alt="">ShowDoc</h2>
           </div>
           <div class="header-btn-group pull-right">
-            <el-button type="text"  @click="feedback">{{$t("feedback")}}</el-button>
-            <router-link to="/team/index" >&nbsp;&nbsp;&nbsp;{{$t('team_mamage')}}</router-link>
-            <router-link to="/admin/index" v-if="isAdmin">&nbsp;&nbsp;&nbsp;{{$t('background')}}</router-link>
-            &nbsp;&nbsp;&nbsp;
-            <el-dropdown @command="dropdown_callback">
-              <span class="el-dropdown-link">
-                {{$t("more")}}<i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item><router-link to="/user/setting">{{$t("personal_setting")}}</router-link></el-dropdown-item>
-                <el-dropdown-item><a target="_blank" v-if="lang =='zh-cn'"  href="https://www.showdoc.cc/clients">客户端</a></el-dropdown-item>
-                <el-dropdown-item><a target="_blank" v-if="lang =='zh-cn'"  href="http://runapi.showdoc.cc/">RunApi</a></el-dropdown-item>
-                <el-dropdown-item :command="logout">{{$t("logout")}}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+                <el-tooltip class="item" effect="dark" :content="$t('feedback')" placement="top">
+                      <router-link to="" ><i @click="feedback" class="el-icon-phone-outline" ></i></router-link>
+                </el-tooltip>
+
+                <el-tooltip v-if="lang =='zh-cn'" class="item" effect="dark" content="客户端" placement="top">
+                  <a target="_blank"  href="https://www.showdoc.cc/clients"><i class="el-icon-mobile-phone" ></i></a>
+                </el-tooltip>
+
+                <el-tooltip class="item" effect="dark" :content="$t('team_mamage')" placement="top">
+                      <router-link to="/team/index"><i class="el-icon-s-flag" ></i></router-link>
+                </el-tooltip>
+
+                <el-tooltip v-if="isAdmin" class="item" effect="dark" :content="$t('background')" placement="top">
+                      <router-link to="/admin/index" ><i class="el-icon-s-tools" ></i></router-link>
+                </el-tooltip>
+
+              &nbsp;&nbsp;
+              <el-tooltip class="item" effect="dark" :content="$t('more')" placement="top">
+                <el-dropdown @command="dropdown_callback" trigger="click">
+                  <span class="el-dropdown-link">
+                    <i class="el-icon-caret-bottom el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item><router-link to="/user/setting">{{$t("personal_setting")}}</router-link></el-dropdown-item>
+                    <el-dropdown-item><a target="_blank" v-if="lang =='zh-cn'" href="http://runapi.showdoc.cc/">RunApi</a></el-dropdown-item>
+                    <el-dropdown-item :command="logout">{{$t("logout")}}</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </el-tooltip>
 
           </div>
 
@@ -93,7 +107,21 @@
 
   .header-btn-group{
    margin-top: -38px;
+   font-size: 18px;
   }
+
+  .header-btn-group a{
+    color: #333;
+    margin-left: 25px;
+  }
+
+  .el-dropdown{
+      font-size: 18px;
+  }
+  .el-dropdown-link , a {
+    color: #333;
+  }
+
 
   .logo-title{
     margin-left: 0px;
