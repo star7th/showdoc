@@ -19,6 +19,11 @@ class UserController extends BaseController {
         session('v_code',null) ;
         if ( $password != '' && $password == $confirm_password) {
 
+            if(!D("User")->checkDbOk()){
+                $this->sendError(100100,"数据库连接不上。请确保安装了php-sqlite扩展以及数据库文件Sqlite/showdoc.db.php可用");
+                return;
+            }
+
             if ( ! D("User")->isExist($username) ) {
                 $new_uid = D("User")->register($username,$password);
                 if ($new_uid) {
@@ -62,6 +67,12 @@ class UserController extends BaseController {
             }
         }
         session('v_code',null) ;
+
+        if(!D("User")->checkDbOk()){
+            $this->sendError(100100,"数据库连接不上。请确保安装了php-sqlite扩展以及数据库文件Sqlite/showdoc.db.php可用");
+            return;
+        }
+
         $ret = D("User")->checkLogin($username,$password);
         //如果失败则尝试ldap登录
         if (!$ret) {
