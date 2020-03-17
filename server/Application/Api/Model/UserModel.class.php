@@ -103,4 +103,13 @@ class UserModel extends BaseModel {
 
     }
 
+    public function checkDbOk(){
+        $ret = $this->find() ;
+        if ($ret) {
+            return true; 
+        }else{
+            return false; 
+        }
+    }
+
 }
