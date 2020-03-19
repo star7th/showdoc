@@ -4,11 +4,11 @@ use Api\Model\BaseModel;
 
 class ItemModel extends BaseModel {
 
-    public function export($item_id){
+    public function export($item_id  , $uncompress = 0){
         $item = D("Item")->where("item_id = '$item_id' ")->field(" item_type, item_name ,item_description,password ")->find();
         $page_field = "page_title ,cat_id,page_content,s_number,page_comments";
         $catalog_field = "cat_id,cat_name ,parent_cat_id,level,s_number";
-        $item['pages'] = $this->getContent($item_id , $page_field , $catalog_field ); 
+        $item['pages'] = $this->getContent($item_id , $page_field , $catalog_field , $uncompress); 
         $item['members'] = D("ItemMember")->where("item_id = '$item_id' ")->field(" member_group_id ,uid,username ")->select();
         return  json_encode($item);
         
