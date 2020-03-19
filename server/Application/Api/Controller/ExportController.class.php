@@ -125,5 +125,90 @@ class ExportController extends BaseController {
         output_word($data,$item['item_name']);
     }
 
+    //导出整个项目为markdown压缩包
+    public function markdown(){
+        set_time_limit(100);
+        ini_set('memory_limit','800M');
+        $item_id =  I("item_id/d");
+        $login_user = $this->checkLogin();
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $this->message(L('no_permissions'));
+            return;
+        }
+
+        $item = D("Item")->where("item_id = '$item_id' ")->find();
+
+        $exportJson = D("Item")->export($item_id , true);
+        $exportData = json_decode($exportJson , 1 ) ;
+        $zipArc = new \ZipArchive();
+        $temp_file = tempnam(sys_get_temp_dir(), 'Tux')."_showdoc_.zip";
+        $temp_dir = sys_get_temp_dir()."/showdoc_".time().rand();
+        mkdir($temp_dir) ;
+
+        file_put_contents($temp_dir.'/'.'info.json', json_encode($exportData));
+        file_put_contents($temp_dir.'/'.'readme.md', "由于页面标题可能含有特殊字符导致异常，所以markdown文件的命令均为英文（base64编码），以下是页面标题和文件的对应关系：".PHP_EOL.PHP_EOL );
+
+        $exportData['pages'] = $this->_markdownTofile( $exportData['pages'] , $temp_dir);
+        $ret = $this->_zip( $temp_dir ,$temp_file );
+
+        clear_runtime($temp_dir);
+
+        header("Cache-Control: max-age=0");
+        header("Content-Description: File Transfer");
+        header('Content-disposition: attachment; filename=showdoc.zip'); // 文件名
+        header("Content-Type: application/zip"); // zip格式的
+        header("Content-Transfer-Encoding: binary"); // 告诉浏览器，这是二进制文件
+        header('Content-Length: ' . filesize($temp_file)); // 告诉浏览器，文件大小
+        @readfile($temp_file);//输出文件;
+        unlink($temp_file);
+
+    }
+
+    private function _markdownTofile( $catalogData ,  $temp_dir ){
+        if ($catalogData['pages']) {
+            foreach ($catalogData['pages'] as $key => $value) {
+                $t = rand(1000,100000) ;
+                //把页面内容保存为md文件并且追加到压缩包里
+                $filename = base64_encode($value['page_title'].'_'.$t).".md" ;
+                file_put_contents($temp_dir.'/'.$filename, $value['page_content']);
+
+                file_put_contents($temp_dir.'/'.'readme.md',$value['page_title']. " —— ".  $filename  .PHP_EOL, FILE_APPEND );
+
+                $catalogData['pages'][$key]['page_content'] = $filename ; //原来的内容就变成文件名
+            }
+        }
+
+        if ($catalogData['catalogs']) {
+            foreach ($catalogData['catalogs'] as $key => $value) {
+                $catalogData['catalogs'][$key] = $this->_markdownTofile($value ,  $temp_dir);
+            }
+            
+        }
+        return $catalogData ;
+
+    }
+
+    /**
+     * 使用ZIP压缩文件或目录
+     * @param  [string] $fromName 被压缩的文件或目录名
+     * @param  [string] $toName   压缩后的文件名
+     * @return [bool]             成功返回TRUE, 失败返回FALSE
+     */
+    private function _zip($fromName, $toName)
+    {
+        if(!file_exists($fromName) && !is_dir($fromName)){
+            return FALSE;
+        }
+        $zipArc = new \ZipArchive();
+        if(!$zipArc->open($toName, \ZipArchive::CREATE)){
+            return FALSE;
+        }
+        $res = is_dir($fromName) ? $zipArc->addGlob("{$fromName}/*"  , 0 , array('add_path' => DIRECTORY_SEPARATOR, 'remove_all_path' => TRUE) ) : $zipArc->addFile($fromName);
+        if(!$res){
+            $zipArc->close();
+            return FALSE;
+        }
+        return $zipArc->close();
+    }
 
 }
