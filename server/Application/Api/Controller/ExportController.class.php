@@ -146,7 +146,7 @@ class ExportController extends BaseController {
         mkdir($temp_dir) ;
 
         file_put_contents($temp_dir.'/'.'info.json', json_encode($exportData));
-        file_put_contents($temp_dir.'/'.'readme.md', "由于页面标题可能含有特殊字符导致异常，所以markdown文件的命令均为英文（base64编码），以下是页面标题和文件的对应关系：".PHP_EOL.PHP_EOL );
+        file_put_contents($temp_dir.'/'.'readme.md', "由于页面标题可能含有特殊字符导致异常，所以markdown文件的命令均为英文（md5串），以下是页面标题和文件的对应关系：".PHP_EOL.PHP_EOL );
 
         $exportData['pages'] = $this->_markdownTofile( $exportData['pages'] , $temp_dir);
         $ret = $this->_zip( $temp_dir ,$temp_file );
@@ -168,13 +168,12 @@ class ExportController extends BaseController {
         if ($catalogData['pages']) {
             foreach ($catalogData['pages'] as $key => $value) {
                 $t = rand(1000,100000) ;
-                //把页面内容保存为md文件并且追加到压缩包里
-                $filename = base64_encode($value['page_title'].'_'.$t).".md" ;
+                //把页面内容保存为md文件
+                $filename = md5($value['page_title'].'_'.$t).".md" ;
                 file_put_contents($temp_dir.'/'.$filename, $value['page_content']);
 
                 file_put_contents($temp_dir.'/'.'readme.md',$value['page_title']. " —— ".  $filename  .PHP_EOL, FILE_APPEND );
 
-                $catalogData['pages'][$key]['page_content'] = $filename ; //原来的内容就变成文件名
             }
         }
 
@@ -203,7 +202,7 @@ class ExportController extends BaseController {
         if(!$zipArc->open($toName, \ZipArchive::CREATE)){
             return FALSE;
         }
-        $res = is_dir($fromName) ? $zipArc->addGlob("{$fromName}/*"  , 0 , array('add_path' => DIRECTORY_SEPARATOR, 'remove_all_path' => TRUE) ) : $zipArc->addFile($fromName);
+        $res = is_dir($fromName) ? $zipArc->addGlob("{$fromName}/*"  , 0 , array('add_path' =>  "prefix_", 'remove_all_path' => TRUE) ) : $zipArc->addFile($fromName);
         if(!$res){
             $zipArc->close();
             return FALSE;

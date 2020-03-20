@@ -17,7 +17,7 @@ class ImportController extends BaseController {
         if ($tail == 'zip') {
             $zipArc = new \ZipArchive();
             $ret = $zipArc->open($file, \ZipArchive::CREATE);
-            $info = $zipArc->getFromName(DIRECTORY_SEPARATOR."info.json") ;
+            $info = $zipArc->getFromName("prefix_info.json") ;
             if ($info) {
                 $info_array = json_decode($info ,1 );
                 if ($info_array) {
@@ -63,14 +63,14 @@ class ImportController extends BaseController {
         if (!$info_array) {
             $zipArc = new \ZipArchive();
             $ret = $zipArc->open($file, \ZipArchive::CREATE);
-            $info = $zipArc->getFromName(DIRECTORY_SEPARATOR."info.json") ;
+            $info = $zipArc->getFromName("prefix_info.json") ;
             $info_array = json_decode($info ,1 );
             unset($info);
         }
 
         if ($info_array) {
 
-            $info_array = $this->_fileToMarkdown($info_array,  $zipArc );
+            //$info_array = $this->_fileToMarkdown($info_array,  $zipArc );
             //echo json_encode($info_array);return ;
             D("Item")->import( json_encode($info_array) , $login_user['uid'] );
             $this->sendResult(array());
@@ -80,7 +80,7 @@ class ImportController extends BaseController {
         $this->sendError(10101);
     }
 
-
+    //废弃
     private function _fileToMarkdown( $catalogData ,  $zipArc ){
         if ($catalogData['pages']) {
             foreach ($catalogData['pages'] as $key => $value) {
