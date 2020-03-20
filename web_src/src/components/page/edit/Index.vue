@@ -25,7 +25,7 @@
 
           <el-form-item class="pull-right">
               <el-dropdown  @command="dropdown_callback" split-button type="primary" size="medium" trigger="click" @click="save">
-                {{$t('save')}}
+                <span id="save-page">{{$t('save')}}</span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item :command="save_to_template">{{$t('save_to_templ')}}</el-dropdown-item>
                   <!-- <el-dropdown-item>保存前添加注释</el-dropdown-item> -->

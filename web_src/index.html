@@ -27,8 +27,13 @@
 <script language="JavaScript">
 
   window.addEventListener('resize', function() {
-    console.log(window.innerWidth + ' ' + window.innerHeight);
+    //console.log(window.innerWidth + ' ' + window.innerHeight);
+    //如果存在save-page，则保存内容后再刷新以免丢失内容
+    if(document.getElementById("save-page")){
+      document.getElementById("save-page").click();
+    }
     window.location.reload();
   });
+
 
 </script>
