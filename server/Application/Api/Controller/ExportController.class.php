@@ -144,7 +144,7 @@ class ExportController extends BaseController {
         $temp_file = tempnam(sys_get_temp_dir(), 'Tux')."_showdoc_.zip";
         $temp_dir = sys_get_temp_dir()."/showdoc_".time().rand();
         mkdir($temp_dir) ;
-
+        unset($exportData['members']);
         file_put_contents($temp_dir.'/'.'info.json', json_encode($exportData));
         file_put_contents($temp_dir.'/'.'readme.md', "由于页面标题可能含有特殊字符导致异常，所以markdown文件的命令均为英文（md5串），以下是页面标题和文件的对应关系：".PHP_EOL.PHP_EOL );
 
