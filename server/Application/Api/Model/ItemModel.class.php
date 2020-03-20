@@ -32,11 +32,11 @@ class ItemModel extends BaseModel {
                 $item['item_domain'] = '';
             }
             $item_data = array(
-                "item_name"=>$item_name ? $item_name :$item['item_name'],
-                "item_domain"=>$item_domain ? $item_domain :$item['item_domain'],
-                "item_type"=>$item['item_type'],
-                "item_description"=>$item_description ? $item_description :$item['item_description'],
-                "password"=>$item_password ? $item_password :$item['password'],
+                "item_name"=>$item_name ? $this->_htmlspecialchars($item_name)  : $this->_htmlspecialchars($item['item_name']) ,
+                "item_domain"=>$item_domain ? $this->_htmlspecialchars($item_domain)  : $this->_htmlspecialchars($item['item_domain']) ,
+                "item_type"=>$this->_htmlspecialchars($item['item_type']),
+                "item_description"=>$item_description ? $this->_htmlspecialchars($item_description) : $this->_htmlspecialchars($item['item_description']),
+                "password"=>$item_password ? $this->_htmlspecialchars($item_password)  : $this->_htmlspecialchars($item['password']),
                 "uid"=>$userInfo['uid'],
                 "username"=>$userInfo['username'],
                 "addtime"=>time(),
@@ -50,10 +50,10 @@ class ItemModel extends BaseModel {
                     $page_data = array(
                         "author_uid"=>$userInfo['uid'],
                         "author_username"=>$userInfo['username'],
-                        "page_title" =>$value['page_title'],
-                        "page_content" =>$value['page_content'],
-                        "s_number" =>$value['s_number'],
-                        "page_comments" =>$value['page_comments'],
+                        "page_title" => $this->_htmlspecialchars($value['page_title'])  ,
+                        "page_content" => $this->_htmlspecialchars($value['page_content']) ,
+                        "s_number" =>$this->_htmlspecialchars($value['s_number']) ,
+                        "page_comments" =>$this->_htmlspecialchars($value['page_comments']),
                         "item_id" => $item_id,
                         "cat_id" => 0 ,
                         "addtime" =>time(),
@@ -65,106 +65,7 @@ class ItemModel extends BaseModel {
             }
             //二级目录
             if ($item['pages']['catalogs']) {
-                foreach ($item['pages']['catalogs'] as $key => &$value) {
-                    $catalog_data = array(
-                        "cat_name" => $value['cat_name'],
-                        "level" => $value['level'],
-                        "s_number" => $value['s_number'],
-                        "item_id" => $item_id,
-                        "addtime" =>time(),
-                        );
-                    $cat_id = D("Catalog")->add($catalog_data);
-                    //二级目录的页面们
-                    if ($value['pages']) {
-                        foreach ($value['pages'] as $key2 => &$value2) {
-                            $page_data = array(
-                                "author_uid"=>$userInfo['uid'],
-                                "author_username"=>$userInfo['username'],
-                                "page_title" =>$value2['page_title'],
-                                "page_content" =>$value2['page_content'],
-                                "s_number" =>$value2['s_number'],
-                                "page_comments" =>$value2['page_comments'],
-                                "item_id" => $item_id,
-                                "cat_id" => $cat_id ,
-                                "addtime" =>time(),
-                                );
-                            D("Page")->add($page_data);
-                            unset($page_data);
-                            unset($value2);
-                        }
-                    }
-                    //判断是否存在三级目录
-                    if ($value['catalogs']) {
-                            foreach ($value['catalogs'] as $key3 => &$value3) {
-                                $catalog_data = array(
-                                    "cat_name" => $value3['cat_name'],
-                                    "level" => $value3['level'],
-                                    "s_number" => $value3['s_number'],
-                                    "parent_cat_id" => $cat_id,
-                                    "item_id" => $item_id,
-                                    "addtime" =>time(),
-                                    );
-                                $cat_id2 = D("Catalog")->add($catalog_data);
-                                //三级目录的页面们
-                                if ($value3['pages']) {
-                                    foreach ($value3['pages'] as $key4 => &$value4) {
-                                        $page_data = array(
-                                            "author_uid"=>$userInfo['uid'],
-                                            "author_username"=>$userInfo['username'],
-                                            "page_title" =>$value4['page_title'],
-                                            "page_content" =>$value4['page_content'],
-                                            "s_number" =>$value4['s_number'],
-                                            "page_comments" =>$value4['page_comments'],
-                                            "item_id" => $item_id,
-                                            "cat_id" => $cat_id2 ,
-                                            "addtime" =>time(),
-                                            );
-                                        D("Page")->add($page_data);
-                                        unset($page_data);
-                                        unset($value4);
-                                    }
-                                }
-
-                                //判断是否存在四级目录
-                                if ($value3['catalogs']) {
-                                        foreach ($value3['catalogs'] as $key5 => &$value5) {
-                                            $catalog_data = array(
-                                                "cat_name" => $value5['cat_name'],
-                                                "level" => $value5['level'],
-                                                "s_number" => $value5['s_number'],
-                                                "parent_cat_id" => $cat_id2,
-                                                "item_id" => $item_id,
-                                                "addtime" =>time(),
-                                                );
-                                            $cat_id3 = D("Catalog")->add($catalog_data);
-                                            //四级目录的页面们
-                                            if ($value5['pages']) {
-                                                foreach ($value5['pages'] as $key6 => &$value6) {
-                                                    $page_data = array(
-                                                        "author_uid"=>$userInfo['uid'],
-                                                        "author_username"=>$userInfo['username'],
-                                                        "page_title" =>$value6['page_title'],
-                                                        "page_content" =>$value6['page_content'],
-                                                        "s_number" =>$value6['s_number'],
-                                                        "page_comments" =>$value6['page_comments'],
-                                                        "item_id" => $item_id,
-                                                        "cat_id" => $cat_id3 ,
-                                                        "addtime" =>time(),
-                                                        );
-                                                    D("Page")->add($page_data);
-                                                    unset($page_data);
-                                                    unset($value6);
-                                                }
-                                            }
-                                         unset($value3);
-                                        }
-                                }
-                             unset($value3);
-                            }
-                    }
-                    unset($value);
-                }
-                 
+                $this->_insertCat($item_id , $item['pages']['catalogs'] , $userInfo , 0 ,  2  ) ;
             }
         }
 
@@ -181,6 +82,51 @@ class ItemModel extends BaseModel {
             }
         }
         return $item_id;
+    }
+
+    //插入一个目录下的所有页面和子目录
+    private function _insertCat($item_id , $catalogs , $userInfo , $parent_cat_id = 0  ,  $level = 2 ){
+        if (!$catalogs) {
+            return ;
+        }
+        foreach ($catalogs as $key => $value) {
+            $catalog_data = array(
+                "cat_name" => $this->_htmlspecialchars($value['cat_name']) ,
+                "level" => $level ,
+                "s_number" => $this->_htmlspecialchars($value['s_number']) ,
+                "item_id" => $item_id,
+                "parent_cat_id" => $parent_cat_id,
+                "addtime" =>time(),
+                );
+            $cat_id = D("Catalog")->add($catalog_data);
+
+            //该目录下的页面们
+            if ($value['pages']) {
+                foreach ($value['pages'] as $key2 => &$value2) {
+
+                    $page_data = array(
+                        "author_uid"=>$userInfo['uid'],
+                        "author_username"=>$userInfo['username'],
+                        "page_title" =>$this->_htmlspecialchars( $value2['page_title']),
+                        "page_content" =>$this->_htmlspecialchars( $value2['page_content']),
+                        "s_number" =>$this->_htmlspecialchars( $value2['s_number']),
+                        "page_comments" =>$this->_htmlspecialchars( $value2['page_comments']),
+                        "item_id" => $item_id,
+                        "cat_id" => $cat_id ,
+                        "addtime" =>time(),
+                        );
+                    D("Page")->add($page_data);
+                    unset($page_data);
+                    unset($value2);
+                }
+            }
+
+            //该目录的子目录
+            if ($value['catalogs']) {
+                $this->_insertCat($item_id , $value['catalogs'] , $userInfo , $cat_id,  $level + 1  ) ;
+            }
+        }
+
     }
 
     public function copy($item_id,$uid,$item_name= '',$item_description= '',$item_password = '',$item_domain=''){
@@ -300,6 +246,14 @@ class ItemModel extends BaseModel {
     //软删除项目
     public function soft_delete_item($item_id){
         return $this->where("item_id = '$item_id' ")->save(array("is_del"=>1 ,"last_update_time"=>time()));
+    }
+
+    private function _htmlspecialchars($str){
+        if (!$str) {
+            return '' ;
+        }
+        //之所以先htmlspecialchars_decode是为了防止被htmlspecialchars转义了两次
+        return htmlspecialchars(htmlspecialchars_decode($str));
     }
 
 }
