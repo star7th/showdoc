@@ -9,6 +9,7 @@
           name="file"
           :action="upload_url"
           :on-success="success"
+          :before-upload="beforeUpload"
           :show-file-list="false"
           >
           <i class="el-icon-upload"></i>
@@ -35,6 +36,7 @@ export default {
     return {
       api_key:'',
       api_token:'',
+      loading:'',
       upload_url:DocConfig.server+'/api/import/auto'
     }
 
@@ -42,13 +44,16 @@ export default {
   methods: {
 
       success(data){
+        this.loading.close();
         if (data.error_code === 0 ) {
           this.$router.push({path:'/item/index'});
         }else{
           this.$alert(data.error_message);
         }
       },
-
+      beforeUpload(){
+        this.loading = this.$loading();
+      }
   },
 
   mounted(){
