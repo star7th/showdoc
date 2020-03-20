@@ -307,5 +307,18 @@ exports.default = {
     "cat_tips":"Drag to sort",
     "cat_limite_tips":"Only up to three levels of directories are supported",
 
+    "regular_item":"Regular Item",
+    "single_item":"Single Item",
+    "copy_item":"Copy Item",
+    "import_file":"Import File",
+    "auto_item":"Auto Create",
+    "single_item_tips":"Single item refers to the item with no catalog structure and only one page",
+    "copy_item_tips1":"Select and copy from your existing items",
+    "copy_item_tips2":"After copying, rename the new item to:",
+    "import_file_tips1":"The imported file can be the JSON file of postman, the JSON file of swagger, and the markdown zip of showdoc. The system will automatically identify the file type",
+    "import_file_tips2":"Drag the file here, or click to upload",
+    "export_format_word":"Word format",
+    "export_format_markdown":"Markdown zip",
+    "export_markdown_tips":"The exported compressed package can be re imported into showdoc. Select 'Import File' when creating a new item",
 
 };

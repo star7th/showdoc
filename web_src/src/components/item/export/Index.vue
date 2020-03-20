@@ -7,13 +7,25 @@
             <el-form  status-icon  label-width="0px" class="demo-ruleForm">
               <h2></h2>
               <el-form-item label="" >
-              <el-radio v-model="export_type"  label="1">{{$t('export_all')}}</el-radio>
-              <el-radio v-model="export_type" label="2">{{$t('export_cat')}}</el-radio>
+
+                <el-radio-group v-model="export_format">
+                  <el-radio-button   label="word" >{{$t('export_format_word')}}</el-radio-button>
+                  <el-radio-button  label="markdown">{{$t('export_format_markdown')}}</el-radio-button>
+                </el-radio-group>
+
               </el-form-item>
 
+              <el-form-item label="" v-if="export_format == 'word'" >
+                <el-radio v-model="export_type"  label="1">{{$t('export_all')}}</el-radio>
+                <el-radio v-model="export_type" label="2">{{$t('export_cat')}}</el-radio>
+              </el-form-item>
 
-              <el-form-item label="" >
-                  <el-select :disabled="export_type > 1 ? false :true" :placeholder="$t('catalog')" class="cat" v-model="cat_id" >
+              <el-form-item label="" v-if="export_format == 'markdown'" >
+                <p class="markdown-tips">{{$t('export_markdown_tips')}}</p>
+              </el-form-item>
+
+              <el-form-item label="" v-if="export_format == 'word' && export_type == 2" >
+                  <el-select  :placeholder="$t('catalog')" class="cat" v-model="cat_id" >
                     <el-option  v-if="computed_catalogs" v-for="cat in computed_catalogs " :key="cat.cat_name" :label="cat.cat_name" :value="cat.cat_id"></el-option>
                   </el-select>
               </el-form-item>
@@ -50,6 +62,7 @@ export default {
       cat_id:'',
       export_type:'1',
       item_id:0,
+      export_format:'word'
 
     }
 
@@ -116,6 +129,9 @@ export default {
           this.cat_id = ''
         };
         var url = DocConfig.server+'/api/export/word&item_id='+this.item_id+'&cat_id='+this.cat_id ;
+        if (this.export_format == 'markdown') {
+          url = DocConfig.server+'/api/export/markdown&item_id='+this.item_id;
+        };
         window.location.href = url;
       },
     goback(){
@@ -141,7 +157,13 @@ export default {
 
 .center-card{
   text-align: center;
-  width: 350px;
+  width: 400px;
+}
+
+.markdown-tips{
+  text-align: left;
+  margin-left: 25px;
+  font-size: 12px;
 }
 
 </style>
