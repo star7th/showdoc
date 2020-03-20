@@ -43,8 +43,8 @@ class ImportSwaggerController extends BaseController {
         D("Item")->import( json_encode($item_array) , $login_user['uid'] );
         
         //echo D("Item")->export(196053901215026 );
-        echo json_encode($item_array);
-        //$this->sendResult(array());
+        //echo json_encode($item_array);
+        $this->sendResult(array());
 
     }
 
