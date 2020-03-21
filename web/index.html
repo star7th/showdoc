@@ -4,7 +4,11 @@
       "server": window.location.protocol +'//'+ window.location.host + window.location.pathname+ '../server/index.php?s=',
       //"lang" :'en'
       "lang" :'zh-cn'
-  }</script><link href=./static/css/app.e842f35bd266ed8d58f34947618d6d93.css rel=stylesheet></head><body class=grey-bg><div id=app></div><script type=text/javascript src=./static/js/manifest.96627ad77791cdcff695.js></script><script type=text/javascript src=./static/js/vendor.e142ae298b8919d4a6df.js></script><script type=text/javascript src=./static/js/app.0a0c74c87f48b871ebfd.js></script></body></html><script language=JavaScript>window.addEventListener('resize', function() {
-    console.log(window.innerWidth + ' ' + window.innerHeight);
+  }</script><link href=./static/css/app.8f471dbc1a542f85e173761b1e1e6d8f.css rel=stylesheet></head><body class=grey-bg><div id=app></div><script type=text/javascript src=./static/js/manifest.e2b980cf8968a5919fb1.js></script><script type=text/javascript src=./static/js/vendor.e142ae298b8919d4a6df.js></script><script type=text/javascript src=./static/js/app.6746119afa913347cb90.js></script></body></html><script language=JavaScript>window.addEventListener('resize', function() {
+    //console.log(window.innerWidth + ' ' + window.innerHeight);
+    //如果存在save-page，则保存内容后再刷新以免丢失内容
+    if(document.getElementById("save-page")){
+      document.getElementById("save-page").click();
+    }
     window.location.reload();
   });</script>
