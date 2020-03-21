@@ -265,14 +265,17 @@ $content .='
             $tmp_title_array = array_slice($tmp_title_array, -2);// 倒数2个
             if($tmp_title_array[1])$return['page_title'] = $tmp_title_array[0]."/".$tmp_title_array[1] ;
         }
-        
+
+        $url = is_array($request['url']) ? $request['url']['raw'] : $request['url'] ;
+        $rawModeData = $request['body']['mode'] == 'raw' ? $request['body']['raw']  : $request['rawModeData'] ;
+
         $content = '  
 **简要描述：** 
 
 - '.$request['description'].'
 
 **请求URL：** 
-- ` '.$request['url'].' `
+- ` '.$url.' `
   
 **请求方式：**
 - '.$request['method'].' ';
@@ -289,14 +292,14 @@ $content .='
     }
 }
 
-if ($request['rawModeData']) {
+if ($rawModeData) {
 $content .= '
 
 
  **请求参数示例**
 
 ``` 
-'.$request['rawModeData'].'
+'.$rawModeData.'
 ```
 
 ';
