@@ -109,6 +109,25 @@ class ExportController extends BaseController {
                                                     $child3 ++;
                                                 }
                                             }
+                                            if ($value4['catalogs']) {
+                                                $parent4 = 1 ;
+                                                foreach ($value4['catalogs'] as $key5 => $value5) {
+                                                    $data .= "<h2>{$parent}.{$parent2}.{$parent3}.{$parent4}、{$value5['cat_name']}</h2>";
+                                                    $data .= '<div style="margin-left:0px;">';
+                                                        $child4 = 1 ;
+                                                        if ($value4['pages']) {
+                                                            foreach ($value4['pages'] as $page5) {
+                                                                $data .= "<h3>{$parent}.{$parent2}.{$parent3}.{$parent4}.{$child4}、{$page5['page_title']}</h3>";
+                                                                $data .= '<div style="margin-left:30px;">';
+                                                                    $data .= htmlspecialchars_decode($Parsedown->text($page5['page_content']));
+                                                                $data .= '</div>';
+                                                                $child3 ++;
+                                                            }
+                                                        }
+                                                    $data .= '</div>';
+                                                    $parent3 ++;
+                                                }
+                                            }
                                         $data .= '</div>';
                                         $parent3 ++;
                                     }
