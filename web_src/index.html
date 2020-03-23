@@ -26,13 +26,18 @@
 
 <script language="JavaScript">
 
+  var Wwidth = window.innerWidth ;
   window.addEventListener('resize', function() {
-    //console.log(window.innerWidth + ' ' + window.innerHeight);
-    //如果存在save-page，则保存内容后再刷新以免丢失内容
-    if(document.getElementById("save-page")){
-      document.getElementById("save-page").click();
-    }
-    window.location.reload();
+    ///宽度变化大于50像素的时候刷新整个窗口以适应新宽度
+    if ( Math.abs(Wwidth - window.innerWidth) > 50 ) {
+        //console.log(window.innerWidth + ' ' + window.innerHeight);
+        //如果存在save-page，则保存内容后再刷新以免丢失内容
+        if(document.getElementById("save-page")){
+          document.getElementById("save-page").click();
+        }
+        window.location.reload();
+    };
+
   });
 
 
