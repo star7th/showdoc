@@ -165,7 +165,7 @@ class ExportController extends BaseController {
         mkdir($temp_dir) ;
         unset($exportData['members']);
         file_put_contents($temp_dir.'/'.'info.json', json_encode($exportData));
-        file_put_contents($temp_dir.'/'.'readme.md', "由于页面标题可能含有特殊字符导致异常，所以markdown文件的命令均为英文（md5串），以下是页面标题和文件的对应关系：".PHP_EOL.PHP_EOL );
+        file_put_contents($temp_dir.'/'.'readme.md', "由于页面标题可能含有特殊字符导致异常，所以markdown文件的命名均为英文（md5串），以下是页面标题和文件的对应关系：".PHP_EOL.PHP_EOL );
 
         $exportData['pages'] = $this->_markdownTofile( $exportData['pages'] , $temp_dir);
         $ret = $this->_zip( $temp_dir ,$temp_file );
@@ -189,7 +189,7 @@ class ExportController extends BaseController {
                 $t = rand(1000,100000) ;
                 //把页面内容保存为md文件
                 $filename = md5($value['page_title'].'_'.$t).".md" ;
-                file_put_contents($temp_dir.'/'.$filename, $value['page_content']);
+                file_put_contents($temp_dir.'/'.$filename, htmlspecialchars_decode( $value['page_content']) ) ;
 
                 file_put_contents($temp_dir.'/'.'readme.md',$value['page_title']. " —— prefix_".  $filename  .PHP_EOL, FILE_APPEND );
 
