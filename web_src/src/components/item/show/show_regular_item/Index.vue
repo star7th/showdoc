@@ -14,18 +14,19 @@
 
 
         <div id="right-side" >
+            <div id="p-content">
+                 <div class="doc-title-box" id="doc-title-box">
+                    <span id="doc-title-span" class="dn"></span>
+                    <h2 id="doc-title">{{page_title}}</h2>
+                    <el-badge :value="attachment_count" class="item"  id="attachment" v-if="attachment_count"   @click.native="ShowAttachment" >
+                      <i class="el-icon-upload"></i> 
+                    </el-badge>
+                </div>
+                <div id="doc-body" >
 
-           <div class="doc-title-box" id="doc-title-box">
-              <span id="doc-title-span" class="dn"></span>
-              <h2 id="doc-title">{{page_title}}</h2>
-              <el-badge :value="attachment_count" class="item"  id="attachment" v-if="attachment_count"   @click.native="ShowAttachment" >
-                <i class="el-icon-upload"></i> 
-              </el-badge>
-          </div>
-          <div id="doc-body" >
-
-          <div id="page_md_content" class="page_content_main"><Editormd v-bind:content="content" v-if="page_id" type="html" :keyword="keyword"></Editormd></div>
-          </div>
+                <div id="page_md_content" class="page_content_main"><Editormd v-bind:content="content" v-if="page_id" type="html" :keyword="keyword"></Editormd></div>
+                </div>
+              </div>
 
             <OpBar   :page_id="page_id" :item_id='item_info.item_id' :item_info='item_info'  :page_info="page_info"  > </OpBar>
 

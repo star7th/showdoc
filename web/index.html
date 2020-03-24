@@ -4,16 +4,15 @@
       "server": window.location.protocol +'//'+ window.location.host + window.location.pathname+ '../server/index.php?s=',
       //"lang" :'en'
       "lang" :'zh-cn'
-  }</script><link href=./static/css/app.8f471dbc1a542f85e173761b1e1e6d8f.css rel=stylesheet></head><body class=grey-bg><div id=app></div><script type=text/javascript src=./static/js/manifest.e2b980cf8968a5919fb1.js></script><script type=text/javascript src=./static/js/vendor.e142ae298b8919d4a6df.js></script><script type=text/javascript src=./static/js/app.6746119afa913347cb90.js></script></body></html><script language=JavaScript>var Wwidth = window.innerWidth ;
+  }</script><link href=./static/css/app.484b0ca6952b8b26184d07c363855d77.css rel=stylesheet></head><body class=grey-bg><div id=app></div><script type=text/javascript src=./static/js/manifest.3f793afba939771f8bd5.js></script><script type=text/javascript src=./static/js/vendor.e142ae298b8919d4a6df.js></script><script type=text/javascript src=./static/js/app.d35ccecb538c9ba7d5d6.js></script></body></html><script language=JavaScript>var Wwidth = window.innerWidth ;
   window.addEventListener('resize', function() {
     ///宽度变化大于50像素的时候刷新整个窗口以适应新宽度
     if ( Math.abs(Wwidth - window.innerWidth) > 50 ) {
         //console.log(window.innerWidth + ' ' + window.innerHeight);
-        //如果存在save-page，则保存内容后再刷新以免丢失内容
-        if(document.getElementById("save-page")){
-          document.getElementById("save-page").click();
+        //如果不在编辑页面，则在窗口变化后刷新窗口以适应宽度
+        if(window.location.href.indexOf("/edit") === -1){
+          window.location.reload();
         }
-        window.location.reload();
     };
 
   });</script>
