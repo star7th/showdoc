@@ -171,7 +171,7 @@ class ExportController extends BaseController {
         $ret = $this->_zip( $temp_dir ,$temp_file );
 
         clear_runtime($temp_dir);
-
+        rmdir($temp_dir);
         header("Cache-Control: max-age=0");
         header("Content-Description: File Transfer");
         header('Content-disposition: attachment; filename=showdoc.zip'); // 文件名
@@ -191,7 +191,7 @@ class ExportController extends BaseController {
                 $filename = md5($value['page_title'].'_'.$t).".md" ;
                 file_put_contents($temp_dir.'/'.$filename, $value['page_content']);
 
-                file_put_contents($temp_dir.'/'.'readme.md',$value['page_title']. " —— ".  $filename  .PHP_EOL, FILE_APPEND );
+                file_put_contents($temp_dir.'/'.'readme.md',$value['page_title']. " —— prefix_".  $filename  .PHP_EOL, FILE_APPEND );
 
             }
         }
@@ -206,22 +206,22 @@ class ExportController extends BaseController {
 
     }
 
-    /**
-     * 使用ZIP压缩文件或目录
-     * @param  [string] $fromName 被压缩的文件或目录名
-     * @param  [string] $toName   压缩后的文件名
-     * @return [bool]             成功返回TRUE, 失败返回FALSE
-     */
-    private function _zip($fromName, $toName)
+    private function _zip($temp_dir, $temp_file)
     {
-        if(!file_exists($fromName) && !is_dir($fromName)){
-            return FALSE;
-        }
         $zipArc = new \ZipArchive();
-        if(!$zipArc->open($toName, \ZipArchive::CREATE)){
+        if(!$zipArc->open($temp_file, \ZipArchive::CREATE)){
             return FALSE;
         }
-        $res = is_dir($fromName) ? $zipArc->addGlob("{$fromName}/*"  , 0 , array('add_path' =>  "prefix_", 'remove_all_path' => TRUE) ) : $zipArc->addFile($fromName);
+         $dir = opendir( $temp_dir );
+         while( false != ( $file = readdir( $dir ) ) )
+         {
+              if( ( $file != "." ) and ( $file != ".." ) )
+              {
+                 $res = $zipArc->addFromString ( "prefix_".$file , file_get_contents($temp_dir."/".$file) ) ;
+              }
+         }
+        closedir( $dir );
+
         if(!$res){
             $zipArc->close();
             return FALSE;
