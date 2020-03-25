@@ -223,7 +223,7 @@ class PageController extends BaseController {
            return false;
         }
         
-        if (strstr(strtolower($_FILES['editormd-image-file']['name']), ".php") ) {
+        if (strstr(strip_tags(strtolower($_FILES['editormd-image-file']['name'])), ".php") ) {
             return false;
         }
 
@@ -274,7 +274,7 @@ class PageController extends BaseController {
            return false;
         }
         
-        if (strstr(strtolower($uploadFile['name']), ".php") ) {
+        if (strstr(strip_tags(strtolower($_FILES['editormd-image-file']['name'])), ".php") ) {
             return false;
         }
 
