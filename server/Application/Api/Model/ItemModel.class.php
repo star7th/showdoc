@@ -169,29 +169,7 @@ class ItemModel extends BaseModel {
             }
             if ($catalogs) {
                 foreach ($catalogs as $key => &$catalog2) {
-                    //该二级目录下的所有子页面
-                    $catalog2['pages'] = $this->_getPageByCatId($catalog2['cat_id'],$all_pages);
-
-                    //该二级目录下的所有子目录
-                    $catalog2['catalogs'] =  $this->_getCatByCatId($catalog2['cat_id'],$all_catalogs);
-                    if($catalog2['catalogs']){
-                        //获取所有三级目录的子页面
-                        foreach ($catalog2['catalogs'] as $key3 => &$catalog3) {
-                            //该三级目录下的所有子页面
-                            $catalog3['pages'] = $this->_getPageByCatId($catalog3['cat_id'],$all_pages);
-
-                            //该三级目录下的所有子目录
-                            $catalog3['catalogs'] =  $this->_getCatByCatId($catalog3['cat_id'],$all_catalogs);
-                            if($catalog3['catalogs']){
-                                //获取所有三级目录的子页面
-                                foreach ($catalog3['catalogs'] as $key4 => &$catalog4) {
-                                    //该三级目录下的所有子页面
-                                    $catalog4['pages'] = $this->_getPageByCatId($catalog4['cat_id'],$all_pages);
-                                }                        
-                            }
-
-                        }                        
-                    }             
+                        $catalog2 = $this->_getCat($catalog2 , $all_pages , $all_catalogs);         
                 }
             }
             $menu = array(
@@ -202,6 +180,23 @@ class ItemModel extends BaseModel {
             unset($catalogs);
             return $menu;
     }
+    
+    //获取某个目录下的页面和子目录
+    private function _getCat($catalog_data , & $all_pages , & $all_catalogs){
+            $catalog_data['pages'] = $this->_getPageByCatId($catalog_data['cat_id'],$all_pages);
+            //该目录下的所有子目录
+            $sub_catalogs =  $this->_getCatByCatId($catalog_data['cat_id'],$all_catalogs);
+            if ($sub_catalogs) {
+                foreach ($sub_catalogs as $key => $value) {
+                    $catalog_data['catalogs'][] = $this->_getCat($value , $all_pages , $all_catalogs ) ;
+                }
+            }
+            if(!$catalog_data['catalogs']){
+                $catalog_data['catalogs'] = array() ;
+            }
+            return $catalog_data ;
+    }
+
     
     //获取某个目录下的所有页面
     private function _getPageByCatId($cat_id ,$all_pages){
