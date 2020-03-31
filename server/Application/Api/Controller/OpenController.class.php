@@ -51,7 +51,8 @@ class OpenController extends BaseController {
             echo "api_key或者api_token不匹配\n";
             return false;
         }
-
+        $table_info = str_replace("_this_and_change_", "&", $table_info);
+        $table_detail = str_replace("_this_and_change_", "&", $table_detail);
         $tables = $this->_analyze_db_structure_to_array($table_info ,$table_detail);
         if (!empty($tables)) {
             foreach ($tables as $key => $value) {

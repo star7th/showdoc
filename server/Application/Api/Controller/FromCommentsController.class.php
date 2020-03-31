@@ -19,7 +19,7 @@ class FromCommentsController extends BaseController {
             echo "\napi_key或者api_token不匹配\n\n";
             return false;
         }
-
+        $content = str_replace("_this_and_change_", "&", $content);
         $p = "|/\*\*([\s\S]*)\*/|U";
         preg_match_all($p, $content , $matches) ;
         if ($matches && $matches[0]) {
