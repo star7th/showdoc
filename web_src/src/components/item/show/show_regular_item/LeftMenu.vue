@@ -31,32 +31,7 @@
           </el-menu-item>
 
           <!-- 目录开始 -->
-        <el-submenu  v-if="menu.catalogs.length" v-for="(catalog2 ,catalog_index) in menu.catalogs" :index="catalog2.cat_id" :key="catalog2.cat_id">
-          <!-- 二级目录名 -->
-          <template slot="title"> <img src="static/images/folder.png"  class="icon-folder menu-icon-folder ">{{catalog2.cat_name}}</template>
-
-          <!-- 二级目录的页面 -->
-          <el-menu-item  v-if="catalog2.pages" v-for="(page2 ,page2_index) in catalog2.pages" :key="page2.page_id" :index="page2.page_id">
-              <i class="el-icon-document"></i><span :title="page2.page_title">{{page2.page_title}}</span> 
-          </el-menu-item>
-
-          <!-- 二级目录下的三级目录 -->
-          <el-submenu  v-if="catalog2.catalogs.length" v-for="(catalog3 ,catalog_index3) in catalog2.catalogs" :index="catalog3.cat_id" :key="catalog3.cat_id">
-            <template slot="title"><img src="static/images/folder.png">{{catalog3.cat_name}}</template>
-            <!-- 三级目录的页面 -->
-            <el-menu-item  v-if="catalog3.pages" v-for="(page3 ,page3_index) in catalog3.pages"  :index="page3.page_id" :key="page3.page_id"><i class="el-icon-document"></i><span :title="page3.page_title">{{page3.page_title}}</span> </el-menu-item>
-
-              <!-- 三级目录下的四级目录 -->
-              <el-submenu  v-if="catalog3.catalogs.length" v-for="(catalog4 ,catalog_index4) in catalog3.catalogs" :index="catalog4.cat_id" :key="catalog4.cat_id">
-                <template slot="title"><img src="static/images/folder.png">{{catalog4.cat_name}}</template>
-                <!-- 四级目录的页面 -->
-                <el-menu-item  v-if="catalog4.pages" v-for="(page4 ,page4_index) in catalog4.pages"  :index="page4.page_id" :key="page4.page_id"><span :title="page4.page_title">{{page4.page_title}}</span></el-menu-item>
-              </el-submenu>
-
-          </el-submenu>
-
-          
-        </el-submenu>
+          <LeftMenuSub v-if="menu.catalogs.length" :catalog="menu.catalogs" ></LeftMenuSub>
 
       </el-menu>
     </el-aside>
@@ -65,7 +40,8 @@
 
 
 <script>
-  import Editormd from '@/components/common/Editormd'
+  import LeftMenuSub from './LeftMenuSub.vue'
+
   export default {
   props:{
     get_page_content:'',
@@ -84,7 +60,7 @@
       }
     },
   components:{
-    Editormd
+    LeftMenuSub
   },
   methods:{
     //选中菜单的回调
