@@ -29,7 +29,10 @@ class UserController extends BaseController {
                 if ($new_uid) {
 
                     $create_sample = D("Options")->get("create_sample") ;
-                    if ($create_sample !== '0' && C("DEFAULT_LANG") == 'zh-cn' ) {
+                    //获取后台的语言设置
+                    //这是个历史包袱。因为安装的时候语言设置没有写到API模块的配置下，所以只能读文件读取Home模快的配置文件
+                    $config = file_get_contents("./Application/Home/Conf/config.php");
+                    if ($create_sample !== '0' && strstr($config, "'zh-cn',") ) {
                         //导入示例项目
                         $this->_importSample($new_uid);
                     }
@@ -108,8 +111,11 @@ class UserController extends BaseController {
             $ret = D("User")->checkLdapLogin($username,$password);
         }
         if ($ret) {
-
-            if (D("Item")->count() < 1 && C("DEFAULT_LANG") == 'zh-cn' ) {
+            //获取后台的语言设置
+            //这是个历史包袱。因为安装的时候语言设置没有写到API模块的配置下，所以只能读文件读取Home模快的配置文件
+            $config = file_get_contents("./Application/Home/Conf/config.php");
+                    
+            if (D("Item")->count() < 1 && strstr($config, "'zh-cn',") ) {
                 //如果项目表是空的，则生成系统示例项目
                 $this->_importSample(1);
             }
