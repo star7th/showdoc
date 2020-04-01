@@ -184,6 +184,7 @@
   .editormd-html-preview{
     width: 95%;
     font-size: 16px;
+    overflow-y: hidden;
   }
 
   #attachment{
