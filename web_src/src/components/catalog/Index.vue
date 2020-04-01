@@ -6,7 +6,7 @@
       <el-card class="center-card">
 
         <el-row>
-          <el-button  type="text" class="add-cat" @click="add_cat">{{$t('add_cat')}}</el-button>
+          <el-button  type="text" class="add-cat" @click="add_cat()">{{$t('add_cat')}}</el-button>
           <el-button type="text" class="goback-btn" @click="goback">{{$t('goback')}}</el-button>
         </el-row>
         <p class="tips" v-if="treeData.length > 1">{{$t('cat_tips')}}</p>
@@ -28,6 +28,12 @@
                 size="mini"
                  class="el-icon-edit"
                 @click.stop="edit(node, data)">
+              </el-button>
+              <el-button
+                type="text"
+                size="mini"
+                 class="el-icon-plus"
+                @click.stop="add_cat(node, data)">
               </el-button>
               <el-button
                 type="text"
@@ -56,7 +62,7 @@
             <el-form-item :label="$t('parent_cat_name')+' : '" >
               <el-select v-model="MyForm.parent_cat_id" :placeholder="$t('none')">
                   <el-option
-                    v-for="item in parent_catalogs"
+                    v-for="item in belong_to_catalogs"
                     :key="item.cat_id"
                     :label="item.cat_name"
                     :value="item.cat_id">
@@ -108,63 +114,41 @@ export default {
   },
   computed: {
     //新建/编辑目录时供用户选择的上级目录列表
-    parent_catalogs:function(){
+    belong_to_catalogs:function(){
+        if (!this.catalogs || this.catalogs.length <=0 ) {
+          return [];
+        };
+        
         var Info = this.catalogs.slice(0);
         var cat_array = [] ;
-        for (var i = 0; i < Info.length; i++) {
-          cat_array.push(Info[i]);
-          var sub = Info[i]['sub'] 
-          if (sub.length > 0 ) {
-            for (var j = 0; j < sub.length; j++) {
+
+        //这个函数将递归
+        var rename = function(catalog , p_cat_name){
+          if (catalog.length > 0 ) {
+            for (var j = 0; j < catalog.length; j++) {
+
+              var cat_name = p_cat_name+' / ' + catalog[j]['cat_name'] ;
               cat_array.push( {
-                "cat_id":sub[j]['cat_id'] ,
-                "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']
+                "cat_id":catalog[j]['cat_id'] ,
+                "cat_name": cat_name 
               });
+              if (catalog[j].sub && catalog[j].sub.length > 0) {
+                rename(catalog[j].sub , cat_name);
+              };
             };
           };
+        }
+
+        for (var i = 0; i < Info.length; i++) {
+          cat_array.push(Info[i]);
+          rename(Info[i]['sub'] , Info[i].cat_name);
         };
         var no_cat = {"cat_id":0 ,"cat_name":this.$t("none")} ;
         cat_array.push(no_cat);
         return cat_array;
 
-    },
-    //新建/编辑页面时供用户选择的归属目录列表
-    belong_to_catalogs:function(){
-        if (!this.catalogs || this.catalogs.length <=0 ) {
-          return [];
-        };
-        var Info = this.catalogs.slice(0);
-        var cat_array = [] ;
-        for (var i = 0; i < Info.length; i++) {
-          cat_array.push(Info[i]);
-          var sub = Info[i]['sub'] ;
-          if (sub.length > 0 ) {
-            for (var j = 0; j < sub.length; j++) {
-              cat_array.push( {
-                "cat_id":sub[j]['cat_id'] ,
-                "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']
-              });
-
-              var sub_sub = sub[j]['sub'] ;
-              if (sub_sub.length > 0 ) {
-                for (var k = 0; k < sub_sub.length; k++) {
-                  cat_array.push( {
-                    "cat_id":sub_sub[k]['cat_id'] ,
-                    "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']+' / ' + sub_sub[k]['cat_name']
-                  });
-                };
-              };
-
-            };
-          };
-        };
-        var no_cat = {"cat_id":'' ,"cat_name":this.$t("none")} ;
-        cat_array.unshift(no_cat);
-        return cat_array;
-
     }
-
-  }, 
+  },
   methods: {
       get_catalog(){
         var that = this ;
@@ -174,33 +158,23 @@ export default {
         that.axios.post(url, params)
           .then(function (response) {
             if (response.data.error_code === 0 ) {
-              var Info = response.data.data ;
-
-              that.catalogs =  Info;
-              that.treeData = [];
-              for (var i = 0; i < Info.length; i++) {
-                let node = {'children':[]};
-                node['id'] = Info[i]['cat_id'];
-                node['label'] = Info[i]['cat_name'];
-                if (Info[i]['sub'].length > 0 ) {
-                  for (var j = 0; j < Info[i]['sub'].length; j++) {
-                      let node2 = {'children':[]};
-                      node2['id'] = Info[i]['sub'][j]['cat_id'];
-                      node2['label'] = Info[i]['sub'][j]['cat_name'];
-                      if (Info[i]['sub'][j]['sub'].length > 0 ) {
-                        for (var k = 0; k < Info[i]['sub'][j]['sub'].length; k++) {
-                            let node3 = {};
-                            node3['id'] = Info[i]['sub'][j]['sub'][k]['cat_id'];
-                            node3['label'] = Info[i]['sub'][j]['sub'][k]['cat_name'];
-                            node2['children'].push(node3);
-                        };
+                var Info = response.data.data ;
+                that.catalogs =  Info;
+                that.treeData = [];
+                var duang = function(Info){
+                  var treeData = [];
+                  for (var i = 0; i < Info.length; i++) {
+                      let node = {'children':[]};
+                      node['id'] = Info[i]['cat_id'];
+                      node['label'] = Info[i]['cat_name'];
+                      if (Info[i]['sub'].length > 0 ) {
+                          node['children'] = duang(Info[i]['sub']);
                       };
-                    node['children'].push(node2);
-                  };
-                  
+                      treeData.push(node);
+                    };
+                    return treeData;
                 };
-                that.treeData.push(node);
-              };
+                that.treeData = duang(Info) ;
             }else{
               that.$alert(response.data.error_message);
             }
@@ -271,8 +245,18 @@ export default {
           })
 
       },
-      add_cat(){
-        this.MyForm = [] ;
+      add_cat(node, data){
+        if (node && data.id) {
+          this.MyForm = {
+            cat_id:'',
+            parent_cat_id: data.id,
+            cat_name:'',
+          };
+        }else{
+          this.MyForm = {};
+        }
+
+
         this.dialogFormVisible = true;
 
       },
@@ -282,11 +266,6 @@ export default {
       },
       handleDragEnd(node1, node2 , position , evt){
         var that = this ;
-        if (!this.checkCat(this.treeData)) {
-          this.$alert(this.$t("cat_limite_tips"));
-          this.get_catalog();
-          return ;
-        };
         let treeData2 = this.dimensionReduction(this.treeData) ;
         var url = DocConfig.server+'/api/catalog/batUpdate';
         var params = new URLSearchParams();
@@ -302,73 +281,28 @@ export default {
           })
 
       },
-      //检查合法性，不能超过三个层级目录
-      checkCat(treeData){
-        for (var i = 0; i < treeData.length; i++) {
-          if (!treeData[i].hasOwnProperty('children')) {
-            continue ;
-          };
-          for (var j = 0; j < treeData[i]['children'].length; j++) {
-            if (!treeData[i]['children'][j].hasOwnProperty('children')) {
-              continue ;
-            };
-            for (var k = 0; k < treeData[i]['children'][j]['children'].length; k++) {
-              if (! treeData[i]['children'][j]['children'][k].hasOwnProperty('children')) {
-                continue ;
-              };
-              if (treeData[i]['children'][j]['children'][k]['children'].length > 0 ) {
-                return false ;
-              };
-       
-            };
-            
-          };
-          
-        };
-
-        return true ;
-      },
       //将目录数组降维
       dimensionReduction(treeData){
         let treeData2 = []; 
-        for (var i = 0; i < treeData.length; i++) {
+
+        var pushTreeData = function(OneData , parent_cat_id , level , i ){
           treeData2.push({
-            'cat_id' : treeData[i]['id'] ,
-            'cat_name' : treeData[i]['label'] ,
-            'parent_cat_id' : 0 ,
-            'level' : 2 ,
+            'cat_id' : OneData['id'] ,
+            'cat_name' : OneData['label'] ,
+            'parent_cat_id' : parent_cat_id ,
+            'level' : level ,
             's_number' : (i+1) ,
           });
-          if (!treeData[i].hasOwnProperty('children')) {
-            continue ;
+          if (OneData.hasOwnProperty('children')) {
+            for (var j = 0; j < OneData['children'].length; j++) {
+              pushTreeData( OneData['children'][j] , OneData['id']  , level + 1  , j ) ;
+            }
           };
-          for (var j = 0; j < treeData[i]['children'].length; j++) {
+        }
 
-            treeData2.push({
-              'cat_id' : treeData[i]['children'][j]['id'] ,
-              'cat_name' : treeData[i]['children'][j]['label'] ,
-              'parent_cat_id' : treeData[i]['id'] ,
-              'level' : 3 ,
-              's_number' : (j+1) ,
-            });
-
-            if (!treeData[i]['children'][j].hasOwnProperty('children')) {
-              continue ;
-            };
-            for (var k = 0; k < treeData[i]['children'][j]['children'].length; k++) {
-              treeData2.push({
-                'cat_id' : treeData[i]['children'][j]['children'][k]['id'] ,
-                'cat_name' : treeData[i]['children'][j]['children'][k]['label'] ,
-                'parent_cat_id' : treeData[i]['children'][j]['id'] ,
-                'level' : 4 ,
-                's_number' : (k+1) ,
-              });
-       
-            };
-            
-          };
-          
-        };
+        for (var i = 0; i < treeData.length; i++) {
+          pushTreeData(treeData[i] , 0 , 2 , i ) ;
+        }
         return treeData2 ;
       },
       //展示页面排序

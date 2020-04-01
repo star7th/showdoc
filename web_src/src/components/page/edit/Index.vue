@@ -280,38 +280,38 @@ export default {
   },
   computed: {
 
-    //新建/编辑页面时供用户选择的归属目录列表
+    //新建/编辑目录时供用户选择的上级目录列表
     belong_to_catalogs:function(){
         if (!this.catalogs || this.catalogs.length <=0 ) {
           return [];
         };
+        
         var Info = this.catalogs.slice(0);
         var cat_array = [] ;
-        for (var i = 0; i < Info.length; i++) {
-          cat_array.push(Info[i]);
-          var sub = Info[i]['sub'] ;
-          if (sub.length > 0 ) {
-            for (var j = 0; j < sub.length; j++) {
+
+        //这个函数将递归
+        var rename = function(catalog , p_cat_name){
+          if (catalog.length > 0 ) {
+            for (var j = 0; j < catalog.length; j++) {
+
+              var cat_name = p_cat_name+' / ' + catalog[j]['cat_name'] ;
               cat_array.push( {
-                "cat_id":sub[j]['cat_id'] ,
-                "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']
+                "cat_id":catalog[j]['cat_id'] ,
+                "cat_name": cat_name 
               });
-
-              var sub_sub = sub[j]['sub'] ;
-              if (sub_sub.length > 0 ) {
-                for (var k = 0; k < sub_sub.length; k++) {
-                  cat_array.push( {
-                    "cat_id":sub_sub[k]['cat_id'] ,
-                    "cat_name":Info[i]['cat_name']+' / ' + sub[j]['cat_name']+' / ' + sub_sub[k]['cat_name']
-                  });
-                };
+              if (catalog[j].sub && catalog[j].sub.length > 0) {
+                rename(catalog[j].sub , cat_name);
               };
-
             };
           };
+        }
+
+        for (var i = 0; i < Info.length; i++) {
+          cat_array.push(Info[i]);
+          rename(Info[i]['sub'] , Info[i].cat_name);
         };
-        var no_cat = {"cat_id":'' ,"cat_name":this.$t("none")} ;
-        cat_array.unshift(no_cat);
+        var no_cat = {"cat_id":0 ,"cat_name":this.$t("none")} ;
+        cat_array.push(no_cat);
         return cat_array;
 
     }
