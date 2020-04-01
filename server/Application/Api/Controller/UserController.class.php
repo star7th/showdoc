@@ -27,6 +27,13 @@ class UserController extends BaseController {
             if ( ! D("User")->isExist($username) ) {
                 $new_uid = D("User")->register($username,$password);
                 if ($new_uid) {
+
+                    $create_sample = D("Options")->get("create_sample") ;
+                    if ($create_sample !== '0' && C("DEFAULT_LANG") == 'zh-cn' ) {
+                        //导入示例项目
+                        $this->_importSample($new_uid);
+                    }
+
                     //设置自动登录
                     $ret = D("User")->where("uid = '$new_uid' ")->find() ;
                     unset($ret['password']);
@@ -49,6 +56,28 @@ class UserController extends BaseController {
             $this->sendError(10206,L('verification_code_are_incorrect'));
         }
     }
+
+    //导入示例项目
+    private function _importSample($uid){
+        $this->_importZip("../Public/SampleZip/apidoc.zip" , $uid);
+        $this->_importZip("../Public/SampleZip/databasedoc.zip" , $uid);
+        $this->_importZip("../Public/SampleZip/teamdoc.zip" , $uid);
+    }
+
+    private function _importZip($file , $uid){
+        $zipArc = new \ZipArchive();
+        $ret = $zipArc->open($file, \ZipArchive::CREATE);
+        $info = $zipArc->getFromName("prefix_info.json") ;
+        if ($info) {
+            $info_array = json_decode($info ,1 );
+            if ($info_array) {
+                D("Item")->import( json_encode($info_array) , $uid );
+                return true;
+            }
+        }
+        return false ;
+    }
+
     //登录
     public function login(){
         $username = I("username");
@@ -79,6 +108,11 @@ class UserController extends BaseController {
             $ret = D("User")->checkLdapLogin($username,$password);
         }
         if ($ret) {
+
+            if (D("Item")->count() < 1 && C("DEFAULT_LANG") == 'zh-cn' ) {
+                //如果项目表是空的，则生成系统示例项目
+                $this->_importSample(1);
+            }
           unset($ret['password']);
           session("login_user" , $ret );
           D("User")->setLastTime($ret['uid']);
