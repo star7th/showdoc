@@ -31,7 +31,7 @@
           </el-menu-item>
 
           <!-- 目录开始 -->
-          <LeftMenuSub v-if="menu.catalogs.length" :catalog="menu.catalogs" ></LeftMenuSub>
+          <LeftMenuSub v-if="menu.catalogs && menu.catalogs.length" :catalog="menu.catalogs" ></LeftMenuSub>
 
       </el-menu>
     </el-aside>
