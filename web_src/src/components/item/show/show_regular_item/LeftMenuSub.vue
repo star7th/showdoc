@@ -32,7 +32,7 @@
 
   },
   mounted () {
-    console.log(this.catalog)
+    // console.log(this.catalog)
   }
 };
 </script>
