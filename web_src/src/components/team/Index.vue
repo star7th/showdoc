@@ -112,7 +112,10 @@ export default {
               if (response.data.error_code === 0 ) {
                 that.dialogFormVisible = false;
                 that.geList() ;
-                that.MyForm = {};
+                that.MyForm = {
+                  id:'',
+                  team_name:''
+                };
               }else{
                 that.$alert(response.data.error_message);
               }
@@ -149,7 +152,10 @@ export default {
 
       },
       addTeam(){
-        this.MyForm = [] ;
+        this.MyForm = {
+           id:'',
+           team_name:''
+        } ;
         this.dialogFormVisible = true;
 
       },
