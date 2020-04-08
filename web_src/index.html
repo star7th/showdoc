@@ -9,6 +9,19 @@
 	<meta name="keywords" content="在线API文档 技术文档 数据字典 在线手册" />
 	<meta name="description" content="一个非常适合IT团队的在线API文档、技术文档工具。你可以使用Showdoc来编写在线API文档、技术文档、数据字典、在线手册" />
   <script type="text/javascript">
+
+    var Wwidth = window.innerWidth ;
+    window.addEventListener('resize', function() {
+      ///宽度变化大于50像素的时候刷新整个窗口以适应新宽度
+      if ( Math.abs(Wwidth - window.innerWidth) > 50 ) {
+          //如果不在编辑页面，则在窗口变化后刷新窗口以适应宽度
+          if(window.location.href.indexOf("/edit") === -1){
+            window.location.reload();
+          }
+      };
+
+    });
+
     //挂在window下的全局配置
     window.DocConfig = {
       //"server":'http://127.0.0.1/showdoc/server/index.php?s=',
@@ -23,21 +36,3 @@
     <!-- built files will be auto injected -->
   </body>
 </html>
-
-<script language="JavaScript">
-
-  var Wwidth = window.innerWidth ;
-  window.addEventListener('resize', function() {
-    ///宽度变化大于50像素的时候刷新整个窗口以适应新宽度
-    if ( Math.abs(Wwidth - window.innerWidth) > 50 ) {
-        //console.log(window.innerWidth + ' ' + window.innerHeight);
-        //如果不在编辑页面，则在窗口变化后刷新窗口以适应宽度
-        if(window.location.href.indexOf("/edit") === -1){
-          window.location.reload();
-        }
-    };
-
-  });
-
-
-</script>
