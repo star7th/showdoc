@@ -49,7 +49,7 @@
       </el-table-column>
       <el-table-column
         prop="username"
-        :label="$t('onwer')"
+        :label="$t('owner')"
         width="160">
       </el-table-column>
       <el-table-column
