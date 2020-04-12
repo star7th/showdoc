@@ -294,7 +294,7 @@ exports.default = {
     "jump_to_item":"choose item",
 
     "recycle":"recycle",
-    "recycle_tips":"The deleted page will go to the recycle bin. The content in the recycle bin for more than 3 days will be automatically selected by the system and cleaned up when appropriate",
+    "recycle_tips":"The deleted page will go to the recycle bin. The content in the recycle bin for more than 30 days will be automatically selected by the system and cleaned up when appropriate",
     "page_title":"Page title",
     "deleter":"Delete Account",
     "del_time":"Delete time",

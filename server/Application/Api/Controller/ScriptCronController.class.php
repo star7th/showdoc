@@ -36,7 +36,7 @@ class ScriptCronController extends BaseController {
             }
         }
 
-        $pages = D("Recycle")->where(" del_time < ".(time() - 3*24*60*60))->select();
+        $pages = D("Recycle")->where(" del_time < ".(time() - 30*24*60*60))->select();
         if ($pages) {
             foreach ($pages as $key => $value) {
                 $ret = D("Page")->deletePage($value['page_id']);

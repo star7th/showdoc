@@ -301,7 +301,7 @@ exports.default = {
     "jump_to_item":"跳转到项目",
 
     "recycle":"回收站",
-    "recycle_tips":"被删除的页面会进入回收站。在回收站超过3天的内容将被系统自动选择合适时候清理掉",
+    "recycle_tips":"被删除的页面会进入回收站。在回收站超过30天的内容将被系统自动选择合适时候清理掉",
     "page_title":"页面标题",
     "deleter":"删除账号",
     "del_time":"删除时间",
