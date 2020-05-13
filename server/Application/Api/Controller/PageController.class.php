@@ -274,7 +274,7 @@ class PageController extends BaseController {
            return false;
         }
         
-        if (strstr(strip_tags(strtolower($_FILES['editormd-image-file']['name'])), ".php") ) {
+        if (strstr(strip_tags(strtolower($uploadFile['name'])), ".php") ) {
             return false;
         }
 
