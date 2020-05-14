@@ -80,7 +80,7 @@
     text-align: center;
     line-height: 200px;
     height: calc(100% - 60px);
-    position: absolute;
+    position: fixed;
   }
 
   .el-menu{
@@ -120,6 +120,7 @@
     font-size: 20px;
     background-color: rgb(84, 92, 100);
     color: #fff;
+    position: fixed;
   }
 </style>
 
