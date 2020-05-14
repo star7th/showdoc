@@ -356,7 +356,7 @@
     this.lang = DocConfig.lang ;
     if (this.page_info.unique_key) {
       this.isCreateSiglePage = true ;
-      this.share_single_link = this.getRootPath()+"/p/"+this.page_info.unique_key ;
+      this.share_single_link = this.getRootPath()+"#/p/"+this.page_info.unique_key ;
     };
     document.onkeydown=function(e){  //对整个页面文档监听 其键盘快捷键
       var keyNum=window.event ? e.keyCode :e.which;  //获取被按下的键值 
@@ -388,7 +388,7 @@
     page_info:function(){
       if (this.page_info.unique_key) {
         this.isCreateSiglePage = true ;
-        this.share_single_link = this.getRootPath()+"/p/"+this.page_info.unique_key ;
+        this.share_single_link = this.getRootPath()+"#/p/"+this.page_info.unique_key ;
       }else{
         this.isCreateSiglePage = false ;
         this.share_single_link = '' ;
