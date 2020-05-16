@@ -110,6 +110,7 @@
                 that.page_id = page_id ;
                 //页面回到顶部
                  document.body.scrollTop = document.documentElement.scrollTop = 0;
+                 document.title = that.page_title +"--ShowDoc";
               });
               
             }else{
