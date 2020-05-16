@@ -329,4 +329,7 @@ exports.default = {
     "export_format_markdown":"markdown压缩包",
     "export_markdown_tips":"导出的压缩包可以重新导入showdoc，在新建项目的时候选择“文件导入”即可",
     
+    "private_tips":"这是一个私密项目",
+
+    
 };

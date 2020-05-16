@@ -321,4 +321,5 @@ exports.default = {
     "export_format_markdown":"Markdown zip",
     "export_markdown_tips":"The exported compressed package can be re imported into showdoc. Select 'Import File' when creating a new item",
 
+    "private_tips":"It's a private item",
 };

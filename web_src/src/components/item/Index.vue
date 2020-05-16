@@ -66,13 +66,22 @@
                      v-dragging="{ item: item, list: itemListByKeyword, group: 'item' }"
                   >
                     <router-link class="thumbnail item-thumbnail"  :to="'/' +  (item.item_domain ? item.item_domain:item.item_id )" title="">
+                      <!-- 自己创建的话显示项目设置按钮 -->
                       <span class="item-setting " @click.prevent="click_item_setting(item.item_id)" :title="$t('item_setting')" v-if="item.creator" >
                         <i class="el-icon-setting"></i>
                       </span>
+                       <!-- 如果是加入的项目的话，这里显示退出按钮 -->
                       <span class="item-exit" @click.prevent="click_item_exit(item.item_id)" :title="$t('item_exit')" v-if="! item.creator">
                         <i class="el-icon-close"></i>
                       </span>
                       <p class="my-item">{{item.item_name}}</p>
+                      <!-- 如果是加密项目的话，这里显示一个加密图标 -->
+                        <span class="item-private" v-if="item.is_private" >
+                          <el-tooltip class="item" effect="dark"  :content="$t('private_tips')" placement="right">
+                            <i class="el-icon-lock"></i>
+                          </el-tooltip>
+                        </span>
+
                     </router-link>
                   </li>
                 </draggable>
@@ -189,6 +198,13 @@
     margin-top:5px;
     display: none;
   }
+  .item-private{
+    float:right;
+    margin-right:15px;
+    margin-top: -20px;
+    display: none;
+    cursor:default;
+  }
 
   .thumbnails li a i{
     color: #777;
@@ -202,7 +218,10 @@
   .item-thumbnail:hover .item-exit {
     display: block;
   }
-
+  .item-thumbnail:hover .item-private {
+    display: block;
+  }
+  
   .search-box-div{
     width: 190px;
     margin-left: 60px;

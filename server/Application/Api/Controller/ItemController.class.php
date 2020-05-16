@@ -182,7 +182,7 @@ class ItemController extends BaseController {
                 $member_item_ids[] = $value['item_id'] ;
             }
         }
-        $items  = D("Item")->field("item_id,uid,item_name,item_domain,item_type,last_update_time,item_description,is_del")->where("uid = '$login_user[uid]' or item_id in ( ".implode(",", $member_item_ids)." ) ")->order("item_id asc")->select();
+        $items  = D("Item")->field("item_id,uid,item_name,item_domain,item_type,last_update_time,item_description,is_del,password")->where("uid = '$login_user[uid]' or item_id in ( ".implode(",", $member_item_ids)." ) ")->order("item_id asc")->select();
         
         
         foreach ($items as $key => $value) {
@@ -191,6 +191,13 @@ class ItemController extends BaseController {
             }else{
                $items[$key]['creator'] = 0 ;
             }
+            //判断是否为私密项目
+            if ($value['password']) {
+                $items[$key]['is_private'] = 1 ; 
+            }else{
+                $items[$key]['is_private'] = 0 ; 
+            }
+            unset($items[$key]['password']);
             //如果项目已标识为删除
             if ($value['is_del'] == 1) {
                 unset($items[$key]);
