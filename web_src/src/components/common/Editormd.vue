@@ -66,6 +66,44 @@ export default {
         onload: () => {
             console.log('onload');
           },
+          toolbarIcons : function() {
+              // Or return editormd.toolbarModes[name]; // full, simple, mini
+              // Using "||" set icons align right.
+              return ["undo", "redo", "|", 
+                  "bold", "del", "italic", "quote", "|", 
+                  "toc","h1", "h2", "h3", "h4", "h5", "h6", "|", 
+                  "list-ul", "list-ol", "hr", "|",
+                  "link", "reference-link", "image","video", "code", "code-block", "table", "datetime",  "html-entities", "pagebreak", "|",
+                  "watch", "preview", "fullscreen", "clear", "search","|",
+                  "help", "info"
+              ]
+          },
+          toolbarIconsClass : {
+              toc : "fa-bars " , // 指定一个FontAawsome的图标类
+              video :"fa-file-video-o"
+          },
+          // 自定义工具栏按钮的事件处理
+          toolbarHandlers : {
+            toc : function(cm, icon, cursor, selection){
+                cm.setCursor(0, 0);
+                cm.replaceSelection("[TOC]\r\n\r\n");
+            },
+            video : function(cm, icon, cursor, selection){
+                // 替换选中文本，如果没有选中文本，则直接插入
+                cm.replaceSelection('\r\n<video src="http://your-site.com/your.mp4" style="width: 100%; height: 100%;" controls="controls"></video>\r\n');
+
+                // 如果当前没有选中的文本，将光标移到要输入的位置
+                if(selection === "") {
+                    cm.setCursor(cursor.line, cursor.ch + 1);
+                }
+            }
+          },
+          lang : {
+              toolbar : {
+                  toc : "在最开头插入TOC，自动生成标题目录",
+                  video : "插入视频",
+              }
+          },
         };
       },
     },
