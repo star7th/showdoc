@@ -227,29 +227,28 @@ class PageController extends BaseController {
             return false;
         }
 
-        $qiniu_config = C('UPLOAD_SITEIMG_QINIU') ;
-        if (!empty($qiniu_config['driverConfig']['secrectKey'])) {
-          //上传到七牛
-          $Upload = new \Think\Upload(C('UPLOAD_SITEIMG_QINIU'));
-          $info = $Upload->upload($_FILES);
-          $url = $info['editormd-image-file']['url'] ;
-          if ($url) {
-              echo json_encode(array("url"=>$url,"success"=>1));
-          }
-        }else{
-            $upload = new \Think\Upload();// 实例化上传类
-            $upload->maxSize  = 1003145728 ;// 设置附件上传大小
-            $upload->allowExts  = array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
-            $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
-            $upload->savePath = '';// 设置附件上传子目录
-            $info = $upload->uploadOne($_FILES['editormd-image-file']) ;
-            if(!$info) {// 上传错误提示错误信息
-              $this->error($upload->getError());
-              return;
-            }else{// 上传成功 获取上传文件信息
-              $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['savepath'].$info['savename'] ;
-              echo json_encode(array("url"=>$url,"success"=>1));
+        $oss_open = D("Options")->get("oss_open" ) ;
+        if ($oss_open) {
+            $uploadFile = $_FILES['editormd-image-file'] ;
+            $url = upload_oss($uploadFile);
+            if ($url) {
+                echo json_encode(array("url"=>$url,"success"=>1));
             }
+            return ;
+        }
+
+        $upload = new \Think\Upload();// 实例化上传类
+        $upload->maxSize  = 1003145728 ;// 设置附件上传大小
+        $upload->allowExts  = array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
+        $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
+        $upload->savePath = '';// 设置附件上传子目录
+        $info = $upload->uploadOne($_FILES['editormd-image-file']) ;
+        if(!$info) {// 上传错误提示错误信息
+          $this->error($upload->getError());
+          return;
+        }else{// 上传成功 获取上传文件信息
+          $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['savepath'].$info['savename'] ;
+          echo json_encode(array("url"=>$url,"success"=>1));
         }
 
     }
@@ -276,6 +275,26 @@ class PageController extends BaseController {
         
         if (strstr(strip_tags(strtolower($uploadFile['name'])), ".php") ) {
             return false;
+        }
+
+        $oss_open = D("Options")->get("oss_open" ) ;
+        if ($oss_open) {
+            $url = upload_oss($uploadFile);
+            if ($url) {
+                $insert = array(
+                "uid" => $login_user['uid'],
+                "item_id" => $item_id,
+                "page_id" => $page_id,
+                "display_name" => $uploadFile['name'],
+                "file_type" => $uploadFile['type'],
+                "file_size" => $uploadFile['size'],
+                "real_url" => $url,
+                "addtime" => time(),
+                );
+                $ret = D("UploadFile")->add($insert);
+                echo json_encode(array("url"=>$url,"success"=>1));
+            }
+            return ;
         }
 
         $upload = new \Think\Upload();// 实例化上传类

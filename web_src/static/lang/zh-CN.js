@@ -331,5 +331,11 @@ exports.default = {
     
     "private_tips":"这是一个私密项目",
 
+    "oss_open":"图片附件储存到云",
+    "oss_server":"云服务商",
+    "aliyun":"阿里云",
+    "qiniu":"七牛云",
+    "oss_domain":"oss绑定域名(选填)",
+
     
 };

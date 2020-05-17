@@ -70,8 +70,46 @@
        
       </div>
 
+      <el-form-item :label="$t('oss_open')" >
+        <el-switch v-model="form.oss_open"></el-switch>
+      </el-form-item>
 
+      <div v-if="form.oss_open" style="margin-left:50px" >
 
+        <el-form-item :label="$t('oss_server')">
+          <el-select v-model="form.oss_setting.oss_type" >
+            <el-option :label="$t('aliyun')" value="aliyun"></el-option>
+            <el-option :label="$t('qiniu')"  value="qiniu"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="key">
+           <el-input v-model="form.oss_setting.key"   class="form-el"></el-input>
+        </el-form-item>
+
+        <el-form-item label="secret">
+           <el-input v-model="form.oss_setting.secret"   class="form-el"></el-input>
+        </el-form-item>
+
+        <el-form-item label="endpoint" v-if="form.oss_setting.oss_type == 'aliyun'" >
+           <el-input v-model="form.oss_setting.endpoint"   class="form-el"></el-input>
+        </el-form-item>
+
+        <el-form-item label="bucket">
+           <el-input v-model="form.oss_setting.bucket"   class="form-el"></el-input>
+        </el-form-item>
+
+        <el-form-item :label="$t('oss_domain')">
+          <el-select v-model="form.oss_setting.protocol" style="width:100px;" >
+            <el-option label="http://" value="http"></el-option>
+            <el-option label="https://" value="https"></el-option>
+          </el-select>
+           <el-input v-model="form.oss_setting.domain"   class="form-el"></el-input>
+        </el-form-item>
+
+      </div>
+
+      <br>
       <el-form-item >
         <el-button type="primary" @click="onSubmit">{{$t('save')}}</el-button>
         <el-button>{{$t('cancel')}}</el-button>
@@ -107,7 +145,17 @@ export default {
           "bind_password":'',
           "user_field":'',
         },
-        home_item:''
+        home_item:'',
+        oss_open:false,
+        oss_setting:{
+           "oss_type":"aliyun",
+           "key" : "",
+           "secret" : "",
+           "endpoint" :"",
+           "bucket" : "",
+           "protocol" : "http",
+           "domain" : ""
+        },
       },
       itemList:[],
     };
@@ -135,10 +183,12 @@ export default {
               return ;
             };
             this.form.register_open =   response.data.data.register_open > 0 ? true :false ;
+            this.form.oss_open =   response.data.data.oss_open > 0 ? true :false ;
             this.form.ldap_open =   response.data.data.ldap_open > 0 ? true :false ;
             this.form.home_page =   response.data.data.home_page > 0 ? response.data.data.home_page :1 ;
             this.form.home_item =   response.data.data.home_item > 0 ? response.data.data.home_item :'' ;
             this.form.ldap_form =   response.data.data.ldap_form ? response.data.data.ldap_form : this.form.ldap_form ;
+            this.form.oss_setting =   response.data.data.oss_setting ? response.data.data.oss_setting : this.form.oss_setting ;
           }else{
             this.$alert(response.data.error_message);
           }

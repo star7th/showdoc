@@ -322,4 +322,11 @@ exports.default = {
     "export_markdown_tips":"The exported compressed package can be re imported into showdoc. Select 'Import File' when creating a new item",
 
     "private_tips":"It's a private item",
+
+    "oss_open":"Image/attachment saved to cloud",
+    "oss_server":"cloud server",
+    "aliyun":"aliyun",
+    "qiniu":"qiniu",
+    "oss_domain":"domain(optional)",
+
 };

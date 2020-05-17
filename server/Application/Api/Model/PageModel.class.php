@@ -152,15 +152,11 @@ class PageModel extends BaseModel {
       $real_url = $file['real_url'] ;
       $array = explode("/Public/Uploads/", $real_url) ;
       $file_path = "../Public/Uploads/".$array[1] ;
-      $ret = unlink($file_path);
-      if ($ret) {
-          D("UploadFile")->where(" file_id = '$file_id' ")->delete();
-          return true ;
-      }else{
-          return false;
+      if (file_exists($file_path)) {
+        unlink($file_path);
       }
-
-
+      D("UploadFile")->where(" file_id = '$file_id' ")->delete();
+      return true ;
     }
 
 }

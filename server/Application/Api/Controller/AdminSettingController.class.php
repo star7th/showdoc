@@ -9,9 +9,11 @@ class AdminSettingController extends BaseController {
         $this->checkAdmin();
         $register_open = intval(I("register_open")) ;
         $ldap_open = intval(I("ldap_open")) ;
+        $oss_open = intval(I("oss_open")) ;
         $home_page = intval(I("home_page")) ;
         $home_item = intval(I("home_item")) ;
         $ldap_form = I("ldap_form") ;
+        $oss_setting = I("oss_setting") ;
         D("Options")->set("register_open" ,$register_open) ;
         D("Options")->set("home_page" ,$home_page) ;
         D("Options")->set("home_item" ,$home_item) ;
@@ -54,6 +56,12 @@ class AdminSettingController extends BaseController {
             D("Options")->set("ldap_form" , json_encode( $ldap_form)) ;
         }
         D("Options")->set("ldap_open" ,$ldap_open) ;
+
+        if ($oss_open) {
+            D("Options")->set("oss_setting" , json_encode( $oss_setting)) ;
+        }
+        D("Options")->set("oss_open" ,$oss_open) ;
+
         $this->sendResult(array());
 
     }
@@ -63,21 +71,27 @@ class AdminSettingController extends BaseController {
         $login_user = $this->checkLogin();
         $this->checkAdmin();
         $ldap_open = D("Options")->get("ldap_open" ) ;
+        $oss_open = D("Options")->get("oss_open" ) ;
         $register_open = D("Options")->get("register_open" ) ;
         $ldap_form = D("Options")->get("ldap_form" ) ;
+        $oss_setting = D("Options")->get("oss_setting" ) ;
         $home_page = D("Options")->get("home_page" ) ;
         $home_item = D("Options")->get("home_item" ) ;
         $ldap_form = json_decode($ldap_form,1);
+        $oss_setting = json_decode($oss_setting,1);
+        
         //如果强等于false，那就是尚未有数据。关闭注册应该是有数据且数据为字符串0
         if ($register_open === false) {
             $this->sendResult(array());
         }else{
             $array = array(
                 "ldap_open"=>$ldap_open ,
+                "oss_open"=>$oss_open ,
                 "register_open"=>$register_open ,
                 "home_page"=>$home_page ,
                 "home_item"=>$home_item ,
                 "ldap_form"=>$ldap_form ,
+                "oss_setting"=>$oss_setting ,
                 );
             $this->sendResult($array);
         }
