@@ -4,7 +4,7 @@
 
     <el-container>
           <el-card class="center-card">
-            <router-link class="goback-btn "to="/item/index">{{$t('goback')}}</router-link>
+            <el-button type="text" @click="goback" class="goback-btn " ><i class="el-icon-back" ></i></el-button>
                 <el-form  status-icon  label-width="75px" class="infoForm" v-model="infoForm">
                   <el-form-item :label="$t('username')+':'" >
                       <el-input type="text" auto-complete="off" v-model="infoForm.username" :disabled="true" placeholder="" ></el-input>
@@ -189,6 +189,9 @@ export default {
               
             });
       },
+      goback(){
+        this.$router.push({path:"/item/index"})
+      }
   },
 
   mounted(){
@@ -211,13 +214,14 @@ export default {
 
 .center-card{
   text-align: center;
-  width: 600px;
+  width: 500px;
   height: 400px;
 }
 
 .goback-btn{
   z-index: 999;
-  margin-left: 500px;
+  font-size: 18px;
+  margin-right: 800px;
 }
 
 .infoForm{
