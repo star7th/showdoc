@@ -343,6 +343,7 @@ export default {
               that.content = response.data.data.page_content ;
               setTimeout(function(){
                 that.insertValue(that.content ,1) ;
+                document.body.scrollTop = document.documentElement.scrollTop = 0;//回到顶部
               },500);
               setTimeout(function(){
                 //如果长度大于3000,则关闭预览
