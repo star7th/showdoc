@@ -6,7 +6,7 @@
       </el-form-item>
 
       <el-form-item  >
-        <el-input type="text" auto-complete="off" v-model="infoForm.item_description" placeholder="" ></el-input>
+        <el-input type="text" auto-complete="off" v-model="infoForm.item_description":placeholder="$t('item_description')"></el-input>
       </el-form-item>
 
       <el-form-item label="" >
@@ -15,7 +15,7 @@
       </el-form-item>
 
       <el-form-item  v-show="!isOpenItem">
-            <el-input type="password" auto-complete="off"  v-model="infoForm.password"></el-input>
+            <el-input type="password" auto-complete="off"  v-model="infoForm.password" :placeholder="$t('visit_password')"></el-input>
       </el-form-item>
 
        <el-form-item label="" >
