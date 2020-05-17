@@ -1,11 +1,11 @@
 <template>
   <div class="hello">
     <el-form  status-icon  label-width="100px" class="infoForm" v-model="infoForm">
-      <el-form-item :label="$t('item_name')+':'" >
+      <el-form-item >
         <el-input type="text" auto-complete="off" v-model="infoForm.item_name" placeholder="" ></el-input>
       </el-form-item>
 
-      <el-form-item :label="$t('item_description')+':'" >
+      <el-form-item  >
         <el-input type="text" auto-complete="off" v-model="infoForm.item_description" placeholder="" ></el-input>
       </el-form-item>
 
@@ -14,7 +14,7 @@
         <el-radio v-model="isOpenItem" :label="false">{{$t('private_item')}}</el-radio>
       </el-form-item>
 
-      <el-form-item :label="$t('visit_password')+':'" v-show="!isOpenItem">
+      <el-form-item  v-show="!isOpenItem">
             <el-input type="password" auto-complete="off"  v-model="infoForm.password"></el-input>
       </el-form-item>
 
@@ -120,7 +120,7 @@ export default {
 
 .infoForm{
   width:350px;
-  margin-left: 160px;
+  margin-left: 20px;
   margin-top: 60px;
 }
 

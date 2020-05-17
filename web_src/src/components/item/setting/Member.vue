@@ -22,7 +22,7 @@
           <el-table-column
             prop="addtime"
             :label="$t('add_time')"
-            width="160">
+            width="100">
           </el-table-column>
           <el-table-column
             prop="member_group"

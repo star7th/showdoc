@@ -3,6 +3,7 @@
     <p class="tips">{{$t("recycle_tips")}}</p>
     <!-- 页面列表 -->
      <el-table align="left"
+           class="recycle-table"
           v-if="lists.length>0"
           :data="lists"
           style="width: 100%">
@@ -118,5 +119,10 @@ export default {
   color: #9ea1a6;
 
 }
+.recycle-table{
+  max-height: 400px;
+  overflow: auto;
+}
+
 
 </style>

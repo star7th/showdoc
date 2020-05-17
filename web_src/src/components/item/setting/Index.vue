@@ -5,7 +5,7 @@
     <el-container>
           <el-card class="center-card">
           <template>
-            <el-button type="text" @click="goback" class="goback-btn " >{{$t('goback')}}</el-button>
+            <el-button type="text" @click="goback" class="goback-btn " ><i class="el-icon-back" ></i></el-button>
             <el-tabs  value="first" type="card">
               <el-tab-pane :label="$t('base_info')" name="first">
 
@@ -121,7 +121,7 @@ export default {
 
 .center-card{
   text-align: center;
-  width: 800px;
+  width: 555px;
   min-height: 600px;
   max-height: 800px;
 }
@@ -134,6 +134,8 @@ export default {
 
 .goback-btn{
   z-index: 999;
-  margin-left: 600px;
+  font-size: 18px;
+  margin-right: 800px;
+  margin-bottom: 5px;
 }
 </style>

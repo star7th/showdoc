@@ -9,9 +9,8 @@
         <el-input type="text" auto-complete="off" :readonly="true" v-model="api_token" placeholder="" ></el-input>
       </el-form-item>
 
-       <el-form-item label="" >
         <el-button type="primary" style="width:100%;" @click="resetKey" >{{$t('reset_token')}}</el-button>
-      </el-form-item>
+
 
     </el-form>
 
@@ -111,7 +110,6 @@ export default {
 
 .infoForm{
   width:470px;
-  margin-left: 90px;
   margin-top: 30px;
 }
 
