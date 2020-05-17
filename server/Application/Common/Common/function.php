@@ -207,3 +207,9 @@ function compress_string($string){
 function uncompress_string($string){
     return  gzuncompress(base64_decode($string));  
 }
+
+function new_oss($key , $secret , $endpoint , $isCName = false)
+{  
+    include_once VENDOR_PATH .'Alioss/autoload.php';
+    return new \OSS\OssClient($key , $secret , $endpoint , $isCName);
+}

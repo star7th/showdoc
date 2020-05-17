@@ -7,12 +7,14 @@
 		public $QINIU_RS_HOST = 'http://rs.qbox.me';
 		public $QINIU_UP_HOST = 'http://up.qiniu.com';
 		public $timeout = '';
+		public $hasHost = 0;
 
 		public function __construct($config){
 			$this->sk = $config['secrectKey'];
 			$this->ak = $config['accessKey'];
 			$this->domain = $config['domain'];
 			$this->bucket = $config['bucket'];
+			$this->protocol = $config['protocol'] ? $config['protocol'] : 'http';
 			$this->timeout = isset($config['timeout'])? $config['timeout'] : 3600;
 		}
 
@@ -68,8 +70,8 @@
 		}
 
 		public function upload($config, $file){
+			$this->queryBucketHost();
 			$uploadToken = $this->UploadToken($this->sk, $this->ak, $config);
-
 			$url = "{$this->QINIU_UP_HOST}";
 			$mimeBoundary = md5(microtime());
 			$header = array('Content-Type'=>'multipart/form-data;boundary='.$mimeBoundary);
@@ -153,6 +155,7 @@
 
 		//获取某个路径下的文件列表
 		public function getList($query = array(), $path = ''){
+			$this->queryBucketHost();
 			$query = array_merge(array('bucket'=>$this->bucket), $query);
 			$url = "{$this->QINIU_RSF_HOST}/list?".http_build_query($query);
 			$accessToken = $this->accessToken($url);
@@ -162,6 +165,7 @@
 
 		//获取某个文件的信息
 		public function info($key){
+			$this->queryBucketHost();
 			$key = trim($key);
 			$url = "{$this->QINIU_RS_HOST}/stat/" . self::Qiniu_Encode("{$this->bucket}:{$key}");
 			$accessToken = $this->accessToken($url);
@@ -175,12 +179,13 @@
 		public function downLink($key){
 			$key = urlencode($key);
 			$key = self::Qiniu_escapeQuotes($key);
-			$url = "http://{$this->domain}/{$key}";
+			$url = "{$this->protocol}://{$this->domain}/{$key}";
 			return $url;
 		}
 
 		//重命名单个文件
 		public function rename($file, $new_file){
+			$this->queryBucketHost();
 			$key = trim($file);
 			$url = "{$this->QINIU_RS_HOST}/move/" . self::Qiniu_Encode("{$this->bucket}:{$key}") .'/'. self::Qiniu_Encode("{$this->bucket}:{$new_file}");
 			trace($url);
@@ -191,6 +196,7 @@
 
 		//删除单个文件
 		public function del($file){
+			$this->queryBucketHost();
 			$key = trim($file);
 			$url = "{$this->QINIU_RS_HOST}/delete/" . self::Qiniu_Encode("{$this->bucket}:{$key}");
 			$accessToken = $this->accessToken($url);
@@ -200,6 +206,7 @@
 
 		//批量删除文件
 		public function delBatch($files){
+			$this->queryBucketHost();
 			$url = $this->QINIU_RS_HOST . '/batch';
 			$ops = array();
 			foreach ($files as $file) {
@@ -329,5 +336,34 @@
 	        $this->error = $message;
 	        $this->errorStr = json_decode($body ,1);
 	        $this->errorStr = $this->errorStr['error'];
+	    }
+
+		public function privateDownloadUrl($baseUrl, $expires = 3600)
+		{
+		    $deadline = time() + $expires;
+		    $pos = strpos($baseUrl, '?');
+		    if ($pos !== false) {
+		        $baseUrl .= '&e=';
+		    } else {
+		        $baseUrl .= '?e=';
+		    }
+		    $baseUrl .= $deadline;
+		    $token = $this->sign($this->sk, $this->ak,$baseUrl);
+		    return "$baseUrl&token=$token";
+		}
+
+	    //根据bucket获取地域host信息
+	    private function queryBucketHost(){
+	    	if ($this->hasHost > 0) {
+	    		return ;
+	    	}
+	    	$url = "https://api.qiniu.com/v2/query?ak={$this->ak}&bucket={$this->bucket}";
+	    	$res = json_decode( $this->request($url,'GET') , 1 ) ;
+	    	if ($res && $res['up'] && $res['up']['acc']['main']) {
+				$this->QINIU_RSF_HOST = 'https://'.$res['rsf']['acc']['main'][0];
+				$this->QINIU_RS_HOST = 'https://'.$res['rs']['acc']['main'][0];
+				$this->QINIU_UP_HOST = 'https://'.$res['up']['acc']['main'][0];
+				$this->hasHost = 1 ;
+	    	}
 	    }
 	}
