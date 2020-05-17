@@ -3,7 +3,7 @@
     <Header> </Header>
 
     <el-container>
-          <el-card class="center-card">
+          <el-card class="center-card" onkeydown="if(event.keyCode==13)return false;" >
             <el-form  status-icon  label-width="0px" class="demo-ruleForm" @keyup.enter.native="onSubmit">
               <h2>{{$t('input_visit_password')}}</h2>
 
