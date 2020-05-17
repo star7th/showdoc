@@ -72,7 +72,7 @@ export default {
               return ["undo", "redo", "|", 
                   "bold", "del", "italic", "quote", "|", 
                   "toc","h1", "h2", "h3", "h4", "h5", "h6", "|", 
-                  "list-ul", "list-ol", "hr", "|",
+                  "list-ul", "list-ol", "hr", "center", "|",
                   "link", "reference-link", "image","video", "code", "code-block", "table", "datetime",  "html-entities", "pagebreak", "|",
                   "watch", "preview", "fullscreen", "clear", "search","|",
                   "help", "info"
@@ -80,7 +80,8 @@ export default {
           },
           toolbarIconsClass : {
               toc : "fa-bars " , // 指定一个FontAawsome的图标类
-              video :"fa-file-video-o"
+              video :"fa-file-video-o",
+              center :"fa-align-center",
           },
           // 自定义工具栏按钮的事件处理
           toolbarHandlers : {
@@ -96,12 +97,23 @@ export default {
                 if(selection === "") {
                     cm.setCursor(cursor.line, cursor.ch + 1);
                 }
+            },
+            center: function(cm, icon, cursor, selection){
+
+                // 替换选中文本，如果没有选中文本，则直接插入
+                cm.replaceSelection("<center>" + selection + "</center>");
+
+                // 如果当前没有选中的文本，将光标移到要输入的位置
+                if(selection === "") {
+                    cm.setCursor(cursor.line, cursor.ch + 1);
+                }
             }
           },
           lang : {
               toolbar : {
                   toc : "在最开头插入TOC，自动生成标题目录",
                   video : "插入视频",
+                  center : "居中",
               }
           },
         };
