@@ -349,7 +349,15 @@ export default {
 
         //代码块美化
         $("#"+this.id+" .linenums").css("padding-left","5px") ;
-        $("#"+this.id+" .linenums li").css("list-style-type","none") ;
+        //$("#"+this.id+" .linenums li").css("list-style-type","none") ; //这句代码的副作用是把代码块里的换行符也去掉了
+        //为了弥补上面那句代码失去换行符的漏洞，所以用这个补丁代替
+        $("#"+this.id+" .linenums li code").each(function(){
+          if($(this).find("span").text()){
+            //假如子元素非空，那就不是换行，从而设置style none。这样就不会误伤把换行符所在的li也设置none了。
+            $(this).parent().css("list-style-type","none") ;
+          }
+        });
+        
         $("#"+this.id+" .linenums li").css("background-color","#fcfcfc") ;
         $(".markdown-body pre").css("background-color","#fcfcfc") ;
         $(".markdown-body pre").css("border","1px solid #e1e1e8") ;
