@@ -16,29 +16,25 @@ class MemberController extends BaseController {
         } 
 
         $username = I("username");
-        $member = D("User")->where(" username = '%s' ",array($username))->find();
-
-        if (!$username || !$member) {
-            $this->sendError(10209);
-            return ;
+        $username_array = explode("," , $username) ;
+        foreach($username_array as $key => $value ){
+            $member = D("User")->where(" username = '%s' ",array($value))->find();
+            if(!$member){
+                continue ;
+            }
+            $if_exit = D("ItemMember")->where(" uid = '$member[uid]' and item_id = '$item_id' ")->find();
+            if ($if_exit) {
+                continue ;
+            }
+            $data = array() ;
+            $data['username'] = $member['username'] ;
+            $data['uid'] = $member['uid'] ;
+            $data['item_id'] = $item_id ;
+            $data['member_group_id'] = $member_group_id ;
+            $data['addtime'] = time() ; 
+            $id = D("ItemMember")->add($data); 
         }
-        
-        $if_exit = D("ItemMember")->where(" uid = '$member[uid]' and item_id = '$item_id' ")->find();
-
-        if ($if_exit) {
-            $this->sendError(10101,"该用户已经是项目成员");
-            return ;
-        }
-        $data['username'] = $member['username'] ;
-        $data['uid'] = $member['uid'] ;
-        $data['item_id'] = $item_id ;
-        $data['member_group_id'] = $member_group_id ;
-        $data['addtime'] = time() ;
-        
-
-        $id = D("ItemMember")->add($data);
         $return = D("ItemMember")->where(" item_member_id = '$id' ")->find();
-
         if (!$return) {
             $this->sendError(10101);
         }else{

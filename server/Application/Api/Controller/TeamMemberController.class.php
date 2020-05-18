@@ -19,39 +19,41 @@ class TeamMemberController extends BaseController {
             return ;
         } 
 
-        $memberInfo = D("User")->where(" username = '%s' ",array($member_username,$member_username))->find();
-        if (!$memberInfo) {
-            $this->sendError(10209);
-            return ;
-        }
-        $if_exit = D("TeamMember")->where(" member_uid = '$memberInfo[uid]' and team_id = '$team_id' ")->find();
-
-        if ($if_exit) {
-            $this->sendError(10101,"该用户已经是成员");
-            return ;
-        }
-        
-        $data['team_id'] = $team_id ;
-        $data['member_uid'] = $memberInfo['uid'] ;
-        $data['member_username'] = $memberInfo['username'] ;
-        $data['addtime'] = time() ;
-        $id = D("TeamMember")->add($data);  
-
-        //检查该团队已经加入了哪些项目
-        $teamItems = D("TeamItem")->where("  team_id = '$team_id' ")->select() ;
-        if ($teamItems) {
-            foreach ($teamItems as $key => $value) {
-                $data= array(
-                    "team_id"=>$team_id,
-                    "member_uid"=>$memberInfo['uid'],
-                    "member_username"=>$memberInfo['username'],
-                    "item_id"=>$value['item_id'],
-                    "member_group_id"=>1, //默认添加的权限为1，即编辑权限
-                    "addtime"=>time()
-                );
-                D("TeamItemMember")->add($data);
+        $member_username_array = explode("," , $member_username) ;
+        foreach($member_username_array as $key => $value ){
+            $memberInfo = D("User")->where(" username = '%s' ",array($value))->find();
+            if (!$memberInfo) {
+                continue ;
             }
+            $if_exit = D("TeamMember")->where(" member_uid = '$memberInfo[uid]' and team_id = '$team_id' ")->find();
+            if ($if_exit) {
+                continue ;
+            }
+            $data = array() ;
+            $data['team_id'] = $team_id ;
+            $data['member_uid'] = $memberInfo['uid'] ;
+            $data['member_username'] = $memberInfo['username'] ;
+            $data['addtime'] = time() ;
+            $id = D("TeamMember")->add($data);  
+    
+            //检查该团队已经加入了哪些项目
+            $teamItems = D("TeamItem")->where("  team_id = '$team_id' ")->select() ;
+            if ($teamItems) {
+                foreach ($teamItems as $key2 => $value2) {
+                    $data= array(
+                        "team_id"=>$team_id,
+                        "member_uid"=>$memberInfo['uid'],
+                        "member_username"=>$memberInfo['username'],
+                        "item_id"=>$value2['item_id'],
+                        "member_group_id"=>1, //默认添加的权限为1，即编辑权限
+                        "addtime"=>time()
+                    );
+                    D("TeamItemMember")->add($data);
+                }
+            }
+
         }
+
         $return = D("TeamMember")->where(" id = '$id' ")->find();
 
         if (!$return) {
