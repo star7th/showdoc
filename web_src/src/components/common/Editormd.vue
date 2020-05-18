@@ -16,6 +16,37 @@
   min-height: 60%;
 }
 
+.markdown-body .kwd {
+    color: #8959a8;
+  }
+.markdown-body .com {
+    color: #8e908c;
+  }
+.markdown-body .str {
+    color: #718c00;
+  }
+.markdown-body code{
+    color:#d14;
+}
+.markdown-body .pln{
+    color:#4d4d4c;
+}
+.markdown-body .typ{
+    color:#4271ae;
+}
+
+.markdown-body h1 {
+  font-size: 1.8em !important;
+}
+.markdown-body h2 {
+  font-size: 1.5em !important;
+}
+.markdown-body h3 {
+  font-size: 1.25em !important;
+}
+.markdown-body h4 {
+  font-size: 1.1em !important;
+}
 </style>
 <script>
 import BigImg from '@/components/common/BigImg'
@@ -323,7 +354,6 @@ export default {
         $(".markdown-body pre").css("background-color","#fcfcfc") ;
         $(".markdown-body pre").css("border","1px solid #e1e1e8") ;
         
-        $("#"+this.id+" code").css("color","#d14");
 
         //高亮关键字
         if(this.keyword)$("#"+this.id).mark(this.keyword);
