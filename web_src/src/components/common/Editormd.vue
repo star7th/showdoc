@@ -116,6 +116,9 @@ export default {
                   center : "居中",
               }
           },
+          onchange : ()=>{
+            this.deal_with_content();
+          }
         };
       },
     },
@@ -317,8 +320,8 @@ export default {
         $("#"+this.id+" .linenums").css("padding-left","5px") ;
         $("#"+this.id+" .linenums li").css("list-style-type","none") ;
         $("#"+this.id+" .linenums li").css("background-color","#fcfcfc") ;
-        $("#"+this.id+" pre").css("background-color","#fcfcfc") ;
-        $("#"+this.id+" pre").css("border","1px solid #e1e1e8") ;
+        $(".markdown-body pre").css("background-color","#fcfcfc") ;
+        $(".markdown-body pre").css("border","1px solid #e1e1e8") ;
         
         $("#"+this.id+" code").css("color","#d14");
 
