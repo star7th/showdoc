@@ -252,7 +252,7 @@
     text-overflow: ellipsis;
   }
   .hide-scrollbar li{
-    white-space: normal;
+   /* white-space: normal;*/
     overflow: hidden;
     text-overflow: ellipsis;
   }
