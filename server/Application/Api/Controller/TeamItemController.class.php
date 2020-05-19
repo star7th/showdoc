@@ -11,40 +11,48 @@ class TeamItemController extends BaseController {
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
 
-        $item_id = I("item_id/d");
+        $item_id = I("item_id");
         $team_id = I("team_id/d");
-
-        if(!$this->checkItemCreator($uid , $item_id)){
-            $this->sendError(10303);
-            return ;
-        }
 
         $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
         if (!$teamInfo) {
             $this->sendError(10209,"无此团队或者你无管理此团队的权限");
             return ;
-        } 
+        }
+
+        $item_id_array = explode(",", $item_id);
+        foreach ($item_id_array as $key => $value) {
+            $item_id = intval($value) ;
+            if(!$this->checkItemCreator($uid , $item_id)){
+                $this->sendError(10303);
+                continue ;
+            }
+
+            if (D("TeamItem")->where("  team_id = '$team_id' and item_id = '$item_id' ")->find()) {
+                continue ; //如果该项目已经加入团队了，则结束当前一次循环。
+            }
 
 
-        $data = array() ;
-        $data['item_id'] = $item_id ;
-        $data['team_id'] = $team_id ;
-        $data['addtime'] = time() ;
-        $id = D("TeamItem")->add($data);
+            $data = array() ;
+            $data['item_id'] = $item_id ;
+            $data['team_id'] = $team_id ;
+            $data['addtime'] = time() ;
+            $id = D("TeamItem")->add($data);
 
-        //获取该团队的所有成员并加入项目
-        $teamMembers = D("TeamMember")->where("  team_id = '$team_id' ")->select() ;
-        if ($teamMembers) {
-            foreach ($teamMembers as $key => $value) {
-                $data= array(
-                    "team_id"=>$team_id,
-                    "member_uid"=>$value['member_uid'],
-                    "member_username"=>$value['member_username'],
-                    "item_id"=>$item_id,
-                    "member_group_id"=>1, //默认添加的权限为1，即编辑权限
-                    "addtime"=>time()
-                );
-                D("TeamItemMember")->add($data);
+            //获取该团队的所有成员并加入项目
+            $teamMembers = D("TeamMember")->where("  team_id = '$team_id' ")->select() ;
+            if ($teamMembers) {
+                foreach ($teamMembers as $key => $value) {
+                    $data= array(
+                        "team_id"=>$team_id,
+                        "member_uid"=>$value['member_uid'],
+                        "member_username"=>$value['member_username'],
+                        "item_id"=>$item_id,
+                        "member_group_id"=>1, //默认添加的权限为1，即编辑权限
+                        "addtime"=>time()
+                    );
+                    D("TeamItemMember")->add($data);
+                }
             }
         }
 

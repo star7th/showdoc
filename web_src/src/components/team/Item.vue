@@ -40,7 +40,7 @@
 
             <el-dialog :visible.sync="dialogFormVisible"  width="300px" :close-on-click-modal="false">
                     <el-form >
-                        <el-select size="mini" v-model="MyForm.item_id"  :placeholder="$t('please_choose')">
+                        <el-select multiple v-model="MyForm.item_id"  :placeholder="$t('please_choose')">
                           <el-option
                             v-for="item in itemList"
                             :key="item.item_id"
