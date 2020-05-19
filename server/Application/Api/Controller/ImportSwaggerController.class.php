@@ -39,7 +39,7 @@ class ImportSwaggerController extends BaseController {
                 )
             ) ;
         $level = 2 ;
-        $item_array['pages']['pages'] = $this->_getPageByPaths($json_array['paths'] );
+        $item_array['pages']['pages'] = $this->_getPageByPaths($json_array );
         D("Item")->import( json_encode($item_array) , $login_user['uid'] );
         
         //echo D("Item")->export(196053901215026 );
@@ -48,18 +48,19 @@ class ImportSwaggerController extends BaseController {
 
     }
 
-    private function _getPageByPaths($paths){
+    private function _getPageByPaths($json_array){
         $return = array() ;
+        $paths = $json_array['paths']  ;
         foreach ($paths as $url => $value) {
             foreach ($value as $method => $value2) {
-                $return[] = $this->_requestToDoc($method , $url , $value2);
+                $return[] = $this->_requestToDoc($method , $url , $value2 , $json_array);
             }
         }
         return $return ;
 
     }
 
-    private function _requestToDoc($method , $url , $request){
+    private function _requestToDoc($method , $url , $request , $json_array){
         $return = array() ;
         $return['page_title'] = $request['summary'] ;
         $return['s_number'] = 99 ;
@@ -115,6 +116,27 @@ $content .='
 }
 
 if ($request['responses']['200']) {
+
+$responses = $request['responses']['200'] ;
+//如果返回信息是引用对象
+if ($request['responses']['200']['schema'] && $request['responses']['200']['schema']['$ref'] ) {
+    $str_array = explode("/", $request['responses']['200']['schema']['$ref']) ;
+    if ($str_array[1] && $str_array[2]) {
+        $responses = $json_array[$str_array[1]][$str_array[2]] ;
+$content .='
+
+**返回参数说明：** 
+
+|参数名|类型|说明|
+|:----    |:---|:----- |-----   |'."\n";
+    foreach ($responses['properties'] as $key => $value) {
+         $content .= '|'.$key.'|'.$value["type"].' | '.$value["description"].' |'."\n";
+    }
+    
+    }
+    
+}else{
+    //如果返回的是普通json
 $content .= '
 
 
@@ -122,11 +144,14 @@ $content .= '
 
 ``` 
 
-'.$this->_indent_json(json_encode($request['responses']['200'])).'
+'.$this->_indent_json(json_encode($responses)).'
 
 ```
 
 ';
+}
+
+
 
 }
 
