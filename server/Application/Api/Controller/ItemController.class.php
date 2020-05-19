@@ -613,15 +613,14 @@ class ItemController extends BaseController {
         $login_user = $this->checkLogin();
 
         $item_id = I("item_id/d");
+        $ret = D("ItemMember")->where("item_id = '$item_id' and uid ='$login_user[uid]' ")->delete();
 
-        //判断，如果是处于团队中，则提示他去请团队管理者把ta从团队中删除
         $row = D("TeamItemMember")->join(" left join team on team.id = team_item_member.team_id ")->where("item_id = '$item_id' and member_uid ='$login_user[uid]' ")->find();
         if ($row) {
-           $this->sendError(10101,"你目前处于团队'{$row[team_name]}'中。你可以请'{$row[username]}'把你从团队成员中删除");
-           return ;
+            $ret = D("TeamItemMember")->where(" member_uid = '$login_user[uid]' and  team_id = '$row[team_id]' ")->delete();
+            $ret = D("TeamMember")->where(" member_uid = '$login_user[uid]' and  team_id = '$row[team_id]' ")->delete();
         }
-        //如果不是处于团队中，仅仅是项目成员，则直接删除
-        $ret = D("ItemMember")->where("item_id = '$item_id' and uid ='$login_user[uid]' ")->delete();
+        
 
         if ($ret) {
            $this->sendResult(array());
