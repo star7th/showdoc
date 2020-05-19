@@ -77,6 +77,46 @@ class TeamController extends BaseController {
         }
     }
 
+    //转让团队
+    public function attorn(){
+        $login_user = $this->checkLogin();
+
+        $username = I("username");
+        $team_id = I("team_id/d");
+        $password = I("password");
+
+        $team  = D("Team")->where("id = '$team_id' and uid = '$login_user[uid]' ")->find();
+
+        if (!$team) {
+            $this->sendError(10101);
+            return ;
+        }
+
+        if(! D("User")-> checkLogin($login_user['username'],$password)){
+            $this->sendError(10208);
+            return ;
+        }
+
+        $member = D("User")->where(" username = '%s' ",array($username))->find();
+
+        if (!$member) {
+            $this->sendError(10209);
+            return ;
+        }
+        $data = array() ;
+        $data['username'] = $member['username'] ;
+        $data['uid'] = $member['uid'] ;
+        D("Team")->where(" id = '$team_id' ")->save($data);
+
+        //读取出该团队下的所有项目，准备转让
+        $items = D("TeamItem")->where(" team_id = '$team_id' ")->select() ;
+        foreach ($items as $key => $value) {
+            D("Item")->where(" item_id = '$value[item_id]' ")->save($data);
+        }
+
+        $this->sendResult($return);
+    }
+
 
 
 

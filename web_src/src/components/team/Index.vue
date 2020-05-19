@@ -39,6 +39,8 @@
                 <el-button @click="$router.push({path:'/team/member/'+scope.row.id})" type="text" size="small">{{$t('member')}}</el-button>
                 <el-button @click="$router.push({path:'/team/item/'+scope.row.id})"  type="text" size="small">{{$t('team_item')}}</el-button>
                 <el-button @click="edit(scope.row)" type="text" size="small">{{$t('edit')}}</el-button>
+                <br>
+                <el-button @click="attornDialog(scope.row)" type="text" size="small">{{$t('attorn')}}</el-button>
                 <el-button @click="deleteTeam(scope.row.id)" type="text" size="small">{{$t('delete')}}</el-button>
               </template>
             </el-table-column>
@@ -58,6 +60,27 @@
                 <el-button type="primary" @click="MyFormSubmit" >{{$t('confirm')}}</el-button>
               </div>
             </el-dialog>
+
+
+            <el-dialog :visible.sync="dialogAttornVisible" :modal="false" width="300px" :close-on-click-modal="false" >
+              <el-form >
+                  <el-form-item label="" >
+                    <el-input  :placeholder="$t('attorn_username')" auto-complete="new-password" v-model="attornForm.username"></el-input>
+                  </el-form-item>
+                  <el-form-item label="" >
+                    <el-input type="password" auto-complete="new-password" :placeholder="$t('input_login_password')"  v-model="attornForm.password" ></el-input>
+                  </el-form-item>
+              </el-form>
+             <p class="tips">
+                {{$t('attornTeamTips')}}
+            </p>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogAttornVisible = false">{{$t('cancel')}}</el-button>
+                <el-button type="primary" @click="attorn" >{{$t('attorn')}}</el-button>
+              </div>
+            </el-dialog>
+
+
     </el-container>
 
     <Footer> </Footer>
@@ -79,6 +102,12 @@ export default {
       list:[],
       dialogFormVisible:false,
       dialogMemberVisible:false,
+      dialogAttornVisible:false,
+      attornForm :{
+        team_id:'',
+        username:'',
+        password:''
+      }
     }
   }, 
   methods: {
@@ -161,6 +190,30 @@ export default {
       },
       goback(){
         this.$router.push({path:"/item/index"})
+      },
+      attornDialog(row){
+        this.attornForm.team_id = row.id; 
+        this.dialogAttornVisible = true ;
+      },
+      attorn(){
+        var that = this ;
+        var url = DocConfig.server+'/api/team/attorn';
+
+        var params = new URLSearchParams();
+        params.append('team_id',  this.attornForm.team_id);
+        params.append('username', this.attornForm.username);
+        params.append('password',this.attornForm.password );
+
+        that.axios.post(url, params)
+          .then(function (response) {
+            if (response.data.error_code === 0 ) {
+              that.dialogAttornVisible = false;
+              that.geList();
+            }else{
+              that.$alert(response.data.error_message);
+            }
+            
+          });
       }
   },
 
