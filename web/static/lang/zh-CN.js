@@ -110,11 +110,10 @@ exports.default = {
     "confirm_delete" :"确认删除吗？",
     "attorn" :"转让",
     "archive" :"归档",
-    "attorn" :"转让",
     "attorn_tips":"你可以将项目转让给他人",
     "archive_tips":"归档后，项目将变为只读，无法再修改/新增内容。如果要重新编辑，请复制到新项目后编辑",
     "delete_tips":"删除后将不可恢复！",
-    "attorn_username" :"项目接受者用户名",
+    "attorn_username" :"接受者用户名",
     "archive_tips2":"说明： 归档项目后，项目将无法再新增和修改内容，并且无法取消归档状态。 如想再次修改内容，可复制本项目，在新的项目基础上修改。复制项目的方法是，在创建项目的时候，选择从已有项目里复制。",
     "success_jump" :"操作成功！正在跳转...",
     "reset_token":"重新生成api_token",
@@ -328,5 +327,16 @@ exports.default = {
     "export_format_word":"word格式",
     "export_format_markdown":"markdown压缩包",
     "export_markdown_tips":"导出的压缩包可以重新导入showdoc，在新建项目的时候选择“文件导入”即可",
+    
+    "private_tips":"这是一个私密项目",
+
+    "oss_open":"图片附件储存到云",
+    "oss_server":"云服务商",
+    "aliyun":"阿里云",
+    "qiniu":"七牛云",
+    "oss_domain":"oss绑定域名(选填)",
+
+    "attornTeamTips":"转让团队后，该团队下拥有的所有项目也会一并转让给对方",
+
     
 };

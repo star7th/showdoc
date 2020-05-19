@@ -93,7 +93,7 @@ exports.default = {
     'open_api' : 'open api',
     'info_item_domain':"Personal domain name",
     'visit_password':"Password",
-    'visit_password_description':"(Optional: private project required)",
+    'visit_password_description':"(Optional: private item required)",
     "add_member" :"Add member",
     "authority" :"Authority",
     "add_time" :"Add time",
@@ -107,11 +107,10 @@ exports.default = {
     "confirm_delete" :"Confirm to delete",
     "attorn" :"Attorn",
     "archive" :"Archive",
-    "attorn" :"Attorn",
     "attorn_tips":"You can attorn item(s) to other user(s)",
-    "archive_tips":"After archiving, the project will become read-only, and no more changes / additions can be made. If you want to edit it again, copy it to the new project and then edit it",
+    "archive_tips":"After archiving, the item will become read-only, and no more changes / additions can be made. If you want to edit it again, copy it to the new project and then edit it",
     "delete_tips":"After deleting it, it can not be restored!",
-    "attorn_username" :"Username of project receiver",
+    "attorn_username" :"Username of receiver",
     "archive_tips2":"Note: After archiving a project, the project will no longer be able to add and modify content and will not be able to unarchive. If you want to modify the content again, you can copy the project and modify it on the basis of the new project. The way to copy a project is to choose to copy from an existing project when you create the project.",
     "success_jump" :"The operation is successful! Skipping...",
     "reset_token":"Reset token",
@@ -320,5 +319,15 @@ exports.default = {
     "export_format_word":"Word format",
     "export_format_markdown":"Markdown zip",
     "export_markdown_tips":"The exported compressed package can be re imported into showdoc. Select 'Import File' when creating a new item",
+
+    "private_tips":"It's a private item",
+
+    "oss_open":"Image/attachment saved to cloud",
+    "oss_server":"cloud server",
+    "aliyun":"aliyun",
+    "qiniu":"qiniu",
+    "oss_domain":"domain(optional)",
+
+    "attornTeamTips":"All items owned by the team will also be transferred to he/her",
 
 };
