@@ -83,7 +83,7 @@ class UserController extends BaseController {
 
     //登录
     public function login(){
-        $username = I("username");
+        $username = trim(I("username"));
         $password = I("password");
         $v_code = I("v_code");
         if (!$password) {
