@@ -291,10 +291,19 @@ export default {
             $(this).prop('outerHTML', '<div style="width: 100%;overflow-x: auto;">'+$(this).prop('outerHTML')+'</div>');
         });
 
-        //超链接都在新窗口打开
-        $("#"+this.id+' a[href^="http"]').each(function() {
-          $(this).attr('target', '_blank');
-
+        //默认超链接都在新窗口打开。但如果是本项目的页面链接，则在本窗口打开。
+        $("#"+this.id+' a[href^="http"]').click(function() {
+            var url = $(this).attr('href');
+            var obj = that.parseURL(url);
+            if (window.location.hostname == obj.hostname && window.location.pathname == obj.pathname) {
+                window.location.href = url;
+                if (obj.hash) {
+                  window.location.reload();
+                };
+            }else{
+              window.open(url) ;
+            }
+            return false ;
         });
 
         //对表格进行一些改造
@@ -381,7 +390,38 @@ export default {
       s = s.replace(/&quot;/g, "\"");   
       //s = s.replace(/<br>/g, "\n");   
       return s;   
+    },
+
+    parseURL(url) {
+        var a = document.createElement('a');
+        a.href = url;
+        // var a = new URL(url);
+        return {
+          source: url,
+          protocol: a.protocol.replace(':', ''), 
+          host: a.hostname,
+          hostname: a.hostname,
+          port: a.port,
+          query: a.search,
+          params: (function() {
+            var params = {},
+                seg = a.search.replace(/^\?/, '').split('&'),
+                len = seg.length,
+                p;
+            for (var i = 0; i < len; i++) {
+              if (seg[i]) {
+                 p = seg[i].split('=');
+                 params[p[0]] = p[1];   
+              }
+            }
+            return params;
+         })(),
+         hash: a.hash.replace('#', ''),
+         path: a.pathname.replace(/^([^\/])/, '/$1'),
+         pathname: a.pathname.replace(/^([^\/])/, '/$1'),
+        };
     }
+
   }
 };
 </script>
