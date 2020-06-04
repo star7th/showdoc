@@ -1,13 +1,11 @@
 <template>
-	<div>
-
-	</div>
+  <div></div>
 </template>
 
 <script>
 export default {
   name: 'Footer',
-  data () {
+  data() {
     return {
       msg: '尾部'
     }
@@ -17,5 +15,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>
