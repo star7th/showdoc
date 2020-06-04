@@ -31,7 +31,7 @@ axios.interceptors.response.use(
         path: '/user/login',
         query: { redirect: router.currentRoute.fullPath }
       })
-    } else if (response.data.error_code !== 0) {
+    } else if (response.data && response.data.error_code !== 0) {
       MessageBox.alert(response.data.error_message)
       return Promise.reject(new Error('something bad happened'))
     }
