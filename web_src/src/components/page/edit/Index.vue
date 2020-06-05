@@ -599,12 +599,14 @@ export default {
 
     // 锁定
     setLock() {
-      this.request('/api/page/setLock', {
-        page_id: this.page_id,
-        item_id: this.item_id
-      }).then(() => {
-        this.isLock = 1
-      })
+      if (this.page_id > 0) {
+        this.request('/api/page/setLock', {
+          page_id: this.page_id,
+          item_id: this.item_id
+        }).then(() => {
+          this.isLock = 1
+        })
+      }
     },
     // 解除锁定
     unlock() {
