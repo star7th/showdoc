@@ -635,11 +635,11 @@ export default {
         page_id: this.page_id
       }).then(res => {
         // 判断已经锁定了不
-        if (res.data.data.lock > 0) {
-          if (res.data.data.is_cur_user > 0) {
+        if (res.data.lock > 0) {
+          if (res.data.is_cur_user > 0) {
             this.isLock = 1
           } else {
-            this.$alert(this.$t('locking') + res.data.data.lock_username)
+            this.$alert(this.$t('locking') + res.data.lock_username)
             this.goback()
           }
         } else {

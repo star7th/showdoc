@@ -1,13 +1,12 @@
-
-body{
+body {
   margin: 0;
 }
 
-.grey-bg{
+.grey-bg {
   background-color: rgb(250, 250, 250);
 }
 #app {
-    font: 14px/1.5 "Microsoft Yahei", 微软雅黑, Tahoma, Arial, Helvetica, STHeiti;
+  font: 14px/1.5 "Microsoft Yahei", 微软雅黑, Tahoma, Arial, Helvetica, STHeiti;
 }
 
 a {
@@ -15,52 +14,56 @@ a {
   text-decoration: none;
 }
 
-.center-card{
-    width: 300px;
-    position  : absolute;
-    top       : 50%;
-    left      : 50%;
-    transform : translate(-50%,-50%);
-    padding-top: 0px;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-bottom: 0px;
-    box-sizing: border-box;
+.center-card {
+  width: 300px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding-top: 0px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 0px;
+  box-sizing: border-box;
 }
 
-.pull-right{
+.pull-right {
   float: right;
 }
 
-.pull-left{
+.pull-left {
   float: left;
 }
 
-.el-dropdown-link{
+.el-dropdown-link {
   cursor: pointer;
   color: #409eff;
 }
 
-li{
-  list-style-type:none;
+li {
+  list-style-type: none;
 }
 
-.markdown-body ul li{
-  list-style-type:disc;
+.markdown-body ul li {
+  list-style-type: disc;
 }
 
-.markdown-body ol li{
-  list-style-type:decimal;
+.markdown-body ol li {
+  list-style-type: decimal;
 }
 
-.text-center{
+.text-center {
   text-align: center;
 }
 
-.text-left{
+.text-left {
   text-align: left;
 }
 
-.block{
+.block {
   display: block;
+}
+
+.el-message-box {
+  max-width: 80vw;
 }
