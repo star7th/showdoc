@@ -455,4 +455,46 @@ class PageController extends BaseController {
     }
 
 
+    //判断页面是否加了编辑锁
+    public function  isLock(){
+        $page_id = I("page_id/d");
+        $lock = 0 ;
+        $now = time() ;
+        $login_user = $this->checkLogin(false);
+        $res = D("PageLock")->where(" page_id = '$page_id' and lock_to > '{$now}' ")->find() ;
+        if( $res){
+            $lock = 1 ;
+        }
+        $this->sendResult(array(
+            "lock" => $lock,
+            "lock_uid" => $res['lock_uid'] ?  $res['lock_uid'] : '',
+            "lock_username" => $res['lock_username'] ? $res['lock_username'] : '',
+            "is_cur_user" => $res['lock_uid'] == $login_user['uid'] ? 1 : 0 ,
+        ));
+    }
+
+    //设置页面加锁时间
+    public function setLock(){
+        $page_id = I("page_id/d");
+        $lock_to = I("lock_to/d") ? I("lock_to/d") :(time() + 5*60*60 )  ;
+        $item_id = I("item_id/d");
+        $login_user = $this->checkLogin();
+        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            $this->sendError(10103);
+            return ;
+        }
+        D("PageLock")->where( "page_id = '{$page_id}' ")->delete();
+        $id = D("PageLock")->add(array(
+            "page_id" => $page_id ,
+            "lock_uid" => $login_user['uid'] ,
+            "lock_username" => $login_user['username'] ,
+            "lock_to" => $lock_to ,
+            "addtime" => time() ,
+        ));
+        $now = time() ;
+        D("PageLock")->where( "lock_to < '{$now}' ")->delete();
+        $this->sendResult($id);
+
+    }
+
 }

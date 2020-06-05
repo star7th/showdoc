@@ -238,6 +238,17 @@ class UpdateController extends BaseController {
         )";
         D("User")->execute($sql);
 
+        //创建page_lock表
+        $sql = "CREATE TABLE IF NOT EXISTS `page_lock` (
+            `id`  INTEGER PRIMARY KEY ,
+            `page_id` int(11) NOT NULL DEFAULT '0',
+            `lock_uid` int(11) NOT NULL DEFAULT '0',
+            `lock_username` CHAR(200) NOT NULL DEFAULT '',
+            `lock_to` int(11) NOT NULL DEFAULT '0',
+            `addtime` int(11) NOT NULL DEFAULT '0'
+            )";
+        D("User")->execute($sql);
+
         echo "OK!\n";
     }
 

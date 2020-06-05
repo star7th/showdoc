@@ -45,6 +45,15 @@
               <span id="save-page">{{$t('save')}}</span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item :command="save_to_template">{{$t('save_to_templ')}}</el-dropdown-item>
+                <el-tooltip
+                  class="item"
+                  effect="dark"
+                  :content="$t('lock_edit_tips')"
+                  placement="left"
+                >
+                  <el-dropdown-item v-if="! isLock" :command="setLock">{{$t('lock_edit')}}</el-dropdown-item>
+                </el-tooltip>
+                <el-dropdown-item v-if="isLock" :command="unlock">{{$t('cacel_lock')}}</el-dropdown-item>
                 <!-- <el-dropdown-item>保存前添加注释</el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
@@ -176,11 +185,13 @@ export default {
       page_id: '',
       copy_page_id: '',
       attachment_count: '',
-      catalogs: []
+      catalogs: [],
+      isLock: 0,
+      intervalId: 0
     }
   },
   computed: {
-    //新建/编辑目录时供用户选择的上级目录列表
+    // 新建/编辑目录时供用户选择的上级目录列表
     belong_to_catalogs: function() {
       if (!this.catalogs || this.catalogs.length <= 0) {
         return []
@@ -189,7 +200,7 @@ export default {
       var Info = this.catalogs.slice(0)
       var cat_array = []
 
-      //这个函数将递归
+      // 这个函数将递归
       var rename = function(catalog, p_cat_name) {
         if (catalog.length > 0) {
           for (var j = 0; j < catalog.length; j++) {
@@ -225,10 +236,10 @@ export default {
     SortPage
   },
   methods: {
-    //获取页面内容
+    // 获取页面内容
     get_page_content(page_id) {
       if (!page_id) {
-        var page_id = this.page_id
+        page_id = this.page_id
       }
       var that = this
       var url = DocConfig.server + '/api/page/info'
@@ -238,14 +249,14 @@ export default {
         .post(url, params)
         .then(function(response) {
           if (response.data.error_code === 0) {
-            //that.$message.success("加载成功");
+            // that.$message.success("加载成功");
             that.content = response.data.data.page_content
             setTimeout(function() {
               that.insertValue(that.content, 1)
-              document.body.scrollTop = document.documentElement.scrollTop = 0 //回到顶部
+              document.body.scrollTop = document.documentElement.scrollTop = 0 // 回到顶部
             }, 500)
             setTimeout(function() {
-              //如果长度大于3000,则关闭预览
+              // 如果长度大于3000,则关闭预览
               if (that.content.length > 3000) {
                 that.editor_unwatch()
               } else {
@@ -266,7 +277,7 @@ export default {
         })
     },
 
-    //获取所有目录
+    // 获取所有目录
     get_catalog(item_id) {
       var that = this
       var url = DocConfig.server + '/api/catalog/catListGroup'
@@ -288,7 +299,7 @@ export default {
           console.log(error)
         })
     },
-    //获取默认该选中的目录
+    // 获取默认该选中的目录
     get_default_cat() {
       var that = this
       var url = DocConfig.server + '/api/catalog/getDefaultCat'
@@ -299,7 +310,7 @@ export default {
 
       that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
-          //that.$message.success("加载成功");
+          // that.$message.success("加载成功");
           var json = response.data.data
           that.cat_id = json.default_cat_id
         } else {
@@ -307,48 +318,50 @@ export default {
         }
       })
     },
-    //插入数据到编辑器中。插入到光标处。如果参数is_cover为真，则清空后再插入(即覆盖)。
+    // 插入数据到编辑器中。插入到光标处。如果参数is_cover为真，则清空后再插入(即覆盖)。
     insertValue(value, is_cover) {
       if (value) {
-        let childRef = this.$refs.Editormd //获取子组件
+        let childRef = this.$refs.Editormd // 获取子组件
         if (is_cover) {
           // 清空
           childRef.clear()
         }
-        childRef.insertValue(value) //调用子组件的方法
+        childRef.insertValue(value) // 调用子组件的方法
       }
     },
 
-    //插入api模板
+    // 插入api模板
     insert_api_template() {
+      var val
       if (DocConfig.lang == 'zh-cn') {
-        var val = Base64.decode(
+        val = Base64.decode(
           'CiAgICAKKirnroDopoHmj4/ov7DvvJoqKiAKCi0g55So5oi35rOo5YaM5o6l5Y+jCgoqKuivt+axglVSTO+8mioqIAotIGAgaHR0cDovL3h4LmNvbS9hcGkvdXNlci9yZWdpc3RlciBgCiAgCioq6K+35rGC5pa55byP77yaKioKLSBQT1NUIAoKKirlj4LmlbDvvJoqKiAKCnzlj4LmlbDlkI185b+F6YCJfOexu+Wei3zor7TmmI58Cnw6LS0tLSAgICB8Oi0tLXw6LS0tLS0gfC0tLS0tICAgfAp8dXNlcm5hbWUgfOaYryAgfHN0cmluZyB855So5oi35ZCNICAgfAp8cGFzc3dvcmQgfOaYryAgfHN0cmluZyB8IOWvhueggSAgICB8CnxuYW1lICAgICB85ZCmICB8c3RyaW5nIHwg5pi156ewICAgIHwKCiAqKui/lOWbnuekuuS+iyoqCgpgYGAgCiAgewogICAgImVycm9yX2NvZGUiOiAwLAogICAgImRhdGEiOiB7CiAgICAgICJ1aWQiOiAiMSIsCiAgICAgICJ1c2VybmFtZSI6ICIxMjE1NDU0NSIsCiAgICAgICJuYW1lIjogIuWQtOezu+aMgiIsCiAgICAgICJncm91cGlkIjogMiAsCiAgICAgICJyZWdfdGltZSI6ICIxNDM2ODY0MTY5IiwKICAgICAgImxhc3RfbG9naW5fdGltZSI6ICIwIiwKICAgIH0KICB9CmBgYAoKICoq6L+U5Zue5Y+C5pWw6K+05piOKiogCgp85Y+C5pWw5ZCNfOexu+Wei3zor7TmmI58Cnw6LS0tLS0gIHw6LS0tLS18LS0tLS0gICAgICAgICAgICAgICAgICAgICAgICAgICB8Cnxncm91cGlkIHxpbnQgICB855So5oi357uEaWTvvIwx77ya6LaF57qn566h55CG5ZGY77ybMu+8muaZrumAmueUqOaItyAgfAoKICoq5aSH5rOoKiogCgotIOabtOWkmui/lOWbnumUmeivr+S7o+eggeivt+eci+mmlumhteeahOmUmeivr+S7o+eggeaPj+i/sAoKCg=='
         )
       } else {
-        var val = Base64.decode(
+        val = Base64.decode(
           'ICAgIAoqKkJyaWVmIGRlc2NyaXB0aW9uOioqIAoKLSBVc2VyIFJlZ2lzdHJhdGlvbiBJbnRlcmZhY2UKCgoqKlJlcXVlc3QgVVJM77yaKiogCi0gYCBodHRwOi8veHguY29tL2FwaS91c2VyL3JlZ2lzdGVyIGAKICAKKipNZXRob2Q6KioKLSBQT1NUIAoKKipQYXJhbWV0ZXI6KiogCgp8UGFyYW1ldGVyIG5hbWV8UmVxdWlyZWR8VHlwZXxFeHBsYWlufAp8Oi0tLS0gICAgfDotLS18Oi0tLS0tIHwtLS0tLSAgIHwKfHVzZXJuYW1lIHxZZXMgIHxzdHJpbmcgfFlvdXIgdXNlcm5hbWUgICB8CnxwYXNzd29yZCB8WWVzICB8c3RyaW5nIHwgWW91ciBwYXNzd29yZCAgICB8CnxuYW1lICAgICB8Tm8gIHxzdHJpbmcgfCBZb3VyIG5hbWUgICAgfAoKICoqUmV0dXJuIGV4YW1wbGUqKgoKYGBgIAogIHsKICAgICJlcnJvcl9jb2RlIjogMCwKICAgICJkYXRhIjogewogICAgICAidWlkIjogIjEiLAogICAgICAidXNlcm5hbWUiOiAiMTIxNTQ1NDUiLAogICAgICAibmFtZSI6ICJoYXJyeSIsCiAgICAgICJncm91cGlkIjogMiAsCiAgICAgICJyZWdfdGltZSI6ICIxNDM2ODY0MTY5IiwKICAgICAgImxhc3RfbG9naW5fdGltZSI6ICIwIiwKICAgIH0KICB9CmBgYAoKICoqUmV0dXJuIHBhcmFtZXRlciBkZXNjcmlwdGlvbioqIAoKfFBhcmFtZXRlciBuYW1lfFR5cGV8RXhwbGFpbnwKfDotLS0tLSAgfDotLS0tLXwtLS0tLSAgICAgICAgICAgICAgICAgICAgICAgICAgIHwKfGdyb3VwaWQgfGludCAgIHwgIC58CgogKipSZW1hcmsqKiAKCi0gRm9yIG1vcmUgZXJyb3IgY29kZSByZXR1cm5zLCBzZWUgdGhlIGVycm9yIGNvZGUgZGVzY3JpcHRpb24gb24gdGhlIGhvbWUgcGFnZQoKCg=='
         )
       }
       this.insertValue(val)
     },
 
-    //插入数据字典模板
+    // 插入数据字典模板
     insert_database_template() {
+      var val
       if (DocConfig.lang == 'zh-cn') {
-        var val = Base64.decode(
+        val = Base64.decode(
           'CiAgICAKLSAg55So5oi36KGo77yM5YKo5a2Y55So5oi35L+h5oGvCgp85a2X5q61fOexu+Wei3znqbp86buY6K6kfOazqOmHinwKfDotLS0tICAgIHw6LS0tLS0tLSAgICB8Oi0tLSB8LS0gLXwtLS0tLS0gICAgICB8Cnx1aWQgICAgfGludCgxMCkgICAgIHzlkKYgfCAgfCAgICAgICAgICAgICB8Cnx1c2VybmFtZSB8dmFyY2hhcigyMCkgfOWQpiB8ICAgIHwgICDnlKjmiLflkI0gIHwKfHBhc3N3b3JkIHx2YXJjaGFyKDUwKSB85ZCmICAgfCAgICB8ICAg5a+G56CBICAgIHwKfG5hbWUgICAgIHx2YXJjaGFyKDE1KSB85pivICAgfCAgICB8ICAgIOaYteensCAgICAgfAp8cmVnX3RpbWUgfGludCgxMSkgICAgIHzlkKYgICB8IDAgIHwgICDms6jlhozml7bpl7QgIHwKCi0g5aSH5rOo77ya5pegCgoK'
         )
       } else {
-        var val = Base64.decode(
+        val = Base64.decode(
           'ICAgIAotICBVc2VyIHRhYmxlICwgdG8gc3RvcmUgdXNlciBpbmZvcm1hdGlvbgoKCgp8RmllbGR8VHlwZXxFbXB0eXxEZWZhdWx0fEV4cGxhaW58Cnw6LS0tLSAgICB8Oi0tLS0tLS0gICAgfDotLS0gfC0tIC18LS0tLS0tICAgICAgfAp8dWlkICAgIHxpbnQoMTApICAgICB8Tm8gfCAgfCAgICAgICAgICAgICB8Cnx1c2VybmFtZSB8dmFyY2hhcigyMCkgfE5vIHwgICAgfCAgICAgfAp8cGFzc3dvcmQgfHZhcmNoYXIoNTApIHxObyAgIHwgICAgfCAgICAgICB8CnxuYW1lICAgICB8dmFyY2hhcigxNSkgfE5vICAgfCAgICB8ICAgICAgICAgfAp8cmVnX3RpbWUgfGludCgxMSkgICAgIHxObyAgIHwgMCAgfCAgICAuIHwKCi0gUmVtYXJrIDogbm8KCg=='
         )
       }
       this.insertValue(val)
     },
-    //关闭预览
+    // 关闭预览
     editor_unwatch() {
-      let childRef = this.$refs.Editormd //获取子组件
+      let childRef = this.$refs.Editormd // 获取子组件
       childRef.editor_unwatch()
       if (sessionStorage.getItem('page_id_unwatch_' + this.page_id)) {
       } else {
@@ -358,43 +371,43 @@ export default {
     },
     //
     editor_watch() {
-      let childRef = this.$refs.Editormd //获取子组件
+      let childRef = this.$refs.Editormd // 获取子组件
       childRef.editor_watch()
     },
-    //json转参数表格
+    // json转参数表格
     ShowJsonToTable() {
-      let childRef = this.$refs.JsonToTable //获取子组件
+      let childRef = this.$refs.JsonToTable // 获取子组件
       childRef.dialogFormVisible = true
     },
-    //json格式化
+    // json格式化
     ShowJsonBeautify() {
-      let childRef = this.$refs.JsonBeautify //获取子组件
+      let childRef = this.$refs.JsonBeautify // 获取子组件
       childRef.dialogFormVisible = true
     },
 
     ShowRunApi() {
       window.open('http://runapi.showdoc.cc/')
     },
-    //更多模板、模板列表
+    // 更多模板、模板列表
     ShowTemplateList() {
-      let childRef = this.$refs.TemplateList //获取子组件
+      let childRef = this.$refs.TemplateList // 获取子组件
       childRef.show()
     },
-    //粘贴插入表格
+    // 粘贴插入表格
     ShowPasteTable() {
-      let childRef = this.$refs.PasteTable //获取子组件
+      let childRef = this.$refs.PasteTable // 获取子组件
       childRef.dialogFormVisible = true
     },
 
-    //展示历史版本
+    // 展示历史版本
     ShowHistoryVersion() {
-      let childRef = this.$refs.HistoryVersion //获取子组件
+      let childRef = this.$refs.HistoryVersion // 获取子组件
       childRef.show()
     },
-    //展示页面排序
+    // 展示页面排序
     ShowSortPage() {
       this.save(() => {
-        let childRef = this.$refs.SortPage //获取子组件
+        let childRef = this.$refs.SortPage // 获取子组件
         childRef.show()
       })
     },
@@ -427,7 +440,7 @@ export default {
             })
           }
 
-          //删除草稿
+          // 删除草稿
           that.deleteDraft()
 
           if (page_id <= 0) {
@@ -440,7 +453,7 @@ export default {
           that.$alert(response.data.error_message)
         }
       })
-      //设置一个最长关闭时间
+      // 设置一个最长关闭时间
       setTimeout(() => {
         loading.close()
       }, 20000)
@@ -457,7 +470,7 @@ export default {
         data()
       }
     },
-    //另存为模板
+    // 另存为模板
     save_to_template() {
       var that = this
       let childRef = this.$refs.Editormd
@@ -476,9 +489,9 @@ export default {
         })
       })
     },
-    //附件
+    // 附件
     ShowAttachment() {
-      let childRef = this.$refs.AttachmentList //获取子组件
+      let childRef = this.$refs.AttachmentList // 获取子组件
       childRef.show()
     },
     /** 粘贴上传图片 **/
@@ -529,12 +542,15 @@ export default {
             processData: false,
             contentType: false,
             beforeSend: function() {
+              // eslint-disable-next-line standard/no-callback-literal
               callback('before')
             },
             error: function() {
+              // eslint-disable-next-line standard/no-callback-literal
               callback('error')
             },
             success: function(data) {
+              // eslint-disable-next-line standard/no-callback-literal
               callback('success', data)
             }
           })
@@ -542,18 +558,18 @@ export default {
         }
       }
     },
-    //草稿
+    // 草稿
     draft() {
       var that = this
       var pkey = 'page_content_' + this.page_id
-      //定时保存文本内容到localStorage
+      // 定时保存文本内容到localStorage
       setInterval(() => {
         let childRef = this.$refs.Editormd
         var content = childRef.getMarkdown()
         localStorage.setItem(pkey, content)
       }, 30 * 1000)
 
-      //检测是否有定时保存的内容
+      // 检测是否有定时保存的内容
       var page_content = localStorage.getItem(pkey)
       if (page_content && page_content.length > 0) {
         localStorage.removeItem(pkey)
@@ -571,7 +587,7 @@ export default {
       }
     },
 
-    //遍历删除草稿
+    // 遍历删除草稿
     deleteDraft() {
       for (var i = 0; i < localStorage.length; i++) {
         var name = localStorage.key(i)
@@ -579,12 +595,61 @@ export default {
           localStorage.removeItem(name)
         }
       }
+    },
+
+    // 锁定
+    setLock() {
+      this.request('/api/page/setLock', {
+        page_id: this.page_id,
+        item_id: this.item_id
+      }).then(() => {
+        this.isLock = 1
+      })
+    },
+    // 解除锁定
+    unlock() {
+      if (!this.isLock) {
+        return // 本来处于未锁定中的话，不发起请求
+      }
+      this.request('/api/page/setLock', {
+        page_id: this.page_id,
+        item_id: this.item_id,
+        lock_to: 1000
+      }).then(() => {
+        this.isLock = 0
+      })
+    },
+    // 如果用户处于锁定状态的话，用心跳保持锁定
+    heartBeatLock() {
+      this.intervalId = setInterval(() => {
+        if (this.isLock) {
+          this.setLock()
+        }
+      }, 3 * 60 * 1000)
+    },
+    // 判断页面是否被锁定编辑
+    remoteIsLock() {
+      this.request('/api/page/isLock', {
+        page_id: this.page_id
+      }).then(res => {
+        // 判断已经锁定了不
+        if (res.data.data.lock > 0) {
+          if (res.data.data.is_cur_user > 0) {
+            this.isLock = 1
+          } else {
+            this.$alert(this.$t('locking') + res.data.data.lock_username)
+            this.goback()
+          }
+        } else {
+          this.setLock() // 如果没有被别人锁定，则进编辑页面后自己锁定。
+        }
+      })
     }
   },
 
   mounted() {
-    var that = this
     this.page_id = this.$route.params.page_id
+    this.item_id = this.$route.params.item_id
     this.copy_page_id = this.$route.query.copy_page_id
       ? this.$route.query.copy_page_id
       : ''
@@ -594,21 +659,23 @@ export default {
     } else if (this.page_id > 0) {
       this.get_page_content(this.page_id)
     } else {
-      this.item_id = this.$route.params.item_id
       this.content = this.$t('welcome_use_showdoc')
     }
     this.get_catalog(this.$route.params.item_id)
 
     this.draft()
-
+    this.heartBeatLock()
+    this.remoteIsLock()
     /** 监听粘贴上传图片 **/
     document.addEventListener('paste', this.upload_paste_img)
   },
 
   beforeDestroy() {
-    //解除对粘贴上传图片的监听
+    // 解除对粘贴上传图片的监听
     document.removeEventListener('paste', this.upload_paste_img)
     this.$message.closeAll()
+    clearInterval(this.intervalId)
+    this.unlock()
   }
 }
 </script>
