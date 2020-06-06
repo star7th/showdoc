@@ -134,7 +134,35 @@ class CatalogModel extends BaseModel {
 
 	}
 
+	//根据用户目录权限来过滤目录数据
+	public function filteMemberCat($uid  , $catData){
+		if(!$catData || !$catData[0]['item_id']){
+			return $catData ;
+		}
+		$item_id = $catData[0]['item_id'] ;
+		$cat_id = 0 ;
+		//首先看是否被添加为项目成员
+		$itemMember = D("ItemMember")->where("uid = '$uid' and item_id = '$item_id' ")->find() ;
+		if($itemMember && $itemMember['cat_id'] > 0 ){
+				$cat_id = $itemMember['cat_id'] ;
+		}
+		//再看是否添加为团队-项目成员
+		$teamItemMember = D("TeamItemMember")->where("member_uid = '$uid' and item_id = '$item_id' ")->find() ;
+		if($teamItemMember && $teamItemMember['cat_id'] > 0 ){
+				$cat_id = $teamItemMember['cat_id'] ;
+		}
+		//开始根据cat_id过滤
+		if($cat_id > 0 ){
+			foreach ($catData as $key => $value) {
+					if( $value['cat_id'] != $cat_id){
+							unset($catData[$key]);
+					}
+			}
+			$catData = array_values($catData);
+		}
 
+		return $catData ;
+	}
 	
 
 }

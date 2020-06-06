@@ -67,6 +67,9 @@ class ItemController extends BaseController {
             $menu['pages'] = $pages ? $pages : array();
         }else{
             $menu = D("Item")->getMemu($item_id) ;
+            if($uid > 0 ){
+                $menu = D("Item")->filteMemberItem($uid , $item_id , $menu);
+            }
         }
 
         $domain = $item['item_domain'] ? $item['item_domain'] : $item['item_id'];

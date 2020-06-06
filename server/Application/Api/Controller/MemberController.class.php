@@ -8,6 +8,7 @@ class MemberController extends BaseController {
     public function save(){ 
         $member_group_id =  I("member_group_id/d");
         $item_id = I("item_id/d");  
+        $cat_id = I("cat_id/d") ?  I("cat_id/d") : 0 ;
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
         if(!$this->checkItemCreator($uid , $item_id)){
@@ -31,6 +32,7 @@ class MemberController extends BaseController {
             $data['uid'] = $member['uid'] ;
             $data['item_id'] = $item_id ;
             $data['member_group_id'] = $member_group_id ;
+            $data['cat_id'] = $cat_id ;
             $data['addtime'] = time() ; 
             $id = D("ItemMember")->add($data); 
         }
@@ -58,7 +60,15 @@ class MemberController extends BaseController {
         if ($ret) {
             foreach ($ret as $key => &$value) {
                 $value['addtime'] = date("Y-m-d H:i:s",$value['addtime']);
-                $value['member_group'] = $value['member_group_id'] == 1 ? "编辑" :"只读"; 
+                $value['member_group'] = $value['member_group_id'] == 1 ? "编辑" :"只读";
+                $value['cat_name'] = '所有目录';
+                if($value['cat_id'] > 0 ){
+                    $row = D("Catalog")->where(" cat_id = '$value[cat_id]' ")->find() ;
+                    if ( $row &&  $row['cat_name'] ){
+                        $value['cat_name'] =  $row['cat_name'] ;
+                    }
+                }
+                $value['member_group'] = $value['member_group_id'] == 1 ? "编辑/目录：{$value['cat_name']}" :"只读/目录：{$value['cat_name']}"; 
             }
         }
         $this->sendResult($ret);

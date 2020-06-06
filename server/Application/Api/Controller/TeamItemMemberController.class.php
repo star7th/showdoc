@@ -14,6 +14,7 @@ class TeamItemMemberController extends BaseController {
 
         $id = I("id/d");
         $member_group_id = I("member_group_id/d");
+        $cat_id = I("cat_id/d");
 
         $teamItemMemberInfo = D("TeamItemMember")->where(" id = '$id'  ")->find();
         $item_id = $teamItemMemberInfo['item_id'] ;
@@ -31,8 +32,12 @@ class TeamItemMemberController extends BaseController {
             return ;
         } 
 
-        $return = D("TeamItemMember")->where(" id = '$id' ")->save(array("member_group_id"=>$member_group_id));
-
+        if(isset($_POST['member_group_id'])){
+            $return = D("TeamItemMember")->where(" id = '$id' ")->save(array("member_group_id"=>$member_group_id));
+        }
+        if(isset($_POST['cat_id'])){
+            $return = D("TeamItemMember")->where(" id = '$id' ")->save(array("cat_id"=>$cat_id));
+        }
         $this->sendResult($return);
         
     }
@@ -55,6 +60,13 @@ class TeamItemMemberController extends BaseController {
         if ($ret) {
             foreach ($ret as $key => &$value) {
                 $value['addtime'] = date("Y-m-d H:i:s" , $value['addtime']);
+                $value['cat_name'] = '所有目录';
+                if($value['cat_id'] > 0 ){
+                    $row = D("Catalog")->where(" cat_id = '$value[cat_id]' ")->find() ;
+                    if ( $row &&  $row['cat_name'] ){
+                        $value['cat_name'] =  $row['cat_name'] ;
+                    }
+                }
             }
            $this->sendResult($ret);
         }else{

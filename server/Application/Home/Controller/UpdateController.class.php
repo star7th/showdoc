@@ -249,6 +249,18 @@ class UpdateController extends BaseController {
             )";
         D("User")->execute($sql);
 
+        //item_member表增加cat_id字段
+        if (!$this->_is_column_exist("item_member","cat_id")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."item_member ADD cat_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
+            D("User")->execute($sql);
+        }
+
+        //team_item_member表增加cat_id字段
+        if (!$this->_is_column_exist("team_item_member","cat_id")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."team_item_member ADD cat_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
+            D("User")->execute($sql);
+        }
+
         echo "OK!\n";
     }
 

@@ -32,7 +32,7 @@
       height="200"
       style="width: 100%"
     >
-      <el-table-column prop="team_name" :label="'团队名'"></el-table-column>
+      <el-table-column prop="team_name" :label="$t('team_name')"></el-table-column>
       <el-table-column prop="addtime" :label="$t('add_time')"></el-table-column>
 
       <el-table-column prop :label="$t('operation')">
@@ -74,6 +74,16 @@
         </el-form-item>
         <el-form-item label class="readonly-checkbox">
           <el-checkbox v-model="MyForm.is_readonly">{{$t('readonly')}}</el-checkbox>
+        </el-form-item>
+        <el-form-item label>
+          <el-select v-model="MyForm.cat_id" :placeholder="$t('all_cat2')">
+            <el-option
+              v-for="item in catalogs"
+              :key="item.cat_id"
+              :label="item.cat_name"
+              :value="item.cat_id"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
 
@@ -139,6 +149,23 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
+              ></el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column prop="cat_id" :label="$t('catalog')" width="130">
+          <template slot-scope="scope">
+            <el-select
+              size="mini"
+              v-model="scope.row.cat_id"
+              @change="changeTeamItemMemberCat($event,scope.row.id)"
+              :placeholder="$t('please_choose')"
+            >
+              <el-option
+                v-for="item in catalogs"
+                :key="item.cat_id"
+                :label="item.cat_name"
+                :value="item.cat_id"
               ></el-option>
             </el-select>
           </template>
@@ -253,6 +280,7 @@ export default {
       var params = new URLSearchParams()
       params.append('item_id', that.$route.params.item_id)
       params.append('username', this.MyForm.username)
+      params.append('cat_id', this.MyForm.cat_id)
       var member_group_id = 1
       if (this.MyForm.is_readonly) {
         member_group_id = 0
@@ -345,7 +373,7 @@ export default {
 
       that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
-          that.$message('权限保存成功')
+          that.$message(that.$t('auth_success'))
         } else {
           that.$alert(response.data.error_message)
         }
@@ -393,6 +421,40 @@ export default {
         }
       }
       return false
+    },
+    get_catalog() {
+      var that = this
+      var url = DocConfig.server + '/api/catalog/catListGroup'
+      var params = new URLSearchParams()
+      params.append('item_id', that.$route.params.item_id)
+      that.axios.post(url, params).then(function(response) {
+        if (response.data.error_code === 0) {
+          var Info = response.data.data
+          Info.unshift({
+            cat_id: '0',
+            cat_name: that.$t('all_cat')
+          })
+          that.catalogs = Info
+        } else {
+          that.$alert(response.data.error_message)
+        }
+      })
+    },
+    changeTeamItemMemberCat(cat_id, id) {
+      var that = this
+      var url = DocConfig.server + '/api/teamItemMember/save'
+
+      var params = new URLSearchParams()
+      params.append('cat_id', cat_id)
+      params.append('id', id)
+
+      that.axios.post(url, params).then(function(response) {
+        if (response.data.error_code === 0) {
+          that.$message(that.$t('cat_success'))
+        } else {
+          that.$alert(response.data.error_message)
+        }
+      })
     }
   },
 
@@ -401,6 +463,7 @@ export default {
     this.get_teams()
     this.getTeamItem()
     this.getAllUser()
+    this.get_catalog()
   }
 }
 </script>

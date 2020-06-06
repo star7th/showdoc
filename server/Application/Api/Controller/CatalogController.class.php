@@ -13,6 +13,7 @@ class CatalogController extends BaseController {
         }
         if ($item_id > 0 ) {
             $ret = D("Catalog")->getList($item_id);
+            $ret = D("Catalog")->filteMemberCat($login_user['uid'] , $ret);
         }
         if ($ret) {
            $this->sendResult($ret);
@@ -31,6 +32,7 @@ class CatalogController extends BaseController {
         }
         if ($item_id > 0 ) {
             $ret = D("Catalog")->getList($item_id,true);
+            $ret = D("Catalog")->filteMemberCat($login_user['uid'] , $ret);
         }
         if ($ret) {
            $this->sendResult($ret);

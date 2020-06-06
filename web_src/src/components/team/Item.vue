@@ -63,7 +63,7 @@
           style="width: 100%"
         >
           <el-table-column prop="member_username" :label="$t('username')"></el-table-column>
-          <el-table-column prop="member_group_id" :label="$t('authority')" width="130">
+          <el-table-column prop="member_group_id" :label="$t('authority')" width="100">
             <template slot-scope="scope">
               <el-select
                 size="mini"
@@ -76,6 +76,23 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
+                ></el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column prop="cat_id" :label="$t('catalog')" width="130">
+            <template slot-scope="scope">
+              <el-select
+                size="mini"
+                v-model="scope.row.cat_id"
+                @change="changeTeamItemMemberCat($event,scope.row.id)"
+                :placeholder="$t('please_choose')"
+              >
+                <el-option
+                  v-for="item in catalogs"
+                  :key="item.cat_id"
+                  :label="item.cat_name"
+                  :value="item.cat_id"
                 ></el-option>
               </el-select>
             </template>
@@ -117,7 +134,8 @@ export default {
           label: '只读',
           value: '0'
         }
-      ]
+      ],
+      catalogs: []
     }
   },
   methods: {
@@ -198,6 +216,7 @@ export default {
     getTeamItemMember(item_id) {
       var that = this
       this.dialogFormTeamMemberVisible = true
+      this.get_catalog(item_id)
       var url = DocConfig.server + '/api/teamItemMember/getList'
       var params = new URLSearchParams()
       params.append('item_id', item_id)
@@ -222,6 +241,40 @@ export default {
       that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
           that.$message('权限保存成功')
+        } else {
+          that.$alert(response.data.error_message)
+        }
+      })
+    },
+    changeTeamItemMemberCat(cat_id, id) {
+      var that = this
+      var url = DocConfig.server + '/api/teamItemMember/save'
+
+      var params = new URLSearchParams()
+      params.append('cat_id', cat_id)
+      params.append('id', id)
+
+      that.axios.post(url, params).then(function(response) {
+        if (response.data.error_code === 0) {
+          that.$message(that.$t('cat_success'))
+        } else {
+          that.$alert(response.data.error_message)
+        }
+      })
+    },
+    get_catalog(item_id) {
+      var that = this
+      var url = DocConfig.server + '/api/catalog/catListGroup'
+      var params = new URLSearchParams()
+      params.append('item_id', item_id)
+      that.axios.post(url, params).then(function(response) {
+        if (response.data.error_code === 0) {
+          var Info = response.data.data
+          Info.unshift({
+            cat_id: '0',
+            cat_name: that.$t('all_cat')
+          })
+          that.catalogs = Info
         } else {
           that.$alert(response.data.error_message)
         }
