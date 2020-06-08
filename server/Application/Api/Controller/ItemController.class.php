@@ -109,7 +109,11 @@ class ItemController extends BaseController {
             $help_url = "https://www.showdoc.cc/help";
         }
 
-
+        //当已经归档了，则去掉编辑权限
+        if($item['is_archived']){
+            $ItemPermn = $ItemCreator = false; 
+        }
+        
         $return = array(
             "item_id"=>$item_id ,
             "item_domain"=>$item['item_domain'] ,
