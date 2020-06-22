@@ -235,6 +235,12 @@ class CatalogController extends BaseController {
                         "s_number" => $value['s_number'] ,
                         ));
                 }
+                if ($value['page_id'] > 0) {
+                    $ret = D("Page")->where(" page_id = '$value[page_id]' and item_id = '$item_id' ")->save(array(
+                        "cat_id" => $value['parent_cat_id'] ,
+                        "s_number" => $value['s_number'] ,
+                        ));
+                }
 
             }
         }

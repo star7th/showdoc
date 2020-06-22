@@ -28,6 +28,12 @@
             </a>
           </el-tooltip>
 
+          <el-tooltip v-if="lang =='zh-cn'" class="item" effect="dark" content="接口开发调试工具RunApi" placement="top">
+            <a target="_blank" href="https://www.showdoc.cc/runapi">
+              <i class="el-icon-connection"></i>
+            </a>
+          </el-tooltip>
+
           <el-tooltip class="item" effect="dark" :content="$t('team_mamage')" placement="top">
             <router-link to="/team/index">
               <i class="el-icon-s-flag"></i>
@@ -53,9 +59,6 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>
                   <router-link to="/user/setting">{{$t("personal_setting")}}</router-link>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <a target="_blank" v-if="lang =='zh-cn'" href="http://runapi.showdoc.cc/">RunApi</a>
                 </el-dropdown-item>
                 <el-dropdown-item :command="logout">{{$t("logout")}}</el-dropdown-item>
               </el-dropdown-menu>

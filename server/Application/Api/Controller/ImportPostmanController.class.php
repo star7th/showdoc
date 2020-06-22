@@ -34,10 +34,10 @@ class ImportPostmanController extends BaseController {
 
         // TODO 这里需要检查下合法性。比如关键字检查/黑名单检查/字符串过滤
 
-
+        $from = I("from") ? I("from") : '' ;
         $item_array = array(
             "item_name" => $json_array['name'] ? $json_array['name'] : 'from postman' ,
-            "item_type" => '1' ,
+            "item_type" =>   ($from == 'runapi') ? '3': '1' ,
             "item_description" => $json_array['description'] ? $json_array['description'] :'',
             "password" => time().rand(),
             "members" => array(),
@@ -72,11 +72,12 @@ class ImportPostmanController extends BaseController {
 
         }
 
-        D("Item")->import( json_encode($item_array) , $login_user['uid'] );
+        $item_id = D("Item")->import( json_encode($item_array) , $login_user['uid'] );
         
         //echo D("Item")->export(196053901215026 );
         //echo json_encode($item_array);
-        $this->sendResult(array());
+        $this->sendResult(array("item_id"=>$item_id));
+
 
 
     }
@@ -120,6 +121,11 @@ class ImportPostmanController extends BaseController {
 
 
     private function _requestToDoc($request){
+        $from = I("from") ? I("from") : '' ;
+        if($from == 'runapi'){
+            return $this->_requestToApi($request);
+            //如果是来自runapi的导入请求，则已经return不再执行下面
+        }
         $return = array() ;
         $return['page_title'] = $request['name'] ;
         $return['id'] = $request['id'] ;
@@ -187,6 +193,75 @@ $content .='
 
     }
 
+    //转成runapi所需要的api格式
+    private function _requestToApi($request){
+        $return = array() ;
+        $return['page_title'] = $request['name'] ;
+        $return['id'] = $request['id'] ;
+        $return['s_number'] = 99 ;
+        $return['page_comments'] = '' ;
+        //若$return['page_title'] 为很长的url，则做一些特殊处理
+        $tmp_title_array = explode("/", $return['page_title']);
+        if ($tmp_title_array) {
+            $tmp_title_array = array_slice($tmp_title_array, -2);// 倒数2个
+            if($tmp_title_array[1])$return['page_title'] = $tmp_title_array[0]."/".$tmp_title_array[1] ;
+        }
+        
+        $content_array = array(
+                "info"=>array(
+                    "from" =>  'runapi'  ,
+                    "type" =>  'api'  ,
+                    "title" =>  $request['name']  ,
+                    "description" =>  $request['description']  ,
+                    "method" =>  strtolower($request['method'])  ,
+                    "url" =>  $request['url']  ,
+                    "remark" =>  '' ,
+                ),
+                "request" =>array(
+                    "params"=> array(
+                        'mode' => "urlencoded",
+                        'json' => "",
+                        'urlencoded' => array(),
+                        'formdata' => array(),
+                    ),
+                    "headers"=> array(),
+                    "cookies"=> array(),
+                    "auth"=> array(),
+                ),
+                "response" =>array(),
+                "extend" =>array(),
+            );
+
+        if ($request['headerData']) {
+            $tmp_array = array();
+            foreach ($request['headerData'] as $key => $value) {
+                 $content_array['request']['headers'][] = array(
+                        "name" =>$value["key"],
+                        "type" =>'string',
+                        "value" =>$value["value"],
+                        "require" =>'1',
+                        "remark" =>'',
+                    );
+            }
+        }
+
+        if ($request['data']) {
+
+            foreach ($request['data'] as $key => $value) {
+                 $content_array['request']['params']['urlencoded'][] = array(
+                        "name" =>$value["key"],
+                        "type" =>'string',
+                        "value" =>$value["value"],
+                        "require" =>'1',
+                        "remark" =>'',
+                    );
+            }
+        }
+
+        $return['page_content'] = json_encode($content_array) ;
+        return $return ;
+    }
+
 
     //从postman导入(v2版本)
     private function _fromPostmanV2($json_array){
@@ -195,10 +270,10 @@ $content .='
 
         // TODO 这里需要检查下合法性。比如关键字检查/黑名单检查/字符串过滤
 
-
+        $from = I("from") ? I("from") : '' ;
         $item_array = array(
             "item_name" => $json_array['info']['name'] ? $json_array['info']['name']  : 'from postman' ,
-            "item_type" => '1' ,
+            "item_type" => ($from=='runapi') ? '3' : '1' ,
             "item_description" => $json_array['info']['description'] ? $json_array['info']['description'] :'',
             "password" => time().rand(),
             "members" => array(),
@@ -210,11 +285,11 @@ $content .='
         $level = 2 ;
         $item_array['pages']['pages'] = $this->_getPageByItem($json_array['item'] );
         $item_array['pages']['catalogs'] = $this->_getItemByItem($json_array['item'] , 2 );
-        D("Item")->import( json_encode($item_array) , $login_user['uid'] );
+        $item_id =  D("Item")->import( json_encode($item_array) , $login_user['uid'] );
         
         //echo D("Item")->export(196053901215026 );
         //echo json_encode($item_array);
-        $this->sendResult(array());
+        $this->sendResult(array("item_id"=>$item_id));
 
 
     }
@@ -255,6 +330,11 @@ $content .='
     }
 
     private function _requestToDocV2($name , $request){
+        $from = I("from") ? I("from") : '' ;
+        if($from == 'runapi'){
+            return $this->_requestToApiV2($name , $request);
+            //如果是来自runapi的导入请求，则已经return不再执行下面
+        }
         $return = array() ;
         $return['page_title'] = $name ;
         $return['s_number'] = 99 ;
@@ -322,6 +402,76 @@ $content .='
         $return['page_content'] = $content ;
         return $return ;
 
+    }
+
+    //转成runapi所需要的api格式
+    private function _requestToApiV2($name , $request){
+        $return = array() ;
+        $return['page_title'] = $name ;
+        $return['s_number'] = 99 ;
+        $return['page_comments'] = '' ;
+        //若$return['page_title'] 为很长的url，则做一些特殊处理
+        $tmp_title_array = explode("/", $return['page_title']);
+        if ($tmp_title_array) {
+            $tmp_title_array = array_slice($tmp_title_array, -2);// 倒数2个
+            if($tmp_title_array[1])$return['page_title'] = $tmp_title_array[0]."/".$tmp_title_array[1] ;
+        }
+        $url = is_array($request['url']) ? $request['url']['raw'] : $request['url'] ;
+        $rawModeData = $request['body']['mode'] == 'raw' ? $request['body']['raw']  : $request['rawModeData'] ;
+
+        $content_array = array(
+                "info"=>array(
+                    "from" =>  'runapi'  ,
+                    "type" =>  'api'  ,
+                    "title" =>  $name ,
+                    "description" =>  $request['description']  ,
+                    "method" =>  strtolower($request['method'])  ,
+                    "url" =>  $url ,
+                    "remark" =>  '' ,
+                ),
+                "request" =>array(
+                    "params"=> array(
+                        'mode' => "formdata",
+                        'json' => "",
+                        'urlencoded' => array(),
+                        'formdata' => array(),
+                    ),
+                    "headers"=> array(),
+                    "cookies"=> array(),
+                    "auth"=> array(),
+                ),
+                "response" =>array(),
+                "extend" =>array(),
+            );
+
+        if ($request['header']) {
+            $tmp_array = array();
+            foreach ($request['header'] as $key => $value) {
+                 $content_array['request']['headers'][] = array(
+                        "name" =>$value["key"],
+                        "type" =>'string',
+                        "value" =>$value["value"],
+                        "require" =>'1',
+                        "remark" =>'',
+                    );
+            }
+        }
+
+        if ($request['body']['formdata']) {
+            foreach ($request['body']['formdata'] as $key => $value) {
+                 $content_array['request']['params']['formdata'][] = array(
+                        "name" =>$value["key"],
+                        "type" =>'string',
+                        "value" =>$value["value"],
+                        "require" =>'1',
+                        "remark" =>'',
+                    );
+            }
+        }
+
+        $return['page_content'] = json_encode($content_array) ;
+
+        return $return ;
     }
 
 }

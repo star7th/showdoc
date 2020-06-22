@@ -7,7 +7,7 @@
       :item_info="item_info"
       :search_item="search_item"
       :keyword="keyword"
-      v-if="item_info && item_info.item_type == 1 "
+      v-if="item_info && (item_info.item_type == 1 || item_info.item_type == 3 ) "
     ></ShowRegularItem>
 
     <!-- 展示单页项目 -->
@@ -60,6 +60,10 @@ export default {
             if (json.menu.pages[0]) {
               json.default_page_id = json.menu.pages[0].page_id
             }
+          }
+          //如果是irunapi类型项目，则去掉编辑权限。只允许在runapi里编辑
+          if(json.item_type == 3){
+            json.ItemCreator = json.ItemPermn = false;  
           }
           that.item_info = json
           document.title = that.item_info.item_name + '--ShowDoc'

@@ -71,6 +71,7 @@ import Toc from '@/components/item/show/show_regular_item/Toc'
 import LeftMenu from '@/components/item/show/show_regular_item/LeftMenu'
 import OpBar from '@/components/item/show/show_regular_item/OpBar'
 import AttachmentList from '@/components/page/edit/AttachmentList'
+import { rederPageContent } from '@/models/page'
 
 export default {
   props: {
@@ -114,7 +115,7 @@ export default {
       that.axios.post(url, params).then(function(response) {
         // loading.close();
         if (response.data.error_code === 0) {
-          that.content = response.data.data.page_content
+           that.content = rederPageContent(response.data.data.page_content)
 
           that.page_title = response.data.data.page_title
           that.page_info = response.data.data

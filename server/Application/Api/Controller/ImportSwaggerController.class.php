@@ -26,7 +26,7 @@ class ImportSwaggerController extends BaseController {
 
         // TODO 这里需要检查下合法性。比如关键字检查/黑名单检查/字符串过滤
 
-
+        $from = I("from") ? I("from") : '' ;
         $item_array = array(
             "item_name" => $json_array['info']['title'] ? $json_array['info']['title']  : 'from swagger' ,
             "item_type" => '1' ,
@@ -35,16 +35,21 @@ class ImportSwaggerController extends BaseController {
             "members" => array(),
             "pages" =>array(
                     "pages" => array(),
-                    "catalogs" => array()
+                    "catalogs" => array(
+                            array(
+                                "cat_name" =>'from swagger',
+                                "pages" =>array()
+                            )
+                        )
                 )
             ) ;
         $level = 2 ;
-        $item_array['pages']['pages'] = $this->_getPageByPaths($json_array );
-        D("Item")->import( json_encode($item_array) , $login_user['uid'] );
+        $item_array['pages']['catalogs'][0]['pages'] = $this->_getPageByPaths($json_array);
+        $item_id = D("Item")->import( json_encode($item_array) , $login_user['uid'] );
         
         //echo D("Item")->export(196053901215026 );
         //echo json_encode($item_array);
-        $this->sendResult(array());
+        $this->sendResult(array('item_id' => $item_id));
 
     }
 
@@ -61,6 +66,11 @@ class ImportSwaggerController extends BaseController {
     }
 
     private function _requestToDoc($method , $url , $request , $json_array){
+        $from = I("from") ? I("from") : '' ;
+        if($from == 'runapi'){
+            return $this->_requestToApi($method , $url , $request , $json_array);
+            //如果是来自runapi的导入请求，则已经return不再执行下面
+        }
         $return = array() ;
         $return['page_title'] = $request['summary'] ;
         $return['s_number'] = 99 ;
@@ -159,6 +169,69 @@ $content .= '
         return $return ;
 
     }
+
+    private function _requestToApi($method , $url , $request , $json_array){
+        $return = array() ;
+        $return['page_title'] = $request['summary'] ;
+        $return['s_number'] = 99 ;
+        $return['page_comments'] = '' ;
+        
+        $content_array = array(
+                "info"=>array(
+                    "from" =>  'runapi'  ,
+                    "type" =>  'api'  ,
+                    "title" => $request['summary']  ,
+                    "description" =>  $request['description']  ,
+                    "method" =>  strtolower($method)  ,
+                    "url" =>  $url  ,
+                    "remark" =>  '' ,
+                ),
+                "request" =>array(
+                    "params"=> array(
+                        'mode' => "formdata",
+                        'json' => "",
+                        'urlencoded' => array(),
+                        'formdata' => array(),
+                    ),
+                    "headers"=> array(),
+                    "cookies"=> array(),
+                    "auth"=> array(),
+                ),
+                "response" =>array(),
+                "extend" =>array(),
+            );
+
+        if ($request['headerData']) {
+            $tmp_array = array();
+            foreach ($request['headerData'] as $key => $value) {
+                 $content_array['request']['headers'][] = array(
+                        "name" =>$value["key"],
+                        "type" =>'string',
+                        "value" =>$value["value"],
+                        "require" =>'1',
+                        "remark" =>'',
+                    );
+            }
+        }
+
+        if ($request['parameters']) {
+
+            foreach ($request['parameters'] as $key => $value) {
+                 $content_array['request']['params']['formdata'][] = array(
+                        "name" =>$value["name"],
+                        "type" =>'string',
+                        "value" =>$value["value"],
+                        "require" =>'1',
+                        "remark" =>$value["description"],
+                    );
+            }
+        }
+
+        $return['page_content'] = json_encode($content_array);
+        return $return ;
+
+    }
+
 
     /**
      * Indents a flat JSON string to make it more human-readable.

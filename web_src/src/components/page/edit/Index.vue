@@ -171,6 +171,7 @@ import AttachmentList from '@/components/page/edit/AttachmentList'
 import PasteTable from '@/components/page/edit/PasteTable'
 import SortPage from '@/components/page/edit/SortPage'
 import { Base64 } from 'js-base64'
+import { rederPageContent } from '@/models/page'
 
 export default {
   data() {
@@ -250,7 +251,7 @@ export default {
         .then(function(response) {
           if (response.data.error_code === 0) {
             // that.$message.success("加载成功");
-            that.content = response.data.data.page_content
+            that.content = rederPageContent(response.data.data.page_content)
             setTimeout(function() {
               that.insertValue(that.content, 1)
               document.body.scrollTop = document.documentElement.scrollTop = 0 // 回到顶部

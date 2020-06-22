@@ -261,6 +261,18 @@ class UpdateController extends BaseController {
             D("User")->execute($sql);
         }
 
+        //创建item_variable表
+        $sql = "CREATE TABLE IF NOT EXISTS `item_variable` (
+            `id`  INTEGER PRIMARY KEY ,
+            `var_name` CHAR(2000) NOT NULL DEFAULT '',
+            `var_value` CHAR(2000) NOT NULL DEFAULT '',
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `addtime` int(11) NOT NULL DEFAULT '0'
+            )";
+        D("User")->execute($sql);
+
+
         echo "OK!\n";
     }
 

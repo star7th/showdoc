@@ -124,7 +124,7 @@ class ItemController extends BaseController {
             "default_cat_id3"=>$default_cat_id3 ,
             "default_cat_id4"=>$default_cat_id4 ,
             "unread_count"=>$unread_count ,
-            "item_type"=>1 ,
+            "item_type"=>$item['item_type'] ,
             "menu"=>$menu ,
             "is_login"=>$is_login,
             "ItemPermn"=>$ItemPermn ,
@@ -197,6 +197,7 @@ class ItemController extends BaseController {
                $items[$key]['creator'] = 1 ;
             }else{
                $items[$key]['creator'] = 0 ;
+               unset($items[$key]['password']);
             }
             //判断是否为私密项目
             if ($value['password']) {
@@ -204,7 +205,7 @@ class ItemController extends BaseController {
             }else{
                 $items[$key]['is_private'] = 0 ; 
             }
-            unset($items[$key]['password']);
+            
             //如果项目已标识为删除
             if ($value['is_del'] == 1) {
                 unset($items[$key]);
@@ -558,9 +559,9 @@ class ItemController extends BaseController {
                 $this->sendError(10103);
                 return;
             }
-            $ret = D("Item")->copy($copy_item_id,$login_user['uid'],$item_name,$item_description,$password,$item_domain);
-            if ($ret) {
-                $this->sendResult(array());             
+            $item_id = D("Item")->copy($copy_item_id,$login_user['uid'],$item_name,$item_description,$password,$item_domain);
+            if ($item_id) {
+                $this->sendResult(array("item_id"=>$item_id));               
             }else{
                 $this->sendError(10101);
             }
@@ -593,7 +594,7 @@ class ItemController extends BaseController {
                     );
                 $page_id = D("Page")->add($insert);
             }
-            $this->sendResult(array());               
+            $this->sendResult(array("item_id"=>$item_id));               
         }else{
             $this->sendError(10101);
         }

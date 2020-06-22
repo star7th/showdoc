@@ -88,5 +88,12 @@ class CommonController extends BaseController {
             );
         $this->sendResult($array);
     }
+
+    //返回showdoc版本
+    public function version(){
+      $file = file_get_contents('../composer.json');
+      $json = json_decode($file , 1 );
+      $this->sendResult(array("version"=>$json['version']));
+    }
     
 }
