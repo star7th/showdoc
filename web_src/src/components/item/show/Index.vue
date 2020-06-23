@@ -7,7 +7,7 @@
       :item_info="item_info"
       :search_item="search_item"
       :keyword="keyword"
-      v-if="item_info && (item_info.item_type == 1 || item_info.item_type == 3 ) "
+      v-if="item_info && (item_info.item_type == 1 || item_info.item_type == 3 || item_info.item_type === '0' || item_info.item_type === 0 ) "
     ></ShowRegularItem>
 
     <!-- 展示单页项目 -->
