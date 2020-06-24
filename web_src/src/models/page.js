@@ -90,6 +90,27 @@ ${params}
 
 `
   }
+  
+  const jsonDesc = obj.request.params.jsonDesc
+
+  if (
+    jsonDesc &&
+    jsonDesc[0] &&
+    jsonDesc[0].name
+  ) {
+    newContent += `
+**json字段说明**
+
+|字段名|必选|类型|说明|
+|:-----  |:-----|-----|
+`
+    jsonDesc.map((one) => {
+      newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${one.type} |${
+        one.remark ? one.remark : '无'
+        }   |
+`
+    })
+  }
 
   if (obj.response.responseExample) {
     newContent += `
