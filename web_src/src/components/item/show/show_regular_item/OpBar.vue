@@ -146,6 +146,11 @@
       <p>
         {{$t('item_page_address')}} :
         <code>{{share_page_link}}</code>
+        <i
+          class="el-icon-document-copy"
+          v-clipboard:copy="share_page_link"
+          v-clipboard:success="onCopy"
+        ></i>
       </p>
       <p v-if="false" style="border-bottom: 1px solid #eee;">
         <img id="qr-page-link" style="width:114px;height:114px;" :src="qr_page_link" />
@@ -160,6 +165,11 @@
         <p v-if="isCreateSiglePage">
           {{$t('single_page_address')}} :
           <code>{{share_single_link}}</code>
+          <i
+            class="el-icon-document-copy"
+            v-clipboard:copy="share_single_link"
+            v-clipboard:success="onCopy"
+          ></i>
         </p>
         <p></p>
         <p>{{$t('create_sigle_page_tips')}}</p>
@@ -220,6 +230,9 @@ a {
   color: #000;
   font-size: 18px;
   font-weight: bolder;
+}
+.el-icon-document-copy {
+  cursor: pointer;
 }
 </style>
 
