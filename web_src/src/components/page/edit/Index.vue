@@ -172,6 +172,12 @@ import PasteTable from '@/components/page/edit/PasteTable'
 import SortPage from '@/components/page/edit/SortPage'
 import { Base64 } from 'js-base64'
 import { rederPageContent } from '@/models/page'
+import {
+  apiTemplateZh,
+  databaseTemplateZh,
+  apiTemplateEn,
+  databaseTemplateEn
+} from '@/models/template'
 
 export default {
   data() {
@@ -335,13 +341,9 @@ export default {
     insert_api_template() {
       var val
       if (DocConfig.lang == 'zh-cn') {
-        val = Base64.decode(
-          'CiAgICAKKirnroDopoHmj4/ov7DvvJoqKiAKCi0g55So5oi35rOo5YaM5o6l5Y+jCgoqKuivt+axglVSTO+8mioqIAotIGAgaHR0cDovL3h4LmNvbS9hcGkvdXNlci9yZWdpc3RlciBgCiAgCioq6K+35rGC5pa55byP77yaKioKLSBQT1NUIAoKKirlj4LmlbDvvJoqKiAKCnzlj4LmlbDlkI185b+F6YCJfOexu+Wei3zor7TmmI58Cnw6LS0tLSAgICB8Oi0tLXw6LS0tLS0gfC0tLS0tICAgfAp8dXNlcm5hbWUgfOaYryAgfHN0cmluZyB855So5oi35ZCNICAgfAp8cGFzc3dvcmQgfOaYryAgfHN0cmluZyB8IOWvhueggSAgICB8CnxuYW1lICAgICB85ZCmICB8c3RyaW5nIHwg5pi156ewICAgIHwKCiAqKui/lOWbnuekuuS+iyoqCgpgYGAgCiAgewogICAgImVycm9yX2NvZGUiOiAwLAogICAgImRhdGEiOiB7CiAgICAgICJ1aWQiOiAiMSIsCiAgICAgICJ1c2VybmFtZSI6ICIxMjE1NDU0NSIsCiAgICAgICJuYW1lIjogIuWQtOezu+aMgiIsCiAgICAgICJncm91cGlkIjogMiAsCiAgICAgICJyZWdfdGltZSI6ICIxNDM2ODY0MTY5IiwKICAgICAgImxhc3RfbG9naW5fdGltZSI6ICIwIiwKICAgIH0KICB9CmBgYAoKICoq6L+U5Zue5Y+C5pWw6K+05piOKiogCgp85Y+C5pWw5ZCNfOexu+Wei3zor7TmmI58Cnw6LS0tLS0gIHw6LS0tLS18LS0tLS0gICAgICAgICAgICAgICAgICAgICAgICAgICB8Cnxncm91cGlkIHxpbnQgICB855So5oi357uEaWTvvIwx77ya6LaF57qn566h55CG5ZGY77ybMu+8muaZrumAmueUqOaItyAgfAoKICoq5aSH5rOoKiogCgotIOabtOWkmui/lOWbnumUmeivr+S7o+eggeivt+eci+mmlumhteeahOmUmeivr+S7o+eggeaPj+i/sAoKCg=='
-        )
+        val = apiTemplateZh ;
       } else {
-        val = Base64.decode(
-          'ICAgIAoqKkJyaWVmIGRlc2NyaXB0aW9uOioqIAoKLSBVc2VyIFJlZ2lzdHJhdGlvbiBJbnRlcmZhY2UKCgoqKlJlcXVlc3QgVVJM77yaKiogCi0gYCBodHRwOi8veHguY29tL2FwaS91c2VyL3JlZ2lzdGVyIGAKICAKKipNZXRob2Q6KioKLSBQT1NUIAoKKipQYXJhbWV0ZXI6KiogCgp8UGFyYW1ldGVyIG5hbWV8UmVxdWlyZWR8VHlwZXxFeHBsYWlufAp8Oi0tLS0gICAgfDotLS18Oi0tLS0tIHwtLS0tLSAgIHwKfHVzZXJuYW1lIHxZZXMgIHxzdHJpbmcgfFlvdXIgdXNlcm5hbWUgICB8CnxwYXNzd29yZCB8WWVzICB8c3RyaW5nIHwgWW91ciBwYXNzd29yZCAgICB8CnxuYW1lICAgICB8Tm8gIHxzdHJpbmcgfCBZb3VyIG5hbWUgICAgfAoKICoqUmV0dXJuIGV4YW1wbGUqKgoKYGBgIAogIHsKICAgICJlcnJvcl9jb2RlIjogMCwKICAgICJkYXRhIjogewogICAgICAidWlkIjogIjEiLAogICAgICAidXNlcm5hbWUiOiAiMTIxNTQ1NDUiLAogICAgICAibmFtZSI6ICJoYXJyeSIsCiAgICAgICJncm91cGlkIjogMiAsCiAgICAgICJyZWdfdGltZSI6ICIxNDM2ODY0MTY5IiwKICAgICAgImxhc3RfbG9naW5fdGltZSI6ICIwIiwKICAgIH0KICB9CmBgYAoKICoqUmV0dXJuIHBhcmFtZXRlciBkZXNjcmlwdGlvbioqIAoKfFBhcmFtZXRlciBuYW1lfFR5cGV8RXhwbGFpbnwKfDotLS0tLSAgfDotLS0tLXwtLS0tLSAgICAgICAgICAgICAgICAgICAgICAgICAgIHwKfGdyb3VwaWQgfGludCAgIHwgIC58CgogKipSZW1hcmsqKiAKCi0gRm9yIG1vcmUgZXJyb3IgY29kZSByZXR1cm5zLCBzZWUgdGhlIGVycm9yIGNvZGUgZGVzY3JpcHRpb24gb24gdGhlIGhvbWUgcGFnZQoKCg=='
-        )
+        val = apiTemplateEn ;
       }
       this.insertValue(val)
     },
@@ -350,13 +352,9 @@ export default {
     insert_database_template() {
       var val
       if (DocConfig.lang == 'zh-cn') {
-        val = Base64.decode(
-          'CiAgICAKLSAg55So5oi36KGo77yM5YKo5a2Y55So5oi35L+h5oGvCgp85a2X5q61fOexu+Wei3znqbp86buY6K6kfOazqOmHinwKfDotLS0tICAgIHw6LS0tLS0tLSAgICB8Oi0tLSB8LS0gLXwtLS0tLS0gICAgICB8Cnx1aWQgICAgfGludCgxMCkgICAgIHzlkKYgfCAgfCAgICAgICAgICAgICB8Cnx1c2VybmFtZSB8dmFyY2hhcigyMCkgfOWQpiB8ICAgIHwgICDnlKjmiLflkI0gIHwKfHBhc3N3b3JkIHx2YXJjaGFyKDUwKSB85ZCmICAgfCAgICB8ICAg5a+G56CBICAgIHwKfG5hbWUgICAgIHx2YXJjaGFyKDE1KSB85pivICAgfCAgICB8ICAgIOaYteensCAgICAgfAp8cmVnX3RpbWUgfGludCgxMSkgICAgIHzlkKYgICB8IDAgIHwgICDms6jlhozml7bpl7QgIHwKCi0g5aSH5rOo77ya5pegCgoK'
-        )
+        val = databaseTemplateZh ;
       } else {
-        val = Base64.decode(
-          'ICAgIAotICBVc2VyIHRhYmxlICwgdG8gc3RvcmUgdXNlciBpbmZvcm1hdGlvbgoKCgp8RmllbGR8VHlwZXxFbXB0eXxEZWZhdWx0fEV4cGxhaW58Cnw6LS0tLSAgICB8Oi0tLS0tLS0gICAgfDotLS0gfC0tIC18LS0tLS0tICAgICAgfAp8dWlkICAgIHxpbnQoMTApICAgICB8Tm8gfCAgfCAgICAgICAgICAgICB8Cnx1c2VybmFtZSB8dmFyY2hhcigyMCkgfE5vIHwgICAgfCAgICAgfAp8cGFzc3dvcmQgfHZhcmNoYXIoNTApIHxObyAgIHwgICAgfCAgICAgICB8CnxuYW1lICAgICB8dmFyY2hhcigxNSkgfE5vICAgfCAgICB8ICAgICAgICAgfAp8cmVnX3RpbWUgfGludCgxMSkgICAgIHxObyAgIHwgMCAgfCAgICAuIHwKCi0gUmVtYXJrIDogbm8KCg=='
-        )
+        val = databaseTemplateEn ;
       }
       this.insertValue(val)
     },
