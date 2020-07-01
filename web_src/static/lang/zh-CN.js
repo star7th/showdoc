@@ -358,5 +358,7 @@ exports.default = {
   cat_success: '目录保存成功',
   auth_success: '权限保存成功',
   all_cat2: '目录权限：所有目录',
-  c_team: '选择团队'
+  c_team: '选择团队',
+
+  Logged:'已登录'
 }

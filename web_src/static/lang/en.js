@@ -367,5 +367,7 @@ exports.default = {
   cat_success: 'Catalogs saved successfully',
   auth_success: 'saved successfully',
   all_cat2: 'Catalogs permissions: all',
-  c_team: 'Select team'
+  c_team: 'Select team',
+
+  Logged:'Logged'
 }

@@ -64,7 +64,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>
-                  <router-link to="/user/setting">{{$t("personal_setting")}}</router-link>
+                  <router-link to="/user/setting">{{$t("Logged")}}:{{username}}</router-link>
                 </el-dropdown-item>
                 <el-dropdown-item :command="logout">{{$t("logout")}}</el-dropdown-item>
               </el-dropdown-menu>
@@ -305,7 +305,8 @@ export default {
       itemList: {},
       isAdmin: false,
       keyword: '',
-      lang: ''
+      lang: '',
+      username: ''
     }
   },
   computed: {
@@ -501,6 +502,11 @@ export default {
     this.lang = DocConfig.lang
     this.script_cron()
     this.checkDb()
+    this.get_user_info(response => {
+      if (response.data.error_code === 0) {
+        this.username = response.data.data.username
+      }
+    })
   },
   beforeDestroy() {
     this.$message.closeAll()
