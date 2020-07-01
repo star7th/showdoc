@@ -61,9 +61,9 @@ export default {
               json.default_page_id = json.menu.pages[0].page_id
             }
           }
-          //如果是irunapi类型项目，则去掉编辑权限。只允许在runapi里编辑
-          if(json.item_type == 3){
-            json.ItemCreator = json.ItemPermn = false;  
+          // 如果是irunapi类型项目，则去掉编辑权限。只允许在runapi里编辑
+          if (json.item_type == 3) {
+            json.ItemCreator = json.ItemPermn = false
           }
           that.item_info = json
           document.title = that.item_info.item_name + '--ShowDoc'
@@ -100,9 +100,14 @@ export default {
       this.item_info = ''
       this.keyword = keyword
       this.get_item_menu(keyword)
+    },
+    checkDb() {
+      var url = DocConfig.server + '/api/update/checkDb'
+      this.axios.get(url)
     }
   },
   mounted() {
+    this.checkDb()
     this.get_item_menu()
   },
   beforeDestroy() {

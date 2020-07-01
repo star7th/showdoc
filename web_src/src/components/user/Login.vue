@@ -39,8 +39,7 @@
           </el-form-item>
 
           <el-form-item label>
-            <router-link to="/user/register">{{$t("register_new_account")}}</router-link>
-&nbsp;&nbsp;&nbsp;
+            <router-link to="/user/register">{{$t("register_new_account")}}</router-link>&nbsp;&nbsp;&nbsp;
           </el-form-item>
         </el-form>
       </el-card>
@@ -112,6 +111,10 @@ export default {
     script_cron() {
       var url = DocConfig.server + '/api/ScriptCron/run'
       this.axios.get(url)
+    },
+    checkDb() {
+      var url = DocConfig.server + '/api/update/checkDb'
+      this.axios.get(url)
     }
   },
   mounted() {
@@ -128,6 +131,7 @@ export default {
     })
 
     this.script_cron()
+    this.checkDb()
   },
   beforeDestroy() {}
 }

@@ -12,7 +12,7 @@ class UpdateController extends BaseController {
             if($r){
                 D("Options")->set("db_version_num" , $version_num );
             }
-            
+            //echo '执行数据库升级';
         }
         $this->sendResult(array());
     }

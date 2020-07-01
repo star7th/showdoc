@@ -28,7 +28,13 @@
             </a>
           </el-tooltip>
 
-          <el-tooltip v-if="lang =='zh-cn'" class="item" effect="dark" content="接口开发调试工具RunApi" placement="top">
+          <el-tooltip
+            v-if="lang =='zh-cn'"
+            class="item"
+            effect="dark"
+            content="接口开发调试工具RunApi"
+            placement="top"
+          >
             <a target="_blank" href="https://www.showdoc.cc/runapi">
               <i class="el-icon-connection"></i>
             </a>
@@ -483,6 +489,10 @@ export default {
     script_cron() {
       var url = DocConfig.server + '/api/ScriptCron/run'
       this.axios.get(url)
+    },
+    checkDb() {
+      var url = DocConfig.server + '/api/update/checkDb'
+      this.axios.get(url)
     }
   },
   mounted() {
@@ -490,6 +500,7 @@ export default {
     this.user_info()
     this.lang = DocConfig.lang
     this.script_cron()
+    this.checkDb()
   },
   beforeDestroy() {
     this.$message.closeAll()
