@@ -119,6 +119,7 @@ export default {
               'quote',
               '|',
               'toc',
+              'mindmap',
               'h1',
               'h2',
               'h3',
@@ -154,6 +155,7 @@ export default {
           },
           toolbarIconsClass: {
             toc: 'fa-bars ', // 指定一个FontAawsome的图标类
+            mindmap: 'fa-sitemap ', // 指定一个FontAawsome的图标类
             video: 'fa-file-video-o',
             center: 'fa-align-center'
           },
@@ -174,6 +176,26 @@ export default {
                 cm.setCursor(cursor.line, cursor.ch + 1)
               }
             },
+            mindmap: function(cm, icon, cursor, selection) {
+              // 替换选中文本，如果没有选中文本，则直接插入
+              var text = `
+\`\`\`mindmap
+# 一级
+## 二级分支1
+### 三级分支1
+### 三级分支2
+## 二级分支2
+### 三级分支3
+### 三级分支4
+\`\`\`
+`
+              cm.replaceSelection(text)
+
+              // 如果当前没有选中的文本，将光标移到要输入的位置
+              if (selection === '') {
+                cm.setCursor(cursor.line, cursor.ch + 1)
+              }
+            },
             center: function(cm, icon, cursor, selection) {
               // 替换选中文本，如果没有选中文本，则直接插入
               cm.replaceSelection('<center>' + selection + '</center>')
@@ -187,6 +209,7 @@ export default {
           lang: {
             toolbar: {
               toc: '在最开头插入TOC，自动生成标题目录',
+              mindmap: '插入思维导图',
               video: '插入视频',
               center: '居中'
             }
@@ -215,7 +238,8 @@ export default {
       [
         `${this.editorPath}/../jquery.min.js`,
         `${this.editorPath}/lib/raphael.min.js`,
-        `${this.editorPath}/lib/flowchart.min.js`
+        `${this.editorPath}/lib/flowchart.min.js`,
+        `${this.editorPath}/lib/d3@5.min.js`
       ],
       () => {
         $s(
@@ -227,7 +251,9 @@ export default {
             `${this.editorPath}/lib/sequence-diagram.min.js`,
             `${this.editorPath}/lib/jquery.flowchart.min.js`,
             `${this.editorPath}/lib/jquery.mark.min.js`,
-            `${this.editorPath}/lib/plantuml.js`
+            `${this.editorPath}/lib/plantuml.js`,
+            `${this.editorPath}/lib/view.min.js`,
+            `${this.editorPath}/lib/transform.min.js`
           ],
           () => {
             $s(`${this.editorPath}/editormd.js`, () => {
