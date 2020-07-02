@@ -4,12 +4,6 @@
       <el-form-item label>
         <el-input v-model="username" placeholder="用户名"></el-input>
       </el-form-item>
-      <!--   <el-form-item label="活动区域">
-    <el-select v-model="formInline.region" placeholder="活动区域">
-      <el-option label="区域一" value="shanghai"></el-option>
-      <el-option label="区域二" value="beijing"></el-option>
-    </el-select>
-      </el-form-item>-->
       <el-form-item>
         <el-button @click="onSubmit">{{$t('search')}}</el-button>
       </el-form-item>
@@ -23,11 +17,7 @@
       <el-table-column prop="last_login_time" :label="$t('last_login_time')" width="160"></el-table-column>
       <el-table-column prop="item_domain" :label="$t('operation')">
         <template slot-scope="scope">
-          <el-button
-            @click="click_password(scope.row)"
-            type="text"
-            size="small"
-          >{{$t('modify_password')}}</el-button>
+          <el-button @click="click_edit(scope.row)" type="text" size="small">{{$t('edit')}}</el-button>
           <el-button
             @click="delete_user(scope.row)"
             v-if="scope.row.groupid != 1"
@@ -48,25 +38,26 @@
       ></el-pagination>
     </div>
 
-    <el-dialog :visible.sync="dialogVisible" :close-on-click-modal="false" width="300px">
-      <el-form>
-        <el-form-item label>
-          <el-input type="password" :placeholder="$t('new_password')" v-model="Form.new_password"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="change_password">{{$t('confirm')}}</el-button>
-      </div>
-    </el-dialog>
-
     <el-dialog :visible.sync="dialogAddVisible" :close-on-click-modal="false" width="300px">
       <el-form>
         <el-form-item label>
-          <el-input type="text" :placeholder="$t('username')" v-model="addForm.username"></el-input>
+          <el-input
+            type="text"
+            :placeholder="$t('username')"
+            :readonly="addForm.uid > 0"
+            v-model="addForm.username"
+          ></el-input>
         </el-form-item>
         <el-form-item label>
+          <el-input type="text" :placeholder="$t('name')" v-model="addForm.name"></el-input>
+        </el-form-item>
+
+        <el-form-item label v-if="addForm.uid <= 0">
           <el-input type="password" :placeholder="$t('password')" v-model="addForm.password"></el-input>
+        </el-form-item>
+
+        <el-form-item label v-if="addForm.uid > 0">
+          <el-input type="password" :placeholder="$t('update_pwd_tips')" v-model="addForm.password"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -89,16 +80,13 @@ export default {
       page: 1,
       count: 7,
       total: 0,
-      Form: {
-        new_password: ''
-      },
       addForm: {
         username: '',
-        password: ''
+        password: '',
+        uid: 0,
+        name: ''
       },
-      dialogVisible: false,
-      dialogAddVisible: false,
-      password_uid: ''
+      dialogAddVisible: false
     }
   },
   methods: {
@@ -166,32 +154,14 @@ export default {
         })
       })
     },
-    click_password(row) {
-      this.dialogVisible = true
-      this.password_uid = row.uid
-    },
-    change_password() {
-      var that = this
-      var url = DocConfig.server + '/api/adminUser/changePassword'
-
-      var params = new URLSearchParams()
-      params.append('uid', that.password_uid)
-      params.append('new_password', this.Form.new_password)
-
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.dialogVisible = false
-            that.Form.new_password = ''
-            that.$message.success(that.$t('success'))
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    click_edit(row) {
+      this.dialogAddVisible = true
+      this.addForm = {
+        uid: row.uid,
+        name: row.name,
+        username: row.username,
+        password: ''
+      }
     },
     add_user() {
       var that = this
@@ -200,6 +170,8 @@ export default {
       var params = new URLSearchParams()
       params.append('username', that.addForm.username)
       params.append('password', this.addForm.password)
+      params.append('uid', this.addForm.uid)
+      params.append('name', this.addForm.name)
 
       that.axios
         .post(url, params)
@@ -208,6 +180,8 @@ export default {
             that.dialogAddVisible = false
             that.addForm.password = ''
             that.addForm.username = ''
+            that.addForm.uid = 0
+            that.addForm.name = ''
             that.$message.success(that.$t('success'))
             that.get_user_list()
           } else {

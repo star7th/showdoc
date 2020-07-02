@@ -360,5 +360,6 @@ exports.default = {
   all_cat2: '目录权限：所有目录',
   c_team: '选择团队',
 
-  Logged:'已登录'
+  Logged: '已登录',
+  update_pwd_tips: '密码，不修改则留空'
 }

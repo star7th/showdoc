@@ -369,5 +369,6 @@ exports.default = {
   all_cat2: 'Catalogs permissions: all',
   c_team: 'Select team',
 
-  Logged:'Logged'
+  Logged: 'Logged',
+  update_pwd_tips: 'Password, leave blank if not changed'
 }
