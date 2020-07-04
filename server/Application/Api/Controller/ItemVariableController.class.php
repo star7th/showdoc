@@ -58,7 +58,7 @@ class ItemVariableController extends BaseController {
         $id = I("id/d");  
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        if(!$this->checkItemCreator($uid , $item_id)){
+        if(!$this->checkItemPermn($uid , $item_id)){
             $this->sendError(10303);
             return ;
         } 
