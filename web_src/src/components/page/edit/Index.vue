@@ -269,6 +269,8 @@ export default {
               } else {
                 that.editor_watch()
               }
+              // 开启草稿
+              that.draft()
             }, 1000)
             that.title = response.data.data.page_title
             that.item_id = response.data.data.item_id
@@ -341,9 +343,9 @@ export default {
     insert_api_template() {
       var val
       if (DocConfig.lang == 'zh-cn') {
-        val = apiTemplateZh ;
+        val = apiTemplateZh
       } else {
-        val = apiTemplateEn ;
+        val = apiTemplateEn
       }
       this.insertValue(val)
     },
@@ -352,9 +354,9 @@ export default {
     insert_database_template() {
       var val
       if (DocConfig.lang == 'zh-cn') {
-        val = databaseTemplateZh ;
+        val = databaseTemplateZh
       } else {
-        val = databaseTemplateEn ;
+        val = databaseTemplateEn
       }
       this.insertValue(val)
     },
@@ -561,16 +563,20 @@ export default {
     draft() {
       var that = this
       var pkey = 'page_content_' + this.page_id
+      let childRef = this.$refs.Editormd
       // 定时保存文本内容到localStorage
       setInterval(() => {
-        let childRef = this.$refs.Editormd
         var content = childRef.getMarkdown()
         localStorage.setItem(pkey, content)
       }, 30 * 1000)
 
       // 检测是否有定时保存的内容
       var page_content = localStorage.getItem(pkey)
-      if (page_content && page_content.length > 0) {
+      if (
+        page_content &&
+        page_content.length > 0 &&
+        page_content != childRef.getMarkdown()
+      ) {
         localStorage.removeItem(pkey)
         that
           .$confirm(that.$t('draft_tips'), '', {
@@ -664,7 +670,6 @@ export default {
     }
     this.get_catalog(this.$route.params.item_id)
 
-    this.draft()
     this.heartBeatLock()
     this.remoteIsLock()
     /** 监听粘贴上传图片 **/

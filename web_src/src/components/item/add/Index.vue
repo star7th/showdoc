@@ -10,12 +10,8 @@
           </el-button>
 
           <el-tabs value="first" type="card">
-            <el-tab-pane :label="$t('regular_item')" name="first">
+            <el-tab-pane :label="$t('new_item')" name="first">
               <Regular></Regular>
-            </el-tab-pane>
-
-            <el-tab-pane :label="$t('single_item')" name="second">
-              <Single></Single>
             </el-tab-pane>
 
             <el-tab-pane :label="$t('copy_item')" name="third">
@@ -40,7 +36,6 @@
 
 <script>
 import Regular from '@/components/item/add/Regular'
-import Single from '@/components/item/add/Single'
 import Copy from '@/components/item/add/Copy'
 import OpenApi from '@/components/item/add/OpenApi'
 import Import from '@/components/item/add/Import'
@@ -49,7 +44,6 @@ export default {
   name: 'Login',
   components: {
     Regular,
-    Single,
     Copy,
     OpenApi,
     Import
@@ -97,7 +91,7 @@ export default {
 
 .center-card {
   text-align: center;
-  width: 560px;
+  width: 463px;
   min-height: 600px;
   max-height: 800px;
 }

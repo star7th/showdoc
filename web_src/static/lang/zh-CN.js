@@ -361,5 +361,8 @@ exports.default = {
   c_team: '选择团队',
 
   Logged: '已登录',
-  update_pwd_tips: '密码，不修改则留空'
+  update_pwd_tips: '密码，不修改则留空',
+
+  import_excel: '你可以选择Excel文件导入',
+  table: '表格'
 }

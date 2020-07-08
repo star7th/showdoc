@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <p class="tips">{{$t('copy_item_tips1')}}</p>
-    <el-form status-icon label-width="100px" class="infoForm" v-model="infoForm">
+    <el-form status-icon label-width="10px" class="infoForm" v-model="infoForm">
       <el-form-item label class="text-left">
         <el-select
           style="width:100%;"
@@ -113,13 +113,8 @@ export default {
 }
 
 .infoForm {
-  width: 400px;
+  width: 380px;
   margin-top: 50px;
-}
-
-.goback-btn {
-  z-index: 999;
-  margin-left: 500px;
 }
 
 .tips {

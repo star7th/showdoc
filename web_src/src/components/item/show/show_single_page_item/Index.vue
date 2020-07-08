@@ -224,7 +224,7 @@ export default {
   },
   mounted() {
     this.menu = this.item_info.menu
-    this.page_id = this.menu.pages.page_id
+    this.page_id = this.menu.pages[0].page_id
     this.get_page_content()
 
     // 根据屏幕宽度进行响应(应对移动设备的访问)

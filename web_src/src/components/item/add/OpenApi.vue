@@ -35,12 +35,7 @@ export default {
 <style scoped>
 .hello {
   text-align: left;
-  margin-left: 50px;
-  margin-top: 80px;
-}
-
-.goback-btn {
-  z-index: 999;
-  margin-left: 500px;
+  margin-left: 20px;
+  margin-top: 50px;
 }
 </style>

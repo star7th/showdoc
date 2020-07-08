@@ -34,14 +34,8 @@ class ItemController extends BaseController {
             $this->sendError(10101,'项目不存在或者已删除');
             return false;
         }
-        if ($item['item_type'] == 1 ) {
-            $this->_show_regular_item($item);
-        }
-        elseif ($item['item_type'] == 2 ) {
-            $this->_show_single_page_item($item);
-        }else{
-           $this->_show_regular_item($item); 
-        }
+        //从2020.7.5开始，常规项目和单页项目合并在一起返回
+        $this->_show_regular_item($item); 
     }
 
     //展示常规项目
@@ -49,6 +43,7 @@ class ItemController extends BaseController {
         $item_id = $item['item_id'];
 
         $default_page_id = I("default_page_id/d");
+        $current_page_id = I("page_id/d");
         $keyword = I("keyword");
         $default_cat_id2 = $default_cat_id3 = 0 ;
 
@@ -129,44 +124,7 @@ class ItemController extends BaseController {
             "is_login"=>$is_login,
             "ItemPermn"=>$ItemPermn ,
             "ItemCreator"=>$ItemCreator ,
-
-            );
-        $this->sendResult($return);
-    }
-
-    //展示单页项目
-    private function _show_single_page_item($item){
-        $item_id = $item['item_id'];
-
-        $current_page_id = I("page_id/d");
-
-        $login_user = session("login_user");
-        $uid = $login_user['uid'] ? $login_user['uid'] : 0 ;
-        $is_login =   $uid > 0 ? true :false;
-        //获取页面
-        $page = D("Page")->where(" item_id = '$item_id' ")->find();
-
-        $domain = $item['item_domain'] ? $item['item_domain'] : $item['item_id'];
-        $share_url = get_domain().__APP__.'/'.$domain;
-
-        $ItemPermn = $this->checkItemPermn($uid , $item_id) ;
-
-        $ItemCreator = $this->checkItemCreator($uid , $item_id);
-
-        $menu = array() ;
-        $menu['pages'] = $page ;
-        $return = array(
-            "item_id"=>$item_id ,
-            "item_domain"=>$item['item_domain'] ,
-            "is_archived"=>$item['is_archived'] ,
-            "item_name"=>$item['item_name'] ,
             "current_page_id"=>$current_page_id ,
-            "unread_count"=>$unread_count ,
-            "item_type"=>2 ,
-            "menu"=>$menu ,
-            "is_login"=>$is_login,
-            "ItemPermn"=>$ItemPermn ,
-            "ItemCreator"=>$ItemCreator ,
 
             );
         $this->sendResult($return);
@@ -590,6 +548,19 @@ class ItemController extends BaseController {
                     "item_id" => $item_id ,
                     "cat_id" => 0 ,
                     "page_content" => '欢迎使用showdoc。点击右上方的编辑按钮进行编辑吧！' ,
+                    "addtime" =>time()
+                    );
+                $page_id = D("Page")->add($insert);
+            }
+            //如果是表格应用，则新建一个默认页
+            if ($item_type == 4 ) {
+                $insert = array(
+                    'author_uid' => $login_user['uid'] ,
+                    'author_username' => $login_user['username'],
+                    "page_title" => $item_name ,
+                    "item_id" => $item_id ,
+                    "cat_id" => 0 ,
+                    "page_content" => '' ,
                     "addtime" =>time()
                     );
                 $page_id = D("Page")->add($insert);

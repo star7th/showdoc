@@ -13,6 +13,9 @@
     <!-- 展示单页项目 -->
     <ShowSinglePageItem :item_info="item_info" v-if="item_info && item_info.item_type == 2 "></ShowSinglePageItem>
 
+    <!-- 展示表格项目 -->
+    <ShowTableItem :item_info="item_info" v-if="item_info && item_info.item_type == 4 "></ShowTableItem>
+
     <Footer></Footer>
   </div>
 </template>
@@ -22,6 +25,8 @@
 <script>
 import ShowRegularItem from '@/components/item/show/show_regular_item/Index'
 import ShowSinglePageItem from '@/components/item/show/show_single_page_item/Index'
+import ShowTableItem from '@/components/item/show/show_table_item/Index'
+
 export default {
   data() {
     return {
@@ -31,7 +36,8 @@ export default {
   },
   components: {
     ShowRegularItem,
-    ShowSinglePageItem
+    ShowSinglePageItem,
+    ShowTableItem
   },
   methods: {
     // 获取菜单

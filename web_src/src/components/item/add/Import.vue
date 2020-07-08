@@ -59,18 +59,14 @@ export default {
 <style scoped>
 .hello {
   text-align: left;
-  margin-left: 50px;
-  margin-top: 50px;
-}
-
-.goback-btn {
-  z-index: 999;
-  margin-left: 500px;
+  margin-left: 10px;
+  margin-top: 30px;
 }
 
 .tips {
-  margin-left: 10px;
-  margin-bottom: 50px;
+  margin-left: 5px;
+  margin-bottom: 20px;
   color: #9ea1a6;
+  padding: 10px;
 }
 </style>

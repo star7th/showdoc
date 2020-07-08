@@ -370,5 +370,8 @@ exports.default = {
   c_team: 'Select team',
 
   Logged: 'Logged',
-  update_pwd_tips: 'Password, leave blank if not changed'
+  update_pwd_tips: 'Password, leave blank if not changed',
+
+  import_excel: 'You can choose to import excel file',
+  table: 'table'
 }

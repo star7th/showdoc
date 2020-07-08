@@ -1,6 +1,23 @@
 <template>
   <div class="hello">
-    <el-form status-icon label-width="100px" class="infoForm" v-model="infoForm">
+    <el-form status-icon label-width="10px" class="infoForm" v-model="infoForm">
+      <el-form-item>
+        <el-radio-group v-model="infoForm.item_type">
+          <el-radio label="1">{{$t('regular_item')}}</el-radio>
+          <el-radio label="4">{{$t('table')}}</el-radio>
+          <el-radio label="2">
+            {{$t('single_item')}}
+            <el-tooltip
+              class="item"
+              effect="dark"
+              :content="$t('single_item_tips')"
+              placement="top"
+            >
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </el-radio>
+        </el-radio-group>
+      </el-form-item>
       <el-form-item>
         <el-tooltip class="item" effect="dark" :content="$t('item_name')" placement="right">
           <el-input
@@ -54,7 +71,8 @@ export default {
         item_name: '',
         item_description: '',
         item_domain: '',
-        password: ''
+        password: '',
+        item_type: '1'
       },
       isOpenItem: true
     }
@@ -71,7 +89,7 @@ export default {
         this.infoForm.password = ''
       }
       var params = new URLSearchParams()
-      params.append('item_type', 1)
+      params.append('item_type', this.infoForm.item_type)
       params.append('item_name', this.infoForm.item_name)
       params.append('item_description', this.infoForm.item_description)
       params.append('item_domain', this.infoForm.item_domain)
@@ -98,12 +116,7 @@ export default {
 }
 
 .infoForm {
-  width: 400px;
-  margin-top: 60px;
-}
-
-.goback-btn {
-  z-index: 999;
-  margin-left: 500px;
+  width: 380px;
+  margin-top: 30px;
 }
 </style>
