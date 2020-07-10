@@ -66,6 +66,9 @@
   width: 90%;
   margin: 10px auto;
 }
+#doc-title {
+  font-size: 1.8em;
+}
 #footer {
   margin: 0 auto;
   width: 180px;
@@ -88,7 +91,7 @@ pre ol {
 .editormd-html-preview,
 .editormd-preview-container {
   padding: 0px;
-  font-size: 16px;
+  font-size: 14px;
 }
 </style>
 
