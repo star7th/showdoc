@@ -9,16 +9,21 @@
         <h2 id="doc-title">{{page_title}}</h2>
 
         <div class="tool-bar pull-right">
-          <el-button type="text" @click="share_item">{{$t('share')}}</el-button>
-          <el-button
-            type="text"
-            @click="edit_page"
+          <el-tooltip class="item" effect="dark" :content="$t('share')" placement="top">
+            <i class="el-icon-share" @click="share_item"></i>
+          </el-tooltip>
+          <el-tooltip
             v-if="item_info.ItemPermn && item_info.is_archived < 1"
-          >{{$t('edit')}}</el-button>&nbsp;&nbsp;&nbsp;
+            class="item"
+            effect="dark"
+            :content="$t('edit_page')"
+            placement="top"
+          >
+            <i class="el-icon-edit" @click="edit_page"></i>
+          </el-tooltip>
           <el-dropdown>
             <span class="el-dropdown-link">
-              {{$t('item')}}
-              <i class="el-icon-arrow-down el-icon--right"></i>
+              <i class="el-icon-caret-bottom el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <router-link :to="'/item/export/'+item_info.item_id" v-if="item_info.ItemPermn">
@@ -117,6 +122,9 @@
   width: 90%;
   margin: 10px auto;
 }
+#doc-title {
+  font-size: 1.8em;
+}
 #footer {
   margin: 0 auto;
   width: 180px;
@@ -136,12 +144,21 @@ pre ol {
   background-color: #f7f7f9;
 }
 .tool-bar {
-  margin-top: -38px;
+  margin-top: -50px;
+  font-size: 1.1em;
+}
+.tool-bar i {
+  margin-right: 15px;
+}
+
+.el-dropdown-link,
+a {
+  color: #333;
 }
 .editormd-html-preview,
 .editormd-preview-container {
   padding: 0px;
-  font-size: 16px;
+  font-size: 14px;
 }
 </style>
 
