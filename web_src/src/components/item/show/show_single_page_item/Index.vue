@@ -144,7 +144,7 @@ pre ol {
   background-color: #f7f7f9;
 }
 .tool-bar {
-  margin-top: -50px;
+  margin-top: -55px;
   font-size: 1.1em;
 }
 .tool-bar i {
