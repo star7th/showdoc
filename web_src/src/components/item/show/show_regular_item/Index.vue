@@ -16,10 +16,20 @@
       </div>
 
       <div id="right-side">
-        <div id="p-content">
+        <div
+          id="p-content"
+          @mouseenter="showfullPageBtn = true"
+          @mouseleave="showfullPageBtn = false"
+        >
           <div class="doc-title-box" id="doc-title-box">
             <span id="doc-title-span" class="dn"></span>
             <h2 id="doc-title">{{page_title}}</h2>
+            <i
+              class="el-icon-full-screen"
+              id="full-page"
+              v-show="showfullPageBtn"
+              @click="clickFullPage"
+            ></i>
             <el-badge
               :value="attachment_count"
               class="item"
@@ -47,7 +57,7 @@
     </div>
 
     <BackToTop></BackToTop>
-    <Toc v-if="page_id"></Toc>
+    <Toc v-if="page_id && showToc"></Toc>
 
     <!-- 附件列表 -->
     <AttachmentList
@@ -89,7 +99,10 @@ export default {
       qr_item_link: '',
       page_info: '',
       copyText: '',
-      attachment_count: ''
+      attachment_count: '',
+      fullPage: false,
+      showfullPageBtn: false,
+      showToc: true
     }
   },
   components: {
@@ -115,7 +128,7 @@ export default {
       that.axios.post(url, params).then(function(response) {
         // loading.close();
         if (response.data.error_code === 0) {
-           that.content = rederPageContent(response.data.data.page_content)
+          that.content = rederPageContent(response.data.data.page_content)
 
           that.page_title = response.data.data.page_title
           that.page_info = response.data.data
@@ -148,6 +161,7 @@ export default {
       header.style.height = '10px'
       var docTitle = document.getElementById('doc-title-box')
       docTitle.style.marginTop = '40px'
+      this.showToc = false
     },
     // 根据屏幕宽度进行响应。应对小屏幕pc设备(如笔记本)的访问
     adaptToSmallpc() {
@@ -179,6 +193,19 @@ export default {
     ShowAttachment() {
       let childRef = this.$refs.AttachmentList // 获取子组件
       childRef.show()
+    },
+    clickFullPage() {
+      // 点击放大页面。由于历史包袱，只能操作dom。这是不规范的，但是现在没时间重构整块页面
+      if (this.fullPage) {
+        // 整体刷新还原
+        window.location.reload()
+      } else {
+        this.adaptToMobile()
+        $('#left-side').hide()
+        $('.op-bar').hide()
+      }
+      this.get_page_content(this.page_id)
+      this.fullPage = !this.fullPage
     }
   },
   mounted() {
@@ -211,7 +238,14 @@ export default {
   cursor: pointer;
   color: #abd1f1;
 }
-
+#full-page {
+  float: right;
+  font-size: 25px;
+  margin-top: -50px;
+  margin-right: 30px;
+  cursor: pointer;
+  color: #ccc;
+}
 #page_md_content {
   padding: 10px 10px 90px 10px;
   overflow: hidden;
