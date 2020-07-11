@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="hello" v-if="showComp">
     <Header></Header>
     <div id="header"></div>
 
@@ -102,7 +102,8 @@ export default {
       attachment_count: '',
       fullPage: false,
       showfullPageBtn: false,
-      showToc: true
+      showToc: true,
+      showComp:true
     }
   },
   components: {
@@ -138,6 +139,7 @@ export default {
               : ''
           // 切换变量让它重新加载、渲染子组件
           that.page_id = 0
+          that.item_info.default_page_id = page_id
           that.$nextTick(() => {
             that.page_id = page_id
             // 页面回到顶部
@@ -197,8 +199,11 @@ export default {
     clickFullPage() {
       // 点击放大页面。由于历史包袱，只能操作dom。这是不规范的，但是现在没时间重构整块页面
       if (this.fullPage) {
-        // 整体刷新还原
-        window.location.reload()
+        // 通过v-if指令起到刷新组件的作用
+          this.showComp = false
+          this.$nextTick(() => {
+            this.showComp = true
+          })
       } else {
         this.adaptToMobile()
           // 切换变量让它重新加载、渲染子组件
@@ -210,10 +215,12 @@ export default {
               $('.editormd-html-preview').css("font-size","16px")
             },200)
           })
-        this.fullPage = !this.fullPage
+        
         $('#left-side').hide()
         $('.op-bar').hide();
       }
+
+    this.fullPage = !this.fullPage
 
     }
   },
