@@ -201,11 +201,20 @@ export default {
         window.location.reload()
       } else {
         this.adaptToMobile()
+          // 切换变量让它重新加载、渲染子组件
+          var page_id =  this.page_id 
+          this.page_id = 0
+          this.$nextTick(() => {
+            this.page_id = page_id;
+            setTimeout(()=>{
+              $('.editormd-html-preview').css("font-size","16px")
+            },200)
+          })
+        this.fullPage = !this.fullPage
         $('#left-side').hide()
-        $('.op-bar').hide()
+        $('.op-bar').hide();
       }
-      this.get_page_content(this.page_id)
-      this.fullPage = !this.fullPage
+
     }
   },
   mounted() {
