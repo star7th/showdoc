@@ -373,5 +373,21 @@ exports.default = {
   update_pwd_tips: 'Password, leave blank if not changed',
 
   import_excel: 'You can choose to import excel file',
-  table: 'table'
+  table: 'table',
+
+  attachment_manage: 'Attachment',
+  op_success: 'success',
+  display_name: 'display name',
+  all_attachment_type: 'all type',
+  image: 'image',
+  general_attachment: 'general attachment',
+  uploader: 'uploader',
+  file_id: 'file id',
+  file_type: 'type',
+  file_size_m: 'size/mb',
+  visit: 'visit',
+  visit_times: 'visit times',
+  my_attachment: 'My attachment',
+  accumulated_used_sapce: 'Accumulated used space',
+  month_flow: 'Traffic has been used this month'
 }
