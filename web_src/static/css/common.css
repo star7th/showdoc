@@ -27,6 +27,17 @@ a {
   box-sizing: border-box;
 }
 
+/* 水平居中的卡片 */
+.hor-center-card {
+  width: 700px;
+  margin: 20px auto;
+  padding-top: 0px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 0px;
+  box-sizing: border-box;
+}
+
 .pull-right {
   float: right;
 }

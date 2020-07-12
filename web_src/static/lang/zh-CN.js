@@ -364,5 +364,21 @@ exports.default = {
   update_pwd_tips: '密码，不修改则留空',
 
   import_excel: '你可以选择Excel文件导入',
-  table: '表格'
+  table: '表格',
+
+  attachment_manage: '附件管理',
+  op_success: '操作成功',
+  display_name: '展示名字',
+  all_attachment_type: '全部附件类型',
+  image: '图片',
+  general_attachment: '普通附件',
+  uploader: '上传者',
+  file_id: '文件id',
+  file_type: '文件类型',
+  file_size_m: '文件大小/mb',
+  visit: '查看',
+  visit_times: '访问次数',
+  my_attachment: '我的附件',
+  accumulated_used_sapce: '累计已使用空间',
+  month_flow: '本月已使用流量'
 }

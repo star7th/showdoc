@@ -23,6 +23,10 @@
               <i class="el-icon-tickets"></i>
               <span slot="title">{{$t('item_manage')}}</span>
             </el-menu-item>
+            <el-menu-item index="5">
+              <i class="el-icon-tickets"></i>
+              <span slot="title">{{$t('attachment_manage')}}</span>
+            </el-menu-item>
             <el-menu-item index="3">
               <i class="el-icon-tickets"></i>
               <span slot="title">{{$t('web_setting')}}</span>
@@ -34,6 +38,7 @@
             <User v-if="open_menu_index == 1 "></User>
             <Item v-if="open_menu_index == 2 "></Item>
             <Setting v-if="open_menu_index == 3 "></Setting>
+            <Attachment v-if="open_menu_index == 5 "></Attachment>
           </el-main>
           <el-footer>
             <!-- something -->
@@ -113,6 +118,7 @@ body > .el-container {
 import Item from '@/components/admin/item/Index'
 import User from '@/components/admin/user/Index'
 import Setting from '@/components/admin/setting/Index'
+import Attachment from '@/components/admin/attachment/Index'
 
 export default {
   data() {
@@ -123,7 +129,8 @@ export default {
   components: {
     Item,
     User,
-    Setting
+    Setting,
+    Attachment
   },
   methods: {
     select_menu(index, indexPath) {

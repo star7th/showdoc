@@ -66,6 +66,9 @@
                 <el-dropdown-item>
                   <router-link to="/user/setting">{{$t("Logged")}}:{{username}}</router-link>
                 </el-dropdown-item>
+                <el-dropdown-item>
+                  <router-link to="/attachment/index">{{$t("my_attachment")}}</router-link>
+                </el-dropdown-item>
                 <el-dropdown-item :command="logout">{{$t("logout")}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

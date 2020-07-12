@@ -95,5 +95,10 @@ class CommonController extends BaseController {
       $json = json_decode($file , 1 );
       $this->sendResult(array("version"=>$json['version']));
     }
+
+    //浏览附件
+    public function visitFile(){
+       R("Attachment/visitFile");
+    }
     
 }

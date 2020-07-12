@@ -148,15 +148,7 @@ class PageModel extends BaseModel {
    }
 
    public function deleteFile($file_id){
-      $file = D("UploadFile")->where("file_id = '$file_id' ")->find();
-      $real_url = $file['real_url'] ;
-      $array = explode("/Public/Uploads/", $real_url) ;
-      $file_path = "../Public/Uploads/".$array[1] ;
-      if (file_exists($file_path)) {
-        unlink($file_path);
-      }
-      D("UploadFile")->where(" file_id = '$file_id' ")->delete();
-      return true ;
+        return D("Attachment")->deleteFile($file_id) ;
     }
 
 }

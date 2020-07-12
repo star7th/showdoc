@@ -274,6 +274,14 @@ class UpdateController extends BaseController {
             )";
         D("User")->execute($sql);
 
+        //创建file_flow表
+        $sql = "CREATE TABLE IF NOT EXISTS `file_flow` (
+            `id`  INTEGER PRIMARY KEY ,
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `used` int(11) NOT NULL DEFAULT '0',
+            `date_month` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
 
         return true ;
     }
