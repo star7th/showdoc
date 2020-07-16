@@ -216,10 +216,16 @@ class AttachmentController extends BaseController {
                 return;
             }
             foreach ($files as $key => $value) {
+                $url = '';
+                if($value['sign']){
+                   $url =  get_domain().U("api/attachment/visitFile",array("sign" => $value['sign'])) ;
+                }else{
+                  $url =  $value['real_url'] ;
+                }
                 $return[] = array(
                     "file_id"=>$value['file_id'],
                     "display_name"=>$value['display_name'],
-                    "url"=>get_domain().U("api/attachment/visitFile",array("sign" => $value['sign'])),
+                    "url"=>$url,
                     "addtime"=> date("Y-m-d H:i:s" , $value['addtime'] ),
                     );
             }
@@ -282,6 +288,12 @@ class AttachmentController extends BaseController {
                 if($value['uid']){
                     $username = D("User")->where(" uid = {$value['uid']} ")->getField('username') ;
                 }
+                $url = '';
+                if($value['sign']){
+                   $url =  get_domain().U("api/attachment/visitFile",array("sign" => $value['sign'])) ;
+                }else{
+                  $url =  $value['real_url'] ;
+                }
                 $return['list'][] = array(
                     "file_id"=>$value['file_id'],
                     "username"=>$username,
@@ -293,7 +305,7 @@ class AttachmentController extends BaseController {
                     "page_id"=>$value['page_id'],
                     "file_size_m"=>round( $value['file_size']/(1024*1024),3),
                     "display_name"=>$value['display_name']?$value['display_name']:'',
-                    "url"=>get_domain().U("api/attachment/visitFile",array("sign" => $value['sign'])),
+                    "url"=>$url ,
                     "addtime"=> date("Y-m-d H:i:s" , $value['addtime'] ),
                     "last_visit_time"=> date("Y-m-d H:i:s" , $value['last_visit_time'] ),
                     );
