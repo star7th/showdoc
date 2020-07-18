@@ -88,7 +88,7 @@ ${params}
 
   const jsonDesc = obj.request.params.jsonDesc;
 
-  if (jsonDesc && jsonDesc[0] && jsonDesc[0].name) {
+  if ( obj.request.params.mode == "json" && jsonDesc && jsonDesc[0] && jsonDesc[0].name) {
     newContent += `
 ##### json字段说明
 
