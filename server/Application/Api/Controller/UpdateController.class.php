@@ -282,7 +282,10 @@ class UpdateController extends BaseController {
             `date_month` CHAR(2000) NOT NULL DEFAULT ''
             )";
         D("User")->execute($sql);
-
+        //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
+        //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
+        //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
+        
         return true ;
     }
 
