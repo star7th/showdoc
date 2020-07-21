@@ -1,7 +1,7 @@
 <!-- 更多模板 -->
 <template>
   <div class="hello">
-    <Header></Header>
+    <!-- <Header></Header> -->
     <link href="static/diff/diffview.css" rel="stylesheet" />
     <el-container class="container-narrow">
       <div class="textInput">

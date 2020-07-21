@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <Header></Header>
+    <!-- <Header></Header> -->
 
     <el-container>
       <el-card class="center-card">

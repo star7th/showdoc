@@ -37,7 +37,7 @@
         ></el-input>
 
         <!-- 一级页面 -->
-        <template v-if="menu.pages.length ">
+        <template v-if="menu.pages && menu.pages.length ">
           <el-menu-item v-for="(page ) in menu.pages" :index="page.page_id" :key="page.page_id">
             <i class="el-icon-document"></i>
             <span :title="page.page_title">{{page.page_title}}</span>
