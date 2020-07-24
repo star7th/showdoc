@@ -575,7 +575,9 @@ export default {
       if (
         page_content &&
         page_content.length > 0 &&
-        page_content != childRef.getMarkdown()
+        page_content != childRef.getMarkdown() &&
+        childRef.getMarkdown() && 
+        childRef.getMarkdown().length > 10 
       ) {
         localStorage.removeItem(pkey)
         that
