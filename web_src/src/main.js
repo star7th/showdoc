@@ -18,6 +18,7 @@ import myEnLocale from '../static/lang/en'
 import 'url-search-params-polyfill'
 import 'babel-polyfill'
 import VueClipboard from 'vue-clipboard2'
+import store from './store/'
 
 Vue.use(util)
 Vue.config.productionTip = false
@@ -43,6 +44,7 @@ Vue.prototype.request = request
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App }
 })
