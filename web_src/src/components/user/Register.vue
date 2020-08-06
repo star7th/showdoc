@@ -87,6 +87,7 @@ export default {
       that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
           // that.$message.success("注册成功");
+          localStorage.setItem('userinfo', JSON.stringify(response.data.data))
           that.$router.push({ path: '/item/index' })
         } else {
           that.change_v_code_img()
