@@ -6,7 +6,7 @@ import axios from "@/http";
 import router from "@/router/index";
 import { MessageBox } from "element-ui";
 
-const request = (path, data, method = "post") => {
+const request = (path, data, method = "post", msgAlert = true) => {
   var params = new URLSearchParams(data);
   let url = DocConfig.server + path;
   return new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ const request = (path, data, method = "post") => {
             reject(new Error("登录态无效"));
           }
 
-          if (response.data && response.data.error_code !== 0) {
+          if (msgAlert && response.data && response.data.error_code !== 0) {
             MessageBox.alert(response.data.error_message);
             return reject(new Error("业务级别的错误"));
           }
