@@ -40,4 +40,5 @@ return array(
                             'bucket' => '', 
                         )
                     ),
+    'DATA_CACHE_KEY'=>'file_cache_safe',
 );
