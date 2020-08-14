@@ -98,27 +98,27 @@ class ItemController extends BaseController {
         //是否有搜索词
         if ($keyword) {
             $keyword = \SQLite3::escapeString($keyword) ;
-            $pages = D("Page")->where("item_id = '$item_id' and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+            $pages = D("Page")->where("item_id = '$item_id' and ( page_title like '%{$keyword}%' or page_content like '%{$keyword}%' ) ")->order(" s_number asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
         
         }else{
             //获取所有父目录id为0的页面
-            $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+            $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->order(" s_number asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
             //获取所有二级目录
-            $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->order(" `s_number` asc  ")->select();
+            $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->order(" s_number asc  ")->select();
             if ($catalogs) {
                 foreach ($catalogs as $key => &$catalog) {
                     //该二级目录下的所有子页面
-                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+                    $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->order(" s_number asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
                     $catalog['pages'] = $temp ? $temp: array();
 
                     //该二级目录下的所有子目录
-                    $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->order(" `s_number` asc  ")->select();
+                    $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->order(" s_number asc  ")->select();
                     $catalog['catalogs'] = $temp ? $temp: array();
                     if($catalog['catalogs']){
                         //获取所有三级目录的子页面
                         foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
                             //该二级目录下的所有子页面
-                            $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->order(" `s_number` asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
+                            $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->order(" s_number asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
                             $catalog3['pages'] = $temp ? $temp: array();
                         }                        
                     }               

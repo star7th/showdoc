@@ -258,7 +258,7 @@ class CatalogController extends BaseController {
             $this->sendError(10103);
             return ;
         }
-        $return = D("Page")->where("cat_id = '$cat_id' and  item_id = '$item_id' and is_del = 0  ")->field("page_id , page_title,s_number")->order("`s_number` asc , `page_id` asc")->select();
+        $return = D("Page")->where("cat_id = '$cat_id' and  item_id = '$item_id' and is_del = 0  ")->field("page_id , page_title,s_number")->order("s_number asc , page_id asc")->select();
         $this->sendResult($return);
 
     }

@@ -7,22 +7,22 @@ class ItemModel extends BaseModel {
     public function export($item_id){
         $item = D("Item")->where("item_id = '$item_id' ")->field(" item_type, item_name ,item_description,password ")->find();
         //获取所有父目录id为0的页面
-        $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" `s_number` asc  ")->select();
+        $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" s_number asc  ")->select();
         //获取所有二级目录
-        $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->field("cat_id, cat_name ,level,s_number ")->order(" `s_number` asc  ")->select();
+        $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->field("cat_id, cat_name ,level,s_number ")->order(" s_number asc  ")->select();
         if ($catalogs) {
             foreach ($catalogs as $key => &$catalog) {
                 //该二级目录下的所有子页面
-                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" `s_number` asc  ")->select();
+                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" s_number asc  ")->select();
                 $catalog['pages'] = $temp ? $temp: array();
                 //该二级目录下的所有子目录
-                $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->field(" cat_id,cat_name ,level,s_number ")->order(" `s_number` asc  ")->select();
+                $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->field(" cat_id,cat_name ,level,s_number ")->order(" s_number asc  ")->select();
                 $catalog['catalogs'] = $temp ? $temp: array();
                 if($catalog['catalogs']){
                     //获取所有三级目录的子页面
                     foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
                         //该二级目录下的所有子页面
-                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" `s_number` asc  ")->select();
+                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" s_number asc  ")->select();
                         $catalog3['pages'] = $temp ? $temp: array();
                         unset($catalog3['cat_id']);
                     }                        

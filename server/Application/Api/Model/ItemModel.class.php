@@ -143,7 +143,7 @@ class ItemModel extends BaseModel {
 
     public function getContent($item_id , $page_field ="*" , $catalog_field ="*" , $uncompress = 0 ){
             //获取所有父目录id为0的页面
-            $all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" `s_number` asc , `page_id` asc  ")->field($page_field)->select();
+            $all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" s_number asc , page_id asc  ")->field($page_field)->select();
             $pages = array() ;
             if ($all_pages) {
                 foreach ($all_pages as $key => $value) {
@@ -156,7 +156,7 @@ class ItemModel extends BaseModel {
             }
             
             //获取该项目下的所有目录
-            $all_catalogs = D("Catalog")->field($catalog_field)->where("item_id = '$item_id' ")->order(" `s_number` asc , `cat_id` asc ")->select();
+            $all_catalogs = D("Catalog")->field($catalog_field)->where("item_id = '$item_id' ")->order(" s_number asc , cat_id asc ")->select();
 
             //获取所有二级目录
             $catalogs = array() ;
