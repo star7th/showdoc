@@ -103,7 +103,7 @@ export default {
       fullPage: false,
       showfullPageBtn: false,
       showToc: true,
-      showComp:true
+      showComp: true
     }
   },
   components: {
@@ -122,20 +122,18 @@ export default {
       }
       this.adaptScreen()
       var that = this
-      var url = DocConfig.server + '/api/page/info'
-      // var loading = that.$loading({target:".page_content_main",fullscreen:false});
-      var params = new URLSearchParams()
-      params.append('page_id', page_id)
-      that.axios.post(url, params).then(function(response) {
+      this.request('/api/page/info', {
+        'page_id': page_id
+      }, 'post', false).then((data) => {
         // loading.close();
-        if (response.data.error_code === 0) {
-          that.content = rederPageContent(response.data.data.page_content)
+        if (data.error_code === 0) {
+          that.content = rederPageContent(data.data.page_content)
 
-          that.page_title = response.data.data.page_title
-          that.page_info = response.data.data
+          that.page_title = data.data.page_title
+          that.page_info = data.data
           that.attachment_count =
-            response.data.data.attachment_count > 0
-              ? response.data.data.attachment_count
+            data.data.attachment_count > 0
+              ? data.data.attachment_count
               : ''
           // 切换变量让它重新加载、渲染子组件
           that.page_id = 0
@@ -147,7 +145,7 @@ export default {
             document.title = that.page_title + '--ShowDoc'
           })
         } else {
-          // that.$alert(response.data.error_message);
+          // that.$alert(data.error_message);
         }
       })
     },
@@ -200,28 +198,27 @@ export default {
       // 点击放大页面。由于历史包袱，只能操作dom。这是不规范的，但是现在没时间重构整块页面
       if (this.fullPage) {
         // 通过v-if指令起到刷新组件的作用
-          this.showComp = false
-          this.$nextTick(() => {
-            this.showComp = true
-          })
+        this.showComp = false
+        this.$nextTick(() => {
+          this.showComp = true
+        })
       } else {
         this.adaptToMobile()
           // 切换变量让它重新加载、渲染子组件
-          var page_id =  this.page_id 
-          this.page_id = 0
-          this.$nextTick(() => {
-            this.page_id = page_id;
-            setTimeout(()=>{
-              $('.editormd-html-preview').css("font-size","16px")
-            },200)
-          })
-        
+        var page_id = this.page_id
+        this.page_id = 0
+        this.$nextTick(() => {
+          this.page_id = page_id
+          setTimeout(() => {
+            $('.editormd-html-preview').css('font-size', '16px')
+          }, 200)
+        })
+
         $('#left-side').hide()
-        $('.op-bar').hide();
+        $('.op-bar').hide()
       }
 
-    this.fullPage = !this.fullPage
-
+      this.fullPage = !this.fullPage
     }
   },
   mounted() {

@@ -49,25 +49,23 @@ export default {
       var loading = that.$loading()
       var item_id = this.$route.params.item_id ? this.$route.params.item_id : 0
       var page_id = this.$route.query.page_id ? this.$route.query.page_id : 0
-
-      var url = DocConfig.server + '/api/item/info'
-
-      var params = new URLSearchParams()
-      params.append('item_id', item_id)
-      params.append('keyword', keyword)
-      if (!that.keyword) {
-        params.append('default_page_id', page_id)
+      let params = {
+        'item_id': item_id,
+        'keyword': keyword
       }
-      that.axios.post(url, params).then(function(response) {
+      if (!keyword) {
+        params.default_page_id = page_id
+      }
+      this.request('/api/item/info', params, 'post', false).then((data) => {
         loading.close()
-        if (response.data.error_code === 0) {
-          var json = response.data.data
+        if (data.error_code === 0) {
+          var json = data.data
           if (json.default_page_id <= 0) {
             if (json.menu.pages[0]) {
               json.default_page_id = json.menu.pages[0].page_id
             }
           }
-          // 如果是irunapi类型项目，则去掉编辑权限。只允许在runapi里编辑
+          // 如果是runapi类型项目，则去掉编辑权限。只允许在runapi里编辑
           if (json.item_type == 3) {
             json.ItemCreator = json.ItemPermn = false
           }
@@ -82,8 +80,8 @@ export default {
             })
           }
         } else if (
-          response.data.error_code === 10307 ||
-          response.data.error_code === 10303
+          data.error_code === 10307 ||
+          data.error_code === 10303
         ) {
           // 需要输入密码
           that.$router.replace({
@@ -94,9 +92,10 @@ export default {
             }
           })
         } else {
-          that.$alert(response.data.error_message)
+          that.$alert(data.error_message)
         }
       })
+
       // 设置一个最长关闭时间
       setTimeout(() => {
         loading.close()
