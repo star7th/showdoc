@@ -772,7 +772,7 @@ abstract class Driver
 
                 if (preg_match('/^[\w\.]+$/', $key)) {
                     $sort = strtoupper($sort);
-                    $sort = in_array($sort, ['ASC', 'DESC'], true) ? ' ' . $sort : '';
+                    $sort = in_array($sort, array('ASC', 'DESC'), true) ? ' ' . $sort : '';
                     if (strpos($key, '.')) {
                         list($alias, $key) = explode('.', $key);
                         $array[]           = $this->parseKey($alias, true) . '.' . $this->parseKey($key, true) . $sort;
