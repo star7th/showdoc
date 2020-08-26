@@ -470,6 +470,9 @@ export default {
         this.share_single_link = ''
       }
     }
+  },
+  destroyed() {
+    document.onkeydown = undefined 
   }
 }
 </script>
