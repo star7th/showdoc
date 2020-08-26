@@ -135,7 +135,7 @@ ${obj.response.responseExample}
   newContent += `
 ##### 备注
 
-  - ${obj.info.remark}
+  ${obj.info.remark}
 
 `;
 
