@@ -351,7 +351,7 @@ class PageController extends BaseController {
         ));
         $now = time() ;
         D("PageLock")->where( "lock_to < '{$now}' ")->delete();
-        $this->sendResult($id);
+        $this->sendResult(array("id"=>$id));
 
     }
 
