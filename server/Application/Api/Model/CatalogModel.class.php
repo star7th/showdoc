@@ -106,9 +106,11 @@ class CatalogModel extends BaseModel {
 			return false;
 		}
 		//如果有子目录的话，递归把子目录清了
-		$cat = $this->where(" parent_cat_id = '$cat_id' ")->find();
-		if ($cat) {
-			$this->deleteCat($cat['cat_id']);
+		$cats = $this->where(" parent_cat_id = '$cat_id' ")->select();
+		if ($cats) {
+			foreach ($cats as $key => $value) {
+				$this->deleteCat($value['cat_id']);
+			}
 		}
 		//获取当前目录信息
 		$cat = $this->where(" cat_id = '$cat_id' ")->find();
