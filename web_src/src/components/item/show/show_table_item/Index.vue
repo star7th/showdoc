@@ -174,7 +174,7 @@ export default {
       let path = this.item_info.item_domain
         ? this.item_info.item_domain
         : this.item_info.item_id
-      this.share_item_link = this.getRootPath() + '/' + path
+      this.share_item_link = this.getRootPath() + '#/' + path
       this.qr_item_link =
         DocConfig.server +
         '/api/common/qrcode&size=3&url=' +
