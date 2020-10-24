@@ -149,6 +149,11 @@ export default {
       } else if (item_info.default_cat_id2) {
         that.openeds = [item_info.default_cat_id2, item_info.default_page_id]
       }
+      // 延迟把左侧栏滚动到默认展开的那个页面
+      setTimeout(() => {
+        const element = document.querySelector('#left_page_' + item_info.default_page_id)
+        element.scrollIntoView()
+      }, 1000)
     }
 
     // 如果是大屏幕且存在目录，则把侧边栏调大

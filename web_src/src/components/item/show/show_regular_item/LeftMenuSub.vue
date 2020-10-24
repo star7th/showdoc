@@ -14,7 +14,7 @@
             :key="page3.page_id"
           >
             <i class="el-icon-document"></i>
-            <span :title="page3.page_title">{{page3.page_title}}</span>
+            <span :title="page3.page_title" :id="'left_page_'+page3.page_id">{{page3.page_title}}</span>
           </el-menu-item>
         </template>
 
