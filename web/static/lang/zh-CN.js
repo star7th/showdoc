@@ -86,7 +86,7 @@ exports.default = {
 
   // item/export
   export_all: '导出全部',
-  export_cat: '按目录导出',
+  export_cat: '按目录/页面',
   select_cat_2: '选择二级目录：',
   select_cat_3: '选择三级目录：',
   begin_export: '开始导出',
@@ -380,5 +380,11 @@ exports.default = {
   visit_times: '访问次数',
   my_attachment: '我的附件',
   accumulated_used_sapce: '累计已使用空间',
-  month_flow: '本月已使用流量'
+  month_flow: '本月已使用流量',
+
+  all_pages: '全部页面',
+
+  cancelSingle: '是否确定取消单页链接？取消后，原链接会立马失效',
+  cancelSingleYes: '取消单页链接',
+  cancelSingleNo: '保留单页链接'
 }
