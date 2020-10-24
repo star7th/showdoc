@@ -38,7 +38,12 @@
       ></el-pagination>
     </div>
 
-    <el-dialog :visible.sync="dialogAddVisible" :close-on-click-modal="false" width="300px">
+    <el-dialog
+      :visible.sync="dialogAddVisible"
+      :before-close="resetForm"
+      :close-on-click-modal="false"
+      width="300px"
+    >
       <el-form>
         <el-form-item label>
           <el-input
@@ -61,7 +66,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogAddVisible = false">{{$t('cancel')}}</el-button>
+        <el-button @click="resetForm">{{$t('cancel')}}</el-button>
         <el-button type="primary" @click="add_user">{{$t('confirm')}}</el-button>
       </div>
     </el-dialog>
@@ -191,6 +196,15 @@ export default {
         .catch(function(error) {
           console.log(error)
         })
+    },
+    resetForm() {
+      this.addForm = {
+        uid: 0,
+        name: '',
+        username: '',
+        password: ''
+      }
+      this.dialogAddVisible = false
     }
   },
   mounted() {
