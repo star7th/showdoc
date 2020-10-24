@@ -31,7 +31,7 @@ class ImportController extends BaseController {
             $json = file_get_contents($file) ;
             $json_array = json_decode($json ,1 );
             unset($json);
-            if ($json_array['swagger'] && $json_array['info']) {
+            if (( $json_array['swagger'] || $json_array['openapi'] ) && $json_array['info']) {
                 R("ImportSwagger/import");
                 return ;
             }
