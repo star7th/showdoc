@@ -139,7 +139,7 @@ export default {
                   }[tag] || tag)
               )
             objData = JSON.parse(
-              unescapeHTML(decodeURIComponent(response.data.page_content))
+              unescapeHTML(response.data.page_content)
             )
           } catch (error) {
             objData = {}
