@@ -194,7 +194,8 @@ export default {
       attachment_count: '',
       catalogs: [],
       isLock: 0,
-      intervalId: 0
+      intervalId: 0,
+      saving: false
     }
   },
   computed: {
@@ -414,6 +415,10 @@ export default {
     },
     save(callback) {
       var that = this
+      if (this.saving) {
+        return false
+      }
+      this.saving = true
       var loading = that.$loading()
       let childRef = this.$refs.Editormd
       var content = childRef.getMarkdown()
@@ -430,6 +435,7 @@ export default {
       params.append('cat_id', cat_id)
       that.axios.post(url, params).then(function(response) {
         loading.close()
+        that.saving = false
         if (response.data.error_code === 0) {
           if (typeof callback == 'function') {
             callback()
@@ -457,6 +463,7 @@ export default {
       // 设置一个最长关闭时间
       setTimeout(() => {
         loading.close()
+        that.saving = false
       }, 20000)
     },
     goback() {
@@ -576,8 +583,8 @@ export default {
         page_content &&
         page_content.length > 0 &&
         page_content != childRef.getMarkdown() &&
-        childRef.getMarkdown() && 
-        childRef.getMarkdown().length > 10 
+        childRef.getMarkdown() &&
+        childRef.getMarkdown().length > 10
       ) {
         localStorage.removeItem(pkey)
         that
