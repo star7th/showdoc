@@ -88,7 +88,7 @@ exports.default = {
 
   // item/export
   export_all: 'Export all',
-  export_cat: 'export catalog',
+  export_cat: 'export catalog/page',
   select_cat_2: 'Select catalog level2',
   select_cat_3: 'Select catalog level3',
   begin_export: 'Begin to export',
@@ -389,5 +389,7 @@ exports.default = {
   visit_times: 'visit times',
   my_attachment: 'My attachment',
   accumulated_used_sapce: 'Accumulated used space',
-  month_flow: 'Traffic has been used this month'
+  month_flow: 'Traffic has been used this month',
+
+  all_pages: 'All pages'
 }

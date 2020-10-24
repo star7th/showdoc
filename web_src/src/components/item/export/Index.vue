@@ -28,6 +28,7 @@
               class="cat"
               v-model="cat_id"
               v-if="computed_catalogs"
+              @change="get_pages"
             >
               <el-option
                 v-for="cat in computed_catalogs "
@@ -37,7 +38,16 @@
               ></el-option>
             </el-select>
           </el-form-item>
-
+          <el-form-item label v-if="export_format == 'word' && export_type == 2">
+            <el-select class="cat" v-model="page_id" v-if="pages">
+              <el-option
+                v-for="page in pages "
+                :key="page.page_title"
+                :label="page.page_title"
+                :value="page.page_id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label>
             <el-button type="primary" style="width:100%;" @click="onSubmit">{{$t('begin_export')}}</el-button>
           </el-form-item>
@@ -63,7 +73,12 @@ export default {
       cat_id: '',
       export_type: '1',
       item_id: 0,
-      export_format: 'word'
+      export_format: 'word',
+      pages: [
+        { page_id: '0',
+          page_title: this.$t('all_pages')
+        }],
+      page_id: '0'
     }
   },
   computed: {
@@ -134,7 +149,7 @@ export default {
         '/api/export/word&item_id=' +
         this.item_id +
         '&cat_id=' +
-        this.cat_id
+        this.cat_id + '&page_id=' + this.page_id
       if (this.export_format == 'markdown') {
         url = DocConfig.server + '/api/export/markdown&item_id=' + this.item_id
       }
@@ -142,6 +157,29 @@ export default {
     },
     goback() {
       this.$router.go(-1)
+    },
+    // 获取某目录下的所有页面
+    get_pages(cat_id) {
+      var that = this
+      var url = DocConfig.server + '/api/catalog/getPagesBycat'
+      var params = new URLSearchParams()
+      params.append('item_id', this.item_id)
+      params.append('cat_id', cat_id)
+      that.axios
+        .post(url, params)
+        .then(function(response) {
+          if (response.data.error_code === 0) {
+            var pages = response.data.data
+            pages.unshift({
+              page_id: '0',
+              page_title: that.$t('all_pages')
+            })
+            that.pages = pages
+            that.page_id = '0'
+          } else {
+            that.$alert(response.data.error_message)
+          }
+        })
     }
   },
   mounted() {

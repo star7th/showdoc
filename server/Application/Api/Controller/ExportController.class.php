@@ -11,6 +11,7 @@ class ExportController extends BaseController {
         $Parsedown = new \Parsedown();
         $item_id =  I("item_id/d");
         $cat_id =  I("cat_id/d");
+        $page_id =  I("page_id/d");
         $login_user = $this->checkLogin();
         if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
             $this->message(L('no_permissions'));
@@ -21,7 +22,10 @@ class ExportController extends BaseController {
 
 
         $menu = D("Item")->getContent($item_id,"*","*",1);
-        if ($cat_id) {
+        if($page_id > 0 ){
+            $pages[] = D("Page")->where(" page_id = '$page_id' ")->find();
+        }
+        else if ($cat_id) {
             foreach ($menu['catalogs'] as $key => $value) {
                 if ($cat_id == $value['cat_id']) {
                     $pages = $value['pages'] ;
@@ -56,7 +60,11 @@ class ExportController extends BaseController {
 
         if ($pages) {
             foreach ($pages as $key => $value) {
-                $data .= "<h1>{$parent}、{$value['page_title']}</h1>";
+                if(count($pages) > 1){
+                    $data .= "<h1>{$parent}、{$value['page_title']}</h1>";
+                }else{
+                    $data .= "<h1>{$value['page_title']}</h1>";
+                }
                 $data .= '<div style="margin-left:20px;">';
                     $data .= htmlspecialchars_decode($Parsedown->text($value['page_content']));
                 $data .= '</div>';
