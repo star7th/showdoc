@@ -391,5 +391,10 @@ exports.default = {
   accumulated_used_sapce: 'Accumulated used space',
   month_flow: 'Traffic has been used this month',
 
-  all_pages: 'All pages'
+  all_pages: 'All pages',
+
+  cancelSingle: 'Are you sure you want to cancel the single page link? After cancellation, the original link will be invalid immediately',
+  cancelSingleYes: 'Unlink single page',
+  cancelSingleNo: 'Keep single page'
+
 }

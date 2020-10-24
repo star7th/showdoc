@@ -382,5 +382,9 @@ exports.default = {
   accumulated_used_sapce: '累计已使用空间',
   month_flow: '本月已使用流量',
 
-  all_pages: '全部页面'
+  all_pages: '全部页面',
+
+  cancelSingle: '是否确定取消单页链接？取消后，原链接会立马失效',
+  cancelSingleYes: '取消单页链接',
+  cancelSingleNo: '保留单页链接'
 }

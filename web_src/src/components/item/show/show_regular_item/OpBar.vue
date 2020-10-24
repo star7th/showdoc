@@ -159,7 +159,7 @@
       <div v-show="item_info.ItemPermn">
         <el-checkbox
           v-model="isCreateSiglePage"
-          @change="CreateSiglePage"
+          @change="checkCreateSiglePage"
         >{{$t('create_sigle_page')}}</el-checkbox>
 
         <p v-if="isCreateSiglePage">
@@ -337,6 +337,21 @@ export default {
     },
     onCopy() {
       this.$message(this.$t('copy_success'))
+    },
+    checkCreateSiglePage(newvalue) {
+      if (newvalue) {
+        this.CreateSiglePage()
+      } else {
+        this.$confirm(this.$t('cancelSingle'), ' ', {
+          confirmButtonText: this.$t('cancelSingleYes'),
+          cancelButtonText: this.$t('cancelSingleNo'),
+          type: 'warning'
+        }).then(() => {
+          this.CreateSiglePage()
+        }, () => {
+          this.isCreateSiglePage = true
+        })
+      }
     },
     CreateSiglePage() {
       var page_id = this.page_id > 0 ? this.page_id : 0
