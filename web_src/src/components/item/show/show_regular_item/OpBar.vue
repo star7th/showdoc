@@ -37,8 +37,8 @@
             <i class="el-icon-user"></i>
           </router-link>
         </el-tooltip>
-        <el-tooltip class="item" effect="dark" :content="$t('detail')" placement="top">
-          <i class="el-icon-info" @click="show_page_info"></i>
+        <el-tooltip class="item" effect="dark" :content="$t('history_version')" placement="top">
+          <i class="el-icon-goods" @click="ShowHistoryVersion"></i>
         </el-tooltip>
         <el-tooltip
           class="item"
@@ -472,7 +472,7 @@ export default {
     }
   },
   destroyed() {
-    document.onkeydown = undefined 
+    document.onkeydown = undefined
   }
 }
 </script>
