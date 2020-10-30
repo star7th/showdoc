@@ -25,7 +25,7 @@ class TeamItemController extends BaseController {
             $item_id = intval($value) ;
             if(!$this->checkItemCreator($uid , $item_id)){
                 $this->sendError(10303);
-                continue ;
+                return ;
             }
 
             if (D("TeamItem")->where("  team_id = '$team_id' and item_id = '$item_id' ")->find()) {
