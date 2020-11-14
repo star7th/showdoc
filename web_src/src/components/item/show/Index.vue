@@ -70,6 +70,7 @@ export default {
             json.ItemCreator = json.ItemPermn = false
           }
           that.item_info = json
+          that.$store.dispatch('changeItemInfo', json)
           document.title = that.item_info.item_name + '--ShowDoc'
           if (json.unread_count > 0) {
             that.$message({
@@ -103,6 +104,7 @@ export default {
     },
     search_item(keyword) {
       this.item_info = ''
+      this.$store.dispatch('changeItemInfo', '')
       this.keyword = keyword
       this.get_item_menu(keyword)
     },

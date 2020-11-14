@@ -127,7 +127,7 @@ export default {
       }, 'post', false).then((data) => {
         // loading.close();
         if (data.error_code === 0) {
-          that.content = rederPageContent(data.data.page_content)
+          that.content = rederPageContent(data.data.page_content, that.$store.state.item_info.global_param)
 
           that.page_title = data.data.page_title
           that.page_info = data.data

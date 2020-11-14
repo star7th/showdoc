@@ -5,7 +5,7 @@ class UpdateController extends BaseController {
 
     //检测数据库并更新
     public function checkDb(){
-        $version_num = 2 ;
+        $version_num = 3 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
             $r = $this->updateSqlite();
@@ -280,6 +280,40 @@ class UpdateController extends BaseController {
             `uid` int(11) NOT NULL DEFAULT '0',
             `used` int(11) NOT NULL DEFAULT '0',
             `date_month` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
+
+        //item_variable表增加env_id字段
+        if (!$this->_is_column_exist("item_variable","env_id")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."item_variable ADD env_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
+            D("User")->execute($sql);
+        }
+        //创建runapi_env表
+        $sql = "CREATE TABLE IF NOT EXISTS `runapi_env` (
+            `id`  INTEGER PRIMARY KEY ,
+            `env_name` CHAR(2000) NOT NULL DEFAULT '',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `addtime` CHAR(2000) NOT NULL DEFAULT '',
+            `last_update_time` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
+        //创建runapi_env_selectd表
+        $sql = "CREATE TABLE IF NOT EXISTS `runapi_env_selectd` (
+            `id`  INTEGER PRIMARY KEY ,
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `env_id` int(11) NOT NULL DEFAULT '0'
+            )";
+        D("User")->execute($sql);
+        //创建runapi_global_param表
+        $sql = "CREATE TABLE IF NOT EXISTS `runapi_global_param` (
+            `id`  INTEGER PRIMARY KEY ,
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `param_type` CHAR(2000) NOT NULL DEFAULT '',
+            `content_json_str` CHAR(2000) NOT NULL DEFAULT '',
+            `addtime` CHAR(2000) NOT NULL DEFAULT '',
+            `last_update_time` CHAR(2000) NOT NULL DEFAULT ''
             )";
         D("User")->execute($sql);
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num

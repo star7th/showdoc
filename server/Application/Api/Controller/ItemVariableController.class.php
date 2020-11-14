@@ -7,6 +7,7 @@ class ItemVariableController extends BaseController {
     //保存
     public function save(){ 
         $item_id = I("item_id/d");  
+        $env_id = I("env_id/d"); 
         $var_name = I("var_name");  
         $var_value = I("var_value");  
         $login_user = $this->checkLogin();
@@ -18,6 +19,7 @@ class ItemVariableController extends BaseController {
         $data = array() ;
         $data['var_name'] = $var_name ;
         $data['uid'] = $uid ;
+        $data['env_id'] = $env_id ;
         $data['var_value'] = $var_value ;
         $data['item_id'] = $item_id ;
         $data['addtime'] = time() ;
@@ -34,7 +36,8 @@ class ItemVariableController extends BaseController {
 
     //获取列表
     public function getList(){
-        $item_id = I("item_id/d");  
+        $item_id = I("item_id/d");
+        $env_id = I("env_id/d");
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
         if(!$this->checkItemPermn($uid , $item_id)){
@@ -42,7 +45,11 @@ class ItemVariableController extends BaseController {
             return ;
         } 
         if ($item_id > 0 ) {
-            $ret = D("ItemVariable")->where(" item_id = '$item_id' ")->order(" addtime asc  ")->select();
+            $where = "item_id = '$item_id'";
+            if($env_id){
+                $where .= " and env_id = '$env_id'";
+            }
+            $ret = D("ItemVariable")->where($where)->order(" addtime asc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {

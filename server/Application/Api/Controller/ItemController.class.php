@@ -108,6 +108,12 @@ class ItemController extends BaseController {
         if($item['is_archived']){
             $ItemPermn = $ItemCreator = false; 
         }
+
+        //如果项目类型为runapi，则获取看看有没有全局参数
+        $global_param = array() ;
+        if($item['item_type'] == 3){
+            $global_param = D("RunApi")->getGlobalParam($item_id);
+        }
         
         $return = array(
             "item_id"=>$item_id ,
@@ -125,6 +131,7 @@ class ItemController extends BaseController {
             "ItemPermn"=>$ItemPermn ,
             "ItemCreator"=>$ItemCreator ,
             "current_page_id"=>$current_page_id ,
+            "global_param"=>$global_param ,
 
             );
         $this->sendResult($return);
