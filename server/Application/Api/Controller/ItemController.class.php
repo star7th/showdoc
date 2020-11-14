@@ -112,7 +112,7 @@ class ItemController extends BaseController {
         //如果项目类型为runapi，则获取看看有没有全局参数
         $global_param = array() ;
         if($item['item_type'] == 3){
-            $global_param = D("RunApi")->getGlobalParam($item_id);
+            $global_param = D("Runapi")->getGlobalParam($item_id);
         }
         
         $return = array(

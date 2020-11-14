@@ -144,7 +144,7 @@ class RunapiController extends BaseController {
         $this->sendError(10303);
         return ;
       }
-      $return = D("RunApi")->getGlobalParam($item_id);
+      $return = D("Runapi")->getGlobalParam($item_id);
       $this->sendResult($return);
     }
 
