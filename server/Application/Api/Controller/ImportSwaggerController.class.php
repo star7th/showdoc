@@ -35,22 +35,53 @@ class ImportSwaggerController extends BaseController {
             "members" => array(),
             "pages" =>array(
                     "pages" => array(),
-                    "catalogs" => array(
-                            array(
-                                "cat_name" =>'from swagger',
-                                "pages" =>array()
-                            )
-                        )
+                    "catalogs" => $this->_getAllTagsLogs($json_array)
                 )
             ) ;
         $level = 2 ;
-        $item_array['pages']['catalogs'][0]['pages'] = $this->_getPageByPaths($json_array);
+//        $item_array['pages']['catalogs'][0]['pages'] = $this->_getPageByPaths($json_array);
         $item_id = D("Item")->import( json_encode($item_array) , $login_user['uid'] );
         
         //echo D("Item")->export(196053901215026 );
         //echo json_encode($item_array);
         $this->sendResult(array('item_id' => $item_id));
 
+    }
+
+    private function _getAllTagsLogs($json_array) {
+        $catalogsMap = array(
+            "fromSwagger" => array("cat_name" =>'from swagger', "pages" =>array())
+        );
+        $paths = $json_array['paths']  ;
+        foreach ($paths as $url => $value) {
+            foreach ($value as $method => $value2) {
+                $tags = isset($value2["tags"]) ? $value2["tags"] : array();
+                if ($tags == array()){
+                    $pages = $this->_requestToDoc($method, $url, $value2, $json_array);
+                    $catalogsMap["fromSwagger"]["pages"][] = $pages;
+                }else{
+                    foreach ($tags as $tag){
+                        if (!key_exists($tag, $catalogsMap)) {
+                            $page = $this->_requestToDoc($method, $url, $value2, $json_array);
+                            if ($page["page_title"] != "" && $page["page_content"] != ""){
+                                $catalogsMap[$tag] = array("cat_name" => $tag, "pages" => array($page));
+                            }
+                        }else{
+                            // 存在则page merge
+                            $page = $this->_requestToDoc($method, $url, $value2, $json_array);
+                            if ($page["page_title"] != "" && $page["page_content"] != ""){
+                                $catalogsMap[$tag]["pages"][] = $page;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $catalogs = array();
+        foreach ($catalogsMap as $key => $value){
+            $catalogs[] = $value;
+        }
+        return $catalogs;
     }
 
     private function _getPageByPaths($json_array){
