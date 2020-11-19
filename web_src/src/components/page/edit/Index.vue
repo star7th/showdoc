@@ -82,7 +82,13 @@
               <el-dropdown-item @click.native="ShowPasteTable">{{$t('paste_insert_table')}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-button type size="medium" @click="ShowRunApi">{{$t('http_test_api')}}</el-button>
+          <el-button v-if="lang =='zh-cn'" type size="medium" @click="showMockDialog = true">Mock</el-button>
+          <el-button
+            v-if="lang =='zh-cn'"
+            type
+            size="medium"
+            @click="ShowRunApi"
+          >{{$t('http_test_api')}}</el-button>
 
           <el-badge :value="attachment_count" class="item">
             <el-button type size="medium" @click="ShowAttachment">{{$t('attachment')}}</el-button>
@@ -131,6 +137,18 @@
         :cat_id="cat_id"
         ref="SortPage"
       ></SortPage>
+      <!-- mock -->
+      <Mock
+        :page_id="page_id"
+        v-if="showMockDialog"
+        :callback="(data)=>{
+        if(data){
+          insertValue(data);
+        }
+        showMockDialog = false;
+        }"
+        ref="Mock"
+      ></Mock>
     </el-container>
     <Footer></Footer>
     <div class></div>
@@ -165,6 +183,7 @@
 import Editormd from '@/components/common/Editormd'
 import JsonToTable from '@/components/common/JsonToTable'
 import JsonBeautify from '@/components/common/JsonBeautify'
+import Mock from '@/components/common/Mock'
 import TemplateList from '@/components/page/edit/TemplateList'
 import HistoryVersion from '@/components/page/edit/HistoryVersion'
 import AttachmentList from '@/components/page/edit/AttachmentList'
@@ -195,7 +214,9 @@ export default {
       catalogs: [],
       isLock: 0,
       intervalId: 0,
-      saving: false
+      saving: false,
+      showMockDialog: false,
+      lang: ''
     }
   },
   computed: {
@@ -241,7 +262,8 @@ export default {
     HistoryVersion,
     AttachmentList,
     PasteTable,
-    SortPage
+    SortPage,
+    Mock
   },
   methods: {
     // 获取页面内容
@@ -683,6 +705,7 @@ export default {
     this.remoteIsLock()
     /** 监听粘贴上传图片 **/
     document.addEventListener('paste', this.upload_paste_img)
+    this.lang = DocConfig.lang
   },
 
   beforeDestroy() {

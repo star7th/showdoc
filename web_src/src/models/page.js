@@ -1,21 +1,23 @@
 // 处理页面数据相关的逻辑
 
+// 定义一个html反转义的函数
+const unescapeHTML = str =>
+  str.replace(
+    /&amp;|&lt;|&gt;|&#39;|&quot;/g,
+    tag =>
+      ({
+        '&amp;': '&',
+        '&lt;': '<',
+        '&gt;': '>',
+        '&#39;': "'",
+        '&quot;': '"'
+      }[tag] || tag)
+  )
+
 // 渲染来自runapi的文档
 const rederPageContent = (page_content, globalParams = {}) => {
   let obj
-  // 先定义一个html反转义的函数
-  const unescapeHTML = str =>
-    str.replace(
-      /&amp;|&lt;|&gt;|&#39;|&quot;/g,
-      tag =>
-        ({
-          '&amp;': '&',
-          '&lt;': '<',
-          '&gt;': '>',
-          '&#39;': "'",
-          '&quot;': '"'
-        }[tag] || tag)
-    )
+
   page_content = unescapeHTML(page_content)
   try {
     obj = JSON.parse(page_content)
@@ -79,18 +81,18 @@ const rederPageContent = (page_content, globalParams = {}) => {
     obj.request.headers[0].name
   ) {
     newContent += `
-##### Header 
+##### Header
 
 |header|必选|类型|说明|
 |:-----  |:-----|-----|
 `
     const headers = obj.request.headers
     headers.map(one => {
-      //如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
-      if (!one.name || (one.disable && one.disable >= 1 ) ) return ;
+      // 如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
+      if (!one.name || (one.disable && one.disable >= 1)) return
       newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
         one.type
-      } |${one.remark ? one.remark : '无'}   |
+        } |${one.remark ? one.remark : '无'}   |
 `
     })
   }
@@ -104,18 +106,18 @@ const rederPageContent = (page_content, globalParams = {}) => {
 |:-----  |:-----|-----|
 `
     params.map(one => {
-      //如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
-      if (!one.name || (one.disable && one.disable >= 1 ) ) return ;
+      // 如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
+      if (!one.name || (one.disable && one.disable >= 1)) return
       newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
         one.type
-      } |${one.remark ? one.remark : '无'}   |
+        } |${one.remark ? one.remark : '无'}   |
 `
     })
   }
 
   if (obj.request.params.mode == 'json' && params) {
     newContent += `
-##### 请求参数示例 
+##### 请求参数示例
 \`\`\`
 ${params}
 \`\`\`
@@ -136,14 +138,14 @@ ${params}
       if (!one.name) return
       newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
         one.type
-      } |${one.remark ? one.remark : '无'}   |
+        } |${one.remark ? one.remark : '无'}   |
 `
     })
   }
 
   if (obj.response.responseExample) {
     newContent += `
-##### 返回示例 
+##### 返回示例
 \`\`\`
 ${obj.response.responseExample}
    \`\`\`
@@ -156,7 +158,7 @@ ${obj.response.responseExample}
     obj.response.responseParamsDesc[0].name
   ) {
     newContent += `
-##### 返回参数说明 
+##### 返回参数说明
 
 |参数名|类型|说明|
 |:-----  |:-----|-----|
@@ -166,7 +168,7 @@ ${obj.response.responseExample}
       if (!one.name) return
       newContent += `|${one.name} |${one.type} |${
         one.remark ? one.remark : '无'
-      }   |
+        }   |
 `
     })
   }
@@ -181,4 +183,4 @@ ${obj.response.responseExample}
   return newContent
 }
 
-export { rederPageContent }
+export { rederPageContent, unescapeHTML }

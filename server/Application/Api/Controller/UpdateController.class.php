@@ -5,7 +5,7 @@ class UpdateController extends BaseController {
 
     //检测数据库并更新
     public function checkDb(){
-        $version_num = 3 ;
+        $version_num = 4 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
             $r = $this->updateSqlite();
@@ -312,6 +312,19 @@ class UpdateController extends BaseController {
             `item_id` int(11) NOT NULL DEFAULT '0',
             `param_type` CHAR(2000) NOT NULL DEFAULT '',
             `content_json_str` CHAR(2000) NOT NULL DEFAULT '',
+            `addtime` CHAR(2000) NOT NULL DEFAULT '',
+            `last_update_time` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
+        //创建mock表
+        $sql = "CREATE TABLE IF NOT EXISTS `mock` (
+            `id`  INTEGER PRIMARY KEY ,
+            `unique_key` CHAR(2000) NOT NULL DEFAULT '',
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `page_id` int(11) NOT NULL DEFAULT '0',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `view_times` int(11) NOT NULL DEFAULT '0',
+            `template` CHAR(2000) NOT NULL DEFAULT '',
             `addtime` CHAR(2000) NOT NULL DEFAULT '',
             `last_update_time` CHAR(2000) NOT NULL DEFAULT ''
             )";
