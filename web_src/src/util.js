@@ -70,8 +70,13 @@ export default {
         }
       }
       // 将美化过的json压缩还原
-      const obj = JSON.parse(txt)
-      return JSON.stringify(obj)
+      try {
+        const obj = JSON.parse(txt);
+        return JSON.stringify(obj);
+      } catch (e) {
+        // 非json数据直接显示
+        return txt;
+      }
     }
   }
 }
