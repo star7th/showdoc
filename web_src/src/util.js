@@ -69,51 +69,9 @@ export default {
           return txt
         }
       }
-      const indentChar = ' '
-      if (/^\s*$/.test(txt)) {
-        // alert('数据为空,无法格式化! ');
-        return txt
-      }
-      try {
-        var data = eval(`(${txt})`)
-      } catch (e) {
-        // alert(`数据源语法错误,格式化失败! 错误信息: ${e.description}`, 'err');
-        return txt
-      }
-      const draw = []
-      const last = false
-      const This = this
-      const line = compress ? '' : '\n'
-      let nodeCount = 0
-      let maxDepth = 0
-
-      const notify = function (name, value, isLast, indent, formObj) {
-        nodeCount++ /* 节点计数 */
-        for (var i = 0, tab = ''; i < indent; i++) tab += indentChar /* 缩进HTML */
-        tab = compress ? '' : tab /* 压缩模式忽略缩进 */
-        maxDepth = ++indent /* 缩进递增并记录 */
-        if (value && value.constructor == Array) {
-          /* 处理数组 */
-          draw.push(`${tab + (formObj ? `"${name}":` : '')}[${line}`) /* 缩进'[' 然后换行 */
-          for (var i = 0; i < value.length; i++) { notify(i, value[i], i == value.length - 1, indent, false) }
-          draw.push(`${tab}]${isLast ? line : `,${line}`}`) /* 缩进']'换行,若非尾元素则添加逗号 */
-        } else if (value && typeof value === 'object') {
-          /* 处理对象 */
-          draw.push(`${tab + (formObj ? `"${name}":` : '')}{${line}`) /* 缩进'{' 然后换行 */
-          let len = 0
-          var i = 0
-          for (var key in value) len++
-          for (var key in value) notify(key, value[key], ++i == len, indent, true)
-          draw.push(`${tab}}${isLast ? line : `,${line}`}`) /* 缩进'}'换行,若非尾元素则添加逗号 */
-        } else {
-          if (typeof value === 'string') value = `"${value}"`
-          draw.push(tab + (formObj ? `"${name}":` : '') + value + (isLast ? '' : ',') + line)
-        }
-      }
-      const isLast = true
-      const indent = 0
-      notify('', data, isLast, indent, false)
-      return draw.join('')
+      // 将美化过的json压缩还原
+      const obj = JSON.parse(txt)
+      return JSON.stringify(obj)
     }
   }
 }
