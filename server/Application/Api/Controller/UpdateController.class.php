@@ -5,7 +5,7 @@ class UpdateController extends BaseController {
 
     //检测数据库并更新
     public function checkDb(){
-        $version_num = 4 ;
+        $version_num = 5 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
             $r = $this->updateSqlite();
@@ -329,6 +329,33 @@ class UpdateController extends BaseController {
             `last_update_time` CHAR(2000) NOT NULL DEFAULT ''
             )";
         D("User")->execute($sql);
+
+        //创建file_page表
+        $sql = "CREATE TABLE IF NOT EXISTS `file_page` (
+            `id`  INTEGER PRIMARY KEY ,
+            `file_id` int(11) NOT NULL DEFAULT '0',
+            `page_id` int(11) NOT NULL DEFAULT '0',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `addtime` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
+
+        // 如果file_page尚未有数据，则把upload_file表的数据转换过去
+        if( !D("FilePage")->find()){
+            $files = D("UploadFile")->select() ;
+            if($files){
+                foreach ($files as $key => $value) {
+                    D("FilePage")->add( array(
+                        "file_id" => $value['file_id'] ,
+                        "page_id" => $value['page_id'] ,
+                        "item_id" => $value['item_id'] ,
+                        "addtime" => $value['addtime'] ,
+                    )) ;
+                }
+            }
+        }
+
+
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num

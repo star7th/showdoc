@@ -9,18 +9,25 @@
         :visible.sync="dialogTableVisible"
         :close-on-click-modal="false"
       >
-        <el-upload
-          class="upload-file"
-          :action="uploadUrl"
-          :on-success="clearFiles"
-          :on-error="clearFiles"
-          :data="uploadData"
-          ref="uploadFile"
-          v-if="manage"
-        >
-          <el-button size="small" type="primary">{{$t('upload_file')}}</el-button>
-          <small>&nbsp;&nbsp;&nbsp;{{$t('file_size_tips')}}</small>
-        </el-upload>
+        <el-form :inline="true" class="demo-form-inline">
+          <el-form-item>
+            <el-button @click="showFilehub">{{$t('from_file_gub')}}</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-upload
+              class="upload-file"
+              :action="uploadUrl"
+              :on-success="uploadCallback"
+              :on-error="uploadCallback"
+              :data="uploadData"
+              ref="uploadFile"
+              v-if="manage"
+            >
+              <el-button>{{$t('upload')}}</el-button>
+              <small>&nbsp;&nbsp;&nbsp;{{$t('file_size_tips')}}</small>
+            </el-upload>
+          </el-form-item>
+        </el-form>
 
         <el-table :data="content">
           <el-table-column property="addtime" :label="$t('add_time')" width="170"></el-table-column>
@@ -49,6 +56,7 @@
         </el-table>
       </el-dialog>
     </el-container>
+    <filehub :callback="get_content" :item_id="item_id" :page_id="page_id" ref="filehub"></filehub>
     <Footer></Footer>
     <div class></div>
   </div>
@@ -58,6 +66,7 @@
 </style>
 
 <script>
+import filehub from '@/components/page/edit/Filehub'
 export default {
   props: {
     callback: '',
@@ -73,7 +82,9 @@ export default {
       uploadUrl: DocConfig.server + '/api/page/upload'
     }
   },
-  components: {},
+  components: {
+    filehub
+  },
   computed: {
     uploadData: function() {
       return {
@@ -119,6 +130,7 @@ export default {
         var url = DocConfig.server + '/api/page/deleteUploadFile'
         var params = new URLSearchParams()
         params.append('file_id', file_id)
+        params.append('page_id', that.page_id)
         that.axios.post(url, params).then(function(response) {
           if (response.data.error_code === 0) {
             that.get_content()
@@ -144,6 +156,19 @@ export default {
         '")'
       this.callback(val)
       this.dialogTableVisible = false
+    },
+    uploadCallback(data) {
+      if (data.error_message) {
+        this.$alert(data.error_message)
+      }
+      let childRef = this.$refs.uploadFile // 获取子组件
+      childRef.clearFiles()
+      this.get_content()
+    },
+    // 文件库
+    showFilehub() {
+      let childRef = this.$refs.filehub // 获取子组件
+      childRef.show()
     }
   },
   mounted() {}

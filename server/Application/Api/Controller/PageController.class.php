@@ -22,7 +22,7 @@ class PageController extends BaseController {
            //unset($page['page_content']);
            $page['addtime'] = date("Y-m-d H:i:s",$page['addtime']);
            //判断是否包含附件信息
-           $page['attachment_count'] = D("UploadFile")->where("page_id = '$page_id' ")->count();
+           $page['attachment_count'] = D("FilePage")->where("page_id = '$page_id' ")->count();
 
            $singlePage = M("SinglePage")->where(" page_id = '%d' ",array($page_id))->limit(1)->find();
            if ($singlePage) {
@@ -217,7 +217,7 @@ class PageController extends BaseController {
     //上传附件
     public function upload(){
         //重定向控制器和方法
-        R("Attachment/pageAttachmentUpload");
+        R("Attachment/attachmentUpload");
     }
 
     public function uploadList(){
@@ -284,7 +284,7 @@ class PageController extends BaseController {
            unset($page['cat_id']);
            $page['addtime'] = date("Y-m-d H:i:s",$page['addtime']);
            //判断是否包含附件信息
-           $page['attachment_count'] = D("UploadFile")->where("page_id = '$page_id' ")->count();
+           $page['attachment_count'] = D("FilePage")->where("page_id = '$page_id' ")->count();
 
         }
         $this->sendResult($page);

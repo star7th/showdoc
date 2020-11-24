@@ -1,12 +1,15 @@
+<!-- 附件 -->
 <template>
   <div class="hello">
     <Header></Header>
 
-    <el-container>
-      <el-card class="hor-center-card">
-        <el-button type="text" @click="goback" class="goback-btn">
-          <i class="el-icon-back"></i>
-        </el-button>
+    <el-container class="container-narrow">
+      <el-dialog
+        :title="$t('file_gub')"
+        :visible.sync="dialogTableVisible"
+        :close-on-click-modal="false"
+        width="65%"
+      >
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label>
             <el-input v-model="display_name" :placeholder="$t('display_name')"></el-input>
@@ -43,6 +46,7 @@
           <el-table-column prop="addtime" :label="$t('add_time')" width="160"></el-table-column>
           <el-table-column prop :label="operation">
             <template slot-scope="scope">
+              <el-button @click="select(scope.row)" type="text" size="small">{{$t('select')}}</el-button>
               <el-button @click="visit(scope.row)" type="text" size="small">{{$t('visit')}}</el-button>
               <el-button @click="delete_row(scope.row)" type="text" size="small">{{$t('delete')}}</el-button>
             </template>
@@ -58,21 +62,29 @@
             :total="total"
           ></el-pagination>
         </div>
-      </el-card>
+      </el-dialog>
     </el-container>
-
     <Footer></Footer>
+    <div class></div>
   </div>
 </template>
 
+<style>
+</style>
+
 <script>
 export default {
-  name: '',
-  components: {},
+  props: {
+    callback: '',
+    page_id: '',
+    item_id: '',
+    manage: true
+  },
   data() {
     return {
+      dialogTableVisible: false,
       page: 1,
-      count: 6,
+      count: 5,
       display_name: '',
       username: '',
       dataList: [],
@@ -82,6 +94,15 @@ export default {
       used: 0,
       used_flow: 0,
       uploadUrl: DocConfig.server + '/api/page/upload'
+    }
+  },
+  components: {},
+  computed: {
+    uploadData: function() {
+      return {
+        page_id: this.page_id,
+        item_id: this.item_id
+      }
     }
   },
   methods: {
@@ -100,10 +121,9 @@ export default {
         this.used_flow = json.used_flow_m
       })
     },
-    // 跳转到项目
-    jump_to_item(row) {
-      let url = '/' + row.item_id
-      window.open(url)
+    show() {
+      this.dialogTableVisible = true
+      this.getList()
     },
     handleCurrentChange(currentPage) {
       this.page = currentPage
@@ -130,9 +150,6 @@ export default {
         })
       })
     },
-    goback() {
-      this.$router.push({ path: '/item/index' })
-    },
     uploadCallback(data) {
       if (data.error_message) {
         this.$alert(data.error_message)
@@ -140,30 +157,18 @@ export default {
       let childRef = this.$refs.uploadFile // 获取子组件
       childRef.clearFiles()
       this.getList()
+    },
+    select(row) {
+      this.request('/api/attachment/bindingPage', {
+        file_id: row.file_id,
+        page_id: this.page_id
+      }).then(data => {
+        this.dialogTableVisible = false
+        this.callback()
+      })
     }
-  },
 
-  mounted() {
-    this.getList()
   },
-  beforeDestroy() {}
+  mounted() {}
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.hor-center-card a {
-  font-size: 12px;
-}
-
-.hor-center-card {
-  width: 1000px;
-}
-
-.goback-btn {
-  font-size: 18px;
-  margin-right: 800px;
-  margin-bottom: 5px;
-}
-
-</style>

@@ -3,6 +3,8 @@ namespace Home\Controller;
 use Think\Controller;
 class UpdateController extends BaseController {
     
+    //此文件不再维护。升级数据库的脚本改到了API/UpdateController
+
     //升级数据库
     public function db(){
         $this->_clear_runtime();

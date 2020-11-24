@@ -30,15 +30,12 @@
               v-show="showfullPageBtn"
               @click="clickFullPage"
             ></i>
-            <el-badge
-              :value="attachment_count"
-              class="item"
+            <i
+              class="el-icon-upload item"
               id="attachment"
               v-if="attachment_count"
-              @click.native="ShowAttachment"
-            >
-              <i class="el-icon-upload"></i>
-            </el-badge>
+              @click="ShowAttachment"
+            ></i>
           </div>
           <div id="doc-body">
             <div id="page_md_content" class="page_content_main">

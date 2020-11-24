@@ -68,75 +68,26 @@ class AttachmentController extends BaseController {
             return false;
         }
 
-        $oss_open = D("Options")->get("oss_open" ) ;
-        if ($oss_open) {
-            $uploadFile = $_FILES['editormd-image-file'] ;
-            $url = upload_oss($uploadFile);
-            if ($url) {
-                $sign = md5($url.time().rand()) ;
-                $insert = array(
-                "sign" => $sign,
-                "uid" => $login_user['uid'],
-                "item_id" => $item_id,
-                "page_id" => $page_id,
-                "display_name" => $uploadFile['name'],
-                "file_type" => $uploadFile['type'],
-                "file_size" => $uploadFile['size'],
-                "real_url" => $url,
-                "addtime" => time(),
-                );
-                $ret = D("UploadFile")->add($insert);
-                $url = get_domain().U("api/attachment/visitFile",array("sign" => $sign))."&showdoc=.jpg"; 
-                echo json_encode(array("url"=>$url,"success"=>1));
-            }
-            return ;
-        }
-
-        $upload = new \Think\Upload();// 实例化上传类
-        $upload->maxSize  = 1003145728 ;// 设置附件上传大小
-        $upload->allowExts  = array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
-        $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
-        $upload->savePath = '';// 设置附件上传子目录
-        $info = $upload->uploadOne($_FILES['editormd-image-file']) ;
-        if(!$info) {// 上传错误提示错误信息
-          $this->error($upload->getError());
-          return;
-        }else{// 上传成功 获取上传文件信息
-          $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['savepath'].$info['savename'] ;
-          $sign = md5($url.time().rand()) ;
-          $uploadFile = $_FILES['editormd-image-file'] ;
-          $insert = array(
-            "sign" => $sign,
-            "uid" => $login_user['uid'],
-            "item_id" => $item_id,
-            "page_id" => $page_id,
-            "display_name" => $uploadFile['name'],
-            "file_type" => $uploadFile['type'],
-            "file_size" => $uploadFile['size'],
-            "real_url" => $url,
-            "addtime" => time(),
-            );
-          $ret = D("UploadFile")->add($insert);
-          $url = get_domain().U("api/attachment/visitFile",array("sign" => $sign))."&showdoc=.jpg";
-          echo json_encode(array("url"=>$url,"success"=>1));
+        $url = D("Attachment")->upload($_FILES , 'editormd-image-file' , $login_user['uid'] , $item_id , $page_id ) ;
+        if ($url) {
+            echo json_encode(array("url"=>$url,"success"=>1));
         }
 
     }
 
-    //页面的上传附件
-    public function pageAttachmentUpload(){
+    //上传附件
+    public function attachmentUpload(){
         $login_user = $this->checkLogin();
         $item_id = I("item_id/d") ? I("item_id/d") : 0 ;
         $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
         $uploadFile = $_FILES['file'] ;
  
-        if (!$page_id) {
-            $this->sendError(10103,"请至少先保存一次页面内容");
-            return;
-        }
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->sendError(10103);
-            return;
+        // 如果附件是要上传绑定到某个页面，那么检验项目权限。如果不绑定，只是上传到自己的文件库，则不需要校验项目权限
+        if( $page_id > 0 || $item_id > 0){
+            if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+                $this->sendError(10103);
+                return;
+            }
         }
         
         if (!$uploadFile) {
@@ -147,54 +98,9 @@ class AttachmentController extends BaseController {
             return false;
         }
 
-        $oss_open = D("Options")->get("oss_open" ) ;
-        if ($oss_open) {
-            $url = upload_oss($uploadFile);
-            if ($url) {
-                $sign = md5($url.time().rand()) ;
-                $insert = array(
-                "sign" => $sign,
-                "uid" => $login_user['uid'],
-                "item_id" => $item_id,
-                "page_id" => $page_id,
-                "display_name" => $uploadFile['name'],
-                "file_type" => $uploadFile['type'],
-                "file_size" => $uploadFile['size'],
-                "real_url" => $url,
-                "addtime" => time(),
-                );
-                $ret = D("UploadFile")->add($insert);
-                $url = get_domain().U("api/attachment/visitFile",array("sign" => $sign)); 
-                echo json_encode(array("url"=>$url,"success"=>1));
-            }
-            return ;
-        }
-
-        $upload = new \Think\Upload();// 实例化上传类
-        $upload->maxSize  = 4145728000 ;// 设置附件上传大小
-        $upload->rootPath = './../Public/Uploads/';// 设置附件上传目录
-        $upload->savePath = '';// 设置附件上传子目录
-        $info = $upload->uploadOne($uploadFile) ;
-        if(!$info) {// 上传错误提示错误信息
-          $this->error($upload->getError());
-          return;
-        }else{// 上传成功 获取上传文件信息
-          $url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['savepath'].$info['savename'] ;
-          $sign = md5($url.time().rand()) ;
-          $insert = array(
-            "sign" => $sign,
-            "uid" => $login_user['uid'],
-            "item_id" => $item_id,
-            "page_id" => $page_id,
-            "display_name" => $uploadFile['name'],
-            "file_type" => $uploadFile['type'],
-            "file_size" => $uploadFile['size'],
-            "real_url" => $url,
-            "addtime" => time(),
-            );
-          $ret = D("UploadFile")->add($insert);
-          $url = get_domain().U("api/attachment/visitFile",array("sign" => $sign));
-          echo json_encode(array("url"=>$url,"success"=>1));
+        $url = D("Attachment")->upload($_FILES , 'file' , $login_user['uid'] , $item_id , $page_id ) ;
+        if ($url) {
+            echo json_encode(array("url"=>$url,"success"=>1));
         }
 
     }
@@ -208,7 +114,7 @@ class AttachmentController extends BaseController {
             return;
         }
         $return = array() ;
-        $files = D("UploadFile")->where("page_id = '$page_id' ")->order("addtime desc")->select();
+        $files = D("UploadFile")->join(" file_page on file_page.file_id = upload_file.file_id")->field("upload_file.* , file_page.item_id as item_id ,file_page.page_id as page_id  ")->where("file_page.page_id = '$page_id' ")->order("file_page.addtime desc")->select();
         if ($files) {
             $item_id = $files[0]['item_id'] ;
             if (!$this->checkItemVisit($login_user['uid'] , $item_id)) {
@@ -239,19 +145,25 @@ class AttachmentController extends BaseController {
     public function deletePageUploadFile(){
         $login_user = $this->checkLogin();
         $file_id = I("file_id/d") ? I("file_id/d") : 0 ;
-
-        $file = D("UploadFile")->where("file_id = '$file_id' ")->find();
-        $item_id = $file['item_id'] ;
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
-            $this->sendError(10103);
-            return;
-        }
-        $ret = D("Page")->deleteFile($file_id);
-        if ($ret) {
-            $this->sendResult(array());
+        $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
+        $count = D("FilePage")->where(" file_id = '$file_id' and page_id > 0   ")->count() ;
+        if($count <= 1 ){
+            $this->deleteMyAttachment();
         }else{
-            $this->sendError(10101,"删除失败");
+            $page = M("Page")->where(" page_id = '$page_id' ")->find();
+            if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+                $this->sendError(10103);
+                return;
+            }
+            $res = D("FilePage")->where(" file_id = '$file_id' and page_id = '$page_id'   ")->delete() ;
+            if($res){
+                $this->sendResult(array());
+            }else{
+                $this->sendError(10101,"删除失败");
+            }
+
         }
+        
     }
 
     //获取全站的附件列表。给管理员查看附件用
@@ -327,7 +239,7 @@ class AttachmentController extends BaseController {
 
         $file = D("UploadFile")->where("file_id = '$file_id' ")->find();
 
-        $ret = D("Page")->deleteFile($file_id);
+        $ret = D("Attachment")->deleteFile($file_id);
         if ($ret) {
             $this->sendResult(array());
         }else{
@@ -401,6 +313,32 @@ class AttachmentController extends BaseController {
             }
         }
         $this->sendError(10101,"删除失败");
+    }
+
+    //将已上传文件绑定到页面中
+    public function bindingPage(){
+        $login_user = $this->checkLogin();
+        $file_id = I("file_id/d") ? I("file_id/d") : 0 ;
+        $page_id = I("page_id/d");
+        $file = D("UploadFile")->where("file_id = '$file_id' and uid ='$login_user[uid]' ")->find();
+        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+            $this->sendError(10103);
+            return;
+        }
+        $insert = array(
+            "file_id" => $file_id,
+            "item_id" => $page['item_id'] ,
+            "page_id" => $page_id,
+            "addtime" => time(),
+            );
+        $ret = D("FilePage")->add($insert);
+        if( $ret){
+            $this->sendResult(array());
+        }else{
+            $this->sendError(10101);
+        }
+
     }
 
 }
