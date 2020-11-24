@@ -395,6 +395,10 @@ exports.default = {
 
   cancelSingle: 'Are you sure you want to cancel the single page link? After cancellation, the original link will be invalid immediately',
   cancelSingleYes: 'Unlink single page',
-  cancelSingleNo: 'Keep single page'
+  cancelSingleNo: 'Keep single page',
+
+  from_file_gub: 'From FileHub',
+  file_gub: 'FileHub',
+  select: 'select'
 
 }

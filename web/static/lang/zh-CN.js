@@ -369,16 +369,16 @@ exports.default = {
   attachment_manage: '附件管理',
   op_success: '操作成功',
   display_name: '展示名字',
-  all_attachment_type: '全部附件类型',
+  all_attachment_type: '全部文件类型',
   image: '图片',
-  general_attachment: '普通附件',
+  general_attachment: '其它文件',
   uploader: '上传者',
   file_id: '文件id',
   file_type: '文件类型',
   file_size_m: '文件大小/mb',
   visit: '查看',
   visit_times: '访问次数',
-  my_attachment: '我的附件',
+  my_attachment: '文件库',
   accumulated_used_sapce: '累计已使用空间',
   month_flow: '本月已使用流量',
 
@@ -386,5 +386,9 @@ exports.default = {
 
   cancelSingle: '是否确定取消单页链接？取消后，原链接会立马失效',
   cancelSingleYes: '取消单页链接',
-  cancelSingleNo: '保留单页链接'
+  cancelSingleNo: '保留单页链接',
+
+  from_file_gub: '从文件库选择',
+  file_gub: '文件库',
+  select: '选择'
 }
