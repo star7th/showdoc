@@ -215,6 +215,8 @@ class ItemController extends BaseController {
 
         $items = $items ? array_values($items) : array();
         $this->sendResult($items);
+        // 埋个点，升级数据库
+        R("Update/checkDb" , array(false));
 
     }
 
