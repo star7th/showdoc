@@ -4,7 +4,7 @@ use Think\Controller;
 class UpdateController extends BaseController {
 
     //检测数据库并更新
-    public function checkDb(){
+    public function checkDb($showBack = true){
         $version_num = 5 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
@@ -14,7 +14,9 @@ class UpdateController extends BaseController {
             }
             //echo '执行数据库升级';
         }
-        $this->sendResult(array());
+        if($showBack){
+           $this->sendResult(array()); 
+        }
     }
 
     public function updateSqlite(){
