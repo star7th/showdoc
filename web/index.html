@@ -1,18 +1,19 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=renderer content=webkit><meta http-equiv=X-UA-Compatible content=edge><title>ShowDoc</title><meta name=keywords content="在线API文档 技术文档 数据字典 在线手册"><meta name=description content=一个非常适合IT团队的在线API文档、技术文档工具。你可以使用Showdoc来编写在线API文档、技术文档、数据字典、在线手册><script type=text/javascript>//挂在window下的全局配置
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=renderer content=webkit><meta http-equiv=X-UA-Compatible content=edge><title>ShowDoc</title><meta name=keywords content=""><meta name=description content=本网站基于开源版showdoc搭建，仅供私人使用。如需访问showdoc官网，请在搜索引擎里搜索showdoc字样或者直接访问showdoc.com.cn><script type=text/javascript>var Wwidth = window.innerWidth ;
+    window.addEventListener('resize', function() {
+      ///宽度变化大于50像素的时候刷新整个窗口以适应新宽度
+      if ( Math.abs(Wwidth - window.innerWidth) > 50 ) {
+          //如果不在编辑页面，则在窗口变化后刷新窗口以适应宽度
+          if(window.location.href.indexOf("/edit") === -1){
+            window.location.reload();
+          }
+      };
+
+    });
+
+    //挂在window下的全局配置
     window.DocConfig = {
       //"server":'http://127.0.0.1/showdoc/server/index.php?s=',
       "server": window.location.protocol +'//'+ window.location.host + window.location.pathname+ '../server/index.php?s=',
       //"lang" :'en'
       "lang" :'zh-cn'
-  }</script><link href=./static/css/app.c48ce3248f2121d4d7c6298ee07f6a90.css rel=stylesheet></head><body class=grey-bg><div id=app></div><script type=text/javascript src=./static/js/manifest.69b7425e83c569f573b8.js></script><script type=text/javascript src=./static/js/vendor.e142ae298b8919d4a6df.js></script><script type=text/javascript src=./static/js/app.d44a64b1e400ebc84a56.js></script></body></html><script language=JavaScript>var Wwidth = window.innerWidth ;
-  window.addEventListener('resize', function() {
-    ///宽度变化大于50像素的时候刷新整个窗口以适应新宽度
-    if ( Math.abs(Wwidth - window.innerWidth) > 50 ) {
-        //console.log(window.innerWidth + ' ' + window.innerHeight);
-        //如果不在编辑页面，则在窗口变化后刷新窗口以适应宽度
-        if(window.location.href.indexOf("/edit") === -1){
-          window.location.reload();
-        }
-    };
-
-  });</script>
+  }</script><link href=./static/css/app.50fcaf54f61bc9c900c66f360d418a7b.css rel=stylesheet></head><body class=grey-bg><div id=app></div><div style=display:none>本网站基于开源版showdoc搭建，仅供私人使用。如需访问showdoc官网，请在搜索引擎里搜索showdoc字样或者直接访问showdoc.com.cn</div><script type=text/javascript src=./static/js/manifest.3ad1d5771e9b13dbdad2.js></script><script type=text/javascript src=./static/js/vendor.451f9dec262f7b7fd825.js></script><script type=text/javascript src=./static/js/app.fb5fe5c4b292fb0fa52b.js></script></body></html>

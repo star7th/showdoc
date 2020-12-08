@@ -21,6 +21,7 @@ import Admin from '@/components/admin/Index'
 import Team from '@/components/team/Index'
 import TeamMember from '@/components/team/Member'
 import TeamItem from '@/components/team/Item'
+import Attachment from '@/components/attachment/Index'
 
 Vue.use(Router)
 
@@ -125,7 +126,7 @@ export default new Router({
       path: '/team/index',
       name: 'Team',
       component: Team
-    }, 
+    },
     {
       path: '/team/member/:team_id',
       name: 'TeamMember',
@@ -136,5 +137,10 @@ export default new Router({
       name: 'TeamItem',
       component: TeamItem
     },
+    {
+      path: '/attachment/index',
+      name: 'Attachment',
+      component: Attachment
+    }
   ]
 })

@@ -1,11 +1,9 @@
-<template>
-
-</template>
+<template></template>
 
 <script>
 export default {
   name: 'Header',
-  data () {
+  data() {
     return {
       msg: '头部'
     }
@@ -15,5 +13,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

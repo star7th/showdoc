@@ -3,6 +3,8 @@ namespace Home\Controller;
 use Think\Controller;
 class UpdateController extends BaseController {
     
+    //此文件不再维护。升级数据库的脚本改到了API/UpdateController
+
     //升级数据库
     public function db(){
         $this->_clear_runtime();
@@ -237,6 +239,41 @@ class UpdateController extends BaseController {
         `del_time` int(11) NOT NULL DEFAULT '0'
         )";
         D("User")->execute($sql);
+
+        //创建page_lock表
+        $sql = "CREATE TABLE IF NOT EXISTS `page_lock` (
+            `id`  INTEGER PRIMARY KEY ,
+            `page_id` int(11) NOT NULL DEFAULT '0',
+            `lock_uid` int(11) NOT NULL DEFAULT '0',
+            `lock_username` CHAR(200) NOT NULL DEFAULT '',
+            `lock_to` int(11) NOT NULL DEFAULT '0',
+            `addtime` int(11) NOT NULL DEFAULT '0'
+            )";
+        D("User")->execute($sql);
+
+        //item_member表增加cat_id字段
+        if (!$this->_is_column_exist("item_member","cat_id")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."item_member ADD cat_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
+            D("User")->execute($sql);
+        }
+
+        //team_item_member表增加cat_id字段
+        if (!$this->_is_column_exist("team_item_member","cat_id")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."team_item_member ADD cat_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
+            D("User")->execute($sql);
+        }
+
+        //创建item_variable表
+        $sql = "CREATE TABLE IF NOT EXISTS `item_variable` (
+            `id`  INTEGER PRIMARY KEY ,
+            `var_name` CHAR(2000) NOT NULL DEFAULT '',
+            `var_value` CHAR(2000) NOT NULL DEFAULT '',
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `addtime` int(11) NOT NULL DEFAULT '0'
+            )";
+        D("User")->execute($sql);
+
 
         echo "OK!\n";
     }

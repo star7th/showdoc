@@ -43,7 +43,17 @@ class UserController extends BaseController {
                     session("login_user" , $ret );
                     $token = D("UserToken")->createToken($ret['uid']);
                     cookie('cookie_token',$token,array('expire'=>60*60*24*90,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
-                  $this->sendResult(array()); 
+                  $this->sendResult(array(
+                    "uid" => $ret['uid'] ,
+                    "username" => $ret['username'] ,
+                    "name" => $ret['name'] ,
+                    "groupid" => $ret['groupid'] ,
+                    "avatar" => $ret['avatar'] ,
+                    "avatar_small" => $ret['avatar_small'] ,
+                    "email" => $ret['email'] ,
+                    "email_verify" => $ret['email_verify'] ,
+                    "user_token" => $token ,
+                )); 
 
                 }else{
                     $this->sendError(10101,'register fail');
@@ -65,6 +75,7 @@ class UserController extends BaseController {
         $this->_importZip("../Public/SampleZip/apidoc.zip" , $uid);
         $this->_importZip("../Public/SampleZip/databasedoc.zip" , $uid);
         $this->_importZip("../Public/SampleZip/teamdoc.zip" , $uid);
+        $this->_importZip("../Public/SampleZip/spreadsheet.zip" , $uid);
     }
 
     private function _importZip($file , $uid){
@@ -83,7 +94,7 @@ class UserController extends BaseController {
 
     //登录
     public function login(){
-        $username = I("username");
+        $username = trim(I("username"));
         $password = I("password");
         $v_code = I("v_code");
         if (!$password) {
@@ -124,7 +135,17 @@ class UserController extends BaseController {
           D("User")->setLastTime($ret['uid']);
           $token = D("UserToken")->createToken($ret['uid'],60*60*24*180);
           cookie('cookie_token',$token,array('expire'=>60*60*24*180,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
-          $this->sendResult(array());               
+          $this->sendResult(array(
+            "uid" => $ret['uid'] ,
+            "username" => $ret['username'] ,
+            "name" => $ret['name'] ,
+            "groupid" => $ret['groupid'] ,
+            "avatar" => $ret['avatar'] ,
+            "avatar_small" => $ret['avatar_small'] ,
+            "email" => $ret['email'] ,
+            "email_verify" => $ret['email_verify'] ,
+            "user_token" => $token ,
+        ));              
         }else{
             D("VerifyCode")->_ins_times($key);//输错密码则设置输错次数
             
@@ -267,8 +288,8 @@ class UserController extends BaseController {
         $uid = $login_user['uid'] ;
         $username = I("username");
         $field = "username as value" ;
-        $username = \SQLite3::escapeString($username) ;
         if ($username) {
+            $username = \SQLite3::escapeString($username) ;
             $where = " username like '%{$username}%'" ;
         }else{
             $where = ' 1 = 1 ';

@@ -146,9 +146,6 @@ class BaseController extends Controller {
 			return false;
 		}
 
-		if (session("mamage_item_".$item_id)) {
-			return true;
-		}
 
 		$item = D("Item")->where("item_id = '%d' ",array($item_id))->find();
 		if ($item['uid'] && $item['uid'] == $uid) {
@@ -189,10 +186,11 @@ class BaseController extends Controller {
 
 	//判断某用户是否有项目访问权限（公开项目的话所有人可访问，私有项目则项目成员、项目创建者和访问密码输入者可访问）
 	protected function checkItemVisit($uid , $item_id, $refer_url= ''){
+
 		if (session("visit_item_".$item_id)) {
 			return true;
 		}
-
+		
 		if ($this->checkItemCreator($uid , $item_id)) {
 			session("visit_item_".$item_id , 1 );
 			return true;

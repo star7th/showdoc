@@ -78,7 +78,7 @@ class ItemModel extends BaseModel {
                     "item_id"=>$item_id,
                     "addtime"=>time(),
                     );
-                D("ItemMember")->add($member_data);
+                 // 不再导入成员数据 D("ItemMember")->add($member_data);
             }
         }
         return $item_id;
@@ -143,7 +143,7 @@ class ItemModel extends BaseModel {
 
     public function getContent($item_id , $page_field ="*" , $catalog_field ="*" , $uncompress = 0 ){
             //获取所有父目录id为0的页面
-            $all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" `s_number` asc , `page_id` asc  ")->field($page_field)->select();
+            $all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" s_number asc , page_id asc  ")->field($page_field)->select();
             $pages = array() ;
             if ($all_pages) {
                 foreach ($all_pages as $key => $value) {
@@ -156,7 +156,7 @@ class ItemModel extends BaseModel {
             }
             
             //获取该项目下的所有目录
-            $all_catalogs = D("Catalog")->field($catalog_field)->where("item_id = '$item_id' ")->order(" `s_number` asc , `cat_id` asc ")->select();
+            $all_catalogs = D("Catalog")->field($catalog_field)->where("item_id = '$item_id' ")->order(" s_number asc , cat_id asc ")->select();
 
             //获取所有二级目录
             $catalogs = array() ;
@@ -249,6 +249,38 @@ class ItemModel extends BaseModel {
         }
         //之所以先htmlspecialchars_decode是为了防止被htmlspecialchars转义了两次
         return htmlspecialchars(htmlspecialchars_decode($str));
+    }
+
+
+    //根据用户目录权限来过滤项目数据
+    public function filteMemberItem($uid , $item_id , $menuData){
+        if(!$menuData || !$menuData['catalogs']){
+            return $menuData ;
+        }
+
+        $cat_id = 0 ;
+        //首先看是否被添加为项目成员
+        $itemMember = D("ItemMember")->where("uid = '$uid' and item_id = '$item_id' ")->find() ;
+        if($itemMember && $itemMember['cat_id'] > 0 ){
+            $cat_id = $itemMember['cat_id'] ;
+        }
+        //再看是否添加为团队-项目成员
+        $teamItemMember = D("TeamItemMember")->where("member_uid = '$uid' and item_id = '$item_id' ")->find() ;
+        if($teamItemMember && $teamItemMember['cat_id'] > 0 ){
+            $cat_id = $teamItemMember['cat_id'] ;
+        }
+        //开始根据cat_id过滤
+        if($cat_id > 0 ){
+            foreach ($menuData['catalogs'] as $key => $value) {
+                if( $value['cat_id'] != $cat_id){
+                    unset($menuData['catalogs'][$key]);
+                }
+            }
+            $menuData['catalogs'] = array_values($menuData['catalogs']);
+        }
+
+        return $menuData ;
+
     }
 
 }

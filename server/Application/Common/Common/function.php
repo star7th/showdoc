@@ -207,3 +207,62 @@ function compress_string($string){
 function uncompress_string($string){
     return  gzuncompress(base64_decode($string));  
 }
+
+function new_oss($key , $secret , $endpoint , $isCName = false)
+{  
+    include_once VENDOR_PATH .'Alioss/autoload.php';
+    return new \OSS\OssClient($key , $secret , $endpoint , $isCName);
+}
+
+//上传到oss。参数$uploadFile是文件上传流，如$_FILES['file'] .也可以自己拼凑
+function upload_oss($uploadFile){
+    $oss_setting_json = D("Options")->get("oss_setting") ;
+    $oss_setting = json_decode($oss_setting_json,1);
+    if ($oss_setting && $oss_setting['oss_type'] && $oss_setting['oss_type'] == 'aliyun') {
+        $config = array(
+            "key" => $oss_setting['key'],
+            "secret"=> $oss_setting['secret'],
+            "endpoint"=> $oss_setting['endpoint'],
+            "bucket"=> $oss_setting['bucket'],
+        );
+        $oss = new_oss($config['key'] , $config['secret'] , $config['endpoint'] );
+        $ext = strrchr($uploadFile['name'], '.'); //获取扩展名
+        $oss_path = "showdoc_".time().rand().$ext;
+        $res = $oss->uploadFile($config['bucket'],$oss_path,$uploadFile['tmp_name']);
+        if ($res && $res['info'] && $res['info']['url']) {
+            if ($oss_setting['domain']) {
+                return $oss_setting['protocol'] . '://'.$oss_setting['domain']."/".$oss_path ;
+            }else{
+                return $res['info']['url'] ;
+            }
+           
+        }
+    }
+
+    if ($oss_setting && $oss_setting['oss_type'] && $oss_setting['oss_type'] == 'qiniu') {
+        $config = array(
+                    'rootPath' => './',
+                    'saveName' => array('uniqid', ''),
+                    'driver' => 'Qiniu',
+                    'driverConfig' => array(
+                            'accessKey' => $oss_setting['key'],
+                            'secrectKey' => $oss_setting['secret'], 
+                            'protocol'=>$oss_setting['protocol'],
+                            'domain' => $oss_setting['domain'],
+                            'bucket' => $oss_setting['bucket'], 
+                        )
+          );
+          //上传到七牛
+          $Upload = new \Think\Upload($config);
+          $info = $Upload->uploadOne($uploadFile);
+          if ($info && $info['url']) {
+              return $info['url'] ;
+          }
+
+    }
+    //var_dump($config);
+
+
+  return false ;
+
+}

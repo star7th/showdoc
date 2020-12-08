@@ -131,6 +131,7 @@ class PageController extends BaseController {
 
     //上传图片
     public function uploadImg(){
+        return false ;
         $qiniu_config = C('UPLOAD_SITEIMG_QINIU') ;
         if ($_FILES['editormd-image-file']['name'] == 'blob') {
             $_FILES['editormd-image-file']['name'] .= '.jpg';
