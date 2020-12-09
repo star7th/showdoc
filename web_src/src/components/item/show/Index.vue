@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <Header></Header>
-
+    <textarea cols="20" rows="10" id="copy_content_2020" style="position: absolute;top: -50px;height:1px;"></textarea>
     <!-- 展示常规项目 -->
     <ShowRegularItem
       :item_info="item_info"

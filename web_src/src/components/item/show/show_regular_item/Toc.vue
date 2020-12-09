@@ -21,6 +21,7 @@ export default {
   },
   methods: {
     toc_main_script() {
+      var that = this ;
       // 监听点击事件并滑动到相应位置
       $(document).on('click', '.markdown-toc-list a[href]', function(event) {
         event.preventDefault()
@@ -66,7 +67,44 @@ export default {
           }, 200)
         })
       }
-    }
+      $(document).on('click', 'pre', function(event) {
+          $('#copy2020').remove();
+          $(this).prepend('<div id="copy2020">复制</div>');
+          var right=$(this).offset().left+$(this).outerWidth()-$('#copy2020').outerWidth();
+          var top=$(this).offset().top;
+          $(this).find('#copy2020').css('left',right);
+          $(this).find('#copy2020').css('top',top);
+          var _this=$(this);
+          $('#copy2020').click(function (e) {
+            //console.log(that.html_encode(_this[0].innerText));
+            $(this).remove();
+            $('#copy_content_2020').html(that.html_encode(_this[0].innerText));
+            that.copyUrl2('copy_content_2020');
+            that.$message('复制成功');
+            $('#copy_content_2020').html('');
+          })
+      });
+
+    },
+
+    copyUrl2(a) {
+      var Url2=document.getElementById(a);
+      Url2.select(); // 选择对象
+      document.execCommand("Copy"); // 执行浏览器复制命令
+      // alert("已复制好，可贴粘。");
+    },
+    html_encode(str){
+      var s = "";
+      if (str.length == 0) return "";
+      s = str.replace(/&/g, "&gt;");
+      s = s.replace(/</g, "&lt;");
+      s = s.replace(/>/g, "&gt;");
+      //s = s.replace(/ /g, "&nbsp;");
+      s = s.replace(/\'/g, "'");
+      s = s.replace(/\"/g, "&quot;");
+      // s = s.replace(/\n/g, "<br>");
+      return s;
+    },
   },
   destroyed() {
     // 把那些监听了的事件去掉
@@ -78,6 +116,7 @@ export default {
 </script>
 <!-- 注意，这里是全局css -->
 <style >
+  #copy2020{position: absolute;background: #9797f7;color: #fff;padding: 5px;cursor: pointer;opacity: 0.6;}
 .page_content_main .markdown-toc {
   position: fixed;
   top: 230px;
