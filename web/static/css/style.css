@@ -35,8 +35,8 @@ img{
 	/**/
 	background: #111111;
 	position: fixed;
-	padding-top: 50px;
-	padding-bottom: 20px;
+	padding-top: 20px;
+	padding-bottom: 10px;
 	z-index: 99;
 }
 
@@ -48,7 +48,11 @@ img{
 	font-weight: 400;
 }
 .header .nav li{
-	margin-left: 55px; display: inline-block;vertical-align: middle;font-size: 16px;
+	margin-left: 55px; 
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 14px;
+	font-weight: bold;
 }
 .header .nav li.active a,
 .header .nav li a:hover{
@@ -109,11 +113,11 @@ border: #111111 solid 1px;
 .form-btns .btn{
 	width: 100%; height: 55px; background: #FFFFFF; font-size: 16px; color: #111111;
 	border: 1px solid #FFFFFF;
-box-sizing: border-box;
-border-radius: 4px;
-cursor: pointer;
-display: inline-block;
-line-height: 55px;
+	box-sizing: border-box;
+	border-radius: 4px;
+	cursor: pointer;
+	display: inline-block;
+	line-height: 55px;
 }
 .form-btns .btn:hover{
 	background: #369FFF !important;
@@ -139,25 +143,28 @@ line-height: 55px;
 
 }
 .hbanner{
-
+	margin-top: 0px;
 }
 .hbanner .wrapper{
-	background: url(../imgs/home1.png) no-repeat right center;
-	height: 940px;
-	padding-top: 305px;
+	background: url(../imgs/home1.png) no-repeat right ;
+	 background-position-y:25%; 
+	height: 950px;
+	padding-top: 285px;
 }
 .hbanner-txt{
 	padding-left: 155px;
 }
 .hbanner-txt h2{
-	font-size: 40px;
-line-height: 160%;
-color: #fff;
-font-weight: bold;
-margin-bottom: 55px;
+	font-size: 30px;
+	line-height: 160%;
+	color: #fff;
+	margin-bottom: 55px;
+	font-weight: bold;
+
 }
 .hbanner-txt h2 font{
 	color: #369FFF;
+
 }
 .hbanner-txt .list{
 	font-size: 14px;
@@ -171,25 +178,26 @@ line-height: 20px;
 }
 .hbanner-txt .list .num{
 	background: #333333;
-border-radius: 1px;
-margin-left: 5px;
-padding: 0 3px;
-font-family: 'Barlow-Regular';
+	border-radius: 1px;
+	margin-left: 5px;
+	padding: 0 3px;
+	font-family: 'Barlow-Regular';
 }
 .hbanner-txt .btns{
 	margin-top: 60px;
 }
 .hbanner-txt .btns a{
 	width: 130px;
-height: 55px;
-line-height: 55px;
-text-align: center;
-display: inline-block;
-border: 1px solid #FFFFFF;
-box-sizing: border-box;
-border-radius: 4px;
-margin-right: 24px;
-/*transition: 0.4s;*/
+	height: 55px;
+	line-height: 55px;
+	text-align: center;
+	display: inline-block;
+	border: 1px solid #FFFFFF;
+	box-sizing: border-box;
+	border-radius: 4px;
+	margin-right: 24px;
+	font-weight: bold;
+	/*transition: 0.4s;*/
 }
 .hbanner-txt .btns a:hover{
 	background: #369FFF !important;
@@ -236,7 +244,7 @@ padding-bottom: 30px;
 }
 .hrow .img{
 	/*padding-top: 120px;*/
-	padding-top: 110px;
+	padding-top: 18%;
 	/*width: 500px;*/
 	width: 43%;
 }
@@ -254,7 +262,7 @@ padding-bottom: 30px;
 	position: relative; z-index: 2;
 }
 .hrow2{
-	background: #369FFF;
+	background: #332E2E;
 	height: 634px;
 }
 .hrow3{
@@ -266,7 +274,7 @@ padding-bottom: 30px;
 	height: 570px;
 }
 .hrow5{
-	background: #369FFF;
+	background: #332E2E;
 	height: 634px;
 }
 .hrow6{
@@ -279,8 +287,8 @@ padding-bottom: 30px;
 }
 .hfoot{
 	height: 594px;
-	background: url(../imgs/home9.png) no-repeat center top #fff;
-	color: #111111;
+	background: url(../imgs/home9.png) no-repeat center top #332E2E;
+	color: #ffffff;
 	text-align: center;
 	padding-top: 280px;
 	position: relative;
@@ -294,24 +302,25 @@ font-weight: bold;
 	display: none;
 }
 .hfoot .num{
-	background: #DFF0FF;
+	background: #202020;
 	color: #369FFF;
 	font-weight: bold;
-border-radius: 1px;
-margin-right: 1px;
-padding: 0 6px;
-font-family: 'Barlow-Regular';
+	border-radius: 1px;
+	margin-right: 1px;
+	padding: 0 6px;
+	font-family: 'Barlow-Regular';
 }
 .hfoot .btn{
 	display: inline-block;
 	width: 130px;
-height: 55px;
-line-height: 55px;
-background: #111111;
-border-radius: 4px;
-margin-top: 24px;
-font-size: 16px;
-color: #fff;
+	height: 55px;
+	line-height: 55px;
+	background: #111111;
+	border-radius: 4px;
+	margin-top: 24px;
+	font-size: 16px;
+	color: #fff;
+	font-weight: bold;
 /*transition: 0.4s;*/
 }
 .hfoot .btn:hover{
@@ -326,7 +335,7 @@ color: #fff;
 /*价格*/
 .mprice-main{
 	background:#111111 url(../imgs/bg1.png) no-repeat center top;
-	padding-top: 200px;
+	padding-top: 100px;
 	padding-bottom: 210px;
 	text-align: center;
 }
@@ -457,7 +466,7 @@ width: 736px;
 background: #202020;
 border-radius: 4px;
 margin: 0 auto;
-margin-top: 210px;
+margin-top: 110px;
 margin-bottom: 270px;
 padding: 24px;
 }
