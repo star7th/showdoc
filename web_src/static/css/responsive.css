@@ -18,7 +18,7 @@ body,.body {
 
 /*pad*/
 img{
-	max-width:90%;
+	max-width:100%;
 }
 
 input[type="submit"], input[type="reset"], input[type="button"], button { -webkit-appearance: none; /*去掉苹果的默认UI来渲染按钮*/}
@@ -27,7 +27,7 @@ input[type="submit"], input[type="reset"], input[type="button"], button { -webki
     		width: 1240px;
     	}
     	.hbanner .wrapper{
-    		background-size: 550px auto;
+    		background-size: 650px auto;
     	}
     	.hrow .txt h2{
     		font-size: 36px;
@@ -122,7 +122,6 @@ input[type="submit"], input[type="reset"], input[type="button"], button { -webki
 	.hbanner .wrapper{
 		background-size: 300px auto;
 		background-position: center 100px;
-		background-position-y:24%; 
 		padding-top: 400px;
 		height: auto;
 		padding-bottom: 100px;
