@@ -213,6 +213,14 @@ export default {
       })
       })
     },
+    resetForm() {
+      this.MyForm = {
+        cat_id: 0,
+        parent_cat_id: '',
+        cat_name: '',
+        s_number: ''
+      }
+    },
     add_cat(node, data) {
       if (node && data.id) {
         this.MyForm = {
@@ -221,7 +229,7 @@ export default {
           cat_name: ''
         }
       } else {
-        this.MyForm = {}
+        this.resetForm()
       }
 
       this.dialogFormVisible = true
