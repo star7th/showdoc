@@ -57,9 +57,11 @@ class ImportSwaggerController extends BaseController {
             foreach ($value as $method => $value2) {
                 $tags = isset($value2["tags"]) ? $value2["tags"] : array();
                 if ($tags == array()){
-                    $pages = $this->_requestToDoc($method, $url, $value2, $json_array);
-                    $catalogsMap["fromSwagger"]["pages"][] = $pages;
-                }else{
+                    $page = $this->_requestToDoc($method, $url, $value2, $json_array);
+                    if($page['page_title']){
+                        $catalogsMap["fromSwagger"]["pages"][] = $page;
+                    }
+                                    }else{
                     foreach ($tags as $tag){
                         if (!key_exists($tag, $catalogsMap)) {
                             $page = $this->_requestToDoc($method, $url, $value2, $json_array);
@@ -103,7 +105,7 @@ class ImportSwaggerController extends BaseController {
             //如果是来自runapi的导入请求，则已经return不再执行下面
         }
         $return = array() ;
-        $return['page_title'] = $request['summary'] ;
+        $return['page_title'] =  $request['summary'] ? $request['summary']: $request['operationId'] ;
         $return['s_number'] = 99 ;
         $return['page_comments'] = '' ;
         
@@ -203,7 +205,7 @@ $content .= '
 
     private function _requestToApi($method , $url , $request , $json_array){
         $return = array() ;
-        $return['page_title'] = $request['summary'] ;
+        $return['page_title'] =  $request['summary'] ? $request['summary']: $request['operationId'] ;
         $return['s_number'] = 99 ;
         $return['page_comments'] = '' ;
         
@@ -211,7 +213,7 @@ $content .= '
                 "info"=>array(
                     "from" =>  'runapi'  ,
                     "type" =>  'api'  ,
-                    "title" => $request['summary']  ,
+                    "title" =>  $request['summary'] ? $request['summary']: $request['operationId']   ,
                     "description" =>  $request['description']  ,
                     "method" =>  strtolower($method)  ,
                     "url" =>  $url  ,
