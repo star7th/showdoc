@@ -256,7 +256,7 @@ class AttachmentController extends BaseController {
         $display_name = I("display_name");
         $username = I("username");
         $return = array() ;
-        $where = " uid  = '{$login_user[uid]}' ";
+        $where = " uid  = {$login_user['uid']} ";
         if($attachment_type == 1 ){
             $where .=" and file_type like '%image%' " ;
         }

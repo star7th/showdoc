@@ -47,7 +47,8 @@ class ItemController extends BaseController {
     }
 
     //根据项目类型展示项目
-    public function show(){
+    //这些参数都不需要用到，只是为了兼容父类的方法。php8需要compatible with父类的同名方法
+    public function show($content='', $charset = '', $contentType = '', $prefix = ''){
         $this->checkLogin(false);
         $item_id = I("item_id/d");
         $item_domain = I("item_domain/s");
