@@ -389,7 +389,7 @@ export default {
       childRef.editor_unwatch()
       if (sessionStorage.getItem('page_id_unwatch_' + this.page_id)) {
       } else {
-        this.$alert(this.$t('long_page_tips'))
+        this.$message(this.$t('long_page_tips'))
         sessionStorage.setItem('page_id_unwatch_' + this.page_id, 1)
       }
     },
