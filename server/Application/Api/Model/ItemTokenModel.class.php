@@ -40,7 +40,7 @@ class ItemTokenModel extends BaseModel {
 	}
 
 	//检查token。如果检测通过则返回item_id
-	public function check($api_key , $api_token){
+	public function check($api_key , $api_token, $no = ''){
         $ret = $this->getTokenByKey($api_key);
         if ($ret && $ret['api_token'] == $api_token) {
             $item_id = $ret['item_id'] ;

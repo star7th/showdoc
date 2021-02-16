@@ -319,7 +319,7 @@ class PageController extends BaseController {
         $lock = 0 ;
         $now = time() ;
         $login_user = $this->checkLogin(false);
-        $res = D("PageLock")->where(" page_id = '$page_id' and lock_to > '{$now}' ")->find() ;
+        $res = D("PageLock")->where(" page_id = '$page_id' and page_id > 0 and lock_to > '{$now}' ")->find() ;
         if( $res){
             $lock = 1 ;
         }

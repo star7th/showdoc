@@ -148,62 +148,42 @@ export default {
   methods: {
     get_catalog() {
       var that = this
-      var url = DocConfig.server + '/api/catalog/catListGroup'
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            var Info = response.data.data
-            that.catalogs = Info
-            that.treeData = []
-            var duang = function(Info) {
-              var treeData = []
-              for (var i = 0; i < Info.length; i++) {
-                let node = { children: [] }
-                node['id'] = Info[i]['cat_id']
-                node['label'] = Info[i]['cat_name']
-                if (Info[i]['sub'].length > 0) {
-                  node['children'] = duang(Info[i]['sub'])
-                }
-                treeData.push(node)
-              }
-              return treeData
+      this.request('/api/catalog/catListGroup', {
+        item_id: this.$route.params.item_id
+      })
+      .then(data => {
+        var Info = data.data
+        that.catalogs = Info
+        that.treeData = []
+        var duang = function(Info) {
+          var treeData = []
+          for (var i = 0; i < Info.length; i++) {
+            let node = { children: [] }
+            node['id'] = Info[i]['cat_id']
+            node['label'] = Info[i]['cat_name']
+            if (Info[i]['sub'].length > 0) {
+              node['children'] = duang(Info[i]['sub'])
             }
-            that.treeData = duang(Info)
-          } else {
-            that.$alert(response.data.error_message)
+            treeData.push(node)
           }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+          return treeData
+        }
+        that.treeData = duang(Info)
+      })
     },
     MyFormSubmit() {
       var that = this
-      var url = DocConfig.server + '/api/catalog/save'
-
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      params.append('cat_id', this.MyForm.cat_id)
-      params.append('parent_cat_id', this.MyForm.parent_cat_id)
-      params.append('cat_name', this.MyForm.cat_name)
-
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.dialogFormVisible = false
-            that.get_catalog()
-            that.MyForm = []
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/catalog/save', {
+        item_id: this.$route.params.item_id,
+        cat_id: this.MyForm.cat_id,
+        parent_cat_id: this.MyForm.parent_cat_id,
+        cat_name: this.MyForm.cat_name
+      })
+      .then(data => {
+        that.dialogFormVisible = false
+        that.get_catalog()
+        that.MyForm = []
+      })
     },
     edit(node, data) {
       this.MyForm = {
@@ -218,25 +198,28 @@ export default {
     delete_cat(node, data) {
       var that = this
       var cat_id = data.id
-      var url = DocConfig.server + '/api/catalog/delete'
 
       this.$confirm(that.$t('confirm_cat_delete'), ' ', {
         confirmButtonText: that.$t('confirm'),
         cancelButtonText: that.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var params = new URLSearchParams()
-        params.append('item_id', that.$route.params.item_id)
-        params.append('cat_id', cat_id)
-
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.get_catalog()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/catalog/delete', {
+          item_id: this.$route.params.item_id,
+          cat_id: cat_id
         })
+      .then(data => {
+        this.get_catalog()
       })
+      })
+    },
+    resetForm() {
+      this.MyForm = {
+        cat_id: 0,
+        parent_cat_id: '',
+        cat_name: '',
+        s_number: ''
+      }
     },
     add_cat(node, data) {
       if (node && data.id) {
@@ -246,7 +229,7 @@ export default {
           cat_name: ''
         }
       } else {
-        this.MyForm = {}
+        this.resetForm()
       }
 
       this.dialogFormVisible = true
@@ -256,17 +239,10 @@ export default {
       this.$router.push({ path: url })
     },
     handleDragEnd(node1, node2, position, evt) {
-      var that = this
       let treeData2 = this.dimensionReduction(this.treeData)
-      var url = DocConfig.server + '/api/catalog/batUpdate'
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      params.append('cats', JSON.stringify(treeData2))
-      that.axios.post(url, params).then(response => {
-        if (response.data.error_code === 0) {
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/catalog/batUpdate', {
+        item_id: this.$route.params.item_id,
+        cats: JSON.stringify(treeData2)
       })
     },
     // 将目录数组降维

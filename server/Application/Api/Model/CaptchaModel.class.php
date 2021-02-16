@@ -7,7 +7,7 @@ use Api\Model\BaseModel;
  */
 class CaptchaModel extends BaseModel {
 
-	public function check($captcha_id , $captcha){
+	public function check($captcha_id , $captcha, $none =''){
 		$time = time() ;
 		$captcha_array = $this->where(" captcha_id = '$captcha_id' and expire_time > $time ")->find();
 		if ($captcha_array['captcha'] && $captcha_array['captcha'] == $captcha) {

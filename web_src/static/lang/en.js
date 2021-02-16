@@ -7,25 +7,42 @@ exports.default = {
   my_item: 'My items',
   section_title1: 'ShowDoc',
   section_description1: ' A tool greatly applicable for an IT team',
+  section_description1_1: 'A tool greatly applicable',
+  section_description1_2: 'for an IT team',
   section_title2: 'API Document',
-  section_description2:
-    'ShowDoc can compile exquisite API documents <br>in a very fast and convenient way',
+  section_description2_1:
+    'ShowDoc can compile exquisite API documents',
+  section_description2_2:
+    'in a very fast and convenient way',
   section_title3: 'Data Dictionary',
-  section_description3:
-    'A good Data Dictionary can easily exhibit database structure to other people<br>ShowDoc can compile exquisite Data Dictionary',
+  section_description3_1:
+    'A good Data Dictionary can easily exhibit database structure to other people',
+  section_description3_2:
+    'ShowDoc can compile exquisite Data Dictionary',
   section_title4: 'Explanation Document',
-  section_description4:
+  section_description4_1:
+    'You can absolutely use ShowDoc to compile the explanation documents for some tools',
+  section_description4_2:
     'You can absolutely use ShowDoc to compile the explanation documents for some tools',
   section_title5: 'Team Work',
   section_description5: 'Your team will work with ShowDoc together very well ',
-  section_title6: 'Open Source',
-  section_description6:
-    'ShowDoc is a free, open source tool that <br>you can deploy it to your own server',
-  section_title7: 'Hosted online',
-  section_description7:
-    'Www.showdoc.cc provide security and stability of the document hosting service',
-  section_title8: 'Try it now',
-  section_description8: 'Over 10000+ IT team is using ShowDoc',
+  section_title6: 'Document Automation',
+  section_description6_1:
+    'Documents can be generated automatically from code comments',
+  section_description6_2:
+    'With the runapi client, you can debug the interface and automatically generate documents',
+  section_title7: 'Open Source',
+  section_description7_1:
+    'ShowDoc is a free, open source tool',
+  section_description7_2:
+    'You can deploy it to your own server',
+  section_title8: 'Hosted online',
+  section_description8_1:
+    'www.showdoc.com.cn provide security and stability of the document hosting service',
+  section_description8_2:
+    'You can safely choose to host your document data in the cloud',
+  section_title9: 'Try it now',
+  section_description9: 'Over 100000+ IT team is using ShowDoc',
 
   // user
   login: 'Login',

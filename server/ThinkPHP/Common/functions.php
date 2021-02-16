@@ -399,8 +399,7 @@ function I($name,$default='',$filter=null,$datas=null) {
     }else{ // 变量默认值
         $data       =    isset($default)?$default:null;
     }
-    is_array($data) && array_walk_recursive($data,'
-    ');
+    is_array($data) && array_walk_recursive($data,'think_filter');
     return $data;
 }
 

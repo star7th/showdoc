@@ -167,7 +167,11 @@ class Upload {
             }
 
             /* 调用回调函数检测文件是否存在 */
-            $data = call_user_func($this->callback, $file);
+            if($this->callback){
+                $data = call_user_func($this->callback, $file);
+            }else{
+                $data = false;
+            }
             if( $this->callback && $data ){
                 if ( file_exists('.'.$data['path'])  ) {
                     $info[$key] = $data;
