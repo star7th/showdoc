@@ -44,7 +44,7 @@
           <el-table-column prop="file_size_m" :label="$t('file_size_m')" width="160"></el-table-column>
           <el-table-column prop="visit_times" :label="$t('visit_times')"></el-table-column>
           <el-table-column prop="addtime" :label="$t('add_time')" width="160"></el-table-column>
-          <el-table-column prop :label="operation">
+          <el-table-column prop :label="$t('operation')">
             <template slot-scope="scope">
               <el-button @click="select(scope.row)" type="text" size="small">{{$t('select')}}</el-button>
               <el-button @click="visit(scope.row)" type="text" size="small">{{$t('visit')}}</el-button>

@@ -1,0 +1,22 @@
+.git/
+Application/Runtime/
+server/Application/Runtime/
+web_src/.DS_Store
+web_src/node_modules/
+web_src/dist/
+web_src/npm-debug.log*
+web_src/yarn-debug.log*
+web_src/yarn-error.log*
+web_src//test/unit/coverage/
+web_src//test/e2e/reports/
+web_src/selenium-debug.log
+
+# Editor directories and files
+web_src/.idea
+web_src/.vscode
+web_src/*.suo
+web_src/*.ntvs*
+web_src/*.njsproj
+web_src/*.sln
+
+

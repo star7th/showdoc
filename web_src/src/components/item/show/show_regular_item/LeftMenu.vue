@@ -40,7 +40,7 @@
         <template v-if="menu.pages && menu.pages.length ">
           <el-menu-item v-for="(page ) in menu.pages" :index="page.page_id" :key="page.page_id">
             <i class="el-icon-document"></i>
-            <span :title="page.page_title">{{page.page_title}}</span>
+            <span :title="page.page_title" :id="'left_page_'+page.page_id">{{page.page_title}}</span>
           </el-menu-item>
         </template>
 
@@ -93,6 +93,9 @@ export default {
 
     // 改变url
     change_url(page_id) {
+      if (page_id > 0 && page_id == this.$route.query.page_id) {
+        return
+      }
       var domain = this.item_info.item_domain
         ? this.item_info.item_domain
         : this.item_info.item_id

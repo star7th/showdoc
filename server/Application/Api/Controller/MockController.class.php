@@ -64,7 +64,7 @@ class MockController extends BaseController {
 
     // 根据唯一key获取mock的响应数据
     public function infoByKey(){
-        $unique_key = I("unique_key");  
+        $unique_key = $_REQUEST["unique_key"];  
         $page = D("Mock")->where(" unique_key = '%s' ",array($unique_key))->find();
         $template = $page['template'] ;
         $res = http_post("http://127.0.0.1:7123/mock",array(

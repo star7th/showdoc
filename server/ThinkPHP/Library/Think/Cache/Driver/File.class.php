@@ -56,7 +56,7 @@ class File extends Cache {
             // 使用子目录
             $dir   ='';
             for($i=0;$i<C('DATA_PATH_LEVEL');$i++) {
-                $dir	.=	$name{$i}.'/';
+                $dir	.=	$name[$i].'/';
             }
             if(!is_dir($this->options['temp'].$dir)) {
                 mkdir($this->options['temp'].$dir,0755,true);
