@@ -48,7 +48,7 @@ class TeamController extends BaseController {
                 $value['memberCount'] = D("TeamMember")->where(" team_id = '$value[id]' ")->count();
 
                 //获取该团队涉及项目数
-                $value['itemCount'] = D("TeamItem")->where(" team_id = '$value[id]' ")->count();
+                $value['itemCount'] = D("TeamItem")->where(" team_id = '$value[id]' and item.is_del = 0 ")->join("left join item on item.item_id = team_item.item_id")->count();
 
                 $value['addtime'] = date("Y-m-d H:i:s" , $value['addtime']);
             }
