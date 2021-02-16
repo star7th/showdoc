@@ -388,14 +388,14 @@ export default {
       var element = document
         .getElementById('page_md_content')
         .getElementsByClassName('open-list')
-      element[0].style.top = '330px'
+      element[0].style.top = '210px'
     },
     hideMoreAction() {
       this.showMore = false
       var element = document
         .getElementById('page_md_content')
         .getElementsByClassName('open-list')
-      element[0].style.top = '230px'
+      element[0].style.top = '110px'
     },
     handleCommand(command) {
       switch (command) {

@@ -197,7 +197,7 @@ class Upload {
             $ext = strtolower($file['ext']);
             if(in_array($ext, array('gif','jpg','jpeg','bmp','png','swf'))) {
                 $imginfo = getimagesize($file['tmp_name']);
-                if(empty($imginfo) || ($ext == 'gif' && empty($imginfo['bits']))){
+                if(empty($imginfo) ){//|| ($ext == 'gif' && empty($imginfo['bits']))
                     $this->error = '非法图像文件！';
                     continue;
                 }

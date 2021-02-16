@@ -1,0 +1,16 @@
+/*个人二开样式文件*/
+
+/*显示页面布局调整*/
+#header{height: 8px !important;}
+#left-side #left-side-menu{height: calc(100% - 10px)}
+#right-side > div.hello > div.op-bar{top:8px;}
+#right-side #page_md_content #editor-md > div{top:110px}
+#right-side .page_content_main .markdown-toc > .markdown-toc-list{max-height: 720px;}
+
+/*编辑文章*/
+/*标题*/
+#app > div > section > div.masthead.el-row > form > div:nth-child(1) > div > div > input{width:500px;}
+/*头部间距*/
+#app > div > section > div.masthead.el-row > div.fun-btn-group.el-row{margin-top: 0;margin-bottom: 5px;}
+/*目录下拉框加高*/
+.el-select-dropdown__wrap{max-height: 600px;}

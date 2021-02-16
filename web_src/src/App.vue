@@ -13,5 +13,6 @@ export default {
 <style>
 
  @import "../static/css/common.css";
+ @import "../static/css/my.css";
 
 </style>
