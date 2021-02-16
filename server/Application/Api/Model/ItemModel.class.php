@@ -147,6 +147,7 @@ class ItemModel extends BaseModel {
             $pages = array() ;
             if ($all_pages) {
                 foreach ($all_pages as $key => $value) {
+                    $all_pages[$key]['page_title']=htmlspecialchars_decode($value['page_title']);
                     if ($value['cat_id']) {
                         # code...
                     }else{

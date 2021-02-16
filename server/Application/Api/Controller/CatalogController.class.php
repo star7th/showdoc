@@ -259,6 +259,9 @@ class CatalogController extends BaseController {
             return ;
         }
         $return = D("Page")->where("cat_id = '$cat_id' and  item_id = '$item_id' and is_del = 0  ")->field("page_id , page_title,s_number")->order("s_number asc , page_id asc")->select();
+        foreach($return as $key=>$index){
+            $return[$key]['page_title']=htmlspecialchars_decode($index['page_title']);
+        }
         $this->sendResult($return);
 
     }

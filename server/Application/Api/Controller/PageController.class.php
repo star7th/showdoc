@@ -32,6 +32,7 @@ class PageController extends BaseController {
            }
 
         }
+        $page['page_title']=htmlspecialchars_decode($page['page_title']);
         $this->sendResult($page);
     }
     //删除页面
