@@ -112,7 +112,7 @@
               <router-link
                 class="thumbnail item-thumbnail"
                 :to="'/' +  (item.item_domain ? item.item_domain:item.item_id )"
-                title
+                :title="item.item_description"
               >
                 <!-- 自己创建的话显示项目设置按钮 -->
                 <span
