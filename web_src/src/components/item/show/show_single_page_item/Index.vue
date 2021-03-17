@@ -9,6 +9,11 @@
         <h2 id="doc-title">{{page_title}}</h2>
 
         <div class="tool-bar pull-right">
+          <el-tooltip class="item" effect="dark" :content="$t('goback')" placement="left">
+            <router-link to="/item/index">
+              <i class="el-icon-back"></i>
+            </router-link>
+          </el-tooltip>
           <el-tooltip class="item" effect="dark" :content="$t('share')" placement="top">
             <i class="el-icon-share" @click="share_item"></i>
           </el-tooltip>
@@ -21,19 +26,16 @@
           >
             <i class="el-icon-edit" @click="edit_page"></i>
           </el-tooltip>
-          <el-dropdown>
+          <el-dropdown v-if="item_info.ItemPermn">
             <span class="el-dropdown-link">
               <i class="el-icon-caret-bottom el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <router-link :to="'/item/export/'+item_info.item_id" v-if="item_info.ItemPermn">
+              <router-link :to="'/item/export/'+item_info.item_id">
                 <el-dropdown-item>{{$t('export')}}</el-dropdown-item>
               </router-link>
-              <router-link :to="'/item/setting/'+item_info.item_id" v-if="item_info.ItemCreator">
+              <router-link :to="'/item/setting/'+item_info.item_id">
                 <el-dropdown-item>{{$t('item_setting')}}</el-dropdown-item>
-              </router-link>
-              <router-link to="/item/index">
-                <el-dropdown-item>{{$t('goback')}}</el-dropdown-item>
               </router-link>
             </el-dropdown-menu>
           </el-dropdown>

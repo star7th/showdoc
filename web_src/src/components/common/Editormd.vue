@@ -80,8 +80,10 @@ export default {
       default() {
         return {
           path: 'static/editor.md/lib/',
-          height: 1000,
+          height: 750,
           taskList: true,
+          atLink: false,
+          emailLink: false,
           tex: true, // 默认不解析
           flowChart: true, // 默认不解析
           sequenceDiagram: true, // 默认不解析
@@ -478,7 +480,7 @@ export default {
     html_decode(str) {
       var s = ''
       if (str.length == 0) return ''
-      s = str.replace(/&gt;/g, '&')
+      s = str.replace(/&amp;/g, '&')
       s = s.replace(/&lt;/g, '<')
       s = s.replace(/&gt;/g, '>')
       s = s.replace(/&nbsp;/g, ' ')

@@ -156,15 +156,8 @@ export default {
     },
     getItemList() {
       var that = this
-      var url = DocConfig.server + '/api/item/myList'
-      var params = new URLSearchParams()
-      that.axios.get(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var json = response.data.data
-          that.itemList = json
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/item/myList', {'original': 1}).then((data) => {
+        that.itemList = data.data
       })
     },
     MyFormSubmit() {

@@ -140,7 +140,8 @@ class ItemController extends BaseController {
 
     //我的项目列表
     public function myList(){
-        $login_user = $this->checkLogin();        
+        $login_user = $this->checkLogin();  
+        $original = I("original/d") ? I("original/d") : 0; //1：只返回自己原创的项目;默认是0      
         $member_item_ids = array(-1) ; 
         $item_members = D("ItemMember")->where("uid = '$login_user[uid]'")->select();
         if ($item_members) {
@@ -173,6 +174,11 @@ class ItemController extends BaseController {
             
             //如果项目已标识为删除
             if ($value['is_del'] == 1) {
+                unset($items[$key]);
+            }
+
+            //如果有参数指定了只返回原创项目
+            if($original > 0 && $value['uid'] != $login_user['uid']){
                 unset($items[$key]);
             }
 
