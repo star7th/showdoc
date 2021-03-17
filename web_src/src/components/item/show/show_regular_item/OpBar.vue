@@ -451,12 +451,6 @@ export default {
         that.edit_page()
         e.preventDefault()
       }
-
-      if (keyNum == 46 && e.ctrlKey) {
-        // Ctrl +del 为删除
-        that.delete_page()
-        e.preventDefault()
-      }
     }
 
     if (
