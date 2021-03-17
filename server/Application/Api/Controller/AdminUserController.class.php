@@ -78,6 +78,10 @@ class AdminUserController extends BaseController {
         $password = I("password");
         $uid = I("uid");
         $name = I("name");
+        if(!$username){
+            $this->sendError(10101,'用户名不允许为空');
+            return ;
+        }
         if($uid){
             if($password){
                 D("User")->updatePwd($uid, $password);
