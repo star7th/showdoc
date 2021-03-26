@@ -71,7 +71,7 @@ class AttachmentController extends BaseController {
            return false;
         }
         
-        if (strstr(strip_tags(strtolower($_FILES['editormd-image-file']['name'])), ".php") ) {
+        if (strstr(strip_tags(strtolower($_FILES['editormd-image-file']['name'])), ".php") || strstr(strip_tags(strtolower($_FILES['editormd-image-file']['name'])), ".htm") ) {
             return false;
         }
 
@@ -101,7 +101,8 @@ class AttachmentController extends BaseController {
            return false;
         }
         
-        if (strstr(strip_tags(strtolower($uploadFile['name'])), ".php") ) {
+        if (strstr(strip_tags(strtolower($uploadFile['name'])), ".php") || strstr(strip_tags(strtolower($uploadFile['name'])), ".htm") ) {
+            $this->sendError(10100,'不支持此文件类型');
             return false;
         }
 
