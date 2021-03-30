@@ -7,33 +7,18 @@
     "declarations": true
   },
   "dependencies": {
-    "egg": "^2.15.1",
-    "egg-scripts": "^2.11.0",
-    "mockjs": "^1.1.0"
+    "mockjs": "^1.1.0",
+    "pm2": "^4.5.5"
   },
-  "devDependencies": {
-    "autod": "^3.0.1",
-    "autod-egg": "^1.1.0",
-    "egg-bin": "^4.11.0",
-    "egg-ci": "^1.11.0",
-    "egg-mock": "^3.21.0",
-    "eslint": "^5.13.0",
-    "eslint-config-egg": "^7.1.0"
-  },
+  "devDependencies": {},
   "engines": {
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-mockServer --port 7123",
-    "stop": "egg-scripts stop --title=egg-server-mockServer",
-    "dev": "egg-bin dev --port 7123 --workers=1 ",
-    "debug": "egg-bin debug",
-    "test": "npm run lint -- --fix && npm run test-local",
-    "test-local": "egg-bin test",
-    "cov": "egg-bin cov",
-    "lint": "eslint .",
-    "ci": "npm run lint && npm run cov",
-    "autod": "autod"
+    "start": "npm run pm2 start index.js  ",
+    "stop": "npm run pm2 stop index.js  ",
+    "pm2-docker": "node ./node_modules/pm2/bin/pm2-docker",
+    "pm2": "node ./node_modules/pm2/bin/pm2"
   },
   "ci": {
     "version": "10"
