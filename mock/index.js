@@ -8,7 +8,7 @@ var server = http.createServer();
 var Mock = require('mockjs');
 var util = require('util');
 
-// 7. 监听客服端请求
+// 监听客服端请求
 server.on('request',function (req,res) {
     //console.log(req.url + req.method);
 	if (req.url.indexOf('/mock') === 0 && req.method === 'POST') {
