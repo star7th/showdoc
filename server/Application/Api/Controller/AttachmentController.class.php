@@ -45,9 +45,10 @@ class AttachmentController extends BaseController {
 
         $array = explode("/Public/Uploads/", $url) ;
         $file_path = "../Public/Uploads/".$array[1] ;
-		if (file_exists($file_path) && $ret['display_name']) {
-            $this->_downloadFile($file_path, $ret['display_name']);
-		}else{
+	$oss_open = D("Options")->get("oss_open" ) ;
+	if (!$oss_open && file_exists($file_path) && $ret['display_name']) {
+    	    $this->_downloadFile($file_path, $ret['display_name']);
+	}else{
             header("location:{$url}");
         }
         
