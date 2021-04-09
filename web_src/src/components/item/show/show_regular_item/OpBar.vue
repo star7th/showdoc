@@ -220,10 +220,10 @@ a {
 
 #header-right-btn {
   font-size: 20px;
-  top: 15px;
-  right: 5%;
+  top: -15px;
+  right: 1%;
   cursor: pointer;
-  position: fixed;
+  position: absolute;
 }
 
 .el-dropdown-link {

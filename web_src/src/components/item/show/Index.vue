@@ -1,7 +1,5 @@
 <template>
   <div class="hello">
-    <Header></Header>
-
     <!-- 展示常规项目 -->
     <ShowRegularItem
       :item_info="item_info"

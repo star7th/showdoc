@@ -1,8 +1,5 @@
 <template>
   <div class="hello" v-if="showComp">
-    <Header></Header>
-    <div id="header"></div>
-
     <div class="container doc-container" id="doc-container">
       <div id="left-side">
         <LeftMenu
@@ -154,8 +151,8 @@ export default {
       var doc_container = document.getElementById('doc-container')
       doc_container.style.width = '95%'
       doc_container.style.padding = '5px'
-      var header = document.getElementById('header')
-      header.style.height = '10px'
+      // var header = document.getElementById('header')
+      // header.style.height = '10px'
       var docTitle = document.getElementById('doc-title-box')
       docTitle.style.marginTop = '40px'
       this.showToc = false
@@ -166,8 +163,8 @@ export default {
       doc_container.style.width = 'calc( 95% - 300px )'
       doc_container.style.marginLeft = '300px'
       doc_container.style.padding = '20px'
-      var header = document.getElementById('header')
-      header.style.height = '20px'
+      // var header = document.getElementById('header')
+      // header.style.height = '20px'
       var docTitle = document.getElementById('doc-title-box')
       docTitle.style.marginTop = '30px'
     },
@@ -283,6 +280,10 @@ export default {
 
 #header {
   height: 80px;
+}
+
+#right-side{
+  position: relative;
 }
 
 #doc-body {

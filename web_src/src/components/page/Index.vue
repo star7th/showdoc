@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <Header></Header>
+    <!-- <Header></Header> -->
 
     <div id="header"></div>
     <div class="container doc-container" id="doc-container">

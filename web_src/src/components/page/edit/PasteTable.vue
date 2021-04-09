@@ -1,7 +1,7 @@
 <!-- 更多模板 -->
 <template>
   <div class="hello">
-    <Header></Header>
+    <!-- <Header></Header> -->
 
     <el-container class="container-narrow">
       <el-dialog
