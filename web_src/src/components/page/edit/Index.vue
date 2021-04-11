@@ -140,6 +140,7 @@
       <!-- mock -->
       <Mock
         :page_id="page_id"
+        :item_id="item_id"
         v-if="showMockDialog"
         :callback="(data)=>{
         if(data){

@@ -5,7 +5,7 @@ class UpdateController extends BaseController {
 
     //检测数据库并更新
     public function checkDb($showBack = true){
-        $version_num = 5 ;
+        $version_num = 6 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
             $r = $this->updateSqlite();
@@ -355,6 +355,12 @@ class UpdateController extends BaseController {
                     )) ;
                 }
             }
+        }
+
+        //给mock表增加path字段
+        if (!$this->_is_column_exist("mock","path")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."mock ADD path text NOT NULL DEFAULT '';";
+            D("mock")->execute($sql);
         }
 
 

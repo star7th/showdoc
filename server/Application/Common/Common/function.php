@@ -266,3 +266,8 @@ function upload_oss($uploadFile){
   return false ;
 
 }
+//获取环境变量。如果环境变量不存在，将返回第一个参数
+function env($name , $default_value = false){
+    return getenv($name) ? getenv($name) : $default_value ;
+
+}

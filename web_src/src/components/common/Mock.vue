@@ -1,14 +1,13 @@
 <template>
   <div>
-    <el-dialog title="Mock" :visible="true" :close-on-click-modal="false" @close="callback()">
+    <el-dialog
+      width="1000px"
+      title="Mock"
+      :visible="true"
+      :close-on-click-modal="false"
+      @close="callback()"
+    >
       <el-form>
-        <p v-if="mock_url" style=" margin-bottom:20px;font-size: 16px">
-          Mock地址 :
-          <code>{{mock_url}}</code>
-          <i class="el-icon-document-copy" v-clipboard:copy="mock_url" v-clipboard:success="onCopy"></i>
-          &nbsp;
-          <el-button @click="callback(mock_url)" type="text">把地址插入文档中</el-button>
-        </p>
         <el-input
           type="textarea"
           class="dialoContent"
@@ -16,6 +15,17 @@
           :rows="20"
           v-model="content"
         ></el-input>
+        <p>
+          <el-row>
+            <span>Mock Url和路径 &nbsp;:&nbsp;&nbsp; {{mockUrlPre}}</span>
+            <el-input class="path-input" v-model="path"></el-input>
+            <i
+              class="el-icon-document-copy"
+              v-clipboard:copy="mock_url"
+              v-clipboard:success="onCopy"
+            ></i>
+          </el-row>
+        </p>
         <p>
           <el-button type="primary" @click="handleClick">{{$t('save')}}</el-button>&nbsp;
           <el-tooltip
@@ -43,31 +53,34 @@
 <script>
 import { unescapeHTML } from '@/models/page'
 export default {
-  name: 'JsonBeautify',
+  name: 'Mock',
   props: {
     formLabelWidth: '120px',
     callback: '',
-    page_id: ''
+    page_id: '',
+    item_id: ''
   },
   data() {
     return {
       content: '',
-      json_table_data: '',
-      mock_url: ''
+      mock_url: '',
+      mockUrlPre: '',
+      path: '/'
     }
   },
   methods: {
     add() {
       this.request('/api/mock/add', {
         'page_id': this.page_id,
-        'template': this.content
+        'template': this.content,
+        'path': this.path
       }).then((data) => {
         this.$message({
           showClose: true,
           message: '保存成功',
           type: 'success'
         })
-        this.mock_url = this.getUrl(data.data.unique_key)
+        this.infoByPageId()
       })
     },
     infoByPageId() {
@@ -80,19 +93,12 @@ export default {
         'page_id': this.page_id
       }).then((data) => {
         if (data.data && data.data.unique_key && data.data.template) {
-          this.mock_url = this.getUrl(data.data.unique_key)
+          // this.mock_url = this.getRootPath() + '/server/mock-data/' + data.data.unique_key
+          this.mock_url = this.mockUrlPre + data.data.path
           this.content = unescapeHTML(data.data.template)
+          this.path = data.data.path
         }
       })
-    },
-    getUrl(unique_key) {
-      if (DocConfig.server.indexOf('web') > -1) {
-        let server = window.location.protocol + '//' + window.location.host + window.location.pathname + 'index.php?s='
-        server = server.replace(/\/web/g, '/server')
-        return server + '/mock-data/' + unique_key
-      } else {
-        return window.location.protocol + '//' + window.location.host + '/server/index.php?s=' + '/mock-data/' + unique_key
-      }
     },
     handleClick() {
       this.add()
@@ -106,6 +112,7 @@ export default {
   },
   mounted() {
     this.infoByPageId()
+    this.mockUrlPre = DocConfig.server + '/mock-path/' + this.item_id + '&path='
   }
 }
 </script>
@@ -114,5 +121,8 @@ export default {
 <style scoped>
 .el-icon-document-copy {
   cursor: pointer;
+}
+.path-input{
+  width: 200px;
 }
 </style>
