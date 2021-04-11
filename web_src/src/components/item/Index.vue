@@ -203,6 +203,9 @@ a {
 
 .my-item {
   margin: 40px 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .thumbnails li {
