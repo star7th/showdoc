@@ -420,6 +420,7 @@ exports.default = {
 
   copy_or_mv_cat: 'Copy or move catalog',
   copy_to: 'Copy To',
-  move_to: 'Move To'
+  move_to: 'Move To',
+  remark: 'remark'
 
 }

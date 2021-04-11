@@ -181,6 +181,25 @@ class PageController extends BaseController {
 
     }
 
+
+    // 更新历史备注信息
+    public function updateHistoryComments(){
+        $login_user = $this->checkLogin(false);
+        $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
+        $page_comments = I("page_comments") ;
+        $page_history_id = I("page_history_id/d") ? I("page_history_id/d") : 0 ;
+        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+            $this->sendError(10103);
+            return;
+        }
+        $res = D("PageHistory")->where(" page_history_id = '$page_history_id' ")->save(array(
+            "page_comments"=>$page_comments
+        ));
+        $this->sendResult($res);
+    }
+
+
     //返回当前页面和历史某个版本的页面以供比较
     public function diff(){
         $page_id = I("page_id/d");
