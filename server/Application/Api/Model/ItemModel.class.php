@@ -89,6 +89,7 @@ class ItemModel extends BaseModel {
         if (!$catalogs) {
             return ;
         }
+        $cat_id = 0 ;
         foreach ($catalogs as $key => $value) {
             $catalog_data = array(
                 "cat_name" => $this->_htmlspecialchars($value['cat_name']) ,
@@ -126,8 +127,13 @@ class ItemModel extends BaseModel {
                 $this->_insertCat($item_id , $value['catalogs'] , $userInfo , $cat_id,  $level + 1  ) ;
             }
         }
-
+        return $cat_id ;
     }
+
+	//插入一个目录下的所有页面和子目录
+    public function insertCat($item_id , $catalogs , $userInfo , $parent_cat_id = 0  ,  $level = 2 ){
+		return $this->_insertCat($item_id , $catalogs , $userInfo , $parent_cat_id  ,  $level );
+	}
 
     public function copy($item_id,$uid,$item_name= '',$item_description= '',$item_password = '',$item_domain=''){
         return $this->import($this->export($item_id),$uid,$item_name,$item_description,$item_password,$item_domain);
@@ -142,7 +148,7 @@ class ItemModel extends BaseModel {
     }
 
     public function getContent($item_id , $page_field ="*" , $catalog_field ="*" , $uncompress = 0 ){
-            //获取所有父目录id为0的页面
+            //获取该项目下的所有页面
             $all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" s_number asc , page_id asc  ")->field($page_field)->select();
             $pages = array() ;
             if ($all_pages) {
@@ -209,6 +215,11 @@ class ItemModel extends BaseModel {
             }
         }
         return $pages;
+    }
+
+    //获取某个目录下的页面和子目录
+    public function getCat($catalog_data ,  & $all_pages , & $all_catalogs){
+        return $this->_getCat($catalog_data ,  $all_pages , $all_catalogs) ;
     }
 
     //获取某个目录下的所有子目录

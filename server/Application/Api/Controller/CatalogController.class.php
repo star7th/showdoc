@@ -40,6 +40,54 @@ class CatalogController extends BaseController {
            $this->sendResult(array());
         }
     }
+    
+    
+     //获取目录列表，其中目录名将按层级描述。比如某个目录的名字为“我的项目/用户接口/用户登录”
+     public function catListName(){
+        $login_user = $this->checkLogin();
+        $item_id = I("item_id/d");
+        if (!$this->checkItemVisit($login_user['uid'] , $item_id)) {
+            $this->sendError(10103);
+            return ;
+        }
+        if ($item_id > 0 ) {
+            $ret = D("Catalog")->getList($item_id,true);
+            $ret = D("Catalog")->filteMemberCat($login_user['uid'] , $ret);
+        }
+        if ($ret) {
+            $return = array() ;
+
+            //匿名递归函数，准备递归改名
+            // uee 指令后面引用参数转递。方便函数内部中使用。
+            $rename = function ($catalog, $p_cat_name) use (&$return , &$rename) {
+               if($catalog){
+                    foreach ($catalog as $key => $value) {
+                        $value['cat_name'] = $p_cat_name .'/'. $value['cat_name'] ;
+                        $sub = $value['sub'] ;
+                        unset($value['sub']);
+                        $return[] = $value ;
+                        if($sub){
+                            $rename($sub , $value['cat_name'] ) ;
+                        }
+                    }
+               }
+            };
+
+            foreach ($ret as $key => $value) {
+                $sub = $value['sub'] ;
+                unset($value['sub']);
+                $return[] = $value ;
+                if($sub){
+                    $rename($sub , $value['cat_name'] ) ;
+                }
+                
+            }
+            $this->sendResult($return);
+        }else{
+           $this->sendResult(array());
+        }
+    }
+
 
     //获取二级目录列表
     public function secondCatList(){
@@ -261,6 +309,31 @@ class CatalogController extends BaseController {
         $return = D("Page")->where("cat_id = '$cat_id' and  item_id = '$item_id' and is_del = 0  ")->field("page_id , page_title,s_number")->order("s_number asc , page_id asc")->select();
         $this->sendResult($return);
 
+    }
+
+    //  复制或移动目录
+    public function copy(){
+        // 参数new_p_cat_id 复制完目录后，挂在哪个父目录下。这里是父目录id。可为0
+        // $to_item_id 要复制到的项目id。可以是同一个项目，可以是跨项目。默认是同一个项目
+        $cat_id = I("cat_id/d");
+        $new_p_cat_id = I("new_p_cat_id/d") ? I("new_p_cat_id/d") : 0;
+        $to_item_id = I("to_item_id/d") ? I("to_item_id/d") : 0 ;
+        $is_del = I("is_del/d") ? I("is_del/d") : 0 ; // 复制完是否删除原目录（相当于移动目录）
+        $login_user = $this->checkLogin();
+        if (!$this->checkItemPermn($login_user['uid'] , $to_item_id)) {
+            $this->sendError(10103);
+            return ;
+        }
+        $old_cat_ary = D("Catalog")->where("cat_id = '$cat_id' ")->find() ;
+        if (!$this->checkItemPermn($login_user['uid'] , $old_cat_ary['item_id'])) {
+            $this->sendError(10103);
+            return ;
+        }
+        $res = D("Catalog")->copy($login_user['uid'] , $cat_id ,$new_p_cat_id , $to_item_id  );
+        if($is_del && $res){
+            D("Catalog")->deleteCat($cat_id) ;
+        }
+        $this->sendResult($res);
     }
 
 }

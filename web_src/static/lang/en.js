@@ -416,6 +416,10 @@ exports.default = {
 
   from_file_gub: 'From FileHub',
   file_gub: 'FileHub',
-  select: 'select'
+  select: 'select',
+
+  copy_or_mv_cat: 'Copy or move catalog',
+  copy_to: 'Copy To',
+  move_to: 'Move To'
 
 }

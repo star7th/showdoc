@@ -127,7 +127,7 @@
           </el-tooltip>
 
           <span v-if="item_info.ItemCreator">
-            <el-tooltip class="item" effect="dark" :content="$t('item_setting')" placement="top">
+            <el-tooltip class="item" effect="dark" :content="$t('item_setting')" placement="left">
               <router-link :to="'/item/setting/'+item_info.item_id" v-if="item_info.ItemCreator">
                 <i class="el-icon-setting"></i>
               </router-link>

@@ -406,5 +406,9 @@ exports.default = {
 
   from_file_gub: '从文件库选择',
   file_gub: '文件库',
-  select: '选择'
+  select: '选择',
+
+  copy_or_mv_cat: '复制或移动目录',
+  copy_to: '复制到',
+  move_to: '移动到'
 }

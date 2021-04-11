@@ -165,6 +165,46 @@ class CatalogModel extends BaseModel {
 
 		return $catData ;
 	}
+
+	//复制目录
+	// old_cat_id 原目录id
+	// new_p_cat_id 复制完目录后，挂在哪个父目录下。这里是父目录id。可为0。默认使用old_cat_id的父目录id
+	// $to_item_id 要复制到的项目id。可以是同一个项目，可以是跨项目。默认是同一个项目
+	public function copy($uid , $old_cat_id , $new_p_cat_id = 0 , $to_item_id = 0 ){
+		$userInfo = D("User")->userInfo($uid);
+		$old_cat_ary = $this->where("cat_id = '$old_cat_id' ")->find() ;
+		$to_item_id = $to_item_id ? $to_item_id : $cat_ary['item_id'] ;
+	
+		//这里需要读取目录下的页面以及子目录信息
+		$old_cat_data = $this->getCat($old_cat_id) ;
+		$catalogs[] =$old_cat_data ;
+		//获取$level.先初始化$level = 2 ;
+		$level = 2 ;
+		if($new_p_cat_id){
+			$p_cat_ary = $this->where("cat_id = '$new_p_cat_id' ")->find() ;
+			$level = $p_cat_ary['level'] + 1 ;
+		}
+		//插入
+		$res =  $this->insertCat($to_item_id , $catalogs , $userInfo , $new_p_cat_id ,  $level ) ;
+		return $res ;
+	}
+
+	//获取某个目录下的页面和子目录
+	public function getCat($cat_id){
+			$cat_ary = $this->where("cat_id = '$cat_id' ")->find() ;
+			$item_id = $cat_ary['item_id'] ;
+			//获取项目下所有页面信息
+			$all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" s_number asc , page_id asc ")->field($page_field)->select();
+			//获取项目下所有目录信息
+			$all_catalogs = $this->where(" item_id = '%d' ",array($item_id) )->order(" s_number, cat_id asc  ")->select();
+
+			return D("Item")->getCat($cat_ary , $all_pages , $all_catalogs) ;
+		}
+
+		//插入一个目录下的所有页面和子目录
+	public function insertCat($item_id , $catalogs , $userInfo , $parent_cat_id = 0  ,  $level = 2 ){
+			return D("Item")->insertCat($item_id , $catalogs , $userInfo , $parent_cat_id  ,  $level );
+		}
 	
 
 }

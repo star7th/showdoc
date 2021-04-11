@@ -23,6 +23,7 @@
               <el-button
                 type="text"
                 size="mini"
+                :title="$t('edit')"
                 class="el-icon-edit"
                 @click.stop="edit(node, data)"
               ></el-button>
@@ -30,13 +31,22 @@
                 type="text"
                 size="mini"
                 class="el-icon-plus"
+                :title="$t('add_cat')"
                 @click.stop="add_cat(node, data)"
               ></el-button>
               <el-button
                 type="text"
                 size="mini"
                 class="el-icon-document"
+                :title="$t('sort_pages')"
                 @click.stop="showSortPage(node, data)"
+              ></el-button>
+              <el-button
+                type="text"
+                size="mini"
+                class="el-icon-copy-document"
+                :title="$t('copy_or_mv_cat')"
+                @click.stop="copyCat(node, data)"
               ></el-button>
               <el-button
                 type="text"
@@ -80,16 +90,20 @@
       ref="SortPage"
     ></SortPage>
 
+    <Copy v-if="copyFormVisible" :item_id="item_id" :cat_id="curl_cat_id" :callback="copyCallback"></Copy>
+
     <Footer></Footer>
   </div>
 </template>
 
 <script>
 import SortPage from '@/components/page/edit/SortPage'
+import Copy from './Copy'
 export default {
   name: 'Login',
   components: {
-    SortPage
+    SortPage,
+    Copy
   },
   data() {
     return {
@@ -101,6 +115,7 @@ export default {
       },
       catalogs: [],
       dialogFormVisible: false,
+      copyFormVisible: false,
       treeData: [],
       defaultProps: {
         children: 'children',
@@ -274,6 +289,14 @@ export default {
       this.curl_cat_id = data.id
       let childRef = this.$refs.SortPage // 获取子组件
       childRef.show()
+    },
+    copyCat(node, data) {
+      this.curl_cat_id = data.id
+      this.copyFormVisible = true
+    },
+    copyCallback() {
+      this.copyFormVisible = false
+      this.get_catalog()
     }
   },
 
