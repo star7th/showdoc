@@ -682,6 +682,31 @@ export default {
           this.setLock() // 如果没有被别人锁定，则进编辑页面后自己锁定。
         }
       })
+    },
+    // 由于页面关闭事件无法直接发起异步的ajax请求，所以用浏览器的navigator.sendBeacon来实现
+    unLockOnClose() {
+      let user_token = ''
+      const userinfostr = localStorage.getItem('userinfo')
+      if (userinfostr) {
+        const userinfo = JSON.parse(userinfostr)
+        if (userinfo && userinfo.user_token) {
+          user_token = userinfo.user_token
+        }
+      }
+      let analyticsData = new URLSearchParams({
+        page_id: this.page_id,
+        item_id: this.item_id,
+        lock_to: 1000,
+        user_token: user_token
+      })
+      let url = DocConfig.server + '/api/page/setLock'
+      if ('sendBeacon' in navigator) {
+        navigator.sendBeacon(url, analyticsData)
+      } else {
+        var client = new XMLHttpRequest()
+        client.open('POST', url, false)
+        client.send(analyticsData)
+      }
     }
   },
 
@@ -706,6 +731,7 @@ export default {
     /** 监听粘贴上传图片 **/
     document.addEventListener('paste', this.upload_paste_img)
     this.lang = DocConfig.lang
+    window.addEventListener('beforeunload', this.unLockOnClose)
   },
 
   beforeDestroy() {
@@ -714,6 +740,7 @@ export default {
     this.$message.closeAll()
     clearInterval(this.intervalId)
     this.unlock()
+    window.removeEventListener('beforeunload', this.unLockOnClose)
   }
 }
 </script>
