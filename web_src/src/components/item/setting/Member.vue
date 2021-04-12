@@ -1,25 +1,49 @@
 <template>
   <div class="hello">
-    <el-button type="text" class="add-member" @click="dialogFormVisible = true">{{$t('add_member')}}</el-button>
+    <el-button
+      type="text"
+      class="add-member"
+      @click="dialogFormVisible = true"
+      >{{ $t('add_member') }}</el-button
+    >
     <el-button
       type="text"
       class="add-member"
       @click="dialogFormTeamVisible = true"
-    >{{$t('add_team')}}</el-button>
+      >{{ $t('add_team') }}</el-button
+    >
 
     <!-- 单个成员列表 -->
-    <el-table align="left" v-if="members.length>0" :data="members" height="200" style="width: 100%">
-      <el-table-column prop="username" :label="$t('member_username')" width="100"></el-table-column>
+    <el-table
+      align="left"
+      v-if="members.length > 0"
+      :data="members"
+      height="200"
+      style="width: 100%"
+    >
+      <el-table-column
+        prop="username"
+        :label="$t('member_username')"
+        width="100"
+      ></el-table-column>
       <el-table-column prop="name" :label="$t('name')"></el-table-column>
-      <el-table-column prop="addtime" :label="$t('add_time')" width="100"></el-table-column>
-      <el-table-column prop="member_group" :label="$t('authority')"></el-table-column>
+      <el-table-column
+        prop="addtime"
+        :label="$t('add_time')"
+        width="100"
+      ></el-table-column>
+      <el-table-column
+        prop="member_group"
+        :label="$t('authority')"
+      ></el-table-column>
       <el-table-column prop :label="$t('operation')">
         <template slot-scope="scope">
           <el-button
             @click="delete_member(scope.row.item_member_id)"
             type="text"
             size="small"
-          >{{$t('delete')}}</el-button>
+            >{{ $t('delete') }}</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -27,12 +51,15 @@
     <!-- 团队列表 -->
     <el-table
       align="left"
-      v-if="teamItems.length>0"
+      v-if="teamItems.length > 0"
       :data="teamItems"
       height="200"
       style="width: 100%"
     >
-      <el-table-column prop="team_name" :label="$t('team_name')"></el-table-column>
+      <el-table-column
+        prop="team_name"
+        :label="$t('team_name')"
+      ></el-table-column>
       <el-table-column prop="addtime" :label="$t('add_time')"></el-table-column>
 
       <el-table-column prop :label="$t('operation')">
@@ -41,8 +68,14 @@
             @click="getTeamItemMember(scope.row.team_id)"
             type="text"
             size="small"
-          >{{$t('member_authority')}}</el-button>
-          <el-button @click="deleteTeam(scope.row.id)" type="text" size="small">{{$t('delete')}}</el-button>
+            >{{ $t('member_authority') }}</el-button
+          >
+          <el-button
+            @click="deleteTeam(scope.row.id)"
+            type="text"
+            size="small"
+            >{{ $t('delete') }}</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -73,7 +106,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label class="readonly-checkbox">
-          <el-checkbox v-model="MyForm.is_readonly">{{$t('readonly')}}</el-checkbox>
+          <el-checkbox v-model="MyForm.is_readonly">{{
+            $t('readonly')
+          }}</el-checkbox>
         </el-form-item>
         <el-form-item label>
           <el-select v-model="MyForm.cat_id" :placeholder="$t('all_cat2')">
@@ -87,10 +122,14 @@
         </el-form-item>
       </el-form>
 
-      <p class="tips">{{$t('member_authority_tips')}}</p>
+      <p class="tips">{{ $t('member_authority_tips') }}</p>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="MyFormSubmit">{{$t('confirm')}}</el-button>
+        <el-button @click="dialogFormVisible = false">{{
+          $t('cancel')
+        }}</el-button>
+        <el-button type="primary" @click="MyFormSubmit">{{
+          $t('confirm')
+        }}</el-button>
       </div>
     </el-dialog>
 
@@ -105,18 +144,24 @@
         <el-form-item label="选择团队">
           <el-select class v-model="MyForm2.team_id">
             <el-option
-              v-for="team in teams "
+              v-for="team in teams"
               :key="team.team_name"
               :label="team.team_name"
               :value="team.id"
             ></el-option>
           </el-select>
         </el-form-item>
-        <router-link to="/team/index" target="_blank">{{$t('go_to_new_an_team')}}</router-link>
+        <router-link to="/team/index" target="_blank">{{
+          $t('go_to_new_an_team')
+        }}</router-link>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormTeamVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="addTeam">{{$t('confirm')}}</el-button>
+        <el-button @click="dialogFormTeamVisible = false">{{
+          $t('cancel')
+        }}</el-button>
+        <el-button type="primary" @click="addTeam">{{
+          $t('confirm')
+        }}</el-button>
       </div>
     </el-dialog>
 
@@ -135,13 +180,20 @@
         :data="teamItemMembers"
         style="width: 100%"
       >
-        <el-table-column prop="member_username" :label="$t('username')"></el-table-column>
-        <el-table-column prop="member_group_id" :label="$t('authority')" width="130">
+        <el-table-column
+          prop="member_username"
+          :label="$t('username')"
+        ></el-table-column>
+        <el-table-column
+          prop="member_group_id"
+          :label="$t('authority')"
+          width="130"
+        >
           <template slot-scope="scope">
             <el-select
               size="mini"
               v-model="scope.row.member_group_id"
-              @change="changeTeamItemMemberGroup($event,scope.row.id)"
+              @change="changeTeamItemMemberGroup($event, scope.row.id)"
               :placeholder="$t('please_choose')"
             >
               <el-option
@@ -158,7 +210,7 @@
             <el-select
               size="mini"
               v-model="scope.row.cat_id"
-              @change="changeTeamItemMemberCat($event,scope.row.id)"
+              @change="changeTeamItemMemberCat($event, scope.row.id)"
               :placeholder="$t('please_choose')"
             >
               <el-option
@@ -170,12 +222,17 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="addtime" :label="$t('add_time')"></el-table-column>
+        <el-table-column
+          prop="addtime"
+          :label="$t('add_time')"
+        ></el-table-column>
       </el-table>
       <br />
-      <p class="tips">{{$t('team_member_authority_tips')}}</p>
+      <p class="tips">{{ $t('team_member_authority_tips') }}</p>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormTeamMemberVisible = false">{{$t('close')}}</el-button>
+        <el-button @click="dialogFormTeamMemberVisible = false">{{
+          $t('close')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -401,9 +458,11 @@ export default {
           that.memberOptions = []
           for (let index = 0; index < newInfo.length; index++) {
             that.memberOptions.push({
-              value: newInfo[index].value,
-              label: newInfo[index].value,
-              key: newInfo[index].value
+              value: newInfo[index].username,
+              label: newInfo[index].name
+                ? newInfo[index].username + '(' + newInfo[index].name + ')'
+                : newInfo[index].username,
+              key: newInfo[index].username
             })
           }
           cb(Info)

@@ -287,7 +287,7 @@ class UserController extends BaseController {
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
         $username = I("username");
-        $field = "username as value" ;
+        $field = "username , uid , name" ;
         if ($username) {
             $username = \SQLite3::escapeString($username) ;
             $where = " username like '%{$username}%'" ;

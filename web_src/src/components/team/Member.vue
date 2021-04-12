@@ -4,12 +4,22 @@
 
     <el-container>
       <el-card class="center-card">
-        <el-button type="text" class="add-cat" @click="addTeamMember">{{$t('add_member')}}</el-button>
-        <el-button type="text" class="goback-btn" @click="goback">{{$t('back_to_team')}}</el-button>
+        <el-button type="text" class="add-cat" @click="addTeamMember">{{
+          $t('add_member')
+        }}</el-button>
+        <el-button type="text" class="goback-btn" @click="goback">{{
+          $t('back_to_team')
+        }}</el-button>
         <el-table align="left" :data="list" height="400" style="width: 100%">
-          <el-table-column prop="member_username" :label="$t('member_username')"></el-table-column>
+          <el-table-column
+            prop="member_username"
+            :label="$t('member_username')"
+          ></el-table-column>
           <el-table-column prop="name" :label="$t('name')"></el-table-column>
-          <el-table-column prop="addtime" :label="$t('addtime')"></el-table-column>
+          <el-table-column
+            prop="addtime"
+            :label="$t('addtime')"
+          ></el-table-column>
 
           <el-table-column prop :label="$t('operation')">
             <template slot-scope="scope">
@@ -17,15 +27,20 @@
                 @click="deleteTeamMember(scope.row.id)"
                 type="text"
                 size="small"
-              >{{$t('delete')}}</el-button>
+                >{{ $t('delete') }}</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
       </el-card>
 
-      <el-dialog :visible.sync="dialogFormVisible" width="300px" :close-on-click-modal="false">
+      <el-dialog
+        :visible.sync="dialogFormVisible"
+        width="300px"
+        :close-on-click-modal="false"
+      >
         <el-form>
-          <el-form-item :label="$t('member_username')+':'">
+          <el-form-item :label="$t('member_username') + ':'">
             <el-select
               v-model="MyForm.member_username"
               multiple
@@ -45,8 +60,12 @@
         </el-form>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">{{$t('cancel')}}</el-button>
-          <el-button type="primary" @click="MyFormSubmit">{{$t('confirm')}}</el-button>
+          <el-button @click="dialogFormVisible = false">{{
+            $t('cancel')
+          }}</el-button>
+          <el-button type="primary" @click="MyFormSubmit">{{
+            $t('confirm')
+          }}</el-button>
         </div>
       </el-dialog>
     </el-container>
@@ -151,9 +170,11 @@ export default {
           that.memberOptions = []
           for (let index = 0; index < newInfo.length; index++) {
             that.memberOptions.push({
-              value: newInfo[index].value,
-              label: newInfo[index].value,
-              key: newInfo[index].value
+              value: newInfo[index].username,
+              label: newInfo[index].name
+                ? newInfo[index].username + '(' + newInfo[index].name + ')'
+                : newInfo[index].username,
+              key: newInfo[index].username
             })
           }
         } else {
@@ -205,7 +226,7 @@ export default {
 </style>
 
 <!-- 全局css -->
-<style >
+<style>
 .el-table .success-row {
   background: #f0f9eb;
 }
