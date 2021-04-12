@@ -2,14 +2,28 @@
   <div class="hello">
     <el-form status-icon label-width="100px" class="infoForm">
       <el-form-item label="api_key：">
-        <el-input type="text" auto-complete="off" :readonly="true" v-model="api_key" placeholder></el-input>
+        <el-input
+          type="text"
+          auto-complete="off"
+          :readonly="true"
+          v-model="api_key"
+          placeholder
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="api_token">
-        <el-input type="text" auto-complete="off" :readonly="true" v-model="api_token" placeholder></el-input>
+        <el-input
+          type="text"
+          auto-complete="off"
+          :readonly="true"
+          v-model="api_token"
+          placeholder
+        ></el-input>
       </el-form-item>
 
-      <el-button type="primary" style="width:100%;" @click="resetKey">{{$t('reset_token')}}</el-button>
+      <el-button type="primary" style="width:100%;" @click="resetKey">{{
+        $t('reset_token')
+      }}</el-button>
     </el-form>
 
     <p>

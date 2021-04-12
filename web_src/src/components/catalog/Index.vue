@@ -5,10 +5,14 @@
     <el-container>
       <el-card class="center-card">
         <el-row>
-          <el-button type="text" class="add-cat" @click="add_cat()">{{$t('add_cat')}}</el-button>
-          <el-button type="text" class="goback-btn" @click="goback">{{$t('goback')}}</el-button>
+          <el-button type="text" class="add-cat" @click="add_cat()">{{
+            $t('add_cat')
+          }}</el-button>
+          <el-button type="text" class="goback-btn" @click="goback">{{
+            $t('goback')
+          }}</el-button>
         </el-row>
-        <p class="tips" v-if="treeData.length > 1">{{$t('cat_tips')}}</p>
+        <p class="tips" v-if="treeData.length > 1">{{ $t('cat_tips') }}</p>
         <el-tree
           class="tree-node"
           :data="treeData"
@@ -58,12 +62,19 @@
           </span>
         </el-tree>
       </el-card>
-      <el-dialog :visible.sync="dialogFormVisible" width="300px" :close-on-click-modal="false">
+      <el-dialog
+        :visible.sync="dialogFormVisible"
+        width="300px"
+        :close-on-click-modal="false"
+      >
         <el-form>
-          <el-form-item :label="$t('cat_name')+' : '">
-            <el-input :placeholder="$t('input_cat_name')" v-model="MyForm.cat_name"></el-input>
+          <el-form-item :label="$t('cat_name') + ' : '">
+            <el-input
+              :placeholder="$t('input_cat_name')"
+              v-model="MyForm.cat_name"
+            ></el-input>
           </el-form-item>
-          <el-form-item :label="$t('parent_cat_name')+' : '">
+          <el-form-item :label="$t('parent_cat_name') + ' : '">
             <el-select v-model="MyForm.parent_cat_id" :placeholder="$t('none')">
               <el-option
                 v-for="item in belong_to_catalogs"
@@ -76,8 +87,12 @@
         </el-form>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">{{$t('cancel')}}</el-button>
-          <el-button type="primary" @click="MyFormSubmit">{{$t('confirm')}}</el-button>
+          <el-button @click="dialogFormVisible = false">{{
+            $t('cancel')
+          }}</el-button>
+          <el-button type="primary" @click="MyFormSubmit">{{
+            $t('confirm')
+          }}</el-button>
         </div>
       </el-dialog>
     </el-container>
@@ -90,7 +105,12 @@
       ref="SortPage"
     ></SortPage>
 
-    <Copy v-if="copyFormVisible" :item_id="item_id" :cat_id="curl_cat_id" :callback="copyCallback"></Copy>
+    <Copy
+      v-if="copyFormVisible"
+      :item_id="item_id"
+      :cat_id="curl_cat_id"
+      :callback="copyCallback"
+    ></Copy>
 
     <Footer></Footer>
   </div>
@@ -165,8 +185,7 @@ export default {
       var that = this
       this.request('/api/catalog/catListGroup', {
         item_id: this.$route.params.item_id
-      })
-      .then(data => {
+      }).then(data => {
         var Info = data.data
         that.catalogs = Info
         that.treeData = []
@@ -193,8 +212,7 @@ export default {
         cat_id: this.MyForm.cat_id,
         parent_cat_id: this.MyForm.parent_cat_id,
         cat_name: this.MyForm.cat_name
-      })
-      .then(data => {
+      }).then(data => {
         that.dialogFormVisible = false
         that.get_catalog()
         that.MyForm = []
@@ -222,10 +240,9 @@ export default {
         this.request('/api/catalog/delete', {
           item_id: this.$route.params.item_id,
           cat_id: cat_id
+        }).then(data => {
+          this.get_catalog()
         })
-      .then(data => {
-        this.get_catalog()
-      })
       })
     },
     resetForm() {

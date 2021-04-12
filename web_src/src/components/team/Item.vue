@@ -4,35 +4,57 @@
 
     <el-container>
       <el-card class="center-card">
-        <el-button type="text" class="add-cat" @click="addTeamItem">{{$t('distribution_to_team')}}</el-button>
-        <el-button type="text" class="goback-btn" @click="goback">{{$t('back_to_team')}}</el-button>
+        <el-button type="text" class="add-cat" @click="addTeamItem">{{
+          $t('distribution_to_team')
+        }}</el-button>
+        <el-button type="text" class="goback-btn" @click="goback">{{
+          $t('back_to_team')
+        }}</el-button>
         <el-table align="left" :data="list" height="400" style="width: 100%">
-          <el-table-column prop="item_name" :label="$t('item_name')"></el-table-column>
-          <el-table-column prop="addtime" :label="$t('Join_time')"></el-table-column>
+          <el-table-column
+            prop="item_name"
+            :label="$t('item_name')"
+          ></el-table-column>
+          <el-table-column
+            prop="addtime"
+            :label="$t('Join_time')"
+          ></el-table-column>
 
           <el-table-column prop width="210" :label="$t('operation')">
             <template slot-scope="scope">
-              <router-link :to="'/'+scope.row.item_id" target="_blank">{{$t('check_item')}}</router-link>
+              <router-link :to="'/' + scope.row.item_id" target="_blank">{{
+                $t('check_item')
+              }}</router-link>
 
               <el-button
                 @click="getTeamItemMember(scope.row.item_id)"
                 type="text"
                 size="small"
-              >{{$t('member_authority')}}</el-button>
+                >{{ $t('member_authority') }}</el-button
+              >
 
               <el-button
                 @click="deleteTeamItem(scope.row.id)"
                 type="text"
                 size="small"
-              >{{$t('unassign')}}</el-button>
+                >{{ $t('unassign') }}</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
       </el-card>
 
-      <el-dialog :visible.sync="dialogFormVisible" width="300px" :close-on-click-modal="false">
+      <el-dialog
+        :visible.sync="dialogFormVisible"
+        width="300px"
+        :close-on-click-modal="false"
+      >
         <el-form>
-          <el-select multiple v-model="MyForm.item_id" :placeholder="$t('please_choose')">
+          <el-select
+            multiple
+            v-model="MyForm.item_id"
+            :placeholder="$t('please_choose')"
+          >
             <el-option
               v-for="item in itemList"
               :key="item.item_id"
@@ -42,10 +64,16 @@
           </el-select>
         </el-form>
         <br />
-        <router-link to="/item/index" target="_blank">{{$t('go_to_new_an_item')}}</router-link>
+        <router-link to="/item/index" target="_blank">{{
+          $t('go_to_new_an_item')
+        }}</router-link>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">{{$t('cancel')}}</el-button>
-          <el-button type="primary" @click="MyFormSubmit">{{$t('confirm')}}</el-button>
+          <el-button @click="dialogFormVisible = false">{{
+            $t('cancel')
+          }}</el-button>
+          <el-button type="primary" @click="MyFormSubmit">{{
+            $t('confirm')
+          }}</el-button>
         </div>
       </el-dialog>
 
@@ -62,13 +90,20 @@
           :data="teamItemMembers"
           style="width: 100%"
         >
-          <el-table-column prop="member_username" :label="$t('username')"></el-table-column>
-          <el-table-column prop="member_group_id" :label="$t('authority')" width="100">
+          <el-table-column
+            prop="member_username"
+            :label="$t('username')"
+          ></el-table-column>
+          <el-table-column
+            prop="member_group_id"
+            :label="$t('authority')"
+            width="100"
+          >
             <template slot-scope="scope">
               <el-select
                 size="mini"
                 v-model="scope.row.member_group_id"
-                @change="changeTeamItemMemberGroup($event,scope.row.id)"
+                @change="changeTeamItemMemberGroup($event, scope.row.id)"
                 :placeholder="$t('please_choose')"
               >
                 <el-option
@@ -85,7 +120,7 @@
               <el-select
                 size="mini"
                 v-model="scope.row.cat_id"
-                @change="changeTeamItemMemberCat($event,scope.row.id)"
+                @change="changeTeamItemMemberCat($event, scope.row.id)"
                 :placeholder="$t('please_choose')"
               >
                 <el-option
@@ -97,12 +132,17 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column prop="addtime" :label="$t('add_time')"></el-table-column>
+          <el-table-column
+            prop="addtime"
+            :label="$t('add_time')"
+          ></el-table-column>
         </el-table>
         <br />
-        <p class="tips">{{$t('team_member_authority_tips')}}</p>
+        <p class="tips">{{ $t('team_member_authority_tips') }}</p>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormTeamMemberVisible = false">{{$t('close')}}</el-button>
+          <el-button @click="dialogFormTeamMemberVisible = false">{{
+            $t('close')
+          }}</el-button>
         </div>
       </el-dialog>
     </el-container>
@@ -156,7 +196,7 @@ export default {
     },
     getItemList() {
       var that = this
-      this.request('/api/item/myList', {'original': 1}).then((data) => {
+      this.request('/api/item/myList', { original: 1 }).then(data => {
         that.itemList = data.data
       })
     },
@@ -306,7 +346,7 @@ export default {
 </style>
 
 <!-- 全局css -->
-<style >
+<style>
 .el-table .success-row {
   background: #f0f9eb;
 }

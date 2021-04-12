@@ -11,7 +11,9 @@
       >
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item>
-            <el-button @click="showFilehub">{{$t('from_file_gub')}}</el-button>
+            <el-button @click="showFilehub">{{
+              $t('from_file_gub')
+            }}</el-button>
           </el-form-item>
           <el-form-item>
             <el-upload
@@ -23,47 +25,61 @@
               ref="uploadFile"
               v-if="manage"
             >
-              <el-button>{{$t('upload')}}</el-button>
-              <small>&nbsp;&nbsp;&nbsp;{{$t('file_size_tips')}}</small>
+              <el-button>{{ $t('upload') }}</el-button>
+              <small>&nbsp;&nbsp;&nbsp;{{ $t('file_size_tips') }}</small>
             </el-upload>
           </el-form-item>
         </el-form>
 
         <el-table :data="content">
-          <el-table-column property="addtime" :label="$t('add_time')" width="170"></el-table-column>
-          <el-table-column property="display_name" :label="$t('file_name')"></el-table-column>
+          <el-table-column
+            property="addtime"
+            :label="$t('add_time')"
+            width="170"
+          ></el-table-column>
+          <el-table-column
+            property="display_name"
+            :label="$t('file_name')"
+          ></el-table-column>
           <el-table-column :label="$t('operation')" width="150">
             <template slot-scope="scope">
               <el-button
                 @click="downloadFile(scope.row)"
                 type="text"
                 size="small"
-              >{{$t('download')}}</el-button>
+                >{{ $t('download') }}</el-button
+              >
               <el-button
                 @click="insertFile(scope.row)"
                 type="text"
                 size="small"
                 v-if="manage"
-              >{{$t('insert')}}</el-button>
+                >{{ $t('insert') }}</el-button
+              >
               <el-button
                 type="text"
                 size="small"
                 @click="deleteFile(scope.row)"
                 v-if="manage"
-              >{{$t('delete')}}</el-button>
+                >{{ $t('delete') }}</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
       </el-dialog>
     </el-container>
-    <filehub :callback="get_content" :item_id="item_id" :page_id="page_id" ref="filehub"></filehub>
+    <filehub
+      :callback="get_content"
+      :item_id="item_id"
+      :page_id="page_id"
+      ref="filehub"
+    ></filehub>
     <Footer></Footer>
     <div class></div>
   </div>
 </template>
 
-<style>
-</style>
+<style></style>
 
 <script>
 import filehub from '@/components/page/edit/Filehub'

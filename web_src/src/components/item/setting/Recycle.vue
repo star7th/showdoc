@@ -1,20 +1,34 @@
 <template>
   <div class="hello">
-    <p class="tips">{{$t("recycle_tips")}}</p>
+    <p class="tips">{{ $t('recycle_tips') }}</p>
     <!-- 页面列表 -->
     <el-table
       align="left"
       class="recycle-table"
-      v-if="lists.length>0"
+      v-if="lists.length > 0"
       :data="lists"
       style="width: 100%"
     >
-      <el-table-column prop="page_title" :label="$t('page_title')"></el-table-column>
-      <el-table-column prop="del_by_username" :label="$t('deleter')"></el-table-column>
-      <el-table-column prop="del_time" :label="$t('del_time')"></el-table-column>
+      <el-table-column
+        prop="page_title"
+        :label="$t('page_title')"
+      ></el-table-column>
+      <el-table-column
+        prop="del_by_username"
+        :label="$t('deleter')"
+      ></el-table-column>
+      <el-table-column
+        prop="del_time"
+        :label="$t('del_time')"
+      ></el-table-column>
       <el-table-column prop :label="$t('operation')">
         <template slot-scope="scope">
-          <el-button @click="recover(scope.row.page_id)" type="text" size="small">{{$t("recover")}}</el-button>
+          <el-button
+            @click="recover(scope.row.page_id)"
+            type="text"
+            size="small"
+            >{{ $t('recover') }}</el-button
+          >
         </template>
       </el-table-column>
     </el-table>

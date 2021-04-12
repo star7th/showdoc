@@ -1,30 +1,40 @@
 <template>
   <div>
     <template v-if="catalog.length">
-      <el-submenu v-for="(catalog2 ) in catalog" :index="catalog2.cat_id" :key="catalog2.cat_id">
+      <el-submenu
+        v-for="catalog2 in catalog"
+        :index="catalog2.cat_id"
+        :key="catalog2.cat_id"
+      >
         <template slot="title">
           <img src="static/images/folder.png" />
-          {{catalog2.cat_name}}
+          {{ catalog2.cat_name }}
         </template>
         <!-- 三级目录的页面 -->
         <template v-if="catalog2.pages">
           <el-menu-item
-            v-for="(page3 ) in catalog2.pages"
+            v-for="page3 in catalog2.pages"
             :index="page3.page_id"
             :key="page3.page_id"
           >
             <i class="el-icon-document"></i>
-            <span :title="page3.page_title" :id="'left_page_'+page3.page_id">{{page3.page_title}}</span>
+            <span
+              :title="page3.page_title"
+              :id="'left_page_' + page3.page_id"
+              >{{ page3.page_title }}</span
+            >
           </el-menu-item>
         </template>
 
         <!-- 子目录 -->
-        <LeftMenuSub v-if="catalog2.catalogs.length" :catalog="catalog2.catalogs"></LeftMenuSub>
+        <LeftMenuSub
+          v-if="catalog2.catalogs.length"
+          :catalog="catalog2.catalogs"
+        ></LeftMenuSub>
       </el-submenu>
     </template>
   </div>
 </template>
-
 
 <script>
 export default {

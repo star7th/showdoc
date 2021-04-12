@@ -2,7 +2,10 @@
   <div class="hello">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item label>
-        <el-input v-model="display_name" :placeholder="$t('display_name')"></el-input>
+        <el-input
+          v-model="display_name"
+          :placeholder="$t('display_name')"
+        ></el-input>
       </el-form-item>
       <el-form-item label>
         <el-select v-model="attachment_type" placeholder>
@@ -15,22 +18,47 @@
         <el-input v-model="username" :placeholder="$t('uploader')"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="onSubmit">{{$t('search')}}</el-button>
+        <el-button @click="onSubmit">{{ $t('search') }}</el-button>
       </el-form-item>
     </el-form>
-    <P>累计已使用 {{used}}M 空间</P>
+    <P>累计已使用 {{ used }}M 空间</P>
     <el-table :data="dataList" style="width: 100%">
       <el-table-column prop="file_id" :label="$t('file_id')"></el-table-column>
-      <el-table-column prop="display_name" :label="$t('display_name')"></el-table-column>
-      <el-table-column prop="file_type" :label="$t('file_type')" width="140"></el-table-column>
-      <el-table-column prop="file_size_m" :label="$t('file_size_m')" width="140"></el-table-column>
-      <el-table-column prop="visit_times" :label="$t('visit_times')"></el-table-column>
-      <el-table-column prop="username" :label="$t('uploader')"></el-table-column>
-      <el-table-column prop="addtime" :label="$t('add_time')" width="160"></el-table-column>
+      <el-table-column
+        prop="display_name"
+        :label="$t('display_name')"
+      ></el-table-column>
+      <el-table-column
+        prop="file_type"
+        :label="$t('file_type')"
+        width="140"
+      ></el-table-column>
+      <el-table-column
+        prop="file_size_m"
+        :label="$t('file_size_m')"
+        width="140"
+      ></el-table-column>
+      <el-table-column
+        prop="visit_times"
+        :label="$t('visit_times')"
+      ></el-table-column>
+      <el-table-column
+        prop="username"
+        :label="$t('uploader')"
+      ></el-table-column>
+      <el-table-column
+        prop="addtime"
+        :label="$t('add_time')"
+        width="160"
+      ></el-table-column>
       <el-table-column prop :label="$t('operation')">
         <template slot-scope="scope">
-          <el-button @click="visit(scope.row)" type="text" size="small">{{$t('visit')}}</el-button>
-          <el-button @click="delete_row(scope.row)" type="text" size="small">{{$t('delete')}}</el-button>
+          <el-button @click="visit(scope.row)" type="text" size="small">{{
+            $t('visit')
+          }}</el-button>
+          <el-button @click="delete_row(scope.row)" type="text" size="small">{{
+            $t('delete')
+          }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -47,8 +75,7 @@
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script>
 export default {

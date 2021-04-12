@@ -23,7 +23,7 @@
         >
           <div class="doc-title-box" id="doc-title-box">
             <span id="doc-title-span" class="dn"></span>
-            <h2 id="doc-title">{{page_title}}</h2>
+            <h2 id="doc-title">{{ page_title }}</h2>
             <i
               class="el-icon-full-screen"
               id="full-page"
@@ -39,7 +39,12 @@
           </div>
           <div id="doc-body">
             <div id="page_md_content" class="page_content_main">
-              <Editormd v-bind:content="content" v-if="page_id" type="html" :keyword="keyword"></Editormd>
+              <Editormd
+                v-bind:content="content"
+                v-if="page_id"
+                type="html"
+                :keyword="keyword"
+              ></Editormd>
             </div>
           </div>
         </div>
@@ -68,8 +73,6 @@
     <Footer></Footer>
   </div>
 </template>
-
-
 
 <script>
 import Editormd from '@/components/common/Editormd'
@@ -119,19 +122,25 @@ export default {
       }
       this.adaptScreen()
       var that = this
-      this.request('/api/page/info', {
-        'page_id': page_id
-      }, 'post', false).then((data) => {
+      this.request(
+        '/api/page/info',
+        {
+          page_id: page_id
+        },
+        'post',
+        false
+      ).then(data => {
         // loading.close();
         if (data.error_code === 0) {
-          that.content = rederPageContent(data.data.page_content, that.$store.state.item_info.global_param)
+          that.content = rederPageContent(
+            data.data.page_content,
+            that.$store.state.item_info.global_param
+          )
 
           that.page_title = data.data.page_title
           that.page_info = data.data
           that.attachment_count =
-            data.data.attachment_count > 0
-              ? data.data.attachment_count
-              : ''
+            data.data.attachment_count > 0 ? data.data.attachment_count : ''
           // 切换变量让它重新加载、渲染子组件
           that.page_id = 0
           that.item_info.default_page_id = page_id
@@ -201,7 +210,7 @@ export default {
         })
       } else {
         this.adaptToMobile()
-          // 切换变量让它重新加载、渲染子组件
+        // 切换变量让它重新加载、渲染子组件
         var page_id = this.page_id
         this.page_id = 0
         this.$nextTick(() => {

@@ -8,21 +8,32 @@
           <h2></h2>
           <el-form-item label>
             <el-radio-group v-model="export_format">
-              <el-radio-button label="word">{{$t('export_format_word')}}</el-radio-button>
-              <el-radio-button label="markdown">{{$t('export_format_markdown')}}</el-radio-button>
+              <el-radio-button label="word">{{
+                $t('export_format_word')
+              }}</el-radio-button>
+              <el-radio-button label="markdown">{{
+                $t('export_format_markdown')
+              }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
 
           <el-form-item label v-if="export_format == 'word'">
-            <el-radio v-model="export_type" label="1">{{$t('export_all')}}</el-radio>
-            <el-radio v-model="export_type" label="2">{{$t('export_cat')}}</el-radio>
+            <el-radio v-model="export_type" label="1">{{
+              $t('export_all')
+            }}</el-radio>
+            <el-radio v-model="export_type" label="2">{{
+              $t('export_cat')
+            }}</el-radio>
           </el-form-item>
 
           <el-form-item label v-if="export_format == 'markdown'">
-            <p class="markdown-tips">{{$t('export_markdown_tips')}}</p>
+            <p class="markdown-tips">{{ $t('export_markdown_tips') }}</p>
           </el-form-item>
 
-          <el-form-item label v-if="export_format == 'word' && export_type == 2">
+          <el-form-item
+            label
+            v-if="export_format == 'word' && export_type == 2"
+          >
             <el-select
               :placeholder="$t('catalog')"
               class="cat"
@@ -31,17 +42,20 @@
               @change="get_pages"
             >
               <el-option
-                v-for="cat in computed_catalogs "
+                v-for="cat in computed_catalogs"
                 :key="cat.cat_name"
                 :label="cat.cat_name"
                 :value="cat.cat_id"
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label v-if="export_format == 'word' && export_type == 2">
+          <el-form-item
+            label
+            v-if="export_format == 'word' && export_type == 2"
+          >
             <el-select class="cat" v-model="page_id" v-if="pages">
               <el-option
-                v-for="page in pages "
+                v-for="page in pages"
                 :key="page.page_title"
                 :label="page.page_title"
                 :value="page.page_id"
@@ -49,11 +63,15 @@
             </el-select>
           </el-form-item>
           <el-form-item label>
-            <el-button type="primary" style="width:100%;" @click="onSubmit">{{$t('begin_export')}}</el-button>
+            <el-button type="primary" style="width:100%;" @click="onSubmit">{{
+              $t('begin_export')
+            }}</el-button>
           </el-form-item>
 
           <el-form-item label>
-            <el-button type="text" @click="goback" class="goback-btn">{{$t('goback')}}</el-button>
+            <el-button type="text" @click="goback" class="goback-btn">{{
+              $t('goback')
+            }}</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -74,10 +92,7 @@ export default {
       export_type: '1',
       item_id: 0,
       export_format: 'word',
-      pages: [
-        { page_id: '0',
-          page_title: this.$t('all_pages')
-        }],
+      pages: [{ page_id: '0', page_title: this.$t('all_pages') }],
       page_id: '0'
     }
   },
@@ -149,7 +164,9 @@ export default {
         '/api/export/word&item_id=' +
         this.item_id +
         '&cat_id=' +
-        this.cat_id + '&page_id=' + this.page_id
+        this.cat_id +
+        '&page_id=' +
+        this.page_id
       if (this.export_format == 'markdown') {
         url = DocConfig.server + '/api/export/markdown&item_id=' + this.item_id
       }
@@ -165,21 +182,19 @@ export default {
       var params = new URLSearchParams()
       params.append('item_id', this.item_id)
       params.append('cat_id', cat_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            var pages = response.data.data
-            pages.unshift({
-              page_id: '0',
-              page_title: that.$t('all_pages')
-            })
-            that.pages = pages
-            that.page_id = '0'
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
+      that.axios.post(url, params).then(function(response) {
+        if (response.data.error_code === 0) {
+          var pages = response.data.data
+          pages.unshift({
+            page_id: '0',
+            page_title: that.$t('all_pages')
+          })
+          that.pages = pages
+          that.page_id = '0'
+        } else {
+          that.$alert(response.data.error_message)
+        }
+      })
     }
   },
   mounted() {

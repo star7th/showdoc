@@ -7,20 +7,30 @@
       :item_info="item_info"
       :search_item="search_item"
       :keyword="keyword"
-      v-if="item_info && (item_info.item_type == 1 || item_info.item_type == 3 || item_info.item_type === '0' || item_info.item_type === 0 ) "
+      v-if="
+        item_info &&
+          (item_info.item_type == 1 ||
+            item_info.item_type == 3 ||
+            item_info.item_type === '0' ||
+            item_info.item_type === 0)
+      "
     ></ShowRegularItem>
 
     <!-- 展示单页项目 -->
-    <ShowSinglePageItem :item_info="item_info" v-if="item_info && item_info.item_type == 2 "></ShowSinglePageItem>
+    <ShowSinglePageItem
+      :item_info="item_info"
+      v-if="item_info && item_info.item_type == 2"
+    ></ShowSinglePageItem>
 
     <!-- 展示表格项目 -->
-    <ShowTableItem :item_info="item_info" v-if="item_info && item_info.item_type == 4 "></ShowTableItem>
+    <ShowTableItem
+      :item_info="item_info"
+      v-if="item_info && item_info.item_type == 4"
+    ></ShowTableItem>
 
     <Footer></Footer>
   </div>
 </template>
-
-
 
 <script>
 import ShowRegularItem from '@/components/item/show/show_regular_item/Index'
@@ -50,13 +60,13 @@ export default {
       var item_id = this.$route.params.item_id ? this.$route.params.item_id : 0
       var page_id = this.$route.query.page_id ? this.$route.query.page_id : 0
       let params = {
-        'item_id': item_id,
-        'keyword': keyword
+        item_id: item_id,
+        keyword: keyword
       }
       if (!keyword) {
         params.default_page_id = page_id
       }
-      this.request('/api/item/info', params, 'post', false).then((data) => {
+      this.request('/api/item/info', params, 'post', false).then(data => {
         loading.close()
         if (data.error_code === 0) {
           var json = data.data
@@ -80,10 +90,7 @@ export default {
               message: '<a href="#/notice/index">你有新的未读消息，点击查看</a>'
             })
           }
-        } else if (
-          data.error_code === 10307 ||
-          data.error_code === 10303
-        ) {
+        } else if (data.error_code === 10307 || data.error_code === 10303) {
           // 需要输入密码
           that.$router.replace({
             path: '/item/password/' + item_id,
@@ -125,5 +132,4 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-</style>
+<style scoped></style>

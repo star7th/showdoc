@@ -4,7 +4,12 @@
 
     <el-container>
       <el-card class="center-card">
-        <el-form status-icon label-width="0px" class="demo-ruleForm" @keyup.enter.native="onSubmit">
+        <el-form
+          status-icon
+          label-width="0px"
+          class="demo-ruleForm"
+          @keyup.enter.native="onSubmit"
+        >
           <h2>重置密码</h2>
           <el-form-item label>
             <el-input
@@ -16,7 +21,9 @@
           </el-form-item>
 
           <el-form-item label>
-            <el-button type="primary" style="width:100%;" @click="onSubmit">提交</el-button>
+            <el-button type="primary" style="width:100%;" @click="onSubmit"
+              >提交</el-button
+            >
           </el-form-item>
 
           <el-form-item label>

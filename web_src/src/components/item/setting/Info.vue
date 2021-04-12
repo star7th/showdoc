@@ -1,8 +1,18 @@
 <template>
   <div class="hello">
-    <el-form status-icon label-width="100px" class="infoForm" v-model="infoForm">
+    <el-form
+      status-icon
+      label-width="100px"
+      class="infoForm"
+      v-model="infoForm"
+    >
       <el-form-item>
-        <el-input type="text" auto-complete="off" v-model="infoForm.item_name" placeholder></el-input>
+        <el-input
+          type="text"
+          auto-complete="off"
+          v-model="infoForm.item_name"
+          placeholder
+        ></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -15,8 +25,12 @@
       </el-form-item>
 
       <el-form-item label>
-        <el-radio v-model="isOpenItem" :label="true">{{$t('Open_item')}}</el-radio>
-        <el-radio v-model="isOpenItem" :label="false">{{$t('private_item')}}</el-radio>
+        <el-radio v-model="isOpenItem" :label="true">{{
+          $t('Open_item')
+        }}</el-radio>
+        <el-radio v-model="isOpenItem" :label="false">{{
+          $t('private_item')
+        }}</el-radio>
       </el-form-item>
 
       <el-form-item v-show="!isOpenItem">
@@ -29,7 +43,9 @@
       </el-form-item>
 
       <el-form-item label>
-        <el-button type="primary" style="width:100%;" @click="FormSubmit">{{$t('submit')}}</el-button>
+        <el-button type="primary" style="width:100%;" @click="FormSubmit">{{
+          $t('submit')
+        }}</el-button>
       </el-form-item>
     </el-form>
   </div>

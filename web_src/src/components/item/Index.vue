@@ -6,18 +6,27 @@
       <el-row class="masthead">
         <div class="logo-title">
           <h2 class="muted">
-            <img src="static/logo/b_64.png" style="width:50px;height:50px;margin-bottom:-10px;" alt />ShowDoc
+            <img
+              src="static/logo/b_64.png"
+              style="width:50px;height:50px;margin-bottom:-10px;"
+              alt
+            />ShowDoc
           </h2>
         </div>
         <div class="header-btn-group pull-right">
-          <el-tooltip class="item" effect="dark" :content="$t('feedback')" placement="top">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('feedback')"
+            placement="top"
+          >
             <router-link to>
               <i @click="feedback" class="el-icon-phone-outline"></i>
             </router-link>
           </el-tooltip>
 
           <el-tooltip
-            v-if="lang =='zh-cn'"
+            v-if="lang == 'zh-cn'"
             class="item"
             effect="dark"
             content="客户端"
@@ -29,7 +38,7 @@
           </el-tooltip>
 
           <el-tooltip
-            v-if="lang =='zh-cn'"
+            v-if="lang == 'zh-cn'"
             class="item"
             effect="dark"
             content="接口开发调试工具RunApi"
@@ -40,7 +49,12 @@
             </a>
           </el-tooltip>
 
-          <el-tooltip class="item" effect="dark" :content="$t('team_mamage')" placement="top">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('team_mamage')"
+            placement="top"
+          >
             <router-link to="/team/index">
               <i class="el-icon-s-flag"></i>
             </router-link>
@@ -55,21 +69,32 @@
           >
             <router-link to="/admin/index">
               <i class="el-icon-s-tools"></i>
-            </router-link>
-          </el-tooltip>&nbsp;&nbsp;
-          <el-tooltip class="item" effect="dark" :content="$t('more')" placement="top">
+            </router-link> </el-tooltip
+          >&nbsp;&nbsp;
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('more')"
+            placement="top"
+          >
             <el-dropdown @command="dropdown_callback" trigger="click">
               <span class="el-dropdown-link">
                 <i class="el-icon-caret-bottom el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>
-                  <router-link to="/user/setting">{{$t("Logged")}}:{{username}}</router-link>
+                  <router-link to="/user/setting"
+                    >{{ $t('Logged') }}:{{ username }}</router-link
+                  >
                 </el-dropdown-item>
                 <el-dropdown-item>
-                  <router-link to="/attachment/index">{{$t("my_attachment")}}</router-link>
+                  <router-link to="/attachment/index">{{
+                    $t('my_attachment')
+                  }}</router-link>
                 </el-dropdown-item>
-                <el-dropdown-item :command="logout">{{$t("logout")}}</el-dropdown-item>
+                <el-dropdown-item :command="logout">{{
+                  $t('logout')
+                }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-tooltip>
@@ -106,12 +131,16 @@
             <li
               class="text-center"
               v-for="item in itemListByKeyword"
-              v-dragging="{ item: item, list: itemListByKeyword, group: 'item' }"
+              v-dragging="{
+                item: item,
+                list: itemListByKeyword,
+                group: 'item'
+              }"
               :key="item.item_id"
             >
               <router-link
                 class="thumbnail item-thumbnail"
-                :to="'/' +  (item.item_domain ? item.item_domain:item.item_id )"
+                :to="'/' + (item.item_domain ? item.item_domain : item.item_id)"
                 :title="item.item_description"
               >
                 <!-- 自己创建的话显示项目设置按钮 -->
@@ -128,11 +157,11 @@
                   class="item-exit"
                   @click.prevent="click_item_exit(item.item_id)"
                   :title="$t('item_exit')"
-                  v-if="! item.creator"
+                  v-if="!item.creator"
                 >
                   <i class="el-icon-close"></i>
                 </span>
-                <p class="my-item">{{item.item_name}}</p>
+                <p class="my-item">{{ item.item_name }}</p>
                 <!-- 如果是加密项目的话，这里显示一个加密图标 -->
                 <span class="item-private" v-if="item.is_private">
                   <el-tooltip
@@ -150,7 +179,7 @@
           <li class="text-center">
             <router-link class="thumbnail item-thumbnail" to="/item/add" title>
               <p class="my-item">
-                {{$t('new_item')}}
+                {{ $t('new_item') }}
                 <i class="el-icon-plus"></i>
               </p>
             </router-link>
@@ -331,8 +360,7 @@ export default {
   },
   methods: {
     get_item_list() {
-      this.request('/api/item/myList', {
-      }).then((data) => {
+      this.request('/api/item/myList', {}).then(data => {
         this.itemList = data.data
       })
     },

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -11,7 +11,5 @@ export default {
 </script>
 
 <style>
-
- @import "../static/css/common.css";
-
+@import '../static/css/common.css';
 </style>

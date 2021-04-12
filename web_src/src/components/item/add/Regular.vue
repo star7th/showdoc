@@ -3,10 +3,10 @@
     <el-form status-icon label-width="10px" class="infoForm" v-model="infoForm">
       <el-form-item>
         <el-radio-group v-model="infoForm.item_type">
-          <el-radio label="1">{{$t('regular_item')}}</el-radio>
-          <el-radio label="4">{{$t('table')}}</el-radio>
+          <el-radio label="1">{{ $t('regular_item') }}</el-radio>
+          <el-radio label="4">{{ $t('table') }}</el-radio>
           <el-radio label="2">
-            {{$t('single_item')}}
+            {{ $t('single_item') }}
             <el-tooltip
               class="item"
               effect="dark"
@@ -19,7 +19,12 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item>
-        <el-tooltip class="item" effect="dark" :content="$t('item_name')" placement="right">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('item_name')"
+          placement="right"
+        >
           <el-input
             type="text"
             auto-complete="off"
@@ -30,7 +35,12 @@
       </el-form-item>
 
       <el-form-item>
-        <el-tooltip class="item" effect="dark" :content="$t('item_description')" placement="right">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('item_description')"
+          placement="right"
+        >
           <el-input
             type="text"
             auto-complete="off"
@@ -41,8 +51,12 @@
       </el-form-item>
 
       <el-form-item label>
-        <el-radio v-model="isOpenItem" :label="true">{{$t('Open_item')}}</el-radio>
-        <el-radio v-model="isOpenItem" :label="false">{{$t('private_item')}}</el-radio>
+        <el-radio v-model="isOpenItem" :label="true">{{
+          $t('Open_item')
+        }}</el-radio>
+        <el-radio v-model="isOpenItem" :label="false">{{
+          $t('private_item')
+        }}</el-radio>
       </el-form-item>
 
       <el-form-item v-show="!isOpenItem">
@@ -55,7 +69,9 @@
       </el-form-item>
 
       <el-form-item label>
-        <el-button type="primary" style="width:100%;" @click="FormSubmit">{{$t('submit')}}</el-button>
+        <el-button type="primary" style="width:100%;" @click="FormSubmit">{{
+          $t('submit')
+        }}</el-button>
       </el-form-item>
     </el-form>
   </div>

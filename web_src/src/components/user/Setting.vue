@@ -7,8 +7,13 @@
         <el-button type="text" @click="goback" class="goback-btn">
           <i class="el-icon-back"></i>
         </el-button>
-        <el-form status-icon label-width="75px" class="infoForm" v-model="infoForm">
-          <el-form-item :label="$t('username')+':'">
+        <el-form
+          status-icon
+          label-width="75px"
+          class="infoForm"
+          v-model="infoForm"
+        >
+          <el-form-item :label="$t('username') + ':'">
             <el-input
               type="text"
               auto-complete="off"
@@ -22,7 +27,7 @@
                        <span>{{emailForm.email}}({{emailForm.status}})</span> <a href="javascript:;" @click="dialogEmailFormVisible = true">{{$t("modify")}}</a>
                   </el-form-item>
           -->
-          <el-form-item :label="$t('name')+':'">
+          <el-form-item :label="$t('name') + ':'">
             <el-input
               type="text"
               auto-complete="off"
@@ -31,11 +36,15 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item :label="$t('password')+':'">
-            <a href="javascript:;" @click="dialogPasswordFormVisible = true">{{$t("modify")}}</a>
+          <el-form-item :label="$t('password') + ':'">
+            <a href="javascript:;" @click="dialogPasswordFormVisible = true">{{
+              $t('modify')
+            }}</a>
           </el-form-item>
 
-          <el-button type="primary" style="width:100%;" @click="formSubmit">{{$t('submit')}}</el-button>
+          <el-button type="primary" style="width:100%;" @click="formSubmit">{{
+            $t('submit')
+          }}</el-button>
         </el-form>
       </el-card>
     </el-container>
@@ -67,8 +76,12 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogEmailFormVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="emailFormSubmit">{{$t('confirm')}}</el-button>
+        <el-button @click="dialogEmailFormVisible = false">{{
+          $t('cancel')
+        }}</el-button>
+        <el-button type="primary" @click="emailFormSubmit">{{
+          $t('confirm')
+        }}</el-button>
       </div>
     </el-dialog>
 
@@ -99,8 +112,12 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogPasswordFormVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="passwordFormSubmit">{{$t('confirm')}}</el-button>
+        <el-button @click="dialogPasswordFormVisible = false">{{
+          $t('cancel')
+        }}</el-button>
+        <el-button type="primary" @click="passwordFormSubmit">{{
+          $t('confirm')
+        }}</el-button>
       </div>
     </el-dialog>
 

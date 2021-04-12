@@ -20,8 +20,12 @@
           ></el-input>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">{{$t('cancel')}}</el-button>
-          <el-button type="primary" @click="transform">{{$t('confirm')}}</el-button>
+          <el-button @click="dialogFormVisible = false">{{
+            $t('cancel')
+          }}</el-button>
+          <el-button type="primary" @click="transform">{{
+            $t('confirm')
+          }}</el-button>
         </div>
       </el-dialog>
     </el-container>
@@ -30,8 +34,7 @@
   </div>
 </template>
 
-<style>
-</style>
+<style></style>
 
 <script>
 export default {

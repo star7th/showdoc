@@ -5,25 +5,47 @@
         <el-input v-model="username" placeholder="用户名"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="onSubmit">{{$t('search')}}</el-button>
+        <el-button @click="onSubmit">{{ $t('search') }}</el-button>
       </el-form-item>
     </el-form>
-    <el-button type="primary" @click="dialogAddVisible = true">{{$t('add_user')}}</el-button>
+    <el-button type="primary" @click="dialogAddVisible = true">{{
+      $t('add_user')
+    }}</el-button>
     <el-table :data="itemList" style="width: 100%">
-      <el-table-column prop="username" :label="$t('username')" width="200"></el-table-column>
+      <el-table-column
+        prop="username"
+        :label="$t('username')"
+        width="200"
+      ></el-table-column>
       <el-table-column prop="name" :label="$t('name')"></el-table-column>
-      <el-table-column prop="groupid" :label="$t('userrole')" :formatter="formatGroup" width="150"></el-table-column>
-      <el-table-column prop="reg_time" :label="$t('reg_time')" width="160"></el-table-column>
-      <el-table-column prop="last_login_time" :label="$t('last_login_time')" width="160"></el-table-column>
+      <el-table-column
+        prop="groupid"
+        :label="$t('userrole')"
+        :formatter="formatGroup"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="reg_time"
+        :label="$t('reg_time')"
+        width="160"
+      ></el-table-column>
+      <el-table-column
+        prop="last_login_time"
+        :label="$t('last_login_time')"
+        width="160"
+      ></el-table-column>
       <el-table-column prop="item_domain" :label="$t('operation')">
         <template slot-scope="scope">
-          <el-button @click="click_edit(scope.row)" type="text" size="small">{{$t('edit')}}</el-button>
+          <el-button @click="click_edit(scope.row)" type="text" size="small">{{
+            $t('edit')
+          }}</el-button>
           <el-button
             @click="delete_user(scope.row)"
             v-if="scope.row.groupid != 1"
             type="text"
             size="small"
-          >{{$t('delete')}}</el-button>
+            >{{ $t('delete') }}</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -54,27 +76,40 @@
           ></el-input>
         </el-form-item>
         <el-form-item label>
-          <el-input type="text" :placeholder="$t('name')" v-model="addForm.name"></el-input>
+          <el-input
+            type="text"
+            :placeholder="$t('name')"
+            v-model="addForm.name"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label v-if="addForm.uid <= 0">
-          <el-input type="password" :placeholder="$t('password')" v-model="addForm.password"></el-input>
+          <el-input
+            type="password"
+            :placeholder="$t('password')"
+            v-model="addForm.password"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label v-if="addForm.uid > 0">
-          <el-input type="password" :placeholder="$t('update_pwd_tips')" v-model="addForm.password"></el-input>
+          <el-input
+            type="password"
+            :placeholder="$t('update_pwd_tips')"
+            v-model="addForm.password"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="resetForm">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="add_user">{{$t('confirm')}}</el-button>
+        <el-button @click="resetForm">{{ $t('cancel') }}</el-button>
+        <el-button type="primary" @click="add_user">{{
+          $t('confirm')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script>
 export default {

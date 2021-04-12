@@ -6,21 +6,33 @@
           <i class="el-icon-caret-bottom el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="goback">{{$t('goback')}}</el-dropdown-item>
-          <el-dropdown-item command="share">{{$t('share')}}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.ItemPermn" command="new_page">{{$t('new_page')}}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.ItemPermn" command="new_catalog">{{$t('new_catalog')}}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.ItemPermn" command="edit_page">{{$t('edit_page')}}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.ItemPermn" command="copy">{{$t('copy')}}</el-dropdown-item>
+          <el-dropdown-item command="goback">{{
+            $t('goback')
+          }}</el-dropdown-item>
+          <el-dropdown-item command="share">{{ $t('share') }}</el-dropdown-item>
+          <el-dropdown-item v-if="item_info.ItemPermn" command="new_page">{{
+            $t('new_page')
+          }}</el-dropdown-item>
+          <el-dropdown-item v-if="item_info.ItemPermn" command="new_catalog">{{
+            $t('new_catalog')
+          }}</el-dropdown-item>
+          <el-dropdown-item v-if="item_info.ItemPermn" command="edit_page">{{
+            $t('edit_page')
+          }}</el-dropdown-item>
+          <el-dropdown-item v-if="item_info.ItemPermn" command="copy">{{
+            $t('copy')
+          }}</el-dropdown-item>
           <el-dropdown-item
             v-if="item_info.ItemPermn"
             command="ShowHistoryVersion"
-          >{{$t('history_version')}}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.ItemPermn" command="export">{{$t('export')}}</el-dropdown-item>
-          <el-dropdown-item
-            v-if="item_info.ItemPermn"
-            command="delete_page"
-          >{{$t('delete_interface')}}</el-dropdown-item>
+            >{{ $t('history_version') }}</el-dropdown-item
+          >
+          <el-dropdown-item v-if="item_info.ItemPermn" command="export">{{
+            $t('export')
+          }}</el-dropdown-item>
+          <el-dropdown-item v-if="item_info.ItemPermn" command="delete_page">{{
+            $t('delete_interface')
+          }}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -37,13 +49,18 @@
             <i class="el-icon-user"></i>
           </router-link>
         </el-tooltip>
-        <el-tooltip class="item" effect="dark" :content="$t('history_version')" placement="top">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('history_version')"
+          placement="top"
+        >
           <i class="el-icon-goods" @click="ShowHistoryVersion"></i>
         </el-tooltip>
         <el-tooltip
           class="item"
           effect="dark"
-          v-if="lang =='zh-cn'"
+          v-if="lang == 'zh-cn'"
           :content="$t('about_showdoc')"
           placement="top"
         >
@@ -54,18 +71,28 @@
       </span>
 
       <span v-if="item_info.is_login">
-        <el-tooltip class="item" effect="dark" :content="$t('goback')" placement="left">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('goback')"
+          placement="left"
+        >
           <router-link to="/item/index">
             <i class="el-icon-back"></i>
           </router-link>
         </el-tooltip>
 
-        <el-tooltip class="item" effect="dark" :content="$t('share')" placement="top">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('share')"
+          placement="top"
+        >
           <i class="el-icon-share" @click="share_page"></i>
         </el-tooltip>
 
         <el-tooltip
-          v-if="! item_info.ItemPermn"
+          v-if="!item_info.ItemPermn"
           class="item"
           effect="dark"
           :content="$t('detail')"
@@ -76,13 +103,28 @@
       </span>
 
       <span v-if="item_info.ItemPermn">
-        <el-tooltip class="item" effect="dark" :content="$t('new_page')" placement="top">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('new_page')"
+          placement="top"
+        >
           <i class="el-icon-plus" @click="new_page"></i>
         </el-tooltip>
-        <el-tooltip class="item" effect="dark" :content="$t('new_catalog')" placement="left">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('new_catalog')"
+          placement="left"
+        >
           <i class="el-icon-folder" @click="mamage_catalog"></i>
         </el-tooltip>
-        <el-tooltip class="item" effect="dark" :content="$t('edit_page')" placement="top">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('edit_page')"
+          placement="top"
+        >
           <i class="el-icon-edit" @click="edit_page"></i>
         </el-tooltip>
 
@@ -106,29 +148,67 @@
         </el-tooltip>
 
         <span v-show="showMore">
-          <el-tooltip class="item" effect="dark" :content="$t('copy')" placement="left">
-            <router-link :to="'/page/edit/'+item_id+'/0?copy_page_id='+page_id">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('copy')"
+            placement="left"
+          >
+            <router-link
+              :to="'/page/edit/' + item_id + '/0?copy_page_id=' + page_id"
+            >
               <i class="el-icon-document"></i>
             </router-link>
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" :content="$t('history_version')" placement="top">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('history_version')"
+            placement="top"
+          >
             <i class="el-icon-goods" @click="ShowHistoryVersion"></i>
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" :content="$t('detail')" placement="top">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('detail')"
+            placement="top"
+          >
             <i class="el-icon-info" @click="show_page_info"></i>
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" :content="$t('export')" placement="left">
-            <router-link :to="'/item/export/'+item_info.item_id" v-if="item_info.ItemPermn">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('export')"
+            placement="left"
+          >
+            <router-link
+              :to="'/item/export/' + item_info.item_id"
+              v-if="item_info.ItemPermn"
+            >
               <i class="el-icon-download"></i>
             </router-link>
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" :content="$t('delete_interface')" placement="top">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('delete_interface')"
+            placement="top"
+          >
             <i class="el-icon-delete" @click="delete_page"></i>
           </el-tooltip>
 
           <span v-if="item_info.ItemCreator">
-            <el-tooltip class="item" effect="dark" :content="$t('item_setting')" placement="left">
-              <router-link :to="'/item/setting/'+item_info.item_id" v-if="item_info.ItemCreator">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              :content="$t('item_setting')"
+              placement="left"
+            >
+              <router-link
+                :to="'/item/setting/' + item_info.item_id"
+                v-if="item_info.ItemCreator"
+              >
                 <i class="el-icon-setting"></i>
               </router-link>
             </el-tooltip>
@@ -144,8 +224,8 @@
       :close-on-click-modal="false"
     >
       <p>
-        {{$t('item_page_address')}} :
-        <code>{{share_page_link}}</code>
+        {{ $t('item_page_address') }} :
+        <code>{{ share_page_link }}</code>
         <i
           class="el-icon-document-copy"
           v-clipboard:copy="share_page_link"
@@ -153,18 +233,23 @@
         ></i>
       </p>
       <p v-if="false" style="border-bottom: 1px solid #eee;">
-        <img id="qr-page-link" style="width:114px;height:114px;" :src="qr_page_link" />
+        <img
+          id="qr-page-link"
+          style="width:114px;height:114px;"
+          :src="qr_page_link"
+        />
       </p>
 
       <div v-show="item_info.ItemPermn">
         <el-checkbox
           v-model="isCreateSiglePage"
           @change="checkCreateSiglePage"
-        >{{$t('create_sigle_page')}}</el-checkbox>
+          >{{ $t('create_sigle_page') }}</el-checkbox
+        >
 
         <p v-if="isCreateSiglePage">
-          {{$t('single_page_address')}} :
-          <code>{{share_single_link}}</code>
+          {{ $t('single_page_address') }} :
+          <code>{{ share_single_link }}</code>
           <i
             class="el-icon-document-copy"
             v-clipboard:copy="share_single_link"
@@ -172,11 +257,13 @@
           ></i>
         </p>
         <p></p>
-        <p>{{$t('create_sigle_page_tips')}}</p>
+        <p>{{ $t('create_sigle_page_tips') }}</p>
       </div>
 
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">{{$t('confirm')}}</el-button>
+        <el-button type="primary" @click="dialogVisible = false">{{
+          $t('confirm')
+        }}</el-button>
       </span>
     </el-dialog>
 
@@ -190,7 +277,6 @@
     ></HistoryVersion>
   </div>
 </template>
-
 
 <style scoped>
 .op-bar {
@@ -346,11 +432,14 @@ export default {
           confirmButtonText: this.$t('cancelSingleYes'),
           cancelButtonText: this.$t('cancelSingleNo'),
           type: 'warning'
-        }).then(() => {
-          this.CreateSiglePage()
-        }, () => {
-          this.isCreateSiglePage = true
-        })
+        }).then(
+          () => {
+            this.CreateSiglePage()
+          },
+          () => {
+            this.isCreateSiglePage = true
+          }
+        )
       }
     },
     CreateSiglePage() {

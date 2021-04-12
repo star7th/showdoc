@@ -4,8 +4,12 @@
 
     <el-container>
       <el-card class="center-card">
-        <el-button type="text" class="add-cat" @click="addTeam">{{$t('add_team')}}</el-button>
-        <el-button type="text" class="goback-btn" @click="goback">{{$t('goback')}}</el-button>
+        <el-button type="text" class="add-cat" @click="addTeam">{{
+          $t('add_team')
+        }}</el-button>
+        <el-button type="text" class="goback-btn" @click="goback">{{
+          $t('goback')
+        }}</el-button>
         <el-table
           align="left"
           :empty-text="$t('empty_team_tips')"
@@ -13,47 +17,76 @@
           height="400"
           style="width: 100%"
         >
-          <el-table-column prop="team_name" :label="$t('team_name')"></el-table-column>
+          <el-table-column
+            prop="team_name"
+            :label="$t('team_name')"
+          ></el-table-column>
           <el-table-column prop="memberCount" :label="$t('memberCount')">
             <template slot-scope="scope">
-              <router-link :to="'/team/member/'+scope.row.id">{{scope.row.memberCount}}</router-link>
+              <router-link :to="'/team/member/' + scope.row.id">{{
+                scope.row.memberCount
+              }}</router-link>
             </template>
           </el-table-column>
           <el-table-column prop="itemCount" :label="$t('itemCount')">
             <template slot-scope="scope">
-              <router-link :to="'/team/item/'+scope.row.id">{{scope.row.itemCount}}</router-link>
+              <router-link :to="'/team/item/' + scope.row.id">{{
+                scope.row.itemCount
+              }}</router-link>
             </template>
           </el-table-column>
           <el-table-column prop :label="$t('operation')">
             <template slot-scope="scope">
               <el-button
-                @click="$router.push({path:'/team/member/'+scope.row.id})"
+                @click="$router.push({ path: '/team/member/' + scope.row.id })"
                 type="text"
                 size="small"
-              >{{$t('member')}}</el-button>
+                >{{ $t('member') }}</el-button
+              >
               <el-button
-                @click="$router.push({path:'/team/item/'+scope.row.id})"
+                @click="$router.push({ path: '/team/item/' + scope.row.id })"
                 type="text"
                 size="small"
-              >{{$t('team_item')}}</el-button>
-              <el-button @click="edit(scope.row)" type="text" size="small">{{$t('edit')}}</el-button>
+                >{{ $t('team_item') }}</el-button
+              >
+              <el-button @click="edit(scope.row)" type="text" size="small">{{
+                $t('edit')
+              }}</el-button>
               <br />
-              <el-button @click="attornDialog(scope.row)" type="text" size="small">{{$t('attorn')}}</el-button>
-              <el-button @click="deleteTeam(scope.row.id)" type="text" size="small">{{$t('delete')}}</el-button>
+              <el-button
+                @click="attornDialog(scope.row)"
+                type="text"
+                size="small"
+                >{{ $t('attorn') }}</el-button
+              >
+              <el-button
+                @click="deleteTeam(scope.row.id)"
+                type="text"
+                size="small"
+                >{{ $t('delete') }}</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
       </el-card>
-      <el-dialog :visible.sync="dialogFormVisible" width="300px" :close-on-click-modal="false">
+      <el-dialog
+        :visible.sync="dialogFormVisible"
+        width="300px"
+        :close-on-click-modal="false"
+      >
         <el-form>
-          <el-form-item :label="$t('team_name')+':'">
+          <el-form-item :label="$t('team_name') + ':'">
             <el-input v-model="MyForm.team_name"></el-input>
           </el-form-item>
         </el-form>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">{{$t('cancel')}}</el-button>
-          <el-button type="primary" @click="MyFormSubmit">{{$t('confirm')}}</el-button>
+          <el-button @click="dialogFormVisible = false">{{
+            $t('cancel')
+          }}</el-button>
+          <el-button type="primary" @click="MyFormSubmit">{{
+            $t('confirm')
+          }}</el-button>
         </div>
       </el-dialog>
 
@@ -80,10 +113,14 @@
             ></el-input>
           </el-form-item>
         </el-form>
-        <p class="tips">{{$t('attornTeamTips')}}</p>
+        <p class="tips">{{ $t('attornTeamTips') }}</p>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogAttornVisible = false">{{$t('cancel')}}</el-button>
-          <el-button type="primary" @click="attorn">{{$t('attorn')}}</el-button>
+          <el-button @click="dialogAttornVisible = false">{{
+            $t('cancel')
+          }}</el-button>
+          <el-button type="primary" @click="attorn">{{
+            $t('attorn')
+          }}</el-button>
         </div>
       </el-dialog>
     </el-container>
@@ -238,7 +275,7 @@ export default {
 </style>
 
 <!-- 全局css -->
-<style >
+<style>
 .el-table .success-row {
   background: #f0f9eb;
 }

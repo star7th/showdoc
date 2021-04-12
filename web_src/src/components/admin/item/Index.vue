@@ -14,27 +14,60 @@
     </el-select>
       </el-form-item>-->
       <el-form-item>
-        <el-button @click="onSubmit">{{$t('search')}}</el-button>
+        <el-button @click="onSubmit">{{ $t('search') }}</el-button>
       </el-form-item>
     </el-form>
 
     <el-table :data="itemList" style="width: 100%">
-      <el-table-column prop="item_name" :label="$t('item_name')" width="140"></el-table-column>
-      <el-table-column prop="item_description" :label="$t('item_description')" width="140"></el-table-column>
-      <el-table-column prop="password" :label="$t('privacy')" :formatter="formatPrivacy" width="80"></el-table-column>
+      <el-table-column
+        prop="item_name"
+        :label="$t('item_name')"
+        width="140"
+      ></el-table-column>
+      <el-table-column
+        prop="item_description"
+        :label="$t('item_description')"
+        width="140"
+      ></el-table-column>
+      <el-table-column
+        prop="password"
+        :label="$t('privacy')"
+        :formatter="formatPrivacy"
+        width="80"
+      ></el-table-column>
 
       <el-table-column prop="item_id" :label="$t('link')" width="100">
         <template slot-scope="scope">
-          <el-button @click="jump_to_item(scope.row)" type="text" size="small">{{$t('link')}}</el-button>
+          <el-button
+            @click="jump_to_item(scope.row)"
+            type="text"
+            size="small"
+            >{{ $t('link') }}</el-button
+          >
         </template>
       </el-table-column>
-      <el-table-column prop="username" :label="$t('owner')" width="160"></el-table-column>
+      <el-table-column
+        prop="username"
+        :label="$t('owner')"
+        width="160"
+      ></el-table-column>
       <el-table-column :label="$t('memberCount')" width="80"></el-table-column>
-      <el-table-column prop="addtime" :label="$t('add_time')" width="160"></el-table-column>
+      <el-table-column
+        prop="addtime"
+        :label="$t('add_time')"
+        width="160"
+      ></el-table-column>
       <el-table-column prop="item_domain" :label="$t('operation')">
         <template slot-scope="scope">
-          <el-button @click="click_attorn_item(scope.row)" type="text" size="small">{{$t('attorn')}}</el-button>
-          <el-button @click="delete_item(scope.row)" type="text" size="small">{{$t('delete')}}</el-button>
+          <el-button
+            @click="click_attorn_item(scope.row)"
+            type="text"
+            size="small"
+            >{{ $t('attorn') }}</el-button
+          >
+          <el-button @click="delete_item(scope.row)" type="text" size="small">{{
+            $t('delete')
+          }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,22 +82,30 @@
       ></el-pagination>
     </div>
 
-    <el-dialog :visible.sync="dialogAttornVisible" :close-on-click-modal="false" width="300px">
+    <el-dialog
+      :visible.sync="dialogAttornVisible"
+      :close-on-click-modal="false"
+      width="300px"
+    >
       <el-form>
         <el-form-item label>
-          <el-input :placeholder="$t('attorn_username')" v-model="attornForm.username"></el-input>
+          <el-input
+            :placeholder="$t('attorn_username')"
+            v-model="attornForm.username"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogAttornVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="attorn">{{$t('attorn')}}</el-button>
+        <el-button @click="dialogAttornVisible = false">{{
+          $t('cancel')
+        }}</el-button>
+        <el-button type="primary" @click="attorn">{{ $t('attorn') }}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
 
 <script>
 export default {

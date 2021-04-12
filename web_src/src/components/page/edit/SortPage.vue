@@ -11,7 +11,7 @@
         :close-on-click-modal="false"
       >
         <div class="dialog-body">
-          <p class="tips">{{$t('sort_pages_tips')}}</p>
+          <p class="tips">{{ $t('sort_pages_tips') }}</p>
           <el-select
             :placeholder="$t('optional')"
             class="select-cat"
@@ -19,7 +19,7 @@
             v-if="belong_to_catalogs"
           >
             <el-option
-              v-for="cat in belong_to_catalogs "
+              v-for="cat in belong_to_catalogs"
               :key="cat.cat_name"
               :label="cat.cat_name"
               :value="cat.cat_id"
@@ -27,7 +27,7 @@
           </el-select>
           <draggable v-model="pages" tag="div" group="page" @end="endMove">
             <div class="page-box" v-for="page in pages" :key="page.page_id">
-              <span class="page-name">{{page.page_title}}</span>
+              <span class="page-name">{{ page.page_title }}</span>
             </div>
           </draggable>
         </div>

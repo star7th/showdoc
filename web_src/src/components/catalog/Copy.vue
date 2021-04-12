@@ -29,7 +29,11 @@
       </el-form-item>
 
       <el-form-item label class="text-left">
-        <el-select style="width:100%;" v-model="new_p_cat_id" :placeholder="$t('please_choose')">
+        <el-select
+          style="width:100%;"
+          v-model="new_p_cat_id"
+          :placeholder="$t('please_choose')"
+        >
           <el-option
             v-for="item in catalogs"
             :key="item.cat_id"
@@ -40,8 +44,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="closeDialog">{{$t('cancel')}}</el-button>
-      <el-button type="primary" @click="copy">{{$t('confirm')}}</el-button>
+      <el-button @click="closeDialog">{{ $t('cancel') }}</el-button>
+      <el-button type="primary" @click="copy">{{ $t('confirm') }}</el-button>
     </div>
   </el-dialog>
 </template>
@@ -59,8 +63,7 @@ export default {
   },
   methods: {
     getItemList() {
-      this.request('/api/item/myList', {
-      }).then((data) => {
+      this.request('/api/item/myList', {}).then(data => {
         this.itemList = data.data
         this.to_item_id = this.item_id
       })
@@ -70,27 +73,29 @@ export default {
     },
     get_catalog(item_id) {
       var that = this
-      that.request('/api/catalog/catListName', {
-        item_id: item_id
-      })
-      .then(data => {
-        this.new_p_cat_id = '0'
-        var Info = data.data
-        Info.unshift({ cat_id: '0', cat_name: '/' })
-        that.catalogs = Info
-      })
+      that
+        .request('/api/catalog/catListName', {
+          item_id: item_id
+        })
+        .then(data => {
+          this.new_p_cat_id = '0'
+          var Info = data.data
+          Info.unshift({ cat_id: '0', cat_name: '/' })
+          that.catalogs = Info
+        })
     },
     copy() {
       var that = this
-      that.request('/api/catalog/copy', {
-        cat_id: this.cat_id,
-        new_p_cat_id: this.new_p_cat_id,
-        to_item_id: this.to_item_id,
-        is_del: this.is_del
-      })
-      .then(data => {
-        this.closeDialog()
-      })
+      that
+        .request('/api/catalog/copy', {
+          cat_id: this.cat_id,
+          new_p_cat_id: this.new_p_cat_id,
+          to_item_id: this.to_item_id,
+          is_del: this.is_del
+        })
+        .then(data => {
+          this.closeDialog()
+        })
     },
     closeDialog() {
       if (this.callback) this.callback()
@@ -102,7 +107,4 @@ export default {
   }
 }
 </script>
-<style scoped>
-
-
-</style>
+<style scoped></style>

@@ -21,15 +21,36 @@
                 <el-table-column prop="notice_title" label="标题">
                   <template slot-scope="props">
                     <span v-html="props.row.notice_title"></span>
-                    <el-badge class="mark" value="未读" v-if="props.row.is_read == 0" />
+                    <el-badge
+                      class="mark"
+                      value="未读"
+                      v-if="props.row.is_read == 0"
+                    />
                   </template>
                 </el-table-column>
-                <el-table-column prop="from_name" label="发送人"></el-table-column>
-                <el-table-column prop="notice_time" label="时间" width="100"></el-table-column>
+                <el-table-column
+                  prop="from_name"
+                  label="发送人"
+                ></el-table-column>
+                <el-table-column
+                  prop="notice_time"
+                  label="时间"
+                  width="100"
+                ></el-table-column>
                 <el-table-column prop label="操作">
                   <template slot-scope="scope">
-                    <el-button @click="show_notice(scope.row)" type="text" size="small">查看</el-button>
-                    <el-button @click="delete_notice(scope.row)" type="text" size="small">删除</el-button>
+                    <el-button
+                      @click="show_notice(scope.row)"
+                      type="text"
+                      size="small"
+                      >查看</el-button
+                    >
+                    <el-button
+                      @click="delete_notice(scope.row)"
+                      type="text"
+                      size="small"
+                      >删除</el-button
+                    >
                   </template>
                 </el-table-column>
               </el-table>

@@ -5,10 +5,18 @@
     <link href="static/diff/diffview.css" rel="stylesheet" />
     <el-container class="container-narrow">
       <div class="textInput">
-        <textarea id="baseText" v-html="content" style="display:none;"></textarea>
+        <textarea
+          id="baseText"
+          v-html="content"
+          style="display:none;"
+        ></textarea>
       </div>
       <div class="textInput spacer">
-        <textarea id="newText" v-html="historyContent" style="display:none;"></textarea>
+        <textarea
+          id="newText"
+          v-html="historyContent"
+          style="display:none;"
+        ></textarea>
       </div>
 
       <div id="diffoutput"></div>

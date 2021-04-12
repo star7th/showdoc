@@ -1,5 +1,5 @@
 <template>
-  <div :class=" hideScrollbar ? 'hide-scrollbar' : 'normal-scrollbar' ">
+  <div :class="hideScrollbar ? 'hide-scrollbar' : 'normal-scrollbar'">
     <i
       class="el-icon-menu header-left-btn"
       v-if="show_menu_btn"
@@ -37,20 +37,28 @@
         ></el-input>
 
         <!-- 一级页面 -->
-        <template v-if="menu.pages && menu.pages.length ">
-          <el-menu-item v-for="(page ) in menu.pages" :index="page.page_id" :key="page.page_id">
+        <template v-if="menu.pages && menu.pages.length">
+          <el-menu-item
+            v-for="page in menu.pages"
+            :index="page.page_id"
+            :key="page.page_id"
+          >
             <i class="el-icon-document"></i>
-            <span :title="page.page_title" :id="'left_page_'+page.page_id">{{page.page_title}}</span>
+            <span :title="page.page_title" :id="'left_page_' + page.page_id">{{
+              page.page_title
+            }}</span>
           </el-menu-item>
         </template>
 
         <!-- 目录开始 -->
-        <LeftMenuSub v-if="menu.catalogs && menu.catalogs.length" :catalog="menu.catalogs"></LeftMenuSub>
+        <LeftMenuSub
+          v-if="menu.catalogs && menu.catalogs.length"
+          :catalog="menu.catalogs"
+        ></LeftMenuSub>
       </el-menu>
     </el-aside>
   </div>
 </template>
-
 
 <script>
 import LeftMenuSub from './LeftMenuSub.vue'
@@ -154,7 +162,9 @@ export default {
       }
       // 延迟把左侧栏滚动到默认展开的那个页面
       setTimeout(() => {
-        const element = document.querySelector('#left_page_' + item_info.default_page_id)
+        const element = document.querySelector(
+          '#left_page_' + item_info.default_page_id
+        )
         element.scrollIntoView()
       }, 1000)
     }

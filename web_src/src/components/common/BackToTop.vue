@@ -1,4 +1,3 @@
-
 <template>
   <div class="gotop-box" v-show="status" @click="gototop">
     <i class="el-icon-caret-top" :title="$t('back_to_top')"></i>
@@ -44,7 +43,7 @@ export default {
   }
 }
 </script>
-<style  scoped>
+<style scoped>
 .gotop-box {
   position: fixed;
   cursor: pointer;

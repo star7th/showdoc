@@ -59,7 +59,11 @@
         </el-form-item>
 
         <el-form-item label="ldap bind password ">
-          <el-input v-model="form.ldap_form.bind_password" class="form-el" placeholder="例如 123456"></el-input>
+          <el-input
+            v-model="form.ldap_form.bind_password"
+            class="form-el"
+            placeholder="例如 123456"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label="ldap version">
@@ -95,15 +99,27 @@
         </el-form-item>
 
         <el-form-item label="secret">
-          <el-input v-model="form.oss_setting.secret" class="form-el"></el-input>
+          <el-input
+            v-model="form.oss_setting.secret"
+            class="form-el"
+          ></el-input>
         </el-form-item>
 
-        <el-form-item label="endpoint" v-if="form.oss_setting.oss_type == 'aliyun'">
-          <el-input v-model="form.oss_setting.endpoint" class="form-el"></el-input>
+        <el-form-item
+          label="endpoint"
+          v-if="form.oss_setting.oss_type == 'aliyun'"
+        >
+          <el-input
+            v-model="form.oss_setting.endpoint"
+            class="form-el"
+          ></el-input>
         </el-form-item>
 
         <el-form-item label="bucket">
-          <el-input v-model="form.oss_setting.bucket" class="form-el"></el-input>
+          <el-input
+            v-model="form.oss_setting.bucket"
+            class="form-el"
+          ></el-input>
         </el-form-item>
 
         <el-form-item :label="$t('oss_domain')">
@@ -111,14 +127,17 @@
             <el-option label="http://" value="http"></el-option>
             <el-option label="https://" value="https"></el-option>
           </el-select>
-          <el-input v-model="form.oss_setting.domain" class="form-el"></el-input>
+          <el-input
+            v-model="form.oss_setting.domain"
+            class="form-el"
+          ></el-input>
         </el-form-item>
       </div>
 
       <br />
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">{{$t('save')}}</el-button>
-        <el-button>{{$t('cancel')}}</el-button>
+        <el-button type="primary" @click="onSubmit">{{ $t('save') }}</el-button>
+        <el-button>{{ $t('cancel') }}</el-button>
       </el-form-item>
     </el-form>
   </div>

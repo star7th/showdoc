@@ -4,8 +4,13 @@
 
     <el-container>
       <el-card class="center-card">
-        <el-form status-icon label-width="0px" class="demo-ruleForm" @keyup.enter.native="onSubmit">
-          <h2>{{$t("register")}}</h2>
+        <el-form
+          status-icon
+          label-width="0px"
+          class="demo-ruleForm"
+          @keyup.enter.native="onSubmit"
+        >
+          <h2>{{ $t('register') }}</h2>
           <el-form-item label>
             <el-input
               type="text"
@@ -40,16 +45,22 @@
               v-model="v_code"
               :placeholder="$t('verification_code')"
             ></el-input>
-            <img v-bind:src="v_code_img" class="v_code_img" v-on:click="change_v_code_img" />
+            <img
+              v-bind:src="v_code_img"
+              class="v_code_img"
+              v-on:click="change_v_code_img"
+            />
           </el-form-item>
 
           <el-form-item label>
-            <el-button type="primary" style="width:100%;" @click="onSubmit">{{$t("register")}}</el-button>
+            <el-button type="primary" style="width:100%;" @click="onSubmit">{{
+              $t('register')
+            }}</el-button>
           </el-form-item>
 
           <el-form-item label>
-            <router-link to="/user/login">{{$t("login")}}</router-link>
-&nbsp;&nbsp;&nbsp;
+            <router-link to="/user/login">{{ $t('login') }}</router-link>
+            &nbsp;&nbsp;&nbsp;
           </el-form-item>
         </el-form>
       </el-card>

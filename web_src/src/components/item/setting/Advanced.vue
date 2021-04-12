@@ -3,18 +3,24 @@
     <p style="height:40px;"></p>
     <p>
       <el-tooltip :content="$t('attorn_tips')" placement="top-start">
-        <el-button class="a_button" @click="dialogAttornVisible = true">{{$t('attorn')}}</el-button>
+        <el-button class="a_button" @click="dialogAttornVisible = true">{{
+          $t('attorn')
+        }}</el-button>
       </el-tooltip>
     </p>
     <p>
       <el-tooltip :content="$t('archive_tips')" placement="top-start">
-        <el-button class="a_button" @click="dialogArchiveVisible = true">{{$t('archive')}}</el-button>
+        <el-button class="a_button" @click="dialogArchiveVisible = true">{{
+          $t('archive')
+        }}</el-button>
       </el-tooltip>
     </p>
 
     <p>
       <el-tooltip :content="$t('delete_tips')" placement="top-start">
-        <el-button class="a_button" @click="dialogDeleteVisible = true">{{$t('delete')}}</el-button>
+        <el-button class="a_button" @click="dialogDeleteVisible = true">{{
+          $t('delete')
+        }}</el-button>
       </el-tooltip>
     </p>
 
@@ -26,7 +32,10 @@
     >
       <el-form>
         <el-form-item label>
-          <el-input :placeholder="$t('attorn_username')" v-model="attornForm.username"></el-input>
+          <el-input
+            :placeholder="$t('attorn_username')"
+            v-model="attornForm.username"
+          ></el-input>
         </el-form-item>
         <el-form-item label>
           <el-input
@@ -37,8 +46,10 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogAttornVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="attorn">{{$t('attorn')}}</el-button>
+        <el-button @click="dialogAttornVisible = false">{{
+          $t('cancel')
+        }}</el-button>
+        <el-button type="primary" @click="attorn">{{ $t('attorn') }}</el-button>
       </div>
     </el-dialog>
 
@@ -58,10 +69,14 @@
         </el-form-item>
       </el-form>
 
-      <p class="tips">{{$t('archive_tips2')}}</p>
+      <p class="tips">{{ $t('archive_tips2') }}</p>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogArchiveVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="archive">{{$t('archive')}}</el-button>
+        <el-button @click="dialogArchiveVisible = false">{{
+          $t('cancel')
+        }}</el-button>
+        <el-button type="primary" @click="archive">{{
+          $t('archive')
+        }}</el-button>
       </div>
     </el-dialog>
 
@@ -77,16 +92,21 @@
             type="password"
             :placeholder="$t('input_login_password')"
             v-model="deleteForm.password"
-          >></el-input>
+            >></el-input
+          >
         </el-form-item>
       </el-form>
 
       <p class="tips">
-        <el-tag type="danger">{{$t('delete_tips')}}</el-tag>
+        <el-tag type="danger">{{ $t('delete_tips') }}</el-tag>
       </p>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogDeleteVisible = false">{{$t('cancel')}}</el-button>
-        <el-button type="primary" @click="deleteItem">{{$t('delete')}}</el-button>
+        <el-button @click="dialogDeleteVisible = false">{{
+          $t('cancel')
+        }}</el-button>
+        <el-button type="primary" @click="deleteItem">{{
+          $t('delete')
+        }}</el-button>
       </div>
     </el-dialog>
   </div>

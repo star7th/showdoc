@@ -10,20 +10,29 @@
         :close-on-click-modal="false"
       >
         <el-table :data="content">
-          <el-table-column property="addtime" :label="$t('save_time')" width="170"></el-table-column>
-          <el-table-column property="template_title" :label="$t('templ_title')"></el-table-column>
+          <el-table-column
+            property="addtime"
+            :label="$t('save_time')"
+            width="170"
+          ></el-table-column>
+          <el-table-column
+            property="template_title"
+            :label="$t('templ_title')"
+          ></el-table-column>
           <el-table-column :label="$t('operation')" width="150">
             <template slot-scope="scope">
               <el-button
                 @click="insertTemplate(scope.row)"
                 type="text"
                 size="small"
-              >{{$t('insert_templ')}}</el-button>
+                >{{ $t('insert_templ') }}</el-button
+              >
               <el-button
                 type="text"
                 size="small"
                 @click="deleteTemplate(scope.row)"
-              >{{$t('delete_templ')}}</el-button>
+                >{{ $t('delete_templ') }}</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -34,8 +43,7 @@
   </div>
 </template>
 
-<style>
-</style>
+<style></style>
 
 <script>
 export default {

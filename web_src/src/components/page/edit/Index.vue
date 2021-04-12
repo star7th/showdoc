@@ -1,15 +1,19 @@
 <template>
-  <div class="hello" @keydown.ctrl.83.prevent="save" @keydown.meta.83.prevent="save">
+  <div
+    class="hello"
+    @keydown.ctrl.83.prevent="save"
+    @keydown.meta.83.prevent="save"
+  >
     <Header></Header>
 
     <el-container class="container-narrow">
       <el-row class="masthead">
         <el-form :inline="true" class="demo-form-inline" size="small">
-          <el-form-item :label="$t('title')+' : '">
+          <el-form-item :label="$t('title') + ' : '">
             <el-input placeholder v-model="title"></el-input>
           </el-form-item>
 
-          <el-form-item :label="$t('catalog')+' : '">
+          <el-form-item :label="$t('catalog') + ' : '">
             <el-select
               :placeholder="$t('optional')"
               class="cat"
@@ -17,7 +21,7 @@
               v-if="belong_to_catalogs"
             >
               <el-option
-                v-for="cat in belong_to_catalogs "
+                v-for="cat in belong_to_catalogs"
                 :key="cat.cat_name"
                 :label="cat.cat_name"
                 :value="cat.cat_id"
@@ -26,10 +30,14 @@
           </el-form-item>
 
           <el-form-item label>
-            <el-button type="text" @click="ShowSortPage">{{$t('sort_pages')}}</el-button>
+            <el-button type="text" @click="ShowSortPage">{{
+              $t('sort_pages')
+            }}</el-button>
           </el-form-item>
           <el-form-item label>
-            <el-button type="text" @click="ShowHistoryVersion">{{$t('history_version')}}</el-button>
+            <el-button type="text" @click="ShowHistoryVersion">{{
+              $t('history_version')
+            }}</el-button>
           </el-form-item>
 
           <el-form-item class="pull-right">
@@ -42,67 +50,103 @@
               trigger="click"
               @click="save"
             >
-              <span id="save-page">{{$t('save')}}</span>
+              <span id="save-page">{{ $t('save') }}</span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="save_to_template">{{$t('save_to_templ')}}</el-dropdown-item>
+                <el-dropdown-item :command="save_to_template">{{
+                  $t('save_to_templ')
+                }}</el-dropdown-item>
                 <el-tooltip
                   class="item"
                   effect="dark"
                   :content="$t('lock_edit_tips')"
                   placement="left"
                 >
-                  <el-dropdown-item v-if="! isLock" :command="setLock">{{$t('lock_edit')}}</el-dropdown-item>
+                  <el-dropdown-item v-if="!isLock" :command="setLock">{{
+                    $t('lock_edit')
+                  }}</el-dropdown-item>
                 </el-tooltip>
-                <el-dropdown-item v-if="isLock" :command="unlock">{{$t('cacel_lock')}}</el-dropdown-item>
+                <el-dropdown-item v-if="isLock" :command="unlock">{{
+                  $t('cacel_lock')
+                }}</el-dropdown-item>
                 <!-- <el-dropdown-item>保存前添加注释</el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
-            <el-button type size="medium" @click="goback">{{$t('goback')}}</el-button>
+            <el-button type size="medium" @click="goback">{{
+              $t('goback')
+            }}</el-button>
           </el-form-item>
         </el-form>
 
         <el-row class="fun-btn-group">
-          <el-button
-            type
-            size="medium"
-            @click="insert_api_template"
-          >{{$t('insert_apidoc_template')}}</el-button>
-          <el-button
-            type
-            size="medium"
-            @click="insert_database_template"
-          >{{$t('insert_database_doc_template')}}</el-button>
-          <el-button type size="medium" @click.native="ShowTemplateList">{{$t('more_templ')}}</el-button>
+          <el-button type size="medium" @click="insert_api_template">{{
+            $t('insert_apidoc_template')
+          }}</el-button>
+          <el-button type size="medium" @click="insert_database_template">{{
+            $t('insert_database_doc_template')
+          }}</el-button>
+          <el-button type size="medium" @click.native="ShowTemplateList">{{
+            $t('more_templ')
+          }}</el-button>
 
-          <el-dropdown split-button type style="margin-left:100px;" size="medium" trigger="hover">
-            {{$t('format_tools')}}
+          <el-dropdown
+            split-button
+            type
+            style="margin-left:100px;"
+            size="medium"
+            trigger="hover"
+          >
+            {{ $t('format_tools') }}
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="ShowJsonToTable">{{$t('json_to_table')}}</el-dropdown-item>
-              <el-dropdown-item @click.native="ShowJsonBeautify">{{$t('beautify_json')}}</el-dropdown-item>
-              <el-dropdown-item @click.native="ShowPasteTable">{{$t('paste_insert_table')}}</el-dropdown-item>
+              <el-dropdown-item @click.native="ShowJsonToTable">{{
+                $t('json_to_table')
+              }}</el-dropdown-item>
+              <el-dropdown-item @click.native="ShowJsonBeautify">{{
+                $t('beautify_json')
+              }}</el-dropdown-item>
+              <el-dropdown-item @click.native="ShowPasteTable">{{
+                $t('paste_insert_table')
+              }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <el-button v-if="lang =='zh-cn'" type size="medium" @click="showMockDialog = true">Mock</el-button>
           <el-button
-            v-if="lang =='zh-cn'"
+            v-if="lang == 'zh-cn'"
+            type
+            size="medium"
+            @click="showMockDialog = true"
+            >Mock</el-button
+          >
+          <el-button
+            v-if="lang == 'zh-cn'"
             type
             size="medium"
             @click="ShowRunApi"
-          >{{$t('http_test_api')}}</el-button>
+            >{{ $t('http_test_api') }}</el-button
+          >
 
           <el-badge :value="attachment_count" class="item">
-            <el-button type size="medium" @click="ShowAttachment">{{$t('attachment')}}</el-button>
+            <el-button type size="medium" @click="ShowAttachment">{{
+              $t('attachment')
+            }}</el-button>
           </el-badge>
         </el-row>
 
-        <Editormd v-bind:content="content" v-if="content" ref="Editormd" type="editor"></Editormd>
+        <Editormd
+          v-bind:content="content"
+          v-if="content"
+          ref="Editormd"
+          type="editor"
+        ></Editormd>
       </el-row>
 
       <!-- 更多模板 -->
       <TemplateList :callback="insertValue" ref="TemplateList"></TemplateList>
 
       <!-- 历史版本 -->
-      <HistoryVersion :callback="insertValue" :is_show_recover_btn="true" ref="HistoryVersion"></HistoryVersion>
+      <HistoryVersion
+        :callback="insertValue"
+        :is_show_recover_btn="true"
+        ref="HistoryVersion"
+      ></HistoryVersion>
 
       <!-- Json转表格 组件 -->
       <JsonToTable :callback="insertValue" ref="JsonToTable"></JsonToTable>
@@ -142,12 +186,14 @@
         :page_id="page_id"
         :item_id="item_id"
         v-if="showMockDialog"
-        :callback="(data)=>{
-        if(data){
-          insertValue(data);
-        }
-        showMockDialog = false;
-        }"
+        :callback="
+          data => {
+            if (data) {
+              insertValue(data)
+            }
+            showMockDialog = false
+          }
+        "
         ref="Mock"
       ></Mock>
     </el-container>

@@ -6,15 +6,25 @@
     <div class="container doc-container" id="doc-container">
       <div class="doc-title-box">
         <span id="doc-title-span" class="dn"></span>
-        <h2 id="doc-title">{{page_title}}</h2>
+        <h2 id="doc-title">{{ page_title }}</h2>
 
         <div class="tool-bar pull-right">
-          <el-tooltip class="item" effect="dark" :content="$t('goback')" placement="left">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('goback')"
+            placement="left"
+          >
             <router-link to="/item/index">
               <i class="el-icon-back"></i>
             </router-link>
           </el-tooltip>
-          <el-tooltip class="item" effect="dark" :content="$t('share')" placement="top">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('share')"
+            placement="top"
+          >
             <i class="el-icon-share" @click="share_item"></i>
           </el-tooltip>
           <el-tooltip
@@ -31,11 +41,11 @@
               <i class="el-icon-caret-bottom el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <router-link :to="'/item/export/'+item_info.item_id">
-                <el-dropdown-item>{{$t('export')}}</el-dropdown-item>
+              <router-link :to="'/item/export/' + item_info.item_id">
+                <el-dropdown-item>{{ $t('export') }}</el-dropdown-item>
               </router-link>
-              <router-link :to="'/item/setting/'+item_info.item_id">
-                <el-dropdown-item>{{$t('item_setting')}}</el-dropdown-item>
+              <router-link :to="'/item/setting/' + item_info.item_id">
+                <el-dropdown-item>{{ $t('item_setting') }}</el-dropdown-item>
               </router-link>
             </el-dropdown-menu>
           </el-dropdown>
@@ -43,7 +53,11 @@
       </div>
       <div id="doc-body">
         <div id="page_md_content" class="page_content_main">
-          <Editormd v-bind:content="content" v-if="content" type="html"></Editormd>
+          <Editormd
+            v-bind:content="content"
+            v-if="content"
+            type="html"
+          ></Editormd>
         </div>
       </div>
     </div>
@@ -55,8 +69,8 @@
       class="text-center"
     >
       <p>
-        {{$t('item_address')}} :
-        <code>{{share_item_link}}</code>
+        {{ $t('item_address') }} :
+        <code>{{ share_item_link }}</code>
       </p>
       <p>
         <a
@@ -64,13 +78,16 @@
           class="home-phone-butt"
           v-clipboard:copyhttplist="copyText"
           v-clipboard:success="onCopy"
-        >{{$t('copy_link')}}</a>
+          >{{ $t('copy_link') }}</a
+        >
       </p>
       <p style="border-bottom: 1px solid #eee;">
         <img id style="width:114px;height:114px;" :src="qr_item_link" />
       </p>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">{{$t('confirm')}}</el-button>
+        <el-button type="primary" @click="dialogVisible = false">{{
+          $t('confirm')
+        }}</el-button>
       </span>
     </el-dialog>
     <BackToTop></BackToTop>

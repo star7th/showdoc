@@ -1,4 +1,3 @@
-
 <template>
   <div></div>
 </template>
@@ -77,7 +76,7 @@ export default {
 }
 </script>
 <!-- 注意，这里是全局css -->
-<style >
+<style>
 .page_content_main .markdown-toc {
   position: fixed;
   top: 230px;

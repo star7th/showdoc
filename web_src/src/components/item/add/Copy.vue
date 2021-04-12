@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <p class="tips">{{$t('copy_item_tips1')}}</p>
+    <p class="tips">{{ $t('copy_item_tips1') }}</p>
     <el-form status-icon label-width="10px" class="infoForm" v-model="infoForm">
       <el-form-item label class="text-left">
         <el-select
@@ -19,7 +19,12 @@
       </el-form-item>
 
       <el-form-item>
-        <el-tooltip class="item" effect="dark" :content="$t('copy_item_tips2')" placement="right">
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('copy_item_tips2')"
+          placement="right"
+        >
           <el-input
             type="text"
             auto-complete="off"
@@ -30,7 +35,9 @@
       </el-form-item>
 
       <el-form-item label>
-        <el-button type="primary" style="width:100%;" @click="FormSubmit">{{$t('submit')}}</el-button>
+        <el-button type="primary" style="width:100%;" @click="FormSubmit">{{
+          $t('submit')
+        }}</el-button>
       </el-form-item>
     </el-form>
   </div>

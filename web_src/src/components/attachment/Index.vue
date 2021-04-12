@@ -9,17 +9,26 @@
         </el-button>
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label>
-            <el-input v-model="display_name" :placeholder="$t('display_name')"></el-input>
+            <el-input
+              v-model="display_name"
+              :placeholder="$t('display_name')"
+            ></el-input>
           </el-form-item>
           <el-form-item label>
             <el-select v-model="attachment_type" placeholder>
-              <el-option :label="$t('all_attachment_type')" value="-1"></el-option>
+              <el-option
+                :label="$t('all_attachment_type')"
+                value="-1"
+              ></el-option>
               <el-option :label="$t('image')" value="1"></el-option>
-              <el-option :label="$t('general_attachment')" value="2"></el-option>
+              <el-option
+                :label="$t('general_attachment')"
+                value="2"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button @click="onSubmit">{{$t('search')}}</el-button>
+            <el-button @click="onSubmit">{{ $t('search') }}</el-button>
           </el-form-item>
           <el-form-item>
             <el-upload
@@ -29,22 +38,53 @@
               :on-error="uploadCallback"
               ref="uploadFile"
             >
-              <el-button>{{$t('upload')}}</el-button>
+              <el-button>{{ $t('upload') }}</el-button>
             </el-upload>
           </el-form-item>
         </el-form>
-        <P>{{$t('accumulated_used_sapce')}} {{used}}M , {{$t('month_flow')}} {{used_flow}}M</P>
+        <P
+          >{{ $t('accumulated_used_sapce') }} {{ used }}M ,
+          {{ $t('month_flow') }} {{ used_flow }}M</P
+        >
         <el-table :data="dataList" style="width: 100%">
-          <el-table-column prop="file_id" :label="$t('file_id')"></el-table-column>
-          <el-table-column prop="display_name" :label="$t('display_name')"></el-table-column>
-          <el-table-column prop="file_type" :label="$t('file_type')" width="160"></el-table-column>
-          <el-table-column prop="file_size_m" :label="$t('file_size_m')" width="160"></el-table-column>
-          <el-table-column prop="visit_times" :label="$t('visit_times')"></el-table-column>
-          <el-table-column prop="addtime" :label="$t('add_time')" width="160"></el-table-column>
+          <el-table-column
+            prop="file_id"
+            :label="$t('file_id')"
+          ></el-table-column>
+          <el-table-column
+            prop="display_name"
+            :label="$t('display_name')"
+          ></el-table-column>
+          <el-table-column
+            prop="file_type"
+            :label="$t('file_type')"
+            width="160"
+          ></el-table-column>
+          <el-table-column
+            prop="file_size_m"
+            :label="$t('file_size_m')"
+            width="160"
+          ></el-table-column>
+          <el-table-column
+            prop="visit_times"
+            :label="$t('visit_times')"
+          ></el-table-column>
+          <el-table-column
+            prop="addtime"
+            :label="$t('add_time')"
+            width="160"
+          ></el-table-column>
           <el-table-column prop :label="$t('operation')">
             <template slot-scope="scope">
-              <el-button @click="visit(scope.row)" type="text" size="small">{{$t('visit')}}</el-button>
-              <el-button @click="delete_row(scope.row)" type="text" size="small">{{$t('delete')}}</el-button>
+              <el-button @click="visit(scope.row)" type="text" size="small">{{
+                $t('visit')
+              }}</el-button>
+              <el-button
+                @click="delete_row(scope.row)"
+                type="text"
+                size="small"
+                >{{ $t('delete') }}</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -165,5 +205,4 @@ export default {
   margin-right: 800px;
   margin-bottom: 5px;
 }
-
 </style>

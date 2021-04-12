@@ -15,10 +15,15 @@
         <div class="nav">
           <ul>
             <li>
-              <router-link :to="link">{{link_text}}</router-link>
+              <router-link :to="link">{{ link_text }}</router-link>
             </li>
             <li>
-              <a target="_blank" v-if="lang =='zh-cn'" href="https://www.showdoc.cc/clients">客户端</a>
+              <a
+                target="_blank"
+                v-if="lang == 'zh-cn'"
+                href="https://www.showdoc.cc/clients"
+                >客户端</a
+              >
             </li>
           </ul>
         </div>
@@ -29,13 +34,20 @@
       <div class="wrapper">
         <div class="hbanner-txt">
           <h2>
-            {{$t('section_description1_1')}}
+            {{ $t('section_description1_1') }}
             <br />
-            <font class="f-blue">{{$t('section_description1_2')}}</font>
+            <font class="f-blue">{{ $t('section_description1_2') }}</font>
           </h2>
           <div class="btns">
-            <a href="https://www.showdoc.cc/demo" target="_blank" class="btn on">{{$t("demo")}}</a>
-            <a href="https://www.showdoc.cc/help" target="_blank" class="btn">{{$t("more")}}</a>
+            <a
+              href="https://www.showdoc.cc/demo"
+              target="_blank"
+              class="btn on"
+              >{{ $t('demo') }}</a
+            >
+            <a href="https://www.showdoc.cc/help" target="_blank" class="btn">{{
+              $t('more')
+            }}</a>
           </div>
         </div>
         <div class="hbanner-imgs"></div>
@@ -50,15 +62,15 @@
           </div>
         </div>
         <div class="txt fr">
-          <h2>{{$t("section_title2")}}</h2>
+          <h2>{{ $t('section_title2') }}</h2>
           <div class="desc">
             <p>
               <img src="static/imgs/Vector.png" />
-              {{$t("section_description2_1")}}
+              {{ $t('section_description2_1') }}
             </p>
             <p>
               <img src="static/imgs/Vector.png" />
-              {{$t("section_description2_2")}}
+              {{ $t('section_description2_2') }}
             </p>
           </div>
         </div>
@@ -71,15 +83,15 @@
           <img src="static/imgs/home3.png" />
         </div>
         <div class="txt fl">
-          <h2>{{$t("section_title3")}}</h2>
+          <h2>{{ $t('section_title3') }}</h2>
           <div class="desc">
             <p>
               <img src="static/imgs/Vector1.png" />
-              {{$t("section_description3_1")}}
+              {{ $t('section_description3_1') }}
             </p>
             <p>
               <img src="static/imgs/Vector1.png" />
-              {{$t("section_description3_2")}}
+              {{ $t('section_description3_2') }}
             </p>
           </div>
         </div>
@@ -92,15 +104,15 @@
           <img src="static/imgs/home4.png" />
         </div>
         <div class="txt fr">
-          <h2>{{$t("section_title4")}}</h2>
+          <h2>{{ $t('section_title4') }}</h2>
           <div class="desc">
             <p>
               <img src="static/imgs/Vector.png" />
-              {{$t("section_description4_1")}}
+              {{ $t('section_description4_1') }}
             </p>
             <p>
               <img src="static/imgs/Vector.png" />
-              {{$t("section_description4_2")}}
+              {{ $t('section_description4_2') }}
             </p>
           </div>
         </div>
@@ -113,9 +125,9 @@
           <img src="static/imgs/home5.png" />
         </div>
         <div class="txt fl">
-          <h2>{{$t("section_title5")}}</h2>
+          <h2>{{ $t('section_title5') }}</h2>
           <div class="desc">
-            <p>{{$t("section_description5")}}</p>
+            <p>{{ $t('section_description5') }}</p>
           </div>
         </div>
       </div>
@@ -127,15 +139,15 @@
           <img src="static/imgs/home6.png" />
         </div>
         <div class="txt fr">
-          <h2>{{$t("section_title6")}}</h2>
+          <h2>{{ $t('section_title6') }}</h2>
           <div class="desc">
             <p>
               <img src="static/imgs/Vector1.png" />
-              {{$t("section_description6_1")}}
+              {{ $t('section_description6_1') }}
             </p>
             <p>
               <img src="static/imgs/Vector1.png" />
-              {{$t("section_description6_2")}}
+              {{ $t('section_description6_2') }}
             </p>
           </div>
         </div>
@@ -147,10 +159,10 @@
           <img src="static/imgs/home7.png" />
         </div>
         <div class="txt fl">
-          <h2>{{$t("section_title7")}}</h2>
+          <h2>{{ $t('section_title7') }}</h2>
           <div class="desc">
-            <p>{{$t("section_description7_1")}}</p>
-            <p>{{$t("section_description7_2")}}</p>
+            <p>{{ $t('section_description7_1') }}</p>
+            <p>{{ $t('section_description7_2') }}</p>
           </div>
         </div>
       </div>
@@ -162,18 +174,20 @@
           <img src="static/imgs/home8.png" />
         </div>
         <div class="txt fr">
-          <h2>{{$t("section_title8")}}</h2>
+          <h2>{{ $t('section_title8') }}</h2>
           <div class="desc">
-            <p>{{$t("section_description8_1")}}</p>
-            <p>{{$t("section_description8_2")}}</p>
+            <p>{{ $t('section_description8_1') }}</p>
+            <p>{{ $t('section_description8_2') }}</p>
           </div>
         </div>
       </div>
     </div>
     <div class="hfoot">
       <div class="wrapper">
-        <h2>{{$t("section_description9")}}</h2>
-        <router-link to="/user/login" class="btn">{{$t("section_title9")}}</router-link>
+        <h2>{{ $t('section_description9') }}</h2>
+        <router-link to="/user/login" class="btn">{{
+          $t('section_title9')
+        }}</router-link>
       </div>
       <div class="copyright">
         <a href="http://www.beian.miit.gov.cn/"></a>

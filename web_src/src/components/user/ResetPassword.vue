@@ -4,23 +4,45 @@
 
     <el-container>
       <el-card class="center-card">
-        <el-form status-icon label-width="0px" class="demo-ruleForm" @keyup.enter.native="onSubmit">
+        <el-form
+          status-icon
+          label-width="0px"
+          class="demo-ruleForm"
+          @keyup.enter.native="onSubmit"
+        >
           <h2>重置密码</h2>
           <el-form-item label>
-            <el-input type="text" auto-complete="off" placeholder="绑定的邮箱" v-model="email"></el-input>
+            <el-input
+              type="text"
+              auto-complete="off"
+              placeholder="绑定的邮箱"
+              v-model="email"
+            ></el-input>
           </el-form-item>
 
           <el-form-item label>
-            <el-input type="text" auto-complete="off" v-model="v_code" placeholder="验证码"></el-input>
-            <img v-bind:src="v_code_img" class="v_code_img" v-on:click="change_v_code_img" />
+            <el-input
+              type="text"
+              auto-complete="off"
+              v-model="v_code"
+              placeholder="验证码"
+            ></el-input>
+            <img
+              v-bind:src="v_code_img"
+              class="v_code_img"
+              v-on:click="change_v_code_img"
+            />
           </el-form-item>
 
           <el-form-item label>
-            <el-button type="primary" style="width:100%;" @click="onSubmit">提交</el-button>
+            <el-button type="primary" style="width:100%;" @click="onSubmit"
+              >提交</el-button
+            >
           </el-form-item>
 
           <el-form-item label>
-            <router-link to="/user/login">想起密码了？去登录</router-link>&nbsp;&nbsp;&nbsp;
+            <router-link to="/user/login">想起密码了？去登录</router-link
+            >&nbsp;&nbsp;&nbsp;
           </el-form-item>
         </el-form>
       </el-card>

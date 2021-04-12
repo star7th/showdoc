@@ -3,25 +3,43 @@
     <link href="static/xspreadsheet/xspreadsheet.css" rel="stylesheet" />
     <div id="header"></div>
     <div class="edit-bar" v-if="item_info.ItemPermn">
-      <el-button type="primary" size="mini" @click="save">{{$t('save')}}</el-button>
+      <el-button type="primary" size="mini" @click="save">{{
+        $t('save')
+      }}</el-button>
       <el-dropdown @command="dropdownCallback">
         <el-button size="mini">
-          {{$t('more')}}
+          {{ $t('more') }}
           <i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item :command="shareItem">{{$t('share')}}</el-dropdown-item>
-          <router-link :to="'/item/setting/'+item_info.item_id" v-if="item_info.ItemCreator">
-            <el-dropdown-item>{{$t('item_setting')}}</el-dropdown-item>
+          <el-dropdown-item :command="shareItem">{{
+            $t('share')
+          }}</el-dropdown-item>
+          <router-link
+            :to="'/item/setting/' + item_info.item_id"
+            v-if="item_info.ItemCreator"
+          >
+            <el-dropdown-item>{{ $t('item_setting') }}</el-dropdown-item>
           </router-link>
-          <el-dropdown-item :command="()=>{importDialogVisible = true}">{{$t('import_file')}}</el-dropdown-item>
-          <el-dropdown-item :command="exportFile">{{$t('export')}}</el-dropdown-item>
-          <el-dropdown-item :command="goback">{{$t('goback')}}</el-dropdown-item>
+          <el-dropdown-item
+            :command="
+              () => {
+                importDialogVisible = true
+              }
+            "
+            >{{ $t('import_file') }}</el-dropdown-item
+          >
+          <el-dropdown-item :command="exportFile">{{
+            $t('export')
+          }}</el-dropdown-item>
+          <el-dropdown-item :command="goback">{{
+            $t('goback')
+          }}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
     <div class="edit-bar" v-if="!item_info.ItemPermn">
-      <el-button size="mini" @click="goback">{{$t('goback')}}</el-button>
+      <el-button size="mini" @click="goback">{{ $t('goback') }}</el-button>
     </div>
     <div id="table-item"></div>
     <el-dialog
@@ -32,8 +50,8 @@
       class="text-center"
     >
       <p>
-        {{$t('item_address')}} :
-        <code>{{share_item_link}}</code>
+        {{ $t('item_address') }} :
+        <code>{{ share_item_link }}</code>
       </p>
       <p>
         <a
@@ -41,13 +59,16 @@
           class="home-phone-butt"
           v-clipboard:copyhttplist="copyText"
           v-clipboard:success="onCopy"
-        >{{$t('copy_link')}}</a>
+          >{{ $t('copy_link') }}</a
+        >
       </p>
       <p style="border-bottom: 1px solid #eee;">
         <img id style="width:114px;height:114px;" :src="qr_item_link" />
       </p>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">{{$t('confirm')}}</el-button>
+        <el-button type="primary" @click="dialogVisible = false">{{
+          $t('confirm')
+        }}</el-button>
       </span>
     </el-dialog>
 
@@ -63,13 +84,17 @@
           type="file"
           name="xlfile"
           id="xlf"
-          @change="(e)=>{
-            improtFile(e.target.files)
-          }"
+          @change="
+            e => {
+              improtFile(e.target.files)
+            }
+          "
         />
       </p>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="importDialogVisible = false">{{$t('confirm')}}</el-button>
+        <el-button type="primary" @click="importDialogVisible = false">{{
+          $t('confirm')
+        }}</el-button>
       </span>
     </el-dialog>
   </div>
@@ -138,9 +163,7 @@ export default {
                     '&quot;': '"'
                   }[tag] || tag)
               )
-            objData = JSON.parse(
-              unescapeHTML(response.data.page_content)
-            )
+            objData = JSON.parse(unescapeHTML(response.data.page_content))
           } catch (error) {
             objData = {}
           }

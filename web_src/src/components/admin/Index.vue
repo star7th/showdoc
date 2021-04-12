@@ -3,7 +3,9 @@
     <el-container>
       <el-header>
         <div class="header_title">ShowDoc</div>
-        <router-link class="goback" to="/item/index">{{$t('goback')}}</router-link>
+        <router-link class="goback" to="/item/index">{{
+          $t('goback')
+        }}</router-link>
       </el-header>
       <el-container>
         <el-aside width="150px">
@@ -17,28 +19,28 @@
           >
             <el-menu-item index="1">
               <i class="el-icon-info"></i>
-              <span slot="title">{{$t('user_manage')}}</span>
+              <span slot="title">{{ $t('user_manage') }}</span>
             </el-menu-item>
             <el-menu-item index="2">
               <i class="el-icon-tickets"></i>
-              <span slot="title">{{$t('item_manage')}}</span>
+              <span slot="title">{{ $t('item_manage') }}</span>
             </el-menu-item>
             <el-menu-item index="5">
               <i class="el-icon-tickets"></i>
-              <span slot="title">{{$t('attachment_manage')}}</span>
+              <span slot="title">{{ $t('attachment_manage') }}</span>
             </el-menu-item>
             <el-menu-item index="3">
               <i class="el-icon-tickets"></i>
-              <span slot="title">{{$t('web_setting')}}</span>
+              <span slot="title">{{ $t('web_setting') }}</span>
             </el-menu-item>
           </el-menu>
         </el-aside>
         <el-container>
           <el-main>
-            <User v-if="open_menu_index == 1 "></User>
-            <Item v-if="open_menu_index == 2 "></Item>
-            <Setting v-if="open_menu_index == 3 "></Setting>
-            <Attachment v-if="open_menu_index == 5 "></Attachment>
+            <User v-if="open_menu_index == 1"></User>
+            <Item v-if="open_menu_index == 2"></Item>
+            <Setting v-if="open_menu_index == 3"></Setting>
+            <Attachment v-if="open_menu_index == 5"></Attachment>
           </el-main>
           <el-footer>
             <!-- something -->

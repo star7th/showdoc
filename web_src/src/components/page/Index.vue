@@ -6,11 +6,15 @@
     <div class="container doc-container" id="doc-container">
       <div class="doc-title-box">
         <span id="doc-title-span" class="dn"></span>
-        <h2 id="doc-title">{{page_title}}</h2>
+        <h2 id="doc-title">{{ page_title }}</h2>
       </div>
       <div id="doc-body">
         <div id="page_md_content" class="page_content_main">
-          <Editormd v-bind:content="content" v-if="content" type="html"></Editormd>
+          <Editormd
+            v-bind:content="content"
+            v-if="content"
+            type="html"
+          ></Editormd>
         </div>
       </div>
     </div>
@@ -94,7 +98,6 @@ pre ol {
   font-size: 14px;
 }
 </style>
-
 
 <script>
 import Editormd from '@/components/common/Editormd'
