@@ -499,25 +499,10 @@ export default {
         }
       })
     },
-    exchangeArray(data, oldIndex, newIndex) {
-      let tmp = data[oldIndex]
-      data.splice(oldIndex, 1)
-      data.splice(newIndex, 0, tmp)
-      return data
-    },
     endMove(evt) {
       let data = {}
-      let list = this.exchangeArray(
-        this.itemList,
-        evt['oldIndex'],
-        evt['newIndex']
-      )
-      this.itemList = []
-      this.$nextTick(() => {
-        this.itemList = list
-      })
-      for (var i = 0; i < list.length; i++) {
-        let key = list[i]['item_id']
+      for (var i = 0; i < this.itemList.length; i++) {
+        let key = this.itemList[i]['item_id']
         data[key] = i + 1
       }
       this.sort_item(data)
