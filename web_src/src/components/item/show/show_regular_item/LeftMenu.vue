@@ -33,6 +33,7 @@
           class="search-box"
           :clearable="true"
           @clear="search_item()"
+          size="medium"
           v-model="keyword"
         ></el-input>
 

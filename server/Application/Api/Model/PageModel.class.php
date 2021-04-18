@@ -9,6 +9,24 @@ class PageModel extends BaseModel {
 
     protected $cat_name_id = array();
 
+    //搜索某个项目下的页面
+    public function search($item_id,$keyword){
+        $return_pages = array() ;
+        $item = D("Item")->where("item_id = '%d' and is_del = 0 ",array($item_id))->find();
+        $pages = $this->where("item_id = '$item_id' and is_del = 0")->order(" s_number asc  ")->select();
+        if (!empty($pages)) {
+          foreach ($pages as $key => &$value) {
+            $page_content = $value['page_content'];
+            if (strpos( strtolower($item['item_name']."-". $value['page_title']."  ".$page_content) ,strtolower ($keyword) ) !== false) {
+              $value['page_content'] = $page_content ;
+              $return_pages[] = $value;
+            }
+          }
+        }
+        unset($pages);
+        return $return_pages;
+    }  
+
     //根据内容更新页面
     //其中cat_name参数特别说明下,传递各格式如 '二级目录/三级目录/四级目录'
     public function update_by_content($item_id,$page_title,$page_content,$cat_name='',$s_number = 99){

@@ -622,5 +622,39 @@ class ItemController extends BaseController {
             $this->sendError(10101);
         }
     }
+
+    // 在某个项目中根据内容搜索
+    public function search(){
+        $keyword = I("keyword");
+        $item_id = I("item_id/d");
+        $login_user = $this->checkLogin();
+        $uid = $login_user['uid'] ;
+        if(!$this->checkItemVisit($uid , $item_id)){
+            $this->sendError(10303,"没有权限");
+            return ;
+        }
+        $item = D("Item")->where("item_id = '%d' and is_del = 0 ",array($item_id))->find();
+        $keyword =  \SQLite3::escapeString($keyword) ;
+        $pages = D("Page")->search($item_id,$keyword) ;
+        if($pages){
+            foreach ($pages as $key => $value) {
+                $page_content = htmlspecialchars_decode($value['page_content']) ;
+                $pos = mb_strpos($page_content,$keyword) ;
+                $len = mb_strlen($keyword) ;
+                $start = ( $pos - 100 ) > 0 ? ( $pos - 100 ) : 0  ;
+                $pages[$key]['search_content'] = '...'.mb_substr($page_content,$start , ($len +  200 ) ).'...' ;
+                unset($pages[$key]['page_content']) ;
+                $pages[$key]['item_id'] = $item['item_id'] ;
+                $pages[$key]['item_name'] = $item['item_name'] ;
+            }
+        }
+        $return = array(
+            "item_id"=> $item_id , 
+            "item_name"=> $item['item_name'] ,
+             "pages"=>$pages
+        );
+        $this->sendResult($return);
+
+    }
     
 }

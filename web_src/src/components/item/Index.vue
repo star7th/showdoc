@@ -104,14 +104,13 @@
 
     <el-container class="container-narrow">
       <div class="container-thumbnails">
-        <div class="search-box-div" v-if="itemList.length > 9">
+        <div class="search-box-div" v-if="itemList.length > 1">
           <div class="search-box el-input el-input--prefix">
-            <input
+            <el-input
               autocomplete="off"
               type="text"
-              rows="2"
               validateevent="true"
-              class="el-input__inner"
+              :clearable="true"
               v-model="keyword"
             />
             <span class="el-input__prefix">
@@ -119,10 +118,14 @@
             </span>
           </div>
         </div>
-
-        <ul class="thumbnails" id="item-list" v-if="itemListByKeyword">
+        <Search
+          v-if="showSearch"
+          :keyword="keyword"
+          :itemList="itemList"
+        ></Search>
+        <ul class="thumbnails" id="item-list" v-if="!showSearch">
           <draggable
-            v-model="itemListByKeyword"
+            v-model="itemList"
             tag="span"
             group="item"
             @end="endMove"
@@ -130,10 +133,10 @@
           >
             <li
               class="text-center"
-              v-for="item in itemListByKeyword"
+              v-for="item in itemList"
               v-dragging="{
                 item: item,
-                list: itemListByKeyword,
+                list: itemList,
                 group: 'item'
               }"
               :key="item.item_id"
@@ -326,13 +329,15 @@ a {
 </style>
 
 <script>
+import Search from './Search'
 import draggable from 'vuedraggable'
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs')
 }
 export default {
   components: {
-    draggable
+    draggable,
+    Search
   },
   data() {
     return {
@@ -341,21 +346,28 @@ export default {
       isAdmin: false,
       keyword: '',
       lang: '',
-      username: ''
+      username: '',
+      showSearch: false
     }
   },
-  computed: {
-    itemListByKeyword: function() {
-      if (!this.keyword) {
-        return this.itemList
-      }
-      let itemListByKeyword = []
-      for (var i = 0; i < this.itemList.length; i++) {
-        if (this.itemList[i]['item_name'].indexOf(this.keyword) > -1) {
-          itemListByKeyword.push(this.itemList[i])
+  watch: {
+    // 监听搜索词的变化
+    keyword: function(val) {
+      if (val) {
+        // 当输入的字符只有一个长度的时候，是中文才会搜索。英文或者数字不会搜索
+        if (val && val.length == 1) {
+          // 验证是否是中文
+          var pattern = new RegExp('[\u4E00-\u9FA5]+')
+          if (pattern.test(val)) {
+            // alert('该字符串是中文')
+            this.showSearch = true
+          }
+        } else {
+          this.showSearch = true
         }
+      } else {
+        this.showSearch = false
       }
-      return itemListByKeyword
     }
   },
   methods: {
