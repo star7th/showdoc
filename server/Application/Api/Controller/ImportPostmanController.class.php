@@ -178,7 +178,7 @@ class ImportPostmanController extends BaseController {
                         "type" =>'string',
                         "value" =>$value["value"],
                         "require" =>'1',
-                        "remark" =>'',
+                        "remark" =>$value["description"] ? $value["description"]:'',
                     );
             }
         }
@@ -191,7 +191,7 @@ class ImportPostmanController extends BaseController {
                         "type" =>'string',
                         "value" =>$value["value"],
                         "require" =>'1',
-                        "remark" =>'',
+                        "remark" =>$value["description"] ? $value["description"]:'',
                     );
             }
         }
@@ -326,7 +326,7 @@ class ImportPostmanController extends BaseController {
                         "type" =>'string',
                         "value" =>$value["value"],
                         "require" =>'1',
-                        "remark" =>'',
+                        "remark" =>$value["description"] ? $value["description"]:'',
                     );
             }
         }
@@ -338,7 +338,7 @@ class ImportPostmanController extends BaseController {
                         "type" =>'string',
                         "value" =>$value["value"],
                         "require" =>'1',
-                        "remark" =>'',
+                        "remark" =>$value["description"] ? $value["description"]:'',
                     );
             }
         }
