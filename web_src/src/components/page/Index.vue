@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="hello" v-if="showComp">
     <Header></Header>
 
     <div id="header"></div>
@@ -7,19 +7,25 @@
       <div class="doc-title-box">
         <span id="doc-title-span" class="dn"></span>
         <h2 id="doc-title">{{ page_title }}</h2>
+        <i
+          class="el-icon-full-screen"
+          id="full-page"
+          v-show="showfullPageBtn"
+          @click="clickFullPage"
+        ></i>
       </div>
       <div id="doc-body">
         <div id="page_md_content" class="page_content_main">
           <Editormd
             v-bind:content="content"
-            v-if="content"
+            v-if="page_id && content"
             type="html"
           ></Editormd>
         </div>
       </div>
     </div>
     <BackToTop></BackToTop>
-    <Toc v-if="page_id"></Toc>
+    <Toc v-if="page_id && showToc"></Toc>
     <Footer></Footer>
     <div class></div>
   </div>
@@ -97,6 +103,15 @@ pre ol {
   padding: 0px;
   font-size: 14px;
 }
+
+#full-page {
+  float: right;
+  font-size: 25px;
+  margin-top: -50px;
+  margin-right: 30px;
+  cursor: pointer;
+  color: #ccc;
+}
 </style>
 
 <script>
@@ -111,7 +126,11 @@ export default {
       itemList: {},
       content: '',
       page_title: '',
-      page_id: 0
+      page_id: 0,
+      fullPage: false,
+      showComp: true,
+      showfullPageBtn: true,
+      showToc: true
     }
   },
   components: {
@@ -157,12 +176,36 @@ export default {
         }
       })
     },
-    AdaptToMobile() {
+    adaptToMobile() {
       var doc_container = document.getElementById('doc-container')
       doc_container.style.width = '95%'
       doc_container.style.padding = '5px'
       var header = document.getElementById('header')
       header.style.height = '10px'
+      this.showToc = false
+    },
+    clickFullPage() {
+      // 点击放大页面。由于历史包袱，只能操作dom。这是不规范的，但是现在没时间重构整块页面
+      if (this.fullPage) {
+        // 通过v-if指令起到刷新组件的作用
+        this.showComp = false
+        this.$nextTick(() => {
+          this.showComp = true
+          this.showToc = true
+        })
+      } else {
+        this.adaptToMobile()
+        // 切换变量让它重新加载、渲染子组件
+        var page_id = this.page_id
+        this.page_id = 0
+        this.$nextTick(() => {
+          this.page_id = page_id
+          setTimeout(() => {
+            $('.editormd-html-preview').css('font-size', '16px')
+          }, 200)
+        })
+      }
+      this.fullPage = !this.fullPage
     }
   },
   mounted() {
@@ -170,7 +213,8 @@ export default {
     // 根据屏幕宽度进行响应(应对移动设备的访问)
     if (this.isMobile() || window.screen.width < 1000) {
       this.$nextTick(() => {
-        this.AdaptToMobile()
+        this.showfullPageBtn = false
+        this.adaptToMobile()
       })
     }
   },

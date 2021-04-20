@@ -207,6 +207,7 @@ export default {
         this.showComp = false
         this.$nextTick(() => {
           this.showComp = true
+          this.showToc = true
         })
       } else {
         this.adaptToMobile()

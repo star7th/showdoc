@@ -103,11 +103,13 @@ export default {
   cursor: pointer;
   box-shadow: 0 5px 5px #f2f6fc;
   transition: 0.25s;
+  display: none;
 }
 .page_content_main .markdown-toc.open-list:before {
   border: 1px solid #40a9ff;
   color: #40a9ff;
   border-radius: 50%;
+  display: none;
 }
 .page_content_main .markdown-toc > .markdown-toc-list {
   position: relative;
