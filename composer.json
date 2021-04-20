@@ -17,6 +17,9 @@
     ],
     "require": {
         "php": ">=5.3.0"
+    },
+    "config": {
+        "vendor-dir": "./server/vendor"
     }
 }
 
