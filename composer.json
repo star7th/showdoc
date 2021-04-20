@@ -16,7 +16,8 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "qcloud/cos-sdk-v5": "1.*"
     },
     "config": {
         "vendor-dir": "./server/vendor"

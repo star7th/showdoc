@@ -91,14 +91,15 @@
           <el-select v-model="form.oss_setting.oss_type">
             <el-option :label="$t('aliyun')" value="aliyun"></el-option>
             <el-option :label="$t('qiniu')" value="qiniu"></el-option>
+            <el-option :label="$t('qcloud')" value="qcloud"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="key">
+        <el-form-item label="key" v-if="form.oss_setting.oss_type != 'qcloud'">
           <el-input v-model="form.oss_setting.key" class="form-el"></el-input>
         </el-form-item>
 
-        <el-form-item label="secret">
+        <el-form-item label="secret" v-if="form.oss_setting.oss_type != 'qcloud'">
           <el-input
             v-model="form.oss_setting.secret"
             class="form-el"
@@ -111,6 +112,25 @@
         >
           <el-input
             v-model="form.oss_setting.endpoint"
+            class="form-el"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item label="region"  v-if="form.oss_setting.oss_type == 'qcloud'">
+          <el-input
+            v-model="form.oss_setting.region"
+            class="form-el"
+          ></el-input>
+        </el-form-item>
+          <el-form-item label="secretId" v-if="form.oss_setting.oss_type == 'qcloud'">
+          <el-input
+            v-model="form.oss_setting.secretId"
+            class="form-el"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="secretKey" v-if="form.oss_setting.oss_type == 'qcloud'">
+          <el-input
+            v-model="form.oss_setting.secretKey"
             class="form-el"
           ></el-input>
         </el-form-item>
@@ -175,7 +195,11 @@ export default {
           endpoint: '',
           bucket: '',
           protocol: 'http',
-          domain: ''
+          domain: '',
+          region: '',
+          secretId: '',
+          secretKey: ''
+
         }
       },
       itemList: []
@@ -212,6 +236,9 @@ export default {
           this.form.oss_setting = response.data.data.oss_setting
             ? response.data.data.oss_setting
             : this.form.oss_setting
+          this.form.oss_setting.region = this.form.oss_setting.region ? this.form.oss_setting.region : ''
+          this.form.oss_setting.secretId = this.form.oss_setting.secretId ? this.form.oss_setting.secretId : ''
+          this.form.oss_setting.secretKey = this.form.oss_setting.secretKey ? this.form.oss_setting.secretKey : ''
         } else {
           this.$alert(response.data.error_message)
         }
