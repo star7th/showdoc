@@ -344,6 +344,7 @@ export default {
             }, 1000)
             that.title = response.data.data.page_title
             that.item_id = response.data.data.item_id
+            that.cat_id = response.data.data.cat_id
             that.s_number = response.data.data.s_number
             that.attachment_count =
               response.data.data.attachment_count > 0 ? '...' : ''
@@ -369,7 +370,6 @@ export default {
             var Info = response.data.data
 
             that.catalogs = Info
-            that.get_default_cat()
           } else {
             that.$alert(response.data.error_message)
           }
@@ -378,25 +378,7 @@ export default {
           console.log(error)
         })
     },
-    // 获取默认该选中的目录
-    get_default_cat() {
-      var that = this
-      var url = DocConfig.server + '/api/catalog/getDefaultCat'
-      var params = new URLSearchParams()
-      params.append('page_id', this.page_id)
-      params.append('item_id', that.$route.params.item_id)
-      params.append('copy_page_id', this.copy_page_id)
 
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          // that.$message.success("加载成功");
-          var json = response.data.data
-          that.cat_id = json.default_cat_id
-        } else {
-          that.$alert(response.data.error_message)
-        }
-      })
-    },
     // 插入数据到编辑器中。插入到光标处。如果参数is_cover为真，则清空后再插入(即覆盖)。
     insertValue(value, is_cover) {
       if (value) {
@@ -779,6 +761,12 @@ export default {
     document.addEventListener('paste', this.upload_paste_img)
     this.lang = DocConfig.lang
     window.addEventListener('beforeunload', this.unLockOnClose)
+    let g_open_cat_id = this.$store.state.open_cat_id // 全局变量-当前打开的目录id
+    // 如果this.page_id无效，则可以判定用户是在新建页面
+    // 此时可以考虑把目录设置为用户当前打开的页面的所属目录
+    if (this.page_id <= 0 && g_open_cat_id > 0) {
+      this.cat_id = g_open_cat_id
+    }
   },
 
   beforeDestroy() {

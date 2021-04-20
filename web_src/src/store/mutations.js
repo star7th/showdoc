@@ -8,6 +8,9 @@ export default {
   changeItemInfo(state, val) {
     state.item_info = val
   },
+  changeOpenCatId(state, val) {
+    state.open_cat_id = val
+  },
   [SOME_MUTATION](state) {
     // mutate state
   }
