@@ -413,5 +413,7 @@ exports.default = {
   move_to: '移动到',
   remark: '备注',
 
-  qcloud: '腾讯云'
+  qcloud: '腾讯云',
+  binding_item: '绑定项目',
+  addtime: '添加时间'
 }

@@ -4,12 +4,12 @@
 
     <el-container>
       <el-card class="center-card">
-        <el-button type="text" class="add-cat" @click="addTeamItem">{{
-          $t('distribution_to_team')
-        }}</el-button>
-        <el-button type="text" class="goback-btn" @click="goback">{{
-          $t('back_to_team')
-        }}</el-button>
+        <el-button type="text" class="goback-btn" @click="goback"
+          ><i class="el-icon-back"></i>&nbsp;{{ $t('goback') }}</el-button
+        >
+        <el-button type="text" class="add-cat" @click="addTeamItem"
+          ><i class="el-icon-plus"></i>&nbsp;{{ $t('binding_item') }}</el-button
+        >
         <el-table align="left" :data="list" height="400" style="width: 100%">
           <el-table-column
             prop="item_name"
@@ -330,7 +330,9 @@ export default {
 }
 
 .add-cat {
-  margin-left: 10px;
+  float: right;
+  margin-right: 15px;
+  font-size: 14px;
 }
 
 .center-card {
@@ -341,7 +343,7 @@ export default {
 
 .goback-btn {
   z-index: 999;
-  margin-left: 500px;
+  font-size: 14px;
 }
 </style>
 
