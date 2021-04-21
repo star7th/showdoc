@@ -253,7 +253,7 @@ export default {
             `${this.editorPath}/lib/sequence-diagram.min.js`,
             `${this.editorPath}/lib/jquery.flowchart.min.js`,
             `${this.editorPath}/lib/jquery.mark.min.js`,
-            `${this.editorPath}/lib/plantuml.js`,
+            `${this.editorPath}/lib/plantuml.js?v=2`,
             `${this.editorPath}/lib/view.min.js`,
             `${this.editorPath}/lib/transform.min.js`
           ],
