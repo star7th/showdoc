@@ -411,5 +411,7 @@ exports.default = {
   copy_or_mv_cat: '复制或移动目录',
   copy_to: '复制到',
   move_to: '移动到',
-  remark: '备注'
+  remark: '备注',
+
+  qcloud: '腾讯云'
 }
