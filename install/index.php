@@ -157,7 +157,7 @@ if (!$go) {
           var json = JSON.parse(xhr.responseText) ;
           // console.log(json);
           if(json.error_code === 0){
-            window.location.href = "../";
+            window.location.href = "../web/";
           }else{
             alert(json.error_message)
           }
