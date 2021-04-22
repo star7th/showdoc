@@ -9,10 +9,6 @@ include("common.php");
 // 检测PHP环境
 if(version_compare(PHP_VERSION,'5.3.0','<'))  die(L('require_php_version'));
 
-if(file_exists('./install.lock') && $f = file_get_contents("./install.lock")){
-  echo L("lock").'<br>';
-  exit();
-}
 
 $go = 1 ;
 
@@ -113,9 +109,17 @@ if (!$go) {
           /* background-image: linear-gradient(to  left,  black , white); */
           height:100% ;
         }
-        .text{
+        .lang-text{
           font-size:30px;
           cursor:pointer ;
+        }
+
+        a{
+          color:#fff;
+        }
+        .en-tips , .zh-tips{
+          display:none ;
+          font-size:20px;
         }
     </style>
 
@@ -125,43 +129,71 @@ if (!$go) {
     <div class="container">
 
       <div class="flex-item left">
-        <div class="text" id="en">
+        <div class="lang-text" id="en">
           Language : English &nbsp;   →
         </div>
+
+        <div class="en-tips">
+        Initialization successful. The default administrator account password is showdoc / 123456.<br>After logging in, you can see the management background entrance in the upper right corner.<br><a href="../web/">Click to enter the home page</a>
+        </div>
+
       </div>
       <div class="flex-item right">
-      <div class="text" id="zh">
+
+      <div class="lang-text" id="zh">
           语言 ：中文  &nbsp;  →
         </div>
+        
+        <div class="zh-tips">
+         初始化成功。默认管理员账户密码是showdoc/123456。<br>登录后，在右上角可以看到管理后台入口。<a href="../web/">点击进入首页</a>
+        </div>
       </div>
+
+        
     </div> <!-- /container -->
 
   </body>
-</html> 
+</html>
+<script src=../web/static/jquery.min.js></script>
 <script>
- 　document.getElementById("en").onclick = function(){ 
-      toInstall("en"); 
-   }
-   document.getElementById("zh").onclick = function(){ 
-      toInstall("zh"); 
-   }
+
+  $("#en").click(function(){
+    toInstall("en");
+  });
+  $("#zh").click(function(){
+    toInstall("zh"); 
+  });
+
 
    function toInstall (lang){
-      //创建异步对象  
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET","ajax.php?lang="+lang,true);
-      xhr.send();
-      xhr.onreadystatechange = function () {
-        // 这步为判断服务器是否正确响应
-        if (xhr.readyState == 4 && xhr.status == 200) {
-          var json = JSON.parse(xhr.responseText) ;
-          // console.log(json);
-          if(json.error_code === 0){
-            window.location.href = "../web/";
+
+      $.get("ajax.php?lang="+lang,function(data){
+          if(data.error_code === 0){
+            if(lang == 'en'){
+              showEnTips()
+            }else{
+              showZhTips()
+            }
           }else{
-            alert(json.error_message)
+            alert(data.error_message)
           }
-        }
-      };
+      },'json');
+
    }
+
+
+
+   function showEnTips(){
+     $(".right").hide();
+     $(".left").css("width",'100%');
+     $(".left .lang-text").hide();
+     $(".en-tips").show();
+   }
+   function showZhTips(){
+     $(".left").hide();
+     $(".right").css("width",'100%');
+     $(".right .lang-text").hide();
+     $(".zh-tips").show();
+   }
+
 </script>
