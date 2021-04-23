@@ -98,23 +98,27 @@ if (!$go) {
           
         .left{
           width: 50%;
-          background-color:#F59064;
+          background-color:#fff;
           /* background-image: linear-gradient(to right, red, white); */
           height:100%;
           
         }
         .right{
           width: 50%;
-          background-color:#87CEEB;
+          background-color:#24292e;
           /* background-image: linear-gradient(to  left,  black , white); */
           height:100% ;
+          color:#fff;
         }
         .lang-text{
           font-size:30px;
           cursor:pointer ;
         }
+        .left a{
+          color:#000;
+        }
 
-        a{
+        .right a{
           color:#fff;
         }
         .en-tips , .zh-tips{
@@ -130,7 +134,7 @@ if (!$go) {
 
       <div class="flex-item left">
         <div class="lang-text" id="en">
-          Language : English &nbsp;   →
+        Choose language: English &nbsp;   →
         </div>
 
         <div class="en-tips">
@@ -141,7 +145,7 @@ if (!$go) {
       <div class="flex-item right">
 
       <div class="lang-text" id="zh">
-          语言 ：中文  &nbsp;  →
+          选择语言 ：中文  &nbsp;  →
         </div>
         
         <div class="zh-tips">
