@@ -13,25 +13,6 @@
   min-height: 60%;
 }
 
-.markdown-body .kwd {
-  color: #8959a8;
-}
-.markdown-body .com {
-  color: #8e908c;
-}
-.markdown-body .str {
-  color: #718c00;
-}
-.markdown-body code {
-  color: #d14;
-}
-.markdown-body .pln {
-  color: #4d4d4c;
-}
-.markdown-body .typ {
-  color: #4271ae;
-}
-
 .markdown-body h1 {
   font-size: 1.8em !important;
 }
@@ -43,6 +24,12 @@
 }
 .markdown-body h4 {
   font-size: 1.1em !important;
+}
+.markdown-body code {
+  color: #d14;
+}
+.markdown-body pre code {
+  color: #333;
 }
 </style>
 <script>
@@ -218,7 +205,8 @@ export default {
           },
           onchange: () => {
             this.deal_with_content()
-          }
+          },
+          previewCodeHighlight: false // 关闭编辑默认的代码高亮模块。用其他插件实现高亮
         }
       }
     }
@@ -248,7 +236,6 @@ export default {
           [
             `${this.editorPath}/../xss.min.js`,
             `${this.editorPath}/lib/marked.min.js`,
-            `${this.editorPath}/lib/prettify.min.js`,
             `${this.editorPath}/lib/underscore.min.js`,
             `${this.editorPath}/lib/sequence-diagram.min.js`,
             `${this.editorPath}/lib/jquery.flowchart.min.js`,
@@ -260,10 +247,6 @@ export default {
           () => {
             $s(`${this.editorPath}/editormd.js`, () => {
               this.initEditor()
-            })
-
-            $s(`${this.editorPath}/../highlight/highlight.min.js`, () => {
-              hljs.initHighlightingOnLoad()
             })
           }
         )
@@ -356,6 +339,12 @@ export default {
     // 对内容做些定制化改造
     deal_with_content() {
       var that = this
+
+      // 代码高亮
+      $s(`${this.editorPath}/../highlight/highlight.min.js`, () => {
+        hljs.highlightAll()
+      })
+
       // 当表格列数过长时将自动出现滚动条
       $.each($('#' + this.id + ' table'), function() {
         $(this).prop(
