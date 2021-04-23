@@ -10,7 +10,4 @@ export default {
 }
 </script>
 
-<style>
-@import '../static/css/common.css';
-@import '../static/highlight/a11y-light.min.css';
-</style>
+<style src="@/../static/css/common.css"></style>

@@ -1,13 +1,13 @@
 <template>
   <div :id="id" class="main-editor">
-    <link href="static/editor.md/css/editormd.min.css" rel="stylesheet" />
-
     <textarea v-html="content" style="display:none;"></textarea>
 
     <!-- 放大图片 -->
     <BigImg v-if="showImg" @clickit="showImg = false" :imgSrc="imgSrc"></BigImg>
   </div>
 </template>
+<style src="@/../static/editor.md/css/editormd.min.css"></style>
+<style src="@/../static/highlight/a11y-light.min.css"></style>
 <style>
 .editormd-preview-container {
   min-height: 60%;
