@@ -107,8 +107,7 @@ body > .el-container {
 
 .header_title {
   float: left;
-  padding-right: 35px;
-  padding-left: 25px;
+  width: 150px;
   font-size: 20px;
   background-color: rgb(84, 92, 100);
   color: #fff;

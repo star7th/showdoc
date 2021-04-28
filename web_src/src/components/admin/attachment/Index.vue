@@ -21,7 +21,7 @@
         <el-button @click="onSubmit">{{ $t('search') }}</el-button>
       </el-form-item>
     </el-form>
-    <P>累计已使用 {{ used }}M 空间</P>
+    <P>{{ $t('used_space') }} {{ used }}M</P>
     <el-table :data="dataList" style="width: 100%">
       <el-table-column prop="file_id" :label="$t('file_id')"></el-table-column>
       <el-table-column

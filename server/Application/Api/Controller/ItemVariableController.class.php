@@ -15,16 +15,24 @@ class ItemVariableController extends BaseController {
         if(!$this->checkItemPermn($uid , $item_id)){
             $this->sendError(10303);
             return ;
-        } 
-        $data = array() ;
-        $data['var_name'] = $var_name ;
-        $data['uid'] = $uid ;
-        $data['env_id'] = $env_id ;
-        $data['var_value'] = $var_value ;
-        $data['item_id'] = $item_id ;
-        $data['addtime'] = time() ;
+        }
 
-        $id = D("ItemVariable")->add($data);
+        $id = 0 ;
+        $res = D("ItemVariable")->where(" item_id = '{$item_id}' and env_id = '{$env_id}' and var_name = '%s'   " ,array($var_name) )->find() ;
+        if($res){
+            $id = $res['id'] ;
+            D("ItemVariable")->where(" id = '{$id}' ")->save(array("var_value"=>$var_value));
+        }else{
+            $data = array() ;
+            $data['var_name'] = $var_name ;
+            $data['uid'] = $uid ;
+            $data['var_value'] = $var_value ;
+            $data['item_id'] = $item_id ;
+            $data['env_id'] = $env_id ;
+            $data['addtime'] = time() ;
+            $id = D("ItemVariable")->add($data);
+        }
+
 
         if (!$id) {
             $this->sendError(10101);

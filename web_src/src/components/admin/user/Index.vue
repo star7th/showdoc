@@ -2,7 +2,7 @@
   <div class="hello">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item label>
-        <el-input v-model="username" placeholder="用户名"></el-input>
+        <el-input v-model="username" :placeholder="$t('username')"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="onSubmit">{{ $t('search') }}</el-button>
