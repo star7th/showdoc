@@ -79,5 +79,23 @@ class ItemVariableController extends BaseController {
 
 
 
+    //根据name删除
+    public function deleteByName(){
+        $item_id = I("item_id/d");  
+        $env_id = I("env_id/d");  
+        $var_name = I("var_name");  
+        $login_user = $this->checkLogin();
+        $uid = $login_user['uid'] ;
+        if(!$this->checkItemPermn($uid , $item_id)){
+            $this->sendError(10303);
+            return ;
+        } 
+        $ret = D("ItemVariable")->where(" item_id = '%d' and env_id = '%d' and var_name = '%s'  ",array($item_id,$env_id,$var_name))->delete();
+        if ($ret) {
+           $this->sendResult($ret);
+        }else{
+            $this->sendError(10101);
+        }
+    }
 
 }
