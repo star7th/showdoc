@@ -415,5 +415,7 @@ exports.default = {
 
   qcloud: '腾讯云',
   binding_item: '绑定项目',
-  addtime: '添加时间'
+  addtime: '添加时间',
+
+  system_update: '系统更新'
 }

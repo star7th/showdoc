@@ -425,6 +425,8 @@ exports.default = {
 
   qcloud: 'qcloud',
   binding_item: 'Binding item',
-  addtime: 'addtime'
+  addtime: 'addtime',
+
+  system_update: 'System update'
 
 }
