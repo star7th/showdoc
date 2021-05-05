@@ -59,7 +59,7 @@ class AttachmentModel extends BaseModel {
 	}
 		$oss_open = D("Options")->get("oss_open" ) ;
 		if ($oss_open) {
-				$url = upload_oss($uploadFile);
+				$url = $this->uploadOss($uploadFile);
 				if ($url) {
 						$sign = md5($url.time().rand()) ;
 						$insert = array(
@@ -120,6 +120,82 @@ class AttachmentModel extends BaseModel {
 			}
 		}
 		return false;
+	}
+
+  //上传到oss。参数$uploadFile是文件上传流，如$_FILES['file'] .也可以自己拼凑
+	public function uploadOss($uploadFile){
+		$oss_setting_json = D("Options")->get("oss_setting") ;
+		$oss_setting = json_decode($oss_setting_json,1);
+		if ($oss_setting && $oss_setting['oss_type'] && $oss_setting['oss_type'] == 'aliyun') {
+				$config = array(
+						"key" => $oss_setting['key'],
+						"secret"=> $oss_setting['secret'],
+						"endpoint"=> $oss_setting['endpoint'],
+						"bucket"=> $oss_setting['bucket'],
+				);
+				// $oss = new_oss($config['key'] , $config['secret'] , $config['endpoint'] );
+				include_once VENDOR_PATH .'Alioss/autoload.php';
+				$oss = new \OSS\OssClient($config['key'] ,  $config['secret'] , $config['endpoint'] , false );
+				$ext = strrchr($uploadFile['name'], '.'); //获取扩展名
+				$oss_path = "showdoc_".time().rand().$ext;
+				$res = $oss->uploadFile($config['bucket'],$oss_path,$uploadFile['tmp_name']);
+				if ($res && $res['info'] && $res['info']['url']) {
+						if ($oss_setting['domain']) {
+								return $oss_setting['protocol'] . '://'.$oss_setting['domain']."/".$oss_path ;
+						}else{
+								return $res['info']['url'] ;
+						}
+						
+				}
+		}
+
+		if ($oss_setting && $oss_setting['oss_type'] && $oss_setting['oss_type'] == 'qiniu') {
+				$config = array(
+										'rootPath' => './',
+										'saveName' => array('uniqid', ''),
+										'driver' => 'Qiniu',
+										'driverConfig' => array(
+														'accessKey' => $oss_setting['key'],
+														'secrectKey' => $oss_setting['secret'], 
+														'protocol'=>$oss_setting['protocol'],
+														'domain' => $oss_setting['domain'],
+														'bucket' => $oss_setting['bucket'], 
+												)
+					);
+					//上传到七牛
+					$Upload = new \Think\Upload($config);
+					$info = $Upload->uploadOne($uploadFile);
+					if ($info && $info['url']) {
+							return $info['url'] ;
+					}
+
+		}
+		//var_dump($config);
+		// 腾讯云
+		if ($oss_setting && $oss_setting['oss_type'] && $oss_setting['oss_type'] == 'qcloud') {
+			$cosClient = new \Qcloud\Cos\Client(array('region' => $oss_setting['region'],
+			'credentials'=> array(
+					'secretId'    => $oss_setting['secretId'],
+					'secretKey' => $oss_setting['secretKey']
+				)));
+				$ext = strrchr($uploadFile['name'], '.'); //获取扩展名
+				$oss_path = "showdoc_".time().rand().rand().$ext;
+				$result = $cosClient->putObject(array(
+					'Bucket' => $oss_setting['bucket'],
+					'Key' => $oss_path ,
+					'Body' => fopen($uploadFile['tmp_name'], 'rb')));
+				if ($result && $result['ObjectURL']) {
+						if ($oss_setting['domain']) {
+								return $oss_setting['protocol'] . '://'.$oss_setting['domain']."/".$oss_path ;
+						}else{
+								return $result['ObjectURL'] ;
+						}
+						
+				}
+		}
+
+
+		return false ;
 	}
 
 }

@@ -3,6 +3,8 @@ namespace Api\Controller;
 use Think\Controller;
 class ImportSwaggerController extends BaseController {
 
+    public $json_array = array();
+    public $url_pre =  '';
 
     public function import(){
         $login_user = $this->checkLogin();
@@ -13,6 +15,8 @@ class ImportSwaggerController extends BaseController {
         $json_array = json_decode($json ,1 );
         unset($json);
         if ($json_array['info']) {
+            $this->json_array = $json_array ;
+            $this->url_pre = $json_array['schemes'][0]."://".$json_array['host'].$json_array['basePath'] ;
             $this->_fromSwaggerV2($json_array);
             return ;
         }
@@ -29,7 +33,7 @@ class ImportSwaggerController extends BaseController {
         $from = I("from") ? I("from") : '' ;
         $item_array = array(
             "item_name" => $json_array['info']['title'] ? $json_array['info']['title']  : 'from swagger' ,
-            "item_type" => '1' ,
+            "item_type" =>  ($from == 'runapi') ? '3': '1'  ,
             "item_description" => $json_array['info']['description'] ? $json_array['info']['description'] :'',
             "password" => time().rand(),
             "members" => array(),
@@ -100,107 +104,13 @@ class ImportSwaggerController extends BaseController {
 
     private function _requestToDoc($method , $url , $request , $json_array){
         $from = I("from") ? I("from") : '' ;
+        $res = $this->_requestToApi($method , $url , $request , $json_array);
         if($from == 'runapi'){
-            return $this->_requestToApi($method , $url , $request , $json_array);
-            //如果是来自runapi的导入请求，则已经return不再执行下面
+            return $res ;
+        }else{
+            $res['page_content'] = D("Page")->runapiToMd($res['page_content']); 
+            return $res ;
         }
-        $return = array() ;
-        $return['page_title'] =  $request['summary'] ? $request['summary']: $request['operationId'] ;
-        $return['s_number'] = 99 ;
-        $return['page_comments'] = '' ;
-        
-        $content = '  
-**简要描述：** 
-
-- '.$request['description'].' 
-
-**请求URL：** 
-- ` '.$url.' `
-  
-**请求方式：**
-- '.$method.' ';
-
-if ($request['header']) {
-$content .='
-
-**Header：** 
-
-|Header名|是否必选|类型|说明|
-|:----    |:---|:----- |-----   |'."\n";
-    foreach ($request['headerData'] as $key => $value) {
-         $content .= '|'.$value["key"].' |  | text | '.$value["value"].' |'."\n";
-    }
-}
-
-if ($request['rawModeData']) {
-$content .= '
-
-
- **请求参数示例**
-
-``` 
-'.$request['rawModeData'].'
-```
-
-';
-
-}
-
-if ($request['parameters']) {
-$content .='
-
-**参数：** 
-
-|参数名|是否必选|类型|说明|
-|:----    |:---|:----- |-----   |'."\n";
-    foreach ($request['parameters'] as $key => $value) {
-         $content .= '|'.$value["name"].' | '.($value["required"] ? '是' : '否' ).'  |'.$value["type"].' | '.$value["description"].' |'."\n";
-    }
-}
-
-if ($request['responses']['200']) {
-
-$responses = $request['responses']['200'] ;
-//如果返回信息是引用对象
-if ($request['responses']['200']['schema'] && $request['responses']['200']['schema']['$ref'] ) {
-    $str_array = explode("/", $request['responses']['200']['schema']['$ref']) ;
-    if ($str_array[1] && $str_array[2]) {
-        $responses = $json_array[$str_array[1]][$str_array[2]] ;
-$content .='
-
-**返回参数说明：** 
-
-|参数名|类型|说明|
-|:----    |:---|:----- |-----   |'."\n";
-    foreach ($responses['properties'] as $key => $value) {
-         $content .= '|'.$key.'|'.$value["type"].' | '.$value["description"].' |'."\n";
-    }
-    
-    }
-    
-}else{
-    //如果返回的是普通json
-$content .= '
-
-
- **返回示例**
-
-``` 
-
-'.$this->_indent_json(json_encode($responses)).'
-
-```
-
-';
-}
-
-
-
-}
-
-        $return['page_content'] = $content ;
-        return $return ;
-
     }
 
     private function _requestToApi($method , $url , $request , $json_array){
@@ -216,13 +126,14 @@ $content .= '
                     "title" =>  $request['summary'] ? $request['summary']: $request['operationId']   ,
                     "description" =>  $request['description']  ,
                     "method" =>  strtolower($method)  ,
-                    "url" =>  $url  ,
+                    "url" =>  $this->url_pre . $url   ,
                     "remark" =>  '' ,
                 ),
                 "request" =>array(
                     "params"=> array(
                         'mode' => "formdata",
                         'json' => "",
+                        'jsonDesc' => array(),
                         'urlencoded' => array(),
                         'formdata' => array(),
                     ),
@@ -250,14 +161,46 @@ $content .= '
         if ($request['parameters']) {
 
             foreach ($request['parameters'] as $key => $value) {
-                 $content_array['request']['params']['formdata'][] = array(
+                // 如果in字段是body的话，应该就是参数为json的情况了
+                if($value["in"] == 'body'){
+                    $ref_str = $value['schema']['$ref'] ;
+                    //如果含有引用标识，则获取引用
+                    if($ref_str){
+                        $ref_array = $this->_getDefinition($ref_str);
+                    }else{
+                        $ref_array = $value['schema'] ;
+                    }
+                    $json_array = $this->_definitionToJsonArray($ref_array);
+                    $json_str = $this->_jsonArrayToStr($json_array);
+                    $content_array['request']['params']['mode'] = 'json';
+                    $content_array['request']['params']['json'] = $json_str;
+                    $content_array['request']['params']['jsonDesc'] = $json_array;
+                }else{
+                    $content_array['request']['params']['formdata'][] = array(
                         "name" =>$value["name"],
                         "type" =>'string',
                         "value" =>$value["value"],
                         "require" =>'1',
                         "remark" =>$value["description"],
                     );
+                }
+
             }
+        }
+
+        //处理返回结果情况
+        if($request['responses'] && $request['responses']['200']){
+            $ref_str = $request['responses']['200']['schema']['$ref'] ;
+            //如果含有引用标识，则获取引用
+            if($ref_str){
+                $ref_array = $this->_getDefinition($ref_str);
+            }else{
+                $ref_array = $request['responses']['200']['schema'] ;
+            }
+            $json_array = $this->_definitionToJsonArray($ref_array);
+            $json_str = $this->_jsonArrayToStr($json_array);
+            $content_array['response']['responseExample'] = $json_str;
+            $content_array['response']['responseParamsDesc'] = $json_array;
         }
 
         $return['page_content'] = json_encode($content_array);
@@ -265,63 +208,42 @@ $content .= '
 
     }
 
-
-    /**
-     * Indents a flat JSON string to make it more human-readable.
-     *
-     * @param string $json The original JSON string to process.
-     *
-     * @return string Indented version of the original JSON string.
-     */
-    private function _indent_json($json) {
-
-        $result      = '';
-        $pos         = 0;
-        $strLen      = strlen($json);
-        $indentStr   = '  ';
-        $newLine     = "\n";
-        $prevChar    = '';
-        $outOfQuotes = true;
-
-        for ($i=0; $i<=$strLen; $i++) {
-
-            // Grab the next character in the string.
-            $char = substr($json, $i, 1);
-
-            // Are we inside a quoted string?
-            if ($char == '"' && $prevChar != '\\') {
-                $outOfQuotes = !$outOfQuotes;
-
-            // If this character is the end of an element,
-            // output a new line and indent the next line.
-            } else if(($char == '}' || $char == ']') && $outOfQuotes) {
-                $result .= $newLine;
-                $pos --;
-                for ($j=0; $j<$pos; $j++) {
-                    $result .= $indentStr;
-                }
-            }
-
-            // Add the character to the result string.
-            $result .= $char;
-
-            // If the last character was the beginning of an element,
-            // output a new line and indent the next line.
-            if (($char == ',' || $char == '{' || $char == '[') && $outOfQuotes) {
-                $result .= $newLine;
-                if ($char == '{' || $char == '[') {
-                    $pos ++;
-                }
-
-                for ($j = 0; $j < $pos; $j++) {
-                    $result .= $indentStr;
-                }
-            }
-
-            $prevChar = $char;
+    // 获取引用，返回数组。
+    //$ref_str 是swagger里引用的字符串，比如"#/definitions/Petoo"
+    private function _getDefinition($ref_str){
+        $json_array = $this->json_array ;
+        $str_array = explode('#/definitions/',$ref_str);
+        $path = $str_array1[1];
+        $target_array = $json_array['definitions'][$str_array[1]] ;
+        if($target_array){
+            return $target_array ;
         }
+        return false;
+    }
 
-        return $result;
+    //把引用类型的数组转换成纯json数组
+    private function _definitionToJsonArray($ref_array){
+        $res = array() ;
+        foreach ($ref_array['properties'] as $key => $value) {
+            $res[] = array(
+                "name" =>$key,
+                "type" =>'string',
+                "value" =>'',
+                "require" =>'1',
+                "remark" =>$value["title"],
+            );
+        }
+        return $res ;
+
+    }
+
+    // 把json数组转成纯json字符串
+    private function _jsonArrayToStr($json_array){
+        $res_array = array() ;
+        foreach ($json_array as $key => $value) {
+            $res_array[$value['name']] = '' ;
+        }
+        return json_encode($res_array) ;  
     }
 
 }

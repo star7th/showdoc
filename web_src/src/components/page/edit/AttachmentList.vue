@@ -16,18 +16,10 @@
             }}</el-button>
           </el-form-item>
           <el-form-item>
-            <el-upload
-              class="upload-file"
-              :action="uploadUrl"
-              :on-success="uploadCallback"
-              :on-error="uploadCallback"
-              :data="uploadData"
-              ref="uploadFile"
-              v-if="manage"
-            >
-              <el-button>{{ $t('upload') }}</el-button>
-              <small>&nbsp;&nbsp;&nbsp;{{ $t('file_size_tips') }}</small>
-            </el-upload>
+            <el-button @click="dialogUploadVisible = true">{{
+              $t('upload')
+            }}</el-button>
+            <!-- <small>&nbsp;&nbsp;&nbsp;{{ $t('file_size_tips') }}</small> -->
           </el-form-item>
         </el-form>
 
@@ -74,6 +66,30 @@
       :page_id="page_id"
       ref="filehub"
     ></filehub>
+    <el-dialog
+      :visible.sync="dialogUploadVisible"
+      :close-on-click-modal="false"
+      width="400px"
+    >
+      <p>
+        <el-upload
+          drag
+          name="file"
+          class="upload-file"
+          :action="uploadUrl"
+          :on-success="uploadCallback"
+          :on-error="uploadCallback"
+          :data="uploadData"
+          ref="uploadFile"
+          :show-file-list="false"
+        >
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">
+            <span v-html="$t('import_file_tips2')"></span>
+          </div>
+        </el-upload>
+      </p>
+    </el-dialog>
     <Footer></Footer>
     <div class></div>
   </div>
@@ -95,7 +111,8 @@ export default {
       currentDate: new Date(),
       content: [],
       dialogTableVisible: false,
-      uploadUrl: DocConfig.server + '/api/page/upload'
+      uploadUrl: DocConfig.server + '/api/page/upload',
+      dialogUploadVisible: false
     }
   },
   components: {
@@ -180,6 +197,7 @@ export default {
       let childRef = this.$refs.uploadFile // 获取子组件
       childRef.clearFiles()
       this.get_content()
+      this.dialogUploadVisible = false
     },
     // 文件库
     showFilehub() {

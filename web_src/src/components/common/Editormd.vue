@@ -1,35 +1,16 @@
 <template>
   <div :id="id" class="main-editor">
-    <link href="static/editor.md/css/editormd.min.css" rel="stylesheet" />
-
     <textarea v-html="content" style="display:none;"></textarea>
 
     <!-- 放大图片 -->
     <BigImg v-if="showImg" @clickit="showImg = false" :imgSrc="imgSrc"></BigImg>
   </div>
 </template>
+<style src="@/../static/editor.md/css/editormd.min.css"></style>
+<style src="@/../static/highlight/a11y-light.min.css"></style>
 <style>
 .editormd-preview-container {
   min-height: 60%;
-}
-
-.markdown-body .kwd {
-  color: #8959a8;
-}
-.markdown-body .com {
-  color: #8e908c;
-}
-.markdown-body .str {
-  color: #718c00;
-}
-.markdown-body code {
-  color: #d14;
-}
-.markdown-body .pln {
-  color: #4d4d4c;
-}
-.markdown-body .typ {
-  color: #4271ae;
 }
 
 .markdown-body h1 {
@@ -43,6 +24,12 @@
 }
 .markdown-body h4 {
   font-size: 1.1em !important;
+}
+.markdown-body code {
+  color: #d14;
+}
+.markdown-body pre code {
+  color: #333;
 }
 </style>
 <script>
@@ -218,7 +205,8 @@ export default {
           },
           onchange: () => {
             this.deal_with_content()
-          }
+          },
+          previewCodeHighlight: false // 关闭编辑默认的代码高亮模块。用其他插件实现高亮
         }
       }
     }
@@ -248,7 +236,6 @@ export default {
           [
             `${this.editorPath}/../xss.min.js`,
             `${this.editorPath}/lib/marked.min.js`,
-            `${this.editorPath}/lib/prettify.min.js`,
             `${this.editorPath}/lib/underscore.min.js`,
             `${this.editorPath}/lib/sequence-diagram.min.js`,
             `${this.editorPath}/lib/jquery.flowchart.min.js`,
@@ -260,10 +247,6 @@ export default {
           () => {
             $s(`${this.editorPath}/editormd.js`, () => {
               this.initEditor()
-            })
-
-            $s(`${this.editorPath}/../highlight/highlight.min.js`, () => {
-              hljs.initHighlightingOnLoad()
             })
           }
         )
@@ -356,6 +339,12 @@ export default {
     // 对内容做些定制化改造
     deal_with_content() {
       var that = this
+
+      // 代码高亮
+      $s(`${this.editorPath}/../highlight/highlight.min.js`, () => {
+        hljs.highlightAll()
+      })
+
       // 当表格列数过长时将自动出现滚动条
       $.each($('#' + this.id + ' table'), function() {
         $(this).prop(
@@ -452,23 +441,7 @@ export default {
       $('#' + this.id + ' table thead tr').css('color', '#fff')
 
       // 代码块美化
-      $('#' + this.id + ' .linenums').css('padding-left', '5px')
-      // $("#"+this.id+" .linenums li").css("list-style-type","none") ; //这句代码的副作用是把代码块里的换行符也去掉了
-      // 为了弥补上面那句代码失去换行符的漏洞，所以用这个补丁代替
-      $('#' + this.id + ' .linenums li code').each(function() {
-        if (
-          $(this)
-            .find('span')
-            .text()
-        ) {
-          // 假如子元素非空，那就不是换行，从而设置style none。这样就不会误伤把换行符所在的li也设置none了。
-          $(this)
-            .parent()
-            .css('list-style-type', 'none')
-        }
-      })
 
-      $('#' + this.id + ' .linenums li').css('background-color', '#fcfcfc')
       $('.markdown-body pre').css('background-color', '#fcfcfc')
       $('.markdown-body pre').css('border', '1px solid #e1e1e8')
 

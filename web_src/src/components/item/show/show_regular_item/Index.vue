@@ -136,7 +136,7 @@ export default {
             data.data.page_content,
             that.$store.state.item_info.global_param
           )
-
+          that.$store.dispatch('changeOpenCatId', data.data.cat_id)
           that.page_title = data.data.page_title
           that.page_info = data.data
           that.attachment_count =
@@ -207,6 +207,7 @@ export default {
         this.showComp = false
         this.$nextTick(() => {
           this.showComp = true
+          this.showToc = true
         })
       } else {
         this.adaptToMobile()

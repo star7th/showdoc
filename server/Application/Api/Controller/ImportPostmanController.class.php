@@ -122,75 +122,13 @@ class ImportPostmanController extends BaseController {
 
     private function _requestToDoc($request){
         $from = I("from") ? I("from") : '' ;
+        $res = $this->_requestToApi($request);
         if($from == 'runapi'){
-            return $this->_requestToApi($request);
-            //如果是来自runapi的导入请求，则已经return不再执行下面
+            return $res ;
+        }else{
+            $res['page_content'] = D("Page")->runapiToMd($res['page_content']); 
+            return $res ;
         }
-        $return = array() ;
-        $return['page_title'] = $request['name'] ;
-        $return['id'] = $request['id'] ;
-        $return['s_number'] = 99 ;
-        $return['page_comments'] = '' ;
-        //若$return['page_title'] 为很长的url，则做一些特殊处理
-        $tmp_title_array = explode("/", $return['page_title']);
-        if ($tmp_title_array) {
-            $tmp_title_array = array_slice($tmp_title_array, -2);// 倒数2个
-            if($tmp_title_array[1])$return['page_title'] = $tmp_title_array[0]."/".$tmp_title_array[1] ;
-        }
-        
-        $content = '  
-**简要描述：** 
-
-- '.$request['description'].'
-
-**请求URL：** 
-- ` '.$request['url'].' `
-  
-**请求方式：**
-- '.$request['method'].' ';
-
-if ($request['headerData']) {
-$content .='
-
-**Header：** 
-
-|Header名|是否必选|类型|说明|
-|:----    |:---|:----- |-----   |'."\n";
-    foreach ($request['headerData'] as $key => $value) {
-         $content .= '|'.$value["key"].' |  | text | '.$value["value"].' |'."\n";
-    }
-}
-
-if ($request['rawModeData']) {
-$content .= '
-
-
- **请求参数示例**
-
-``` 
-'.$request['rawModeData'].'
-```
-
-';
-
-}
-
-if ($request['data']) {
-$content .='
-
-**参数：** 
-
-|参数名|是否必选|类型|说明|
-|:----    |:---|:----- |-----   |'."\n";
-    foreach ($request['data'] as $key => $value) {
-         $content .= '|'.$value["key"].' |   |'.$value["type"].' | 无 |'."\n";
-    }
-}
-
-
-        $return['page_content'] = $content ;
-        return $return ;
-
     }
 
     //转成runapi所需要的api格式
@@ -240,7 +178,7 @@ $content .='
                         "type" =>'string',
                         "value" =>$value["value"],
                         "require" =>'1',
-                        "remark" =>'',
+                        "remark" =>$value["description"] ? $value["description"]:'',
                     );
             }
         }
@@ -253,7 +191,7 @@ $content .='
                         "type" =>'string',
                         "value" =>$value["value"],
                         "require" =>'1',
-                        "remark" =>'',
+                        "remark" =>$value["description"] ? $value["description"]:'',
                     );
             }
         }
@@ -331,77 +269,13 @@ $content .='
 
     private function _requestToDocV2($name , $request){
         $from = I("from") ? I("from") : '' ;
+        $res = $this->_requestToApiV2($name , $request);
         if($from == 'runapi'){
-            return $this->_requestToApiV2($name , $request);
-            //如果是来自runapi的导入请求，则已经return不再执行下面
+            return $res ;
+        }else{
+            $res['page_content'] = D("Page")->runapiToMd($res['page_content']); 
+            return $res ;
         }
-        $return = array() ;
-        $return['page_title'] = $name ;
-        $return['s_number'] = 99 ;
-        $return['page_comments'] = '' ;
-        //若$return['page_title'] 为很长的url，则做一些特殊处理
-        $tmp_title_array = explode("/", $return['page_title']);
-        if ($tmp_title_array) {
-            $tmp_title_array = array_slice($tmp_title_array, -2);// 倒数2个
-            if($tmp_title_array[1])$return['page_title'] = $tmp_title_array[0]."/".$tmp_title_array[1] ;
-        }
-
-        $url = is_array($request['url']) ? $request['url']['raw'] : $request['url'] ;
-        $rawModeData = $request['body']['mode'] == 'raw' ? $request['body']['raw']  : $request['rawModeData'] ;
-
-        $content = '  
-**简要描述：** 
-
-- '.$request['description'].'
-
-**请求URL：** 
-- ` '.$url.' `
-  
-**请求方式：**
-- '.$request['method'].' ';
-
-if ($request['header']) {
-$content .='
-
-**Header：** 
-
-|Header名|是否必选|类型|说明|
-|:----    |:---|:----- |-----   |'."\n";
-    foreach ($request['header'] as $key => $value) {
-         $content .= '|'.$value["key"].' |  |  | '.$value["value"].' |'."\n";
-    }
-}
-
-if ($rawModeData) {
-$content .= '
-
-
- **请求参数示例**
-
-``` 
-'.$rawModeData.'
-```
-
-';
-
-}
-
-if ($request['body']['formdata']) {
-$content .='
-
-**参数：** 
-
-|参数名|是否必选|类型|说明|
-|:----    |:---|:----- |-----   |'."\n";
-    foreach ($request['body']['formdata'] as $key => $value) {
-         $content .= '|'.$value["key"].' |   |'.$value["type"].' | 无 |'."\n";
-    }
-}
-
-
-        $return['page_content'] = $content ;
-        return $return ;
-
     }
 
     //转成runapi所需要的api格式
@@ -452,7 +326,7 @@ $content .='
                         "type" =>'string',
                         "value" =>$value["value"],
                         "require" =>'1',
-                        "remark" =>'',
+                        "remark" =>$value["description"] ? $value["description"]:'',
                     );
             }
         }
@@ -464,9 +338,13 @@ $content .='
                         "type" =>'string',
                         "value" =>$value["value"],
                         "require" =>'1',
-                        "remark" =>'',
+                        "remark" =>$value["description"] ? $value["description"]:'',
                     );
             }
+        }
+        else if($rawModeData && json_decode($rawModeData)){
+            $content_array['request']['params']['mode'] = 'json';
+            $content_array['request']['params']['json'] = $rawModeData;
         }
 
         $return['page_content'] = json_encode($content_array) ;

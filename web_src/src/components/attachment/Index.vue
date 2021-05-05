@@ -31,15 +31,9 @@
             <el-button @click="onSubmit">{{ $t('search') }}</el-button>
           </el-form-item>
           <el-form-item>
-            <el-upload
-              class="upload-file"
-              :action="uploadUrl"
-              :on-success="uploadCallback"
-              :on-error="uploadCallback"
-              ref="uploadFile"
-            >
-              <el-button>{{ $t('upload') }}</el-button>
-            </el-upload>
+            <el-button @click="dialogFormVisible = true">{{
+              $t('upload')
+            }}</el-button>
           </el-form-item>
         </el-form>
         <P
@@ -58,12 +52,12 @@
           <el-table-column
             prop="file_type"
             :label="$t('file_type')"
-            width="160"
+            width="140"
           ></el-table-column>
           <el-table-column
             prop="file_size_m"
             :label="$t('file_size_m')"
-            width="160"
+            width="80"
           ></el-table-column>
           <el-table-column
             prop="visit_times"
@@ -72,12 +66,15 @@
           <el-table-column
             prop="addtime"
             :label="$t('add_time')"
-            width="160"
+            width="100"
           ></el-table-column>
           <el-table-column prop :label="$t('operation')">
             <template slot-scope="scope">
               <el-button @click="visit(scope.row)" type="text" size="small">{{
                 $t('visit')
+              }}</el-button>
+              <el-button @click="copy(scope.row)" type="text" size="small">{{
+                $t('copy_link')
               }}</el-button>
               <el-button
                 @click="delete_row(scope.row)"
@@ -99,6 +96,26 @@
           ></el-pagination>
         </div>
       </el-card>
+      <el-dialog
+        :visible.sync="dialogFormVisible"
+        :close-on-click-modal="false"
+        width="400px"
+      >
+        <p>
+          <el-upload
+            drag
+            name="file"
+            :action="uploadUrl"
+            :on-success="uploadCallback"
+            :show-file-list="false"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              <span v-html="$t('import_file_tips2')"></span>
+            </div>
+          </el-upload>
+        </p>
+      </el-dialog>
     </el-container>
 
     <Footer></Footer>
@@ -121,7 +138,8 @@ export default {
       attachment_type: '-1',
       used: 0,
       used_flow: 0,
-      uploadUrl: DocConfig.server + '/api/page/upload'
+      uploadUrl: DocConfig.server + '/api/page/upload',
+      dialogFormVisible: false
     }
   },
   methods: {
@@ -177,9 +195,14 @@ export default {
       if (data.error_message) {
         this.$alert(data.error_message)
       }
-      let childRef = this.$refs.uploadFile // 获取子组件
-      childRef.clearFiles()
+      this.dialogFormVisible = false
       this.getList()
+    },
+    copy(row) {
+      // 如果需要回调：
+      this.$copyText(row.url).then(e => {
+        this.$message.success(this.$t('copy_success'))
+      })
     }
   },
 

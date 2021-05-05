@@ -33,6 +33,14 @@
               <i class="el-icon-tickets"></i>
               <span slot="title">{{ $t('web_setting') }}</span>
             </el-menu-item>
+            <el-menu-item index="6" v-if="isUpdate">
+              <i class="el-icon-tickets"></i>
+              <span slot="title"
+                ><el-badge value="new"
+                  >{{ $t('system_update') }}
+                </el-badge></span
+              >
+            </el-menu-item>
           </el-menu>
         </el-aside>
         <el-container>
@@ -41,6 +49,7 @@
             <Item v-if="open_menu_index == 2"></Item>
             <Setting v-if="open_menu_index == 3"></Setting>
             <Attachment v-if="open_menu_index == 5"></Attachment>
+            <SystemUpdate v-if="open_menu_index == 6"></SystemUpdate>
           </el-main>
           <el-footer>
             <!-- something -->
@@ -120,18 +129,20 @@ import Item from '@/components/admin/item/Index'
 import User from '@/components/admin/user/Index'
 import Setting from '@/components/admin/setting/Index'
 import Attachment from '@/components/admin/attachment/Index'
-
+import SystemUpdate from '@/components/admin/systemUpdate/Index'
 export default {
   data() {
     return {
-      open_menu_index: 1
+      open_menu_index: 1,
+      isUpdate: false
     }
   },
   components: {
     Item,
     User,
     Setting,
-    Attachment
+    Attachment,
+    SystemUpdate
   },
   methods: {
     select_menu(index, indexPath) {

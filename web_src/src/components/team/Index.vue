@@ -4,12 +4,12 @@
 
     <el-container>
       <el-card class="center-card">
-        <el-button type="text" class="add-cat" @click="addTeam">{{
-          $t('add_team')
-        }}</el-button>
-        <el-button type="text" class="goback-btn" @click="goback">{{
-          $t('goback')
-        }}</el-button>
+        <el-button type="text" class="goback-btn" @click="goback"
+          ><i class="el-icon-back"></i>&nbsp;{{ $t('goback') }}</el-button
+        >
+        <el-button type="text" class="add-cat" @click="addTeam"
+          ><i class="el-icon-plus"></i>&nbsp;{{ $t('add_team') }}</el-button
+        >
         <el-table
           align="left"
           :empty-text="$t('empty_team_tips')"
@@ -21,14 +21,22 @@
             prop="team_name"
             :label="$t('team_name')"
           ></el-table-column>
-          <el-table-column prop="memberCount" :label="$t('memberCount')">
+          <el-table-column
+            prop="memberCount"
+            width="100"
+            :label="$t('memberCount')"
+          >
             <template slot-scope="scope">
               <router-link :to="'/team/member/' + scope.row.id">{{
                 scope.row.memberCount
               }}</router-link>
             </template>
           </el-table-column>
-          <el-table-column prop="itemCount" :label="$t('itemCount')">
+          <el-table-column
+            prop="itemCount"
+            width="100"
+            :label="$t('itemCount')"
+          >
             <template slot-scope="scope">
               <router-link :to="'/team/item/' + scope.row.id">{{
                 scope.row.itemCount
@@ -52,7 +60,6 @@
               <el-button @click="edit(scope.row)" type="text" size="small">{{
                 $t('edit')
               }}</el-button>
-              <br />
               <el-button
                 @click="attornDialog(scope.row)"
                 type="text"
@@ -113,7 +120,9 @@
             ></el-input>
           </el-form-item>
         </el-form>
-        <p class="tips">{{ $t('attornTeamTips') }}</p>
+        <p class="tips">
+          <small>{{ $t('attornTeamTips') }}</small>
+        </p>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogAttornVisible = false">{{
             $t('cancel')
@@ -259,18 +268,20 @@ export default {
 }
 
 .add-cat {
-  margin-left: 10px;
+  float: right;
+  margin-right: 15px;
+  font-size: 14px;
 }
 
 .center-card {
   text-align: left;
-  width: 800px;
+  width: 750px;
   height: 600px;
 }
 
 .goback-btn {
   z-index: 999;
-  margin-left: 600px;
+  font-size: 14px;
 }
 </style>
 

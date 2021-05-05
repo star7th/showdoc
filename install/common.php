@@ -14,10 +14,10 @@ function lang(){
 
 
 function L($field){
-  if (!isset($GLOBALS['lang'])) {
-      $GLOBALS['lang'] = lang();
+  if (!isset($GLOBALS['lang_array'])) {
+      $GLOBALS['lang_array'] = lang();
   }
-  return $GLOBALS['lang'][$field] ;
+  return $GLOBALS['lang_array'][$field] ;
 }
 
 /**
@@ -73,6 +73,15 @@ function clear_runtime($path = "../server/Application/Runtime"){
 } 
 
 function ajax_out($message,$error_code = 0){
-        echo json_encode(array("error_code"=>$error_code,"message"=>$message));
+        echo json_encode(array("error_code"=>$error_code,"error_message"=>$message));
         exit();
+}
+
+
+function replace_file_content($file , $from ,$to ){
+  $content = file_get_contents($file);
+  $content2 = str_replace($from,$to,$content);
+  if ($content2) {
+      file_put_contents($file,$content2);
+  }
 }
