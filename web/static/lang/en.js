@@ -423,6 +423,10 @@ exports.default = {
   move_to: 'Move To',
   remark: 'remark',
 
-  used_space: 'Used pace'
+  used_space: 'Used pace',
+  qcloud: 'qcloud',
+  binding_item: 'Binding item',
+  addtime: 'addtime',
+  system_update: 'System update'
 
 }

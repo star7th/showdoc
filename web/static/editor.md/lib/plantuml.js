@@ -1743,4 +1743,3 @@ return function deflate(str, level) {
 //     port.postMessage(deflate(m.data, 9));
 //   };
 // };
-

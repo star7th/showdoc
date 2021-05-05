@@ -413,5 +413,9 @@ exports.default = {
   move_to: '移动到',
   remark: '备注',
 
-  used_space: '已使用空间'
+  used_space: '已使用空间',
+  qcloud: '腾讯云',
+  binding_item: '绑定项目',
+  addtime: '添加时间',
+  system_update: '系统更新'
 }
