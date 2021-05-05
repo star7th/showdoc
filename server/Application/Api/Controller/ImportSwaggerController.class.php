@@ -33,7 +33,7 @@ class ImportSwaggerController extends BaseController {
         $from = I("from") ? I("from") : '' ;
         $item_array = array(
             "item_name" => $json_array['info']['title'] ? $json_array['info']['title']  : 'from swagger' ,
-            "item_type" => '1' ,
+            "item_type" =>  ($from == 'runapi') ? '3': '1'  ,
             "item_description" => $json_array['info']['description'] ? $json_array['info']['description'] :'',
             "password" => time().rand(),
             "members" => array(),
