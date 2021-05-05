@@ -5,7 +5,7 @@ class UpdateController extends BaseController {
 
     //检测数据库并更新
     public function checkDb($showBack = true){
-        $version_num = 6 ;
+        $version_num = 7 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
             $r = $this->updateSqlite();
@@ -363,7 +363,34 @@ class UpdateController extends BaseController {
             D("mock")->execute($sql);
         }
 
+        //创建runapi_flow表
+        $sql = "CREATE TABLE IF NOT EXISTS `runapi_flow` (
+            `id`  INTEGER PRIMARY KEY ,
+            `flow_name` CHAR(2000) NOT NULL DEFAULT '',
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `username` CHAR(2000) NOT NULL DEFAULT '',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `env_id` int(11) NOT NULL DEFAULT '0',
+            `times` int(11) NOT NULL DEFAULT '0',
+            `time_interval` int(11) NOT NULL DEFAULT '0',
+            `error_continue` int(11) NOT NULL DEFAULT '0',
+            `save_change` int(11) NOT NULL DEFAULT '0',
+            `addtime` CHAR(2000) NOT NULL DEFAULT '',
+            `last_update_time` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
 
+        //创建runapi_flow_page表
+        $sql = "CREATE TABLE IF NOT EXISTS `runapi_flow_page` (
+            `id`  INTEGER PRIMARY KEY ,
+            `flow_id` int(11) NOT NULL DEFAULT '0',
+            `page_id` int(11) NOT NULL DEFAULT '0',
+            `s_number` int(11) NOT NULL DEFAULT '0',
+            `addtime` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
+
+        
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
