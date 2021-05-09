@@ -235,6 +235,33 @@ class FlowController extends BaseController {
 
     }
 
+    // 保存启用关系
+    public function setFlowPageEnabled(){
+        $login_user = $this->checkLogin();
+        $flow_id = I("flow_id/d");
+        $ids = I("ids");
+        $res = D("RunapiFlow")->where(" id = '{$flow_id}' ")->find();
+        if(!$this->checkItemPermn($login_user['uid'] , $res['item_id'])){
+            $this->sendError(10303);
+            return ;
+        }
+        $data_array = json_decode(htmlspecialchars_decode($ids) , true) ;
+        if($data_array){
+            D("RunapiFlowPage")->where(" flow_id = '%d'",array($flow_id))->save(array(
+                "enabled"=>0
+            ));
+            foreach ($data_array as $key => $value) {
+                if($value){
+                    D("RunapiFlowPage")->where(" flow_id = '%d' and id = '%d' ",array($flow_id , $value))->save(array(
+                        "enabled"=>1
+                    ));
+                }
+            }
+        }
+        $this->sendResult(array());
+
+    }
+
 
 
 

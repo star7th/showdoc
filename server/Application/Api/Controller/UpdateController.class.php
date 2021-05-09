@@ -5,7 +5,7 @@ class UpdateController extends BaseController {
 
     //检测数据库并更新
     public function checkDb($showBack = true){
-        $version_num = 7 ;
+        $version_num = 8 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
             $r = $this->updateSqlite();
@@ -390,6 +390,11 @@ class UpdateController extends BaseController {
             )";
         D("User")->execute($sql);
 
+        //给runapi_flow_page表增加enabled字段
+        if (!$this->_is_column_exist("runapi_flow_page","enabled")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."runapi_flow_page ADD enabled int(1) NOT NULL DEFAULT '1' ;";
+            D("mock")->execute($sql);
+        }
         
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
