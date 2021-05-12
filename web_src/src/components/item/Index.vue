@@ -451,6 +451,16 @@ export default {
     logout() {
       var that = this
       var url = DocConfig.server + '/api/user/logout'
+      // 清空所有cookies
+      var keys = document.cookie.match(/[^ =;]+(?=\=)/g)
+      if (keys) {
+        for (var i = keys.length; i--; ) {
+          document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString()
+        }
+      }
+
+      // 清空 localStorage
+      localStorage.clear()
 
       var params = new URLSearchParams()
 

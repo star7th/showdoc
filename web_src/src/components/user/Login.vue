@@ -148,6 +148,11 @@ export default {
     this.script_cron()
     this.checkDb()
   },
+  watch: {
+    $route(to, from) {
+      this.$router.go(0)
+    }
+  },
   beforeDestroy() {}
 }
 </script>

@@ -123,6 +123,7 @@ export default {
   mounted() {
     this.checkDb()
     this.get_item_menu()
+    this.$store.dispatch('changeOpenCatId', 0)
   },
   beforeDestroy() {
     this.$message.closeAll()

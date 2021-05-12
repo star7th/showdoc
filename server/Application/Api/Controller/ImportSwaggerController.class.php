@@ -16,7 +16,8 @@ class ImportSwaggerController extends BaseController {
         unset($json);
         if ($json_array['info']) {
             $this->json_array = $json_array ;
-            $this->url_pre = $json_array['schemes'][0]."://".$json_array['host'].$json_array['basePath'] ;
+            $scheme = $json_array['schemes'][0] ? $json_array['schemes'][0] : 'http';
+            $this->url_pre = $scheme."://".$json_array['host'].$json_array['basePath'] ;
             $this->_fromSwaggerV2($json_array);
             return ;
         }

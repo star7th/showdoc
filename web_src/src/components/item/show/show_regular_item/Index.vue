@@ -27,7 +27,7 @@
             <i
               class="el-icon-full-screen"
               id="full-page"
-              v-show="showfullPageBtn"
+              v-show="showfullPageBtn && page_id"
               @click="clickFullPage"
             ></i>
             <i
@@ -45,6 +45,34 @@
                 type="html"
                 :keyword="keyword"
               ></Editormd>
+            </div>
+            <div v-if="emptyItem && lang == 'zh-cn'" class="empty-tips">
+              <div class="icon"><i class="el-icon-shopping-cart-2"></i></div>
+              <div class="text">
+                <p>
+                  当前项目是空的，你可以点击右上方的 + 以手动添加页面。
+                </p>
+
+                <div>
+                  除了手动添加外，你还可以通过以下三种方式自动化生成文档：
+                  <p class="links">
+                    <a href="https://www.showdoc.com.cn/runapi" target="_blank"
+                      >使用runapi工具自动生成（推荐）</a
+                    ><br />
+                    <a
+                      href="https://www.showdoc.com.cn/page/741656402509783"
+                      target="_blank"
+                    >
+                      使用程序注释自动生成</a
+                    ><br />
+                    <a
+                      href="https://www.showdoc.com.cn/page/102098"
+                      target="_blank"
+                      >自己写程序调用接口来生成</a
+                    >
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -103,7 +131,9 @@ export default {
       fullPage: false,
       showfullPageBtn: false,
       showToc: true,
-      showComp: true
+      showComp: true,
+      emptyItem: false,
+      lang: ''
     }
   },
   components: {
@@ -231,6 +261,15 @@ export default {
   mounted() {
     this.adaptScreen()
     this.set_bg_grey()
+    this.lang = DocConfig.lang
+    if (
+      this.item_info &&
+      this.item_info.menu &&
+      this.item_info.menu.catalogs.length === 0 &&
+      this.item_info.menu.pages.length === 0
+    ) {
+      this.emptyItem = true
+    }
   }
 }
 </script>
@@ -329,5 +368,28 @@ pre ol {
 .editormd-preview-container {
   padding: 0px;
   font-size: 14px;
+}
+.empty-tips {
+  margin: 5% auto;
+  width: 400px;
+  text-align: center;
+  color: #909399;
+}
+
+.empty-tips .icon {
+  font-size: 100px;
+  margin-left: -50px;
+}
+
+.empty-tips .text {
+  text-align: left;
+}
+
+.empty-tips .links {
+  line-height: 2em;
+}
+.empty-tips .links a {
+  color: #909399;
+  text-decoration: underline;
 }
 </style>
