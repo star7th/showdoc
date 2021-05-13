@@ -60,10 +60,3 @@ function write_js_lang(){
     
 }
 
-function replace_file_content($file , $from ,$to ){
-    $content = file_get_contents($file);
-    $content2 = str_replace($from,$to,$content);
-    if ($content2) {
-        file_put_contents($file,$content2);
-    }
-}
