@@ -508,7 +508,7 @@ class ItemController extends BaseController {
         $copy_item_id = I("copy_item_id");
         $password = I("password");
         $item_description = I("item_description");
-        $item_type = I("item_type");
+        $item_type = I("item_type") ? I("item_type") : 1 ;
 
         if ($item_domain) {
             
