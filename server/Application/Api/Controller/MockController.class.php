@@ -115,7 +115,7 @@ class MockController extends BaseController {
             }
             echo $res ;
         }else{
-            echo "mock服务暂时不可用。网站管理员安装完showdoc后需要另行安装mock服务，详情请打开https://www.showdoc.com.cn/help";
+            echo "mock服务暂时不可用。网站管理员安装完showdoc后需要另行安装mock服务，详情请打开https://www.showdoc.com.cn/p/1ee8a176dd0ccc65609005f3a36c2cc7";
         }
     }
 
