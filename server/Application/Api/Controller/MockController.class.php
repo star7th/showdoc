@@ -91,8 +91,9 @@ class MockController extends BaseController {
     }
     // 根据item_id和path获取
     public function infoByPath(){
-        $item_id = I("item_id") ;  
-        $path = I("path") ? I("path"): '/' ;  
+        // 这里如果用I("path")方法来获取参数，那么接受post请求的时候有问题。原因暂时不明。应该跟路由里使用正则有关。
+        $item_id = $_REQUEST["item_id"] ;  
+        $path = $_REQUEST['path'] ? $_REQUEST['path']: '/' ; 
         $page = D("Mock")->where(" item_id = '%s' and path = '%s'  ",array($item_id,$path) )->find();
         if(!$page){
             echo 'no such path';
