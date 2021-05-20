@@ -605,9 +605,9 @@ class ItemController extends BaseController {
         $data = I("data");
         $item_group_id = I("item_group_id/d");
 
-        $res = D("ItemSort")->where("  uid ='{$login_user[uid]}' and item_group_id = $item_group_id ")->find() ;
+        $res = D("ItemSort")->where("  uid ='$login_user[uid]' and item_group_id = $item_group_id ")->find() ;
         if($res){
-            $ret = D("ItemSort")->where("  uid ='{$login_user[uid]}' and item_group_id = $item_group_id ")->save(array("item_sort_data"=>$data,"addtime"=>time()));
+            $ret = D("ItemSort")->where("  uid ='$login_user[uid]' and item_group_id = $item_group_id ")->save(array("item_sort_data"=>$data,"addtime"=>time()));
         }else{
             $ret = D("ItemSort")->add(array("item_sort_data"=>$data,"item_group_id"=>$item_group_id,"uid"=>$login_user['uid'],"addtime"=>time()));
 
