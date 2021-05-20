@@ -123,6 +123,33 @@
           :keyword="keyword"
           :itemList="itemList"
         ></Search>
+        <div
+          class="group-bar"
+          v-show="!showSearch && (itemGroupId > 0 || itemList.length > 5)"
+        >
+          <el-radio-group
+            v-model="itemGroupId"
+            @change="changeGroup"
+            size="small"
+          >
+            <el-radio-button class="radio-button" label="0">{{
+              $t('all_items')
+            }}</el-radio-button>
+            <el-radio-button
+              v-for="element in itemGroupList"
+              :key="element.id"
+              class="radio-button"
+              :label="element.id"
+              >{{ element.group_name }}</el-radio-button
+            >
+          </el-radio-group>
+          <router-link class="group-link" to="/item/group/index">
+            {{ $t('manage_item_group') }}
+          </router-link>
+          <router-link class="group-link" to="/item/add">
+            {{ $t('new_item') }}
+          </router-link>
+        </div>
         <ul class="thumbnails" id="item-list" v-if="!showSearch">
           <draggable
             v-model="itemList"
@@ -134,11 +161,7 @@
             <li
               class="text-center"
               v-for="item in itemList"
-              v-dragging="{
-                item: item,
-                list: itemList,
-                group: 'item'
-              }"
+              v-loading="loading"
               :key="item.item_id"
             >
               <router-link
@@ -326,6 +349,22 @@ a {
   color: #ffffff;
   background-color: #ffffff;
 }
+.group-bar {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 60px;
+}
+.group-link {
+  margin-left: 10px;
+  font-size: 12px;
+}
+</style>
+
+<style>
+.group-bar .el-radio-button__inner {
+  border-radius: 30px !important;
+  margin-right: 5px;
+}
 </style>
 
 <script>
@@ -347,7 +386,10 @@ export default {
       keyword: '',
       lang: '',
       username: '',
-      showSearch: false
+      showSearch: false,
+      itemGroupId: '0',
+      itemGroupList: [],
+      loading: false
     }
   },
   watch: {
@@ -372,7 +414,12 @@ export default {
   },
   methods: {
     get_item_list() {
-      this.request('/api/item/myList', {}).then(data => {
+      this.loading = true
+      const itemGroupId = this.itemGroupId
+      this.request('/api/item/myList', {
+        item_group_id: itemGroupId
+      }).then(data => {
+        this.loading = false
         this.itemList = data.data
       })
     },
@@ -496,6 +543,7 @@ export default {
       var url = DocConfig.server + '/api/item/sort'
       var params = new URLSearchParams()
       params.append('data', JSON.stringify(data))
+      params.append('item_group_id', this.itemGroupId)
       that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
           that.get_item_list()
@@ -524,14 +572,38 @@ export default {
     checkDb() {
       var url = DocConfig.server + '/api/update/checkDb'
       this.axios.get(url)
+    },
+    getItemGroupList() {
+      this.request('/api/itemgroup/getList', {}).then(data => {
+        this.itemGroupList = data.data
+        const deaultItemGroupId = localStorage.getItem('deaultItemGroupId')
+        // 循环欧判断记住的id是否还存在列表中
+        this.itemGroupList.map(element => {
+          if (element.id == deaultItemGroupId) {
+            this.itemGroupId = deaultItemGroupId
+          }
+        })
+        this.get_item_list()
+      })
+    },
+    changeGroup() {
+      localStorage.setItem('deaultItemGroupId', this.itemGroupId)
+      this.get_item_list()
     }
   },
   mounted() {
-    this.get_item_list()
+    this.checkDb()
     this.user_info()
     this.lang = DocConfig.lang
     this.script_cron()
-    this.checkDb()
+    const deaultItemGroupId = localStorage.getItem('deaultItemGroupId')
+    if (deaultItemGroupId === null) {
+      this.get_item_list()
+      this.itemGroupId = '0'
+    } else {
+      this.itemGroupId = deaultItemGroupId
+    }
+    this.getItemGroupList()
     this.get_user_info(response => {
       if (response.data.error_code === 0) {
         this.username = response.data.data.username

@@ -141,7 +141,10 @@ class ItemController extends BaseController {
     //我的项目列表
     public function myList(){
         $login_user = $this->checkLogin();  
-        $original = I("original/d") ? I("original/d") : 0; //1：只返回自己原创的项目;默认是0      
+        $original = I("original/d") ? I("original/d") : 0; //1：只返回自己原创的项目;默认是0 
+        $item_group_id = I("item_group_id/d") ? I("item_group_id/d") : 0; //项目分组id。默认是0
+
+        $where = "uid = '$login_user[uid]' " ;     
         $member_item_ids = array(-1) ; 
         $item_members = D("ItemMember")->where("uid = '$login_user[uid]'")->select();
         if ($item_members) {
@@ -155,7 +158,15 @@ class ItemController extends BaseController {
                 $member_item_ids[] = $value['item_id'] ;
             }
         }
-        $items  = D("Item")->field("item_id,uid,item_name,item_domain,item_type,last_update_time,item_description,is_del,password")->where("uid = '$login_user[uid]' or item_id in ( ".implode(",", $member_item_ids)." ) ")->order("item_id asc")->select();
+
+        $where .= " or item_id in ( ".implode(",", $member_item_ids)." ) ";
+        if($item_group_id){
+            $res = D("ItemGroup")->where(" id = '$item_group_id' ")->find();
+            if($res){
+                $where = " ({$where}) and item_id in ({$res['item_ids']}) ";
+            }
+        }
+        $items  = D("Item")->field("item_id,uid,item_name,item_domain,item_type,last_update_time,item_description,is_del,password")->where($where)->order("item_id asc")->select();
         
         
         foreach ($items as $key => $value) {
@@ -203,7 +214,7 @@ class ItemController extends BaseController {
         }
 
         //读取项目顺序
-        $item_sort = D("ItemSort")->where("uid = '$login_user[uid]'")->find();
+        $item_sort = D("ItemSort")->where("uid = '$login_user[uid]'  and item_group_id = '$item_group_id' ")->find();
         if ($item_sort) {
             $item_sort_data = json_decode(htmlspecialchars_decode($item_sort['item_sort_data']) , true) ;
             //var_dump($item_sort_data);
@@ -592,8 +603,16 @@ class ItemController extends BaseController {
         $login_user = $this->checkLogin();
 
         $data = I("data");
-        D("ItemSort")->where(" uid = '$login_user[uid]' ")->delete();
-        $ret = D("ItemSort")->add(array("item_sort_data"=>$data,"uid"=>$login_user['uid'],"addtime"=>time()),array(),true);
+        $item_group_id = I("item_group_id/d");
+
+        $res = D("ItemSort")->where("  uid ='{$login_user[uid]}' and item_group_id = $item_group_id ")->find() ;
+        if($res){
+            $ret = D("ItemSort")->where("  uid ='{$login_user[uid]}' and item_group_id = $item_group_id ")->save(array("item_sort_data"=>$data,"addtime"=>time()));
+        }else{
+            $ret = D("ItemSort")->add(array("item_sort_data"=>$data,"item_group_id"=>$item_group_id,"uid"=>$login_user['uid'],"addtime"=>time()));
+
+        }
+
 
         if ($ret) {
             $this->sendResult(array());

@@ -427,6 +427,14 @@ exports.default = {
   qcloud: 'qcloud',
   binding_item: 'Binding item',
   addtime: 'addtime',
-  system_update: 'System update'
+  system_update: 'System update',
+
+  group_name: 'group name',
+  add_group: 'New group',
+  all_items: 'All items',
+  manage_item_group: 'Manage group',
+  draggable_tips: 'Press and hold to drag sort',
+  item_group_empty_tips: 'There is no grouping data. You can click the top right corner to create a new group',
+  select_item: 'Select item'
 
 }

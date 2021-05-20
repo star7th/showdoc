@@ -5,7 +5,7 @@ class UpdateController extends BaseController {
 
     //检测数据库并更新
     public function checkDb($showBack = true){
-        $version_num = 8 ;
+        $version_num = 9 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
             $r = $this->updateSqlite();
@@ -395,7 +395,25 @@ class UpdateController extends BaseController {
             $sql = "ALTER TABLE ".C('DB_PREFIX')."runapi_flow_page ADD enabled int(1) NOT NULL DEFAULT '1' ;";
             D("mock")->execute($sql);
         }
-        
+
+         //给item_sort表增加item_group_id字段
+         if (!$this->_is_column_exist("item_sort","item_group_id")) {
+            $sql = "ALTER TABLE ".C('DB_PREFIX')."item_sort ADD item_group_id int(10) NOT NULL DEFAULT '0' ;";
+            D("mock")->execute($sql);
+        }
+
+        //创建item_group表
+        $sql = "CREATE TABLE IF NOT EXISTS `item_group` (
+            `id`  INTEGER PRIMARY KEY ,
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `group_name` CHAR(2000) NOT NULL DEFAULT '',
+            `item_ids` text NOT NULL DEFAULT '',
+            `s_number` int(11) NOT NULL DEFAULT '0',
+            `created_at` CHAR(2000) NOT NULL DEFAULT '',
+            `updated_at` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
+
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改上面的$version_num

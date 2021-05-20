@@ -22,6 +22,7 @@ import Team from '@/components/team/Index'
 import TeamMember from '@/components/team/Member'
 import TeamItem from '@/components/team/Item'
 import Attachment from '@/components/attachment/Index'
+import ItemGroup from '@/components/item/group/Index'
 
 Vue.use(Router)
 
@@ -141,6 +142,11 @@ export default new Router({
       path: '/attachment/index',
       name: 'Attachment',
       component: Attachment
+    },
+    {
+      path: '/item/group/index',
+      name: 'ItemGroup',
+      component: ItemGroup
     }
   ]
 })
