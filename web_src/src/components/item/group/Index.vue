@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     geList() {
-      this.request('/api/itemgroup/getList', {}).then(data => {
+      this.request('/api/itemGroup/getList', {}).then(data => {
         this.list = data.data
       })
     },
@@ -116,7 +116,7 @@ export default {
         item_ids_array.push(element.item_id)
       })
       const item_ids = item_ids_array.join(',')
-      this.request('/api/itemgroup/save', { group_name, id, item_ids }).then(
+      this.request('/api/itemGroup/save', { group_name, id, item_ids }).then(
         data => {
           this.geList()
           this.dialogFormVisible = false
@@ -155,7 +155,7 @@ export default {
         cancelButtonText: that.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        this.request('/api/itemgroup/delete', { id }).then(data => {
+        this.request('/api/itemGroup/delete', { id }).then(data => {
           this.geList()
         })
       })
@@ -195,7 +195,7 @@ export default {
           s_number: index + 1
         })
       })
-      this.request('/api/itemgroup/saveSort', {
+      this.request('/api/itemGroup/saveSort', {
         groups: JSON.stringify(groups_array)
       }).then(data => {
         this.itemList = data.data

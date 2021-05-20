@@ -574,7 +574,7 @@ export default {
       this.axios.get(url)
     },
     getItemGroupList() {
-      this.request('/api/itemgroup/getList', {}).then(data => {
+      this.request('/api/itemGroup/getList', {}).then(data => {
         this.itemGroupList = data.data
         const deaultItemGroupId = localStorage.getItem('deaultItemGroupId')
         // 循环欧判断记住的id是否还存在列表中
