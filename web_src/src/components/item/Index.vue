@@ -202,7 +202,7 @@
               </router-link>
             </li>
           </draggable>
-          <li class="text-center">
+          <li class="text-center" v-if="itemGroupId <= 0">
             <router-link class="thumbnail item-thumbnail" to="/item/add" title>
               <p class="my-item">
                 {{ $t('new_item') }}
