@@ -417,5 +417,13 @@ exports.default = {
   qcloud: '腾讯云',
   binding_item: '绑定项目',
   addtime: '添加时间',
-  system_update: '系统更新'
+  system_update: '系统更新',
+
+  group_name: '组名',
+  add_group: '新建分组',
+  all_items: '所有项目',
+  manage_item_group: '项目分组管理',
+  draggable_tips: '按住可拖动排序',
+  item_group_empty_tips: '暂无分组数据。可点击右上角新建分组',
+  select_item: '选择项目'
 }
