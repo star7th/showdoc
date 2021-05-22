@@ -73,7 +73,25 @@
       </el-tab-pane>
       <el-tab-pane label="OAuth2">
         <el-form ref="form" :model="form" label-width="150px">
+          <el-form-item label="启动OAuth2登录">
+            <el-switch v-model="form.ldap_open"></el-switch>
+          </el-form-item>
           <div>
+            <el-form-item label="入口文字">
+              <el-input
+                v-model="form.ldap_form.host"
+                placeholder="eg: 使用公司OA登录"
+                class="form-el"
+              ></el-input>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                content="当启动OAuth2登录时候，登录界面将在输入框的下方出现此入口。你可以填上如'使用公司OA登录'这样的提示"
+                placement="top"
+              >
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </el-form-item>
             <el-form-item label="Client id">
               <el-input
                 v-model="form.ldap_form.host"
