@@ -4,6 +4,45 @@ use Think\Controller;
 class ExtLoginController extends BaseController {
 
 
+    // 根据用户名和密码串登录
+    public function byName(){
+        $username = I("username") ;
+        $password_md5 = strtolower(I("password_md5")); // 密码md5之后的加密串
+        $redirect = I("redirect") ;
+        
+
+        //防止枚举破解。检查密码的次数。如果错误超过1000次，则不允许。
+        $key= 'login_fail_times_'.$username;
+        if(!D("VerifyCode")->_check_times($key,1000)){
+            $this->sendError(10101,"密码错误太频繁，请24小时后再试");
+            return ;
+        }
+
+        $password = md5(base64_encode($password_md5).'576hbgh6');
+        $where=array($username,$password);
+        $res = D("User")->where("( username='%s'  and password='%s' ) ",$where)->find();
+        if($res){
+            // var_dump($res); return ;
+            if($res['groupid'] == 1){
+                $this->sendError(10101,"为了安全，禁止管理员通过这种方式登录");
+                return ;
+            }
+            unset($res['password']);
+            session("login_user" , $res );
+            $token = D("UserToken")->createToken($res['uid'],60*60*24*180);
+            cookie('cookie_token',$token,array('expire'=>60*60*24*180,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
+            if($redirect){
+                $redirect = urldecode($redirect) ;
+                header("location:{$redirect}");
+            }else{
+                header("location:../web/#/");
+            }
+            
+        }else{
+            D("VerifyCode")->_ins_times($key);//输错密码则设置输错次数
+        }
+    }
+
     public function oauth2(){
         $provider = new \League\OAuth2\Client\Provider\GenericProvider([
             'clientId'                => 'a36df4c9-5ed4-440b-8f69-7535d2947213',    // The client ID assigned to you by the provider
@@ -143,6 +182,8 @@ class ExtLoginController extends BaseController {
         }
 
     }
+
+
 
 
 
