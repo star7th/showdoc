@@ -73,6 +73,77 @@ class ExtLoginController extends BaseController {
         }
     }
 
+    
+    public function cas(){
+        define("CAS_VERSION_1_0", '1.0');
+        define("CAS_VERSION_2_0", '2.0');
+        define("CAS_VERSION_3_0", '3.0');
+
+        # 2 开启phpCAS debug
+        \phpCAS::setDebug();
+
+        # 3 初始化phpCAS,参数说明：
+        # a) CAS协议版本号
+        # b) cas server的域名
+        # c) cas server的端口号
+        # d) cas server的项目访问路径
+        \phpCAS::client(CAS_VERSION_2_0, '192.168.8.160', 8443, '/maxkey/authz/cas/');
+
+        # 4 开启设置证书验证。如果是开发环境可将此注释，如果是生产环境为了安全性建议将此开启
+        // phpCAS::setCasServerCACert($cas_server_ca_cert_path);
+
+        # 5 不为CAS服务器设置SSL验证
+        # 为了快速测试，您可以禁用CAS服务器的SSL验证。此建议不建议用于生产环境。验证CAS服务器对CAS协议的安全性至关重要！
+        \phpCAS::setNoCasServerValidation();
+
+        # 6 这里会检测服务器端的退出的通知，就能实现php和其他语言平台间同步登出了
+        # 处理登出请求。cas服务端会发送请求通知客户端。如果没有同步登出，可能是服务端跟客户端无法通信（比如我的客户端是localhost, 服务端在云上）
+        \phpCAS::handleLogoutRequests();
+
+        # 7 进行CAS服务验证，这个方法确保用户是否验证过，如果没有验证则跳转到验证界面
+        # 这个是强制认证模式，查看 CAS.php 可以找到几种不同的方式：
+        # a) forceAuthentication - phpCAS::forceAuthentication();
+        # b) checkAuthentication - phpCAS::checkAuthentication();
+        # c) renewAuthentication - phpCAS::renewAuthentication();
+        # 根据自己需要调用即可。
+        $auth = \phpCAS::forceAuthentication();
+        if ($auth) {
+            var_dump($auth);
+            return ;
+            # 8 验证通过，或者说已经登陆系统，可进行已经登陆之后的逻辑处理...
+            # 获得登陆CAS用户的名称
+            $user_name = \phpCAS::getUser();
+            echo $user_name . '已经成功登陆...<br>';
+
+            # 9 你还可打印保存的phpCAS session信息
+            print_r($_SESSION);
+
+            # 10 还可获取有关已验证用户的属性,例如：$uid = phpCAS::getAttribute('id');
+            $attr = \phpCAS::getAttributes();
+            print_r($attr);
+
+            # 11 进行退出的相关操作
+            # 在你的PHP项目中处理完相应的退出逻辑之后，还需执行phpCAS::logout()进行CAS系统的退出
+            # 当我们访问cas服务端的logout的时候，cas服务器会发送post请求到各个已经登录的客户端
+            //phpCAS::logout();
+
+            # 登出方法一：登出成功后跳转的地址
+            //phpCAS::setServerLoginUrl("https://192.168.1.120:80/cas/logout?embed=true&service=http://localhost/phpCasClient/user.php?a=login");
+            //phpCAS::logout();
+            # 登出方法二：退出登录后返回地址
+            //$param = array("service" => "http://cas.x.com");
+            //phpCAS::logout($param);
+
+        } else {
+            # 12 验证未通过，说明未进行登陆
+            # 将会跳转回你配置的CAS SSO SERVER服务的域名；
+            # 在你输入正确的用户名和密码之后CAS会自动跳转回service=http%3A%2F%2Fcas.x.com%2F此地址
+            # 在此你可以处理验证未通过的各种逻辑
+            echo '还未登陆，跳转到CAS进行登陆...<br>';
+        }
+
+    }
+
 
 
 }
