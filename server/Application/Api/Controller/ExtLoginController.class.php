@@ -35,7 +35,7 @@ class ExtLoginController extends BaseController {
                 $redirect = urldecode($redirect) ;
                 header("location:{$redirect}");
             }else{
-                header("location:../web/#/");
+                header("location:../web/#/item/index");
             }
             
         }else{
@@ -44,13 +44,22 @@ class ExtLoginController extends BaseController {
     }
 
     public function oauth2(){
+        $redirect = I("redirect") ;
+        session('redirect',$redirect) ;
+        $clientId = 'a36df4c9-5ed4-440b-8f69-7535d2947213';
+        $clientSecret = 'F2m6MjIwNTIwMjEyMjE3NDYxMTM8Lr';
+        $redirectUri = 'http://192.168.8.160:8280/showdoc/server/?s=/api/ExtLogin/oauth2';
+        $urlAuthorize = 'https://192.168.8.160:8443/maxkey/authz/oauth/v20/authorize';
+        $urlAccessToken = 'https://192.168.8.160:8443/maxkey/authz/oauth/v20/token';
+        $urlResourceOwnerDetails = 'https://192.168.8.160:8443/maxkey/authz/oauth/v20/resource' ;
+        $urlUserInfo = 'https://192.168.8.160:8443/maxkey/api/oauth/v20/me';
         $provider = new \League\OAuth2\Client\Provider\GenericProvider([
-            'clientId'                => 'a36df4c9-5ed4-440b-8f69-7535d2947213',    // The client ID assigned to you by the provider
-            'clientSecret'            => 'F2m6MjIwNTIwMjEyMjE3NDYxMTM8Lr',    // The client password assigned to you by the provider
-            'redirectUri'             => 'http://192.168.8.160:8280/showdoc/server/?s=/api/ExtLogin/oauth2',
-            'urlAuthorize'            => 'https://192.168.8.160:8443/maxkey/authz/oauth/v20/authorize',
-            'urlAccessToken'          => 'https://192.168.8.160:8443/maxkey/authz/oauth/v20/token',
-            'urlResourceOwnerDetails' => 'https://192.168.8.160:8443/maxkey/authz/oauth/v20/resource',
+            'clientId'                => $clientId,    // The client ID assigned to you by the provider
+            'clientSecret'            => $clientSecret,    // The client password assigned to you by the provider
+            'redirectUri'             => $redirectUri ,
+            'urlAuthorize'            => $urlAuthorize,
+            'urlAccessToken'          =>  $urlAccessToken,
+            'urlResourceOwnerDetails' => $urlResourceOwnerDetails,
         ],[
             'httpClient' => new \GuzzleHttp\Client(['verify' => false]),
         ]);
@@ -90,15 +99,38 @@ class ExtLoginController extends BaseController {
         
                 // We have an access token, which we may use in authenticated
                 // requests against the service provider's API.
-                echo 'Access Token: ' . $accessToken->getToken() . "<br>";
-                echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
-                echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
-                echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
+                //echo 'Access Token: ' . $accessToken->getToken() . "<br>";
+                //echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
+                //echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
+               // echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
                 
-                $res = http_post('https://192.168.8.160:8443/maxkey/api/oauth/v20/me',array(
+                $res = http_post($urlUserInfo,array(
                     "access_token"=>$accessToken->getToken()
                 ));
-                var_dump($res);
+                if($res){
+                    $res_array = json_decode($res, true);
+                    $username = $res_array['username'] ;
+                    $info = D("User")->where("username='%s'" ,array($username))->find();
+                    if(!$info){
+                        D("User")->register($username,md5($username.time().rand()));
+                        $info = D("User")->where("username='%s'" ,array($username))->find();
+                    }
+
+                    unset($info['password']);
+                    session("login_user" , $info );
+                    $token = D("UserToken")->createToken($info['uid'],60*60*24*180);
+                    cookie('cookie_token',$token,array('expire'=>60*60*24*180,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
+                    if(session('redirect')){
+                        $redirect = urldecode(session('redirect')) ;
+                        header("location:{$redirect}");
+                        session('redirect',null) ;
+
+                    }else{
+                        header("location:../web/#/item/index");
+                    }
+
+                }
+
 
                 
         
