@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap="source/CAS.php"
+    convertNoticesToExceptions="false"
+    colors="true"
+    stderr="true"
+    backupGlobals="true"
+    >
+
+    <testsuites>
+        <testsuite name="phpCAS Tests">
+            <directory>test/CAS/Tests/</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="false">
+            <directory>source/</directory>
+        </whitelist>
+    </filter>
+</phpunit>

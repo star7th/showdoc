@@ -364,6 +364,76 @@
             "install-path": "../guzzlehttp/psr7"
         },
         {
+            "name": "jasig/phpcas",
+            "version": "1.3.9",
+            "version_normalized": "1.3.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/apereo/phpCAS.git",
+                "reference": "7325865c4cfb5005ed4e4c5cf01823be1726a2a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/apereo/phpCAS/zipball/7325865c4cfb5005ed4e4c5cf01823be1726a2a0",
+                "reference": "7325865c4cfb5005ed4e4c5cf01823be1726a2a0",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.4.0",
+                "psr/log": "^1.0.0"
+            },
+            "require-dev": {
+                "monolog/monolog": "^1.0.0",
+                "phpunit/phpunit": ">=4.8.35 <8"
+            },
+            "time": "2021-01-31T21:13:59+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "classmap": [
+                    "source/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Joachim Fritschi",
+                    "homepage": "https://wiki.jasig.org/display/~fritschi"
+                },
+                {
+                    "name": "Adam Franco",
+                    "homepage": "https://wiki.jasig.org/display/~adamfranco"
+                }
+            ],
+            "description": "Provides a simple API for authenticating users against a CAS server",
+            "homepage": "https://wiki.jasig.org/display/CASC/phpCAS",
+            "keywords": [
+                "apereo",
+                "cas",
+                "jasig"
+            ],
+            "support": {
+                "issues": "https://github.com/apereo/phpCAS/issues",
+                "source": "https://github.com/apereo/phpCAS/tree/1.3.9"
+            },
+            "install-path": "../jasig/phpcas"
+        },
+        {
             "name": "league/oauth2-client",
             "version": "2.6.0",
             "version_normalized": "2.6.0.0",
@@ -623,6 +693,65 @@
                 "source": "https://github.com/php-fig/http-message/tree/master"
             },
             "install-path": "../psr/http-message"
+        },
+        {
+            "name": "psr/log",
+            "version": "1.1.4",
+            "version_normalized": "1.1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
+                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "2021-05-03T11:20:27+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "Psr/Log/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/log/tree/1.1.4"
+            },
+            "install-path": "../psr/log"
         },
         {
             "name": "qcloud/cos-sdk-v5",

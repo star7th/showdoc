@@ -201,6 +201,15 @@
       ),
       'reference' => 'dc960a912984efb74d0a90222870c72c87f10c91',
     ),
+    'jasig/phpcas' => 
+    array (
+      'pretty_version' => '1.3.9',
+      'version' => '1.3.9.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '7325865c4cfb5005ed4e4c5cf01823be1726a2a0',
+    ),
     'league/oauth2-client' => 
     array (
       'pretty_version' => '2.6.0',
@@ -250,6 +259,15 @@
       array (
         0 => '1.0',
       ),
+    ),
+    'psr/log' => 
+    array (
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
     ),
     'qcloud/cos-sdk-v5' => 
     array (

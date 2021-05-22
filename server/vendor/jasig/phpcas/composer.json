@@ -1,0 +1,39 @@
+{
+    "name": "apereo/phpcas",
+    "description": "Provides a simple API for authenticating users against a CAS server",
+    "keywords": ["cas", "jasig", "apereo"],
+    "homepage": "https://wiki.jasig.org/display/CASC/phpCAS",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {"name": "Joachim Fritschi", "homepage": "https://wiki.jasig.org/display/~fritschi"},
+        {"name": "Adam Franco", "homepage": "https://wiki.jasig.org/display/~adamfranco"}
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "ext-curl": "*",
+        "psr/log": "^1.0.0"
+    },
+    "require-dev": {
+        "monolog/monolog": "^1.0.0",
+        "phpunit/phpunit": ">=4.8.35 <8"
+    },
+    "autoload": {
+        "classmap": [
+            "source/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpCas\\": "test/CAS/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.3.x-dev"
+        }
+    }
+}

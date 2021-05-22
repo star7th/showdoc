@@ -1,0 +1,17 @@
+codecov:
+  strict_yaml_branch: master
+
+coverage:
+  round: up
+  precision: 2
+  status:
+    project:
+      default:
+        target: "70%"
+        informational: true
+    patch: # temporarily disabled
+      default:
+        target: "70%"
+        informational: true
+
+comment: false
