@@ -1,4 +1,3 @@
-
 {
     "name": "showdoc/showdoc",
     "type": "project",
@@ -17,10 +16,10 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "qcloud/cos-sdk-v5": "1.*"
+        "qcloud/cos-sdk-v5": "1.*",
+        "league/oauth2-client": "^2.6"
     },
     "config": {
         "vendor-dir": "./server/vendor"
     }
 }
-

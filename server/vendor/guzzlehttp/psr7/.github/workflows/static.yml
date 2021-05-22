@@ -1,0 +1,29 @@
+name: Static analysis
+
+on:
+  pull_request:
+
+jobs:
+  php-cs-fixer:
+    name: PHP-CS-Fixer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          coverage: none
+          extensions: mbstring
+
+      - name: Download dependencies
+        run: composer update --no-interaction --no-progress
+
+      - name: Download PHP CS Fixer
+        run: composer require "friendsofphp/php-cs-fixer:2.18.4"
+
+      - name: Execute PHP CS Fixer
+        run: vendor/bin/php-cs-fixer fix --diff-format udiff --dry-run

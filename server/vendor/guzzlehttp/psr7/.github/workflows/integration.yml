@@ -1,0 +1,37 @@
+name: Integration
+
+on:
+  pull_request:
+
+jobs:
+
+  build:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 10
+      matrix:
+        php: ['7.2', '7.3', '7.4', '8.0']
+
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download dependencies
+        uses: ramsey/composer-install@v1
+        with:
+          composer-options: --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Start server
+        run: php -S 127.0.0.1:10002 tests/Integration/server.php &
+
+      - name: Run tests
+        env:
+          TEST_SERVER: 127.0.0.1:10002
+        run: ./vendor/bin/phpunit --testsuite Integration
