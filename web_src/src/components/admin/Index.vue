@@ -29,6 +29,10 @@
               <i class="el-icon-tickets"></i>
               <span slot="title">{{ $t('attachment_manage') }}</span>
             </el-menu-item>
+            <el-menu-item index="7">
+              <i class="el-icon-tickets"></i>
+              <span slot="title">{{ $t('ext_login') }}</span>
+            </el-menu-item>
             <el-menu-item index="3">
               <i class="el-icon-tickets"></i>
               <span slot="title">{{ $t('web_setting') }}</span>
@@ -50,6 +54,7 @@
             <Setting v-if="open_menu_index == 3"></Setting>
             <Attachment v-if="open_menu_index == 5"></Attachment>
             <SystemUpdate v-if="open_menu_index == 6"></SystemUpdate>
+            <ExtLogin v-if="open_menu_index == 7"></ExtLogin>
           </el-main>
           <el-footer>
             <!-- something -->
@@ -130,6 +135,7 @@ import User from '@/components/admin/user/Index'
 import Setting from '@/components/admin/setting/Index'
 import Attachment from '@/components/admin/attachment/Index'
 import SystemUpdate from '@/components/admin/systemUpdate/Index'
+import ExtLogin from '@/components/admin/extLogin/Index'
 export default {
   data() {
     return {
@@ -142,7 +148,8 @@ export default {
     User,
     Setting,
     Attachment,
-    SystemUpdate
+    SystemUpdate,
+    ExtLogin
   },
   methods: {
     select_menu(index, indexPath) {

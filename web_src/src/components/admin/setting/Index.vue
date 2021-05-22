@@ -29,59 +29,6 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item :label="$t('ldap_open_label')">
-        <el-switch v-model="form.ldap_open"></el-switch>
-      </el-form-item>
-
-      <div v-if="form.ldap_open" style="margin-left:50px">
-        <el-form-item label="ldap host">
-          <el-input v-model="form.ldap_form.host" class="form-el"></el-input>
-        </el-form-item>
-
-        <el-form-item label="ldap port">
-          <el-input v-model="form.ldap_form.port" style="width:90px"></el-input>
-        </el-form-item>
-
-        <el-form-item label="ldap base dn ">
-          <el-input
-            v-model="form.ldap_form.base_dn"
-            class="form-el"
-            placeholder="例如 dc=showdoc,dc=com"
-          ></el-input>
-        </el-form-item>
-
-        <el-form-item label="ldap bind dn ">
-          <el-input
-            v-model="form.ldap_form.bind_dn"
-            class="form-el"
-            placeholder="cn=admin,dc=showdoc,dc=com"
-          ></el-input>
-        </el-form-item>
-
-        <el-form-item label="ldap bind password ">
-          <el-input
-            v-model="form.ldap_form.bind_password"
-            class="form-el"
-            placeholder="例如 123456"
-          ></el-input>
-        </el-form-item>
-
-        <el-form-item label="ldap version">
-          <el-select v-model="form.ldap_form.version" class="form-el">
-            <el-option label="3" value="3"></el-option>
-            <el-option label="2" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="ldap user filed">
-          <el-input
-            v-model="form.ldap_form.user_field"
-            class="form-el"
-            placeholder="例如 cn 或者 sAMAccountName"
-          ></el-input>
-        </el-form-item>
-      </div>
-
       <el-form-item :label="$t('oss_open')">
         <el-switch v-model="form.oss_open"></el-switch>
       </el-form-item>
@@ -99,7 +46,10 @@
           <el-input v-model="form.oss_setting.key" class="form-el"></el-input>
         </el-form-item>
 
-        <el-form-item label="secret" v-if="form.oss_setting.oss_type != 'qcloud'">
+        <el-form-item
+          label="secret"
+          v-if="form.oss_setting.oss_type != 'qcloud'"
+        >
           <el-input
             v-model="form.oss_setting.secret"
             class="form-el"
@@ -116,19 +66,28 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="region"  v-if="form.oss_setting.oss_type == 'qcloud'">
+        <el-form-item
+          label="region"
+          v-if="form.oss_setting.oss_type == 'qcloud'"
+        >
           <el-input
             v-model="form.oss_setting.region"
             class="form-el"
           ></el-input>
         </el-form-item>
-          <el-form-item label="secretId" v-if="form.oss_setting.oss_type == 'qcloud'">
+        <el-form-item
+          label="secretId"
+          v-if="form.oss_setting.oss_type == 'qcloud'"
+        >
           <el-input
             v-model="form.oss_setting.secretId"
             class="form-el"
           ></el-input>
         </el-form-item>
-        <el-form-item label="secretKey" v-if="form.oss_setting.oss_type == 'qcloud'">
+        <el-form-item
+          label="secretKey"
+          v-if="form.oss_setting.oss_type == 'qcloud'"
+        >
           <el-input
             v-model="form.oss_setting.secretKey"
             class="form-el"
@@ -175,17 +134,7 @@ export default {
     return {
       form: {
         register_open: true,
-        ldap_open: false,
         home_page: '1',
-        ldap_form: {
-          host: '',
-          port: '389',
-          version: '3',
-          base_dn: '',
-          bind_dn: '',
-          bind_password: '',
-          user_field: ''
-        },
         home_item: '',
         oss_open: false,
         oss_setting: {
@@ -199,7 +148,6 @@ export default {
           region: '',
           secretId: '',
           secretKey: ''
-
         }
       },
       itemList: []
@@ -225,20 +173,22 @@ export default {
           }
           this.form.register_open = response.data.data.register_open > 0
           this.form.oss_open = response.data.data.oss_open > 0
-          this.form.ldap_open = response.data.data.ldap_open > 0
           this.form.home_page =
             response.data.data.home_page > 0 ? response.data.data.home_page : 1
           this.form.home_item =
             response.data.data.home_item > 0 ? response.data.data.home_item : ''
-          this.form.ldap_form = response.data.data.ldap_form
-            ? response.data.data.ldap_form
-            : this.form.ldap_form
           this.form.oss_setting = response.data.data.oss_setting
             ? response.data.data.oss_setting
             : this.form.oss_setting
-          this.form.oss_setting.region = this.form.oss_setting.region ? this.form.oss_setting.region : ''
-          this.form.oss_setting.secretId = this.form.oss_setting.secretId ? this.form.oss_setting.secretId : ''
-          this.form.oss_setting.secretKey = this.form.oss_setting.secretKey ? this.form.oss_setting.secretKey : ''
+          this.form.oss_setting.region = this.form.oss_setting.region
+            ? this.form.oss_setting.region
+            : ''
+          this.form.oss_setting.secretId = this.form.oss_setting.secretId
+            ? this.form.oss_setting.secretId
+            : ''
+          this.form.oss_setting.secretKey = this.form.oss_setting.secretKey
+            ? this.form.oss_setting.secretKey
+            : ''
         } else {
           this.$alert(response.data.error_message)
         }
