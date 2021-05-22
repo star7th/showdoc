@@ -71,7 +71,63 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="OAuth2">OAuth2</el-tab-pane>
+      <el-tab-pane label="OAuth2">
+        <el-form ref="form" :model="form" label-width="150px">
+          <div>
+            <el-form-item label="Client id">
+              <el-input
+                v-model="form.ldap_form.host"
+                class="form-el"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="Client secret">
+              <el-input
+                v-model="form.ldap_form.host"
+                class="form-el"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="Oauth host">
+              <el-select style="width:100px;">
+                <el-option label="http://" value="http"></el-option>
+                <el-option label="https://" value="https"></el-option>
+              </el-select>
+              <el-input
+                class="form-el"
+                placeholder="eg:  sso.your-site.com"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="Authorize path">
+              <el-input
+                v-model="form.ldap_form.host"
+                placeholder="eg:  /oauth/v2/authorize"
+                class="form-el"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="AccessToken path">
+              <el-input
+                v-model="form.ldap_form.host"
+                placeholder="eg:  /oauth/v2/token"
+                class="form-el"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="Resource path">
+              <el-input
+                v-model="form.ldap_form.host"
+                placeholder="eg:  /oauth/v2/resource"
+                class="form-el"
+              ></el-input>
+            </el-form-item>
+          </div>
+
+          <br />
+          <el-form-item>
+            <el-button type="primary" @click="saveLdapConfig">{{
+              $t('save')
+            }}</el-button>
+            <el-button>{{ $t('cancel') }}</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
       <el-tab-pane label="通用接入">
         <div style="min-height:600px;margin-top:20px;">
           通用接入提供的是一种自动登录showdoc的能力，需要自己根据文档开发集成，详情请看：这里

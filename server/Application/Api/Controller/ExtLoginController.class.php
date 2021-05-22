@@ -48,10 +48,11 @@ class ExtLoginController extends BaseController {
         session('redirect',$redirect) ;
         $clientId = 'a36df4c9-5ed4-440b-8f69-7535d2947213';
         $clientSecret = 'F2m6MjIwNTIwMjEyMjE3NDYxMTM8Lr';
-        $redirectUri = 'http://192.168.8.160:8280/showdoc/server/?s=/api/ExtLogin/oauth2';
-        $urlAuthorize = 'https://192.168.8.160:8443/maxkey/authz/oauth/v20/authorize';
-        $urlAccessToken = 'https://192.168.8.160:8443/maxkey/authz/oauth/v20/token';
-        $urlResourceOwnerDetails = 'https://192.168.8.160:8443/maxkey/authz/oauth/v20/resource' ;
+        $oauthUrl = 'https://192.168.8.160:8443/maxkey/authz/oauth/v20';
+        $redirectUri = 'http://192.168.8.160/showdoc/server/?s=/api/ExtLogin/oauth2';
+        $urlAuthorize = $oauthUrl.'/authorize';
+        $urlAccessToken = $oauthUrl.'/token';
+        $urlResourceOwnerDetails = $oauthUrl.'/resource' ;
         $urlUserInfo = 'https://192.168.8.160:8443/maxkey/api/oauth/v20/me';
         $provider = new \League\OAuth2\Client\Provider\GenericProvider([
             'clientId'                => $clientId,    // The client ID assigned to you by the provider
