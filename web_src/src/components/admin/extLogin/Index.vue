@@ -182,10 +182,10 @@
             LoginSecretKey:&nbsp;
             <el-input
               readonly
-              v-model="login_secret_token"
+              v-model="login_secret_key"
               class="form-el"
             ></el-input>
-            <el-button @click="resetLoginSecretToken">{{
+            <el-button @click="resetLoginSecretKey">{{
               $t('reset')
             }}</el-button>
           </p>
@@ -237,7 +237,7 @@ export default {
           userinfo_path: ''
         }
       },
-      login_secret_token: '',
+      login_secret_key: '',
       itemList: [],
       lang: ''
     }
@@ -296,29 +296,27 @@ export default {
       })
     },
 
-    getLoginSecretToken() {
-      this.request('/api/adminSetting/getLoginSecretToken', {}).then(data => {
-        this.login_secret_token = data.data.login_secret_token
+    getLoginSecretKey() {
+      this.request('/api/adminSetting/getLoginSecretKey', {}).then(data => {
+        this.login_secret_key = data.data.login_secret_key
       })
     },
-    resetLoginSecretToken() {
+    resetLoginSecretKey() {
       this.$confirm(this.$t('confirm') + '?', ' ', {
         confirmButtonText: this.$t('confirm'),
         cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        this.request('/api/adminSetting/resetLoginSecretToken', {}).then(
-          data => {
-            this.login_secret_token = data.data.login_secret_token
-          }
-        )
+        this.request('/api/adminSetting/resetLoginSecretKey', {}).then(data => {
+          this.login_secret_key = data.data.login_secret_key
+        })
       })
     }
   },
   mounted() {
     this.loadLdapConfig()
     this.loadOauth2Config()
-    this.getLoginSecretToken()
+    this.getLoginSecretKey()
     this.lang = DocConfig.lang
   },
   beforeDestroy() {

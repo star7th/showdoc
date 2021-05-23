@@ -4,7 +4,7 @@ use Think\Controller;
 class ExtLoginController extends BaseController {
 
 
-    // 根据用户名和LoginSecretToken登录
+    // 根据用户名和LoginSecretKey登录
     public function bySecretKey(){
         $username = I("username") ;
         $key = I("key") ;
@@ -16,9 +16,9 @@ class ExtLoginController extends BaseController {
             $this->sendError(10101,"已过期");
             return ;
         }
-        $login_secret_token = D("Options")->get("login_secret_token") ;
+        $login_secret_key = D("Options")->get("login_secret_key") ;
 
-        $new_token = md5($username.$login_secret_token.$time);
+        $new_token = md5($username.$login_secret_key.$time);
         if($token !=  $new_token){
             $this->sendError(10101,"token不正确");
             return ;
