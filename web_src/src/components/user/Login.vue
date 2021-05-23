@@ -54,6 +54,7 @@
               $t('register_new_account')
             }}</router-link
             >&nbsp;&nbsp;&nbsp;
+            <a :href="oauth2_url">{{ oauth2_entrance_tips }}</a>
           </el-form-item>
         </el-form>
       </el-card>
@@ -74,7 +75,9 @@ export default {
       v_code: '',
       v_code_img: DocConfig.server + '/api/common/verify',
       show_v_code: false,
-      is_show_alert: false
+      is_show_alert: false,
+      oauth2_entrance_tips: '',
+      oauth2_url: DocConfig.server + '/api/ExtLogin/oauth2'
     }
   },
   methods: {
@@ -130,6 +133,16 @@ export default {
     checkDb() {
       var url = DocConfig.server + '/api/update/checkDb'
       this.axios.get(url)
+    },
+    getOauth() {
+      var url = DocConfig.server + '/api/user/oauthInfo'
+      this.axios.get(url).then(response => {
+        if (response.data.error_code === 0) {
+          if (response.data.data.oauth2_open > 0) {
+            this.oauth2_entrance_tips = response.data.data.oauth2_entrance_tips
+          }
+        }
+      })
     }
   },
   mounted() {
@@ -147,6 +160,7 @@ export default {
 
     this.script_cron()
     this.checkDb()
+    this.getOauth()
   },
   watch: {
     $route(to, from) {

@@ -339,6 +339,24 @@ class UserController extends BaseController {
 
     }
 
+    public function oauthInfo(){
+        $oauth2_open = D("Options")->get("oauth2_open" ) ;
+        $oauth2_form = D("Options")->get("oauth2_form" ) ;
+        $oauth2_entrance_tips = '';
+        if($oauth2_form){
+            $oauth2_form = json_decode($oauth2_form,1);
+            if($oauth2_form && $oauth2_form['entrance_tips']){
+                $oauth2_entrance_tips = $oauth2_form['entrance_tips'] ;
+            }
+        }
+        $this->sendResult(array(
+            "oauth2_open" => $oauth2_open ,
+            "oauth2_entrance_tips" => $oauth2_entrance_tips ,
+        ));
+
+    }
+
+
 
 
 }

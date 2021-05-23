@@ -4,23 +4,32 @@ use Think\Controller;
 class ExtLoginController extends BaseController {
 
 
-    // 根据用户名和密码串登录
-    public function byName(){
+    // 根据用户名和LoginSecretToken登录
+    public function bySecretKey(){
         $username = I("username") ;
-        $password_md5 = strtolower(I("password_md5")); // 密码md5之后的加密串
+        $key = I("key") ;
+        $time = I("time") ;
+        $token = I("token") ;
         $redirect = I("redirect") ;
-        
 
-        //防止枚举破解。检查密码的次数。如果错误超过1000次，则不允许。
-        $key= 'login_fail_times_'.$username;
-        if(!D("VerifyCode")->_check_times($key,1000)){
-            $this->sendError(10101,"密码错误太频繁，请24小时后再试");
+        if($time < (time() - 60) ){
+            $this->sendError(10101,"已过期");
             return ;
         }
+        $login_secret_token = D("Options")->get("login_secret_token") ;
 
-        $password = md5(base64_encode($password_md5).'576hbgh6');
-        $where=array($username,$password);
-        $res = D("User")->where("( username='%s'  and password='%s' ) ",$where)->find();
+        $new_token = md5($username.$login_secret_token.$time);
+        if($token !=  $new_token){
+            $this->sendError(10101,"token不正确");
+            return ;
+        }
+        
+        $res = D("User")->where("( username='%s' ) ",array($username))->find();
+        if(!$res){
+            D("User")->register($username,md5("savsnyjh".time().rand()));
+            $res = D("User")->where("( username='%s' ) ",array($username))->find();
+
+        }
         if($res){
             // var_dump($res); return ;
             if($res['groupid'] == 1){
@@ -38,22 +47,30 @@ class ExtLoginController extends BaseController {
                 header("location:../web/#/item/index");
             }
             
-        }else{
-            D("VerifyCode")->_ins_times($key);//输错密码则设置输错次数
         }
     }
 
     public function oauth2(){
         $redirect = I("redirect") ;
         session('redirect',$redirect) ;
-        $clientId = 'a36df4c9-5ed4-440b-8f69-7535d2947213';
-        $clientSecret = 'F2m6MjIwNTIwMjEyMjE3NDYxMTM8Lr';
-        $oauthUrl = 'https://192.168.8.160:8443/maxkey/authz/oauth/v20';
-        $redirectUri = 'http://192.168.8.160/showdoc/server/?s=/api/ExtLogin/oauth2';
-        $urlAuthorize = $oauthUrl.'/authorize';
-        $urlAccessToken = $oauthUrl.'/token';
-        $urlResourceOwnerDetails = $oauthUrl.'/resource' ;
-        $urlUserInfo = 'https://192.168.8.160:8443/maxkey/api/oauth/v20/me';
+        $oauth2_open = D("Options")->get("oauth2_open" ) ;
+        $oauth2_form = D("Options")->get("oauth2_form" ) ;
+        $oauth2_form = json_decode($oauth2_form,1);
+
+        if(!$oauth2_open){
+            echo "尚未启用oauth2";
+            return ;
+        }
+        
+
+        $clientId = $oauth2_form['client_id'] ;
+        $clientSecret = $oauth2_form['client_secret']  ;
+        $redirectUri = $oauth2_form['redirectUri'];
+        $urlAuthorize = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['authorize_path'] ;
+        $urlAccessToken = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['token_path'] ;
+        $urlResourceOwnerDetails = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['resource_path'] ;
+        $urlUserInfo = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['userinfo_path'] ;
+    
         $provider = new \League\OAuth2\Client\Provider\GenericProvider([
             'clientId'                => $clientId,    // The client ID assigned to you by the provider
             'clientSecret'            => $clientSecret,    // The client password assigned to you by the provider
@@ -108,8 +125,8 @@ class ExtLoginController extends BaseController {
                 $res = http_post($urlUserInfo,array(
                     "access_token"=>$accessToken->getToken()
                 ));
-                if($res){
-                    $res_array = json_decode($res, true);
+                $res_array = json_decode($res, true);
+                if($res_array){
                     $username = $res_array['username'] ;
                     $info = D("User")->where("username='%s'" ,array($username))->find();
                     if(!$info){
@@ -130,6 +147,8 @@ class ExtLoginController extends BaseController {
                         header("location:../web/#/item/index");
                     }
 
+                }else{
+                    echo "登录成功但无法获取用户信息";
                 }
 
 

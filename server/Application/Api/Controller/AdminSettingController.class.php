@@ -53,7 +53,7 @@ class AdminSettingController extends BaseController {
 
     }
 
-    //保存配置
+    //保存Ldap配置
     public function saveLdapConfig(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
@@ -101,7 +101,7 @@ class AdminSettingController extends BaseController {
 
     }
 
-    //加载配置
+    //加载Ldap配置
     public function loadLdapConfig(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
@@ -122,6 +122,59 @@ class AdminSettingController extends BaseController {
 
     }
 
+    //保存Oauth2配置
+    public function saveOauth2Config(){
+        $login_user = $this->checkLogin();
+        $this->checkAdmin();
+        $oauth2_open = intval(I("oauth2_open")) ;
+        $oauth2_form = I("oauth2_form") ;
+        D("Options")->set("oauth2_form" , json_encode( $oauth2_form)) ;
+        D("Options")->set("oauth2_open" ,$oauth2_open) ;
+        $this->sendResult(array());
+
+    }
+
+    //加载Oauth2配置
+    public function loadOauth2Config(){
+        $login_user = $this->checkLogin();
+        $this->checkAdmin();
+        $oauth2_open = D("Options")->get("oauth2_open" ) ;
+        $oauth2_form = D("Options")->get("oauth2_form" ) ;
+        $oauth2_form = json_decode($oauth2_form,1);
+        
+        //如果强等于false，那就是尚未有数据。关闭注册应该是有数据且数据为字符串0
+        if ($register_open === false) {
+            $this->sendResult(array());
+        }else{
+            $array = array(
+                "oauth2_open"=>$oauth2_open ,
+                "oauth2_form"=>$oauth2_form ,
+                );
+            $this->sendResult($array);
+        }
+
+    }
+
+    public function getLoginSecretToken(){
+        $login_user = $this->checkLogin();
+        $this->checkAdmin();
+        $login_secret_token = D("Options")->get("login_secret_token") ;
+        if(!$login_secret_token){
+            $login_secret_token = md5("rgrsfsrfsrf".time().rand());
+            D("Options")->set("login_secret_token",$login_secret_token) ;
+        }
+        $this->sendResult(array("login_secret_token"=>$login_secret_token));
+
+    }
+
+    public function resetLoginSecretToken(){
+        $login_user = $this->checkLogin();
+        $this->checkAdmin();
+        $login_secret_token = md5("rgrsfsrfsrf".time().rand());
+        D("Options")->set("login_secret_token",$login_secret_token) ;
+        $this->sendResult(array("login_secret_token"=>$login_secret_token));
+
+    }
 
 
     public function checkLdapLogin(){

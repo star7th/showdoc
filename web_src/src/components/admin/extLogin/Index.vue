@@ -2,7 +2,7 @@
   <div class="hello">
     <el-tabs type="border-card">
       <el-tab-pane label="LDAP">
-        <el-form ref="form" :model="form" label-width="150px">
+        <el-form ref="form" label-width="150px">
           <el-form-item :label="$t('ldap_open_label')">
             <el-switch v-model="form.ldap_open"></el-switch>
           </el-form-item>
@@ -72,21 +72,32 @@
         </el-form>
       </el-tab-pane>
       <el-tab-pane label="OAuth2">
-        <el-form ref="form" :model="form" label-width="150px">
-          <el-form-item label="启动OAuth2登录">
-            <el-switch v-model="form.ldap_open"></el-switch>
+        <el-form ref="form" label-width="150px">
+          <el-form-item :label="$t('enable_oauth')">
+            <el-switch v-model="form.oauth2_open"></el-switch>
+          </el-form-item>
+          <el-form-item label="callback url">
+            <el-input
+              v-model="form.oauth2_form.redirectUri"
+              class="form-el"
+            ></el-input>
+          </el-form-item>
+          <el-form-item :label="$t('callback_eg')">
+            http://{{
+              $t('your_showdoc_server')
+            }}/server/?s=/api/ExtLogin/oauth2
           </el-form-item>
           <div>
-            <el-form-item label="入口文字">
+            <el-form-item :label="$t('入口文字提示')">
               <el-input
-                v-model="form.ldap_form.host"
-                placeholder="eg: 使用公司OA登录"
+                v-model="form.oauth2_form.entrance_tips"
+                placeholder=""
                 class="form-el"
               ></el-input>
               <el-tooltip
                 class="item"
                 effect="dark"
-                content="当启动OAuth2登录时候，登录界面将在输入框的下方出现此入口。你可以填上如'使用公司OA登录'这样的提示"
+                :content="$t('entrance_tips_content')"
                 placement="top"
               >
                 <i class="el-icon-question"></i>
@@ -94,61 +105,97 @@
             </el-form-item>
             <el-form-item label="Client id">
               <el-input
-                v-model="form.ldap_form.host"
+                v-model="form.oauth2_form.client_id"
                 class="form-el"
               ></el-input>
             </el-form-item>
             <el-form-item label="Client secret">
               <el-input
-                v-model="form.ldap_form.host"
+                v-model="form.oauth2_form.client_secret"
                 class="form-el"
               ></el-input>
             </el-form-item>
+
             <el-form-item label="Oauth host">
-              <el-select style="width:100px;">
+              <el-select
+                v-model="form.oauth2_form.protocol"
+                style="width:100px;"
+              >
                 <el-option label="http://" value="http"></el-option>
                 <el-option label="https://" value="https"></el-option>
               </el-select>
               <el-input
+                v-model="form.oauth2_form.host"
                 class="form-el"
                 placeholder="eg:  sso.your-site.com"
               ></el-input>
             </el-form-item>
             <el-form-item label="Authorize path">
               <el-input
-                v-model="form.ldap_form.host"
+                v-model="form.oauth2_form.authorize_path"
                 placeholder="eg:  /oauth/v2/authorize"
                 class="form-el"
               ></el-input>
             </el-form-item>
             <el-form-item label="AccessToken path">
               <el-input
-                v-model="form.ldap_form.host"
+                v-model="form.oauth2_form.token_path"
                 placeholder="eg:  /oauth/v2/token"
                 class="form-el"
               ></el-input>
             </el-form-item>
             <el-form-item label="Resource path">
               <el-input
-                v-model="form.ldap_form.host"
+                v-model="form.oauth2_form.resource_path"
                 placeholder="eg:  /oauth/v2/resource"
                 class="form-el"
               ></el-input>
             </el-form-item>
+            <el-form-item label="User info path">
+              <el-input
+                v-model="form.oauth2_form.userinfo_path"
+                placeholder="eg:  /oauth/v2/me"
+                class="form-el"
+              ></el-input>
+              <el-tooltip
+                class="item"
+                effect="dark"
+                :content="$t('userinfo_path_content')"
+                placement="top"
+              >
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </el-form-item>
           </div>
-
           <br />
           <el-form-item>
-            <el-button type="primary" @click="saveLdapConfig">{{
+            <el-button type="primary" @click="saveOauth2Config">{{
               $t('save')
             }}</el-button>
             <el-button>{{ $t('cancel') }}</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="通用接入">
-        <div style="min-height:600px;margin-top:20px;">
-          通用接入提供的是一种自动登录showdoc的能力，需要自己根据文档开发集成，详情请看：这里
+      <el-tab-pane label="通用接入" v-if="lang == 'zh-cn'">
+        <div style="min-height:600px;margin-top:50px;margin-left:30px;">
+          <p>
+            LoginSecretKey:&nbsp;
+            <el-input
+              readonly
+              v-model="login_secret_token"
+              class="form-el"
+            ></el-input>
+            <el-button @click="resetLoginSecretToken">{{
+              $t('reset')
+            }}</el-button>
+          </p>
+          <p>
+            通用接入提供的是一种自动登录showdoc的能力，需要自己根据文档开发集成。<a
+              href="https://www.showdoc.com.cn/p/0fb2753c5a48acc7c3fbbb00f9504e6b"
+              target="_blank"
+              >点击这里查看文档</a
+            >
+          </p>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -157,7 +204,7 @@
 
 <style scoped>
 .form-el {
-  width: 230px;
+  width: 400px;
 }
 </style>
 
@@ -175,9 +222,24 @@ export default {
           bind_dn: '',
           bind_password: '',
           user_field: ''
+        },
+        oauth2_open: false,
+        oauth2_form: {
+          redirectUri: '',
+          entrance_tips: '',
+          client_id: '',
+          client_secret: '',
+          protocol: 'https',
+          host: '',
+          authorize_path: '',
+          token_path: '',
+          resource_path: '',
+          userinfo_path: ''
         }
       },
-      itemList: []
+      login_secret_token: '',
+      itemList: [],
+      lang: ''
     }
   },
   methods: {
@@ -206,10 +268,58 @@ export default {
           this.$alert(response.data.error_message)
         }
       })
+    },
+    saveOauth2Config() {
+      var url = DocConfig.server + '/api/adminSetting/saveOauth2Config'
+      this.axios.post(url, this.form).then(response => {
+        if (response.data.error_code === 0) {
+          this.$alert(this.$t('success'))
+        } else {
+          this.$alert(response.data.error_message)
+        }
+      })
+    },
+    loadOauth2Config() {
+      var url = DocConfig.server + '/api/adminSetting/loadOauth2Config'
+      this.axios.post(url, this.form).then(response => {
+        if (response.data.error_code === 0) {
+          if (response.data.data.length === 0) {
+            return
+          }
+          this.form.oauth2_open = response.data.data.oauth2_open > 0
+          this.form.oauth2_form = response.data.data.oauth2_form
+            ? response.data.data.oauth2_form
+            : this.form.oauth2_form
+        } else {
+          this.$alert(response.data.error_message)
+        }
+      })
+    },
+
+    getLoginSecretToken() {
+      this.request('/api/adminSetting/getLoginSecretToken', {}).then(data => {
+        this.login_secret_token = data.data.login_secret_token
+      })
+    },
+    resetLoginSecretToken() {
+      this.$confirm(this.$t('confirm') + '?', ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
+        type: 'warning'
+      }).then(() => {
+        this.request('/api/adminSetting/resetLoginSecretToken', {}).then(
+          data => {
+            this.login_secret_token = data.data.login_secret_token
+          }
+        )
+      })
     }
   },
   mounted() {
     this.loadLdapConfig()
+    this.loadOauth2Config()
+    this.getLoginSecretToken()
+    this.lang = DocConfig.lang
   },
   beforeDestroy() {
     this.$message.closeAll()
