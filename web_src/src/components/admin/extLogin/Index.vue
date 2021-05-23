@@ -85,7 +85,7 @@
           <el-form-item :label="$t('callback_eg')">
             http://{{
               $t('your_showdoc_server')
-            }}/server/?s=/api/ExtLogin/oauth2
+            }}/server/?s=/api/extLogin/oauth2
           </el-form-item>
           <div>
             <el-form-item :label="$t('入口文字提示')">

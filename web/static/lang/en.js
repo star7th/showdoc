@@ -443,6 +443,6 @@ exports.default = {
   callback_eg: ' callback url example',
   entrance_tips_label: 'Entrance text prompt',
   entrance_tips_content: "When OAuth2 login is enabled, this entry will appear below the input box on the login interface. You can fill in a prompt such as 'Log in with company OA'",
-  userinfo_path_content:'The interface path for obtaining user information after successful login. The interface should return a json string and include the username field',
+  userinfo_path_content:'Interface to obtain user information after successful login. You can write a full URL or a path. When only the path is filled in, the OAuth host above will be used to supplement the full address automatically. The interface should return a JSON string with a username field',
   reset:'reset',
 }

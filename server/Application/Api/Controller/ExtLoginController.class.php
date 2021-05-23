@@ -69,7 +69,12 @@ class ExtLoginController extends BaseController {
         $urlAuthorize = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['authorize_path'] ;
         $urlAccessToken = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['token_path'] ;
         $urlResourceOwnerDetails = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['resource_path'] ;
-        $urlUserInfo = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['userinfo_path'] ;
+        if(strstr($oauth2_form['userinfo_path'],"://")){
+            $urlUserInfo = $oauth2_form['userinfo_path'] ;
+        }else{
+            $urlUserInfo = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['userinfo_path'] ;
+        }
+        
     
         $provider = new \League\OAuth2\Client\Provider\GenericProvider([
             'clientId'                => $clientId,    // The client ID assigned to you by the provider

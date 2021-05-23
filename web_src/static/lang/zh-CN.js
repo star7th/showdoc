@@ -421,6 +421,6 @@ exports.default = {
   callback_eg: ' callback url填写示例',
   entrance_tips_label: '入口文字提示',
   entrance_tips_content: "当启用OAuth2登录时候，登录界面将在输入框的下方出现此入口。你可以填上如'使用公司OA登录'这样的提示",
-  userinfo_path_content: '登录成功后获取用户信息的接口路径。该接口应当返回json字符串且包含username字段',
+  userinfo_path_content: '登录成功后获取用户信息的接口。可以写完整网址也可以写路径。当只填写路径的时候，将自动使用上面的Oauth host补充完整地址。该接口应当返回json字符串且包含username字段',
   reset:'重新生成',
 }
