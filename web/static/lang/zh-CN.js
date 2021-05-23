@@ -9,37 +9,25 @@ exports.default = {
   section_description1_1: '一个非常适合IT团队的',
   section_description1_2: '在线API文档、技术文档工具',
   section_title2: 'API文档',
-  section_description2_1:
-    'APP、web前端与服务器常用API来进行交互',
-  section_description2_2:
-    'ShowDoc可以非常方便快速地编写出美观的API文档',
+  section_description2_1: 'APP、web前端与服务器常用API来进行交互',
+  section_description2_2: 'ShowDoc可以非常方便快速地编写出美观的API文档',
   section_title3: '数据字典',
-  section_description3_1:
-    '好的数据字典可以方便地向别人描述你的数据库结构',
-  section_description3_2:
-    '用ShowDoc可以编辑出美观的数据字典',
+  section_description3_1: '好的数据字典可以方便地向别人描述你的数据库结构',
+  section_description3_2: '用ShowDoc可以编辑出美观的数据字典',
   section_title4: '说明文档',
-  section_description4_1:
-    '你完全可以使用 ShowDoc来编写一些工具的说明书',
-  section_description4_2:
-    '也可以编写一些技术规范说明文档以供团队查阅',
+  section_description4_1: '你完全可以使用 ShowDoc来编写一些工具的说明书',
+  section_description4_2: '也可以编写一些技术规范说明文档以供团队查阅',
   section_title5: '团队协作',
   section_description5: '团队权限管理机制让团队良好地协同编写文档',
   section_title6: '文档自动化',
-  section_description6_1:
-    '可从代码注释中自动生成文档',
-  section_description6_2:
-    '搭配的RunApi客户端，可调试接口和自动生成文档',
+  section_description6_1: '可从代码注释中自动生成文档',
+  section_description6_2: '搭配的RunApi客户端，可调试接口和自动生成文档',
   section_title7: '免费开源',
-  section_description7_1:
-    'ShowDoc提供免费开源的版本',
-  section_description7_2:
-    '你可以选择将ShowDoc部署到你的服务器',
+  section_description7_1: 'ShowDoc提供免费开源的版本',
+  section_description7_2: '你可以选择将ShowDoc部署到你的服务器',
   section_title8: '在线托管',
-  section_description8_1:
-    'www.showdoc.com.cn 安全稳定的在线文档托管服务',
-  section_description8_2:
-    '你可以放心地选择托管你的文档数据在云端',
+  section_description8_1: 'www.showdoc.com.cn 安全稳定的在线文档托管服务',
+  section_description8_2: '你可以放心地选择托管你的文档数据在云端',
   section_title9: '立即体验',
   section_description9: '超过100000+互联网团队正在使用ShowDoc',
 
@@ -425,5 +413,14 @@ exports.default = {
   manage_item_group: '项目分组管理',
   draggable_tips: '按住可拖动排序',
   item_group_empty_tips: '暂无分组数据。可点击右上角新建分组',
-  select_item: '选择项目'
+  select_item: '选择项目',
+
+  ext_login:'集成登录',
+  enable_oauth: '启动OAuth2登录',
+  your_showdoc_server: '【你的showdoc地址】',
+  callback_eg: ' callback url填写示例',
+  entrance_tips_label: '入口文字提示',
+  entrance_tips_content: "当启用OAuth2登录时候，登录界面将在输入框的下方出现此入口。你可以填上如'使用公司OA登录'这样的提示",
+  userinfo_path_content: '登录成功后获取用户信息的接口路径。该接口应当返回json字符串且包含username字段',
+  reset:'重新生成',
 }

@@ -435,6 +435,14 @@ exports.default = {
   manage_item_group: 'Manage group',
   draggable_tips: 'Press and hold to drag sort',
   item_group_empty_tips: 'There is no grouping data. You can click the top right corner to create a new group',
-  select_item: 'Select item'
+  select_item: 'Select item',
 
+  ext_login:'Ext login',
+  enable_oauth: 'OAuth Login',
+  your_showdoc_server: '[your-showdoc-server]',
+  callback_eg: ' callback url example',
+  entrance_tips_label: 'Entrance text prompt',
+  entrance_tips_content: "When OAuth2 login is enabled, this entry will appear below the input box on the login interface. You can fill in a prompt such as 'Log in with company OA'",
+  userinfo_path_content:'The interface path for obtaining user information after successful login. The interface should return a json string and include the username field',
+  reset:'reset',
 }
