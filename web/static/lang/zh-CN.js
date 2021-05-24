@@ -415,12 +415,18 @@ exports.default = {
   item_group_empty_tips: '暂无分组数据。可点击右上角新建分组',
   select_item: '选择项目',
 
-  ext_login:'集成登录',
+  ext_login: '集成登录',
   enable_oauth: '启动OAuth2登录',
   your_showdoc_server: '【你的showdoc地址】',
   callback_eg: ' callback url填写示例',
   entrance_tips_label: '入口文字提示',
-  entrance_tips_content: "当启用OAuth2登录时候，登录界面将在输入框的下方出现此入口。你可以填上如'使用公司OA登录'这样的提示",
-  userinfo_path_content: '登录成功后获取用户信息的接口。可以写完整网址也可以写路径。当只填写路径的时候，将自动使用上面的Oauth host补充完整地址。该接口应当返回json字符串且包含username字段',
-  reset:'重新生成',
+  entrance_tips_content:
+    "当启用OAuth2登录时候，登录界面将在输入框的下方出现此入口。你可以填上如'使用公司OA登录'这样的提示",
+  userinfo_path_content:
+    '登录成功后获取用户信息的接口。可以写完整网址也可以写路径。当只填写路径的时候，将自动使用上面的Oauth host补充完整地址。该接口应当返回json字符串且包含username字段',
+  reset: '重新生成',
+
+  history_version_count: '历史版本数量',
+  history_version_count_content:
+    '每次编辑页面都会生成一个页面的历史版本。这里是保留的历史版本数量。默认只保留最新的20个版本'
 }

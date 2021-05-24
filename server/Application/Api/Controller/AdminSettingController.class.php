@@ -8,10 +8,12 @@ class AdminSettingController extends BaseController {
         $login_user = $this->checkLogin();
         $this->checkAdmin();
         $register_open = intval(I("register_open")) ;
+        $history_version_count = intval(I("history_version_count")) ;
         $oss_open = intval(I("oss_open")) ;
         $home_page = intval(I("home_page")) ;
         $home_item = intval(I("home_item")) ;
         $oss_setting = I("oss_setting") ;
+        D("Options")->set("history_version_count" ,$history_version_count) ;
         D("Options")->set("register_open" ,$register_open) ;
         D("Options")->set("home_page" ,$home_page) ;
         D("Options")->set("home_item" ,$home_item) ;
@@ -31,6 +33,7 @@ class AdminSettingController extends BaseController {
         $this->checkAdmin();
         $oss_open = D("Options")->get("oss_open" ) ;
         $register_open = D("Options")->get("register_open" ) ;
+        $history_version_count = D("Options")->get("history_version_count" ) ;
         $oss_setting = D("Options")->get("oss_setting" ) ;
         $home_page = D("Options")->get("home_page" ) ;
         $home_item = D("Options")->get("home_item" ) ;
@@ -44,6 +47,7 @@ class AdminSettingController extends BaseController {
             $array = array(
                 "oss_open"=>$oss_open ,
                 "register_open"=>$register_open ,
+                "history_version_count"=>$history_version_count ,
                 "home_page"=>$home_page ,
                 "home_item"=>$home_item ,
                 "oss_setting"=>$oss_setting ,

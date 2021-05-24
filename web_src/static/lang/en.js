@@ -10,15 +10,12 @@ exports.default = {
   section_description1_1: 'A tool greatly applicable',
   section_description1_2: 'for an IT team',
   section_title2: 'API Document',
-  section_description2_1:
-    'ShowDoc can compile exquisite API documents',
-  section_description2_2:
-    'in a very fast and convenient way',
+  section_description2_1: 'ShowDoc can compile exquisite API documents',
+  section_description2_2: 'in a very fast and convenient way',
   section_title3: 'Data Dictionary',
   section_description3_1:
     'A good Data Dictionary can easily exhibit database structure to other people',
-  section_description3_2:
-    'ShowDoc can compile exquisite Data Dictionary',
+  section_description3_2: 'ShowDoc can compile exquisite Data Dictionary',
   section_title4: 'Explanation Document',
   section_description4_1:
     'You can absolutely use ShowDoc to compile the explanation documents for some tools',
@@ -32,10 +29,8 @@ exports.default = {
   section_description6_2:
     'With the runapi client, you can debug the interface and automatically generate documents',
   section_title7: 'Open Source',
-  section_description7_1:
-    'ShowDoc is a free, open source tool',
-  section_description7_2:
-    'You can deploy it to your own server',
+  section_description7_1: 'ShowDoc is a free, open source tool',
+  section_description7_2: 'You can deploy it to your own server',
   section_title8: 'Hosted online',
   section_description8_1:
     'www.showdoc.com.cn provide security and stability of the document hosting service',
@@ -410,7 +405,8 @@ exports.default = {
 
   all_pages: 'All pages',
 
-  cancelSingle: 'Are you sure you want to cancel the single page link? After cancellation, the original link will be invalid immediately',
+  cancelSingle:
+    'Are you sure you want to cancel the single page link? After cancellation, the original link will be invalid immediately',
   cancelSingleYes: 'Unlink single page',
   cancelSingleNo: 'Keep single page',
 
@@ -434,15 +430,22 @@ exports.default = {
   all_items: 'All items',
   manage_item_group: 'Manage group',
   draggable_tips: 'Press and hold to drag sort',
-  item_group_empty_tips: 'There is no grouping data. You can click the top right corner to create a new group',
+  item_group_empty_tips:
+    'There is no grouping data. You can click the top right corner to create a new group',
   select_item: 'Select item',
 
-  ext_login:'Ext login',
+  ext_login: 'Ext login',
   enable_oauth: 'OAuth Login',
   your_showdoc_server: '[your-showdoc-server]',
   callback_eg: ' callback url example',
   entrance_tips_label: 'Entrance text prompt',
-  entrance_tips_content: "When OAuth2 login is enabled, this entry will appear below the input box on the login interface. You can fill in a prompt such as 'Log in with company OA'",
-  userinfo_path_content:'Interface to obtain user information after successful login. You can write a full URL or a path. When only the path is filled in, the OAuth host above will be used to supplement the full address automatically. The interface should return a JSON string with a username field',
-  reset:'reset',
+  entrance_tips_content:
+    "When OAuth2 login is enabled, this entry will appear below the input box on the login interface. You can fill in a prompt such as 'Log in with company OA'",
+  userinfo_path_content:
+    'Interface to obtain user information after successful login. You can write a full URL or a path. When only the path is filled in, the OAuth host above will be used to supplement the full address automatically. The interface should return a JSON string with a username field',
+  reset: 'reset',
+
+  history_version_count: 'History versions',
+  history_version_count_content:
+    'Each time you edit a page, a historical version of the page is generated. Here is the number of historical versions kept. Only the latest 20 versions are reserved by default'
 }

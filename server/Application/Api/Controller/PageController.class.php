@@ -94,9 +94,18 @@ class PageController extends BaseController {
         $data['addtime'] = time();
         $data['author_uid'] = $login_user['uid'] ;
         $data['author_username'] = $login_user['username'];
+        
+
 
         if ($page_id > 0 ) {
             
+            // 设置里的历史版本数量
+            $history_version_count = D("Options")->get("history_version_count" ) ;
+            if(!$history_version_count){
+                $history_version_count = 20 ;
+                D("Options")->set("history_version_count" ,$history_version_count) ;
+            }
+
             //在保存前先把当前页面的版本存档
             $page = D("Page")->where(" page_id = '$page_id' ")->find();
             if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
@@ -121,10 +130,10 @@ class PageController extends BaseController {
 
             //统计该page_id有多少历史版本了
             $Count = D("PageHistory")->where(" page_id = '$page_id' ")->Count();
-            if ($Count > 20 ) {
-               //每个单页面只保留最多20个历史版本
-               $ret = D("PageHistory")->where(" page_id = '$page_id' ")->limit("20")->order("page_history_id desc")->select();
-               D("PageHistory")->where(" page_id = '$page_id' and page_history_id < ".$ret[19]['page_history_id'] )->delete();
+            if ($Count > $history_version_count ) {
+               //每个单页面只保留最多$history_version_count个历史版本
+               $ret = D("PageHistory")->where(" page_id = '$page_id' ")->limit($history_version_count)->order("page_history_id desc")->select();
+               D("PageHistory")->where(" page_id = '$page_id' and page_history_id < ".$ret[$history_version_count-1]['page_history_id'] )->delete();
             }
 
             //如果是单页项目，则将页面标题设置为项目名

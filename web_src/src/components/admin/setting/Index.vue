@@ -28,6 +28,20 @@
           ></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item :label="$t('history_version_count')">
+        <el-input
+          v-model="form.history_version_count"
+          class="form-el"
+        ></el-input>
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('history_version_count_content')"
+          placement="top"
+        >
+          <i class="el-icon-question"></i>
+        </el-tooltip>
+      </el-form-item>
 
       <el-form-item :label="$t('oss_open')">
         <el-switch v-model="form.oss_open"></el-switch>
@@ -148,7 +162,8 @@ export default {
           region: '',
           secretId: '',
           secretKey: ''
-        }
+        },
+        history_version_count: 20
       },
       itemList: []
     }
@@ -172,6 +187,10 @@ export default {
             return
           }
           this.form.register_open = response.data.data.register_open > 0
+          this.form.history_version_count = response.data.data
+            .history_version_count
+            ? response.data.data.history_version_count
+            : this.form.history_version_count
           this.form.oss_open = response.data.data.oss_open > 0
           this.form.home_page =
             response.data.data.home_page > 0 ? response.data.data.home_page : 1
