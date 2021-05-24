@@ -22,6 +22,7 @@ class ItemTokenModel extends BaseModel {
 	}
 
 	public function getTokenByItemId($item_id){
+		$item_id = intval($item_id) ;
 		$item_token = $this->where("item_id='$item_id'")->find();
 		if (!$item_token) {
 			$this->createToken($item_id);
@@ -36,6 +37,7 @@ class ItemTokenModel extends BaseModel {
 	}
 
 	public function setLastTime($item_id){
+		$item_id = intval($item_id) ;
 		return $this->where("item_id='$item_id'")->save(array("last_check_time"=>time()));
 	}
 

@@ -5,6 +5,7 @@ use Api\Model\BaseModel;
 class ItemModel extends BaseModel {
 
     public function export($item_id  , $uncompress = 0){
+        $item_id = intval($item_id) ;
         $item = D("Item")->where("item_id = '$item_id' ")->field(" item_type, item_name ,item_description,password ")->find();
         $page_field = "page_title ,cat_id,page_content,s_number,page_comments";
         $catalog_field = "cat_id,cat_name ,parent_cat_id,level,s_number";
@@ -148,6 +149,7 @@ class ItemModel extends BaseModel {
     }
 
     public function getContent($item_id , $page_field ="*" , $catalog_field ="*" , $uncompress = 0 ){
+            $item_id = intval($item_id) ;
             //获取该项目下的所有页面
             $all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" s_number asc , page_id asc  ")->field($page_field)->select();
             $pages = array() ;
@@ -238,6 +240,7 @@ class ItemModel extends BaseModel {
 
     //删除项目
     public function delete_item($item_id){
+        $item_id = intval($item_id) ;
         D("Page")->where("item_id = '$item_id' ")->delete();
         D("Page")->where("item_id = '$item_id' ")->delete();
         D("Catalog")->where("item_id = '$item_id' ")->delete();
@@ -251,6 +254,7 @@ class ItemModel extends BaseModel {
     
     //软删除项目
     public function soft_delete_item($item_id){
+        $item_id = intval($item_id) ;
         return $this->where("item_id = '$item_id' ")->save(array("is_del"=>1 ,"last_update_time"=>time()));
     }
 
@@ -268,7 +272,8 @@ class ItemModel extends BaseModel {
         if(!$menuData || !$menuData['catalogs']){
             return $menuData ;
         }
-
+        $uid = intval($uid) ; 
+        $item_id = intval($item_id) ;
         $cat_id = 0 ;
         //首先看是否被添加为项目成员
         $itemMember = D("ItemMember")->where("uid = '$uid' and item_id = '$item_id' ")->find() ;

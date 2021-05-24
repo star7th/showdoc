@@ -36,7 +36,7 @@ class AttachmentModel extends BaseModel {
 	}
 
 	public function deleteFile($file_id){
-
+		$file_id = intval($file_id) ;
 		$file = D("UploadFile")->where("file_id = '$file_id' ")->find();
 		$real_url = $file['real_url'] ;
 		$array = explode("/Public/Uploads/", $real_url) ;

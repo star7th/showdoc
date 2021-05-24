@@ -11,6 +11,7 @@ class RunapiModel  {
     
     //获取全局参数
     public function getGlobalParam($item_id){
+        $item_id = intval($item_id) ; 
         $return = array(
             'query'=>array(),
             'body'=>array(),

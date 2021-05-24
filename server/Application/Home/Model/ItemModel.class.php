@@ -5,6 +5,7 @@ use Home\Model\BaseModel;
 class ItemModel extends BaseModel {
 
     public function export($item_id){
+        $item_id = intval($item_id) ;
         $item = D("Item")->where("item_id = '$item_id' ")->field(" item_type, item_name ,item_description,password ")->find();
         //获取所有父目录id为0的页面
         $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" s_number asc  ")->select();

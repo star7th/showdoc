@@ -105,6 +105,7 @@ class CatalogModel extends BaseModel {
 		if (!$cat_id) {
 			return false;
 		}
+		$cat_id = intval($cat_id) ;
 		//如果有子目录的话，递归把子目录清了
 		$cats = $this->where(" parent_cat_id = '$cat_id' ")->select();
 		if ($cats) {
@@ -144,12 +145,12 @@ class CatalogModel extends BaseModel {
 		$item_id = $catData[0]['item_id'] ;
 		$cat_id = 0 ;
 		//首先看是否被添加为项目成员
-		$itemMember = D("ItemMember")->where("uid = '$uid' and item_id = '$item_id' ")->find() ;
+		$itemMember = D("ItemMember")->where("uid = '%d' and item_id = '%d' ", array($uid ,$item_id ))->find() ;
 		if($itemMember && $itemMember['cat_id'] > 0 ){
 				$cat_id = $itemMember['cat_id'] ;
 		}
 		//再看是否添加为团队-项目成员
-		$teamItemMember = D("TeamItemMember")->where("member_uid = '$uid' and item_id = '$item_id' ")->find() ;
+		$teamItemMember = D("TeamItemMember")->where("member_uid = '%d' and item_id = '%d' ",array($uid ,$item_id ))->find() ;
 		if($teamItemMember && $teamItemMember['cat_id'] > 0 ){
 				$cat_id = $teamItemMember['cat_id'] ;
 		}
@@ -172,7 +173,7 @@ class CatalogModel extends BaseModel {
 	// $to_item_id 要复制到的项目id。可以是同一个项目，可以是跨项目。默认是同一个项目
 	public function copy($uid , $old_cat_id , $new_p_cat_id = 0 , $to_item_id = 0 ){
 		$userInfo = D("User")->userInfo($uid);
-		$old_cat_ary = $this->where("cat_id = '$old_cat_id' ")->find() ;
+		$old_cat_ary = $this->where("cat_id = '%d' ",array($old_cat_id) )->find() ;
 		$to_item_id = $to_item_id ? $to_item_id : $cat_ary['item_id'] ;
 	
 		//这里需要读取目录下的页面以及子目录信息
@@ -181,7 +182,7 @@ class CatalogModel extends BaseModel {
 		//获取$level.先初始化$level = 2 ;
 		$level = 2 ;
 		if($new_p_cat_id){
-			$p_cat_ary = $this->where("cat_id = '$new_p_cat_id' ")->find() ;
+			$p_cat_ary = $this->where("cat_id = '%d' " ,array($new_p_cat_id)  )->find() ;
 			$level = $p_cat_ary['level'] + 1 ;
 		}
 		//插入
@@ -191,6 +192,7 @@ class CatalogModel extends BaseModel {
 
 	//获取某个目录下的页面和子目录
 	public function getCat($cat_id){
+			$cat_id = intval($cat_id) ;
 			$cat_ary = $this->where("cat_id = '$cat_id' ")->find() ;
 			$item_id = $cat_ary['item_id'] ;
 			//获取项目下所有页面信息

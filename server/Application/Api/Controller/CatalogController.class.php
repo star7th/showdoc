@@ -278,7 +278,7 @@ class CatalogController extends BaseController {
         if ($data_array) {
             foreach ($data_array as $key => $value) {
                 if ($value['cat_name']) {
-                    $ret = D("Catalog")->where(" cat_id = '$value[cat_id]' and item_id = '$item_id' ")->save(array(
+                    $ret = D("Catalog")->where(" cat_id = '%d' and item_id = '%d' ",array($value['cat_id'],$item_id) )->save(array(
                         "cat_name" => $value['cat_name'] ,
                         "parent_cat_id" => $value['parent_cat_id'] ,
                         "level" => $value['level'] ,
@@ -286,7 +286,7 @@ class CatalogController extends BaseController {
                         ));
                 }
                 if ($value['page_id'] > 0) {
-                    $ret = D("Page")->where(" page_id = '$value[page_id]' and item_id = '$item_id' ")->save(array(
+                    $ret = D("Page")->where(" page_id = '%d' and item_id = '%d' " ,array($value['page_id'],$item_id) )->save(array(
                         "cat_id" => $value['parent_cat_id'] ,
                         "s_number" => $value['s_number'] ,
                         ));

@@ -13,7 +13,7 @@ class TeamItemController extends BaseController {
 
         $item_id = I("item_id");
         $team_id = I("team_id/d");
-
+        $item_id =  \SQLite3::escapeString($item_id) ;
         $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
         if (!$teamInfo) {
             $this->sendError(10209,"无此团队或者你无管理此团队的权限");

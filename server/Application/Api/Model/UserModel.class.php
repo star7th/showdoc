@@ -52,6 +52,7 @@ class UserModel extends BaseModel {
 
     //删除用户
     public function delete_user($uid){
+        $uid = intval($uid) ;
         D("TeamMember")->where("member_uid = '$uid' ")->delete();
         D("TeamItemMember")->where("member_uid = '$uid' ")->delete();
         D("ItemMember")->where("uid = '$uid' ")->delete();

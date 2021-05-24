@@ -78,7 +78,7 @@ class ItemGroupController extends BaseController {
         $uid = $login_user['uid'] ;
         if($data_array){
             foreach ($data_array as $key => $value) {
-                $id = $value['id'] ;
+                $id = intval($value['id']);
                 $ret = D("ItemGroup")->where(" id = '$id' and uid = '{$uid}'")->save(array('s_number'=>$value['s_number']));
             }
         }

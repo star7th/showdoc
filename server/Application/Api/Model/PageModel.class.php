@@ -144,6 +144,7 @@ class PageModel extends BaseModel {
 
    //软删除页面
    public function softDeletePage($page_id){
+    $page_id = intval($page_id) ;
       //放入回收站
       $login_user = session('login_user');
       $page = D("Page")->field("item_id,page_title")->where(" page_id = '$page_id' ")->find() ;
@@ -161,11 +162,13 @@ class PageModel extends BaseModel {
 
    //删除页面
    public function deletePage($page_id){
+    $page_id = intval($page_id) ;
       $ret = M("Page")->where(" page_id = '$page_id' ")->delete();
       return $ret;
    }
 
    public function deleteFile($file_id){
+    $file_id = intval($file_id) ;
         return D("Attachment")->deleteFile($file_id) ;
     }
 
