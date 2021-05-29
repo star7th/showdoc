@@ -159,33 +159,19 @@ export default {
       })
     },
     check_upadte() {
-      var that = this
-      var url = DocConfig.server + '/api/adminUser/checkUpdate'
-      var params = new URLSearchParams()
-      that.axios.post(url, params).then(function(response) {
-        if (
-          response &&
-          response.data &&
-          response.data.data &&
-          response.data.data.url
-        ) {
-          that.$message({
-            showClose: true,
-            duration: 10000,
-            dangerouslyUseHTMLString: true,
-            message:
-              '<a target="_blank" href="' +
-              response.data.data.url +
-              '">' +
-              response.data.data.title +
-              '</a>'
-          })
+      this.request('/api/adminUpdate/checkUpdate', {}).then(data => {
+        if (data && data.data && data.data.url) {
+          this.isUpdate = true
         }
       })
     }
   },
   mounted() {
-    this.check_upadte()
+    // 只对中文版进行更新检查
+    if (DocConfig.lang == 'zh-cn') {
+      this.check_upadte()
+    }
+
     this.unset_bg_grey()
   },
   beforeDestroy() {
