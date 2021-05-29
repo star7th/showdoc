@@ -30,7 +30,7 @@ class AdminUpdateController extends BaseController {
         $file_url = I("file_url") ;
         $version_num = str_replace("v","",$new_version) ;
 
-        $showdoc_path = sys_get_temp_dir()."/showdoc/";
+        $showdoc_path = "../" ;
 
         // 进行文件读写权限检查
         if(!$this->new_is_writeable($showdoc_path)
@@ -81,7 +81,7 @@ class AdminUpdateController extends BaseController {
         set_time_limit(1000);
         ini_set('memory_limit','500M');
         
-        $showdoc_path = sys_get_temp_dir()."/showdoc/";
+        $showdoc_path = "../" ;
         
         // 进行文件读写权限检查
         if(!$this->new_is_writeable($showdoc_path)
