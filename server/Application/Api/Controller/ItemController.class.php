@@ -160,10 +160,17 @@ class ItemController extends BaseController {
         }
 
         $where .= " or item_id in ( ".implode(",", $member_item_ids)." ) ";
+        if ($this->checkAdmin(false)){
+            $where = "";
+        }
         if($item_group_id){
             $res = D("ItemGroup")->where(" id = '$item_group_id' ")->find();
             if($res){
-                $where = " ({$where}) and item_id in ({$res['item_ids']}) ";
+                if ($this->checkAdmin(false)){
+                    $where = " item_id in ({$res['item_ids']}) ";
+                } else {
+                    $where = " ({$where}) and item_id in ({$res['item_ids']}) ";
+                }
             }
         }
         $items  = D("Item")->field("item_id,uid,item_name,item_domain,item_type,last_update_time,item_description,is_del,password")->where($where)->order("item_id asc")->select();
@@ -173,8 +180,12 @@ class ItemController extends BaseController {
             if ($value['uid'] == $login_user['uid']) {
                $items[$key]['creator'] = 1 ;
             }else{
-               $items[$key]['creator'] = 0 ;
-               unset($items[$key]['password']);
+                if ($this->checkAdmin(false)){
+                    $items[$key]['creator'] = 1 ;
+                }else{
+                    $items[$key]['creator'] = 0 ;
+                    unset($items[$key]['password']);
+                }
             }
             //判断是否为私密项目
             if ($value['password']) {
