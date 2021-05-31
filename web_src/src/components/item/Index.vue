@@ -221,7 +221,8 @@
 <style scoped>
 .container-narrow {
   margin: 0 auto;
-  max-width: 930px;
+  /*max-width: 930px;*/
+  max-width: 90%;
 }
 
 .masthead {
@@ -253,7 +254,8 @@ a {
 
 .container-thumbnails {
   margin-top: 30px;
-  max-width: 1000px;
+  /*max-width: 1000px;*/
+  max-width: 100%;
 }
 
 .my-item {
@@ -342,7 +344,8 @@ a {
 
 .search-box-div {
   width: 190px;
-  margin-left: 60px;
+  /*margin-left: 60px;*/
+  margin-left: 20px;
 }
 
 .sortable-chosen .item-thumbnail {
@@ -352,11 +355,15 @@ a {
 .group-bar {
   margin-top: 20px;
   margin-bottom: 20px;
-  margin-left: 60px;
+  /*margin-left: 60px;*/
+  margin-left: 20px;
 }
 .group-link {
   margin-left: 10px;
   font-size: 12px;
+}
+#item-list{
+  padding: 0;
 }
 </style>
 

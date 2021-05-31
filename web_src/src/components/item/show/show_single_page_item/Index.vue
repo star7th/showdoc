@@ -115,7 +115,8 @@
   background-color: #fff;
   border-bottom: 1px solid #d9d9d9;
   margin-bottom: 20px;
-  width: 800px;
+  /*width: 800px;*/
+  width: 90%;
   min-height: 500px;
   margin-left: auto;
   margin-right: auto;
