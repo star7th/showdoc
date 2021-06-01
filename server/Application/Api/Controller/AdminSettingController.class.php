@@ -19,6 +19,7 @@ class AdminSettingController extends BaseController {
         D("Options")->set("home_item" ,$home_item) ;
         
         if ($oss_open) {
+            $this->checkComposerPHPVersion();
             D("Options")->set("oss_setting" , json_encode( $oss_setting)) ;
         }
         D("Options")->set("oss_open" ,$oss_open) ;
@@ -130,6 +131,7 @@ class AdminSettingController extends BaseController {
     public function saveOauth2Config(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
+        $this->checkComposerPHPVersion();
         $oauth2_open = intval(I("oauth2_open")) ;
         $oauth2_form = I("oauth2_form") ;
         D("Options")->set("oauth2_form" , json_encode( $oauth2_form)) ;

@@ -51,6 +51,7 @@ class ExtLoginController extends BaseController {
     }
 
     public function oauth2(){
+        $this->checkComposerPHPVersion();
         $redirect = I("redirect") ;
         session('redirect',$redirect) ;
         $oauth2_open = D("Options")->get("oauth2_open" ) ;
@@ -171,6 +172,7 @@ class ExtLoginController extends BaseController {
 
     
     public function cas(){
+        $this->checkComposerPHPVersion();
         define("CAS_VERSION_1_0", '1.0');
         define("CAS_VERSION_2_0", '2.0');
         define("CAS_VERSION_3_0", '3.0');

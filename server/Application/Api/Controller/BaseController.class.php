@@ -226,5 +226,13 @@ class BaseController extends Controller {
 	    }
 	}
 
+	//检查使用composer包是否满足php版本需求
+	public function checkComposerPHPVersion(){
+		if(version_compare(PHP_VERSION,COMPOSER_PHP_VERSION,'<=')){
+			$this->sendError(10101,"该功能需要php版本".COMPOSER_PHP_VERSION."以上，你所使用的php版本".PHP_VERSION."已滞后。请联系管理员进行升级");
+			exit();
+		}
+	}
+
 
 }
