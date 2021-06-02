@@ -13,7 +13,7 @@ class ExportController extends BaseController {
         $cat_id =  I("cat_id/d");
         $page_id =  I("page_id/d");
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $this->message(L('no_permissions'));
             return;
         }
@@ -168,7 +168,7 @@ class ExportController extends BaseController {
         ini_set('memory_limit','800M');
         $item_id =  I("item_id/d");
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $this->message(L('no_permissions'));
             return;
         }

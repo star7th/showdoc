@@ -10,27 +10,27 @@
             $t('goback')
           }}</el-dropdown-item>
           <el-dropdown-item command="share">{{ $t('share') }}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.ItemPermn" command="new_page">{{
+          <el-dropdown-item v-if="item_info.item_edit" command="new_page">{{
             $t('new_page')
           }}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.ItemPermn" command="new_catalog">{{
+          <el-dropdown-item v-if="item_info.item_edit" command="new_catalog">{{
             $t('new_catalog')
           }}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.ItemPermn" command="edit_page">{{
+          <el-dropdown-item v-if="item_info.item_edit" command="edit_page">{{
             $t('edit_page')
           }}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.ItemPermn" command="copy">{{
+          <el-dropdown-item v-if="item_info.item_edit" command="copy">{{
             $t('copy')
           }}</el-dropdown-item>
           <el-dropdown-item
-            v-if="item_info.ItemPermn"
+            v-if="item_info.item_edit"
             command="ShowHistoryVersion"
             >{{ $t('history_version') }}</el-dropdown-item
           >
-          <el-dropdown-item v-if="item_info.ItemPermn" command="export">{{
+          <el-dropdown-item v-if="item_info.item_edit" command="export">{{
             $t('export')
           }}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.ItemPermn" command="delete_page">{{
+          <el-dropdown-item v-if="item_info.item_edit" command="delete_page">{{
             $t('delete_interface')
           }}</el-dropdown-item>
         </el-dropdown-menu>
@@ -92,7 +92,7 @@
         </el-tooltip>
 
         <el-tooltip
-          v-if="!item_info.ItemPermn"
+          v-if="!item_info.item_edit"
           class="item"
           effect="dark"
           :content="$t('detail')"
@@ -102,7 +102,7 @@
         </el-tooltip>
       </span>
 
-      <span v-if="item_info.ItemPermn">
+      <span v-if="item_info.item_edit">
         <el-tooltip
           class="item"
           effect="dark"
@@ -184,7 +184,7 @@
           >
             <router-link
               :to="'/item/export/' + item_info.item_id"
-              v-if="item_info.ItemPermn"
+              v-if="item_info.item_edit"
             >
               <i class="el-icon-download"></i>
             </router-link>
@@ -198,7 +198,7 @@
             <i class="el-icon-delete" @click="delete_page"></i>
           </el-tooltip>
 
-          <span v-if="item_info.ItemCreator">
+          <span v-if="item_info.item_manage">
             <el-tooltip
               class="item"
               effect="dark"
@@ -207,7 +207,7 @@
             >
               <router-link
                 :to="'/item/setting/' + item_info.item_id"
-                v-if="item_info.ItemCreator"
+                v-if="item_info.item_manage"
               >
                 <i class="el-icon-setting"></i>
               </router-link>
@@ -240,7 +240,7 @@
         />
       </p>
 
-      <div v-show="item_info.ItemPermn">
+      <div v-show="item_info.item_edit">
         <el-checkbox
           v-model="isCreateSiglePage"
           @change="checkCreateSiglePage"

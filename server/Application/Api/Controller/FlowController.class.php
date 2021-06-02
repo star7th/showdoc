@@ -20,7 +20,7 @@ class FlowController extends BaseController {
         $date_time = date("Y-m-d H:i:s");
         if($id){
             $res = D("RunapiFlow")->where(" id = '{$id}' ")->find();
-            if(!$this->checkItemPermn($login_user['uid'] , $res['item_id'])){
+            if(!$this->checkItemEdit($login_user['uid'] , $res['item_id'])){
                 $this->sendError(10303);
                 return ;
             }
@@ -47,7 +47,7 @@ class FlowController extends BaseController {
             D("RunapiFlow")->where(" id = '{$id}' ")->save($data);
 
         }else{
-            if(!$this->checkItemPermn($login_user['uid'] , $item_id)){
+            if(!$this->checkItemEdit($login_user['uid'] , $item_id)){
                 $this->sendError(10303);
                 return ;
             }
@@ -83,7 +83,7 @@ class FlowController extends BaseController {
     public function getList(){
         $login_user = $this->checkLogin();
         $item_id = I("item_id/d");
-        if(!$this->checkItemPermn($login_user['uid'] , $item_id)){
+        if(!$this->checkItemEdit($login_user['uid'] , $item_id)){
             $this->sendError(10303);
             return ;
         }
@@ -101,7 +101,7 @@ class FlowController extends BaseController {
         $id = I("id/d")? I("id/d") : 0;
         $login_user = $this->checkLogin();
         $res = D("RunapiFlow")->where(" id = '{$id}' ")->find();
-        if(!$this->checkItemPermn($login_user['uid'] , $res['item_id'])){
+        if(!$this->checkItemEdit($login_user['uid'] , $res['item_id'])){
             $this->sendError(10303);
             return ;
         }
@@ -123,12 +123,12 @@ class FlowController extends BaseController {
         $flow_id = I("flow_id/d");
         $page_id = I("page_id/d");
         $flow_res = D("RunapiFlow")->where(" id = '{$flow_id}' ")->find();
-        if(!$this->checkItemPermn($login_user['uid'] , $flow_res['item_id'])){
+        if(!$this->checkItemEdit($login_user['uid'] , $flow_res['item_id'])){
             $this->sendError(10303);
             return ;
         }
         $page_res = $page = M("Page")->where(" page_id = '$page_id' ")->find();
-        if(!$this->checkItemPermn($login_user['uid'] , $page_res['item_id'])){
+        if(!$this->checkItemEdit($login_user['uid'] , $page_res['item_id'])){
             $this->sendError(10303);
             return ;
         }
@@ -157,7 +157,7 @@ class FlowController extends BaseController {
         $flow_page_res = D("RunapiFlowPage")->where(" id = '{$id}' ")->find();
         $page_id = $flow_page_res['page_id'] ;
         $page_res = $page = M("Page")->where(" page_id = '$page_id' ")->find();
-        if(!$this->checkItemPermn($login_user['uid'] , $page_res['item_id'])){
+        if(!$this->checkItemEdit($login_user['uid'] , $page_res['item_id'])){
             $this->sendError(10303);
             return ;
         }
@@ -174,7 +174,7 @@ class FlowController extends BaseController {
         $login_user = $this->checkLogin();
         $flow_id = I("flow_id/d");
         $flow_res = D("RunapiFlow")->where(" id = '{$flow_id}' ")->find();
-        if(!$this->checkItemPermn($login_user['uid'] , $flow_res['item_id'])){
+        if(!$this->checkItemEdit($login_user['uid'] , $flow_res['item_id'])){
             $this->sendError(10303);
             return ;
         }
@@ -217,7 +217,7 @@ class FlowController extends BaseController {
         $flow_id = I("flow_id/d");
         $orders = I("orders");
         $res = D("RunapiFlow")->where(" id = '{$flow_id}' ")->find();
-        if(!$this->checkItemPermn($login_user['uid'] , $res['item_id'])){
+        if(!$this->checkItemEdit($login_user['uid'] , $res['item_id'])){
             $this->sendError(10303);
             return ;
         }
@@ -241,7 +241,7 @@ class FlowController extends BaseController {
         $flow_id = I("flow_id/d");
         $ids = I("ids");
         $res = D("RunapiFlow")->where(" id = '{$flow_id}' ")->find();
-        if(!$this->checkItemPermn($login_user['uid'] , $res['item_id'])){
+        if(!$this->checkItemEdit($login_user['uid'] , $res['item_id'])){
             $this->sendError(10303);
             return ;
         }

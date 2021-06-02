@@ -11,8 +11,8 @@ class MockController extends BaseController {
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
         $page = M("Page")->where(" page_id = '$page_id' ")->find();
-        if(!$this->checkItemCreator($uid , $page['item_id'])){
-            $this->sendError(10303);
+        if(!$this->checkItemEdit($uid , $page['item_id'])){
+            $this->sendError(10103);
             return ;
         }
         if(substr($path, 0, 1) !== '/'){

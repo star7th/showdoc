@@ -11,7 +11,7 @@ class RunapiController extends BaseController {
       $env_name = I("env_name");
       $item_id = I("item_id/d");
       $uid = $login_user['uid'] ;
-      if(!$this->checkItemPermn($uid , $item_id)){
+      if(!$this->checkItemEdit($uid , $item_id)){
           $this->sendError(10303);
           return ;
       } 
@@ -46,7 +46,7 @@ class RunapiController extends BaseController {
       $item_id = I("item_id/d");
       $login_user = $this->checkLogin();
       $uid = $login_user['uid'] ;
-      if(!$this->checkItemPermn($uid , $item_id)){
+      if(!$this->checkItemEdit($uid , $item_id)){
         $this->sendError(10303);
         return ;
       }
@@ -78,7 +78,7 @@ class RunapiController extends BaseController {
       $uid = $login_user['uid'] ;
       $res = D("RunapiEnv")->where("id = {$env_id}")->find();
       $item_id = $res['item_id'] ;
-      if(!$this->checkItemPermn($uid , $item_id)){
+      if(!$this->checkItemEdit($uid , $item_id)){
         $this->sendError(10303);
         return ;
       }
@@ -99,7 +99,7 @@ class RunapiController extends BaseController {
       $uid = $login_user['uid'] ;
       $res = D("RunapiEnv")->where("id = {$env_id}")->find();
       $item_id = $res['item_id'] ;
-      if(!$this->checkItemPermn($uid , $item_id)){
+      if(!$this->checkItemEdit($uid , $item_id)){
         $this->sendError(10303);
         return ;
       }
@@ -121,7 +121,7 @@ class RunapiController extends BaseController {
       $item_id = I("item_id/d");
       $login_user = $this->checkLogin();
       $uid = $login_user['uid'] ;
-      if(!$this->checkItemPermn($uid , $item_id)){
+      if(!$this->checkItemEdit($uid , $item_id)){
         $this->sendError(10303);
         return ;
       }
@@ -140,7 +140,7 @@ class RunapiController extends BaseController {
       $item_id = I("item_id/d");
       $login_user = $this->checkLogin();
       $uid = $login_user['uid'] ;
-      if(!$this->checkItemPermn($uid , $item_id)){
+      if(!$this->checkItemEdit($uid , $item_id)){
         $this->sendError(10303);
         return ;
       }
@@ -155,7 +155,7 @@ class RunapiController extends BaseController {
       $content_json_str = I("content_json_str");
       $login_user = $this->checkLogin();
       $uid = $login_user['uid'] ;
-      if(!$this->checkItemPermn($uid , $item_id)){
+      if(!$this->checkItemEdit($uid , $item_id)){
         $this->sendError(10303);
         return ;
       }

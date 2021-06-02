@@ -70,9 +70,9 @@ class ItemController extends BaseController {
         $domain = $item['item_domain'] ? $item['item_domain'] : $item['item_id'];
         $share_url = get_domain().__APP__.'/'.$domain;
 
-        $ItemPermn = $this->checkItemPermn($uid , $item_id) ;
+        $item_edit = $this->checkItemEdit($uid , $item_id) ;
 
-        $ItemCreator = $this->checkItemCreator($uid , $item_id);
+        $item_manage = $this->checkItemManage($uid , $item_id);
 
         //如果带了默认展开的页面id，则获取该页面所在的二级目录/三级目录/四级目录
         if ($default_page_id) {
@@ -106,7 +106,7 @@ class ItemController extends BaseController {
 
         //当已经归档了，则去掉编辑权限
         if($item['is_archived']){
-            $ItemPermn = $ItemCreator = false; 
+            $item_edit = $item_manage = false; 
         }
 
         //如果项目类型为runapi，则获取看看有没有全局参数
@@ -128,8 +128,10 @@ class ItemController extends BaseController {
             "item_type"=>$item['item_type'] ,
             "menu"=>$menu ,
             "is_login"=>$is_login,
-            "ItemPermn"=>$ItemPermn ,
-            "ItemCreator"=>$ItemCreator ,
+            "item_edit"=>$item_edit ,
+            "item_manage"=>$item_manage ,
+            "ItemPermn"=>$item_edit , // ItemPermn 和 ItemCreator这两个字段是为了兼容历史。确保各大客户端(web/手机/runapi)改用字段后可以去掉
+            "ItemCreator"=>$item_manage ,
             "current_page_id"=>$current_page_id ,
             "global_param"=>$global_param ,
 
@@ -255,7 +257,7 @@ class ItemController extends BaseController {
         $login_user = $this->checkLogin();
         $item_id = I("item_id/d");  
         $uid = $login_user['uid'] ;
-        if(!$this->checkItemCreator($uid , $item_id)){
+        if(!$this->checkItemManage($uid , $item_id)){
             $this->sendError(10303);
             return ;
         }  
@@ -273,7 +275,7 @@ class ItemController extends BaseController {
         $item_domain = I("item_domain");  
         $password = I("password");
         $uid = $login_user['uid'] ;
-        if(!$this->checkItemCreator($uid , $item_id)){
+        if(!$this->checkItemManage($uid , $item_id)){
             $this->sendError(10303);
             return ;
         }
@@ -314,7 +316,7 @@ class ItemController extends BaseController {
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
 
-        if(!$this->checkItemCreator($login_user['uid'] , $item['item_id'])){
+        if(!$this->checkItemManage($login_user['uid'] , $item['item_id'])){
             $this->sendError(10303);
             return ;
         }
@@ -355,7 +357,7 @@ class ItemController extends BaseController {
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
 
-        if(!$this->checkItemCreator($login_user['uid'] , $item['item_id'])){
+        if(!$this->checkItemManage($login_user['uid'] , $item['item_id'])){
             $this->sendError(10303);
             return ;
         }
@@ -384,7 +386,7 @@ class ItemController extends BaseController {
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
 
-        if(!$this->checkItemCreator($login_user['uid'] , $item['item_id'])){
+        if(!$this->checkItemManage($login_user['uid'] , $item['item_id'])){
             $this->sendError(10303);
             return ;
         }
@@ -411,7 +413,7 @@ class ItemController extends BaseController {
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
 
-        if(!$this->checkItemCreator($login_user['uid'] , $item['item_id'])){
+        if(!$this->checkItemManage($login_user['uid'] , $item['item_id'])){
             $this->sendError(10303);
             return ;
         }
@@ -432,7 +434,7 @@ class ItemController extends BaseController {
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
 
-        if(!$this->checkItemCreator($login_user['uid'] , $item['item_id'])){
+        if(!$this->checkItemManage($login_user['uid'] , $item['item_id'])){
             $this->sendError(10303);
             return ;
         }
@@ -539,7 +541,7 @@ class ItemController extends BaseController {
         
         //如果是复制项目
         if ($copy_item_id > 0) {
-            if (!$this->checkItemPermn($login_user['uid'] , $copy_item_id)) {
+            if (!$this->checkItemEdit($login_user['uid'] , $copy_item_id)) {
                 $this->sendError(10103);
                 return;
             }

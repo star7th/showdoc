@@ -77,7 +77,7 @@ export default {
           }
           // 如果是runapi类型项目，则去掉编辑权限。只允许在runapi里编辑
           if (json.item_type == 3) {
-            json.ItemCreator = json.ItemPermn = false
+            json.item_manage = json.item_edit = false
           }
           that.item_info = json
           that.$store.dispatch('changeItemInfo', json)

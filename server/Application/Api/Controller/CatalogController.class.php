@@ -136,7 +136,7 @@ class CatalogController extends BaseController {
         $item_id =  I("item_id/d");
 
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $this->sendError(10103);
             return;
         }
@@ -164,7 +164,7 @@ class CatalogController extends BaseController {
         if ($cat_id > 0 ) {
             $cat = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
             $item_id = $cat['item_id']; 
-            if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
                 $this->sendError(10103);
                 return;
             }
@@ -198,7 +198,7 @@ class CatalogController extends BaseController {
         $item_id = $cat['item_id'];
         
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $return['error_code'] = -1 ;
             $return['error_message'] = L('no_permissions');
             $this->sendResult($return);
@@ -256,7 +256,7 @@ class CatalogController extends BaseController {
         $item_id = $page['item_id'] ?$page['item_id'] :$item_id;
 
         
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $this->sendError(10101,L('no_permissions'));
             return;
         }
@@ -269,7 +269,7 @@ class CatalogController extends BaseController {
         $cats = I("cats");
         $item_id = I("item_id/d");
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $this->sendError(10103);
             return ;
         }
@@ -304,7 +304,7 @@ class CatalogController extends BaseController {
         $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $item_id =  I("item_id/d");
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $this->sendError(10103);
             return ;
         }
@@ -322,12 +322,12 @@ class CatalogController extends BaseController {
         $to_item_id = I("to_item_id/d") ? I("to_item_id/d") : 0 ;
         $is_del = I("is_del/d") ? I("is_del/d") : 0 ; // 复制完是否删除原目录（相当于移动目录）
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $to_item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $to_item_id)) {
             $this->sendError(10103);
             return ;
         }
         $old_cat_ary = D("Catalog")->where("cat_id = '$cat_id' ")->find() ;
-        if (!$this->checkItemPermn($login_user['uid'] , $old_cat_ary['item_id'])) {
+        if (!$this->checkItemEdit($login_user['uid'] , $old_cat_ary['item_id'])) {
             $this->sendError(10103);
             return ;
         }

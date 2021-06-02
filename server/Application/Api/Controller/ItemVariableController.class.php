@@ -12,7 +12,7 @@ class ItemVariableController extends BaseController {
         $var_value = I("var_value");  
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        if(!$this->checkItemPermn($uid , $item_id)){
+        if(!$this->checkItemEdit($uid , $item_id)){
             $this->sendError(10303);
             return ;
         }
@@ -48,7 +48,7 @@ class ItemVariableController extends BaseController {
         $env_id = I("env_id/d");
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        if(!$this->checkItemPermn($uid , $item_id)){
+        if(!$this->checkItemEdit($uid , $item_id)){
             $this->sendError(10303);
             return ;
         } 
@@ -73,7 +73,7 @@ class ItemVariableController extends BaseController {
         $id = I("id/d");  
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        if(!$this->checkItemPermn($uid , $item_id)){
+        if(!$this->checkItemEdit($uid , $item_id)){
             $this->sendError(10303);
             return ;
         } 
@@ -94,7 +94,7 @@ class ItemVariableController extends BaseController {
         $var_name = I("var_name");  
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        if(!$this->checkItemPermn($uid , $item_id)){
+        if(!$this->checkItemEdit($uid , $item_id)){
             $this->sendError(10303);
             return ;
         } 

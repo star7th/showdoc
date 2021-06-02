@@ -28,7 +28,7 @@
             <i class="el-icon-share" @click="share_item"></i>
           </el-tooltip>
           <el-tooltip
-            v-if="item_info.ItemPermn && item_info.is_archived < 1"
+            v-if="item_info.item_edit && item_info.is_archived < 1"
             class="item"
             effect="dark"
             :content="$t('edit_page')"
@@ -36,7 +36,7 @@
           >
             <i class="el-icon-edit" @click="edit_page"></i>
           </el-tooltip>
-          <el-dropdown v-if="item_info.ItemPermn">
+          <el-dropdown v-if="item_info.item_edit">
             <span class="el-dropdown-link">
               <i class="el-icon-caret-bottom el-icon--right"></i>
             </span>

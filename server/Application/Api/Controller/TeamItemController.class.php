@@ -23,7 +23,7 @@ class TeamItemController extends BaseController {
         $item_id_array = explode(",", $item_id);
         foreach ($item_id_array as $key => $value) {
             $item_id = intval($value) ;
-            if(!$this->checkItemCreator($uid , $item_id)){
+            if(!$this->checkItemManage($uid , $item_id)){
                 $this->sendError(10303);
                 return ;
             }
@@ -75,7 +75,7 @@ class TeamItemController extends BaseController {
 
         $item_id = I("item_id/d");
 
-        if(!$this->checkItemCreator($uid , $item_id)){
+        if(!$this->checkItemManage($uid , $item_id)){
             $this->sendError(10303);
             return ;
         }
@@ -130,7 +130,7 @@ class TeamItemController extends BaseController {
         $item_id = $teamItemInfo['item_id'] ;
         $team_id = $teamItemInfo['team_id'] ;
 
-        if(!$this->checkItemCreator($uid , $item_id)){
+        if(!$this->checkItemManage($uid , $item_id)){
             $this->sendError(10303);
             return ;
         }

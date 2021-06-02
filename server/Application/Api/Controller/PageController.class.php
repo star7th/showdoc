@@ -42,7 +42,7 @@ class PageController extends BaseController {
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
 
         $login_user = $this->checkLogin();
-        if (!$this->checkItemCreator($login_user['uid'] , $page['item_id']) && $login_user['uid'] != $page['author_uid']) {
+        if (!$this->checkItemManage($login_user['uid'] , $page['item_id']) && $login_user['uid'] != $page['author_uid']) {
             $this->sendError(10303);
             return ;
         }
@@ -74,7 +74,7 @@ class PageController extends BaseController {
         $s_number = I("s_number/d")? I("s_number/d") : '';
 
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $this->sendError(10103);
             return;
         }
@@ -108,7 +108,7 @@ class PageController extends BaseController {
 
             //在保存前先把当前页面的版本存档
             $page = D("Page")->where(" page_id = '$page_id' ")->find();
-            if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+            if (!$this->checkItemEdit($login_user['uid'] , $page['item_id'])) {
                 $this->sendError(10103);
                 return;
             }
@@ -200,7 +200,7 @@ class PageController extends BaseController {
         $page_comments = I("page_comments") ;
         $page_history_id = I("page_history_id/d") ? I("page_history_id/d") : 0 ;
         $page = M("Page")->where(" page_id = '$page_id' ")->find();
-        if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+        if (!$this->checkItemEdit($login_user['uid'] , $page['item_id'])) {
             $this->sendError(10103);
             return;
         }
@@ -273,7 +273,7 @@ class PageController extends BaseController {
             return false;
         }
         $login_user = $this->checkLogin(false);
-        if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+        if (!$this->checkItemEdit($login_user['uid'] , $page['item_id'])) {
             $this->sendError(10103);
             return;
         }
@@ -325,7 +325,7 @@ class PageController extends BaseController {
         $pages = I("pages");
         $item_id = I("item_id/d");
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $this->sendError(10103);
             return ;
         }
@@ -367,7 +367,7 @@ class PageController extends BaseController {
         $lock_to = I("lock_to/d") ? I("lock_to/d") :(time() + 5*60*60 )  ;
         $item_id = I("item_id/d");
         $login_user = $this->checkLogin();
-        if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $this->sendError(10103);
             return ;
         }

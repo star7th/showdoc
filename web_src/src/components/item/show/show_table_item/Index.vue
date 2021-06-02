@@ -2,7 +2,7 @@
   <div class="hello">
     <link href="static/xspreadsheet/xspreadsheet.css" rel="stylesheet" />
     <div id="header"></div>
-    <div class="edit-bar" v-if="item_info.ItemPermn">
+    <div class="edit-bar" v-if="item_info.item_edit">
       <el-button type="primary" size="mini" @click="save">{{
         $t('save')
       }}</el-button>
@@ -17,7 +17,7 @@
           }}</el-dropdown-item>
           <router-link
             :to="'/item/setting/' + item_info.item_id"
-            v-if="item_info.ItemCreator"
+            v-if="item_info.item_manage"
           >
             <el-dropdown-item>{{ $t('item_setting') }}</el-dropdown-item>
           </router-link>
@@ -38,7 +38,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <div class="edit-bar" v-if="!item_info.ItemPermn">
+    <div class="edit-bar" v-if="!item_info.item_edit">
       <el-button size="mini" @click="goback">{{ $t('goback') }}</el-button>
     </div>
     <div id="table-item"></div>
@@ -170,7 +170,7 @@ export default {
           this.spreadsheetData = objData
           // 初始化表格
           this.initSheet()
-          if (this.item_info.ItemPermn) {
+          if (this.item_info.item_edit) {
             this.draft()
           }
         }
@@ -333,7 +333,7 @@ export default {
             this.heartBeatLock()
           } else {
             this.$alert(this.$t('locking') + res.data.lock_username)
-            this.item_info.ItemPermn = false
+            this.item_info.item_edit = false
             clearInterval(this.intervalId)
             this.deleteDraft()
           }
@@ -427,7 +427,7 @@ export default {
           }
           this.getPageContent()
 
-          if (this.item_info.ItemPermn) {
+          if (this.item_info.item_edit) {
             this.remoteIsLock()
           }
         }

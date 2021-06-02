@@ -21,7 +21,7 @@ class TeamItemMemberController extends BaseController {
         $team_id = $teamItemMemberInfo['team_id'] ;
 
 
-        if(!$this->checkItemCreator($uid , $item_id)){
+        if(!$this->checkItemManage($uid , $item_id)){
             $this->sendError(10303);
             return ;
         }
@@ -50,7 +50,7 @@ class TeamItemMemberController extends BaseController {
         $item_id = I("item_id/d");
         $team_id = I("team_id/d");
 
-        if(!$this->checkItemCreator($uid , $item_id)){
+        if(!$this->checkItemManage($uid , $item_id)){
             $this->sendError(10303);
             return ;
         }

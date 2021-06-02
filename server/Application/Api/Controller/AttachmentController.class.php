@@ -99,7 +99,7 @@ class AttachmentController extends BaseController {
  
         // 如果附件是要上传绑定到某个页面，那么检验项目权限。如果不绑定，只是上传到自己的文件库，则不需要校验项目权限
         if( $page_id > 0 || $item_id > 0){
-            if (!$this->checkItemPermn($login_user['uid'] , $item_id)) {
+            if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
                 $this->sendError(10103);
                 return;
             }
@@ -167,7 +167,7 @@ class AttachmentController extends BaseController {
             $this->deleteMyAttachment();
         }else{
             $page = M("Page")->where(" page_id = '$page_id' ")->find();
-            if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+            if (!$this->checkItemEdit($login_user['uid'] , $page['item_id'])) {
                 $this->sendError(10103);
                 return;
             }
@@ -338,7 +338,7 @@ class AttachmentController extends BaseController {
         $page_id = I("page_id/d");
         $file = D("UploadFile")->where("file_id = '$file_id' and uid ='$login_user[uid]' ")->find();
         $page = M("Page")->where(" page_id = '$page_id' ")->find();
-        if (!$this->checkItemPermn($login_user['uid'] , $page['item_id'])) {
+        if (!$this->checkItemEdit($login_user['uid'] , $page['item_id'])) {
             $this->sendError(10103);
             return;
         }

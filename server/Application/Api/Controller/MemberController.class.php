@@ -11,7 +11,7 @@ class MemberController extends BaseController {
         $cat_id = I("cat_id/d") ?  I("cat_id/d") : 0 ;
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        if(!$this->checkItemCreator($uid , $item_id)){
+        if(!$this->checkItemManage($uid , $item_id)){
             $this->sendError(10303);
             return ;
         } 
@@ -50,7 +50,7 @@ class MemberController extends BaseController {
         $item_id = I("item_id/d");  
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        if(!$this->checkItemCreator($uid , $item_id)){
+        if(!$this->checkItemManage($uid , $item_id)){
             $this->sendError(10303);
             return ;
         } 
@@ -79,7 +79,7 @@ class MemberController extends BaseController {
         $item_id = I("item_id/d");  
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        if(!$this->checkItemCreator($uid , $item_id)){
+        if(!$this->checkItemManage($uid , $item_id)){
             $this->sendError(10303);
             return ;
         } 
