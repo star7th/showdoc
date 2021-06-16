@@ -32,6 +32,7 @@
         <LeftMenuSub
           v-if="catalog2.catalogs.length"
           :catalog="catalog2.catalogs"
+          :item_info="item_info"
         ></LeftMenuSub>
       </el-submenu>
     </template>
