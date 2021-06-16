@@ -45,9 +45,13 @@
             :key="page.page_id"
           >
             <i class="el-icon-document"></i>
-            <span :title="page.page_title" :id="'left_page_' + page.page_id">{{
-              page.page_title
-            }}</span>
+            <a
+              :href="randerUrl(page.page_id)"
+              @click.prevent="() => {}"
+              :title="page.page_title"
+              :id="'left_page_' + page.page_id"
+              >{{ page.page_title }}</a
+            >
           </el-menu-item>
         </template>
 
@@ -55,6 +59,7 @@
         <LeftMenuSub
           v-if="menu.catalogs && menu.catalogs.length"
           :catalog="menu.catalogs"
+          :item_info="item_info"
         ></LeftMenuSub>
       </el-menu>
     </el-aside>
@@ -139,6 +144,12 @@ export default {
       element.style.display = 'block'
       element = document.getElementById('page_md_content')
       element.style.width = '95%'
+    },
+    randerUrl(page_id) {
+      var domain = this.item_info.item_domain
+        ? this.item_info.item_domain
+        : this.item_info.item_id
+      return '#/' + domain + '/' + page_id
     }
   },
   mounted() {
@@ -270,6 +281,9 @@ export default {
   margin-top: 5px;
   cursor: pointer;
   position: fixed;
+}
+.el-menu-item:not(.is-active) a {
+  color: #303133;
 }
 </style>
 <style type="text/css">

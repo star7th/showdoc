@@ -18,10 +18,12 @@
             :key="page3.page_id"
           >
             <i class="el-icon-document"></i>
-            <span
+            <a
+              :href="randerUrl(page3.page_id)"
+              @click.prevent="() => {}"
               :title="page3.page_title"
               :id="'left_page_' + page3.page_id"
-              >{{ page3.page_title }}</span
+              >{{ page3.page_title }}</a
             >
           </el-menu-item>
         </template>
@@ -40,13 +42,22 @@
 export default {
   name: 'LeftMenuSub',
   props: {
-    catalog: []
+    catalog: [],
+    item_info: {}
   },
   data() {
     return {}
   },
   components: {},
-  methods: {},
+  methods: {
+    randerUrl(page_id) {
+      if (!this.item_info) return
+      var domain = this.item_info.item_domain
+        ? this.item_info.item_domain
+        : this.item_info.item_id
+      return '#/' + domain + '/' + page_id
+    }
+  },
   mounted() {
     // console.log(this.catalog)
   }
@@ -90,5 +101,8 @@ export default {
   margin-left: 5px;
   margin-right: 10px;
   margin-bottom: 4px;
+}
+.el-menu-item:not(.is-active) a {
+  color: #303133;
 }
 </style>
