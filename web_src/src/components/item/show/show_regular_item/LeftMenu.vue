@@ -102,15 +102,18 @@ export default {
 
     // 改变url
     change_url(page_id) {
-      if (page_id > 0 && page_id == this.$route.query.page_id) {
+      if (
+        page_id > 0 &&
+        (page_id == this.$route.query.page_id ||
+          page_id == this.$route.params.page_id)
+      ) {
         return
       }
       var domain = this.item_info.item_domain
         ? this.item_info.item_domain
         : this.item_info.item_id
       this.$router.replace({
-        path: '/' + domain,
-        query: { page_id: page_id }
+        path: '/' + domain + '/' + page_id
       })
     },
 

@@ -518,10 +518,10 @@ export default {
       }, 20000)
     },
     goback() {
-      var url = '/' + this.$route.params.item_id
+      var url =
+        '/' + this.$route.params.item_id + '/' + this.$route.params.page_id
       this.$router.push({
-        path: url,
-        query: { page_id: this.$route.params.page_id }
+        path: url
       })
     },
     dropdown_callback(data) {

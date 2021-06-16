@@ -122,7 +122,7 @@ class AttachmentController extends BaseController {
     }
     //页面的上传附件列表
     public function pageAttachmentUploadList(){
-        $login_user = $this->checkLogin();
+        $login_user = $this->checkLogin(false);
         $item_id = I("item_id/d") ? I("item_id/d") : 0 ;
         $page_id = I("page_id/d") ? I("page_id/d") : 0 ;
         if (!$page_id) {

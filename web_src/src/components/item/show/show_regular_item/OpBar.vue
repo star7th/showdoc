@@ -361,8 +361,7 @@ export default {
     share_page() {
       var page_id = this.page_id > 0 ? this.page_id : 0
       let path = this.item_domain ? this.item_domain : this.item_id
-      this.share_page_link =
-        this.getRootPath() + '#/' + path + '?page_id=' + page_id
+      this.share_page_link = this.getRootPath() + '#/' + path + '/' + page_id
       // this.share_single_link= this.getRootPath()+"/page/"+page_id ;
       this.qr_page_link =
         DocConfig.server +

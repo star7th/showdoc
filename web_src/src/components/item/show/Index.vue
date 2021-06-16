@@ -59,6 +59,9 @@ export default {
       var loading = that.$loading()
       var item_id = this.$route.params.item_id ? this.$route.params.item_id : 0
       var page_id = this.$route.query.page_id ? this.$route.query.page_id : 0
+      page_id = this.$route.params.page_id
+        ? this.$route.params.page_id
+        : page_id
       let params = {
         item_id: item_id,
         keyword: keyword

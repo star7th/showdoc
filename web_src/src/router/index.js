@@ -74,11 +74,6 @@ export default new Router({
       component: ItemPassword
     },
     {
-      path: '/:item_id',
-      name: 'ItemShow',
-      component: ItemShow
-    },
-    {
       path: '/item/export/:item_id',
       name: 'ItemExport',
       component: ItemExport
@@ -147,6 +142,18 @@ export default new Router({
       path: '/item/group/index',
       name: 'ItemGroup',
       component: ItemGroup
+    },
+
+    // -------新路由加在分割线前面---------------
+    {
+      path: '/:item_id',
+      name: 'ItemShow',
+      component: ItemShow
+    },
+    {
+      path: '/:item_id/:page_id(\\d+)',
+      name: 'ItemShow',
+      component: ItemShow
     }
   ]
 })
