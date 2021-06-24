@@ -24,6 +24,8 @@ class AdminUpdateController extends BaseController {
 
     // 下载更新代码包
     public function download(){
+        $this->checkLogin();
+        $this->checkAdmin();
         set_time_limit(1000);
         ini_set('memory_limit','500M');
         $new_version = I("new_version") ;
@@ -78,6 +80,8 @@ class AdminUpdateController extends BaseController {
 
     // 执行升级操作，升级覆盖文件
     public function updateFiles(){
+        $this->checkLogin();
+        $this->checkAdmin();
         set_time_limit(1000);
         ini_set('memory_limit','500M');
         
