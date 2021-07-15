@@ -36,6 +36,8 @@ class ExtLoginController extends BaseController {
                 $this->sendError(10101,"为了安全，禁止管理员通过这种方式登录");
                 return ;
             }
+            
+            D("User")->setLastTime($res['uid']);
             unset($res['password']);
             session("login_user" , $res );
             $token = D("UserToken")->createToken($res['uid'],60*60*24*180);
@@ -139,7 +141,8 @@ class ExtLoginController extends BaseController {
                         D("User")->register($username,md5($username.time().rand()));
                         $info = D("User")->where("username='%s'" ,array($username))->find();
                     }
-
+                    
+                    D("User")->setLastTime($info['uid']);
                     unset($info['password']);
                     session("login_user" , $info );
                     $token = D("UserToken")->createToken($info['uid'],60*60*24*180);
