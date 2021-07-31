@@ -16,9 +16,9 @@ class UserModel extends BaseModel {
      * 注册新用户
      * 
      */
-    public function register($username,$password){
+    public function register($username, $password, $name = ''){
         $password = md5(base64_encode(md5($password)).'576hbgh6');
-        return $this->add(array('username'=>$username ,'password'=>$password , 'reg_time'=>time()));
+        return $this->add(array('username'=>$username ,'password'=>$password , 'reg_time'=>time(), 'name'=> $name));
     }
 
     //修改用户密码
@@ -82,17 +82,19 @@ class UserModel extends BaseModel {
             if (!$rs) {
                return false ;
             }
-
-            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
+            //仅查询登录用户
+            $filter = 'samaccountname=' . $username;
+            $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $filter);
             $data = ldap_get_entries($ldap_conn, $result);
             for ($i=0; $i<$data["count"]; $i++) {
-                $ldap_user = $data[$i][$ldap_form['user_field']][0] ;
+                $ldap_user = $data[$i]['samaccountname'][0];;
+                $display_name = $data[$i]['displayname'][0];
                 $dn = $data[$i]["dn"] ;
                 if ($ldap_user == $username) {
                     //如果该用户不在数据库里，则帮助其注册
                     $userInfo = D("User")->isExist($username) ;
                     if(!$userInfo){
-                        D("User")->register($ldap_user,$ldap_user.time());
+                        D("User")->register($ldap_user, $ldap_user.time(), $display_name);
                     }
                     $rs2=ldap_bind($ldap_conn, $dn , $password);
                     if ($rs2) {

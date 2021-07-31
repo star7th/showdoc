@@ -85,20 +85,20 @@ class AdminSettingController extends BaseController {
                $this->sendError(10011,"Can't bind to LDAP server");
                return ;
             }
-
-            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
-            $data = ldap_get_entries($ldap_conn, $result);
-            
-            for ($i=0; $i<$data["count"]; $i++) {
-                $ldap_user = $data[$i][$ldap_form['user_field']][0] ;
-                if (!$ldap_user) {
-                    continue ;
-                }
-                //如果该用户不在数据库里，则帮助其注册
-                if(!D("User")->isExist($ldap_user)){
-                    D("User")->register($ldap_user,$ldap_user.time());
-                }
-            }
+//配置ldap时，不在同步数据
+//            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
+//            $data = ldap_get_entries($ldap_conn, $result);
+//            
+//            for ($i=0; $i<$data["count"]; $i++) {
+//                $ldap_user = $data[$i][$ldap_form['user_field']][0] ;
+//                if (!$ldap_user) {
+//                    continue ;
+//                }
+//                //如果该用户不在数据库里，则帮助其注册
+//                if(!D("User")->isExist($ldap_user)){
+//                    D("User")->register($ldap_user,$ldap_user.time());
+//                }
+//            }
             D("Options")->set("ldap_form" , json_encode( $ldap_form)) ;
         }
         D("Options")->set("ldap_open" ,$ldap_open) ;
