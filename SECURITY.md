@@ -17,10 +17,10 @@ Please contact email xing7th#gmail.com (change # into @)   report the vulnerabil
 
 ## 支持的版本
 
-安全报告的最新版本目前已被接受。
+目前接受最新版本的安全报告。
 
-在报告之前，你可以测试项目的最新版本或最新主分支代码
+在报告之前，你可以测试项目的最新版本或最新master分支代码
 
 ## 报告漏洞
 
-请联系电子邮件xing7th#gmail.com（将#更改为@）报告该漏洞。我们将通过电子邮件回复您
+请联系电子邮件xing7th#gmail.com（将#更改为@）报告该漏洞。我们将通过电子邮件回复你
