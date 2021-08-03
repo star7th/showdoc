@@ -10,6 +10,6 @@ Before reporting, you can test the latest release or the latest master branch co
 
 ## Reporting a Vulnerability
 
-Please contact email xing7th@gmail.com report the vulnerability. We will reply to you by email
+Please contact email xing7th#gmail.com (change # into @)  report the vulnerability. We will reply to you by email
 
 
