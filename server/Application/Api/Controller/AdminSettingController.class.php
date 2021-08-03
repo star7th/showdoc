@@ -166,7 +166,7 @@ class AdminSettingController extends BaseController {
         $this->checkAdmin();
         $login_secret_key = D("Options")->get("login_secret_key") ;
         if(!$login_secret_key){
-            $login_secret_key = md5("rgrsfsrfsrf".time().rand());
+            $login_secret_key = md5("rgrsfsrfsrf".time().rand(1,9000000000000000).uniqid());
             D("Options")->set("login_secret_key",$login_secret_key) ;
         }
         $this->sendResult(array("login_secret_key"=>$login_secret_key));
@@ -176,7 +176,7 @@ class AdminSettingController extends BaseController {
     public function resetLoginSecretKey(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
-        $login_secret_key = md5("rgrsfsrfsrf".time().rand());
+        $login_secret_key = md5("rgrsfsrfsrf".time().rand(1,9000000000000000).uniqid());
         D("Options")->set("login_secret_key",$login_secret_key) ;
         $this->sendResult(array("login_secret_key"=>$login_secret_key));
 
