@@ -4,7 +4,7 @@
 
 ### What is ShowDoc?
 
-When we take over a module or project which has been developed by others, we always feel crazy watching at the codes without notes or comments. 
+When we take over a module or project which has been developed by others, we always feel crazy watching at the codes without notes or comments.
 
 Where is the document?! Where is the document?! **Show me the doc!!**
 
@@ -43,31 +43,39 @@ Responsive webpage design can share the project documents to computer or mobile 
 - #### Permission Manage
 
   - Public and Private Project
-    Projects on ShowDoc are divided into two categories including Public Project and Private Project. The Public Project can be visited by anyone, the Private Project need to login. The password is set by project owner. 
+  
+    Projects on ShowDoc are divided into two categories including Public Project and Private Project. The Public Project can be visited by anyone, the Private Project need to login. The password is set by project owner.
 
   - Project Transfer
+
     The project owner can freely transfer the project to others.
 
   - Project Members
+
     You can easily add or delete project members. Members of the project can edit the documents, but they can't transfer or delete the project, only owner has the permission.
 
 - #### Edit Function
 
   - Support Markdown
+
     ShowDoc adopts Markdown Editor, it is excellent both in editing and reading. If you know nothing about Markdown, please google it by the keywords "Learning and Introduction of Markdown".
 
   - Template Insert
+
     On the editing page, a click on the button which is on the top of the Editor can easily insert API interface template and data dictionary template. After inserting the template, altering data is the only thing needs to be done, and this reduces lots of editing work.
 
   - History Version
+
     ShowDoc provides a function of History Version on the page, you can easily restore from the history.
 
 ### Deploy it on your own server
 
 - ShowDoc Deploy
+
   Please refer to: [AutoInstall.md](https://github.com/star7th/showdoc/blob/master/documentation/en/AutoInstall.md)
 
 - Development & Contribution
+
   Please refer to: [Development&Contribution.md](https://github.com/star7th/showdoc/blob/master/documentation/en/Development&Contribution.md)
 
 ### About the copyright
@@ -76,6 +84,6 @@ ShowDoc is issued complying with Apache2 Open Source License, and it is free.
 
 Copyright © star7th
 
-E-mail: xing7th#gmail.com (change # into @) 
+E-mail: xing7th#gmail.com (change # into @)
 
 All rights reserved.
