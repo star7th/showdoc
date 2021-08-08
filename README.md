@@ -1,80 +1,81 @@
-﻿## 中文版教程：https://www.showdoc.com.cn/help 
+﻿# ShowDoc
 
-### What is ShowDoc ?
+## [点击查看中文版教程](https://www.showdoc.com.cn/help)
 
-Whenever we take over a module or project which has been developed by other people, we always feel crazy watching at those codes without notes. Where is the document?! Where is the document?! **Show me the doc !!**
+### What is ShowDoc?
 
-A programmer often hopes the others to write technical documents, with the hope of not writing them on his/her own. Because writing a technical document needs a lot of time to handle the format and layout, and the person who writes it has to think of all kinds of non-technical details such as which catalog to put in the newly-established word document
+When we take over a module or project which has been developed by others, we always feel crazy watching at the codes without notes or comments. 
 
-All kinds of the word documents are kept by different persons in a team dispersedly. The person who needs other documents gets the documents by shouting out. He/She gives a shout asking for the documents and then receives them from other people by IMs or the e-mail. This kind of communication is not bad, but the efficiency is not high.
+Where is the document?! Where is the document?! **Show me the doc!!**
 
-ShowDoc is a tool greatly applicable for an IT team to share documents online. It can promote communication efficiency among members of the team.
+Programmers often want others to write technical documents, but not by themselves. Writing technical documents need lots of time and works, such as it needs to consider how to handle the format and layout of the documents. Beside, the man who writes the documents has to think all kinds of non-technical details. For example, which catalog should to be put in the newly-established word document.
+
+In general, all kinds of the word documents are dispersively maintained by different people in a team.
+
+How to get the latest documents? Here is a way.
+
+The man gets the documents by shouting out, Lol. Then he will receive them from others through IMs or E-mail. This kind of communication is not so bad, but this is not the most effective way.
+
+So, what is the most effective way? **ShowDoc comes out!**
+
+ShowDoc is a tool greatly applicable for an IT team to share documents online. It can promote communication efficiency between members of a team.
 
 ### What can it be used for?
 
-- #### API Document （ [Demo](https://www.showdoc.com.cn/demo-en)）
- 
- With the development of mobile Internet, BaaS (Backend as a Service) becomes more and more popular. The Server end provides API, and the APP end or Webpage frontend can invoke data conveniently. Using ShowDoc can compile exquisite API documents in a very fast and convenient way.
+- #### API Document ([Demo](https://www.showdoc.com.cn/demo-en))
 
-- #### Data Dictionary （ [Demo](https://www.showdoc.com.cn/demo-en)）
- 
- A good Data Dictionary can easily exhibit database structure to other people, such as definition of each field and the like.
+With the development of mobile Internet, BaaS (Backend as a Service) becomes more and more popular. The server side(backend) provides API, and the APP side or Webpage frontend can conveniently invoke data through the backend. Using ShowDoc can compile exquisite API documents in a very fast and convenient way.
 
-- #### Explanation Document （ [Demo](https://www.showdoc.com.cn/help-en)）
- 
- You can absolutely use ShowDoc to compile the explanation documents for some tools, as well as to compile some technical specifications explanation documents for the team to look up.
- 
-### What functions does it have?
+- #### Data Dictionary ([Demo](https://www.showdoc.com.cn/demo-en))
+
+A good Data Dictionary, such as database structure can be easily exhibited to others, shown the definition of each field of the database structure.
+
+- #### Explain Document ([Demo](https://www.showdoc.com.cn/help-en))
+
+You can absolutely use ShowDoc to write instructions of some tools, or some technical specifications explanation documents for the team to query.
+
+### What functions does it have now?
 
 - #### Sharing and Exporting
 
- Responsive webpage design can share the project documents to computer or mobile devices for reading. It can also export the project into word document for browsing offline.
- 
-- #### Permission Management
+Responsive webpage design can share the project documents to computer or mobile devices for reading. It can also export the project into offline word document.
 
- - Public Project and Private Project
- 
-   Projects on ShowDoc are divided into two categories including Public Project and Private Project. Public Project can be visited by any user no matter he/she logs in or not, while inputting password for verification is needed for visiting the Private Project. The password is set by project creator. 
-   
+- #### Permission Manage
+
+  - Public and Private Project
+    Projects on ShowDoc are divided into two categories including Public Project and Private Project. The Public Project can be visited by anyone, the Private Project need to login. The password is set by project owner. 
+
   - Project Transfer
-  
-   The project creator can transfer the project to other users of the website freely.
-   
+    The project owner can freely transfer the project to others.
+
   - Project Members
-  
-   You can easily add or delete project members in the project of ShowDoc. Members of the project can edit the project, but they can not transfer or delete the project (only creator of the project has the permission).
-   
+    You can easily add or delete project members. Members of the project can edit the documents, but they can't transfer or delete the project, only owner has the permission.
+
 - #### Edit Function
-  - Markdown Edit
-  
-   ShowDoc adopts Markdown Editor, and it is excellent both in editing and reading experience. If you know nothing about Markdown, please search “Learning and Introduction of Markdown” on the search engine.
-   
+
+  - Support Markdown
+    ShowDoc adopts Markdown Editor, it is excellent both in editing and reading. If you know nothing about Markdown, please google it by the keywords "Learning and Introduction of Markdown".
+
   - Template Insert
-  
-   On the editing page of ShowDoc, a click on the button which is on the top of the Editor can easily insert API interface template and data dictionary template. After inserting the template, altering data is the only thing that need to do and it reduces a lot of work in editing.
-   
+    On the editing page, a click on the button which is on the top of the Editor can easily insert API interface template and data dictionary template. After inserting the template, altering data is the only thing needs to be done, and this reduces lots of editing work.
+
   - History Version
-  
-   ShowDoc provides a function of History Version on the page, and you can easily restore the page to the former version.
-   
+    ShowDoc provides a function of History Version on the page, you can easily restore from the history.
 
-### Deploy It to Your Own Server
- - ShowDoc Deploy
-  
-     Please refer to: [AutoInstall.md](https://github.com/star7th/showdoc/blob/master/documentation/en/AutoInstall.md)
+### Deploy it on your own server
 
- - Development & Contribution
+- ShowDoc Deploy
+  Please refer to: [AutoInstall.md](https://github.com/star7th/showdoc/blob/master/documentation/en/AutoInstall.md)
 
-   Please refer to: [Development&Contribution.md](https://github.com/star7th/showdoc/blob/master/documentation/en/Development&Contribution.md)
+- Development & Contribution
+  Please refer to: [Development&Contribution.md](https://github.com/star7th/showdoc/blob/master/documentation/en/Development&Contribution.md)
 
-### Copyright 
+### About the copyright
 
- ShowDoc is issued complying with Apache2 Open Source License, and it is for free use. 
- 
- Copyright ©  star7th 
- 
- 
- E-mail: xing7th#gmail.com (change # into @) 
- 
- All rights reserved. 
- 
+ShowDoc is issued complying with Apache2 Open Source License, and it is free.
+
+Copyright © star7th
+
+E-mail: xing7th#gmail.com (change # into @) 
+
+All rights reserved.
