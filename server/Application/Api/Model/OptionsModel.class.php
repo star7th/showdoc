@@ -15,8 +15,11 @@ class OptionsModel extends BaseModel {
 
     //
     public function set($option_name,$option_value){
-        $sql = " replace into  options (option_name , option_value ) values ('$option_name' , '$option_value')";
-        return $this->execute($sql);;
+        $return = M('options')->add(array(
+            "option_name"=>$option_name ,
+            "option_value"=>$option_value ,
+        ),NULL,true);
+        return $return;
     }    
     
 }

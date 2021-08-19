@@ -82,9 +82,11 @@ class CommonController extends BaseController {
     public function homePageSetting(){
         $home_page = D("Options")->get("home_page" ) ;
         $home_item = D("Options")->get("home_item" ) ;
+        $beian = D("Options")->get("beian" ) ;
         $array = array(
             "home_page"=>$home_page ,
             "home_item"=>$home_item ,
+            "beian"=>$beian ,
             );
         $this->sendResult($array);
     }

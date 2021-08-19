@@ -13,10 +13,12 @@ class AdminSettingController extends BaseController {
         $home_page = intval(I("home_page")) ;
         $home_item = intval(I("home_item")) ;
         $oss_setting = I("oss_setting") ;
+        $beian = I("beian") ;
         D("Options")->set("history_version_count" ,$history_version_count) ;
         D("Options")->set("register_open" ,$register_open) ;
         D("Options")->set("home_page" ,$home_page) ;
         D("Options")->set("home_item" ,$home_item) ;
+        D("Options")->set("beian" ,$beian) ;
         
         if ($oss_open) {
             $this->checkComposerPHPVersion();
@@ -38,6 +40,7 @@ class AdminSettingController extends BaseController {
         $oss_setting = D("Options")->get("oss_setting" ) ;
         $home_page = D("Options")->get("home_page" ) ;
         $home_item = D("Options")->get("home_item" ) ;
+        $beian = D("Options")->get("beian" ) ;
         $ldap_form = json_decode($ldap_form,1);
         $oss_setting = json_decode($oss_setting,1);
         
@@ -51,6 +54,7 @@ class AdminSettingController extends BaseController {
                 "history_version_count"=>$history_version_count ,
                 "home_page"=>$home_page ,
                 "home_item"=>$home_item ,
+                "beian"=>$beian ,
                 "oss_setting"=>$oss_setting ,
                 );
             $this->sendResult($array);
