@@ -106,6 +106,7 @@
             drag
             name="file"
             :action="uploadUrl"
+            :before-upload="beforeUpload"
             :on-success="uploadCallback"
             :show-file-list="false"
           >
@@ -139,7 +140,8 @@ export default {
       used: 0,
       used_flow: 0,
       uploadUrl: DocConfig.server + '/api/page/upload',
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      loading: ''
     }
   },
   methods: {
@@ -192,6 +194,7 @@ export default {
       this.$router.push({ path: '/item/index' })
     },
     uploadCallback(data) {
+      this.loading.close()
       if (data.error_message) {
         this.$alert(data.error_message)
       }
@@ -203,6 +206,9 @@ export default {
       this.$copyText(row.url).then(e => {
         this.$message.success(this.$t('copy_success'))
       })
+    },
+    beforeUpload() {
+      this.loading = this.$loading()
     }
   },
 

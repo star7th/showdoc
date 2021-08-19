@@ -1,5 +1,9 @@
 <template>
-  <div class="hello">
+  <div
+    class="hello"
+    @keydown.ctrl.83.prevent="save"
+    @keydown.meta.83.prevent="save"
+  >
     <link href="static/xspreadsheet/xspreadsheet.css" rel="stylesheet" />
     <div id="header"></div>
     <div class="edit-bar" v-if="item_info.item_edit">
@@ -406,6 +410,31 @@ export default {
         }
       }
       reader.readAsArrayBuffer(f)
+    },
+    // 由于页面关闭事件无法直接发起异步的ajax请求，所以用浏览器的navigator.sendBeacon来实现
+    unLockOnClose() {
+      let user_token = ''
+      const userinfostr = localStorage.getItem('userinfo')
+      if (userinfostr) {
+        const userinfo = JSON.parse(userinfostr)
+        if (userinfo && userinfo.user_token) {
+          user_token = userinfo.user_token
+        }
+      }
+      let analyticsData = new URLSearchParams({
+        page_id: this.page_id,
+        item_id: this.item_info.item_id,
+        lock_to: 1000,
+        user_token: user_token
+      })
+      let url = DocConfig.server + '/api/page/setLock'
+      if ('sendBeacon' in navigator) {
+        navigator.sendBeacon(url, analyticsData)
+      } else {
+        var client = new XMLHttpRequest()
+        client.open('POST', url, false)
+        client.send(analyticsData)
+      }
     }
   },
   mounted() {
@@ -434,11 +463,13 @@ export default {
       )
       $s([`static/xspreadsheet/xlsx.full.min.js`])
     })
+    window.addEventListener('beforeunload', this.unLockOnClose)
   },
   beforeDestroy() {
     this.$message.closeAll()
     clearInterval(this.intervalId)
     this.unlock()
+    window.removeEventListener('beforeunload', this.unLockOnClose)
   }
 }
 </script>

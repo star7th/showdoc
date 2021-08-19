@@ -368,7 +368,7 @@ exports.default = {
   update_pwd_tips: '密码，不修改则留空',
 
   import_excel: '你可以选择Excel文件导入',
-  table: '表格',
+  table: '电子表格',
 
   attachment_manage: '附件管理',
   op_success: '操作成功',

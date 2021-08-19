@@ -221,11 +221,11 @@ class ItemController extends BaseController {
             $item_sort_data = json_decode(htmlspecialchars_decode($item_sort['item_sort_data']) , true) ;
             //var_dump($item_sort_data);
             foreach ($items as $key => &$value) {
-                //如果item_id有设置了序号，则赋值序号。没有则默认填上0
+                //如果item_id有设置了序号，则赋值序号。没有则默认填上项目id
                 if ($item_sort_data[$value['item_id']]) {
                     $value['s_number'] = $item_sort_data[$value['item_id']] ;
                 }else{
-                    $value['s_number'] = 0 ;
+                    $value['s_number'] = $value['item_id'] ;
                 }
             }
             $items = $this->_sort_by_key($items , 's_number' ) ;
