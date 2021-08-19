@@ -86,7 +86,7 @@ class CommonController extends BaseController {
         $array = array(
             "home_page"=>$home_page ,
             "home_item"=>$home_item ,
-            "beian"=>$beian ,
+            "beian"=>$beian? $beian :'',
             );
         $this->sendResult($array);
     }
