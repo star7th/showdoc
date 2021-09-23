@@ -135,7 +135,7 @@ class ExtLoginController extends BaseController {
                 ));
                 $res_array = json_decode($res, true);
                 if($res_array){
-                    $username = $res_array['username'] ;
+                    $username = $res_array['preferred_username'] ? $res_array['preferred_username'] : $res_array['username'] ;
                     $info = D("User")->where("username='%s'" ,array($username))->find();
                     if(!$info){
                         D("User")->register($username,md5($username.time().rand()));
