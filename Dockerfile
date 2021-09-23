@@ -16,6 +16,6 @@ RUN mv /showdoc_data/html/mock/ /showdoc_data/mock
 RUN (cd /showdoc_data/mock/ && npm install )
 
 # 写环境变量
-ENV SHOWDOC_DOCKER_VERSION 2.0
+ENV SHOWDOC_DOCKER_VERSION 2.1
 
 CMD if [ ! -f "/var/www/html/index.php" ]; then \cp -fr /showdoc_data/html/ /var/www/ ;fi;chmod 777 -R /var/www/ ;(sleep 30 && cd /showdoc_data/mock/ && npm run start) & supervisord
