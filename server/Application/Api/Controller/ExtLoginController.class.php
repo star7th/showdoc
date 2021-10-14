@@ -19,7 +19,7 @@ class ExtLoginController extends BaseController {
         $login_secret_key = D("Options")->get("login_secret_key") ;
         if(!$login_secret_key) return false ;
         $new_token = md5($username.$login_secret_key.$time);
-        if($token !=  $new_token){
+        if( !($token ===  $new_token) ){
             $this->sendError(10101,"token不正确");
             return ;
         }
