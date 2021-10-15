@@ -77,6 +77,7 @@
           name="file"
           class="upload-file"
           :action="uploadUrl"
+          :before-upload="beforeUpload"
           :on-success="uploadCallback"
           :on-error="uploadCallback"
           :data="uploadData"
@@ -112,7 +113,8 @@ export default {
       content: [],
       dialogTableVisible: false,
       uploadUrl: DocConfig.server + '/api/page/upload',
-      dialogUploadVisible: false
+      dialogUploadVisible: false,
+      loading: ''
     }
   },
   components: {
@@ -191,6 +193,7 @@ export default {
       this.dialogTableVisible = false
     },
     uploadCallback(data) {
+      this.loading.close()
       if (data.error_message) {
         this.$alert(data.error_message)
       }
@@ -203,6 +206,9 @@ export default {
     showFilehub() {
       let childRef = this.$refs.filehub // 获取子组件
       childRef.show()
+    },
+    beforeUpload() {
+      this.loading = this.$loading()
     }
   },
   mounted() {}

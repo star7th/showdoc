@@ -8,8 +8,8 @@ class ItemVariableController extends BaseController {
     public function save(){ 
         $item_id = I("item_id/d");  
         $env_id = I("env_id/d"); 
-        $var_name = I("var_name");  
-        $var_value = I("var_value");  
+        $var_name = trim(I("var_name"));  
+        $var_value = trim( I("var_value"));  
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
         if(!$this->checkItemEdit($uid , $item_id)){

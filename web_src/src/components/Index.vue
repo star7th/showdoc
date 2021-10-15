@@ -190,7 +190,7 @@
         }}</router-link>
       </div>
       <div class="copyright">
-        <a href="http://www.beian.miit.gov.cn/"></a>
+        <a href="https://beian.miit.gov.cn/">{{ beian }}</a>
       </div>
     </div>
   </div>
@@ -204,7 +204,8 @@ export default {
       height: '',
       link: '',
       link_text: '',
-      lang: ''
+      lang: '',
+      beian: ''
     }
   },
   methods: {
@@ -221,6 +222,7 @@ export default {
       var url = DocConfig.server + '/api/common/homePageSetting'
       this.axios.post(url, this.form).then(response => {
         if (response.data.error_code === 0) {
+          this.beian = response.data.data.beian
           if (response.data.data.home_page == 2) {
             // 跳转到登录页面
             this.$router.replace({

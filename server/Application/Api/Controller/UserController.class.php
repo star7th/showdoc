@@ -308,6 +308,7 @@ class UserController extends BaseController {
         if ($ret) {
                 $ret = D("User")->updatePwd($login_user['uid'],$new_password);
                 if ($ret) {
+                    D("UserToken")->where("  uid = '%d' " ,array($login_user['uid']) )->delete();
                     $this->sendResult(array());
                 }else{
                     $this->sendError(10101,L('modify_faild'));

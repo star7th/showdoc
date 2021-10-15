@@ -37,6 +37,7 @@
             <el-upload
               class="upload-file"
               :action="uploadUrl"
+              :before-upload="beforeUpload"
               :on-success="uploadCallback"
               :on-error="uploadCallback"
               ref="uploadFile"
@@ -134,7 +135,8 @@ export default {
       attachment_type: '-1',
       used: 0,
       used_flow: 0,
-      uploadUrl: DocConfig.server + '/api/page/upload'
+      uploadUrl: DocConfig.server + '/api/page/upload',
+      loading: ''
     }
   },
   components: {},
@@ -192,6 +194,7 @@ export default {
       })
     },
     uploadCallback(data) {
+      this.loading.close()
       if (data.error_message) {
         this.$alert(data.error_message)
       }
@@ -207,6 +210,9 @@ export default {
         this.dialogTableVisible = false
         this.callback()
       })
+    },
+    beforeUpload() {
+      this.loading = this.$loading()
     }
   },
   mounted() {}

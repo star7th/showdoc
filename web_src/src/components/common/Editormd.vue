@@ -293,6 +293,10 @@ export default {
     editor_watch() {
       return this.instance.watch()
     },
+    setCursorToTop() {
+      return this.instance.setCursor({ line: 0, ch: 0 })
+    },
+
     clear() {
       return this.instance.clear()
     },

@@ -17,9 +17,9 @@ class ExtLoginController extends BaseController {
             return ;
         }
         $login_secret_key = D("Options")->get("login_secret_key") ;
-
+        if(!$login_secret_key) return false ;
         $new_token = md5($username.$login_secret_key.$time);
-        if($token !=  $new_token){
+        if( !($token ===  $new_token) ){
             $this->sendError(10101,"token不正确");
             return ;
         }
@@ -135,7 +135,7 @@ class ExtLoginController extends BaseController {
                 ));
                 $res_array = json_decode($res, true);
                 if($res_array){
-                    $username = $res_array['username'] ;
+                    $username = $res_array['preferred_username'] ? $res_array['preferred_username'] : $res_array['username'] ;
                     $info = D("User")->where("username='%s'" ,array($username))->find();
                     if(!$info){
                         D("User")->register($username,md5($username.time().rand()));

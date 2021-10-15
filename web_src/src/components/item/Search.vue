@@ -1,5 +1,22 @@
 <template>
   <div class="page">
+    <div
+      class="itemResultList"
+      v-for="item in itemResultList"
+      :key="item.item_id"
+    >
+      <hr />
+      <p class="title">
+        <router-link :to="'/' + item.item_id" tag="a" target="_blank"
+          ><text-highlight :queries="queries">{{
+            item.item_name
+          }}</text-highlight></router-link
+        >
+      </p>
+      <p class="content">
+        {{ item.item_description }}
+      </p>
+    </div>
     <div class="resultList" v-for="item in resultList" :key="item.item_id">
       <div v-for="page in item.pages" :key="page.page_id">
         <hr />
@@ -41,7 +58,8 @@ export default {
       searchItemIds: [], // 要搜索的item_id们
       resultList: [],
       showLoading: false,
-      queries: []
+      queries: [],
+      itemResultList: []
     }
   },
   watch: {
@@ -54,11 +72,12 @@ export default {
       this.itemList.forEach(element => {
         this.searchItemIds.push(element.item_id)
       })
-      this.search()
+      this.searchItems()
+      this.searchPages()
     }
   },
   methods: {
-    search() {
+    searchPages() {
       this.showLoading = true
       let item_id = this.searchItemIds.shift()
       if (!item_id) {
@@ -73,7 +92,15 @@ export default {
         if (json && json.pages && json.pages.length > 0) {
           this.resultList.push(json)
         }
-        this.search()
+        this.searchPages()
+      })
+    },
+    searchItems() {
+      this.itemResultList = []
+      this.itemList.map((one, index) => {
+        if (one && one.item_name && one.item_name.indexOf(this.keyword) > -1) {
+          this.itemResultList.push(one)
+        }
       })
     }
   },
@@ -83,7 +110,8 @@ export default {
     this.itemList.forEach(element => {
       this.searchItemIds.push(element.item_id)
     })
-    this.search()
+    this.searchItems()
+    this.searchPages()
   },
   beforeDestroy() {
     this.searchItemIds = []
@@ -101,7 +129,8 @@ export default {
   margin: 0 auto;
   font-size: 20px;
 }
-.resultList {
+.resultList,
+.itemResultList {
   width: 85%;
   margin: 0 auto;
 }

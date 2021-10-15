@@ -33,7 +33,23 @@
           ></el-input>
         </el-tooltip>
       </el-form-item>
+      <el-form-item label>
+        <el-radio v-model="isOpenItem" :label="true">{{
+          $t('Open_item')
+        }}</el-radio>
+        <el-radio v-model="isOpenItem" :label="false">{{
+          $t('private_item')
+        }}</el-radio>
+      </el-form-item>
 
+      <el-form-item v-show="!isOpenItem">
+        <el-input
+          type="text"
+          auto-complete="off"
+          v-model="password"
+          :placeholder="$t('visit_password')"
+        ></el-input>
+      </el-form-item>
       <el-form-item label>
         <el-button type="primary" style="width:100%;" @click="FormSubmit">{{
           $t('submit')
@@ -54,7 +70,8 @@ export default {
       itemList: {},
       copy_item_id: '',
       item_name: '',
-      item_description: ''
+      item_description: '',
+      password: ''
     }
   },
   methods: {
@@ -84,25 +101,21 @@ export default {
     },
     FormSubmit() {
       var that = this
-      var url = DocConfig.server + '/api/item/add'
-      if (!this.isOpenItem && !this.infoForm.password) {
+      if (!this.isOpenItem && !this.password) {
         that.$alert(that.$t('private_item_passwrod'))
         return false
       }
       if (this.isOpenItem) {
-        this.infoForm.password = ''
+        this.password = ''
       }
-      var params = new URLSearchParams()
-      params.append('copy_item_id', this.copy_item_id)
-      params.append('item_name', this.item_name)
-      params.append('item_description', this.item_description)
 
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.$router.push({ path: '/item/index' })
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/item/add', {
+        copy_item_id: this.copy_item_id,
+        item_name: this.item_name,
+        password: this.password,
+        item_description: this.item_description
+      }).then(() => {
+        that.$router.push({ path: '/item/index' })
       })
     }
   },

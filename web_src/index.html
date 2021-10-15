@@ -5,30 +5,32 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <meta name="renderer"  content="webkit">
     <meta http-equiv="X-UA-Compatible" content="edge" />
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Cache" content="no-cache">
 	<title>ShowDoc</title>
 	<meta name="keywords" content="" />
 	<meta name="description" content="本网站基于开源版showdoc搭建，仅供私人使用。如需访问showdoc官网，请在搜索引擎里搜索showdoc字样或者直接访问showdoc.com.cn" />
   <script type="text/javascript">
-
-    var Wwidth = window.innerWidth ;
-    window.addEventListener('resize', function() {
-      ///宽度变化大于50像素的时候刷新整个窗口以适应新宽度
-      if ( Math.abs(Wwidth - window.innerWidth) > 50 ) {
-          //如果不在编辑页面，则在窗口变化后刷新窗口以适应宽度
-          if(window.location.href.indexOf("/edit") === -1){
-            window.location.reload();
-          }
+    var Wwidth = window.innerWidth
+window.addEventListener('resize', function() {
+      /// 宽度变化大于50像素的时候刷新整个窗口以适应新宽度
+      if (Math.abs(Wwidth - window.innerWidth) > 50) {
+          // 如果不在编辑页面，则在窗口变化后刷新窗口以适应宽度
+        if (window.location.href.indexOf('/edit') === -1) {
+          window.location.reload()
+        }
       };
+    })
 
-    });
-
-    //挂在window下的全局配置
-    window.DocConfig = {
-      //"server":'http://127.0.0.1/showdoc/server/index.php?s=',
-      "server": window.location.protocol +'//'+ window.location.host + window.location.pathname+ '../server/index.php?s=',
-      //"lang" :'en'
-      "lang" :'zh-cn'
-  }
+// 挂在window下的全局配置
+window.DocConfig = {
+      // "server":'http://127.0.0.1/showdoc/server/index.php?s=',
+      'server': window.location.protocol + '//' + window.location.host + window.location.pathname + '../server/index.php?s=',
+      // "lang" :'en'
+      'lang': 'zh-cn'
+}
   </script>
   </head>
   <body class="grey-bg">

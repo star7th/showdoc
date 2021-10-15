@@ -39,6 +39,8 @@ Vue.locale('en', allEnLocale)
 Vue.prototype.axios = axios
 Vue.prototype.request = request
 
+Vue.prototype.$lang = DocConfig.lang // 把语言放进里面，这样组件中可以this.$lang来读取
+
 /* eslint-disable no-new */
 
 new Vue({

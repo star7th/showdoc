@@ -386,8 +386,11 @@ export default {
         if (is_cover) {
           // 清空
           childRef.clear()
+          childRef.insertValue(value)
+          childRef.setCursorToTop()
+        } else {
+          childRef.insertValue(value)
         }
-        childRef.insertValue(value) // 调用子组件的方法
       }
     },
 
@@ -416,10 +419,10 @@ export default {
     editor_unwatch() {
       let childRef = this.$refs.Editormd // 获取子组件
       childRef.editor_unwatch()
-      if (sessionStorage.getItem('page_id_unwatch_' + this.page_id)) {
+      if (localStorage.getItem('page_id_unwatch_' + this.page_id)) {
       } else {
         this.$message(this.$t('long_page_tips'))
-        sessionStorage.setItem('page_id_unwatch_' + this.page_id, 1)
+        localStorage.setItem('page_id_unwatch_' + this.page_id, 1)
       }
     },
     //
@@ -751,7 +754,7 @@ export default {
     } else if (this.page_id > 0) {
       this.get_page_content(this.page_id)
     } else {
-      this.content = this.$t('welcome_use_showdoc')
+      this.content = '\n'
     }
     this.get_catalog(this.$route.params.item_id)
 

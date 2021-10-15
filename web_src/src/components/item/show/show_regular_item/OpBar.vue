@@ -476,14 +476,16 @@ export default {
       var element = document
         .getElementById('page_md_content')
         .getElementsByClassName('open-list')
-      element[0].style.top = '330px'
+      if (element && element[0]) element[0].style.top = '330px'
+      sessionStorage.setItem('show_more_' + this.item_id, 1)
     },
     hideMoreAction() {
       this.showMore = false
       var element = document
         .getElementById('page_md_content')
         .getElementsByClassName('open-list')
-      element[0].style.top = '230px'
+      if (element && element[0]) element[0].style.top = '230px'
+      sessionStorage.removeItem('show_more_' + this.item_id)
     },
     handleCommand(command) {
       switch (command) {
@@ -554,6 +556,9 @@ export default {
     ) {
       this.show_menu_btn = true
       this.show_op_bar = false
+    }
+    if (sessionStorage.getItem('show_more_' + this.item_id)) {
+      this.showMoreAction()
     }
   },
   watch: {

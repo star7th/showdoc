@@ -28,6 +28,19 @@
           ></el-option>
         </el-select>
       </el-form-item>
+
+      <el-form-item v-show="$lang == 'zh-cn'" label="备案号">
+        <el-input v-model="form.beian" class="form-el"></el-input>
+        <el-tooltip
+          class="item"
+          effect="dark"
+          content="设置后会展示在网站首页最下方"
+          placement="top"
+        >
+          <i class="el-icon-question"></i>
+        </el-tooltip>
+      </el-form-item>
+
       <el-form-item :label="$t('history_version_count')">
         <el-input
           v-model="form.history_version_count"
@@ -130,7 +143,7 @@
       <br />
       <el-form-item>
         <el-button type="primary" @click="onSubmit">{{ $t('save') }}</el-button>
-        <el-button>{{ $t('cancel') }}</el-button>
+        <el-button @click="loadConfig">{{ $t('cancel') }}</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -163,7 +176,8 @@ export default {
           secretId: '',
           secretKey: ''
         },
-        history_version_count: 20
+        history_version_count: 20,
+        beian: ''
       },
       itemList: []
     }
@@ -207,6 +221,9 @@ export default {
             : ''
           this.form.oss_setting.secretKey = this.form.oss_setting.secretKey
             ? this.form.oss_setting.secretKey
+            : ''
+          this.form.beian = response.data.data.beian
+            ? response.data.data.beian
             : ''
         } else {
           this.$alert(response.data.error_message)
