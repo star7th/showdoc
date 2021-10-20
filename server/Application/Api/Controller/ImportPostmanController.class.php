@@ -239,7 +239,7 @@ class ImportPostmanController extends BaseController {
 
             //含有request，则这是一个子页面
             if ($value['request']) {
-                $return[] = $this->_requestToDocV2($value['name'] ,$value['request']);
+                $return[] = $this->_requestToDocV2($value['name'] ,$value);
             }
 
         }
@@ -267,9 +267,9 @@ class ImportPostmanController extends BaseController {
         return $return ;
     }
 
-    private function _requestToDocV2($name , $request){
+    private function _requestToDocV2($name , $page){
         $from = I("from") ? I("from") : '' ;
-        $res = $this->_requestToApiV2($name , $request);
+        $res = $this->_requestToApiV2($name , $page);
         if($from == 'runapi'){
             return $res ;
         }else{
@@ -279,7 +279,8 @@ class ImportPostmanController extends BaseController {
     }
 
     //转成runapi所需要的api格式
-    private function _requestToApiV2($name , $request){
+    private function _requestToApiV2($name , $page){
+        $request = $page['request'] ;
         $return = array() ;
         $return['page_title'] = $name ;
         $return['s_number'] = 99 ;
@@ -345,6 +346,10 @@ class ImportPostmanController extends BaseController {
         else if($rawModeData && json_decode($rawModeData)){
             $content_array['request']['params']['mode'] = 'json';
             $content_array['request']['params']['json'] = $rawModeData;
+        }
+
+        if($page['response'][0]['body'] ){
+            $content_array['response']['responseExample'] = $page['response'][0]['body'] ;
         }
 
         $return['page_content'] = json_encode($content_array) ;

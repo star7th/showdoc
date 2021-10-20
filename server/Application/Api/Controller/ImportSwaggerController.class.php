@@ -17,8 +17,18 @@ class ImportSwaggerController extends BaseController {
         if ($json_array['info']) {
             $this->json_array = $json_array ;
             $scheme = $json_array['schemes'][0] ? $json_array['schemes'][0] : 'http';
-            $this->url_pre = $scheme."://".$json_array['host'].$json_array['basePath'] ;
-            $this->_fromSwaggerV2($json_array);
+            if($json_array['host']){
+                $this->url_pre = $scheme."://".$json_array['host'].$json_array['basePath'] ;
+            }
+            // 转换10次。我觉得可能解析的思路不对，以至于要用这种别扭的方法。以后再完善吧
+            for ($i=0; $i < 10 ; $i++) { 
+                $this->json_array = $this->_transferDefinition($json_array) ;
+            }
+            
+            // echo json_encode($this->json_array) ;
+            // exit();
+            
+            $this->_fromSwaggerV2($this->json_array);
             return ;
         }
 
@@ -116,7 +126,9 @@ class ImportSwaggerController extends BaseController {
 
     private function _requestToApi($method , $url , $request , $json_array){
         $return = array() ;
-        $return['page_title'] =  $request['summary'] ? $request['summary']: $request['operationId'] ;
+        $page_title = $request['summary'] ? $request['summary']: $request['operationId'] ; 
+        $page_title = mb_substr($page_title, 0, 50, 'utf-8');
+        $return['page_title'] = $page_title ;
         $return['s_number'] = 99 ;
         $return['page_comments'] = '' ;
         
@@ -172,7 +184,7 @@ class ImportSwaggerController extends BaseController {
                         $ref_array = $value['schema'] ;
                     }
                     $json_array = $this->_definitionToJsonArray($ref_array);
-                    $json_str = $this->_jsonArrayToStr($json_array);
+                    $json_str = $this->_jsonArrayToStr($ref_array);
                     $content_array['request']['params']['mode'] = 'json';
                     $content_array['request']['params']['json'] = $json_str;
                     $content_array['request']['params']['jsonDesc'] = $json_array;
@@ -191,15 +203,29 @@ class ImportSwaggerController extends BaseController {
 
         //处理返回结果情况
         if($request['responses'] && $request['responses']['200']){
-            $ref_str = $request['responses']['200']['schema']['$ref'] ;
-            //如果含有引用标识，则获取引用
-            if($ref_str){
-                $ref_array = $this->_getDefinition($ref_str);
-            }else{
+            $ref_array = array() ;
+            if($request['responses']['200']['schema']){
                 $ref_array = $request['responses']['200']['schema'] ;
             }
+
+            if($request['responses']['200']['content']){
+                if($request['responses']['200']['content']['text/json']){
+                    $ref_array = $request['responses']['200']['content']['text/json']['schema'] ;
+                }
+                if($request['responses']['200']['content']['text/plain']){
+                    $ref_array = $request['responses']['200']['content']['text/plain']['schema'] ;
+                }
+                if($request['responses']['200']['content']['application/json']){
+                    $ref_array = $request['responses']['200']['content']['application/json']['schema'] ;
+                }
+
+            }
+
+
+
+            
             $json_array = $this->_definitionToJsonArray($ref_array);
-            $json_str = $this->_jsonArrayToStr($json_array);
+            $json_str = $this->_jsonArrayToStr($ref_array);
             $content_array['response']['responseExample'] = $json_str;
             $content_array['response']['responseParamsDesc'] = $json_array;
         }
@@ -210,41 +236,119 @@ class ImportSwaggerController extends BaseController {
     }
 
     // 获取引用，返回数组。
-    //$ref_str 是swagger里引用的字符串，比如"#/definitions/Petoo"
+    //$ref_str 是swagger里引用的字符串，比如"#/definitions/Petoo",比如"#/components/schemas/TenantArticleResult"
     private function _getDefinition($ref_str){
         $json_array = $this->json_array ;
-        $str_array = explode('#/definitions/',$ref_str);
-        $path = $str_array1[1];
-        $target_array = $json_array['definitions'][$str_array[1]] ;
+        $str_array = explode('/',$ref_str);
+
+        if($str_array[2]){
+            $target_array = $json_array[$str_array[1]][$str_array[2]] ;
+        }
+        if($str_array[3]){
+            $target_array = $json_array[$str_array[1]][$str_array[2]][$str_array[3]] ;
+        }
+
         if($target_array){
             return $target_array ;
         }
         return false;
     }
 
-    //把引用类型的数组转换成纯json数组
+    //把引用类型的数组转换成适合showdoc-runapi格式的描述
     private function _definitionToJsonArray($ref_array){
         $res = array() ;
         foreach ($ref_array['properties'] as $key => $value) {
+            $remark = $value["title"] ? $value["title"] : '' ;
+            $remark = $value["description"] ? $value["description"] : $remark ;
+
             $res[] = array(
                 "name" =>$key,
-                "type" =>'string',
+                "type" =>$value["type"] ? $value["type"] : 'string',
                 "value" =>'',
                 "require" =>'1',
-                "remark" =>$value["title"],
+                "remark" =>$remark,
             );
+
+            if($value['properties']){
+                $tmp_json_array = $this->_definitionToJsonArray($value);
+                $res = array_merge($res,$tmp_json_array);
+            }
+            if($value['items']){
+                $tmp_json_array = $this->_definitionToJsonArray($value['items']);
+                $res = array_merge($res,$tmp_json_array);
+            }
+            
         }
+
         return $res ;
 
     }
 
     // 把json数组转成纯json字符串
     private function _jsonArrayToStr($json_array){
-        $res_array = array() ;
-        foreach ($json_array as $key => $value) {
-            $res_array[$value['name']] = '' ;
-        }
+
+
+        $res_array = $this->_toB($json_array) ;
+
+
         return json_encode($res_array) ;  
+    }
+
+    // 被_jsonArrayToStr调用
+    private function _toB($json_array){
+        $res_array = array() ;
+        if($json_array['properties']){
+            foreach ($json_array['properties'] as $key => $value) {
+                $res_array[$key] = $this->_formatToFakeValue($value['type'], $value['format']) ;
+                // value 为数组的场景
+                if($value['items']){
+                    $res_array[$key] = array( $this->_toB($value['items']) ) ;
+                }
+                // value为object的场景
+                if($value['properties']){
+                    $res_array[$key] = $this->_toB($value) ;
+                }
+            }
+        }
+        return $res_array ;
+    }
+
+    // 根据字段format的要求类型，模拟一个数值。被_toB调用
+    private function _formatToFakeValue($type , $format){
+
+        switch ($format) {
+            case 'int64':
+                return 0 ;
+            case 'int32':
+                return 0 ;
+            case 'double':
+                return 0.00 ;
+            case 'date-time':
+                return date("Y-m-d H:i:s") ;
+        }
+    
+        switch ($type) {
+            case 'boolean':
+                return true ;
+        }
+
+        // 如果上面没有retuan，则默认返回$type ;
+        return $type ; 
+    }
+
+
+    // 将引用改为真实数据
+    private function _transferDefinition($cur_array){
+        $json_array = $this->json_array ;
+        foreach ($cur_array as $key => $value) {
+            if(is_array($value)){
+                $cur_array[$key] = $this->_transferDefinition($value);
+                if($value['$ref']){
+                    $cur_array[$key] = $this->_getDefinition($value['$ref']);
+                }
+            }
+        }
+        return $cur_array ;
     }
 
 }
