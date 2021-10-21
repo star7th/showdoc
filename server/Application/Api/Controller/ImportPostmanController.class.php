@@ -347,6 +347,19 @@ class ImportPostmanController extends BaseController {
             $content_array['request']['params']['mode'] = 'json';
             $content_array['request']['params']['json'] = $rawModeData;
         }
+        
+        // 兼容get请求参数的场景
+        if ($request['url']['query']) {
+            foreach ($request['url']['query'] as $key => $value) {
+                 $content_array['request']['params']['formdata'][] = array(
+                        "name" =>$value["key"],
+                        "type" =>'string',
+                        "value" =>$value["value"],
+                        "require" =>'1',
+                        "remark" =>$value["description"] ? $value["description"]:'',
+                    );
+            }
+        }
 
         if($page['response'][0]['body'] ){
             $content_array['response']['responseExample'] = $page['response'][0]['body'] ;
