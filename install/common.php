@@ -6,7 +6,7 @@
 
 function lang(){
   $lang = $_REQUEST['lang'] ? $_REQUEST['lang'] :"zh";
-  if ($lang == 'zh-CN') {
+  if ($lang == 'zh') {
     return include("lang.".$lang.".php");
   }
   if ($lang == 'en') {
