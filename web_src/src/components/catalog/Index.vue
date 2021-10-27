@@ -98,7 +98,6 @@
     </el-container>
 
     <SortPage
-      :callback="insertValue"
       :belong_to_catalogs="belong_to_catalogs"
       :item_id="item_id"
       :cat_id="curl_cat_id"
