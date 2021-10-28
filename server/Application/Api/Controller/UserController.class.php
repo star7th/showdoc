@@ -120,6 +120,7 @@ class UserController extends BaseController {
             return;
         }
 
+        $password = htmlspecialchars_decode($password);
         $ret = D("User")->checkLogin($username,$password);
         //如果失败则尝试ldap登录
         if (!$ret) {
