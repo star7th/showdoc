@@ -42,8 +42,12 @@ class UserController extends BaseController {
                     unset($ret['password']);
                     session("login_user" , $ret );
                     $token = D("UserToken")->createToken($ret['uid']);
-                    cookie('cookie_token',$token,array('expire'=>60*60*24*90,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
-                  $this->sendResult(array(
+                    if(version_compare(PHP_VERSION,'7.3.0','>')){
+                        setcookie('cookie_token',$token,array('expires'=>time()+60*60*24*180,'httponly'=>'httponly','samesite' => 'Strict','path'=>'/'));
+                      }else{
+                        cookie('cookie_token',$token,array('expire'=>60*60*24*180,'httponly'=>'httponly'));
+                    }
+                    $this->sendResult(array(
                     "uid" => $ret['uid'] ,
                     "username" => $ret['username'] ,
                     "name" => $ret['name'] ,
@@ -134,7 +138,11 @@ class UserController extends BaseController {
           session("login_user" , $ret );
           D("User")->setLastTime($ret['uid']);
           $token = D("UserToken")->createToken($ret['uid'],60*60*24*180);
-          cookie('cookie_token',$token,array('expire'=>60*60*24*180,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
+          if(version_compare(PHP_VERSION,'7.3.0','>')){
+            setcookie('cookie_token',$token,array('expires'=>time()+60*60*24*180,'httponly'=>'httponly','samesite' => 'Strict','path'=>'/'));
+          }else{
+            cookie('cookie_token',$token,array('expire'=>60*60*24*180,'httponly'=>'httponly'));
+          }
           $this->sendResult(array(
             "uid" => $ret['uid'] ,
             "username" => $ret['username'] ,
@@ -247,8 +255,11 @@ class UserController extends BaseController {
                     unset($ret['password']);
                     session("login_user" , $ret );
                     $token = D("UserToken")->createToken($ret['uid']);
-                    cookie('cookie_token',$token,array('expire'=>60*60*24*90,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
-                    
+                    if(version_compare(PHP_VERSION,'7.3.0','>')){
+                        setcookie('cookie_token',$token,array('expires'=>time()+60*60*24*180,'httponly'=>'httponly','samesite' => 'Strict','path'=>'/'));
+                      }else{
+                        cookie('cookie_token',$token,array('expire'=>60*60*24*180,'httponly'=>'httponly'));
+                    }                    
                     $this->sendResult(array(
                         "uid" => $ret['uid'] ,
                         "username" => $ret['username'] ,
