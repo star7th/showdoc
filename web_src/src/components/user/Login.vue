@@ -85,6 +85,13 @@ export default {
       if (this.is_show_alert) {
         return
       }
+      // 对redirect参数进行校验，以防止钓鱼跳转
+      if (this.$route.query.redirect) {
+        // 如果含有点号，则应该为绝对地址。此时禁止。
+        if (this.$route.query.redirect.indexOf('.') > -1) {
+          return false
+        }
+      }
       // this.$message.success(this.username);
       var that = this
       var url = DocConfig.server + '/api/user/login'
@@ -147,6 +154,13 @@ export default {
   },
   mounted() {
     var that = this
+    // 对redirect参数进行校验，以防止钓鱼跳转
+    if (this.$route.query.redirect) {
+      // 如果含有点号，则应该为绝对地址。此时禁止。
+      if (this.$route.query.redirect.indexOf('.') > -1) {
+        return false
+      }
+    }
     this.get_user_info(function(response) {
       if (response.data.error_code === 0) {
         let redirect = decodeURIComponent(
