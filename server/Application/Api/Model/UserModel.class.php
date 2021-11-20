@@ -92,7 +92,7 @@ class UserModel extends BaseModel {
                     //如果该用户不在数据库里，则帮助其注册
                     $userInfo = D("User")->isExist($username) ;
                     if(!$userInfo){
-                        D("User")->register($ldap_user,$ldap_user.time());
+                        D("User")->register($ldap_user,$ldap_user.get_rand_str());
                     }
                     $rs2=ldap_bind($ldap_conn, $dn , $password);
                     if ($rs2) {

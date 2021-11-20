@@ -213,3 +213,20 @@ function env($name , $default_value = false){
     return getenv($name) ? getenv($name) : $default_value ;
 
 }
+
+// 获取随机字符串
+function get_rand_str($len = 32 ){
+    // 对于php7以上版本，可利用random_bytes产生随机
+    if(version_compare(PHP_VERSION,'7.0','>')){
+        $rand = bin2hex( random_bytes( 16 ) ); 
+        return substr($rand,0,$len); 
+    }else{
+        // 对于低版本，只好尽量加大长度实现伪随机，增大暴力破解难度
+        $s1 = microtime(true).time().rand().rand().rand().microtime(true).time().rand().rand().rand();
+        $s2 = microtime(true).time().rand().rand().rand().microtime(true).time().rand().rand().rand();
+        $md5 = md5($s2.base64_encode($s1));
+        return substr($md5,0,$len);
+    }
+
+    
+}
