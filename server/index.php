@@ -8,6 +8,18 @@ if(version_compare(PHP_VERSION,COMPOSER_PHP_VERSION,'>')){
     require './vendor/autoload.php';
 }
 
+// cookie安全，给PHPSESSID加上Strict
+if (PHP_VERSION_ID >= 70300) {
+    session_set_cookie_params([
+        'samesite' => 'Strict'
+    ]);
+} else { 
+    session_set_cookie_params(
+        NULL,
+        '/; samesite=Strict',
+    );
+}
+
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
 define('APP_DEBUG',True);
 
