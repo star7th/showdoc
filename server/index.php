@@ -16,7 +16,7 @@ if (PHP_VERSION_ID >= 70300) {
 } else { 
     session_set_cookie_params(
         NULL,
-        '/; samesite=Strict',
+        '/; samesite=Strict'
     );
 }
 
