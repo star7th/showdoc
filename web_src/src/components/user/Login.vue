@@ -88,7 +88,10 @@ export default {
       // 对redirect参数进行校验，以防止钓鱼跳转
       if (this.$route.query.redirect) {
         let redirect = decodeURIComponent(this.$route.query.redirect)
-        if (redirect.search(/[^A-Za-z0-9/:\?\._\*\+\-]+.*/i) > -1) {
+        if (
+          redirect.search(/[^A-Za-z0-9/:\?\._\*\+\-]+.*/i) > -1 ||
+          redirect.indexOf('.') > -1
+        ) {
           this.$alert('illegal redirect')
           return false
         }
@@ -158,7 +161,10 @@ export default {
     // 对redirect参数进行校验，以防止钓鱼跳转
     if (this.$route.query.redirect) {
       let redirect = decodeURIComponent(this.$route.query.redirect)
-      if (redirect.search(/[^A-Za-z0-9/:\?\._\*\+\-]+.*/i) > -1) {
+      if (
+        redirect.search(/[^A-Za-z0-9/:\?\._\*\+\-]+.*/i) > -1 ||
+        redirect.indexOf('.') > -1
+      ) {
         this.$alert('illegal redirect')
         return false
       }
