@@ -19,17 +19,25 @@ axios.interceptors.request.use(
   },
   err => {
     return Promise.reject(err)
-  })
+  }
+)
 
 // http response 拦截器
 axios.interceptors.response.use(
   response => {
-    if (response.config.data && response.config.data.indexOf('redirect_login=false') > -1) {
+    if (
+      response.config.data &&
+      response.config.data.indexOf('redirect_login=false') > -1
+    ) {
       // 不跳转到登录
     } else if (response.data.error_code === 10102) {
+      var redirect = router.currentRoute.fullPath.repeat(1)
+      if (redirect.indexOf('redirect=') > -1) {
+        return false
+      }
       router.replace({
         path: '/user/login',
-        query: { redirect: router.currentRoute.fullPath }
+        query: { redirect: redirect }
       })
     }
     return response
@@ -37,6 +45,7 @@ axios.interceptors.response.use(
   error => {
     // console.log(JSON.stringify(error));//console : Error: Request failed with status code 402
     return Promise.reject(error.response)
-  })
+  }
+)
 
 export default axios

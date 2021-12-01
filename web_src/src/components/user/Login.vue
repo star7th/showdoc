@@ -87,8 +87,9 @@ export default {
       }
       // 对redirect参数进行校验，以防止钓鱼跳转
       if (this.$route.query.redirect) {
-        // 如果含有点号，则应该为绝对地址。此时禁止。
-        if (this.$route.query.redirect.indexOf('.') > -1) {
+        let redirect = decodeURIComponent(this.$route.query.redirect)
+        if (redirect.search(/[^A-Za-z0-9/:\?\._\*\+\-]+.*/i) > -1) {
+          this.$alert('illegal redirect')
           return false
         }
       }
@@ -156,8 +157,9 @@ export default {
     var that = this
     // 对redirect参数进行校验，以防止钓鱼跳转
     if (this.$route.query.redirect) {
-      // 如果含有点号，则应该为绝对地址。此时禁止。
-      if (this.$route.query.redirect.indexOf('.') > -1) {
+      let redirect = decodeURIComponent(this.$route.query.redirect)
+      if (redirect.search(/[^A-Za-z0-9/:\?\._\*\+\-]+.*/i) > -1) {
+        this.$alert('illegal redirect')
         return false
       }
     }
