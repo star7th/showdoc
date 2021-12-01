@@ -126,7 +126,7 @@ class ImportSwaggerController extends BaseController {
 
     private function _requestToApi($method , $url , $request , $json_array){
         $return = array() ;
-        $page_title = $request['summary'] ? $request['summary']: $request['operationId'] ; 
+        $page_title = $request['summary'] ? $request['summary']: $request['description'] ; 
         $page_title = mb_substr($page_title, 0, 50, 'utf-8');
         $return['page_title'] = $page_title ;
         $return['s_number'] = 99 ;
@@ -136,7 +136,7 @@ class ImportSwaggerController extends BaseController {
                 "info"=>array(
                     "from" =>  'runapi'  ,
                     "type" =>  'api'  ,
-                    "title" =>  $request['summary'] ? $request['summary']: $request['operationId']   ,
+                    "title" =>  $request['summary'] ? $request['summary']: $request['description']   ,
                     "description" =>  $request['description']  ,
                     "method" =>  strtolower($method)  ,
                     "url" =>  $this->url_pre . $url   ,
