@@ -108,7 +108,7 @@
           content="runapi项目请在runapi客户端编辑"
           placement="top"
         >
-          <i class="el-icon-edit" style="color:#ccc"></i>
+          <i class="el-icon-edit" style="color:#666;cursor:not-allowed"></i>
         </el-tooltip>
       </span>
 
