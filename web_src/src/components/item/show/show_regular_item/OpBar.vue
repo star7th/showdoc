@@ -100,6 +100,16 @@
         >
           <i class="el-icon-info" @click="show_page_info"></i>
         </el-tooltip>
+
+        <el-tooltip
+          v-if="item_info.item_type == '3'"
+          class="item"
+          effect="dark"
+          content="runapi项目请在runapi客户端编辑"
+          placement="top"
+        >
+          <i class="el-icon-edit" style="color:#ccc"></i>
+        </el-tooltip>
       </span>
 
       <span v-if="item_info.item_edit">
