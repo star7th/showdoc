@@ -65,7 +65,37 @@ const rederPageContent = (page_content, globalParams = {}) => {
 [TOC]
 
 ##### 简要描述
-  - ${obj.info.description ? obj.info.description : '无'}
+  - ${obj.info.description ? obj.info.description : '无'}`
+
+  if (obj.info.apiStatus) {
+    let statusText = ''
+    switch (obj.info.apiStatus) {
+      case '1':
+        statusText = '开发中'
+        break
+      case '2':
+        statusText = '测试中'
+        break
+      case '3':
+        statusText = '已完成'
+        break
+      case '4':
+        statusText = '需修改'
+        break
+      case '5':
+        statusText = '已废弃'
+        break
+      default:
+        break
+    }
+
+    newContent += `
+
+##### 接口状态
+ - ${statusText}`
+  }
+
+  newContent += `
 
 ##### 请求URL
 

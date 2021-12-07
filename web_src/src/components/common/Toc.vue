@@ -23,6 +23,7 @@ export default {
       // 监听点击事件并滑动到相应位置
       $(document).on('click', '.markdown-toc-list a[href]', function(event) {
         event.preventDefault()
+        event.stopPropagation()
         var name = $(this)
           .attr('href')
           .substring(1)

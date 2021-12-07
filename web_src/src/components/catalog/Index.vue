@@ -98,7 +98,12 @@
     </el-container>
 
     <SortPage
-      :belong_to_catalogs="belong_to_catalogs"
+      v-if="sortPageVisiable"
+      :callback="
+        () => {
+          sortPageVisiable = false
+        }
+      "
       :item_id="item_id"
       :cat_id="curl_cat_id"
       ref="SortPage"
@@ -141,7 +146,8 @@ export default {
         label: 'label'
       },
       item_id: '',
-      curl_cat_id: ''
+      curl_cat_id: '',
+      sortPageVisiable: false
     }
   },
   computed: {
@@ -303,8 +309,7 @@ export default {
     // 展示页面排序
     showSortPage(node, data) {
       this.curl_cat_id = data.id
-      let childRef = this.$refs.SortPage // 获取子组件
-      childRef.show()
+      this.sortPageVisiable = true
     },
     copyCat(node, data) {
       this.curl_cat_id = data.id

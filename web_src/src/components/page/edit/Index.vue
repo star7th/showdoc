@@ -19,6 +19,7 @@
               class="cat"
               v-model="cat_id"
               v-if="belong_to_catalogs"
+              filterable
             >
               <el-option
                 v-for="cat in belong_to_catalogs"
@@ -30,14 +31,20 @@
           </el-form-item>
 
           <el-form-item label>
-            <el-button type="text" @click="ShowSortPage">{{
-              $t('sort_pages')
-            }}</el-button>
+            <el-tooltip class="item" effect="dark" :content="$t('refresh_cat')">
+              <i class="el-icon-refresh-right icon-btn" @click="refreshCat"></i>
+            </el-tooltip>
           </el-form-item>
           <el-form-item label>
-            <el-button type="text" @click="ShowHistoryVersion">{{
-              $t('history_version')
-            }}</el-button>
+            <el-tooltip class="item" effect="dark" :content="$t('go_add_cat')">
+              <i class="el-icon-plus icon-btn" @click="goToCat"></i>
+            </el-tooltip>
+          </el-form-item>
+
+          <el-form-item label>
+            <el-tooltip class="item" effect="dark" :content="$t('sort_pages')">
+              <i class="el-icon-sort icon-btn" @click="ShowSortPage"></i>
+            </el-tooltip>
           </el-form-item>
 
           <el-form-item class="pull-right">
@@ -128,6 +135,9 @@
               $t('attachment')
             }}</el-button>
           </el-badge>
+          <el-button size="medium" @click="ShowHistoryVersion">{{
+            $t('history_version')
+          }}</el-button>
         </el-row>
 
         <Editormd
@@ -174,8 +184,12 @@
 
       <!-- 页面排序 -->
       <SortPage
-        :callback="insertValue"
-        :belong_to_catalogs="belong_to_catalogs"
+        v-if="sortPageVisiable"
+        :callback="
+          () => {
+            sortPageVisiable = false
+          }
+        "
         :item_id="item_id"
         :page_id="page_id"
         :cat_id="cat_id"
@@ -224,6 +238,10 @@
   margin-top: 15px;
   margin-bottom: 15px;
 }
+.icon-btn {
+  cursor: pointer;
+  margin-left: 5px;
+}
 </style>
 
 <script>
@@ -263,7 +281,8 @@ export default {
       intervalId: 0,
       saving: false,
       showMockDialog: false,
-      lang: ''
+      lang: '',
+      sortPageVisiable: false
     }
   },
   computed: {
@@ -463,8 +482,7 @@ export default {
     // 展示页面排序
     ShowSortPage() {
       this.save(() => {
-        let childRef = this.$refs.SortPage // 获取子组件
-        childRef.show()
+        this.sortPageVisiable = true
       })
     },
     save(callback) {
@@ -739,6 +757,17 @@ export default {
         client.open('POST', url, false)
         client.send(analyticsData)
       }
+    },
+    // 刷新目录列表
+    refreshCat() {
+      this.get_catalog(this.item_id)
+    },
+    // 去新建目录
+    goToCat() {
+      let routeUrl = this.$router.resolve({
+        path: '/catalog/' + this.item_id
+      })
+      window.open(routeUrl.href, '_blank')
     }
   },
 

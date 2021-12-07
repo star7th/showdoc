@@ -447,5 +447,10 @@ exports.default = {
 
   history_version_count: 'History versions',
   history_version_count_content:
-    'Each time you edit a page, a historical version of the page is generated. Here is the number of historical versions kept. Only the latest 20 versions are reserved by default'
+    'Each time you edit a page, a historical version of the page is generated. Here is the number of historical versions kept. Only the latest 20 versions are reserved by default',
+
+  refresh_cat: 'Refresh directory list',
+  go_add_cat: 'To create a new directory ',
+  all_member_read: 'Set all to read-only'
+
 }

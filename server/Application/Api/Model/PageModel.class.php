@@ -185,7 +185,40 @@ class PageModel extends BaseModel {
         $new_content = "
 ##### 简要描述
   
-- ".($content['info']['description'] ? $content['info']['description'] :'无') ."
+- ".($content['info']['description'] ? $content['info']['description'] :'无');
+
+
+if($content['info']['apiStatus']){
+    $statusText = '';
+    switch ($content['info']['apiStatus']) {
+        case '1':
+            $statusText = '开发中';
+            break;
+        case '2':
+        $statusText = '测试中';
+        break;
+        case '3':
+        $statusText = '已完成';
+        break;
+        case '4':
+        $statusText = '需修改';
+        break;
+        case '5':
+        $statusText = '已废弃';
+        break;
+        default:
+        break;
+   }
+ 
+   $new_content .= "
+ 
+##### 接口状态
+  - ".$statusText ;
+ 
+ }
+
+
+$new_content .= "
   
 ##### 请求URL
   

@@ -181,6 +181,14 @@
           <el-tooltip
             class="item"
             effect="dark"
+            :content="$t('sort_pages')"
+            placement="top"
+          >
+            <i class="el-icon-sort" @click="sortPageVisiable = true"></i>
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
             :content="$t('detail')"
             placement="top"
           >
@@ -285,6 +293,16 @@
       callback="insertValue"
       ref="HistoryVersion"
     ></HistoryVersion>
+
+    <!-- 页面排序 -->
+    <SortPage
+      v-if="sortPageVisiable"
+      :callback="reload"
+      :item_id="item_id"
+      :page_id="page_id"
+      :cat_id="page_info.cat_id"
+      ref="SortPage"
+    ></SortPage>
   </div>
 </template>
 
@@ -334,6 +352,8 @@ a {
 
 <script>
 import HistoryVersion from '@/components/page/edit/HistoryVersion'
+import SortPage from '@/components/page/edit/SortPage'
+
 export default {
   props: {
     item_id: '',
@@ -356,11 +376,13 @@ export default {
       showMore: false,
       lang: '',
       show_menu_btn: false,
-      show_op_bar: true
+      show_op_bar: true,
+      sortPageVisiable: false
     }
   },
   components: {
-    HistoryVersion
+    HistoryVersion,
+    SortPage
   },
   methods: {
     edit_page() {
@@ -483,10 +505,12 @@ export default {
     },
     showMoreAction() {
       this.showMore = true
-      var element = document
-        .getElementById('page_md_content')
-        .getElementsByClassName('open-list')
-      if (element && element[0]) element[0].style.top = '330px'
+      setTimeout(() => {
+        var element = document
+          .getElementById('page_md_content')
+          .getElementsByClassName('open-list')
+        if (element && element[0]) element[0].style.top = '360px'
+      }, 700)
       sessionStorage.setItem('show_more_' + this.item_id, 1)
     },
     hideMoreAction() {
@@ -533,6 +557,9 @@ export default {
           this.delete_page()
           break
       }
+    },
+    reload() {
+      window.location.reload()
     }
   },
   mounted() {
@@ -580,6 +607,9 @@ export default {
       } else {
         this.isCreateSiglePage = false
         this.share_single_link = ''
+      }
+      if (sessionStorage.getItem('show_more_' + this.item_id)) {
+        this.showMoreAction()
       }
     }
   },

@@ -9,6 +9,7 @@
         :modal="is_modal"
         :visible.sync="dialogTableVisible"
         :close-on-click-modal="false"
+        :before-close="callback"
       >
         <div class="dialog-body">
           <p class="tips">{{ $t('sort_pages_tips') }}</p>
@@ -69,18 +70,18 @@
 import draggable from 'vuedraggable'
 export default {
   props: {
-    callback: '',
+    callback: () => {},
     page_id: '',
     item_id: '',
     is_modal: true,
-    belong_to_catalogs: [],
     cat_id: ''
   },
   data() {
     return {
       currentDate: new Date(),
-      dialogTableVisible: false,
-      pages: []
+      dialogTableVisible: true,
+      pages: [],
+      belong_to_catalogs: []
     }
   },
   components: {
@@ -136,16 +137,23 @@ export default {
           })
         }
       })
+    },
+    getCatListName() {
+      this.request('/api/catalog/catListName', {
+        item_id: this.item_id
+      }).then(data => {
+        this.belong_to_catalogs = data.data
+      })
     }
   },
   watch: {
     cat_id: function() {
       this.get_pages()
-    },
-    dialogTableVisible: function() {
-      this.get_pages()
     }
   },
-  mounted() {}
+  mounted() {
+    this.get_pages()
+    this.getCatListName()
+  }
 }
 </script>

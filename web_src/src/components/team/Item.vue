@@ -84,6 +84,11 @@
         :title="$t('adjust_member_authority')"
         :close-on-click-modal="false"
       >
+        <p>
+          <el-button type="text" @click="setAllMemberRead"
+            >&nbsp;{{ $t('all_member_read') }}</el-button
+          >
+        </p>
         <el-table
           align="left"
           :empty-text="$t('team_member_empty_tips')"
@@ -263,7 +268,7 @@ export default {
         }
       })
     },
-    changeTeamItemMemberGroup(member_group_id, id) {
+    changeTeamItemMemberGroup(member_group_id, id, showMsg = true) {
       var that = this
       var url = DocConfig.server + '/api/teamItemMember/save'
 
@@ -273,7 +278,7 @@ export default {
 
       that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
-          that.$message('权限保存成功')
+          if (showMsg) that.$message(that.$t('auth_success'))
         } else {
           that.$alert(response.data.error_message)
         }
@@ -311,6 +316,15 @@ export default {
         } else {
           that.$alert(response.data.error_message)
         }
+      })
+    },
+    // 一键全部设置为只读
+    setAllMemberRead() {
+      this.teamItemMembers.forEach(element => {
+        this.changeTeamItemMemberGroup(0, element.id, false)
+        setTimeout(() => {
+          this.getTeamItemMember(element.item_id)
+        }, 500)
       })
     }
   },
