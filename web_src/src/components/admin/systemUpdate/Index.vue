@@ -2,10 +2,14 @@
   <div class="">
     <div>
       <br />
-      你当前使用的版本是<b>{{ cur_version }}</b
-      >，showdoc最新版本是<b>{{ new_version }}</b>
-      <br />
-      <br />
+      <p>
+        你当前使用的版本是<b>{{ cur_version }}</b
+        >，showdoc最新稳定版本是<b>{{ new_version }}</b>
+      </p>
+      <p>点击下方按钮将自动升级到最新稳定版</p>
+      <p>
+        升级到最新版有助于及时得到官方的安全修复和功能更新，以获得更安全更稳定的使用体验。
+      </p>
       <el-button type="primary" @click="clickToUpdate">点此更新</el-button>
     </div>
     <br />
