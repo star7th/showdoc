@@ -428,5 +428,9 @@ exports.default = {
 
   history_version_count: '历史版本数量',
   history_version_count_content:
-    '每次编辑页面都会生成一个页面的历史版本。这里是保留的历史版本数量。默认只保留最新的20个版本'
+    '每次编辑页面都会生成一个页面的历史版本。这里是保留的历史版本数量。默认只保留最新的20个版本',
+
+  refresh_cat: '刷新目录列表',
+  go_add_cat: '去新建目录',
+  all_member_read: '全部设置为只读'
 }
