@@ -64,6 +64,8 @@ class UserModel extends BaseModel {
     }
     //检测ldap登录
     public function checkLdapLogin($username ,$password ){
+            set_time_limit(60);
+            ini_set('memory_limit','500M');
             $ldap_open = D("Options")->get("ldap_open" ) ;
             $ldap_form = D("Options")->get("ldap_form" ) ;
             $ldap_form = json_decode($ldap_form,1);

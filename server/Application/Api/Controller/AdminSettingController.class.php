@@ -64,6 +64,8 @@ class AdminSettingController extends BaseController {
 
     //保存Ldap配置
     public function saveLdapConfig(){
+        set_time_limit(60);
+        ini_set('memory_limit','500M');
         $login_user = $this->checkLogin();
         $this->checkAdmin();
         $ldap_open = intval(I("ldap_open")) ;
@@ -188,6 +190,8 @@ class AdminSettingController extends BaseController {
 
 
     public function checkLdapLogin(){
+            set_time_limit(60);
+            ini_set('memory_limit','500M');
             $username = 'admin';
             $password = '123456';
 
