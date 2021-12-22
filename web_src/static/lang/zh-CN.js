@@ -432,5 +432,8 @@ exports.default = {
 
   refresh_cat: '刷新目录列表',
   go_add_cat: '去新建目录',
-  all_member_read: '全部设置为只读'
+  all_member_read: '全部设置为只读',
+
+  watermark: '水印',
+  watermark_tips: '登录用户查看项目时候显示水印'
 }

@@ -36,12 +36,15 @@
 import ShowRegularItem from '@/components/item/show/show_regular_item/Index'
 import ShowSinglePageItem from '@/components/item/show/show_single_page_item/Index'
 import ShowTableItem from '@/components/item/show/show_table_item/Index'
+import watermark from 'watermark-dom'
+import moment from 'moment'
 
 export default {
   data() {
     return {
       item_info: '',
-      keyword: ''
+      keyword: '',
+      watermark_txt: '测试水印，1021002301，测试水印，100101010111101'
     }
   },
   components: {
@@ -93,6 +96,10 @@ export default {
               message: '<a href="#/notice/index">你有新的未读消息，点击查看</a>'
             })
           }
+          // 是否显示水印
+          if (json.show_watermark > 0) {
+            this.renderWatermark()
+          }
         } else if (data.error_code === 10307 || data.error_code === 10303) {
           // 需要输入密码
           that.$router.replace({
@@ -121,6 +128,39 @@ export default {
     checkDb() {
       var url = DocConfig.server + '/api/update/checkDb'
       this.axios.get(url)
+    },
+    // 渲染水印
+    renderWatermark() {
+      // 如果已经有全局缓存的登录数据
+      if (this.$store.state.user_info && this.$store.state.user_info.username) {
+        let user_info = this.$store.state.user_info
+        if (user_info && user_info.username) {
+          this.watermark_txt = user_info.username + '，' + moment().format('L')
+          if (user_info.name) {
+            this.watermark_txt += '，' + user_info.name
+          }
+          setTimeout(() => {
+            watermark.load({
+              monitor: false, // monitor 是否监控， true: 不可删除水印; false: 可删水印。
+              watermark_txt: this.watermark_txt
+            })
+          }, 700)
+        }
+      } else {
+        // 网络请求获取用户信息
+        this.get_user_info(response => {
+          if (response.data.error_code === 0) {
+            let user_info = response.data.data
+            this.$store.dispatch('changeUserInfo', user_info).then(() => {
+              this.renderWatermark()
+            })
+          } else {
+            // 假如没登录
+            // 探索了下，纯js无法获取ip，不能展示ip水印。所以做不了啥
+            // 如果说是通过showdoc后端获取ip的话，假如showdoc部署在网关后面，它获取的ip不一定准确
+          }
+        })
+      }
     }
   },
   mounted() {
@@ -131,6 +171,7 @@ export default {
   beforeDestroy() {
     this.$message.closeAll()
     document.title = 'ShowDoc'
+    watermark.remove() // 去掉水印
   }
 }
 </script>

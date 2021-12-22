@@ -56,6 +56,18 @@
         </el-tooltip>
       </el-form-item>
 
+      <el-form-item :label="$t('watermark')">
+        <el-switch v-model="form.show_watermark"></el-switch>
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('watermark_tips')"
+          placement="top"
+        >
+          <i class="el-icon-question"></i>
+        </el-tooltip>
+      </el-form-item>
+
       <el-form-item :label="$t('oss_open')">
         <el-switch v-model="form.oss_open"></el-switch>
       </el-form-item>
@@ -177,7 +189,8 @@ export default {
           secretKey: ''
         },
         history_version_count: 20,
-        beian: ''
+        beian: '',
+        show_watermark: false
       },
       itemList: []
     }
@@ -225,6 +238,7 @@ export default {
           this.form.beian = response.data.data.beian
             ? response.data.data.beian
             : ''
+          this.form.show_watermark = response.data.data.show_watermark > 0
         } else {
           this.$alert(response.data.error_message)
         }

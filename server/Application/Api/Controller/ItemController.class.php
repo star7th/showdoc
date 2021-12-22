@@ -114,6 +114,13 @@ class ItemController extends BaseController {
         if($item['item_type'] == 3){
             $global_param = D("Runapi")->getGlobalParam($item_id);
         }
+
+        // 登录的状态下，才去检查下是否开启了水印
+        if(is_login){
+            $show_watermark = D("Options")->get("show_watermark" ) ;
+            $show_watermark = $show_watermark ? '1' : '0';
+        }
+        
         
         $return = array(
             "item_id"=>$item_id ,
@@ -134,6 +141,7 @@ class ItemController extends BaseController {
             "ItemCreator"=>$item_manage ,
             "current_page_id"=>$current_page_id ,
             "global_param"=>$global_param ,
+            "show_watermark"=>$show_watermark ,
 
             );
         $this->sendResult($return);

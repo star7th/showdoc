@@ -11,6 +11,9 @@ export default {
   changeOpenCatId(state, val) {
     state.open_cat_id = val
   },
+  changeUserInfo(state, val) {
+    state.user_info = val
+  },
   [SOME_MUTATION](state) {
     // mutate state
   }

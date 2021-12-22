@@ -13,12 +13,14 @@ class AdminSettingController extends BaseController {
         $home_page = intval(I("home_page")) ;
         $home_item = intval(I("home_item")) ;
         $oss_setting = I("oss_setting") ;
+        $show_watermark = intval(I("show_watermark"));
         $beian = I("beian") ;
         D("Options")->set("history_version_count" ,$history_version_count) ;
         D("Options")->set("register_open" ,$register_open) ;
         D("Options")->set("home_page" ,$home_page) ;
         D("Options")->set("home_item" ,$home_item) ;
         D("Options")->set("beian" ,$beian) ;
+        D("Options")->set("show_watermark" ,$show_watermark) ;
         
         if ($oss_open) {
             $this->checkComposerPHPVersion();
@@ -36,6 +38,7 @@ class AdminSettingController extends BaseController {
         $this->checkAdmin();
         $oss_open = D("Options")->get("oss_open" ) ;
         $register_open = D("Options")->get("register_open" ) ;
+        $show_watermark = D("Options")->get("show_watermark" ) ;
         $history_version_count = D("Options")->get("history_version_count" ) ;
         $oss_setting = D("Options")->get("oss_setting" ) ;
         $home_page = D("Options")->get("home_page" ) ;
@@ -51,6 +54,7 @@ class AdminSettingController extends BaseController {
             $array = array(
                 "oss_open"=>$oss_open ,
                 "register_open"=>$register_open ,
+                "show_watermark"=>$show_watermark ,
                 "history_version_count"=>$history_version_count ,
                 "home_page"=>$home_page ,
                 "home_item"=>$home_item ,

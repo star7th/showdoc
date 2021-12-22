@@ -15,5 +15,10 @@ export default {
     // console.log(val)  //val是dispatch派发传递过来的值
     // console.log(ctx)  //ctx是上下文，必传
     ctx.commit('changeOpenCatId', val)// commit到mutation
+  },
+  changeUserInfo(ctx, val) {
+    // console.log(val)  //val是dispatch派发传递过来的值
+    // console.log(ctx)  //ctx是上下文，必传
+    ctx.commit('changeUserInfo', val)// commit到mutation
   }
 }

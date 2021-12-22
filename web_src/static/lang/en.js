@@ -451,6 +451,9 @@ exports.default = {
 
   refresh_cat: 'Refresh directory list',
   go_add_cat: 'To create a new directory ',
-  all_member_read: 'Set all to read-only'
+  all_member_read: 'Set all to read-only',
+
+  watermark: 'watermark',
+  watermark_tips: 'The watermark is displayed when the logged in user views the item'
 
 }
