@@ -437,5 +437,8 @@ exports.default = {
   watermark: '水印',
   watermark_tips: '登录用户查看项目时候显示水印',
   site_url: '网站外部访问url',
-  site_url_tips: '你上传图片/附件等资源时，其生成的url自动由程序判断填充。如果程序判断错误，你可以在这里手动填上访问url，当你填写后，上传资源后的访问url将使用这里填写的值作为访问前缀。填写示例值"https://www.showdoc.com.cn"。如果你不理解此值含义，请默认留空，不要填写'
+  site_url_tips: '你上传图片/附件等资源时，其生成的url自动由程序判断填充。如果程序判断错误，你可以在这里手动填上访问url，当你填写后，上传资源后的访问url将使用这里填写的值作为访问前缀。填写示例值"https://www.showdoc.com.cn"。如果你不理解此值含义，请默认留空，不要填写',
+
+  about_site: '关于本站'
+
 }

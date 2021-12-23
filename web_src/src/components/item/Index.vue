@@ -82,15 +82,11 @@
                 <i class="el-icon-caret-bottom el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
-                  <router-link to="/user/setting"
-                    >{{ $t('Logged') }}:{{ username }}</router-link
-                  >
+                <el-dropdown-item :command="toUserSettingLink">
+                  {{ $t('Logged') }}:{{ username }}
                 </el-dropdown-item>
-                <el-dropdown-item>
-                  <router-link to="/attachment/index">{{
-                    $t('my_attachment')
-                  }}</router-link>
+                <el-dropdown-item :command="toAttachmentLink">
+                  {{ $t('my_attachment') }}
                 </el-dropdown-item>
                 <el-dropdown-item :command="logout">{{
                   $t('logout')
@@ -589,6 +585,12 @@ export default {
     changeGroup() {
       localStorage.setItem('deaultItemGroupId', this.itemGroupId)
       this.get_item_list()
+    },
+    toUserSettingLink() {
+      this.$router.push({ path: '/user/setting' })
+    },
+    toAttachmentLink() {
+      this.$router.push({ path: '/attachment/index' })
     }
   },
   mounted() {

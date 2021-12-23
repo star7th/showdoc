@@ -456,6 +456,8 @@ exports.default = {
   watermark: 'watermark',
   watermark_tips: 'The watermark is displayed when the logged in user views the item',
   site_url: 'Site url',
-  site_url_tips: 'Site url'
+  site_url_tips: 'Site url',
+
+  about_site: 'About site'
 
 }

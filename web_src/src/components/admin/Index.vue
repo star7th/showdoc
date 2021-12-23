@@ -37,11 +37,11 @@
               <i class="el-icon-tickets"></i>
               <span slot="title">{{ $t('web_setting') }}</span>
             </el-menu-item>
-            <el-menu-item index="6" v-if="isUpdate">
+            <el-menu-item index="6" v-show="lang == 'zh-cn'">
               <i class="el-icon-tickets"></i>
               <span slot="title"
-                ><el-badge value="new"
-                  >{{ $t('system_update') }}
+                ><el-badge :value="isUpdate ? 'new' : ''"
+                  >{{ $t('about_site') }}
                 </el-badge></span
               >
             </el-menu-item>
@@ -53,7 +53,7 @@
             <Item v-if="open_menu_index == 2"></Item>
             <Setting v-if="open_menu_index == 3"></Setting>
             <Attachment v-if="open_menu_index == 5"></Attachment>
-            <SystemUpdate v-if="open_menu_index == 6"></SystemUpdate>
+            <About v-if="open_menu_index == 6"></About>
             <ExtLogin v-if="open_menu_index == 7"></ExtLogin>
           </el-main>
           <el-footer>
@@ -134,13 +134,14 @@ import Item from '@/components/admin/item/Index'
 import User from '@/components/admin/user/Index'
 import Setting from '@/components/admin/setting/Index'
 import Attachment from '@/components/admin/attachment/Index'
-import SystemUpdate from '@/components/admin/systemUpdate/Index'
 import ExtLogin from '@/components/admin/extLogin/Index'
+import About from '@/components/admin/about/Index'
 export default {
   data() {
     return {
       open_menu_index: 1,
-      isUpdate: false
+      isUpdate: false,
+      lang: ''
     }
   },
   components: {
@@ -148,8 +149,8 @@ export default {
     User,
     Setting,
     Attachment,
-    SystemUpdate,
-    ExtLogin
+    ExtLogin,
+    About
   },
   methods: {
     select_menu(index, indexPath) {
@@ -158,7 +159,7 @@ export default {
         this.open_menu_index = index
       })
     },
-    check_upadte() {
+    checkUpadte() {
       this.request('/api/adminUpdate/checkUpdate', {}).then(data => {
         if (data && data.data && data.data.url) {
           this.isUpdate = true
@@ -168,10 +169,8 @@ export default {
   },
   mounted() {
     // 只对中文版进行更新检查
-    if (DocConfig.lang == 'zh-cn') {
-      this.check_upadte()
-    }
-
+    this.lang = DocConfig.lang
+    this.checkUpadte()
     this.unset_bg_grey()
   },
   beforeDestroy() {
