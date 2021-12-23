@@ -175,7 +175,7 @@ ${params}
 
   if (obj.response.responseExample) {
     newContent += `
-##### 返回示例
+##### 成功返回示例
 \`\`\`
 ${obj.response.responseExample}
    \`\`\`
@@ -188,12 +188,42 @@ ${obj.response.responseExample}
     obj.response.responseParamsDesc[0].name
   ) {
     newContent += `
-##### 返回参数说明
+##### 成功返回示例的参数说明
 
 |参数名|类型|说明|
 |:-----  |:-----|-----|
 `
     const returnParams = obj.response.responseParamsDesc
+    returnParams.map(one => {
+      if (!one.name) return
+      newContent += `|${one.name} |${one.type} |${
+        one.remark ? one.remark : '无'
+        }   |
+`
+    })
+  }
+
+  if (obj.response.responseFailExample) {
+    newContent += `
+##### 失败返回示例
+\`\`\`
+${obj.response.responseFailExample}
+   \`\`\`
+   `
+  }
+
+  if (
+    obj.response.responseFailParamsDesc &&
+    obj.response.responseFailParamsDesc[0] &&
+    obj.response.responseFailParamsDesc[0].name
+  ) {
+    newContent += `
+##### 失败返回示例的参数说明
+
+|参数名|类型|说明|
+|:-----  |:-----|-----|
+`
+    const returnParams = obj.response.responseFailParamsDesc
     returnParams.map(one => {
       if (!one.name) return
       newContent += `|${one.name} |${one.type} |${

@@ -291,7 +291,7 @@ $new_content .= "
           $responseExample = $this->_indent_json($content['response']['responseExample']);
           $responseExample = $responseExample ? $responseExample : $content['response']['responseExample'] ;
             $new_content .= " 
-##### 返回示例  
+##### 成功返回示例  
 ```
 {$responseExample}
   
@@ -302,7 +302,7 @@ $new_content .= "
         //返回示例说明
         if($content['response']['responseParamsDesc'] && $content['response']['responseParamsDesc'][0] && $content['response']['responseParamsDesc'][0]['name']){
             $new_content .= " 
-##### 返回参数说明 
+##### 成功返回示例的参数说明 
   
 |参数名|类型|说明|
 |:-----  |:-----|-----|
@@ -312,6 +312,33 @@ $new_content .= "
                 $new_content .= "|{$value['name']}| {$value['type']} |  {$value['remark']} | \n";
             }
         }
+
+        //返回示例
+        if($content['response']['responseFailExample']){
+            $responseFailExample = $this->_indent_json($content['response']['responseFailExample']);
+            $responseFailExample = $responseFailExample ? $responseFailExample : $content['response']['responseFailExample'] ;
+              $new_content .= " 
+  ##### 失败返回示例  
+  ```
+  {$responseFailExample}
+    
+  ``` 
+    "; 
+          }
+    
+          //返回示例说明
+          if($content['response']['responseFailParamsDesc'] && $content['response']['responseFailParamsDesc'][0] && $content['response']['responseFailParamsDesc'][0]['name']){
+              $new_content .= " 
+  ##### 失败返回示例的参数说明 
+    
+  |参数名|类型|说明|
+  |:-----  |:-----|-----|
+    ";
+              foreach ($content['response']['responseFailParamsDesc'] as $key => $value) {
+                  $value['remark'] = $value['remark'] ? $value['remark'] : '无' ;
+                  $new_content .= "|{$value['name']}| {$value['type']} |  {$value['remark']} | \n";
+              }
+          }
   
         $new_content .= " 
 ##### 备注
