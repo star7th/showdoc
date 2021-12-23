@@ -15,11 +15,13 @@ class AdminSettingController extends BaseController {
         $oss_setting = I("oss_setting") ;
         $show_watermark = intval(I("show_watermark"));
         $beian = I("beian") ;
+        $site_url = I("site_url") ;
         D("Options")->set("history_version_count" ,$history_version_count) ;
         D("Options")->set("register_open" ,$register_open) ;
         D("Options")->set("home_page" ,$home_page) ;
         D("Options")->set("home_item" ,$home_item) ;
         D("Options")->set("beian" ,$beian) ;
+        D("Options")->set("site_url" ,$site_url) ;
         D("Options")->set("show_watermark" ,$show_watermark) ;
         
         if ($oss_open) {
@@ -44,6 +46,7 @@ class AdminSettingController extends BaseController {
         $home_page = D("Options")->get("home_page" ) ;
         $home_item = D("Options")->get("home_item" ) ;
         $beian = D("Options")->get("beian" ) ;
+        $site_url = D("Options")->get("site_url" ) ;
         $ldap_form = json_decode($ldap_form,1);
         $oss_setting = json_decode($oss_setting,1);
         
@@ -59,6 +62,7 @@ class AdminSettingController extends BaseController {
                 "home_page"=>$home_page ,
                 "home_item"=>$home_item ,
                 "beian"=>$beian ,
+                "site_url"=>$site_url ,
                 "oss_setting"=>$oss_setting ,
                 );
             $this->sendResult($array);

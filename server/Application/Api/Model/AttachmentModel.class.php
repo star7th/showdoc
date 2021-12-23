@@ -81,7 +81,7 @@ class AttachmentModel extends BaseModel {
 							"addtime" => time(),
 							);
 						$ret = D("FilePage")->add($insert);
-						$url = get_domain().U("api/attachment/visitFile",array("sign" => $sign)); 
+						$url = server_url("api/attachment/visitFile",array("sign" => $sign)); 
 					  return $url ;
 				}
 		}else{
@@ -94,7 +94,7 @@ class AttachmentModel extends BaseModel {
 				var_dump($upload->getError());
 				return;
 			}else{// 上传成功 获取上传文件信息
-				$url = get_domain().__ROOT__.substr($upload->rootPath,1).$info['savepath'].$info['savename'] ;
+				$url = site_url().'/Public/Uploads/'.$info['savepath'].$info['savename'] ;
 				$sign = md5($url.time().rand()) ;
 				$insert = array(
 					"sign" => $sign,
@@ -115,7 +115,7 @@ class AttachmentModel extends BaseModel {
 						"addtime" => time(),
 						);
 					$ret = D("FilePage")->add($insert);
-				$url = get_domain().U("api/attachment/visitFile",array("sign" => $sign));
+				$url = server_url("api/attachment/visitFile",array("sign" => $sign));
 				return $url ;
 			}
 		}

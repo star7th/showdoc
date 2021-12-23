@@ -51,15 +51,30 @@ function get_domain()
 }
 
 /**
- * 获得网站的URL地址
+ * 获得网站的URL地址。
  *
  * @return  string
  */
 function site_url()
 {
-    return get_domain() . substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/'));
+
+    $site_url = D("Options")->get("site_url" ) ;
+    if(!$site_url){
+        $site_url =  get_domain() . substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/'));
+        $site_url = str_replace('/server','',$site_url) ;
+    }
+    return $site_url ;
 }
 
+// 拼接后台server链接
+function server_url($path = '',$params = array()){
+    
+    $url =   site_url().'/server/index.php?s=/'.$path; 
+    if($params){
+        $url =  $url . '&' .http_build_query($params);
+    }
+    return $url ;
+}
 
 //导出称word
 function output_word($data,$fileName=''){

@@ -68,7 +68,6 @@ class ItemController extends BaseController {
         }
 
         $domain = $item['item_domain'] ? $item['item_domain'] : $item['item_id'];
-        $share_url = get_domain().__APP__.'/'.$domain;
 
         $item_edit = $this->checkItemEdit($uid , $item_id) ;
 
