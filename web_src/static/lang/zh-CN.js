@@ -335,7 +335,7 @@ exports.default = {
   copy_item_tips1: '从你已有的项目中选择并复制',
   copy_item_tips2: '复制后将新项目重命名为：',
   import_file_tips1:
-    '导入的文件可以是<b>postman</b>的json文件、<b>swagger</b>的json文件、showdoc的<b>markdown压缩包</b>。系统会自动识别文件类型。',
+    '导入的文件可以是<b>postman</b>的json文件、<b>swagger3</b>的json文件、showdoc的<b>markdown压缩包</b>。系统会自动识别文件类型。',
   import_file_tips2: '将文件拖到此处，或<em>点击上传</em>',
   export_format_word: 'word格式',
   export_format_markdown: 'markdown压缩包',
@@ -437,8 +437,8 @@ exports.default = {
   watermark: '水印',
   watermark_tips: '登录用户查看项目时候显示水印',
   site_url: '网站外部访问url',
-  site_url_tips: '你上传图片/附件等资源时，其生成的url自动由程序判断填充。如果程序判断错误，你可以在这里手动填上访问url，当你填写后，上传资源后的访问url将使用这里填写的值作为访问前缀。填写示例值"https://www.showdoc.com.cn"。如果你不理解此值含义，请默认留空，不要填写',
+  site_url_tips:
+    '你上传图片/附件等资源时，其生成的url自动由程序判断填充。如果程序判断错误，你可以在这里手动填上访问url，当你填写后，上传资源后的访问url将使用这里填写的值作为访问前缀。填写示例值"https://www.showdoc.com.cn"。如果你不理解此值含义，请默认留空，不要填写',
 
   about_site: '关于本站'
-
 }
