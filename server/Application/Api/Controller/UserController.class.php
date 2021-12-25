@@ -333,18 +333,22 @@ class UserController extends BaseController {
     //退出登录
     public function logout(){
         $login_user = $this->checkLogin();
-        D("UserToken")->where(" uid = '$login_user[uid]' ")->save(array("token_expire"=>0));
-        session("login_user" , NULL);
-        cookie('cookie_token',NULL);
-        session(null);
-        $this->sendResult(array());
+        $confirm = I('post.confirm');
+        if($confirm){
+            D("UserToken")->where(" uid = '$login_user[uid]' ")->save(array("token_expire"=>0));
+            session("login_user" , NULL);
+            cookie('cookie_token',NULL);
+            session(null);
+            $this->sendResult(array());
+        }
+
     }
 
 
     public function updateInfo(){
         $user = $this->checkLogin();
         $uid = $user['uid'];
-        $name = I("name");
+        $name = I("post.name");
 
         D("User")->where(" uid = '$uid' ")->save(array("name"=>$name));
         $this->sendResult(array());

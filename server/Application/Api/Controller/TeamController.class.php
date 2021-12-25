@@ -10,8 +10,8 @@ class TeamController extends BaseController {
     public function save(){
         $login_user = $this->checkLogin();
 
-        $team_name = I("team_name");
-        $id = I("id/d");
+        $team_name = I("post.team_name");
+        $id = I("post.id/d");
 
         if ($id) {
             
@@ -60,7 +60,7 @@ class TeamController extends BaseController {
 
     //删除
     public function delete(){
-        $id = I("id/d")? I("id/d") : 0;
+        $id = I("post.id/d")? I("post.id/d") : 0;
         $login_user = $this->checkLogin();
         if ($id && $login_user['uid']) {
             $ret = D("Team")->where(" id = '$id' and uid = '$login_user[uid]'")->delete();
@@ -81,9 +81,9 @@ class TeamController extends BaseController {
     public function attorn(){
         $login_user = $this->checkLogin();
 
-        $username = I("username");
-        $team_id = I("team_id/d");
-        $password = I("password");
+        $username = I("post.username");
+        $team_id = I("post.team_id/d");
+        $password = I("post.password");
 
         $team  = D("Team")->where("id = '$team_id' and uid = '$login_user[uid]' ")->find();
 

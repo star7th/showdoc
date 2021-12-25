@@ -10,8 +10,8 @@ class TeamMemberController extends BaseController {
     public function save(){
         $login_user = $this->checkLogin();
 
-        $member_username = I("member_username");
-        $team_id = I("team_id/d");
+        $member_username = I("post.member_username");
+        $team_id = I("post.team_id/d");
 
         $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
         if (!$teamInfo) {

@@ -12,9 +12,9 @@ class TeamItemMemberController extends BaseController {
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
 
-        $id = I("id/d");
-        $member_group_id = I("member_group_id/d");
-        $cat_id = I("cat_id/d");
+        $id = I("post.id/d");
+        $member_group_id = I("post.member_group_id/d");
+        $cat_id = I("post.cat_id/d");
 
         $teamItemMemberInfo = D("TeamItemMember")->where(" id = '$id'  ")->find();
         $item_id = $teamItemMemberInfo['item_id'] ;

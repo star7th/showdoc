@@ -510,8 +510,8 @@ export default {
       localStorage.clear()
 
       var params = new URLSearchParams()
-
-      that.axios.get(url, params).then(function(response) {
+      params.append('confirm', '1')
+      that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
           that.$router.push({
             path: '/'

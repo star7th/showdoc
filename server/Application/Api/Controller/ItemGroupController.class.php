@@ -10,10 +10,10 @@ class ItemGroupController extends BaseController {
     public function save(){
         $login_user = $this->checkLogin();
 
-        $group_name = I("group_name");
-        $item_ids = I("item_ids");
-        $id = I("id/d");
-
+        $group_name = I("post.group_name");
+        $item_ids = I("post.item_ids");
+        $id = I("post.id/d");
+        if(!$group_name)return false;
         if ($id) {
             
             D("ItemGroup")->where(" id = '$id' ")->save(array("group_name"=>$group_name,"item_ids"=>$item_ids));

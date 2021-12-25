@@ -53,7 +53,7 @@ class AdminItemController extends BaseController {
     public function deleteItem(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
-        $item_id = I("item_id/d");
+        $item_id = I("post.item_id/d");
         $return = D("Item")->soft_delete_item($item_id);
         if (!$return) {
             $this->sendError(10101);
@@ -66,8 +66,8 @@ class AdminItemController extends BaseController {
     public function attorn(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
-        $username = I("username");
-        $item_id = I("item_id/d");
+        $username = I("post.username");
+        $item_id = I("post.item_id/d");
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
 

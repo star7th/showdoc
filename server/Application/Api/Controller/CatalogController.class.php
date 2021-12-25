@@ -193,7 +193,7 @@ class CatalogController extends BaseController {
 
     //删除目录
     public function delete(){
-        $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
+        $cat_id = I("post.cat_id/d")? I("post.cat_id/d") : 0;
         $cat = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
         $item_id = $cat['item_id'];
         
@@ -266,8 +266,8 @@ class CatalogController extends BaseController {
 
     //批量更新
     public function batUpdate(){
-        $cats = I("cats");
-        $item_id = I("item_id/d");
+        $cats = I("post.cats");
+        $item_id = I("post.item_id/d");
         $login_user = $this->checkLogin();
         if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
             $this->sendError(10103);

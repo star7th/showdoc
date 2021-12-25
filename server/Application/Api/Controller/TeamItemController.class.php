@@ -11,8 +11,8 @@ class TeamItemController extends BaseController {
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
 
-        $item_id = I("item_id");
-        $team_id = I("team_id/d");
+        $item_id = I("post.item_id");
+        $team_id = I("post.team_id/d");
         $item_id =  \SQLite3::escapeString($item_id) ;
         $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
         if (!$teamInfo) {
@@ -125,7 +125,7 @@ class TeamItemController extends BaseController {
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
 
-        $id = I("id/d")? I("id/d") : 0;
+        $id = I("post.id/d")? I("post.id/d") : 0;
         $teamItemInfo = D("TeamItem")->where(" id = '$id'  ")->find();
         $item_id = $teamItemInfo['item_id'] ;
         $team_id = $teamItemInfo['team_id'] ;

@@ -269,7 +269,7 @@ class ItemController extends BaseController {
     //更新项目信息
     public function update(){
         $login_user = $this->checkLogin();
-        $item_id = I("item_id/d");  
+        $item_id = I("post.item_id/d");  
         $item_name = I("item_name");  
         $item_description = I("item_description");  
         $item_domain = I("item_domain");  
@@ -311,8 +311,8 @@ class ItemController extends BaseController {
         $login_user = $this->checkLogin();
 
         $username = I("username");
-        $item_id = I("item_id/d");
-        $password = I("password");
+        $item_id = I("post.item_id/d");
+        $password = I("post.password");
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
 
@@ -381,7 +381,7 @@ class ItemController extends BaseController {
     public function archive(){
         $login_user = $this->checkLogin();
 
-        $item_id = I("item_id/d");
+        $item_id = I("post.item_id/d");
         $password = I("password");
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
@@ -430,7 +430,7 @@ class ItemController extends BaseController {
 
         $login_user = $this->checkLogin();
 
-        $item_id = I("item_id/d");
+        $item_id = I("post.item_id/d");
 
         $item  = D("Item")->where("item_id = '$item_id' ")->find();
 
@@ -475,7 +475,7 @@ class ItemController extends BaseController {
     
     //验证访问密码
     public function pwd(){
-        $item_id = I("item_id/d");
+        $item_id = I("post.item_id/d");
         $password = I("password");
         $v_code = I("v_code");
         $refer_url = I('refer_url');
@@ -516,13 +516,13 @@ class ItemController extends BaseController {
     //新建项目
     public function add(){
         $login_user = $this->checkLogin();
-        $item_name = I("item_name");
+        $item_name = I("post.item_name");
         $item_domain = I("item_domain") ? I("item_domain") : '';
         $copy_item_id = I("copy_item_id");
         $password = I("password");
         $item_description = I("item_description");
         $item_type = I("item_type") ? I("item_type") : 1 ;
-
+        if(!$item_name)return false;
         if ($item_domain) {
             
             if(!ctype_alnum($item_domain) ||  is_numeric($item_domain) ){

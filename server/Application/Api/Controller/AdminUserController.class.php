@@ -40,7 +40,7 @@ class AdminUserController extends BaseController {
     public function deleteUser(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
-        $uid = I("uid/d");
+        $uid = I("post.uid/d");
 
         if (D("Item")->where("uid = '$uid' and is_del = 0 ")->find()) {
            $this->sendError(10101,"该用户名下还有项目，不允许删除。请先将其项目删除或者重新分配/转让"); 
@@ -58,7 +58,7 @@ class AdminUserController extends BaseController {
     public function changePassword(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
-        $uid = I("uid/d");
+        $uid = I("post.uid/d");
         $new_password = I("new_password");
 
         $return = D("User")->updatePwd($uid, $new_password);
@@ -74,10 +74,10 @@ class AdminUserController extends BaseController {
     public function addUser(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
-        $username = I("username");
-        $password = I("password");
-        $uid = I("uid");
-        $name = I("name");
+        $username = I("post.username");
+        $password = I("post.password");
+        $uid = I("post.uid");
+        $name = I("post.name");
         if(!$username){
             $this->sendError(10101,'用户名不允许为空');
             return ;

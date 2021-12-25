@@ -69,7 +69,7 @@ class ItemVariableController extends BaseController {
 
     //删除
     public function delete(){
-        $item_id = I("item_id/d");  
+        $item_id = I("post.item_id/d");  
         $id = I("id/d");  
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
@@ -89,9 +89,9 @@ class ItemVariableController extends BaseController {
 
     //根据name删除
     public function deleteByName(){
-        $item_id = I("item_id/d");  
-        $env_id = I("env_id/d");  
-        $var_name = I("var_name");  
+        $item_id = I("post.item_id/d");  
+        $env_id = I("post.env_id/d");  
+        $var_name = I("post.var_name");  
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
         if(!$this->checkItemEdit($uid , $item_id)){

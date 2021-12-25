@@ -38,7 +38,7 @@ class PageController extends BaseController {
     }
     //删除页面
     public function delete(){
-        $page_id = I("page_id/d")? I("page_id/d") : 0;
+        $page_id = I("post.page_id/d")? I("post.page_id/d") : 0;
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
 
         $login_user = $this->checkLogin();
@@ -68,7 +68,7 @@ class PageController extends BaseController {
         $is_urlencode = I("is_urlencode/d") ? I("is_urlencode/d") : 0 ; //页面内容是否经过了转义
         $page_title = I("page_title") ?I("page_title") : L("default_title");
         $page_comments = I("page_comments") ?I("page_comments") :'';
-        $page_content = I("page_content");
+        $page_content = I("post.page_content");
         $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $item_id = I("item_id/d")? I("item_id/d") : 0;
         $s_number = I("s_number/d")? I("s_number/d") : '';
