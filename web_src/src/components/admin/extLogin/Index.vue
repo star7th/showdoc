@@ -60,6 +60,13 @@
                 placeholder="例如 cn 或者 sAMAccountName"
               ></el-input>
             </el-form-item>
+            <el-form-item label="search filter">
+              <el-input
+                v-model="form.ldap_form.search_filter"
+                class="form-el"
+                placeholder="(cn=*)"
+              ></el-input>
+            </el-form-item>
           </div>
 
           <br />
@@ -221,7 +228,8 @@ export default {
           base_dn: '',
           bind_dn: '',
           bind_password: '',
-          user_field: ''
+          user_field: '',
+          search_filter: '(cn=*)'
         },
         oauth2_open: false,
         oauth2_form: {

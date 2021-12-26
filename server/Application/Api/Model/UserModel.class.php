@@ -84,8 +84,8 @@ class UserModel extends BaseModel {
             if (!$rs) {
                return false ;
             }
-
-            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
+            $ldap_form['search_filter'] = $ldap_form['search_filter'] ? $ldap_form['search_filter'] :'(cn=*)';
+            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],$ldap_form['search_filter']);
             $data = ldap_get_entries($ldap_conn, $result);
             for ($i=0; $i<$data["count"]; $i++) {
                 $ldap_user = $data[$i][$ldap_form['user_field']][0] ;

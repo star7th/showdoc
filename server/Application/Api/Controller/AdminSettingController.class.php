@@ -99,8 +99,8 @@ class AdminSettingController extends BaseController {
                $this->sendError(10011,"Can't bind to LDAP server");
                return ;
             }
-
-            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
+            $ldap_form['search_filter'] = $ldap_form['search_filter'] ? $ldap_form['search_filter'] :'(cn=*)';
+            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],$ldap_form['search_filter']);
             $data = ldap_get_entries($ldap_conn, $result);
             
             for ($i=0; $i<$data["count"]; $i++) {
@@ -132,6 +132,9 @@ class AdminSettingController extends BaseController {
         if ($register_open === false) {
             $this->sendResult(array());
         }else{
+            if($ldap_form && $ldap_form['host'] && !$ldap_form['search_filter'] ){
+                $ldap_form['search_filter'] = '(cn=*)';
+            }
             $array = array(
                 "ldap_open"=>$ldap_open ,
                 "ldap_form"=>$ldap_form ,
@@ -223,8 +226,8 @@ class AdminSettingController extends BaseController {
                $this->sendError(10011,"Can't bind to LDAP server");
                return ;
             }
-
-            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
+            $ldap_form['search_filter'] = $ldap_form['search_filter'] ? $ldap_form['search_filter'] :'(cn=*)';
+            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],$ldap_form['search_filter']);
             $data = ldap_get_entries($ldap_conn, $result);
             for ($i=0; $i<$data["count"]; $i++) {
                 $ldap_user = $data[$i][$ldap_form['user_field']][0] ;

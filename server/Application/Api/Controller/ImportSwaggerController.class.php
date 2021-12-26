@@ -15,6 +15,10 @@ class ImportSwaggerController extends BaseController {
         $json_array = json_decode($json ,1 );
         unset($json);
         if ($json_array['info']) {
+            if( strstr($json_array['swagger'] , '2.') ){
+                $this->sendError(10101,"暂未支持swagger2的文件。你尝试可以导入swagger3(openapi3)的json文件");
+                return ;
+            }
             $this->json_array = $json_array ;
             $scheme = $json_array['schemes'][0] ? $json_array['schemes'][0] : 'http';
             if($json_array['host']){
