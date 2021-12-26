@@ -117,7 +117,23 @@ const rederPageContent = (page_content, globalParams = {}) => {
 ##### 请求方式
   - ${obj.info.method}
  `
+  const pathVariable = obj.request.pathVariable
+  if (pathVariable && pathVariable[0] && pathVariable[0].name) {
+    newContent += `
+##### 路径变量
 
+|变量名|必选|类型|说明|
+|:-----  |:-----|-----|
+`
+    pathVariable.map(one => {
+      // 如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
+      if (!one.name || (one.disable && one.disable >= 1)) return
+      newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
+        one.type
+      } |${one.remark ? one.remark : '无'}   |
+`
+    })
+  }
   if (
     obj.request.headers &&
     obj.request.headers[0] &&

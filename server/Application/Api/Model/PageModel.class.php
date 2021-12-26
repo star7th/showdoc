@@ -237,6 +237,23 @@ $new_content .= "
   
 - {$content['info']['method']}
   ";
+
+  $pathVariable = $content['request']['pathVariable'] ;
+  if ($pathVariable && is_array($pathVariable) && $pathVariable[0] && $pathVariable[0]['name']){
+    $new_content .= " 
+##### 路径变量
+
+|变量名|必选|类型|说明|
+|:-----  |:-----|-----|
+";
+
+  foreach ($pathVariable as $key => $value) {
+    $value['require'] = $value['require'] > 0 ? "是" : "否" ;
+    $value['remark'] = $value['remark'] ? $value['remark'] : '无' ;
+    $new_content .= "|{$value['name']}|  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
+  }
+}
+
   
     if($content['request']['headers'] && $content['request']['headers'][0] && $content['request']['headers'][0]['name']){
         $new_content .= " 
