@@ -38,7 +38,7 @@ const rederPageContent = (page_content, globalParams = {}) => {
       globalParams.query[0] &&
       globalParams.query[0].name
     ) {
-      globalParams.query.map((element) => {
+      globalParams.query.map(element => {
         obj.request.params[obj.request.params.mode].unshift(element)
       })
     }
@@ -50,17 +50,30 @@ const rederPageContent = (page_content, globalParams = {}) => {
       globalParams.body[0] &&
       globalParams.body[0].name
     ) {
-      globalParams.body.map((element) => {
+      globalParams.body.map(element => {
         obj.request.params[obj.request.params.mode].unshift(element)
       })
     }
     // 全局header
-    if (globalParams.header && globalParams.header[0] && globalParams.header[0].name) {
-      globalParams.header.map((element) => {
+    if (
+      globalParams.header &&
+      globalParams.header[0] &&
+      globalParams.header[0].name
+    ) {
+      globalParams.header.map(element => {
         obj.request.headers.unshift(element)
       })
     }
   } // 全局参数处理完毕
+
+  // 兼容query
+  if (obj.info.method == 'get') {
+    if (!obj.request.query) {
+      obj.request.query = obj.request.params[obj.request.params.mode]
+    }
+    obj.request.params[obj.request.params.mode] = []
+  }
+
   let newContent = `
 [TOC]
 
@@ -122,15 +135,35 @@ const rederPageContent = (page_content, globalParams = {}) => {
       if (!one.name || (one.disable && one.disable >= 1)) return
       newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
         one.type
-        } |${one.remark ? one.remark : '无'}   |
+      } |${one.remark ? one.remark : '无'}   |
 `
     })
   }
+
+  const query = obj.request.query
+
+  if (query && query[0] && query[0].name) {
+    newContent += `
+##### 请求Query参数
+
+|参数名|必选|类型|说明|
+|:-----  |:-----|-----|
+`
+    query.map(one => {
+      // 如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
+      if (!one.name || (one.disable && one.disable >= 1)) return
+      newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
+        one.type
+      } |${one.remark ? one.remark : '无'}   |
+`
+    })
+  }
+
   const params = obj.request.params[obj.request.params.mode]
 
   if (params && params[0] && params[0].name) {
     newContent += `
-##### 请求参数
+##### 请求Body参数
 
 |参数名|必选|类型|说明|
 |:-----  |:-----|-----|
@@ -140,7 +173,7 @@ const rederPageContent = (page_content, globalParams = {}) => {
       if (!one.name || (one.disable && one.disable >= 1)) return
       newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
         one.type
-        } |${one.remark ? one.remark : '无'}   |
+      } |${one.remark ? one.remark : '无'}   |
 `
     })
   }
@@ -157,9 +190,14 @@ ${params}
 
   const jsonDesc = obj.request.params.jsonDesc
 
-  if (obj.request.params.mode == 'json' && jsonDesc && jsonDesc[0] && jsonDesc[0].name) {
+  if (
+    obj.request.params.mode == 'json' &&
+    jsonDesc &&
+    jsonDesc[0] &&
+    jsonDesc[0].name
+  ) {
     newContent += `
-##### json字段说明
+##### 请求json字段说明
 
 |字段名|必选|类型|说明|
 |:-----  |:-----|-----|
@@ -168,7 +206,7 @@ ${params}
       if (!one.name) return
       newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
         one.type
-        } |${one.remark ? one.remark : '无'}   |
+      } |${one.remark ? one.remark : '无'}   |
 `
     })
   }
@@ -198,7 +236,7 @@ ${obj.response.responseExample}
       if (!one.name) return
       newContent += `|${one.name} |${one.type} |${
         one.remark ? one.remark : '无'
-        }   |
+      }   |
 `
     })
   }
@@ -228,7 +266,7 @@ ${obj.response.responseFailExample}
       if (!one.name) return
       newContent += `|${one.name} |${one.type} |${
         one.remark ? one.remark : '无'
-        }   |
+      }   |
 `
     })
   }

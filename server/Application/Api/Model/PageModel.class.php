@@ -182,6 +182,15 @@ class PageModel extends BaseModel {
         if(!$content || !$content['info'] || !$content['info']['url'] ){
             return false ;
         }
+
+        // 兼容query
+        if($content['info']['method'] == 'get'){
+            if(!$content['request']['query']){
+                $content['request']['query'] = $content['request']['params'][$content['request']['params']['mode']];
+            }
+            $content['request']['params'][$content['request']['params']['mode']] = array();
+        }
+
         $new_content = "
 ##### 简要描述
   
@@ -243,10 +252,27 @@ $new_content .= "
         } 
     }
   
+    $query = $content['request']['query'] ;
+        if ($query && is_array($query) && $query[0] && $query[0]['name']){
+        $new_content .= " 
+##### 请求Query参数
+
+|参数名|必选|类型|说明|
+|:-----  |:-----|-----|
+";
+
+        foreach ($query as $key => $value) {
+            $value['require'] = $value['require'] > 0 ? "是" : "否" ;
+            $value['remark'] = $value['remark'] ? $value['remark'] : '无' ;
+            $new_content .= "|{$value['name']}|  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
+        }
+    }
+  
+
     $params = $content['request']['params'][$content['request']['params']['mode']];
     if ($params && is_array($params) && $params[0] && $params[0]['name']){
         $new_content .= " 
-##### 请求参数
+##### 请求Body参数
   
 |参数名|必选|类型|说明|
 |:-----  |:-----|-----|
