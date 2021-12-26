@@ -54,7 +54,11 @@ class AttachmentModel extends BaseModel {
 	public function upload($_files , $file_key , $uid , $item_id = 0  , $page_id = 0  ){
 		$uploadFile = $_files[$file_key] ;
 
-		if (strstr(strip_tags(strtolower($uploadFile['name'])), ".php") ) {
+		if (strstr(strip_tags(strtolower($uploadFile['name'])), ".php")
+		||  strstr(strip_tags(strtolower($uploadFile['name'])), ".php")
+		||  strstr(strip_tags(strtolower($uploadFile['name'])), ".svg")
+		
+		) {
 			return false;
 	}
 		$oss_open = D("Options")->get("oss_open" ) ;
