@@ -4,6 +4,7 @@
       <el-form-item :label="$t('register_open')">
         <el-switch v-model="form.register_open"></el-switch>
       </el-form-item>
+
       <!-- 待支持
       <el-form-item label="所有人可以新建项目">
         <el-switch v-model="form.register_open"></el-switch>
@@ -56,6 +57,32 @@
         </el-tooltip>
       </el-form-item>
 
+      <el-form-item :label="$t('watermark')">
+        <el-switch v-model="form.show_watermark"></el-switch>
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('watermark_tips')"
+          placement="top"
+        >
+          <i class="el-icon-question"></i>
+        </el-tooltip>
+      </el-form-item>
+      <el-form-item :label="$t('site_url')">
+        <el-input
+          v-model="form.site_url"
+          class="form-el"
+          placeholder="https://www.your-site.com"
+        ></el-input>
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="$t('site_url_tips')"
+          placement="top"
+        >
+          <i class="el-icon-question"></i>
+        </el-tooltip>
+      </el-form-item>
       <el-form-item :label="$t('oss_open')">
         <el-switch v-model="form.oss_open"></el-switch>
       </el-form-item>
@@ -177,7 +204,9 @@ export default {
           secretKey: ''
         },
         history_version_count: 20,
-        beian: ''
+        beian: '',
+        show_watermark: false,
+        site_url: ''
       },
       itemList: []
     }
@@ -224,6 +253,10 @@ export default {
             : ''
           this.form.beian = response.data.data.beian
             ? response.data.data.beian
+            : ''
+          this.form.show_watermark = response.data.data.show_watermark > 0
+          this.form.site_url = response.data.data.site_url
+            ? response.data.data.site_url
             : ''
         } else {
           this.$alert(response.data.error_message)

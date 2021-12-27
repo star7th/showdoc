@@ -147,7 +147,7 @@ class AttachmentController extends BaseController {
             foreach ($files as $key => $value) {
                 $url = '';
                 if($value['sign']){
-                   $url =  get_domain().U("api/attachment/visitFile",array("sign" => $value['sign'])) ;
+                   $url =  server_url("api/attachment/visitFile",array("sign" => $value['sign'])) ;
                 }else{
                   $url =  $value['real_url'] ;
                 }
@@ -225,7 +225,7 @@ class AttachmentController extends BaseController {
                 }
                 $url = '';
                 if($value['sign']){
-                   $url =  get_domain().U("api/attachment/visitFile",array("sign" => $value['sign'])) ;
+                   $url =  server_url("api/attachment/visitFile",array("sign" => $value['sign'])) ;
                 }else{
                   $url =  $value['real_url'] ;
                 }
@@ -304,7 +304,7 @@ class AttachmentController extends BaseController {
                     "page_id"=>$value['page_id'],
                     "file_size_m"=>round( $value['file_size']/(1024*1024),3),
                     "display_name"=>$value['display_name']?$value['display_name']:'',
-                    "url"=>get_domain().U("api/attachment/visitFile",array("sign" => $value['sign'])),
+                    "url"=>server_url("api/attachment/visitFile",array("sign" => $value['sign'])),
                     "addtime"=> date("Y-m-d H:i:s" , $value['addtime'] ),
                     "last_visit_time"=> date("Y-m-d H:i:s" , $value['last_visit_time'] ),
                     );

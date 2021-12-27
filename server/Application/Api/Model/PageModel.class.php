@@ -182,6 +182,15 @@ class PageModel extends BaseModel {
         if(!$content || !$content['info'] || !$content['info']['url'] ){
             return false ;
         }
+
+        // 兼容query
+        if($content['info']['method'] == 'get'){
+            if(!$content['request']['query']){
+                $content['request']['query'] = $content['request']['params'][$content['request']['params']['mode']];
+            }
+            $content['request']['params'][$content['request']['params']['mode']] = array();
+        }
+
         $new_content = "
 ##### 简要描述
   
@@ -228,6 +237,23 @@ $new_content .= "
   
 - {$content['info']['method']}
   ";
+
+  $pathVariable = $content['request']['pathVariable'] ;
+  if ($pathVariable && is_array($pathVariable) && $pathVariable[0] && $pathVariable[0]['name']){
+    $new_content .= " 
+##### 路径变量
+
+|变量名|必选|类型|说明|
+|:-----  |:-----|-----|
+";
+
+  foreach ($pathVariable as $key => $value) {
+    $value['require'] = $value['require'] > 0 ? "是" : "否" ;
+    $value['remark'] = $value['remark'] ? $value['remark'] : '无' ;
+    $new_content .= "|{$value['name']}|  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
+  }
+}
+
   
     if($content['request']['headers'] && $content['request']['headers'][0] && $content['request']['headers'][0]['name']){
         $new_content .= " 
@@ -243,10 +269,27 @@ $new_content .= "
         } 
     }
   
+    $query = $content['request']['query'] ;
+        if ($query && is_array($query) && $query[0] && $query[0]['name']){
+        $new_content .= " 
+##### 请求Query参数
+
+|参数名|必选|类型|说明|
+|:-----  |:-----|-----|
+";
+
+        foreach ($query as $key => $value) {
+            $value['require'] = $value['require'] > 0 ? "是" : "否" ;
+            $value['remark'] = $value['remark'] ? $value['remark'] : '无' ;
+            $new_content .= "|{$value['name']}|  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
+        }
+    }
+  
+
     $params = $content['request']['params'][$content['request']['params']['mode']];
     if ($params && is_array($params) && $params[0] && $params[0]['name']){
         $new_content .= " 
-##### 请求参数
+##### 请求Body参数
   
 |参数名|必选|类型|说明|
 |:-----  |:-----|-----|
@@ -291,7 +334,7 @@ $new_content .= "
           $responseExample = $this->_indent_json($content['response']['responseExample']);
           $responseExample = $responseExample ? $responseExample : $content['response']['responseExample'] ;
             $new_content .= " 
-##### 返回示例  
+##### 成功返回示例  
 ```
 {$responseExample}
   
@@ -302,7 +345,7 @@ $new_content .= "
         //返回示例说明
         if($content['response']['responseParamsDesc'] && $content['response']['responseParamsDesc'][0] && $content['response']['responseParamsDesc'][0]['name']){
             $new_content .= " 
-##### 返回参数说明 
+##### 成功返回示例的参数说明 
   
 |参数名|类型|说明|
 |:-----  |:-----|-----|
@@ -312,6 +355,33 @@ $new_content .= "
                 $new_content .= "|{$value['name']}| {$value['type']} |  {$value['remark']} | \n";
             }
         }
+
+        //返回示例
+        if($content['response']['responseFailExample']){
+            $responseFailExample = $this->_indent_json($content['response']['responseFailExample']);
+            $responseFailExample = $responseFailExample ? $responseFailExample : $content['response']['responseFailExample'] ;
+              $new_content .= " 
+  ##### 失败返回示例  
+  ```
+  {$responseFailExample}
+    
+  ``` 
+    "; 
+          }
+    
+          //返回示例说明
+          if($content['response']['responseFailParamsDesc'] && $content['response']['responseFailParamsDesc'][0] && $content['response']['responseFailParamsDesc'][0]['name']){
+              $new_content .= " 
+  ##### 失败返回示例的参数说明 
+    
+  |参数名|类型|说明|
+  |:-----  |:-----|-----|
+    ";
+              foreach ($content['response']['responseFailParamsDesc'] as $key => $value) {
+                  $value['remark'] = $value['remark'] ? $value['remark'] : '无' ;
+                  $new_content .= "|{$value['name']}| {$value['type']} |  {$value['remark']} | \n";
+              }
+          }
   
         $new_content .= " 
 ##### 备注

@@ -13,12 +13,16 @@ class AdminSettingController extends BaseController {
         $home_page = intval(I("home_page")) ;
         $home_item = intval(I("home_item")) ;
         $oss_setting = I("oss_setting") ;
+        $show_watermark = intval(I("show_watermark"));
         $beian = I("beian") ;
+        $site_url = I("site_url") ;
         D("Options")->set("history_version_count" ,$history_version_count) ;
         D("Options")->set("register_open" ,$register_open) ;
         D("Options")->set("home_page" ,$home_page) ;
         D("Options")->set("home_item" ,$home_item) ;
         D("Options")->set("beian" ,$beian) ;
+        D("Options")->set("site_url" ,$site_url) ;
+        D("Options")->set("show_watermark" ,$show_watermark) ;
         
         if ($oss_open) {
             $this->checkComposerPHPVersion();
@@ -36,11 +40,13 @@ class AdminSettingController extends BaseController {
         $this->checkAdmin();
         $oss_open = D("Options")->get("oss_open" ) ;
         $register_open = D("Options")->get("register_open" ) ;
+        $show_watermark = D("Options")->get("show_watermark" ) ;
         $history_version_count = D("Options")->get("history_version_count" ) ;
         $oss_setting = D("Options")->get("oss_setting" ) ;
         $home_page = D("Options")->get("home_page" ) ;
         $home_item = D("Options")->get("home_item" ) ;
         $beian = D("Options")->get("beian" ) ;
+        $site_url = D("Options")->get("site_url" ) ;
         $ldap_form = json_decode($ldap_form,1);
         $oss_setting = json_decode($oss_setting,1);
         
@@ -51,10 +57,12 @@ class AdminSettingController extends BaseController {
             $array = array(
                 "oss_open"=>$oss_open ,
                 "register_open"=>$register_open ,
+                "show_watermark"=>$show_watermark ,
                 "history_version_count"=>$history_version_count ,
                 "home_page"=>$home_page ,
                 "home_item"=>$home_item ,
                 "beian"=>$beian ,
+                "site_url"=>$site_url ,
                 "oss_setting"=>$oss_setting ,
                 );
             $this->sendResult($array);
@@ -64,6 +72,8 @@ class AdminSettingController extends BaseController {
 
     //保存Ldap配置
     public function saveLdapConfig(){
+        set_time_limit(60);
+        ini_set('memory_limit','500M');
         $login_user = $this->checkLogin();
         $this->checkAdmin();
         $ldap_open = intval(I("ldap_open")) ;
@@ -89,8 +99,8 @@ class AdminSettingController extends BaseController {
                $this->sendError(10011,"Can't bind to LDAP server");
                return ;
             }
-
-            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
+            $ldap_form['search_filter'] = $ldap_form['search_filter'] ? $ldap_form['search_filter'] :'(cn=*)';
+            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],$ldap_form['search_filter']);
             $data = ldap_get_entries($ldap_conn, $result);
             
             for ($i=0; $i<$data["count"]; $i++) {
@@ -122,6 +132,9 @@ class AdminSettingController extends BaseController {
         if ($register_open === false) {
             $this->sendResult(array());
         }else{
+            if($ldap_form && $ldap_form['host'] && !$ldap_form['search_filter'] ){
+                $ldap_form['search_filter'] = '(cn=*)';
+            }
             $array = array(
                 "ldap_open"=>$ldap_open ,
                 "ldap_form"=>$ldap_form ,
@@ -188,6 +201,8 @@ class AdminSettingController extends BaseController {
 
 
     public function checkLdapLogin(){
+            set_time_limit(60);
+            ini_set('memory_limit','500M');
             $username = 'admin';
             $password = '123456';
 
@@ -211,8 +226,8 @@ class AdminSettingController extends BaseController {
                $this->sendError(10011,"Can't bind to LDAP server");
                return ;
             }
-
-            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
+            $ldap_form['search_filter'] = $ldap_form['search_filter'] ? $ldap_form['search_filter'] :'(cn=*)';
+            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],$ldap_form['search_filter']);
             $data = ldap_get_entries($ldap_conn, $result);
             for ($i=0; $i<$data["count"]; $i++) {
                 $ldap_user = $data[$i][$ldap_form['user_field']][0] ;

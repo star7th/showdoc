@@ -60,6 +60,7 @@ class ItemController extends BaseController {
             $keyword = \SQLite3::escapeString($keyword) ;
             $pages = D("Page")->where("item_id = '$item_id' and is_del = 0  and ( lower(page_title) like '%{$keyword}%' or lower(page_content) like '%{$keyword}%' ) ")->order(" s_number asc  ")->field("page_id,author_uid,cat_id,page_title,addtime")->select();
             $menu['pages'] = $pages ? $pages : array();
+            $menu['catalogs'] = array();
         }else{
             $menu = D("Item")->getMemu($item_id) ;
             if($uid > 0 ){
@@ -68,7 +69,6 @@ class ItemController extends BaseController {
         }
 
         $domain = $item['item_domain'] ? $item['item_domain'] : $item['item_id'];
-        $share_url = get_domain().__APP__.'/'.$domain;
 
         $item_edit = $this->checkItemEdit($uid , $item_id) ;
 
@@ -114,6 +114,13 @@ class ItemController extends BaseController {
         if($item['item_type'] == 3){
             $global_param = D("Runapi")->getGlobalParam($item_id);
         }
+
+        // 登录的状态下，才去检查下是否开启了水印
+        if(is_login){
+            $show_watermark = D("Options")->get("show_watermark" ) ;
+            $show_watermark = $show_watermark ? '1' : '0';
+        }
+        
         
         $return = array(
             "item_id"=>$item_id ,
@@ -134,6 +141,7 @@ class ItemController extends BaseController {
             "ItemCreator"=>$item_manage ,
             "current_page_id"=>$current_page_id ,
             "global_param"=>$global_param ,
+            "show_watermark"=>$show_watermark ,
 
             );
         $this->sendResult($return);

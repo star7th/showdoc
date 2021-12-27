@@ -64,6 +64,8 @@ class UserModel extends BaseModel {
     }
     //检测ldap登录
     public function checkLdapLogin($username ,$password ){
+            set_time_limit(60);
+            ini_set('memory_limit','500M');
             $ldap_open = D("Options")->get("ldap_open" ) ;
             $ldap_form = D("Options")->get("ldap_form" ) ;
             $ldap_form = json_decode($ldap_form,1);
@@ -82,8 +84,8 @@ class UserModel extends BaseModel {
             if (!$rs) {
                return false ;
             }
-
-            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],"(cn=*)");
+            $ldap_form['search_filter'] = $ldap_form['search_filter'] ? $ldap_form['search_filter'] :'(cn=*)';
+            $result = ldap_search($ldap_conn,$ldap_form['base_dn'],$ldap_form['search_filter']);
             $data = ldap_get_entries($ldap_conn, $result);
             for ($i=0; $i<$data["count"]; $i++) {
                 $ldap_user = $data[$i][$ldap_form['user_field']][0] ;

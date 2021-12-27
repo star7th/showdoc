@@ -38,7 +38,7 @@ const rederPageContent = (page_content, globalParams = {}) => {
       globalParams.query[0] &&
       globalParams.query[0].name
     ) {
-      globalParams.query.map((element) => {
+      globalParams.query.map(element => {
         obj.request.params[obj.request.params.mode].unshift(element)
       })
     }
@@ -50,24 +50,37 @@ const rederPageContent = (page_content, globalParams = {}) => {
       globalParams.body[0] &&
       globalParams.body[0].name
     ) {
-      globalParams.body.map((element) => {
+      globalParams.body.map(element => {
         obj.request.params[obj.request.params.mode].unshift(element)
       })
     }
     // 全局header
-    if (globalParams.header && globalParams.header[0] && globalParams.header[0].name) {
-      globalParams.header.map((element) => {
+    if (
+      globalParams.header &&
+      globalParams.header[0] &&
+      globalParams.header[0].name
+    ) {
+      globalParams.header.map(element => {
         obj.request.headers.unshift(element)
       })
     }
   } // 全局参数处理完毕
+
+  // 兼容query
+  if (obj.info.method == 'get') {
+    if (!obj.request.query) {
+      obj.request.query = obj.request.params[obj.request.params.mode]
+    }
+    obj.request.params[obj.request.params.mode] = []
+  }
+
   let newContent = `
 [TOC]
 
 ##### 简要描述
   - ${obj.info.description ? obj.info.description : '无'}`
 
-  if (obj.info.apiStatus) {
+  if (obj.info.apiStatus > 0) {
     let statusText = ''
     switch (obj.info.apiStatus) {
       case '1':
@@ -104,7 +117,23 @@ const rederPageContent = (page_content, globalParams = {}) => {
 ##### 请求方式
   - ${obj.info.method}
  `
+  const pathVariable = obj.request.pathVariable
+  if (pathVariable && pathVariable[0] && pathVariable[0].name) {
+    newContent += `
+##### 路径变量
 
+|变量名|必选|类型|说明|
+|:-----  |:-----|-----|
+`
+    pathVariable.map(one => {
+      // 如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
+      if (!one.name || (one.disable && one.disable >= 1)) return
+      newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
+        one.type
+      } |${one.remark ? one.remark : '无'}   |
+`
+    })
+  }
   if (
     obj.request.headers &&
     obj.request.headers[0] &&
@@ -122,15 +151,35 @@ const rederPageContent = (page_content, globalParams = {}) => {
       if (!one.name || (one.disable && one.disable >= 1)) return
       newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
         one.type
-        } |${one.remark ? one.remark : '无'}   |
+      } |${one.remark ? one.remark : '无'}   |
 `
     })
   }
+
+  const query = obj.request.query
+
+  if (query && query[0] && query[0].name) {
+    newContent += `
+##### 请求Query参数
+
+|参数名|必选|类型|说明|
+|:-----  |:-----|-----|
+`
+    query.map(one => {
+      // 如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
+      if (!one.name || (one.disable && one.disable >= 1)) return
+      newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
+        one.type
+      } |${one.remark ? one.remark : '无'}   |
+`
+    })
+  }
+
   const params = obj.request.params[obj.request.params.mode]
 
   if (params && params[0] && params[0].name) {
     newContent += `
-##### 请求参数
+##### 请求Body参数
 
 |参数名|必选|类型|说明|
 |:-----  |:-----|-----|
@@ -140,7 +189,7 @@ const rederPageContent = (page_content, globalParams = {}) => {
       if (!one.name || (one.disable && one.disable >= 1)) return
       newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
         one.type
-        } |${one.remark ? one.remark : '无'}   |
+      } |${one.remark ? one.remark : '无'}   |
 `
     })
   }
@@ -157,9 +206,14 @@ ${params}
 
   const jsonDesc = obj.request.params.jsonDesc
 
-  if (obj.request.params.mode == 'json' && jsonDesc && jsonDesc[0] && jsonDesc[0].name) {
+  if (
+    obj.request.params.mode == 'json' &&
+    jsonDesc &&
+    jsonDesc[0] &&
+    jsonDesc[0].name
+  ) {
     newContent += `
-##### json字段说明
+##### 请求json字段说明
 
 |字段名|必选|类型|说明|
 |:-----  |:-----|-----|
@@ -168,14 +222,14 @@ ${params}
       if (!one.name) return
       newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
         one.type
-        } |${one.remark ? one.remark : '无'}   |
+      } |${one.remark ? one.remark : '无'}   |
 `
     })
   }
 
   if (obj.response.responseExample) {
     newContent += `
-##### 返回示例
+##### 成功返回示例
 \`\`\`
 ${obj.response.responseExample}
    \`\`\`
@@ -188,7 +242,7 @@ ${obj.response.responseExample}
     obj.response.responseParamsDesc[0].name
   ) {
     newContent += `
-##### 返回参数说明
+##### 成功返回示例的参数说明
 
 |参数名|类型|说明|
 |:-----  |:-----|-----|
@@ -198,7 +252,37 @@ ${obj.response.responseExample}
       if (!one.name) return
       newContent += `|${one.name} |${one.type} |${
         one.remark ? one.remark : '无'
-        }   |
+      }   |
+`
+    })
+  }
+
+  if (obj.response.responseFailExample) {
+    newContent += `
+##### 失败返回示例
+\`\`\`
+${obj.response.responseFailExample}
+   \`\`\`
+   `
+  }
+
+  if (
+    obj.response.responseFailParamsDesc &&
+    obj.response.responseFailParamsDesc[0] &&
+    obj.response.responseFailParamsDesc[0].name
+  ) {
+    newContent += `
+##### 失败返回示例的参数说明
+
+|参数名|类型|说明|
+|:-----  |:-----|-----|
+`
+    const returnParams = obj.response.responseFailParamsDesc
+    returnParams.map(one => {
+      if (!one.name) return
+      newContent += `|${one.name} |${one.type} |${
+        one.remark ? one.remark : '无'
+      }   |
 `
     })
   }
