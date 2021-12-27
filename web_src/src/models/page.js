@@ -80,7 +80,7 @@ const rederPageContent = (page_content, globalParams = {}) => {
 ##### 简要描述
   - ${obj.info.description ? obj.info.description : '无'}`
 
-  if (obj.info.apiStatus) {
+  if (obj.info.apiStatus > 0) {
     let statusText = ''
     switch (obj.info.apiStatus) {
       case '1':
