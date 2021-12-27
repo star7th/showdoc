@@ -252,6 +252,12 @@ export default {
   },
   methods: {
     saveLdapConfig() {
+      let loading = this.$loading()
+      // 设置一个最长关闭时间
+      setTimeout(() => {
+        loading.close()
+        this.saving = false
+      }, 30000)
       var url = DocConfig.server + '/api/adminSetting/saveLdapConfig'
       this.axios.post(url, this.form).then(response => {
         if (response.data.error_code === 0) {
@@ -259,6 +265,7 @@ export default {
         } else {
           this.$alert(response.data.error_message)
         }
+        loading.close()
       })
     },
     loadLdapConfig() {

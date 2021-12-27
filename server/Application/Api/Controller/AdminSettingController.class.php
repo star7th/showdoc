@@ -83,6 +83,7 @@ class AdminSettingController extends BaseController {
             if (!$ldap_form['user_field']) {
                 $ldap_form['user_field'] = 'cn';
             }
+            
             if( !extension_loaded( 'ldap' ) ) {
                $this->sendError(10011,"你尚未安装php-ldap扩展。如果是普通PHP环境，请手动安装之。如果是使用之前官方docker镜像，则需要重新安装镜像。方法是：备份 /showdoc_data 整个目录，然后全新安装showdoc，接着用备份覆盖/showdoc_data 。然后递归赋予777可写权限。");
                return ;
@@ -93,16 +94,19 @@ class AdminSettingController extends BaseController {
                $this->sendError(10011,"Can't connect to LDAP server");
                return ;
             }
+            
             ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $ldap_form['version']);
             $rs=ldap_bind($ldap_conn, $ldap_form['bind_dn'], $ldap_form['bind_password']);//与服务器绑定 用户登录验证 成功返回1 
             if (!$rs) {
                $this->sendError(10011,"Can't bind to LDAP server");
                return ;
             }
+            
             $ldap_form['search_filter'] = $ldap_form['search_filter'] ? $ldap_form['search_filter'] :'(cn=*)';
+            $ldap_form['search_filter'] = trim(htmlspecialchars_decode($ldap_form['search_filter']));
             $result = ldap_search($ldap_conn,$ldap_form['base_dn'],$ldap_form['search_filter']);
             $data = ldap_get_entries($ldap_conn, $result);
-            
+
             for ($i=0; $i<$data["count"]; $i++) {
                 $ldap_user = $data[$i][$ldap_form['user_field']][0] ;
                 if (!$ldap_user) {
@@ -113,6 +117,7 @@ class AdminSettingController extends BaseController {
                     D("User")->register($ldap_user,$ldap_user.get_rand_str());
                 }
             }
+            
             D("Options")->set("ldap_form" , json_encode( $ldap_form)) ;
         }
         D("Options")->set("ldap_open" ,$ldap_open) ;
@@ -135,7 +140,6 @@ class AdminSettingController extends BaseController {
             if($ldap_form && $ldap_form['host'] && !$ldap_form['search_filter'] ){
                 $ldap_form['search_filter'] = '(cn=*)';
             }
-            $ldap_form['search_filter'] = htmlspecialchars_decode($ldap_form['search_filter']);
             $array = array(
                 "ldap_open"=>$ldap_open ,
                 "ldap_form"=>$ldap_form ,
