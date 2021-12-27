@@ -135,6 +135,7 @@ class AdminSettingController extends BaseController {
             if($ldap_form && $ldap_form['host'] && !$ldap_form['search_filter'] ){
                 $ldap_form['search_filter'] = '(cn=*)';
             }
+            $ldap_form['search_filter'] = htmlspecialchars_decode($ldap_form['search_filter']);
             $array = array(
                 "ldap_open"=>$ldap_open ,
                 "ldap_form"=>$ldap_form ,
