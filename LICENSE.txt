@@ -1,7 +1,9 @@
 ﻿
-ShowDoc遵循Apache2开源协议发布，并提供免费使用。
-版权所有Copyright © 2015 by star7th (http://blog.star7th.com/)
-All rights reserved。
+ShowDoc遵循Apache2开源协议发布。
+ShowDoc在遵循Apache2开源协议之上有一条额外版权声明：
+showdoc官方(https://www.showdoc.com.cn/)以及作者star7th ( https://github.com/star7th )拥有程序的版权和相应权利，
+在保留程序UI界面上的版权信息和链接的前提下，可免费使用或者二次开发
+如需更改版权信息或版权链接，需取得官方同意授权。
 
 Apache Licence是著名的非盈利开源组织Apache采用的协议。
 该协议和BSD类似，鼓励代码共享和尊重原作者的著作权，
@@ -29,3 +31,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
+
+Showdoc has an additional copyright notice on compliance with the Apache2 Open Source License:
+Showdoc official（ https://www.showdoc.com.cn/ ）And author star7th（ https://github.com/star7th ）Have the copyright and corresponding rights of the program,
+On the premise of retaining the copyright information and links on the program UI interface, it can be used for free or secondary development
+If you need to change copyright information or copyright links, you need to obtain official consent and authorization.
+
