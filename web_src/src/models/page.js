@@ -108,6 +108,12 @@ const rederPageContent = (page_content, globalParams = {}) => {
  - ${statusText}`
   }
 
+  // 如果有query参数组，则把url中的参数去掉
+  if (obj.request.query && obj.request.query[0] && obj.request.query[0]['name']) {
+    const words = obj.info.url.split('?')
+    obj.info.url = words[0]
+  }
+
   newContent += `
 
 ##### 请求URL

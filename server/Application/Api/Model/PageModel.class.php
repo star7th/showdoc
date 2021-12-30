@@ -226,6 +226,12 @@ if($content['info']['apiStatus']){
  
  }
 
+    // 如果有query参数组，则把url中的参数去掉
+    $query = $content['request']['query'] ;
+    if ($query && is_array($query) && $query[0] && $query[0]['name']){
+        $words = explode('?',$content['info']['url']);
+        $content['info']['url']  = $words[0] ;
+    }
 
 $new_content .= "
   
