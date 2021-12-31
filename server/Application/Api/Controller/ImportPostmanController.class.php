@@ -306,7 +306,7 @@ class ImportPostmanController extends BaseController {
                 ),
                 "request" =>array(
                     "params"=> array(
-                        'mode' => "formdata",
+                        'mode' => $request['body']['mode'],
                         'json' => "",
                         'urlencoded' => array(),
                         'formdata' => array(),
@@ -332,9 +332,9 @@ class ImportPostmanController extends BaseController {
             }
         }
 
-        if ($request['body']['formdata']) {
-            foreach ($request['body']['formdata'] as $key => $value) {
-                 $content_array['request']['params']['formdata'][] = array(
+        if (in_array($request['body']['mode'],['formdata','urlencoded']) && $request['body'][$request['body']['mode']]) {
+            foreach ($request['body'][$request['body']['mode']] as $key => $value) {
+                 $content_array['request']['params'][$request['body']['mode']][] = array(
                         "name" =>$value["key"],
                         "type" =>'string',
                         "value" =>$value["value"],
