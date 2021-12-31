@@ -459,5 +459,7 @@ exports.default = {
   site_url: 'Site url',
   site_url_tips: 'Site url',
 
-  about_site: 'About site'
+  about_site: 'About site',
+
+  s3_storage: 'S3 Storage(Amazon S3/Minio and so on）'
 }
