@@ -1,0 +1,4 @@
+# ignore generated files
+ext/api.h
+ext/*_arginfo.h
+src/api.h

@@ -1,0 +1,145 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+
+env:
+  BUILDER_VERSION: v0.8.18
+  BUILDER_SOURCE: releases
+  BUILDER_HOST: https://d19elf31gohf1l.cloudfront.net
+  PACKAGE_NAME: aws-crt-php
+  LINUX_BASE_IMAGE: ubuntu-16-x64
+  RUN: ${{ github.run_id }}-${{ github.run_number }}
+
+jobs:
+  php-5_5-linux-x64:
+    name: php-linux-x64 (5.5)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup PHP with Xdebug
+      uses: shivammathur/setup-php@v2
+      with:
+        coverage: xdebug
+        php-version: 5.5
+        ini-values: xdebug.overload_var_dump=0, memory_limit=4G, phar.readonly=false
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Install ancient PHPUnit
+      run: composer require --dev --ignore-platform-reqs phpunit/phpunit "4.8.36"
+
+    - name: Install depedencies
+      run: composer update --no-interaction
+
+    - name: Build for PHP 5.5
+      env:
+        CC: clang
+        CXX: clang++
+      run: |
+        phpize
+        ./configure
+        make
+
+  php-linux-x64:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - "5.6"
+          - "7.0"
+          - "7.1"
+          - "7.2"
+          - "7.3"
+          - "7.4"
+          - "8.0"
+    steps:
+    - name: Setup PHP with Xdebug
+      uses: shivammathur/setup-php@v2
+      with:
+        coverage: xdebug
+        php-version: ${{matrix.version}}
+        ini-values: xdebug.overload_var_dump=0, memory_limit=4G, phar.readonly=false
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Install depedencies
+      run: composer update --no-interaction
+
+    - name: Run tests
+      env:
+        CC: clang
+        CXX: clang++
+      run: |
+        phpize
+        ./configure
+        make
+        make test
+
+
+  #   linux-arm:
+  #     name: ARM (${{ matrix.arch }})
+  #     runs-on: ubuntu-latest
+  #     strategy:
+  #       matrix:
+  #         arch: [armv6, armv7, arm64]
+  #     steps:
+  #     - name: Build ${{ env.PACKAGE_NAME }}
+  #       run: |
+  #         python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
+  #         chmod a+x builder
+  #         ./builder build -p ${{ env.PACKAGE_NAME }} --target=linux-${{ matrix.arch }} --spec=downstream
+
+  # windows-vc16:
+  #   runs-on: windows-latest
+  #   strategy:
+  #     matrix:
+  #       arch: [x64]
+  #   steps:
+  #   - uses: ilammy/msvc-dev-cmd@v1
+  #     with:
+  #       arch: ${{ matrix.arch }}
+  #       uwp: false
+  #       spectre: true
+  #   - name: Build ${{ env.PACKAGE_NAME }} + consumers
+  #     run: |
+  #       python -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
+  #       python builder.pyz build -p ${{ env.PACKAGE_NAME }} --spec=downstream
+
+  # windows-vc14:
+  #   runs-on: windows-latest
+  #   strategy:
+  #     matrix:
+  #       arch: [x86, x64]
+  #   steps:
+  #   - uses: ilammy/msvc-dev-cmd@v1
+  #     with:
+  #       toolset: 14.0
+  #       arch: ${{ matrix.arch }}
+  #       uwp: false
+  #       spectre: true
+  #   - name: Build ${{ env.PACKAGE_NAME }} + consumers
+  #     run: |
+  #       python -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder.pyz')"
+  #       python builder.pyz build -p ${{ env.PACKAGE_NAME }} downstream
+
+  macos:
+    runs-on: macos-${{ matrix.version }}
+    strategy:
+      matrix:
+        version: [10.15]
+    steps:
+      - name: Build PHP 8 extension and test
+        run: |
+          python3 -c "from urllib.request import urlretrieve; urlretrieve('${{ env.BUILDER_HOST }}/${{ env.BUILDER_SOURCE }}/${{ env.BUILDER_VERSION }}/builder.pyz?run=${{ env.RUN }}', 'builder')"
+          chmod a+x builder
+          ./builder build -p ${{ env.PACKAGE_NAME }} --spec=downstream

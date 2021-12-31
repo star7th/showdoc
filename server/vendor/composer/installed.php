@@ -1,8 +1,8 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => 'v2.9.2',
-    'version' => '2.9.2.0',
+    'pretty_version' => 'v2.9.15',
+    'version' => '2.9.15.0',
     'aliases' => 
     array (
     ),
@@ -11,6 +11,24 @@
   ),
   'versions' => 
   array (
+    'aws/aws-crt-php' => 
+    array (
+      'pretty_version' => 'v1.0.2',
+      'version' => '1.0.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '3942776a8c99209908ee0b287746263725685732',
+    ),
+    'aws/aws-sdk-php' => 
+    array (
+      'pretty_version' => '3.208.7',
+      'version' => '3.208.7.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '41a800dd7cf5c4ac0ef9bf8db01e838ab6a3698c',
+    ),
     'guzzle/batch' => 
     array (
       'replaced' => 
@@ -219,6 +237,15 @@
       ),
       'reference' => 'badb01e62383430706433191b82506b6df24ad98',
     ),
+    'mtdowling/jmespath.php' => 
+    array (
+      'pretty_version' => '2.6.1',
+      'version' => '2.6.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9b87907a81b87bc76d19a7fb2d61e61486ee9edb',
+    ),
     'paragonie/random_compat' => 
     array (
       'pretty_version' => 'v9.99.100',
@@ -289,8 +316,8 @@
     ),
     'showdoc/showdoc' => 
     array (
-      'pretty_version' => 'v2.9.2',
-      'version' => '2.9.2.0',
+      'pretty_version' => 'v2.9.15',
+      'version' => '2.9.15.0',
       'aliases' => 
       array (
       ),
@@ -304,6 +331,15 @@
       array (
       ),
       'reference' => 'a77e974a5fecb4398833b0709210e3d5e334ffb0',
+    ),
+    'symfony/polyfill-mbstring' => 
+    array (
+      'pretty_version' => 'v1.23.1',
+      'version' => '1.23.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9174a3d80210dca8daa7f31fec659150bbeabfc6',
     ),
   ),
 );

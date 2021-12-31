@@ -1,0 +1,3 @@
+api.h
+pkgconfig/
+*.so*
