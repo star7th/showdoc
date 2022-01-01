@@ -25,7 +25,7 @@ class OpenController extends BaseController {
             $cat_name = $cat_name .'/'.$cat_name_sub ;
         }
 
-        $page_id = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name,$s_number);
+        $page_id = D("Page")->update_by_title($item_id,$page_title,$page_content,$cat_name,$s_number);
 
         if ($page_id) {
             $ret = D("Page")->where(" page_id = '$page_id' ")->find();
@@ -58,7 +58,7 @@ class OpenController extends BaseController {
             foreach ($tables as $key => $value) {
                 $page_title = $value['table_name'] ;
                 $page_content = $value['markdown'] ;
-                $result = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name,$s_number);
+                $result = D("Page")->update_by_title($item_id,$page_title,$page_content,$cat_name,$s_number);
             }
         }
 

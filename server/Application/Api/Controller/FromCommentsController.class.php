@@ -44,7 +44,7 @@ class FromCommentsController extends BaseController {
         $page_content = $page_content;
         $cat_name = $array['cat_name'];
         $s_number = $array['s_number'] ? $array['s_number'] : 99;
-        $page_id = D("Page")->update_by_content($item_id,$page_title,$page_content,$cat_name,$s_number);
+        $page_id = D("Page")->update_by_title($item_id,$page_title,$page_content,$cat_name,$s_number);
         if ($page_id) {
             $ret = D("Page")->where(" page_id = '$page_id' ")->find();
             return $ret;

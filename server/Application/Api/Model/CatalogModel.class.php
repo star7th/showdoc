@@ -206,7 +206,49 @@ class CatalogModel extends BaseModel {
 		//插入一个目录下的所有页面和子目录
 	public function insertCat($item_id , $catalogs , $userInfo , $parent_cat_id = 0  ,  $level = 2 ){
 			return D("Item")->insertCat($item_id , $catalogs , $userInfo , $parent_cat_id  ,  $level );
+	}
+
+	// 用路径的形式（比如'二级目录/三级目录/四级目录'）来保存目录信息并返回最后一层目录的id
+	public function saveCatPath($catPath , $item_id){
+		if(!$catPath) return false;
+		$session_key = 'cat_path_'.md5($item_id.$catPath) ;
+		// 如果session中有缓存值，则直接从session中获取。这是为了避免重复读数据库
+		if(session($session_key) ){
+			// die(session($session_key));
+			return $cat_id = session($session_key) ;
 		}
+		$catalog_array = explode('/', $catPath);
+		$cat_ids_array = array() ;
+		for ($i = 0; $i < count($catalog_array) ; $i++) { 
+			$level = $i+2 ;
+			$cat_name = $catalog_array[$i];
+			$parent_cat_id = 0 ;
+			if($i > 0 ){  //$i > 0则表明非顶级目录。应该有parent_cat_id
+				$parent_cat_id = $cat_ids_array[$i-1] ;
+			}
+			$one_array = D("Catalog")->where(" item_id = '$item_id' and level = '$level' and cat_name = '%s' and parent_cat_id = '$parent_cat_id' ",array($cat_name))->find();
+			if($one_array){
+				$cat_ids_array[$i] = $one_array['cat_id'] ;
+			}else{
+					$add_data = array(
+						"cat_name" => $cat_name, 
+						"item_id" => $item_id, 
+						"addtime" => time(),
+						"level" => $level,
+						'parent_cat_id'=>$parent_cat_id
+						);
+				$one_cat_id = D("Catalog")->add($add_data);
+				$cat_ids_array[$i] = $one_cat_id ;
+			}
+		}
+
+		$cat_id = end($cat_ids_array); // 获取最后的一个元素
+		if($cat_id){
+			session($session_key, $cat_id) ;
+			return $cat_id ;
+		}
+		return false ;
+	}
 	
 
 }
