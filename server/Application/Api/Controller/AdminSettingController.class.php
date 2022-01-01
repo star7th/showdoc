@@ -188,7 +188,7 @@ class AdminSettingController extends BaseController {
         $this->checkAdmin();
         $login_secret_key = D("Options")->get("login_secret_key") ;
         if(!$login_secret_key){
-            $login_secret_key = bin2hex( random_bytes( 16 ) );
+            $login_secret_key = get_rand_str();
             D("Options")->set("login_secret_key",$login_secret_key) ;
         }
         $this->sendResult(array("login_secret_key"=>$login_secret_key));
@@ -198,7 +198,7 @@ class AdminSettingController extends BaseController {
     public function resetLoginSecretKey(){
         $login_user = $this->checkLogin();
         $this->checkAdmin();
-        $login_secret_key = bin2hex( random_bytes( 16 ) );
+        $login_secret_key = get_rand_str();
         D("Options")->set("login_secret_key",$login_secret_key) ;
         $this->sendResult(array("login_secret_key"=>$login_secret_key));
 

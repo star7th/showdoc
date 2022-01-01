@@ -18,7 +18,9 @@
         "php": ">=5.3.0",
         "qcloud/cos-sdk-v5": "1.*",
         "league/oauth2-client": "^2.6",
-        "jasig/phpcas": "^1.3"
+        "jasig/phpcas": "^1.3",
+        "aws/aws-sdk-php": "^3.208",
+        "gregwar/captcha": "1.*"
     },
     "config": {
         "vendor-dir": "./server/vendor"

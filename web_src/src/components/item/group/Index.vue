@@ -110,6 +110,8 @@ export default {
     },
     MyFormSubmit() {
       const group_name = this.MyForm.group_name
+        ? this.MyForm.group_name
+        : 'default'
       const id = this.MyForm.id
       const item_ids_array = []
       this.multipleSelection.map(element => {
@@ -163,7 +165,7 @@ export default {
     addDialog() {
       this.MyForm = {
         id: '',
-        team_name: ''
+        group_name: ''
       }
       this.dialogFormVisible = true
     },

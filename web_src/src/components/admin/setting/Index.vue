@@ -93,6 +93,7 @@
             <el-option :label="$t('aliyun')" value="aliyun"></el-option>
             <el-option :label="$t('qiniu')" value="qiniu"></el-option>
             <el-option :label="$t('qcloud')" value="qcloud"></el-option>
+            <el-option :label="$t('s3_storage')" value="s3_storage"></el-option>
           </el-select>
         </el-form-item>
 
@@ -112,7 +113,10 @@
 
         <el-form-item
           label="endpoint"
-          v-if="form.oss_setting.oss_type == 'aliyun'"
+          v-if="
+            form.oss_setting.oss_type == 'aliyun' ||
+              form.oss_setting.oss_type == 's3_storage'
+          "
         >
           <el-input
             v-model="form.oss_setting.endpoint"

@@ -1,0 +1,35 @@
+
+CMAKE=cmake.exe
+COMPOSER_PHAR=C:\ProgramData\ComposerSetup\bin\composer.phar
+PHP_BINARY=$(PHP_PREFIX)\php.exe
+
+CMAKE_CONFIGURE = $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(AWSCRT_DIR)\build\install -DCMAKE_PREFIX_PATH=$(AWSCRT_DIR)\build\install -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=$(CMAKE_BUILD_TYPE)
+CMAKE_BUILD = $(CMAKE) --build
+CMAKE_BUILD_TYPE = Release
+CMAKE_TARGET = --config $(CMAKE_BUILD_TYPE) --target install
+
+# configure for static aws-crt-ffi.lib
+$(AWSCRT_DIR)\build\CMakeCache.txt:
+	$(CMAKE_CONFIGURE) -H$(AWSCRT_DIR)\crt\aws-crt-ffi -B$(AWSCRT_DIR)\build -DBUILD_SHARED_LIBS=OFF
+
+# build static libaws-crt-ffi.lib
+$(AWSCRT_DIR)\build\libaws-crt-ffi.lib: $(AWSCRT_DIR)\build\CMakeCache.txt
+	$(CMAKE_BUILD) $(AWSCRT_DIR)\build $(CMAKE_TARGET)
+
+# Force the awscrt extension DLL target to depend on the extension src
+$(BUILD_DIR)\php_awscrt.dll: $(AWSCRT_DIR)\ext\awscrt.c
+
+$(AWSCRT_DIR)\ext\awscrt.c: $(AWSCRT_DIR)\build\libaws-crt-ffi.lib $(AWSCRT_DIR)\ext\api.h $(AWSCRT_DIR)\ext\awscrt_arginfo.h
+
+# transform\install api.h from FFI lib
+$(AWSCRT_DIR)\src\api.h: $(AWSCRT_DIR)\crt\aws-crt-ffi\src\api.h
+	php $(AWSCRT_DIR)\gen_api.php $(AWSCRT_DIR)\crt\aws-crt-ffi\src\api.h > $(AWSCRT_DIR)\src\api.h
+
+# install api.h to ext/ as well
+$(AWSCRT_DIR)\ext\api.h : $(AWSCRT_DIR)\src\api.h
+	copy $(AWSCRT_DIR)\src\api.h $(AWSCRT_DIR)\ext\api.h
+
+# Use PHPUnit to run tests
+test-awscrt: install $(AWSCRT_DIR)\src\api.h $(BUILD_DIR)\php_awscrt.dll
+	$(PHP_BINARY) -c $(AWSCRT_DIR)\php-win.ini $(COMPOSER_PHAR) --working-dir=$(AWSCRT_DIR) update
+	$(PHP_BINARY) -c $(AWSCRT_DIR)\php-win.ini $(COMPOSER_PHAR) --working-dir=$(AWSCRT_DIR) run test-win

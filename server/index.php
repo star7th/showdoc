@@ -10,9 +10,9 @@ if(version_compare(PHP_VERSION,COMPOSER_PHP_VERSION,'>')){
 
 // cookie安全，给PHPSESSID加上Strict
 if (PHP_VERSION_ID >= 70300) {
-    session_set_cookie_params([
+    session_set_cookie_params(array(
         'samesite' => 'Strict'
-    ]);
+    ));
 } else { 
     session_set_cookie_params(
         NULL,

@@ -43,7 +43,7 @@ Responsive webpage design can share the project documents to computer or mobile 
 - #### Permission Manage
 
   - Public and Private Project
-  
+
     Projects on ShowDoc are divided into two categories including Public Project and Private Project. The Public Project can be visited by anyone, the Private Project need to login. The password is set by project owner.
 
   - Project Transfer
@@ -81,9 +81,7 @@ Responsive webpage design can share the project documents to computer or mobile 
 ### About the copyright
 
 ShowDoc is issued complying with Apache2 Open Source License, and it is free.
-
-Copyright © star7th
-
-E-mail: xing7th#gmail.com (change # into @)
-
-All rights reserved.
+Showdoc has an additional copyright notice on compliance with the Apache2 Open Source License:
+[Showdoc official](https://www.showdoc.com.cn/ 'Showdoc official') And author [star7th](https://github.com/star7th 'star7th') Have the copyright and corresponding rights of the program,
+On the premise of retaining the copyright information and links on the program UI interface, it can be used for free or secondary development
+If you need to change copyright information or copyright links, you need to obtain official consent and authorization.

@@ -1,0 +1,13 @@
+// vim:ft=javascript
+
+ARG_ENABLE("awscrt", "Include AWS Common Runtime support", "yes");
+
+if (PHP_AWSCRT != "no") {
+    ADD_MAKEFILE_FRAGMENT();
+    DEFINE('CFLAGS_AWSCRT', '/I ' + configure_module_dirname + '\\build\\install\\include');
+    DEFINE('LIBS_AWSCRT', '/LIBPATH:' + configure_module_dirname + '\\build\\install\\lib ' + 
+        'aws-crt-ffi.lib aws-c-auth.lib aws-c-http.lib aws-c-io.lib aws-c-cal.lib aws-c-compression.lib aws-c-common.lib ' +
+        'ncrypt.lib Secur32.lib Crypt32.lib Shlwapi.lib');
+    DEFINE('AWSCRT_DIR', configure_module_dirname);
+    EXTENSION("awscrt", "ext\\awscrt.c", PHP_AWSCRT_SHARED);
+}
