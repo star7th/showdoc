@@ -29,6 +29,7 @@ return array(
     'AWS\\CRT\\NativeResource' => $vendorDir . '/aws/aws-crt-php/src/AWS/CRT/NativeResource.php',
     'AWS\\CRT\\OptionValue' => $vendorDir . '/aws/aws-crt-php/src/AWS/CRT/Options.php',
     'AWS\\CRT\\Options' => $vendorDir . '/aws/aws-crt-php/src/AWS/CRT/Options.php',
+    'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'CAS_AuthenticationException' => $vendorDir . '/jasig/phpcas/source/CAS/AuthenticationException.php',
     'CAS_Client' => $vendorDir . '/jasig/phpcas/source/CAS/Client.php',
     'CAS_CookieJar' => $vendorDir . '/jasig/phpcas/source/CAS/CookieJar.php',
@@ -77,5 +78,8 @@ return array(
     'CAS_Session_PhpSession' => $vendorDir . '/jasig/phpcas/source/CAS/Session/PhpSession.php',
     'CAS_TypeMismatchException' => $vendorDir . '/jasig/phpcas/source/CAS/TypeMismatchException.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+    'UnhandledMatchError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+    'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     'phpCAS' => $vendorDir . '/jasig/phpcas/source/CAS.php',
 );
