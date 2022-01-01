@@ -38,8 +38,12 @@ class FromCommentsController extends BaseController {
     }
 
     private function generate_one($item_id,$content){
+        $item = D("Item")->where("item_id = '%d'",array($item_id))->find();
         $array = $this->parse_content($content);
-        $page_content = $this->toMarkdown($array);
+        $page_content = $this->_toRunapiFormat($array);
+        if($item['item_type'] != '3'){
+            $page_content = D("Page")->runapiToMd($page_content);
+        }
         $page_title = $array['title'];
         $page_content = $page_content;
         $cat_name = $array['cat_name'];
@@ -73,11 +77,7 @@ class FromCommentsController extends BaseController {
         //解析返回内容
         $return = $this->parse_one_line("return" , $content);
         $return = htmlspecialchars_decode($return);
-        //判断是否是json数据
-        if (!is_null(json_decode($return))) {
-            //格式化下
-            $return = $this->indent_json($return);
-        }
+
         $array['return'] = $return ;  
 
         //解析请求参数
@@ -97,11 +97,7 @@ class FromCommentsController extends BaseController {
         //如果请求参数是json，则生成请求示例
         $json_param = $this->parse_one_line("json_param" , $content);
         $json_param = htmlspecialchars_decode($json_param);
-        //判断是否是json数据
-        if (!is_null(json_decode($json_param))) {
-            //格式化下
-            $json_param = $this->indent_json($json_param);
-        }
+
         $array['json_param'] = $json_param ; 
 
         return $array ;
@@ -138,147 +134,81 @@ class FromCommentsController extends BaseController {
 
     }
 
+    //转成runapi的接口格式
+    private function _toRunapiFormat($array){
+        $content_array = array(
+            "info"=>array(
+                "from" =>  'runapi'  ,
+                "type" =>  'api'  ,
+                "title" =>  $array['title']  ,
+                "description" =>  $array['description']  ,
+                "method" =>  strtolower($array['method'])  ,
+                "url" =>  $array['url']  ,
+                "remark" =>  $array['remark'] ,
+            ),
+            "request" =>array(
+                "params"=> array(
+                    'mode' => "formdata",
+                    'json' => "",
+                    'urlencoded' => array(),
+                    'formdata' => array(),
+                ),
+                "headers"=> array(),
+                "query"=> array(),
+                "cookies"=> array(),
+                "auth"=> array(),
+            ),
+            "response" =>array(
+                "responseExample"=>$array['return'],
+                "responseParamsDesc"=>array(),
+            ),
+            "extend" =>array(),
+        );
 
-    /**
-     * Indents a flat JSON string to make it more human-readable.
-     *
-     * @param string $json The original JSON string to process.
-     *
-     * @return string Indented version of the original JSON string.
-     */
-    private function indent_json($json) {
-
-        $result      = '';
-        $pos         = 0;
-        $strLen      = strlen($json);
-        $indentStr   = '  ';
-        $newLine     = "\n";
-        $prevChar    = '';
-        $outOfQuotes = true;
-
-        for ($i=0; $i<=$strLen; $i++) {
-
-            // Grab the next character in the string.
-            $char = substr($json, $i, 1);
-
-            // Are we inside a quoted string?
-            if ($char == '"' && $prevChar != '\\') {
-                $outOfQuotes = !$outOfQuotes;
-
-            // If this character is the end of an element,
-            // output a new line and indent the next line.
-            } else if(($char == '}' || $char == ']') && $outOfQuotes) {
-                $result .= $newLine;
-                $pos --;
-                for ($j=0; $j<$pos; $j++) {
-                    $result .= $indentStr;
-                }
+        if ($array['header']) {
+            foreach ($array['header'] as $key => $value) {
+                // |参数名|是否必选|类型|说明
+                $content_array['request']['headers'][] = array(
+                    "name" =>$value[0],
+                    "require" => ($value[1] == '必选') ? '1':'0',
+                    "type" =>$value[2],
+                    "value" =>'',
+                    "remark" =>$value[3] ,
+                );
             }
-
-            // Add the character to the result string.
-            $result .= $char;
-
-            // If the last character was the beginning of an element,
-            // output a new line and indent the next line.
-            if (($char == ',' || $char == '{' || $char == '[') && $outOfQuotes) {
-                $result .= $newLine;
-                if ($char == '{' || $char == '[') {
-                    $pos ++;
-                }
-
-                for ($j = 0; $j < $pos; $j++) {
-                    $result .= $indentStr;
-                }
-            }
-
-            $prevChar = $char;
         }
 
-        return $result;
+        if ($array['json_param']) {
+            $content_array['request']['params']['mode'] = 'json';
+            $content_array['request']['params']['json'] = $array['json_param'] ;
+        }
+
+        if ($array['param']) {
+            foreach ($array['param'] as $key => $value) {
+                // |参数名|是否必选|类型|说明
+                $content_array['request']['params']['formdata'][] = array(
+                    "name" =>$value[0],
+                    "require" => ($value[1] == '必选') ? '1':'0',
+                    "type" =>$value[2],
+                    "value" =>'',
+                    "remark" =>$value[3] ,
+                );
+            }
+        }
+
+        if ($array['return_param']) {
+            foreach ($array['return_param'] as $key => $value) {
+                // |参数名|类型|说明
+                $content_array['response']['responseParamsDesc'][] = array(
+                    "name" =>$value[0],
+                    "type" =>$value[1],
+                    "value" =>'',
+                    "remark" =>$value[2] ,
+                );
+            }
+        }
+
+        return json_encode($content_array);
+
     }
-
-    //生成markdown文档内容
-    private function toMarkdown($array){
-        $content = '  
-**简要描述：** 
-
-- '.$array['description'].'
-
-**请求URL：** 
-
-- ` '.$array['url'].' `
-  
-**请求方式：**
-
-- '.$array['method'].' ';
-
-if ($array['header']) {
-$content .='
-
-**Header：** 
-
-|Header名|是否必选|类型|说明|
-|:----    |:---|:----- |-----   |'."\n";
-    foreach ($array['header'] as $key => $value) {
-         $content .= '|'.$value[0].' |'.$value[1].'  |'.$value[2].' |'.$value[3].' |'."\n";
-    }
-}
-
-if ($array['json_param']) {
-$content .= '
-
-
-**请求参数示例**
-
-``` 
-'.$array['json_param'].'
-```
-
-';
-
-}
-
-if ($array['param']) {
-$content .='
-
-**参数：** 
-
-|参数名|是否必选|类型|说明|
-|:----    |:---|:----- |-----   |'."\n";
-    foreach ($array['param'] as $key => $value) {
-         $content .= '|'.$value[0].' |'.$value[1].'  |'.$value[2].' |'.$value[3].' |'."\n";
-    }
-}
-
-
-
-$content .= '
-
-**返回示例**
-
-``` 
-'.$array['return'].'
-```
-
-**返回参数说明** 
-
-|参数名|类型|说明|
-|:-----  |:-----|----- |'."\n";
-
-if ($array['return_param']) {
-    foreach ($array['return_param'] as $key => $value) {
-         $content .= '|'.$value[0].' |'.$value[1].'  |'.$value[2]."\n";
-    }
-}
-
-$content .= '
-
-**备注** 
-
-- '.$array['remark'].'
-
-        ';
-        return $content;
-    }
-
 }
