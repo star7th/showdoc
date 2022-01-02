@@ -13,6 +13,13 @@ class ImportController extends BaseController {
         $file = $_FILES["file"]["tmp_name"] ;
         //文件后缀
         $tail = substr(strrchr($filename, '.'), 1);
+        $item_id = I("item_id") ? I("item_id") : '0' ;
+        if($item_id){
+            if(!$this->checkItemEdit($login_user['uid'] , $item_id)){
+                $this->sendError(10303);
+                return ;
+            } 
+        }
 
         if ($tail == 'zip') {
             $zipArc = new \ZipArchive();
@@ -21,6 +28,7 @@ class ImportController extends BaseController {
             if ($info) {
                 $info_array = json_decode($info ,1 );
                 if ($info_array) {
+                    $info_array['item_id'] = $item_id ;
                     $this->markdown($info_array);
                     return ;
                 }
@@ -69,9 +77,7 @@ class ImportController extends BaseController {
         }
 
         if ($info_array) {
-
-            //$info_array = $this->_fileToMarkdown($info_array,  $zipArc );
-            //echo json_encode($info_array);return ;
+            // $info_array['item_id'] = '2'; //debug
             D("Item")->import( json_encode($info_array) , $login_user['uid'] );
             $this->sendResult(array());
             return ;

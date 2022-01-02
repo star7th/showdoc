@@ -6,18 +6,26 @@ class ImportPostmanController extends BaseController {
 
     public function import(){
         $login_user = $this->checkLogin();
-
+        $item_id = I("item_id") ? I("item_id") : '0' ;
+        if($item_id){
+            if(!$this->checkItemEdit($login_user['uid'] , $item_id)){
+                $this->sendError(10303);
+                return ;
+            } 
+        }
         $json = file_get_contents($_FILES["file"]["tmp_name"]) ;
 
         //$json = file_get_contents("../Public/postmanpostman_collectionV2.json") ;//test
         $json_array = json_decode($json ,1 );
         unset($json);
         if ($json_array['id']) {
+            $json_array['item_id'] = $item_id ;
             $this->_fromPostmanV1($json_array);
             return ;
         }
 
         if ($json_array['info']) {
+            $json_array['item_id'] = $item_id ;
             $this->_fromPostmanV2($json_array);
             return ;
         }
@@ -223,11 +231,9 @@ class ImportPostmanController extends BaseController {
         $level = 2 ;
         $item_array['pages']['pages'] = $this->_getPageByItem($json_array['item'] );
         $item_array['pages']['catalogs'] = $this->_getItemByItem($json_array['item'] , 2 );
+        // $item_array['item_id'] = '0'; //debug
         $item_id =  D("Item")->import( json_encode($item_array) , $login_user['uid'] );
-        
-        //echo D("Item")->export(196053901215026 );
-        //echo json_encode($item_array);
-        $this->sendResult(array("item_id"=>$item_id));
+                $this->sendResult(array("item_id"=>$item_id));
 
 
     }

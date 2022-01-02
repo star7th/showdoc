@@ -28,8 +28,9 @@ class PageModel extends BaseModel {
 
     //根据标题更新页面
     //其中cat_name参数特别说明下,传递各格式如 '二级目录/三级目录/四级目录'
-    public function update_by_title($item_id,$page_title,$page_content,$cat_name='',$s_number = 99){
+    public function update_by_title($item_id,$page_title,$page_content,$cat_name='',$s_number = 99,$author_uid = 0,$author_username='update_by_title'){
         $item_id = intval($item_id);
+        $s_number = intval($s_number);
         if (!$item_id) {
           return false;
         }
@@ -40,16 +41,16 @@ class PageModel extends BaseModel {
         $this->cat_name_id[$cat_name] = $cat_id ;
         
         if ($page_content) {
-            $page_array = D("Page")->where(" item_id = '$item_id' and is_del = 0  and cat_id = '$cat_id'  and page_title ='%s' ",array($page_title))->find();
+            $page_array = D("Page")->field("page_id")->where(" item_id = '$item_id' and is_del = 0  and cat_id = '$cat_id'  and page_title ='%s' ",array($page_title))->find();
             //如果不存在则新建
             if (!$page_array) {
                 $add_data = array(
-                    "author_uid"=>0,
-                    "author_username" => "update_by_title", 
+                    "author_uid"=>$author_uid,
+                    "author_username" => $author_username, 
                     "item_id" => $item_id, 
                     "cat_id" => $cat_id, 
-                    "page_title" => $page_title, 
-                    "page_content" => $page_content, 
+                    "page_title" => $this->_htmlspecialchars($page_title) , 
+                    "page_content" => $this->_htmlspecialchars($page_content), 
                     "s_number" => $s_number, 
                     "addtime" => time(),
                     );
@@ -57,12 +58,12 @@ class PageModel extends BaseModel {
             }else{
                 $page_id = $page_array['page_id'] ;
                 $update_data = array(
-                    "author_uid"=>0,
-                    "author_username" => "update_by_title", 
+                    "author_uid"=>$author_uid,
+                    "author_username" => $author_username, 
                     "item_id" => $item_id, 
                     "cat_id" => $cat_id, 
-                    "page_title" => $page_title, 
-                    "page_content" => $page_content, 
+                    "page_title" => $this->_htmlspecialchars($page_title), 
+                    "page_content" => $this->_htmlspecialchars($page_content), 
                     "s_number" => $s_number, 
                     );
                 D("Page")->where(" page_id = '$page_id' ")->save($update_data);
@@ -388,5 +389,13 @@ $new_content .= "
   
         return $result;
     }
+
+    private function _htmlspecialchars($str){
+      if (!$str) {
+          return '' ;
+      }
+      //之所以先htmlspecialchars_decode是为了防止被htmlspecialchars转义了两次
+      return htmlspecialchars(htmlspecialchars_decode($str));
+  }
 
 }

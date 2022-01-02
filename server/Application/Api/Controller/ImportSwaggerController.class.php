@@ -8,6 +8,13 @@ class ImportSwaggerController extends BaseController {
 
     public function import(){
         $login_user = $this->checkLogin();
+        $item_id = I("item_id") ? I("item_id") : '0' ;
+        if($item_id){
+            if(!$this->checkItemEdit($login_user['uid'] , $item_id)){
+                $this->sendError(10303);
+                return ;
+            } 
+        }
 
         $json = file_get_contents($_FILES["file"]["tmp_name"]) ;
 
@@ -19,6 +26,7 @@ class ImportSwaggerController extends BaseController {
                 $this->sendError(10101,"暂未支持swagger2的文件。你尝试可以导入swagger3(openapi3)的json文件");
                 return ;
             }
+            $json_array['item_id'] = $item_id ;
             $this->json_array = $json_array ;
             $scheme = $json_array['schemes'][0] ? $json_array['schemes'][0] : 'http';
             if($json_array['host']){
