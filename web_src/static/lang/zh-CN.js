@@ -442,5 +442,11 @@ exports.default = {
 
   about_site: '关于本站',
 
-  s3_storage: '通用S3存储(亚马逊s3/minio等）'
+  s3_storage: '通用S3存储(亚马逊s3/minio等）',
+
+  import: '导入',
+  import_into_cur_item: '导入到当前项目中',
+  import_into_cur_item_tips:
+    '当你选择导入到当前项目时，同一个目录下相同标题的页面会被覆盖',
+  import_into_new_item: '导入为一个新项目'
 }

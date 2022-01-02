@@ -461,5 +461,11 @@ exports.default = {
 
   about_site: 'About site',
 
-  s3_storage: 'S3 Storage(Amazon S3/Minio and so on）'
+  s3_storage: 'S3 Storage(Amazon S3/Minio and so on）',
+
+  import: 'import',
+  import_into_cur_item: 'Import into current item',
+  import_into_cur_item_tips:
+    'When you choose to import to the current item, the pages with the same title in the same directory will be overwritten',
+  import_into_new_item: 'Import as a new item'
 }

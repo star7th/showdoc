@@ -210,6 +210,18 @@
           <el-tooltip
             class="item"
             effect="dark"
+            :content="$t('import')"
+            placement="left"
+          >
+            <i
+              v-if="item_info.item_edit"
+              class="el-icon-upload2"
+              @click="dialogUploadVisible = true"
+            ></i>
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
             :content="$t('delete_interface')"
             placement="top"
           >
@@ -303,6 +315,44 @@
       :cat_id="page_info.cat_id"
       ref="SortPage"
     ></SortPage>
+
+    <el-dialog
+      :visible.sync="dialogUploadVisible"
+      :close-on-click-modal="false"
+      width="400px"
+    >
+      <div>
+        <div>
+          <el-radio v-model="importToItemId" :label="item_id">{{
+            $t('import_into_cur_item')
+          }}</el-radio>
+          <el-radio v-model="importToItemId" label="0">{{
+            $t('import_into_new_item')
+          }}</el-radio>
+        </div>
+        <br />
+        <div>
+          <el-upload
+            drag
+            name="file"
+            :action="uploadUrl"
+            :data="{ item_id: this.importToItemId }"
+            :before-upload="beforeUpload"
+            :on-success="uploadCallback"
+            :show-file-list="false"
+          >
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">
+              <span v-html="$t('import_file_tips2')"></span>
+            </div>
+          </el-upload>
+        </div>
+        <br />
+        <div><span v-html="$t('import_file_tips1')"></span></div>
+        <br />
+        <div>{{ $t('import_into_cur_item_tips') }}</div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -377,7 +427,10 @@ export default {
       lang: '',
       show_menu_btn: false,
       show_op_bar: true,
-      sortPageVisiable: false
+      sortPageVisiable: false,
+      dialogUploadVisible: false,
+      importToItemId: '',
+      uploadUrl: DocConfig.server + '/api/import/auto'
     }
   },
   components: {
@@ -560,6 +613,17 @@ export default {
     },
     reload() {
       window.location.reload()
+    },
+    beforeUpload() {
+      this.loading = this.$loading()
+    },
+    uploadCallback(data) {
+      if (this.importToItemId > 0) {
+        window.location.reload()
+      } else {
+        this.loading.close()
+        this.$router.push({ path: '/item/index' })
+      }
     }
   },
   mounted() {
@@ -597,6 +661,7 @@ export default {
     if (sessionStorage.getItem('show_more_' + this.item_id)) {
       this.showMoreAction()
     }
+    this.importToItemId = this.item_id
   },
   watch: {
     page_info: function() {
