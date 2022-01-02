@@ -11,7 +11,7 @@ class ImportSwaggerController extends BaseController {
         $item_id = I("item_id") ? I("item_id") : '0' ;
         if($item_id){
             if(!$this->checkItemEdit($login_user['uid'] , $item_id)){
-                $this->sendError(10303);
+                $this->sendError(10302);
                 return ;
             } 
         }
