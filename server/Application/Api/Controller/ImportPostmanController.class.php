@@ -44,6 +44,7 @@ class ImportPostmanController extends BaseController {
 
         $from = I("from") ? I("from") : '' ;
         $item_array = array(
+            "item_id" => $json_array['item_id'],
             "item_name" => $json_array['name'] ? $json_array['name'] : 'from postman' ,
             "item_type" =>   ($from == 'runapi') ? '3': '1' ,
             "item_description" => $json_array['description'] ? $json_array['description'] :'',
@@ -218,6 +219,7 @@ class ImportPostmanController extends BaseController {
 
         $from = I("from") ? I("from") : '' ;
         $item_array = array(
+            "item_id" => $json_array['item_id'],
             "item_name" => $json_array['info']['name'] ? $json_array['info']['name']  : 'from postman' ,
             "item_type" => ($from=='runapi') ? '3' : '1' ,
             "item_description" => $json_array['info']['description'] ? $json_array['info']['description'] :'',
