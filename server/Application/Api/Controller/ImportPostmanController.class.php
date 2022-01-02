@@ -351,7 +351,7 @@ class ImportPostmanController extends BaseController {
         // 兼容get请求参数的场景
         if ($request['url']['query']) {
             foreach ($request['url']['query'] as $key => $value) {
-                 $content_array['request']['params']['formdata'][] = array(
+                 $content_array['request']['params'][$request['body']['mode']][] = array(
                         "name" =>$value["key"],
                         "type" =>'string',
                         "value" =>$value["value"],
