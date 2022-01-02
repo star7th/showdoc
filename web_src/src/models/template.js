@@ -2,6 +2,7 @@
 
 const apiTemplateZh = `
 
+[TOC]
     
 ##### 简要描述
 
@@ -49,7 +50,7 @@ const apiTemplateZh = `
 
 
 
-`;
+`
 
 const databaseTemplateZh = `
 
@@ -66,10 +67,12 @@ const databaseTemplateZh = `
 
 - 备注：无
 
-`;
+`
 
 const apiTemplateEn = `
-    
+
+[TOC]
+
 ##### Brief description
 
 - User Registration Interface
@@ -116,7 +119,7 @@ const apiTemplateEn = `
 - For more error code returns, see the error code description on the home page
 
 
-`;
+`
 const databaseTemplateEn = `
     
 -  User table , to store user information
@@ -133,5 +136,5 @@ const databaseTemplateEn = `
 - Remark : none
 
 
-`;
-export { apiTemplateZh, databaseTemplateZh, apiTemplateEn, databaseTemplateEn };
+`
+export { apiTemplateZh, databaseTemplateZh, apiTemplateEn, databaseTemplateEn }
