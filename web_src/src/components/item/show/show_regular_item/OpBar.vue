@@ -227,6 +227,17 @@
           >
             <i class="el-icon-delete" @click="delete_page"></i>
           </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :content="$t('item_change_log')"
+            placement="top"
+          >
+            <i
+              class="el-icon-toilet-paper"
+              @click="dialogChangeLogVisible = true"
+            ></i>
+          </el-tooltip>
 
           <span v-if="item_info.item_manage">
             <el-tooltip
@@ -316,6 +327,7 @@
       ref="SortPage"
     ></SortPage>
 
+    <!-- 导入文件对话框 -->
     <el-dialog
       :visible.sync="dialogUploadVisible"
       :close-on-click-modal="false"
@@ -353,6 +365,20 @@
         <div>{{ $t('import_into_cur_item_tips') }}</div>
       </div>
     </el-dialog>
+
+    <!-- 项目变更日志对话框 -->
+    <ChangeLog
+      v-if="dialogChangeLogVisible"
+      :callback="
+        () => {
+          dialogChangeLogVisible = false
+        }
+      "
+      :item_id="item_id"
+      :page_id="page_id"
+      :cat_id="page_info.cat_id"
+      ref="ChangeLog"
+    ></ChangeLog>
   </div>
 </template>
 
@@ -403,6 +429,7 @@ a {
 <script>
 import HistoryVersion from '@/components/page/edit/HistoryVersion'
 import SortPage from '@/components/page/edit/SortPage'
+import ChangeLog from './ChangeLog'
 
 export default {
   props: {
@@ -430,12 +457,14 @@ export default {
       sortPageVisiable: false,
       dialogUploadVisible: false,
       importToItemId: '',
-      uploadUrl: DocConfig.server + '/api/import/auto'
+      uploadUrl: DocConfig.server + '/api/import/auto',
+      dialogChangeLogVisible: false
     }
   },
   components: {
     HistoryVersion,
-    SortPage
+    SortPage,
+    ChangeLog
   },
   methods: {
     edit_page() {

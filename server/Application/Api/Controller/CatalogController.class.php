@@ -176,11 +176,13 @@ class CatalogController extends BaseController {
             
             $ret = D("Catalog")->where(" cat_id = '$cat_id' ")->save($data);
             $return = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+            D("ItemChangeLog")->addLog($login_user['uid'] , $item_id , 'update','catalog' , $cat_id, $cat_name  );
 
         }else{
             $data['addtime'] = time();
             $cat_id = D("Catalog")->add($data);
             $return = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+            D("ItemChangeLog")->addLog($login_user['uid'] , $item_id , 'create','catalog' , $cat_id ,$cat_name );
             
         }
         if (!$return) {

@@ -54,6 +54,7 @@ class PageController extends BaseController {
 
         }
         if ($ret) {
+            D("ItemChangeLog")->addLog($login_user['uid'] ,  $page['item_id'] , 'delete','page' , $page['page_id'] , $page['page_title']  );
            $this->sendResult(array());
         }else{
            $this->sendError(10101);
@@ -127,6 +128,8 @@ class PageController extends BaseController {
 
             $ret = D("Page")->where(" page_id = '$page_id' ")->save($data);
 
+            D("ItemChangeLog")->addLog($login_user['uid'] , $item_id , 'update','page' , $page_id,$page_title  );
+
             //统计该page_id有多少历史版本了
             $Count = D("PageHistory")->where(" page_id = '$page_id' ")->Count();
             if ($Count > $history_version_count ) {
@@ -147,6 +150,8 @@ class PageController extends BaseController {
         }else{
             
             $page_id = D("Page")->add($data);
+
+            D("ItemChangeLog")->addLog($login_user['uid'] , $item_id , 'create','page' , $page_id ,$page_title );
 
             //更新项目时间
             D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));

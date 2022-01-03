@@ -448,5 +448,13 @@ exports.default = {
   import_into_cur_item: '导入到当前项目中',
   import_into_cur_item_tips:
     '当你选择导入到当前项目时，同一个目录下相同标题的页面会被覆盖',
-  import_into_new_item: '导入为一个新项目'
+  import_into_new_item: '导入为一个新项目',
+
+  item_change_log: '项目变更日志',
+  item_change_log_dialog_title: '项目变更日志(只保留前200条)',
+  optime: '操作时间',
+  oper: '操作人',
+  op_type_desc: '操作动作类型描述',
+  op_object_type_desc: '操作对象类型描述',
+  op_object_name: '操作对象名称'
 }

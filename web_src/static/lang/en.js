@@ -467,5 +467,14 @@ exports.default = {
   import_into_cur_item: 'Import into current item',
   import_into_cur_item_tips:
     'When you choose to import to the current item, the pages with the same title in the same directory will be overwritten',
-  import_into_new_item: 'Import as a new item'
+  import_into_new_item: 'Import as a new item',
+
+  item_change_log: 'Item change log',
+  item_change_log_dialog_title:
+    'Item change log(only the first 200 are retained)',
+  optime: 'Operation time',
+  oper: 'Operator',
+  op_type_desc: 'Operation action type description',
+  op_object_type_desc: 'Operation object type description',
+  op_object_name: 'Operation object name'
 }

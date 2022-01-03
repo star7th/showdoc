@@ -683,5 +683,22 @@ class ItemController extends BaseController {
         $this->sendResult($return);
 
     }
+
+    //获取项目变更日志
+    public function getChangeLog(){
+        $page = I("page/d")?I("page/d") : 1;
+        $count = I("count/d")?I("count/d") : 15;
+        $item_id = I("post.item_id/d");
+        $login_user = $this->checkLogin();
+
+        if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
+            $this->sendError(10103);
+            return;
+        }
+
+        $list = D("ItemChangeLog")->getLog($item_id , $page , $count );
+        $list = $list ? $list: array() ;
+        $this->sendResult($list);   
+    }
     
 }

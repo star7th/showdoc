@@ -40,6 +40,7 @@ class MemberController extends BaseController {
         if (!$return) {
             $this->sendError(10101);
         }else{
+            D("ItemChangeLog")->addLog($login_user['uid'] , $item_id , 'binding', 'member' , $member['uid'], $member['username'] );
             $this->sendResult($return);
         }
         
@@ -91,6 +92,7 @@ class MemberController extends BaseController {
 
         }
         if ($ret) {
+            D("ItemChangeLog")->addLog($login_user['uid'] , $item_id , 'unbound', 'member' , $member_array['uid'], $member_array['username'] );
            $this->sendResult($ret);
         }else{
             $this->sendError(10101);

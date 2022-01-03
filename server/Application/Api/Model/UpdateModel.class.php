@@ -11,7 +11,7 @@ class UpdateModel  {
 
     //检测数据库并更新
     public function checkDb(){
-        $version_num = 9 ;
+        $version_num = 10 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
             $r = $this->updateSqlite();
@@ -414,6 +414,20 @@ class UpdateModel  {
             `s_number` int(11) NOT NULL DEFAULT '0',
             `created_at` CHAR(2000) NOT NULL DEFAULT '',
             `updated_at` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
+
+        //创建item_change_log表
+        $sql = "CREATE TABLE IF NOT EXISTS `item_change_log` (
+            `id`  INTEGER PRIMARY KEY ,
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `op_type` CHAR(2000) NOT NULL DEFAULT '',
+            `op_object_type` CHAR(2000) NOT NULL DEFAULT '',
+            `op_object_id` int(11) NOT NULL DEFAULT '0',
+            `op_object_name` CHAR(2000) NOT NULL DEFAULT '',
+            `remark` CHAR(2000) NOT NULL DEFAULT '',
+            `optime` CHAR(2000) NOT NULL DEFAULT ''
             )";
         D("User")->execute($sql);
 

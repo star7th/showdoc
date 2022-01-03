@@ -39,6 +39,8 @@ class TeamItemController extends BaseController {
             $data['addtime'] = time() ;
             $id = D("TeamItem")->add($data);
 
+            D("ItemChangeLog")->addLog($login_user['uid'] , $item_id ,'binding', 'team' , $team_id,$teamInfo['team_name']  );
+
             //获取该团队的所有成员并加入项目
             $teamMembers = D("TeamMember")->where("  team_id = '$team_id' ")->select() ;
             if ($teamMembers) {
@@ -139,6 +141,8 @@ class TeamItemController extends BaseController {
         $ret = D("TeamItem")->where(" id = '$id' ")->delete();
 
         if ($ret) {
+            $teamInfo = D("Team")->where(" id = '$team_id' ")->find();
+            D("ItemChangeLog")->addLog($login_user['uid'] , $item_id , 'unbound', 'team' , $team_id ,$teamInfo['team_name']  );
            $this->sendResult($ret);
         }else{
             $return['error_code'] = 10103 ;
