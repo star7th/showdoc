@@ -471,7 +471,7 @@ exports.default = {
 
   item_change_log: 'Item change log',
   item_change_log_dialog_title:
-    'Item change log(only the first 200 are retained)',
+    'Item change log(only the first 300 are retained)',
   optime: 'Operation time',
   oper: 'Operator',
   op_type_desc: 'Operation action type description',

@@ -20,7 +20,7 @@ class ItemChangeLogModel extends BaseModel {
         //统计有多少条日志记录了
         $count = $this->where(" item_id = '$item_id' ")->count();
         //每个项目只保留最多$keepNum个变更记录
-        $keepCount = 200 ;
+        $keepCount = 300 ;
         if ($count > $keepCount ) {
             $ret = $this->where(" item_id = '$item_id' ")->limit($keepCount)->order("id desc")->select();
             $this->where(" item_id = '$item_id' and id < ".$ret[$keepCount-1]['id'] )->delete();

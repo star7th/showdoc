@@ -451,7 +451,7 @@ exports.default = {
   import_into_new_item: '导入为一个新项目',
 
   item_change_log: '项目变更日志',
-  item_change_log_dialog_title: '项目变更日志(只保留前200条)',
+  item_change_log_dialog_title: '项目变更日志(只保留前300条)',
   optime: '操作时间',
   oper: '操作人',
   op_type_desc: '操作动作类型描述',
