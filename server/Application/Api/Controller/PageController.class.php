@@ -33,8 +33,7 @@ class PageController extends BaseController {
 
         }
         $this->sendResult($page);
-        // 埋个点，升级数据库
-        R("Update/checkDb" , array(false));
+
     }
     //删除页面
     public function delete(){

@@ -125,10 +125,7 @@ export default {
       this.keyword = keyword
       this.get_item_menu(keyword)
     },
-    checkDb() {
-      var url = DocConfig.server + '/api/update/checkDb'
-      this.axios.get(url)
-    },
+
     // 渲染水印
     renderWatermark() {
       // 如果已经有全局缓存的登录数据
@@ -164,7 +161,6 @@ export default {
     }
   },
   mounted() {
-    this.checkDb()
     this.get_item_menu()
     this.$store.dispatch('changeOpenCatId', 0)
   },

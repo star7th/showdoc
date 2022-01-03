@@ -31,6 +31,8 @@ class BaseController extends Controller {
 			$array = json_decode($json,1);
 			$_POST = array_merge($_POST,$array) ;
 		}
+
+		D("Update")->checkDb();
 		
     }
 

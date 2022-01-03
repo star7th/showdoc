@@ -142,10 +142,6 @@ export default {
       var url = DocConfig.server + '/api/ScriptCron/run'
       this.axios.get(url)
     },
-    checkDb() {
-      var url = DocConfig.server + '/api/update/checkDb'
-      this.axios.get(url)
-    },
     getOauth() {
       var url = DocConfig.server + '/api/user/oauthInfo'
       this.axios.get(url).then(response => {
@@ -183,7 +179,6 @@ export default {
     })
 
     this.script_cron()
-    this.checkDb()
     this.getOauth()
   },
   watch: {

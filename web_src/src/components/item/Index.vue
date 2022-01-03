@@ -565,10 +565,6 @@ export default {
       var url = DocConfig.server + '/api/ScriptCron/run'
       this.axios.get(url)
     },
-    checkDb() {
-      var url = DocConfig.server + '/api/update/checkDb'
-      this.axios.get(url)
-    },
     getItemGroupList() {
       this.request('/api/itemGroup/getList', {}).then(data => {
         this.itemGroupList = data.data
@@ -594,7 +590,6 @@ export default {
     }
   },
   mounted() {
-    this.checkDb()
     this.user_info()
     this.lang = DocConfig.lang
     this.script_cron()
