@@ -5,11 +5,11 @@ use Api\Model\BaseModel;
 class ItemChangeLogModel extends BaseModel {
 
 
-    public function addLog($uid , $item_id , $op_type, $op_object_type , $op_object_id , $op_object_name='' , $remark=''){
+    public function addLog($uid , $item_id , $op_action_type, $op_object_type , $op_object_id , $op_object_name='' , $remark=''){
         $data = array(
             "uid" =>$uid  ,
             "item_id" =>$item_id  ,
-            "op_type" =>$op_type  ,
+            "op_action_type" =>$op_action_type  ,
             "op_object_type" =>$op_object_type  ,
             "op_object_id" =>$op_object_id  ,
             "op_object_name" =>$op_object_name  ,
@@ -47,7 +47,7 @@ class ItemChangeLogModel extends BaseModel {
 
     // 把变更日志的一行渲染成人类可读的提示
     public function renderOneLog($one){
-        $op_type = $one['op_type'] ;
+        $op_action_type = $one['op_action_type'] ;
         $uid = intval($one['uid']) ;
         $one['op_object_id'] = intval($one['op_object_id']) ;
         $user_array = D("User")->where(" uid = {$uid} ")->Field('username,name')->find();
@@ -59,24 +59,24 @@ class ItemChangeLogModel extends BaseModel {
         }
         $one['oper'] = $oper ;
 
-        switch ($op_type) {
+        switch ($op_action_type) {
             case 'create':
-                $one['op_type_desc'] = '创建' ;
+                $one['op_action_type_desc'] = '创建' ;
                 break;
             case 'update':
-                $one['op_type_desc'] = '修改' ;
+                $one['op_action_type_desc'] = '修改' ;
                 break;
             case 'delete':
-                $one['op_type_desc'] = '删除' ;
+                $one['op_action_type_desc'] = '删除' ;
                 break;
             case 'binding':
-                $one['op_type_desc'] = '绑定' ;
+                $one['op_action_type_desc'] = '绑定' ;
                 break;
             case 'unbound':
-                $one['op_type_desc'] = '解绑' ;
+                $one['op_action_type_desc'] = '解绑' ;
                 break;
             default:
-                $one['op_type_desc'] = '未定义' ;
+                $one['op_action_type_desc'] = '未定义' ;
                 break;
         }
 

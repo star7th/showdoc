@@ -422,7 +422,7 @@ class UpdateModel  {
             `id`  INTEGER PRIMARY KEY ,
             `uid` int(11) NOT NULL DEFAULT '0',
             `item_id` int(11) NOT NULL DEFAULT '0',
-            `op_type` CHAR(2000) NOT NULL DEFAULT '',
+            `op_action_type` CHAR(2000) NOT NULL DEFAULT '',
             `op_object_type` CHAR(2000) NOT NULL DEFAULT '',
             `op_object_id` int(11) NOT NULL DEFAULT '0',
             `op_object_name` CHAR(2000) NOT NULL DEFAULT '',

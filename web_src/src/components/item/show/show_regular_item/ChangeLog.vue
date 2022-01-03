@@ -19,8 +19,8 @@
         <el-table-column property="oper" :label="$t('oper')"></el-table-column>
         <el-table-column
           v-if="lang == 'zh-cn'"
-          property="op_type_desc"
-          :label="$t('op_type_desc')"
+          property="op_action_type_desc"
+          :label="$t('op_action_type_desc')"
         ></el-table-column>
         <el-table-column
           v-if="lang == 'zh-cn'"
@@ -29,8 +29,8 @@
         ></el-table-column>
         <el-table-column
           v-if="lang == 'en'"
-          property="op_type"
-          :label="$t('op_type_desc')"
+          property="op_action_type"
+          :label="$t('op_action_type_desc')"
         ></el-table-column>
         <el-table-column
           v-if="lang == 'en'"
@@ -44,8 +44,8 @@
           <template slot-scope="scope">
             <el-button
               v-if="
-                (scope.row.op_type == 'create' ||
-                  scope.row.op_type == 'update') &&
+                (scope.row.op_action_type == 'create' ||
+                  scope.row.op_action_type == 'update') &&
                   scope.row.op_object_type == 'page'
               "
               @click="visitPage(scope.row.op_object_id)"

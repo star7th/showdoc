@@ -474,7 +474,7 @@ exports.default = {
     'Item change log(only the first 300 are retained)',
   optime: 'Operation time',
   oper: 'Operator',
-  op_type_desc: 'Operation action type description',
+  op_action_type_desc: 'Operation action type description',
   op_object_type_desc: 'Operation object type description',
   op_object_name: 'Operation object name'
 }

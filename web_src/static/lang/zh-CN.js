@@ -454,7 +454,7 @@ exports.default = {
   item_change_log_dialog_title: '项目变更日志(只保留前300条)',
   optime: '操作时间',
   oper: '操作人',
-  op_type_desc: '操作动作类型描述',
+  op_action_type_desc: '操作动作类型描述',
   op_object_type_desc: '操作对象类型描述',
   op_object_name: '操作对象名称'
 }
