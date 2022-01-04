@@ -78,8 +78,18 @@ class FromCommentsController extends BaseController {
             //格式化下
             $return = $this->indent_json($return);
         }
-        $array['return'] = $return ;  
-
+        $array['return'] = $return ;
+        
+        //解析错误时返回的内容
+        $err_return = $this->parse_one_line("err_return" , $content);
+        $err_return = htmlspecialchars_decode($err_return);
+        //判断是否是json数据
+        if (!is_null(json_decode($err_return))) {
+            //格式化下
+            $err_return = $this->indent_json($err_return);
+        }
+        $array['err_return'] = $err_return ;
+        
         //解析请求参数
         $array['param'] = $this->parse_muti_line('param' , $content);
 
@@ -258,6 +268,13 @@ $content .= '
 
 ``` 
 '.$array['return'].'
+```'."\n";
+
+$content .= '
+ **返回错误示例**
+
+``` 
+'.$array['err_return'].'
 ```
 
 **返回参数说明** 
