@@ -1,0 +1,43 @@
+{
+    "name": "async-aws/core",
+    "description": "Core package to integrate with AWS. This is a lightweight AWS SDK provider by AsyncAws.",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "aws",
+        "amazon",
+        "sdk",
+        "async-aws",
+        "sts"
+    ],
+    "require": {
+        "php": "^7.2.5 || ^8.0",
+        "ext-SimpleXML": "*",
+        "ext-hash": "*",
+        "ext-json": "*",
+        "psr/cache": "^1.0 || ^2.0 || ^3.0",
+        "psr/log": "^1.0 || ^2.0 || ^3.0",
+        "symfony/deprecation-contracts": "^2.1 || ^3.0",
+        "symfony/http-client": "^4.4.16 || ^5.1.7,!=5.2.0 || ^6.0",
+        "symfony/http-client-contracts": "^1.1.8 || ^2.0 || ^3.0",
+        "symfony/service-contracts": "^1.0 || ^2.0 || ^3.0"
+    },
+    "conflict": {
+        "async-aws/s3": "<1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "AsyncAws\\Core\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AsyncAws\\Core\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.13-dev"
+        }
+    }
+}

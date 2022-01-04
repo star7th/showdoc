@@ -1,7 +1,7 @@
 <?php
 namespace Api\Model;
 use Api\Model\BaseModel;
-use Aws\S3\S3Client;
+use AsyncAws\S3\S3Client;
 
 /**
  * 
@@ -171,15 +171,11 @@ class AttachmentModel extends BaseModel {
 		if(!strstr($oss_setting['endpoint'] , '://')){
 			$oss_setting['endpoint'] = 'https://'.$oss_setting['endpoint'] ;
 		}
+
 		$s3 = new S3Client([
-			'version' => 'latest',
-			'region'  => 'us-east-1',
+			'accessKeyId' => $oss_setting['key'],
+			'accessKeySecret' => $oss_setting['secret'] ,
 			'endpoint' => $oss_setting['endpoint'] ,
-			'use_virtual_hosted_style_endpoint' => true,
-			'credentials' => [
-					'key'    => $oss_setting['key'],
-					'secret' => $oss_setting['secret'],
-				],
 		]);
 	
 		// Send a PutObject request and get the result object.
@@ -188,18 +184,15 @@ class AttachmentModel extends BaseModel {
 			'Key'    => $oss_path,
 			'Body'   => fopen($uploadFile['tmp_name'], 'rb')
 		]);
-		$res = (array)$resObj ;
-		$resultdata = current($res) ;// 获取数组的第一个值
-		// var_dump( $resultdata) ;exit();
-		if ($res && $resultdata && $resultdata['ObjectURL']) {
-			if ($oss_setting['domain']) {
-					return $oss_setting['protocol'] . '://'.$oss_setting['domain']."/".$oss_path ;
-			}else{
-					return $resultdata['ObjectURL'];
-			}
-			
+
+		// 不抛出异常，默认就是成功的
+
+		if ($oss_setting['domain']) {
+			return $oss_setting['protocol'] . '://'.$oss_setting['domain']."/".$oss_path ;
 		}else{
-			// var_dump($resObj) ;exit();
+			$tmp_array = parse_url($oss_setting['endpoint']);
+			$endpoint_host = $tmp_array['host'] ;
+			return 'https://'.$oss_setting['bucket'].'.'.$endpoint_host.'/'.$oss_path;
 		}
 	}
 
@@ -243,15 +236,11 @@ class AttachmentModel extends BaseModel {
 		if(!strstr($oss_setting['endpoint'] , '://')){
 			$oss_setting['endpoint'] = 'https://'.$oss_setting['endpoint'] ;
 		}
+
 		$s3 = new S3Client([
-			'version' => 'latest',
-			'region'  => 'us-east-1',
+			'accessKeyId' => $oss_setting['key'],
+			'accessKeySecret' => $oss_setting['secret'] ,
 			'endpoint' => $oss_setting['endpoint'] ,
-			'use_virtual_hosted_style_endpoint' => true,
-			'credentials' => [
-					'key'    => $oss_setting['key'],
-					'secret' => $oss_setting['secret'],
-				],
 		]);
 	
 		// Send a PutObject request and get the result object.
@@ -259,9 +248,10 @@ class AttachmentModel extends BaseModel {
 			'Bucket' => $oss_setting['bucket'],
 			'Key'    => $file,
 		]);
-		$res = (array)$resObj ;
-		$resultdata = current($res) ;// 获取数组的第一个值
-		// var_dump( $resultdata) ;exit();
+
+		// 不抛出异常，默认就是成功的
+
+
 	}
 
 	// 由于历史原因，当初没有让用户填写七牛云的region。而且即使填写了，也不能直接获取到七牛云s3兼容协议上传的endpoint

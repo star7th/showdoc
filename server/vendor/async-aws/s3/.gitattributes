@@ -1,0 +1,5 @@
+/.github export-ignore
+/tests export-ignore
+/.gitignore export-ignore
+/Makefile export-ignore
+/phpunit.xml.dist export-ignore

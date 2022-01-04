@@ -1,3 +1,0 @@
-[submodule "crt/aws-crt-ffi"]
-	path = crt/aws-crt-ffi
-	url = https://github.com/awslabs/aws-crt-ffi.git
