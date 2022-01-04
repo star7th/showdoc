@@ -40,14 +40,14 @@ class ImportSwaggerController extends BaseController {
             // echo json_encode($this->json_array) ;
             // exit();
             
-            $this->_fromSwaggerV2($this->json_array);
+            $this->_fromSwagger($this->json_array,$item_id);
             return ;
         }
 
         $this->sendError(10303);
     }
 
-    private function _fromSwaggerV2($json_array){
+    private function _fromSwagger($json_array,$item_id){
 
         $login_user = $this->checkLogin();
 
@@ -68,7 +68,7 @@ class ImportSwaggerController extends BaseController {
             ) ;
         $level = 2 ;
 //        $item_array['pages']['catalogs'][0]['pages'] = $this->_getPageByPaths($json_array);
-        $item_id = D("Item")->import( json_encode($item_array) , $login_user['uid'] );
+        $item_id = D("Item")->import( json_encode($item_array) , $login_user['uid'],$item_id );
         
         //echo D("Item")->export(196053901215026 );
         //echo json_encode($item_array);

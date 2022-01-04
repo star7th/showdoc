@@ -29,7 +29,7 @@ class ImportController extends BaseController {
                 $info_array = json_decode($info ,1 );
                 if ($info_array) {
                     $info_array['item_id'] = $item_id ;
-                    $this->markdown($info_array);
+                    $this->markdown($info_array, $item_id);
                     return ;
                 }
             }
@@ -59,7 +59,7 @@ class ImportController extends BaseController {
     }
 
     //导入markdown压缩包
-    public function markdown($info_array){
+    public function markdown($info_array, $item_id){
         set_time_limit(100);
         ini_set('memory_limit','200M');
 
@@ -78,7 +78,7 @@ class ImportController extends BaseController {
 
         if ($info_array) {
             // $info_array['item_id'] = '2'; //debug
-            D("Item")->import( json_encode($info_array) , $login_user['uid'] );
+            D("Item")->import( json_encode($info_array) , $login_user['uid'], $item_id );
             $this->sendResult(array());
             return ;
         }

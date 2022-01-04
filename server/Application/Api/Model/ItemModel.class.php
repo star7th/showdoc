@@ -14,16 +14,16 @@ class ItemModel extends BaseModel {
         return  json_encode($item);
         
     }
-    public function import($json,$uid,$item_name= '',$item_description= '',$item_password = '',$item_domain = ''){
+    public function import($json,$uid,$item_id = 0,$item_name= '',$item_description= '',$item_password = '',$item_domain = ''){
         $userInfo = D("User")->userInfo($uid);
         $item = json_decode($json ,1 );
         unset($json);
-        $item_id = 0 ;
         if ($item) {
 
-            // 如果存在$item['item_id']，那就是项目内导入。
-            if($item['item_id']){
-                $item_id = $item['item_id'];
+            // 如果存在$item_id，那就是项目内导入。
+            if($item_id){
+                //
+
             }else{
                 if ($item['item_domain']) {
                     $item2 = D("Item")->where("item_domain = '%s'  ".array($item['item_domain']))->find();
@@ -88,7 +88,7 @@ class ItemModel extends BaseModel {
     }
 
     public function copy($item_id,$uid,$item_name= '',$item_description= '',$item_password = '',$item_domain=''){
-        return $this->import($this->export($item_id),$uid,$item_name,$item_description,$item_password,$item_domain);
+        return $this->import($this->export($item_id),$uid,0,$item_name,$item_description,$item_password,$item_domain);
     }
 
     //获取菜单结构

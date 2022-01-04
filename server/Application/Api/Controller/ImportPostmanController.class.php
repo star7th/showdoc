@@ -20,13 +20,13 @@ class ImportPostmanController extends BaseController {
         unset($json);
         if ($json_array['id']) {
             $json_array['item_id'] = $item_id ;
-            $this->_fromPostmanV1($json_array);
+            $this->_fromPostmanV1($json_array,$item_id);
             return ;
         }
 
         if ($json_array['info']) {
             $json_array['item_id'] = $item_id ;
-            $this->_fromPostmanV2($json_array);
+            $this->_fromPostmanV2($json_array,$item_id);
             return ;
         }
 
@@ -37,7 +37,7 @@ class ImportPostmanController extends BaseController {
 
     //从postman导入(v1版本)
 
-    private function _fromPostmanV1($json_array){
+    private function _fromPostmanV1($json_array,$item_id){
         $login_user = $this->checkLogin();
 
         // TODO 这里需要检查下合法性。比如关键字检查/黑名单检查/字符串过滤
@@ -81,7 +81,7 @@ class ImportPostmanController extends BaseController {
 
         }
 
-        $item_id = D("Item")->import( json_encode($item_array) , $login_user['uid'] );
+        $item_id = D("Item")->import( json_encode($item_array) , $login_user['uid'],$item_id );
         
         //echo D("Item")->export(196053901215026 );
         //echo json_encode($item_array);
@@ -211,7 +211,7 @@ class ImportPostmanController extends BaseController {
 
 
     //从postman导入(v2版本)
-    private function _fromPostmanV2($json_array){
+    private function _fromPostmanV2($json_array,$item_id){
 
         $login_user = $this->checkLogin();
 
@@ -234,7 +234,7 @@ class ImportPostmanController extends BaseController {
         $item_array['pages']['pages'] = $this->_getPageByItem($json_array['item'] );
         $item_array['pages']['catalogs'] = $this->_getItemByItem($json_array['item'] , 2 );
         // $item_array['item_id'] = '0'; //debug
-        $item_id =  D("Item")->import( json_encode($item_array) , $login_user['uid'] );
+        $item_id =  D("Item")->import( json_encode($item_array) , $login_user['uid'],$item_id );
                 $this->sendResult(array("item_id"=>$item_id));
 
 
