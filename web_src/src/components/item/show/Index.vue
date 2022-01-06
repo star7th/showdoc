@@ -44,7 +44,8 @@ export default {
     return {
       item_info: '',
       keyword: '',
-      watermark_txt: '测试水印，1021002301，测试水印，100101010111101'
+      watermark_txt: '测试水印，1021002301，测试水印，100101010111101',
+      intervalId: 0
     }
   },
   components: {
@@ -158,16 +159,67 @@ export default {
           }
         })
       }
+    },
+    // 获取用户未读的提醒
+    getUnreadRemind() {
+      if (this.item_info.is_login) {
+        this.request('/api/message/getUnreadRemind', {}, 'post', false).then(
+          data => {
+            const json = data.data
+            if (json && json.id) {
+              let msg =
+                json.from_name +
+                ' ' +
+                this.$t('update_the_page') +
+                ' ' +
+                json.page_data.page_title +
+                ' , ' +
+                this.$t('click_to_view')
+              this.$notify({
+                message: msg,
+                duration: 30000,
+                type: 'info',
+                customClass: 'cursor-click',
+                onClick: data => {
+                  let routeUrl = this.$router.resolve({
+                    path: '/message/index',
+                    query: {
+                      dtab: 'remindList'
+                    }
+                  })
+                  window.open(routeUrl.href, '_blank')
+                },
+                onClose: () => {
+                  // 设置已读
+                  this.request('/api/message/setRead', {
+                    id: json.id
+                  })
+                }
+                // dangerouslyUseHTMLString: true
+              })
+            }
+          }
+        )
+      }
     }
   },
   mounted() {
     this.get_item_menu()
     this.$store.dispatch('changeOpenCatId', 0)
+    // 延迟获取一次未读提醒
+    setTimeout(() => {
+      this.getUnreadRemind()
+    }, 2000)
+    // 5分钟重复获取未读提醒
+    this.intervalId = setInterval(() => {
+      this.getUnreadRemind()
+    }, 5 * 60 * 1000)
   },
   beforeDestroy() {
     this.$message.closeAll()
     document.title = 'ShowDoc'
     watermark.remove() // 去掉水印
+    clearInterval(this.intervalId)
   }
 }
 </script>

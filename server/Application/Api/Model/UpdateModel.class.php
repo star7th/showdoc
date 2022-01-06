@@ -11,7 +11,7 @@ class UpdateModel  {
 
     //检测数据库并更新
     public function checkDb(){
-        $version_num = 10 ;
+        $version_num = 11 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
             $r = $this->updateSqlite();
@@ -428,6 +428,45 @@ class UpdateModel  {
             `op_object_name` CHAR(2000) NOT NULL DEFAULT '',
             `remark` CHAR(2000) NOT NULL DEFAULT '',
             `optime` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
+
+        //创建message_content表
+        $sql = "CREATE TABLE IF NOT EXISTS `message_content` (
+            `id`  INTEGER PRIMARY KEY ,
+            `from_uid` int(11) NOT NULL DEFAULT '0',
+            `from_name` CHAR(2000) NOT NULL DEFAULT '',
+            `message_type` CHAR(2000) NOT NULL DEFAULT '',
+            `message_content` CHAR(2000) NOT NULL DEFAULT '',
+            `action_type` CHAR(2000) NOT NULL DEFAULT '',
+            `object_type` CHAR(2000) NOT NULL DEFAULT '',
+            `object_id` int(11) NOT NULL DEFAULT '0',
+            `addtime` CHAR(2000) NOT NULL DEFAULT ''
+
+            )";
+        D("User")->execute($sql);
+
+        //创建message表
+        $sql = "CREATE TABLE IF NOT EXISTS `message` (
+            `id`  INTEGER PRIMARY KEY ,
+            `from_uid` int(11) NOT NULL DEFAULT '0',
+            `to_uid` int(11) NOT NULL DEFAULT '0',
+            `message_type` CHAR(2000) NOT NULL DEFAULT '',
+            `message_content_id` int(11) NOT NULL DEFAULT '0',
+            `status` int(11) NOT NULL DEFAULT '0',
+            `addtime` CHAR(2000) NOT NULL DEFAULT '',
+            `readtime` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+         D("User")->execute($sql);
+        
+        //创建subscription表
+        $sql = "CREATE TABLE IF NOT EXISTS `subscription` (
+            `id`  INTEGER PRIMARY KEY ,
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `object_id` int(11) NOT NULL DEFAULT '0',
+            `object_type` CHAR(2000) NOT NULL DEFAULT '',
+            `action_type` CHAR(2000) NOT NULL DEFAULT '',
+            `sub_time` CHAR(2000) NOT NULL DEFAULT ''
             )";
         D("User")->execute($sql);
 

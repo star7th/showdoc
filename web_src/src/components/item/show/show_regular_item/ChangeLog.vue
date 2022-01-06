@@ -50,7 +50,6 @@
               "
               @click="visitPage(scope.row.op_object_id)"
               type="text"
-              size="small"
               >{{ scope.row.op_object_name }}</el-button
             >
             <span v-else>{{ scope.row.op_object_name }}</span>

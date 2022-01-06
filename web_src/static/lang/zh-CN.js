@@ -456,5 +456,27 @@ exports.default = {
   oper: '操作人',
   op_action_type_desc: '操作动作类型描述',
   op_object_type_desc: '操作对象类型描述',
-  op_object_name: '操作对象名称'
+  op_object_name: '操作对象名称',
+
+  from_name: '发送人',
+  send_time: '发送时间',
+  content: '内容',
+  system_announcement: '系统公告',
+  save_and_notify: '保存并通知',
+  refresh_member_list: '刷新人员列表',
+  click_to_edit_member: '点此编辑通知人员名单',
+  cur_setting_notify: '当前已设置通知',
+  people: '人',
+  notify_tips1: '处于通知名单里的人会收到当前页面被修改了的提醒，同时会附上修改备注',
+  input_update_remark: '请输入修改备注',
+  update_remark: '修改备注',
+  add_single_member: '单独添加人员',
+  add_all_member: '一键添加全部项目成员',
+  notify_add_member_tips1: '你只能从项目成员中选择人员。如果你想添加的人不在下拉选项内，请先联系项目管理员添加成员到项目或者相应绑定的团队中。',
+  quick_entrance: '快捷入口',
+  to_item_setting: '去项目设置',
+  to_team: '去团队管理',
+  system_reminder: '系统提醒',
+  update_the_page: '修改了页面',
+  click_to_view: '点此查看'
 }

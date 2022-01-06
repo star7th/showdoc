@@ -72,6 +72,9 @@ class PageController extends BaseController {
         $cat_id = I("cat_id/d")? I("cat_id/d") : 0;
         $item_id = I("item_id/d")? I("item_id/d") : 0;
         $s_number = I("s_number/d")? I("s_number/d") : '';
+        $is_notify = I("is_notify/d")? I("is_notify/d") : 0;
+        $notify_content = I("notify_content") ?I("notify_content") :'';
+
 
         $login_user = $this->checkLogin();
         if (!$this->checkItemEdit($login_user['uid'] , $item_id)) {
@@ -144,6 +147,19 @@ class PageController extends BaseController {
                 D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time(),"item_name"=>$page_title));
             }else{
                 D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));
+            }
+
+            if($is_notify){
+                // 检测订阅事件，根据订阅情况，将页面的更新消息发给通知用户
+                $subscription_array = D("Subscription")->getListByObjectId($page_id , 'page' , 'update' );
+                if($subscription_array){
+                    foreach ($subscription_array as $skey => $svalue) {
+                        if($login_user['uid'] == $svalue['uid'] ){
+                            continue; // 中断一次循环。不发给自己
+                        }
+                        D("Message")->addMsg($login_user['uid'] ,$login_user['username'],$svalue['uid'],'remind',$notify_content ,'update', 'page',$page_id );
+                    }
+                } 
             }
 
             $return = D("Page")->where(" page_id = '$page_id' ")->find();

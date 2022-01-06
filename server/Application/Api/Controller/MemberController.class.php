@@ -99,6 +99,68 @@ class MemberController extends BaseController {
         }
     }
 
+    // 获取一个项目的所有成员列表。包括单独成员和绑定的团队成员
+    public function getAllList(){
+        $item_id = I("item_id/d");  
+        $login_user = $this->checkLogin();
+        $uid = $login_user['uid'] ;
+        if(!$this->checkItemEdit($uid , $item_id) && !$this->checkAdmin(false)){
+            $this->sendError(10301);
+            return ;
+        }
+
+        // 先获取项目的单独成员
+        $members_array = D("ItemMember")->where(" item_id = '$item_id' ")->join(" left join user on user.uid = item_member.uid")->field("item_member.uid,item_member.username ,item_member.member_group_id ,item_member.item_id , user.name as name")->order(" addtime asc  ")->select();
+
+        // 获取项目绑定的团队的成员
+        $team_members_array = D("TeamItemMember")->where("item_id = '$item_id' ")->join(" left join user on user.uid = team_item_member.member_uid")->field("team_item_member.member_uid as uid ,team_item_member.member_username as username ,team_item_member.member_group_id,team_item_member.item_id , user.name as name")->order(" addtime asc  ")->select();
+
+        $return_array = array() ;
+        $uid_array = array() ;  // 利用这个uid数组来去重
+
+        $item = D("Item")->where("item_id = '%d'",array($item_id))->find();
+        // 把项目创建者加入成员里
+        $return_array[] = array(
+            "item_id" => $item_id ,
+            "uid" => $item['uid'] ,
+            "username" => $item['username'] ,
+            "username_name" => $item['username'] ,
+            "member_group_id" => 1 ,
+        );
+        $uid_array[] = $item['uid'] ;
+
+        if($members_array){
+            foreach ($members_array as $key => $value) {
+              if(!in_array($value['uid'] , $uid_array )){
+                $value['username_name'] = $value['username'] ;
+                if( $value['name']){
+                    $value['username_name'] .= "({$value['name']})";
+                }
+                $uid_array[] = $value['uid'] ;
+                $return_array[] = $value ;
+              }  
+            }
+        }
+        if($team_members_array){
+            foreach ($team_members_array as $key => $value) {
+              if(!in_array($value['uid'] , $uid_array )){
+                $value['username_name'] = $value['username'] ;
+                if( $value['name']){
+                    $value['username_name'] .= "({$value['name']})";
+                }
+                $uid_array[] = $value['uid'] ;
+                $return_array[] = $value ;
+
+              }  
+            }
+        }
+
+
+
+        $this->sendResult($return_array);
+    }
+
+
 
 
 

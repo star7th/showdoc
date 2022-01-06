@@ -23,6 +23,7 @@ import TeamMember from '@/components/team/Member'
 import TeamItem from '@/components/team/Item'
 import Attachment from '@/components/attachment/Index'
 import ItemGroup from '@/components/item/group/Index'
+import Message from '@/components/message/Index'
 
 Vue.use(Router)
 
@@ -142,6 +143,11 @@ export default new Router({
       path: '/item/group/index',
       name: 'ItemGroup',
       component: ItemGroup
+    },
+    {
+      path: '/message/index',
+      name: 'Message',
+      component: Message
     },
 
     // -------新路由加在分割线前面---------------

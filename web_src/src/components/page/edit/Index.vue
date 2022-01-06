@@ -78,6 +78,13 @@
                 <!-- <el-dropdown-item>保存前添加注释</el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
+            <el-button
+              v-if="page_id > 0"
+              type
+              size="medium"
+              @click="notifyVisiable = true"
+              >{{ $t('save_and_notify') }}</el-button
+            >
             <el-button type size="medium" @click="goback">{{
               $t('goback')
             }}</el-button>
@@ -210,6 +217,26 @@
         "
         ref="Mock"
       ></Mock>
+
+      <!-- 通知框 -->
+      <Notify
+        :page_id="page_id"
+        :item_id="item_id"
+        v-if="notifyVisiable"
+        :callback="
+          data => {
+            notifyVisiable = false
+            if (data) {
+              is_notify = 1
+              notify_content = data
+              save(() => {
+                goback()
+              })
+            }
+          }
+        "
+        ref="Notify"
+      ></Notify>
     </el-container>
     <Footer></Footer>
     <div class></div>
@@ -254,6 +281,7 @@ import HistoryVersion from '@/components/page/edit/HistoryVersion'
 import AttachmentList from '@/components/page/edit/AttachmentList'
 import PasteTable from '@/components/page/edit/PasteTable'
 import SortPage from '@/components/page/edit/SortPage'
+import Notify from '@/components/page/edit/Notify'
 import { Base64 } from 'js-base64'
 import { rederPageContent } from '@/models/page'
 import {
@@ -282,7 +310,10 @@ export default {
       saving: false,
       showMockDialog: false,
       lang: '',
-      sortPageVisiable: false
+      sortPageVisiable: false,
+      notifyVisiable: false,
+      is_notify: 0,
+      notify_content: ''
     }
   },
   computed: {
@@ -329,7 +360,8 @@ export default {
     AttachmentList,
     PasteTable,
     SortPage,
-    Mock
+    Mock,
+    Notify
   },
   methods: {
     // 获取页面内容
@@ -502,6 +534,8 @@ export default {
       params.append('page_id', page_id)
       params.append('item_id', item_id)
       params.append('page_title', that.title)
+      params.append('is_notify', that.is_notify)
+      params.append('notify_content', that.notify_content)
       params.append('page_content', encodeURIComponent(content))
       params.append('is_urlencode', 1)
       params.append('cat_id', cat_id)

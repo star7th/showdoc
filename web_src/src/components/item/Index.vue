@@ -85,6 +85,9 @@
                 <el-dropdown-item :command="toUserSettingLink">
                   {{ $t('Logged') }}:{{ username }}
                 </el-dropdown-item>
+                <el-dropdown-item divided :command="toMessageLink">
+                  {{ $t('my_notice') }}
+                </el-dropdown-item>
                 <el-dropdown-item :command="toAttachmentLink">
                   {{ $t('my_attachment') }}
                 </el-dropdown-item>
@@ -587,6 +590,9 @@ export default {
     },
     toAttachmentLink() {
       this.$router.push({ path: '/attachment/index' })
+    },
+    toMessageLink() {
+      this.$router.push({ path: '/message/index' })
     }
   },
   mounted() {
