@@ -43,7 +43,7 @@
 
           <el-form-item label>
             <el-tooltip class="item" effect="dark" :content="$t('sort_pages')">
-              <i class="el-icon-sort icon-btn" @click="ShowSortPage"></i>
+              <i class="el-icon-sort icon-btn" @click="showSortPage"></i>
             </el-tooltip>
           </el-form-item>
 
@@ -78,13 +78,9 @@
                 <!-- <el-dropdown-item>保存前添加注释</el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
-            <el-button
-              v-if="page_id > 0"
-              type
-              size="medium"
-              @click="notifyVisiable = true"
-              >{{ $t('save_and_notify') }}</el-button
-            >
+            <el-button type size="medium" @click="showNotify">{{
+              $t('save_and_notify')
+            }}</el-button>
             <el-button type size="medium" @click="goback">{{
               $t('goback')
             }}</el-button>
@@ -512,10 +508,20 @@ export default {
       childRef.show()
     },
     // 展示页面排序
-    ShowSortPage() {
+    showSortPage() {
       this.save(() => {
         this.sortPageVisiable = true
       })
+    },
+    // 展示通知对话框
+    showNotify() {
+      if (this.page_id > 0) {
+        this.notifyVisiable = true
+      } else {
+        this.save(() => {
+          this.notifyVisiable = true
+        })
+      }
     },
     save(callback) {
       var that = this

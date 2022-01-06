@@ -172,6 +172,9 @@ class PageController extends BaseController {
             //更新项目时间
             D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time"=>time()));
 
+             // 添加页面的时候把最初的创建者加入消息订阅
+             D("Subscription")->addSub($login_user['uid'] , $page_id , 'page' ,'update');
+             
             $return = D("Page")->where(" page_id = '$page_id' ")->find();
         }
         if (!$return) {
