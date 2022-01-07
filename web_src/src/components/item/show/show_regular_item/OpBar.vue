@@ -591,7 +591,7 @@ export default {
         var element = document
           .getElementById('page_md_content')
           .getElementsByClassName('open-list')
-        if (element && element[0]) element[0].style.top = '360px'
+        if (element && element[0]) element[0].style.top = '380px'
       }, 700)
       sessionStorage.setItem('show_more_' + this.item_id, 1)
     },

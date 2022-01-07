@@ -150,7 +150,7 @@ export default {
 .page_content_main .markdown-toc li a {
   display: block;
   padding: 3px 15px;
-  font-size: 14px;
+  font-size: 12px;
   color: #606266;
   white-space: nowrap;
   text-overflow: ellipsis;
