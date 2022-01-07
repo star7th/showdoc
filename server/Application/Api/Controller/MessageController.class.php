@@ -35,21 +35,25 @@ class MessageController extends BaseController {
     public function setRead(){
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'] ;
-        $id = I("id/d") ? I("id/d") : 0 ;
-        $array = D("Message")->where("to_uid = '$uid' and message_content_id = '$id' ")->find();
+        $message_content_id = I("message_content_id/d") ? I("message_content_id/d") : 0 ;
+        $array = D("Message")->where("to_uid = '$uid' and message_content_id = '$message_content_id' ")->find();
         if($array){
-            D("Message")->where("to_uid = '$uid' and message_content_id = '$id' ")->save(array("status"=>1));
+            D("Message")->where("to_uid = '$uid' and message_content_id = '$message_content_id' ")->save(array("status"=>1));
         }else{
-            // 如果不存在，则可能是公告类型。
-            D("Message")->add(array(
-                "from_uid"=>0,
-                "to_uid" => $uid ,
-                "message_content_id" => $id ,
-                "status" => 1 ,
-                "addtime" => date("Y-m-d H:i:s") ,
-                "readtime" => date("Y-m-d H:i:s")
-    
-            ));
+            if($message_content_id){
+                // 如果不存在，则可能是公告类型。
+                D("Message")->add(array(
+                    "from_uid"=>0,
+                    "to_uid" => $uid ,
+                    "message_type" => 'announce' ,
+                    "message_content_id" => $message_content_id ,
+                    "status" => 1 ,
+                    "addtime" => date("Y-m-d H:i:s") ,
+                    "readtime" => date("Y-m-d H:i:s")
+        
+                ));
+            }
+
         }
 
         $this->sendResult(array()); 
@@ -58,8 +62,8 @@ class MessageController extends BaseController {
     public function delete(){
         $login_user = $this->checkLogin();
         $uid =  $login_user['uid'];
-        $id = I("id/d") ? I("id/d") : 0 ;
-        D("Message")->where(" to_uid = '$uid' and message_content_id = '$id' ")->save(array(
+        $message_content_id = I("message_content_id/d") ? I("message_content_id/d") : 0 ;
+        D("Message")->where(" to_uid = '$uid' and message_content_id = '$message_content_id' ")->save(array(
             "status" => -1 ,
         ));
         $this->sendResult(array()); 

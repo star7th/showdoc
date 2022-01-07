@@ -175,7 +175,7 @@ export default {
                 json.page_data.page_title +
                 ' , ' +
                 this.$t('click_to_view')
-              this.$notify({
+              const nObj = this.$notify({
                 message: msg,
                 duration: 30000,
                 type: 'info',
@@ -188,11 +188,12 @@ export default {
                     }
                   })
                   window.open(routeUrl.href, '_blank')
+                  nObj.close()
                 },
                 onClose: () => {
                   // 设置已读
                   this.request('/api/message/setRead', {
-                    id: json.id
+                    message_content_id: json.message_content_id
                   })
                 }
                 // dangerouslyUseHTMLString: true

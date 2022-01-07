@@ -139,7 +139,7 @@ export default {
           json.message_announce_unread.map(element => {
             element.status = 0
             this.announcementList.push(element)
-            this.setRead(element.id)
+            this.setRead(element.message_content_id)
           })
         }
 
@@ -161,17 +161,19 @@ export default {
         this.remindList = []
         json.map(element => {
           this.remindList.push(element)
-          this.setRead(element.id)
+          this.setRead(element.message_content_id)
         })
       })
     },
-    setRead(id) {
-      this.request('/api/message/setRead', {
-        id: id
-      }).then(data => {})
+    setRead(message_content_id) {
+      if (message_content_id) {
+        this.request('/api/message/setRead', {
+          message_content_id: message_content_id
+        }).then(data => {})
+      }
     },
     delete_message(row) {
-      var id = row.id
+      var message_content_id = row.message_content_id
       var that = this
       this.$confirm(this.$t('confirm_delete'), '', {
         confirmButtonText: this.$t('confirm'),
@@ -179,7 +181,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.request('/api/message/delete', {
-          id: id
+          message_content_id: message_content_id
         }).then(data => {
           that.getList()
         })
