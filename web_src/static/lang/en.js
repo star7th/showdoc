@@ -485,15 +485,18 @@ exports.default = {
 
   save_and_notify: 'Save and notify',
   refresh_member_list: 'Refresh member list',
-  click_to_edit_member: 'Click here to edit the list of notifiers',
+  click_to_edit_member:
+    'Click here to edit the list of notifiers for this page',
   cur_setting_notify: 'currently set',
   people: 'person',
-  notify_tips1: 'People on the notification list will receive a reminder that the current page has been modified and will attach a modification note',
+  notify_tips1:
+    'People on the notification list will receive a reminder that the current page has been modified and will attach a modification note',
   input_update_remark: 'Please enter modification remarks',
   update_remark: 'Modification remark',
   add_single_member: 'Add personnel separately',
   add_all_member: 'Add all project members with one click',
-  notify_add_member_tips1: 'You can only select people from project members. If the person you want to add is not in the drop-down option, please contact the project administrator first to add members to the project or the corresponding bound team.',
+  notify_add_member_tips1:
+    'You can only select people from project members. If the person you want to add is not in the drop-down option, please contact the project administrator first to add members to the project or the corresponding bound team.',
   quick_entrance: 'Quick entrance',
   to_item_setting: 'Go to item settings',
   to_team: 'Go to team management',
