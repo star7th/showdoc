@@ -459,5 +459,48 @@ exports.default = {
   site_url: 'Site url',
   site_url_tips: 'Site url',
 
-  about_site: 'About site'
+  about_site: 'About site',
+
+  s3_storage: 'S3 Storage(Amazon S3/Minio and so on）',
+
+  import: 'import',
+  import_into_cur_item: 'Import into current item',
+  import_into_cur_item_tips:
+    'When you choose to import to the current item, the pages with the same title in the same directory will be overwritten',
+  import_into_new_item: 'Import as a new item',
+
+  item_change_log: 'Item change log',
+  item_change_log_dialog_title:
+    'Item change log(only the first 300 are retained)',
+  optime: 'Operation time',
+  oper: 'Operator',
+  op_action_type_desc: 'Operation action type description',
+  op_object_type_desc: 'Operation object type description',
+  op_object_name: 'Operation object name',
+
+  from_name: 'Sender',
+  send_time: 'Sending time',
+  content: 'content',
+  system_announcement: 'Announcement',
+
+  save_and_notify: 'Save and notify',
+  refresh_member_list: 'Refresh member list',
+  click_to_edit_member:
+    'Click here to edit the list of notifiers for this page',
+  cur_setting_notify: 'currently set',
+  people: 'person',
+  notify_tips1:
+    'People on the notification list will receive a reminder that the current page has been modified and will attach a modification note',
+  input_update_remark: 'Please enter modification remarks',
+  update_remark: 'Modification remark',
+  add_single_member: 'Add personnel separately',
+  add_all_member: 'Add all project members with one click',
+  notify_add_member_tips1:
+    'You can only select people from project members. If the person you want to add is not in the drop-down option, please contact the project administrator first to add members to the project or the corresponding bound team.',
+  quick_entrance: 'Quick entrance',
+  to_item_setting: 'Go to item settings',
+  to_team: 'Go to team management',
+  system_reminder: 'System reminder',
+  update_the_page: 'update the page',
+  click_to_view: 'click to view'
 }

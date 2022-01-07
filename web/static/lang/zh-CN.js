@@ -440,5 +440,45 @@ exports.default = {
   site_url_tips:
     '你上传图片/附件等资源时，其生成的url自动由程序判断填充。如果程序判断错误，你可以在这里手动填上访问url，当你填写后，上传资源后的访问url将使用这里填写的值作为访问前缀。填写示例值"https://www.showdoc.com.cn"。如果你不理解此值含义，请默认留空，不要填写',
 
-  about_site: '关于本站'
+  about_site: '关于本站',
+
+  s3_storage: '通用S3存储(亚马逊s3/minio等）',
+
+  import: '导入',
+  import_into_cur_item: '导入到当前项目中',
+  import_into_cur_item_tips:
+    '当你选择导入到当前项目时，同一个目录下相同标题的页面会被覆盖',
+  import_into_new_item: '导入为一个新项目',
+
+  item_change_log: '项目变更日志',
+  item_change_log_dialog_title: '项目变更日志(只保留前300条)',
+  optime: '操作时间',
+  oper: '操作人',
+  op_action_type_desc: '操作动作类型描述',
+  op_object_type_desc: '操作对象类型描述',
+  op_object_name: '操作对象名称',
+
+  from_name: '发送人',
+  send_time: '发送时间',
+  content: '内容',
+  system_announcement: '系统公告',
+  save_and_notify: '保存并通知',
+  refresh_member_list: '刷新人员列表',
+  click_to_edit_member: '点此编辑本页面的通知人员名单',
+  cur_setting_notify: '当前已设置通知',
+  people: '人',
+  notify_tips1:
+    '处于通知名单里的人会收到当前页面被修改了的提醒，同时会附上修改备注',
+  input_update_remark: '请输入修改备注',
+  update_remark: '修改备注',
+  add_single_member: '单独添加人员',
+  add_all_member: '一键添加全部项目成员',
+  notify_add_member_tips1:
+    '你只能从项目成员中选择人员。如果你想添加的人不在下拉选项内，请先联系项目管理员添加成员到项目或者相应绑定的团队中。',
+  quick_entrance: '快捷入口',
+  to_item_setting: '去项目设置',
+  to_team: '去团队管理',
+  system_reminder: '系统提醒',
+  update_the_page: '修改了页面',
+  click_to_view: '点此查看'
 }
