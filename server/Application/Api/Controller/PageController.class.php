@@ -154,9 +154,6 @@ class PageController extends BaseController {
                 $subscription_array = D("Subscription")->getListByObjectId($page_id , 'page' , 'update' );
                 if($subscription_array){
                     foreach ($subscription_array as $skey => $svalue) {
-                        if($login_user['uid'] == $svalue['uid'] ){
-                            continue; // 中断一次循环。不发给自己
-                        }
                         D("Message")->addMsg($login_user['uid'] ,$login_user['username'],$svalue['uid'],'remind',$notify_content ,'update', 'page',$page_id );
                     }
                 } 
