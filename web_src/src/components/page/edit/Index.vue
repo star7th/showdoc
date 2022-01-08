@@ -222,7 +222,7 @@
         :callback="
           data => {
             notifyVisiable = false
-            if (data) {
+            if (data && typeof data == 'string') {
               is_notify = 1
               notify_content = data
               save(() => {
