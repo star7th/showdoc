@@ -189,6 +189,14 @@ export default {
                   })
                   window.open(routeUrl.href, '_blank')
                   nObj.close()
+                },
+                onClose: () => {
+                  // 设置已读
+                  setTimeout(() => {
+                    this.request('/api/message/setRead', {
+                      message_content_id: json.message_content_id
+                    })
+                  }, 2000)
                 }
                 // dangerouslyUseHTMLString: true
               })
