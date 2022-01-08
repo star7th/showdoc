@@ -116,7 +116,7 @@ class ItemController extends BaseController {
         }
 
         // 登录的状态下，才去检查下是否开启了水印
-        if(is_login){
+        if($is_login){ //少了个$ if(is_login)
             $show_watermark = D("Options")->get("show_watermark" ) ;
             $show_watermark = $show_watermark ? '1' : '0';
         }
