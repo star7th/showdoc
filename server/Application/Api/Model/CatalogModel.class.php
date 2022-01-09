@@ -201,12 +201,60 @@ class CatalogModel extends BaseModel {
 			$all_catalogs = $this->where(" item_id = '%d' ",array($item_id) )->order(" s_number, cat_id asc  ")->select();
 
 			return D("Item")->getCat($cat_ary , $all_pages , $all_catalogs) ;
-		}
-
-		//插入一个目录下的所有页面和子目录
-	public function insertCat($item_id , $catalogs , $userInfo , $parent_cat_id = 0  ,  $level = 2 ){
-			return D("Item")->insertCat($item_id , $catalogs , $userInfo , $parent_cat_id  ,  $level );
 	}
+
+	//插入一个目录下的所有页面和子目录
+	public function insertCat($item_id , $catalogs , $userInfo , $parent_cat_id = 0  ,  $level = 2 ){
+		return $this->_insertCat($item_id , $catalogs , $userInfo , $parent_cat_id  ,  $level );
+	}
+
+    //插入一个目录下的所有页面和子目录
+    private function _insertCat($item_id , $catalogs , $userInfo , $parent_cat_id = 0  ,  $level = 2 ){
+        if (!$catalogs) {
+            return ;
+        }
+        $cat_id = 0 ;
+        foreach ($catalogs as $key => $value) {
+            $catalog_data = array(
+                "cat_name" => $this->_htmlspecialchars($value['cat_name']) ,
+                "level" => $level ,
+                "s_number" => $this->_htmlspecialchars($value['s_number']) ,
+                "item_id" => $item_id,
+                "parent_cat_id" => $parent_cat_id,
+                "addtime" =>time(),
+                );
+            $cat_id = D("Catalog")->add($catalog_data);
+
+            //该目录下的页面们
+            if ($value['pages']) {
+                foreach ($value['pages'] as $key2 => &$value2) {
+
+                    $page_data = array(
+                        "author_uid"=>$userInfo['uid'],
+                        "author_username"=>$userInfo['username'],
+                        "page_title" =>$this->_htmlspecialchars( $value2['page_title']),
+                        "page_content" =>$this->_htmlspecialchars( $value2['page_content']),
+                        "s_number" =>$this->_htmlspecialchars( $value2['s_number']),
+                        "page_comments" =>$this->_htmlspecialchars( $value2['page_comments']),
+                        "item_id" => $item_id,
+                        "cat_id" => $cat_id ,
+                        "addtime" =>time(),
+                        );
+                    D("Page")->add($page_data);
+                    unset($page_data);
+                    unset($value2);
+                }
+            }
+
+            //该目录的子目录
+            if ($value['catalogs']) {
+                $this->_insertCat($item_id , $value['catalogs'] , $userInfo , $cat_id,  $level + 1  ) ;
+            }
+        }
+
+        return $cat_id ;
+
+    }
 
 	// 用路径的形式（比如'二级目录/三级目录/四级目录'）来保存目录信息并返回最后一层目录的id
 	public function saveCatPath($catPath , $item_id){
@@ -250,5 +298,12 @@ class CatalogModel extends BaseModel {
 		return false ;
 	}
 	
+	private function _htmlspecialchars($str){
+		if (!$str) {
+				return '' ;
+		}
+		//之所以先htmlspecialchars_decode是为了防止被htmlspecialchars转义了两次
+		return htmlspecialchars(htmlspecialchars_decode($str));
+	}
 
 }
