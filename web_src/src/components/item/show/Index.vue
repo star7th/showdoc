@@ -27,6 +27,8 @@
       :item_info="item_info"
       v-if="item_info && item_info.item_type == 4"
     ></ShowTableItem>
+    <!-- 如果是处于登录态的话，则引入通知组件  -->
+    <Notify v-if="item_info.is_login"></Notify>
 
     <Footer></Footer>
   </div>
@@ -38,20 +40,21 @@ import ShowSinglePageItem from '@/components/item/show/show_single_page_item/Ind
 import ShowTableItem from '@/components/item/show/show_table_item/Index'
 import watermark from 'watermark-dom'
 import moment from 'moment'
+import Notify from '@/components/common/Notify'
 
 export default {
   data() {
     return {
       item_info: '',
       keyword: '',
-      watermark_txt: '测试水印，1021002301，测试水印，100101010111101',
-      intervalId: 0
+      watermark_txt: '测试水印，1021002301，测试水印，100101010111101'
     }
   },
   components: {
     ShowRegularItem,
     ShowSinglePageItem,
-    ShowTableItem
+    ShowTableItem,
+    Notify
   },
   methods: {
     // 获取菜单
@@ -159,70 +162,16 @@ export default {
           }
         })
       }
-    },
-    // 获取用户未读的提醒
-    getUnreadRemind() {
-      if (this.item_info.is_login) {
-        this.request('/api/message/getUnreadRemind', {}, 'post', false).then(
-          data => {
-            const json = data.data
-            if (json && json.id) {
-              let msg =
-                json.from_name +
-                ' ' +
-                this.$t('update_the_page') +
-                ' ' +
-                json.page_data.page_title +
-                ' , ' +
-                this.$t('click_to_view')
-              const nObj = this.$notify({
-                message: msg,
-                duration: 30000,
-                type: 'info',
-                customClass: 'cursor-click',
-                onClick: data => {
-                  let routeUrl = this.$router.resolve({
-                    path: '/message/index',
-                    query: {
-                      dtab: 'remindList'
-                    }
-                  })
-                  window.open(routeUrl.href, '_blank')
-                  nObj.close()
-                },
-                onClose: () => {
-                  // 设置已读
-                  setTimeout(() => {
-                    this.request('/api/message/setRead', {
-                      message_content_id: json.message_content_id
-                    })
-                  }, 2000)
-                }
-                // dangerouslyUseHTMLString: true
-              })
-            }
-          }
-        )
-      }
     }
   },
   mounted() {
     this.get_item_menu()
     this.$store.dispatch('changeOpenCatId', 0)
-    // 延迟获取一次未读提醒
-    setTimeout(() => {
-      this.getUnreadRemind()
-    }, 2000)
-    // 5分钟重复获取未读提醒
-    this.intervalId = setInterval(() => {
-      this.getUnreadRemind()
-    }, 5 * 60 * 1000)
   },
   beforeDestroy() {
     this.$message.closeAll()
     document.title = 'ShowDoc'
     watermark.remove() // 去掉水印
-    clearInterval(this.intervalId)
   }
 }
 </script>
