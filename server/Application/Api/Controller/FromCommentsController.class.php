@@ -181,6 +181,19 @@ class FromCommentsController extends BaseController {
         if ($array['json_param']) {
             $content_array['request']['params']['mode'] = 'json';
             $content_array['request']['params']['json'] = $array['json_param'] ;
+            // 请求方式是json的话，原有的参数说明数组就写入json描述中
+            if ($array['param']) {
+                foreach ($array['param'] as $key => $value) {
+                    // |参数名|是否必选|类型|说明
+                    $content_array['request']['params']['jsonDesc'][] = array(
+                        "name" =>$value[0],
+                        "require" => ($value[1] == '必选') ? '1':'0',
+                        "type" =>$value[2],
+                        "value" =>'',
+                        "remark" =>$value[3] ,
+                    );
+                }
+            }
         }
 
         if ($array['param']) {
