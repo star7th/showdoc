@@ -1,0 +1,4 @@
+phpunit.xml
+composer.lock
+vendor/
+artifacts/

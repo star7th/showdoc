@@ -1,8 +1,6 @@
 <?php
-
 namespace GuzzleHttp\Exception;
 
-use Psr\Http\Client\NetworkExceptionInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -10,47 +8,30 @@ use Psr\Http\Message\RequestInterface;
  *
  * Note that no response is present for a ConnectException
  */
-class ConnectException extends TransferException implements NetworkExceptionInterface
+class ConnectException extends RequestException
 {
-    /**
-     * @var RequestInterface
-     */
-    private $request;
-
-    /**
-     * @var array
-     */
-    private $handlerContext;
-
     public function __construct(
-        string $message,
+        $message,
         RequestInterface $request,
-        \Throwable $previous = null,
+        \Exception $previous = null,
         array $handlerContext = []
     ) {
-        parent::__construct($message, 0, $previous);
-        $this->request = $request;
-        $this->handlerContext = $handlerContext;
+        parent::__construct($message, $request, null, $previous, $handlerContext);
     }
 
     /**
-     * Get the request that caused the exception
+     * @return null
      */
-    public function getRequest(): RequestInterface
+    public function getResponse()
     {
-        return $this->request;
+        return null;
     }
 
     /**
-     * Get contextual information about the error from the underlying handler.
-     *
-     * The contents of this array will vary depending on which handler you are
-     * using. It may also be just an empty array. Relying on this data will
-     * couple you to a specific handler, but can give more debug information
-     * when needed.
+     * @return bool
      */
-    public function getHandlerContext(): array
+    public function hasResponse()
     {
-        return $this->handlerContext;
+        return false;
     }
 }

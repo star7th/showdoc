@@ -2,117 +2,125 @@
 
 namespace Qcloud\Cos;
 
-use Guzzle\Http\ReadLimitEntityBody;
-
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Pool;
 
 class Copy {
-    /**
-     * const var: part size from 5MB to 5GB, and max parts of 10000 are allowed for each upload.
-     */
-    const MIN_PART_SIZE = 5242880;
+    const MIN_PART_SIZE = 1048576;
     const MAX_PART_SIZE = 5368709120;
+    const DEFAULT_PART_SIZE = 52428800;
     const MAX_PARTS     = 10000;
 
     private $client;
-    private $source;
+    private $copySource;
     private $options;
     private $partSize;
+    private $parts;
     private $size;
+    private $commandList = [];
+    private $requestList = [];
 
-    public function __construct($client, $contentlength, $source, $minPartSize, $options = array()) {
+    public function __construct($client, $source, $options = array()) {
+        $minPartSize = $options['PartSize'];
+        unset($options['PartSize']);
         $this->client = $client;
-        $this->source = $source;
+        $this->copySource = $source;
         $this->options = $options;
-        $this->size = $contentlength;
+        $this->size = $source['ContentLength'];
+        unset($source['ContentLength']);
         $this->partSize = $this->calculatePartSize($minPartSize);
-        $this->concurrency = isset($options['concurrency']) ? $options['concurrency'] : 10;
-        $this->retry = isset($options['retry']) ? $options['retry'] : 5;
+        $this->concurrency = isset($options['Concurrency']) ? $options['Concurrency'] : 10;
+        $this->retry = isset($options['Retry']) ? $options['Retry'] : 5;
     }
     public function copy() {
         $uploadId= $this->initiateMultipartUpload();
-        for ($i = 0; $i < 5; $i += 1) {
+        for ($i = 0; $i < $this->retry; $i += 1) {
             $rt = $this->uploadParts($uploadId);
             if ($rt == 0) {
                 break;
             }
             sleep(1 << $i);
         }
+        foreach ( $this->parts as $key => $row ){
+            $num1[$key] = $row ['PartNumber'];
+            $num2[$key] = $row ['ETag'];
+        }
+        array_multisort($num1, SORT_ASC, $num2, SORT_ASC, $this->parts);
         return $this->client->completeMultipartUpload(array(
             'Bucket' => $this->options['Bucket'],
             'Key' => $this->options['Key'],
             'UploadId' => $uploadId,
-            'Parts' => $this->parts));
+            'Parts' => $this->parts)
+        );
 
     }
     public function uploadParts($uploadId) {
-        $commands = array();
-        $offset = 0;
-        $partNumber = 1;
-        $partSize = $this->partSize;
-        $finishedNum = 0;
-        $this->parts = array();
-        for (;;) {
-
-            if ($offset + $partSize  >= $this->size)
-            {
-                $partSize = $this->size - $offset;
-            }
-            $params = array(
-                'Bucket' => $this->options['Bucket'],
-                'Key' => $this->options['Key'],
-                'UploadId' => $uploadId,
-                'PartNumber' => $partNumber,
-                'CopySource'=> $this->source,
-                'CopySourceRange' => 'bytes='.((string)$offset).'-'.(string)($offset+$partSize - 1),
-            );
-            if(!isset($parts[$partNumber])) {
-                $commands[] = $this->client->getCommand('UploadPartCopy', $params);
-            }
-            if ($partNumber % $this->concurrency == 0) {
-                $this->client->execute($commands);
-                $commands = array();
-            }
-            ++$partNumber;
-            $offset += $partSize;
-            if ($this->size == $offset)
-            {
-                break;
-            }
-        }
-        if (!empty($commands)) {
-            $this->client->execute($commands);
-        }
-        try {
-            $marker = 0;
-            $finishedNum = 1;
-            while (true) {
-                $rt = $this->client->listParts(array(
+        $copyRequests = function ($uploadId) {
+            $offset = 0;
+            $partNumber = 1;
+            $partSize = $this->partSize;
+            $finishedNum = 0;
+            $this->parts = array();
+            for ($index = 1; ; $index ++) {
+                if ($offset + $partSize  >= $this->size)
+                {
+                    $partSize = $this->size - $offset;
+                }
+                $copySourcePath = $this->copySource['Bucket']. '.cos.'. $this->copySource['Region'].
+                    ".myqcloud.com/". $this->copySource['Key']. "?versionId=". $this->copySource['VersionId'];
+                $params = array(
                     'Bucket' => $this->options['Bucket'],
                     'Key' => $this->options['Key'],
-                    'PartNumberMarker' => $marker,
-                    'MaxParts' => 1000,
-                    'UploadId' => $uploadId));
-                if (!empty($rt['Parts'])) {
-                    foreach ($rt['Parts'] as $part) {
-                        $part = array('PartNumber' => $finishedNum, 'ETag' => $part['ETag']);
-                        $this->parts[$finishedNum] = $part;
-                        $finishedNum++;
-                    }
+                    'UploadId' => $uploadId,
+                    'PartNumber' => $partNumber,
+                    'CopySource'=> $copySourcePath,
+                    'CopySourceRange' => 'bytes='.((string)$offset).'-'.(string)($offset+$partSize - 1),
+                );
+                if(!isset($this->parts[$partNumber])) {
+                    $command = $this->client->getCommand('uploadPartCopy', $params);
+                    $request = $this->client->commandToRequestTransformer($command);
+                    $this->commandList[$index] = $command;
+                    $this->requestList[$index] = $request;
+                    yield $request;
                 }
-                $marker = $rt['NextPartNumberMarker'];
-                if (!$rt['IsTruncated']) {
+                ++$partNumber;
+                $offset += $partSize;
+                if ($this->size == $offset) {
                     break;
                 }
             }
-        } catch (\Exception $e) {
-            echo($e);
-        }
-        if ($finishedNum == $partNumber) {
-            return 0;
-        } else {
-            return -1;
-        }
-
+        };
+        $pool = new Pool($this->client->httpClient, $copyRequests($uploadId), [
+            'concurrency' => $this->concurrency,
+            'fulfilled' => function ($response, $index) {
+                $index = $index + 1;
+                $response = $this->client->responseToResultTransformer($response, $this->requestList[$index], $this->commandList[$index]);
+                $part = array('PartNumber' => $index, 'ETag' => $response['ETag']);
+                $this->parts[$index] = $part;
+            },
+           
+            'rejected' => function ($reason, $index) { 
+                $index = $index += 1;
+                $retry = 2;
+                for ($i = 1; $i <= $retry; $i++) {
+                    try {
+                        $rt =$this->client->execute($this->commandList[$index]);
+                        $part = array('PartNumber' => $index, 'ETag' => $rt['ETag']);
+                        $this->parts[$index] = $part;
+                    } catch(\Exception $e) {
+                        if ($i == $retry) {
+                            throw($e);
+                        }
+                    }
+                }
+            },
+        ]);
+        
+        // Initiate the transfers and create a promise
+        $promise = $pool->promise();
+        
+        // Force the pool of requests to complete.
+        $promise->wait();
     }
 
 
@@ -122,7 +130,6 @@ class Copy {
         $partSize = max($minPartSize, $partSize);
         $partSize = min($partSize, self::MAX_PART_SIZE);
         $partSize = max($partSize, self::MIN_PART_SIZE);
-
         return $partSize;
     }
 
@@ -131,10 +138,4 @@ class Copy {
         return $result['UploadId'];
     }
 
-}
-function partUploadCopy($client, $params) {
-    $rt = $client->uploadPartCopy($params);
-//    $part = array('PartNumber' => $params['PartNumber'], 'ETag' => $rt['ETag']);
-    $rt['PartNumber'] = $params['PartNumber'];
-    return $rt;
 }

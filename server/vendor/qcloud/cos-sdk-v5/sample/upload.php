@@ -13,6 +13,11 @@ $cosClient = new Qcloud\Cos\Client(
             'secretId'  => $secretId ,
             'secretKey' => $secretKey)));
 $local_path = "/data/exampleobject";
+
+$printbar = function($totolSize, $uploadedSize) {
+    printf("uploaded [%d/%d]\n", $uploadedSize, $totolSize);
+};
+
 try {
     $result = $cosClient->upload(
         $bucket = 'examplebucket-125000000', //格式：BucketName-APPID
@@ -36,7 +41,10 @@ try {
             ),
             'ContentMD5' => 'string',
             'ServerSideEncryption' => 'string',
-            'StorageClass' => 'string'
+            'StorageClass' => 'string', //存储类型
+            'Progress' => $printbar, //指定进度条
+            'PartSize' => 10 * 1024 * 1024, //分块大小
+            'Concurrency' => 5 //并发数
         )
         */
     );

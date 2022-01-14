@@ -57,7 +57,7 @@ if (!isset($_SERVER['REQUEST_URI']) && isset($_SERVER['SCRIPT_NAME']) && isset($
 /**
  * phpCAS version. accessible for the user by phpCAS::getVersion().
  */
-define('PHPCAS_VERSION', '1.3.9');
+define('PHPCAS_VERSION', '1.4.0');
 
 /**
  * @addtogroup public
@@ -330,7 +330,7 @@ class phpCAS
      *
      * @param string                   $server_version  the version of the CAS server
      * @param string                   $server_hostname the hostname of the CAS server
-     * @param string                   $server_port     the port the CAS server is running on
+     * @param int                      $server_port     the port the CAS server is running on
      * @param string                   $server_uri      the URI the CAS server is responding on
      * @param bool                     $changeSessionID Allow phpCAS to change the session_id
      *                                                  (Single Sign Out/handleLogoutRequests

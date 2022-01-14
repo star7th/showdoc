@@ -13,16 +13,26 @@ $cosClient = new Qcloud\Cos\Client(
             'secretId'  => $secretId ,
             'secretKey' => $secretKey)));
 try {
-    $result = $cosClient->putBucketCors(array(
+    $result = $cosClient->putBucketLifecycle(array(
         'Bucket' => 'examplebucket-125000000', //格式：BucketName-APPID
-        'CORSRules' => array(
+        'Rules' => array(
             array(
-                'AllowedHeaders' => array('*',),
-                'AllowedMethods' => array('Put', ),
-                'AllowedOrigins' => array('*', ),
-                'ExposeHeaders' => array('*', ),
-                'MaxAgeSeconds' => 1,
-            ),
+                'Expiration' => array(
+                    'Days' => integer,
+                ),  
+                'ID' => 'string',
+                'Filter' => array(
+                    'Prefix' => 'string'
+                ),  
+                'Status' => 'string',
+                'Transitions' => array(
+                    array(
+                        'Days' => integer,
+                        'StorageClass' => 'string'
+                    ),  
+                    // ... repeated
+                ),  
+            ),  
             // ... repeated
         )
     ));

@@ -2,26 +2,27 @@
 
 namespace Qcloud\Cos;
 
-use Guzzle\Http\Message\RequestInterface;
-use Guzzle\Http\Message\Response;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Parses default XML exception responses
  */
 class ExceptionParser {
 
-    public function parse(RequestInterface $request, Response $response) {
+    public function parse(RequestInterface $request, ResponseInterface $response) {
         $data = array(
             'code'       => null,
             'message'    => null,
-            'type'       => $response->isClientError() ? 'client' : 'server',
+            //'type'       => $response->isClientError() ? 'client' : 'server',
+            'type'       => 'client',
             'request_id' => null,
             'parsed'     => null
         );
 
-        $body = $response->getBody(true);
+		$body = strval($response->getBody());
 
-        if (!$body) {
+        if (empty($body)) {
             $this->parseHeaders($request, $response, $data);
             return $data;
         }
@@ -44,9 +45,11 @@ class ExceptionParser {
      * @param Response         $response The response from the request
      * @param array            $data     The current set of exception data
      */
-    protected function parseHeaders(RequestInterface $request, Response $response, array &$data) {
+    protected function parseHeaders(RequestInterface $request, ResponseInterface $response, array &$data) {
         $data['message'] = $response->getStatusCode() . ' ' . $response->getReasonPhrase();
-        if ($requestId = $response->getHeader('x-cos-request-id')) {
+        $requestId = $response->getHeader('x-cos-request-id');
+        if (isset($requestId[0])) {
+            $requestId = $requestId[0];
             $data['request_id'] = $requestId;
             $data['message'] .= " (Request-ID: $requestId)";
         }
@@ -59,8 +62,8 @@ class ExceptionParser {
         if ($status === 403) {
             $data['code'] = 'AccessDenied';
         } elseif ($method === 'HEAD' && $status === 404) {
-            $path   = explode('/', trim($request->getPath(), '/'));
-            $host   = explode('.', $request->getHost());
+            $path   = explode('/', trim($request->getUri()->getPath(), '/'));
+            $host   = explode('.', $request->getUri()->getHost());
             $bucket = (count($host) >= 4) ? $host[0] : array_shift($path);
             $object = array_shift($path);
 
