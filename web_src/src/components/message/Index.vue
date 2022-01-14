@@ -51,17 +51,6 @@
                   </div>
                 </template>
               </el-table-column>
-
-              <!-- <el-table-column prop :label="$t('operation')">
-                <template slot-scope="scope">
-                  <el-button
-                    @click="delete_message(scope.row)"
-                    type="text"
-                    size="small"
-                    >{{ $t('delete') }}</el-button
-                  >
-                </template>
-              </el-table-column> -->
             </el-table>
             <div class="block">
               <span class="demonstration"></span>
@@ -79,8 +68,8 @@
           >
             <el-table :data="announcementList" style="width: 100%">
               <el-table-column
-                prop="from_name"
-                :label="$t('from_name')"
+                prop="addtime"
+                :label="$t('send_time')"
               ></el-table-column>
               <el-table-column prop="message_content" :label="$t('content')">
                 <template slot-scope="props">
@@ -90,20 +79,6 @@
                     value="new"
                     v-if="props.row.status == 0"
                   />
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="addtime"
-                :label="$t('send_time')"
-              ></el-table-column>
-              <el-table-column prop :label="$t('operation')">
-                <template slot-scope="scope">
-                  <el-button
-                    @click="delete_message(scope.row)"
-                    type="text"
-                    size="small"
-                    >{{ $t('delete') }}</el-button
-                  >
                 </template>
               </el-table-column>
             </el-table>
@@ -131,24 +106,13 @@ export default {
     }
   },
   methods: {
-    getList() {
-      this.request('/api/message/getList', {}).then(data => {
+    getAnnouncementList() {
+      this.request('/api/message/getAnnouncementList', {}).then(data => {
         const json = data.data
-        this.announcementList = []
-        if (json.message_announce_unread) {
-          json.message_announce_unread.map(element => {
-            element.status = 0
-            this.announcementList.push(element)
-            this.setRead(element.message_content_id)
-          })
-        }
-
-        if (json.message_announce_read) {
-          json.message_announce_read.map(element => {
-            element.status = 1
-            this.announcementList.push(element)
-          })
-        }
+        this.announcementList = json
+        json.map(element => {
+          this.setRead(element.from_uid, element.message_content_id)
+        })
       })
     },
     getRemindList() {
@@ -161,31 +125,17 @@ export default {
         this.remindList = []
         json.map(element => {
           this.remindList.push(element)
-          this.setRead(element.message_content_id)
+          this.setRead(element.from_uid, element.message_content_id)
         })
       })
     },
-    setRead(message_content_id) {
+    setRead(from_uid, message_content_id) {
       if (message_content_id) {
         this.request('/api/message/setRead', {
-          message_content_id: message_content_id
+          message_content_id: message_content_id,
+          from_uid: from_uid
         }).then(data => {})
       }
-    },
-    delete_message(row) {
-      var message_content_id = row.message_content_id
-      var that = this
-      this.$confirm(this.$t('confirm_delete'), '', {
-        confirmButtonText: this.$t('confirm'),
-        cancelButtonText: this.$t('cancel'),
-        type: 'warning'
-      }).then(() => {
-        this.request('/api/message/delete', {
-          message_content_id: message_content_id
-        }).then(data => {
-          that.getList()
-        })
-      })
     },
     goback() {
       this.$router.push({ path: '/item/index' })
@@ -212,6 +162,9 @@ export default {
 
   mounted() {
     this.getRemindList()
+    if (this.$route.query.dtab) {
+      this.dtab = this.$route.query.dtab
+    }
   },
   beforeDestroy() {}
 }

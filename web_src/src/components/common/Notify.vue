@@ -12,26 +12,57 @@ export default {
   },
   methods: {
     // 获取用户未读的提醒
-    getUnreadRemind() {
-      this.request('/api/message/getUnreadRemind', {}, 'post', false).then(
-        data => {
-          const json = data.data
-          if (json && json.id) {
+    getUnread() {
+      this.request('/api/message/getUnread', {}, 'post', false).then(data => {
+        const json = data.data
+        // 提醒类消息
+        if (json['remind'] && json['remind'].id) {
+          if (json['remind'].object_type == 'page') {
             let msg =
-              json.from_name +
+              json['remind'].from_name +
               ' ' +
               this.$t('update_the_page') +
               ' ' +
-              json.page_data.page_title +
+              json['remind'].page_data.page_title +
               ' , ' +
               this.$t('click_to_view')
-            this.brownNotify(msg, json.message_content_id)
+
+            let routeUrl = this.$router.resolve({
+              path: '/message/index',
+              query: {
+                dtab: 'remindList'
+              }
+            })
+            const toUrl = routeUrl.href
+            this.brownNotify(
+              msg,
+              json['remind'].from_uid,
+              json['remind'].message_content_id,
+              toUrl
+            )
           }
         }
-      )
+        // 公告类消息
+        // if (json['announce'] && json['announce'].id) {
+        //   const msg = '你有未读的公告消息，点此查看'
+        //   let routeUrl = this.$router.resolve({
+        //     path: '/message/index',
+        //     query: {
+        //       dtab: 'announcementList'
+        //     }
+        //   })
+        //   const toUrl = routeUrl.href
+        //   this.brownNotify(
+        //     msg,
+        //     json['announce'].from_uid,
+        //     json['announce'].message_content_id,
+        //     toUrl
+        //   )
+        // }
+      })
     },
     // 浏览器通知
-    brownNotify(msg, message_content_id) {
+    brownNotify(msg, from_uid, message_content_id, toUrl) {
       const title = 'showdoc通知'
       const options = {
         dir: 'auto', // 文字方向
@@ -41,21 +72,21 @@ export default {
       // 先检查浏览器是否支持
       if (!window.Notification) {
         console.log('浏览器不支持通知')
-        this.webNotify(msg, message_content_id) // 如果不能浏览器通知，则使用web本身的弹窗通知
+        this.webNotify(msg, from_uid, message_content_id, toUrl) // 如果不能浏览器通知，则使用web本身的弹窗通知
       } else {
         let notification = {}
         // 检查用户曾经是否同意接受通知
         if (Notification.permission === 'granted') {
           notification = new Notification(title, options) // 显示通知
           notification.onclick = e => {
-            this.toMessIndex()
-            this.setRead(message_content_id)
+            window.open(toUrl, '_blank')
+            this.setRead(from_uid, message_content_id)
             // 可直接打开通知notification相关联的tab窗
             window.focus()
             notification.close()
           }
         } else if (Notification.permission === 'default') {
-          this.webNotify(msg, message_content_id) // 如果不能浏览器通知，则使用web本身的弹窗通知
+          this.webNotify(msg, from_uid, message_content_id, toUrl) // 如果不能浏览器通知，则使用web本身的弹窗通知
 
           // 用户还未选择，可以询问用户是否同意发送通知
           Notification.requestPermission().then(permission => {
@@ -64,8 +95,8 @@ export default {
               if (this.nObj && this.nObj.close) this.nObj.close()
               notification = new Notification(title, options) // 显示通知
               notification.onclick = e => {
-                this.toMessIndex()
-                this.setRead(message_content_id)
+                window.open(toUrl, '_blank')
+                this.setRead(from_uid, message_content_id)
                 // 可直接打开通知notification相关联的tab窗
                 window.focus()
                 notification.close()
@@ -80,42 +111,34 @@ export default {
         } else {
           // denied 用户拒绝
           console.log('用户曾经拒绝显示通知')
-          this.webNotify(msg, message_content_id) // 如果不能浏览器通知，则使用web本身的弹窗通知
+          this.webNotify(msg, from_uid, message_content_id, toUrl) // 如果不能浏览器通知，则使用web本身的弹窗通知
         }
       }
     },
     // web弹窗通知
-    webNotify(msg, message_content_id) {
+    webNotify(msg, from_uid, message_content_id, toUrl) {
       this.nObj = this.$notify({
         message: msg,
         duration: 30000,
         type: 'info',
         customClass: 'cursor-click',
         onClick: data => {
-          this.toMessIndex()
+          window.open(toUrl, '_blank')
           this.nObj.close()
         },
         onClose: () => {
           // 设置已读
-          this.setRead(message_content_id)
+          this.setRead(from_uid, message_content_id)
         }
         // dangerouslyUseHTMLString: true
       })
     },
 
-    toMessIndex() {
-      let routeUrl = this.$router.resolve({
-        path: '/message/index',
-        query: {
-          dtab: 'remindList'
-        }
-      })
-      window.open(routeUrl.href, '_blank')
-    },
     // 设置已读
-    setRead(message_content_id) {
+    setRead(from_uid, message_content_id) {
       setTimeout(() => {
         this.request('/api/message/setRead', {
+          from_uid: from_uid,
           message_content_id: message_content_id
         })
       }, 2000)
@@ -123,11 +146,11 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      this.getUnreadRemind()
+      this.getUnread()
     }, 2000)
     // 5分钟重复获取未读提醒
     this.intervalId = setInterval(() => {
-      this.getUnreadRemind()
+      this.getUnread()
     }, 5 * 60 * 1000)
   },
 
