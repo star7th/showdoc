@@ -2,65 +2,121 @@
 
 namespace Qcloud\Cos;
 
-use Guzzle\Http\ReadLimitEntityBody;
 use Qcloud\Cos\Exception\CosException;
+use GuzzleHttp\Pool;
+
+use function GuzzleHttp\Promise\rejection_for;
+
 class MultipartUpload {
-    /**
-     * const var: part size from 5MB to 5GB, and max parts of 10000 are allowed for each upload.
-     */
-    const MIN_PART_SIZE = 5242880;
+    const MIN_PART_SIZE = 1048576;
     const MAX_PART_SIZE = 5368709120;
+    const DEFAULT_PART_SIZE = 52428800;
     const MAX_PARTS     = 10000;
 
     private $client;
-    private $source;
     private $options;
     private $partSize;
+    private $parts;
+    private $body;
+    private $progress;
+    private $totolSize;
+    private $uploadedSize;
 
-    public function __construct($client, $source, $minPartSize, $options = array()) {
+    public function __construct($client, $body, $options = array()) {
+        $minPartSize = $options['PartSize'];
+        unset($options['PartSize']);
+        $this->body = $body;
         $this->client = $client;
-        $this->source = $source;
         $this->options = $options;
         $this->partSize = $this->calculatePartSize($minPartSize);
+        $this->concurrency = isset($options['Concurrency']) ? $options['Concurrency'] : 10;
+        $this->progress = isset($options['Progress']) ? $options['Progress'] : function($totolSize, $uploadedSize) {};
+        $this->parts = [];
+        $this->partNumberList = [];
+        $this->uploadedSize = 0;
+        $this->totolSize = $this->body->getSize();
+        $this->needMd5 = isset($options['ContentMD5']) ? $options['ContentMD5'] : true;
+        $this->retry = isset($options['Retry']) ? $options['Retry'] : 3;
     }
-
     public function performUploading() {
-        $uploadId = $this->initiateMultipartUpload();
-
-        $partNumber = 1;
-        $parts = array();
-        for (;;) {
-            if ($this->source->isConsumed()) {
-                break;
-            }
-
-            $body = new ReadLimitEntityBody($this->source, $this->partSize, $this->source->ftell());
-            if ($body->getContentLength() == 0) {
-                break;
-            }
-            $result = $this->client->uploadPart(array(
-                        'Bucket' => $this->options['Bucket'],
-                        'Key' => $this->options['Key'],
-                        'Body' => $body,
-                        'UploadId' => $uploadId,
-                        'PartNumber' => $partNumber));
-            if (md5($body) != substr($result['ETag'], 1, -1)){
-                throw new CosException("ETag check inconsistency");
-            }
-            $part = array('PartNumber' => $partNumber, 'ETag' => $result['ETag']);
-            array_push($parts, $part);
-            ++$partNumber;
+        $uploadId= $this->initiateMultipartUpload();
+        $this->uploadParts($uploadId);
+        foreach ( $this->parts as $key => $row ){
+            $num1[$key] = $row ['PartNumber'];
+            $num2[$key] = $row ['ETag'];
         }
-        try {
-            $rt = $this->client->completeMultipartUpload(array(
-                'Bucket' => $this->options['Bucket'],
-                'Key' => $this->options['Key'],
-                'UploadId' => $uploadId,
-                'Parts' => $parts));
-        } catch(\Exception $e){
-            throw $e;
-        }
-        return $rt;
+        array_multisort($num1, SORT_ASC, $num2, SORT_ASC, $this->parts);
+        return $this->client->completeMultipartUpload(array(
+            'Bucket' => $this->options['Bucket'],
+            'Key' => $this->options['Key'],
+            'UploadId' => $uploadId,
+            'Parts' => $this->parts)
+        );
+
+    }
+    public function uploadParts($uploadId) {
+        $uploadRequests = function ($uploadId) {
+            $partNumber = 1;
+            $index = 1;
+            $offset = 0;
+            $partSize = 0;
+            for ( ; ; $partNumber ++) {
+                if ($this->body->eof()) {
+                    break;
+                }
+                $body = $this->body->read($this->partSize);
+                $partSize = $this->partSize;
+                if ($offset + $this->partSize >= $this->totolSize) {
+                    $partSize = $this->totolSize - $offset;
+                }
+                $offset += $partSize;
+                if (empty($body)) {
+                    break;
+                }
+                if (isset($this->parts[$partNumber])) {
+                    continue;
+                }
+                $this->partNumberList[$index]['PartNumber'] = $partNumber;
+                $this->partNumberList[$index]['PartSize'] = $partSize;
+                $params = array(
+                    'Bucket' => $this->options['Bucket'],
+                    'Key' => $this->options['Key'],
+                    'UploadId' => $uploadId,
+                    'PartNumber' => $partNumber,
+                    'Body' => $body,
+                    'ContentMD5' => $this->needMd5
+                );
+                if ($this->needMd5 == false) {
+                    unset($params["ContentMD5"]);
+                }
+                if (!isset($this->parts[$partNumber])) {
+                    $command = $this->client->getCommand('uploadPart', $params);
+                    $request = $this->client->commandToRequestTransformer($command);
+                    $index ++;
+                    yield $request;
+                }
+            }
+        }; 
+        $pool = new Pool($this->client->httpClient, $uploadRequests($uploadId), [
+            'concurrency' => $this->concurrency,
+            'fulfilled' => function ($response, $index) {
+                $index = $index + 1;
+                $partNumber = $this->partNumberList[$index]['PartNumber'];
+                $partSize = $this->partNumberList[$index]['PartSize'];
+                $etag = $response->getHeaders()["ETag"][0];
+                $part = array('PartNumber' => $partNumber, 'ETag' => $etag);
+                $this->parts[$partNumber] = $part;
+                $this->uploadedSize += $partSize;
+                call_user_func_array($this->progress, [$this->totolSize, $this->uploadedSize]);
+            },
+           
+            'rejected' => function ($reason, $index) {
+                printf("part [%d] upload failed, reason: %s\n", $index, $reason);
+                throw($reason);
+            }
+        ]);
+        $promise = $pool->promise();
+        $promise->wait();
     }
 
     public function resumeUploading() {
@@ -70,58 +126,31 @@ class MultipartUpload {
                 'Bucket'=>$this->options['Bucket'],
                 'Key'=>$this->options['Key']));
                 $parts = array();
-        $offset = $this->partSize;
         if (count($rt['Parts']) > 0) {
             foreach ($rt['Parts'] as $part) {
-                $parts[$part['PartNumber'] - 1] = array('PartNumber' => $part['PartNumber'], 'ETag' => $part['ETag']);
+                $this->parts[$part['PartNumber']] = array('PartNumber' => $part['PartNumber'], 'ETag' => $part['ETag']);
             }
         }
-        for ($partNumber = 1;;++$partNumber,$offset+=$body->getContentLength()) {
-            if ($this->source->isConsumed()) {
-                break;
-            }
-
-            $body = new ReadLimitEntityBody($this->source, $this->partSize, $this->source->ftell());
-            if ($body->getContentLength() == 0) {
-                break;
-            }
-
-
-            if (array_key_exists($partNumber-1,$parts)){
-
-                if (md5($body) != substr($parts[$partNumber-1]['ETag'], 1, -1)){
-                    throw new CosException("ETag check inconsistency");
-                }
-                $body->setOffset($offset);
-                continue;
-            }
-
-            $result = $this->client->uploadPart(array(
-                'Bucket' => $this->options['Bucket'],
-                'Key' => $this->options['Key'],
-                'Body' => $body,
-                'UploadId' => $uploadId,
-                'PartNumber' => $partNumber));
-            if (md5($body) != substr($result['ETag'], 1, -1)){
-                throw new CosException("ETag check inconsistency");
-            }
-            $parts[$partNumber-1] = array('PartNumber' => $partNumber, 'ETag' => $result['ETag']);
-
+        $this->uploadParts($uploadId);
+        foreach ( $this->parts as $key => $row ){
+            $num1[$key] = $row ['PartNumber'];
+            $num2[$key] = $row ['ETag'];
         }
-        $rt = $this->client->completeMultipartUpload(array(
+        array_multisort($num1, SORT_ASC, $num2, SORT_ASC, $this->parts);
+        return $this->client->completeMultipartUpload(array(
             'Bucket' => $this->options['Bucket'],
             'Key' => $this->options['Key'],
             'UploadId' => $uploadId,
-            'Parts' => $parts));
-        return $rt;
+            'Parts' => $this->parts)
+        );
     }
 
-    private function calculatePartSize($minPartSize) {
-        $partSize = intval(ceil(($this->source->getContentLength() / self::MAX_PARTS)));
+    private function calculatePartSize($minPartSize)
+    {   
+        $partSize = intval(ceil(($this->body->getSize() / self::MAX_PARTS)));
         $partSize = max($minPartSize, $partSize);
         $partSize = min($partSize, self::MAX_PART_SIZE);
         $partSize = max($partSize, self::MIN_PART_SIZE);
-
         return $partSize;
     }
 
@@ -129,4 +158,5 @@ class MultipartUpload {
         $result = $this->client->createMultipartUpload($this->options);
         return $result['UploadId'];
     }
+
 }

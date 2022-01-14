@@ -1,6 +1,17 @@
 language: php
 php:
   - 5.6
+notifications:
+  email:
+    recipients:
+      - wjielai@tencent.com
+      - fysntian@tencent.com
+
+before_script:
+  - composer install --prefer-dist --dev --no-interaction
+
 script: 
-  - composer install
-  - phpunit -v
+  - phpunit -v --coverage-clover=coverage.xml
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)

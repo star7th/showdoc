@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## 1.8.3 - 2021-10-05
+
+### Fixed
+
+- Return `null` in caching stream size if remote size is `null`
+
 ## 1.8.2 - 2021-04-26
 
 ### Fixed

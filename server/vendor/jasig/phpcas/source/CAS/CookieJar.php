@@ -231,6 +231,7 @@ class CAS_CookieJar
             case 'commenturl':
             case 'discard':
             case 'httponly':
+            case 'samesite':
                 $cookie[$attributeNameLC] = $attributeValue;
                 break;
             default:

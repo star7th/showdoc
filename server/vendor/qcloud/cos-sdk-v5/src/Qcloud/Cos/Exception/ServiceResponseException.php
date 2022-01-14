@@ -2,8 +2,8 @@
 
 namespace Qcloud\Cos\Exception;
 
-use Guzzle\Http\Message\RequestInterface;
-use Guzzle\Http\Message\Response;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class ServiceResponseException extends \RuntimeException {
 
@@ -91,7 +91,7 @@ class ServiceResponseException extends \RuntimeException {
      *
      * @param Response $response Response
      */
-    public function setResponse(Response $response) {
+    public function setResponse(ResponseInterface $response) {
         $this->response = $response;
     }
 
@@ -146,7 +146,7 @@ class ServiceResponseException extends \RuntimeException {
 
         // Add the User-Agent if available
         if ($this->request) {
-            $message .= ', ' . 'User-Agent: ' . $this->request->getHeader('User-Agent');
+            $message .= ', ' . 'User-Agent: ' . $this->request->getHeader('User-Agent')[0];
         }
 
         return $message;

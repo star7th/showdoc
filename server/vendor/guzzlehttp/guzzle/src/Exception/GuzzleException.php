@@ -1,9 +1,23 @@
 <?php
-
 namespace GuzzleHttp\Exception;
 
-use Psr\Http\Client\ClientExceptionInterface;
+use Throwable;
 
-interface GuzzleException extends ClientExceptionInterface
-{
+if (interface_exists(Throwable::class)) {
+    interface GuzzleException extends Throwable
+    {
+    }
+} else {
+    /**
+     * @method string getMessage()
+     * @method \Throwable|null getPrevious()
+     * @method mixed getCode()
+     * @method string getFile()
+     * @method int getLine()
+     * @method array getTrace()
+     * @method string getTraceAsString()
+     */
+    interface GuzzleException
+    {
+    }
 }

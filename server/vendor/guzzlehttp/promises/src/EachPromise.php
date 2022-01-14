@@ -79,9 +79,7 @@ class EachPromise implements PromisorInterface
             $this->createPromise();
             /** @psalm-assert Promise $this->aggregate */
             $this->iterable->rewind();
-            if (!$this->checkIfFinished()) {
-                $this->refillPending();
-            }
+            $this->refillPending();
         } catch (\Throwable $e) {
             /**
              * @psalm-suppress NullReference
@@ -107,6 +105,9 @@ class EachPromise implements PromisorInterface
     {
         $this->mutex = false;
         $this->aggregate = new Promise(function () {
+            if ($this->checkIfFinished()) {
+                return;
+            }
             reset($this->pending);
             // Consume a potentially fluctuating list of promises while
             // ensuring that indexes are maintained (precluding array_shift).

@@ -48,7 +48,9 @@ final class Utils
         $promise = new Promise([$queue, 'run']);
         $queue->add(function () use ($task, $promise) {
             try {
-                $promise->resolve($task());
+                if (Is::pending($promise)) {
+                    $promise->resolve($task());
+                }
             } catch (\Throwable $e) {
                 $promise->reject($e);
             } catch (\Exception $e) {
