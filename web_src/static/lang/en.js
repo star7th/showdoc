@@ -511,5 +511,7 @@ exports.default = {
   no_item_template_text:
     'There are currently no templates shared to this project. You and other members can choose to share their own templates with this project. You can set it in my template. After sharing, all members can see the shared templates under this item',
   sharer: 'sharer',
-  share_to_these_items: 'share to these items'
+  share_to_these_items: 'share to these items',
+  share_items_tips:
+    'When you choose to share to these items, members of these items can use this sharing template'
 }

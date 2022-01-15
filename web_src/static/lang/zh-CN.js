@@ -488,5 +488,7 @@ exports.default = {
   no_item_template_text:
     '当前没有任何共享到本项目的模板。你以及其他成员都可以选择把自己的模板共享到本项目。在‘我的模板’处便可以设置。共享后，所有成员都能看到本项目下共享的模板',
   sharer: '共享人',
-  share_to_these_items: '共享到这些项目'
+  share_to_these_items: '共享到这些项目',
+  share_items_tips:
+    '当你选择共享到这些项目后，这些项目的成员都能使用到此共享模板'
 }

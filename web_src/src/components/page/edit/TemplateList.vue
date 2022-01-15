@@ -101,6 +101,7 @@
           ></el-option>
         </el-select>
       </el-form>
+      <p>{{ $t('share_items_tips') }}</p>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogItemVisible = false">{{
           $t('cancel')
