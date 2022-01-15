@@ -502,5 +502,14 @@ exports.default = {
   to_team: 'Go to team management',
   system_reminder: 'System reminder',
   update_the_page: 'update the page',
-  click_to_view: 'click to view'
+  click_to_view: 'click to view',
+
+  my_template: 'My template',
+  item_template: 'Templates shared to this item',
+  no_my_template_text:
+    "You haven't saved any templates yet. When editing the page, click on the right side of the 'save' button and select 'save as template' in the drop-down menu. After saving the page content as a template, you can use the template you saved before the next time you create or edit a page. If you want to use the template shared by others, you can switch to the 'template shared to this item' tab",
+  no_item_template_text:
+    'There are currently no templates shared to this project. You and other members can choose to share their own templates with this project. You can set it in my template. After sharing, all members can see the shared templates under this item',
+  sharer: 'sharer',
+  share_to_these_items: 'share to these items'
 }

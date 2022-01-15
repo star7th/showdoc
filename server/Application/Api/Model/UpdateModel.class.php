@@ -11,7 +11,7 @@ class UpdateModel  {
 
     //检测数据库并更新
     public function checkDb(){
-        $version_num = 11 ;
+        $version_num = 12 ;
         $db_version_num = D("Options")->get("db_version_num");
         if(!$db_version_num || $db_version_num < $version_num ){
             $r = $this->updateSqlite();
@@ -467,6 +467,17 @@ class UpdateModel  {
             `object_type` CHAR(2000) NOT NULL DEFAULT '',
             `action_type` CHAR(2000) NOT NULL DEFAULT '',
             `sub_time` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
+
+        //创建template_item表
+        $sql = "CREATE TABLE IF NOT EXISTS `template_item` (
+            `id`  INTEGER PRIMARY KEY ,
+            `template_id` int(11) NOT NULL DEFAULT '0',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `username` CHAR(2000) NOT NULL DEFAULT '',
+            `created_at` CHAR(2000) NOT NULL DEFAULT ''
             )";
         D("User")->execute($sql);
 

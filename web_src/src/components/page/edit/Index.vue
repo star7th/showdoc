@@ -94,9 +94,12 @@
           <el-button type size="medium" @click="insert_database_template">{{
             $t('insert_database_doc_template')
           }}</el-button>
-          <el-button type size="medium" @click.native="ShowTemplateList">{{
-            $t('more_templ')
-          }}</el-button>
+          <el-button
+            type
+            size="medium"
+            @click.native="templateVisiable = true"
+            >{{ $t('more_templ') }}</el-button
+          >
 
           <el-dropdown
             split-button
@@ -152,7 +155,19 @@
       </el-row>
 
       <!-- 更多模板 -->
-      <TemplateList :callback="insertValue" ref="TemplateList"></TemplateList>
+      <TemplateList
+        v-if="templateVisiable"
+        :item_id="item_id"
+        :callback="
+          data => {
+            if (data && typeof data == 'string') {
+              insertValue(data)
+            }
+            templateVisiable = false
+          }
+        "
+        ref="TemplateList"
+      ></TemplateList>
 
       <!-- 历史版本 -->
       <HistoryVersion
@@ -309,7 +324,8 @@ export default {
       sortPageVisiable: false,
       notifyVisiable: false,
       is_notify: 0,
-      notify_content: ''
+      notify_content: '',
+      templateVisiable: false
     }
   },
   computed: {
@@ -490,11 +506,6 @@ export default {
 
     ShowRunApi() {
       window.open('http://runapi.showdoc.cc/')
-    },
-    // 更多模板、模板列表
-    ShowTemplateList() {
-      let childRef = this.$refs.TemplateList // 获取子组件
-      childRef.show()
     },
     // 粘贴插入表格
     ShowPasteTable() {
