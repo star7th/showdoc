@@ -58,6 +58,7 @@ class ExtLoginController extends BaseController {
         session('redirect',$redirect) ;
         $oauth2_open = D("Options")->get("oauth2_open" ) ;
         $oauth2_form = D("Options")->get("oauth2_form" ) ;
+        $oauth2_form = htmlspecialchars_decode($oauth2_form);
         $oauth2_form = json_decode($oauth2_form,1);
 
         if(!$oauth2_open){

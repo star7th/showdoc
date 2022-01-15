@@ -168,6 +168,7 @@ class AdminSettingController extends BaseController {
         $this->checkAdmin();
         $oauth2_open = D("Options")->get("oauth2_open" ) ;
         $oauth2_form = D("Options")->get("oauth2_form" ) ;
+        $oauth2_form = htmlspecialchars_decode($oauth2_form);
         $oauth2_form = json_decode($oauth2_form,1);
         
         //如果强等于false，那就是尚未有数据。关闭注册应该是有数据且数据为字符串0
