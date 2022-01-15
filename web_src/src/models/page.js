@@ -109,7 +109,11 @@ const rederPageContent = (page_content, globalParams = {}) => {
   }
 
   // 如果有query参数组，则把url中的参数去掉
-  if (obj.request.query && obj.request.query[0] && obj.request.query[0]['name']) {
+  if (
+    obj.request.query &&
+    obj.request.query[0] &&
+    obj.request.query[0]['name']
+  ) {
     const words = obj.info.url.split('?')
     obj.info.url = words[0]
   }
@@ -128,15 +132,15 @@ const rederPageContent = (page_content, globalParams = {}) => {
     newContent += `
 ##### 路径变量
 
-|变量名|必选|类型|说明|
+|变量名|示例值|必选|类型|说明|
 |:-----  |:-----|-----|
 `
     pathVariable.map(one => {
       // 如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
       if (!one.name || (one.disable && one.disable >= 1)) return
-      newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
-        one.type
-      } |${one.remark ? one.remark : '无'}   |
+      newContent += `|${one.name}|${one.value} |${
+        one.require > 0 ? '是' : '否'
+      } |${one.type} |${one.remark ? one.remark : '无'}   |
 `
     })
   }
@@ -148,16 +152,16 @@ const rederPageContent = (page_content, globalParams = {}) => {
     newContent += `
 ##### Header
 
-|header|必选|类型|说明|
+|header|示例值|必选|类型|说明|
 |:-----  |:-----|-----|
 `
     const headers = obj.request.headers
     headers.map(one => {
       // 如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
       if (!one.name || (one.disable && one.disable >= 1)) return
-      newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
-        one.type
-      } |${one.remark ? one.remark : '无'}   |
+      newContent += `|${one.name}|${one.value}|${one.value} |${
+        one.require > 0 ? '是' : '否'
+      } |${one.type} | ${one.remark ? one.remark : '无'}   |
 `
     })
   }
@@ -168,15 +172,15 @@ const rederPageContent = (page_content, globalParams = {}) => {
     newContent += `
 ##### 请求Query参数
 
-|参数名|必选|类型|说明|
+|参数名|示例值|必选|类型|说明|
 |:-----  |:-----|-----|
 `
     query.map(one => {
       // 如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
       if (!one.name || (one.disable && one.disable >= 1)) return
-      newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
-        one.type
-      } |${one.remark ? one.remark : '无'}   |
+      newContent += `|${one.name}|${one.value} |${
+        one.require > 0 ? '是' : '否'
+      } |${one.type} |${one.remark ? one.remark : '无'}   |
 `
     })
   }
@@ -187,15 +191,15 @@ const rederPageContent = (page_content, globalParams = {}) => {
     newContent += `
 ##### 请求Body参数
 
-|参数名|必选|类型|说明|
+|参数名|示例值|必选|类型|说明|
 |:-----  |:-----|-----|
 `
     params.map(one => {
       // 如果名字为空，或者存在禁用的key且禁用状态生效中，则终止本条参数
       if (!one.name || (one.disable && one.disable >= 1)) return
-      newContent += `|${one.name} |${one.require > 0 ? '是' : '否'} |${
-        one.type
-      } |${one.remark ? one.remark : '无'}   |
+      newContent += `|${one.name}|${one.value} |${
+        one.require > 0 ? '是' : '否'
+      } |${one.type} |${one.remark ? one.remark : '无'}   |
 `
     })
   }
