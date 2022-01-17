@@ -165,6 +165,9 @@ class FromCommentsController extends BaseController {
             "extend" =>array(),
         );
 
+        $responseExample = $this->_indent_json($content_array['response']['responseExample']);
+        $content_array['response']['responseExample'] = $responseExample ? $responseExample : $content['response']['responseExample'] ;
+
         if ($array['header']) {
             foreach ($array['header'] as $key => $value) {
                 // |参数名|是否必选|类型|说明
@@ -222,6 +225,17 @@ class FromCommentsController extends BaseController {
         }
 
         return json_encode($content_array);
+
+    }
+
+    // json美化
+    private function _indent_json($json) {
+
+        $json_new = json_encode(json_decode($json), JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
+        if($json_new){
+            return $json_new ;
+        }
+        return $json ;
 
     }
 }
