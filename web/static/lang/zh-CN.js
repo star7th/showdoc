@@ -480,5 +480,22 @@ exports.default = {
   to_team: '去团队管理',
   system_reminder: '系统提醒',
   update_the_page: '修改了页面',
-  click_to_view: '点此查看'
+  click_to_view: '点此查看',
+  my_template: '我的模板',
+  item_template: '共享到本项目的模板',
+  no_my_template_text:
+    '你尚未保存过任何模板。你可以在编辑页面时，在“保存”按钮右边点击，在下拉菜单中选择“另存为模板”。把页面内容保存为模板后，你下次新建或者编辑页面时便可以使用你之前保存的模板。如果你想使用别人共享的模板，可以切换到‘共享到本项目的模板’标签页去看',
+  no_item_template_text:
+    '当前没有任何共享到本项目的模板。你以及其他成员都可以选择把自己的模板共享到本项目。在‘我的模板’处便可以设置。共享后，所有成员都能看到本项目下共享的模板',
+  sharer: '共享人',
+  share_to_these_items: '共享到这些项目',
+  share_items_tips:
+    '当你选择共享到这些项目后，这些项目的成员都能使用到此共享模板',
+
+  ordinary_member: '普通成员',
+  team_admin: '团队管理员',
+
+  edit_member: '编辑成员',
+  readonly_member: '只读成员',
+  item_admin: '项目管理员'
 }
