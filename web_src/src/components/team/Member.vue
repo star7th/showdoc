@@ -15,6 +15,18 @@
             prop="member_username"
             :label="$t('member_username')"
           ></el-table-column>
+          <el-table-column
+            prop="team_member_group_id"
+            :label="$t('member_authority')"
+          >
+            <template slot-scope="scope">
+              {{
+                scope.row.team_member_group_id == 2
+                  ? $t('team_admin')
+                  : $t('ordinary_member')
+              }}
+            </template>
+          </el-table-column>
           <el-table-column prop="name" :label="$t('name')"></el-table-column>
           <el-table-column
             prop="addtime"
@@ -58,6 +70,14 @@
               ></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item>
+            <el-radio v-model="MyForm.team_member_group_id" label="1">{{
+              $t('ordinary_member')
+            }}</el-radio>
+            <el-radio v-model="MyForm.team_member_group_id" label="2">{{
+              $t('team_admin')
+            }}</el-radio>
+          </el-form-item>
         </el-form>
 
         <div slot="footer" class="dialog-footer">
@@ -80,10 +100,7 @@ export default {
   components: {},
   data() {
     return {
-      MyForm: {
-        id: '',
-        member_username: ''
-      },
+      MyForm: {},
       list: [],
       dialogFormVisible: false,
       team_id: '',
@@ -106,6 +123,13 @@ export default {
         }
       })
     },
+    reSetMyForm() {
+      this.MyForm = {
+        id: '',
+        member_username: '',
+        team_member_group_id: '1'
+      }
+    },
     MyFormSubmit() {
       var that = this
       var url = DocConfig.server + '/api/teamMember/save'
@@ -113,11 +137,12 @@ export default {
       var params = new URLSearchParams()
       params.append('team_id', this.team_id)
       params.append('member_username', this.MyForm.member_username)
+      params.append('team_member_group_id', this.MyForm.team_member_group_id)
       that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
           that.dialogFormVisible = false
           that.geList()
-          that.MyForm = {}
+          that.reSetMyForm()
         } else {
           that.$alert(response.data.error_message)
         }
@@ -146,7 +171,7 @@ export default {
       })
     },
     addTeamMember() {
-      this.MyForm = []
+      this.reSetMyForm()
       this.dialogFormVisible = true
     },
     goback() {
@@ -200,6 +225,7 @@ export default {
     this.team_id = this.$route.params.team_id
     this.geList()
     this.getAllUser()
+    this.reSetMyForm()
   }
 }
 </script>

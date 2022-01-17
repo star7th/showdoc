@@ -9,15 +9,18 @@ class TeamMemberController extends BaseController {
     //添加和编辑
     public function save(){
         $login_user = $this->checkLogin();
+        $uid = $login_user['uid'] ;
 
-        $member_username = I("post.member_username");
+        $member_username = I("member_username");
         $team_id = I("post.team_id/d");
+        $team_member_group_id = I("post.team_member_group_id/d") ? I("post.team_member_group_id/d") :1 ;
 
-        $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
-        if (!$teamInfo) {
-            $this->sendError(10209,"无此团队或者你无管理此团队的权限");
+        if(!$this->checkTeamManage($uid , $team_id) ){
+            $this->sendError(10103);
             return ;
-        } 
+        }
+        
+        $teamInfo = D("Team")->where(" id = '$team_id'  ")->find();
 
         $member_username_array = explode("," , $member_username) ;
         foreach($member_username_array as $key => $value ){
@@ -33,6 +36,7 @@ class TeamMemberController extends BaseController {
             $data['team_id'] = $team_id ;
             $data['member_uid'] = $memberInfo['uid'] ;
             $data['member_username'] = $memberInfo['username'] ;
+            $data['team_member_group_id'] = $team_member_group_id ;
             $data['addtime'] = time() ;
             $id = D("TeamMember")->add($data);  
     
@@ -68,13 +72,15 @@ class TeamMemberController extends BaseController {
     //获取列表
     public function getList(){
         $login_user = $this->checkLogin();
+        $uid = $login_user['uid'] ;
         $team_id = I("team_id/d");
 
-        $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
-        if (!$teamInfo) {
-            $this->sendError(102099,"无此团队或者你无管理此团队的权限");
+        if(!$this->checkTeamManage($uid , $team_id) ){
+            $this->sendError(10103);
             return ;
         }
+
+        $teamInfo = D("Team")->where(" id = '$team_id' ")->find();
 
         if ($login_user['uid'] > 0 ) {
             $ret = D("TeamMember")->where(" team_id = '$team_id' ")->join(" left join user on user.uid = team_member.member_uid")->field("team_member.* , user.name as name")->order(" addtime desc  ")->select();
@@ -92,14 +98,17 @@ class TeamMemberController extends BaseController {
     //删除
     public function delete(){
         $login_user = $this->checkLogin();
-        $id = I("id/d")? I("id/d") : 0;
+        $uid = $login_user['uid'] ;
+        $id = I("post.id/d")? I("post.id/d") : 0;
         $teamMemberInfo = D("TeamMember")->where(" id = '$id'  ")->find();
         $team_id = $teamMemberInfo['team_id'] ;
-        $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
-        if (!$teamInfo) {
-            $this->sendError(102099,"无此团队或者你无管理此团队的权限");
+
+        if(!$this->checkTeamManage($uid , $team_id) ){
+            $this->sendError(10103);
             return ;
         }
+
+        $teamInfo = D("Team")->where(" id = '$team_id' ")->find();
         $ret = D("TeamItemMember")->where(" member_uid = '$teamMemberInfo[member_uid]' and  team_id = '$team_id' ")->delete();
         $ret = D("TeamMember")->where(" id = '$id' ")->delete();
         

@@ -102,7 +102,7 @@
           <el-table-column
             prop="member_group_id"
             :label="$t('authority')"
-            width="100"
+            width="120"
           >
             <template slot-scope="scope">
               <el-select
@@ -124,6 +124,7 @@
             <template slot-scope="scope">
               <el-select
                 size="mini"
+                v-if="scope.row.member_group_id <= 1"
                 v-model="scope.row.cat_id"
                 @change="changeTeamItemMemberCat($event, scope.row.id)"
                 :placeholder="$t('please_choose')"
@@ -172,12 +173,16 @@ export default {
       dialogFormTeamMemberVisible: false,
       authorityOptions: [
         {
-          label: '编辑',
+          label: this.$t('edit_member'),
           value: '1'
         },
         {
-          label: '只读',
+          label: this.$t('readonly_member'),
           value: '0'
+        },
+        {
+          label: this.$t('item_admin'),
+          value: '2'
         }
       ],
       catalogs: []

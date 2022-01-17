@@ -175,9 +175,18 @@ class BaseController extends Controller {
 		if (!$uid) {
 			return false;
 		}
+		$uid = intval($uid);
+		$item_id = intval($item_id);
 
 		$item = D("Item")->where("item_id = '%d' ",array($item_id))->find();
 		if ($item['uid'] && $item['uid'] == $uid) {
+			return true;
+		}
+
+		if(D("ItemMember")->where("item_id = '%d'  and member_group_id = 2 and uid = '$uid' ",array($item_id))->find()){
+			return true;
+		}
+		if(D("TeamItemMember")->where("item_id = '%d'  and member_group_id = 2 and member_uid = '$uid' ",array($item_id))->find()){
 			return true;
 		}
 
@@ -253,6 +262,26 @@ class BaseController extends Controller {
 			$this->sendError(10101,"该功能需要php版本".COMPOSER_PHP_VERSION."以上，你所使用的php版本".PHP_VERSION."已滞后。请联系管理员进行升级");
 			exit();
 		}
+	}
+
+	//判断某用户是否有团队管理权限（团队创建者、团队管理员）
+	protected function checkTeamManage($uid , $team_id){
+
+		if (!$uid) {
+			return false;
+		}
+
+		$team = D("Team")->where("id = '%d' ",array($team_id))->find();
+		if ($team['uid'] && $team['uid'] == $uid) {
+			return true;
+		}
+
+		$team_member = D("TeamMember")->where("team_id = '%d' and member_uid = '$uid' and team_member_group_id = 2  ",array($team_id))->find();
+		if ($team_member) {
+			return true;
+		}
+
+		return false;
 	}
 
 

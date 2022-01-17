@@ -33,9 +33,14 @@
         width="100"
       ></el-table-column>
       <el-table-column
-        prop="member_group"
+        prop="member_group_id"
         :label="$t('authority')"
-      ></el-table-column>
+        width="120"
+      >
+        <template slot-scope="scope"
+          >{{ memberGroupText(scope.row.member_group_id, scope.row.cat_name) }}
+        </template>
+      </el-table-column>
       <el-table-column prop :label="$t('operation')">
         <template slot-scope="scope">
           <el-button
@@ -85,6 +90,7 @@
       :visible.sync="dialogFormVisible"
       :modal="false"
       top="10vh"
+      width="400px"
       :close-on-click-modal="false"
     >
       <el-form>
@@ -105,13 +111,23 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label class="readonly-checkbox">
-          <el-checkbox v-model="MyForm.is_readonly">{{
-            $t('readonly')
-          }}</el-checkbox>
+        <el-form-item>
+          <el-radio v-model="MyForm.member_group_id" label="1">{{
+            $t('edit_member')
+          }}</el-radio>
+          <el-radio v-model="MyForm.member_group_id" label="0">{{
+            $t('readonly_member')
+          }}</el-radio>
+          <el-radio v-model="MyForm.member_group_id" label="2">{{
+            $t('item_admin')
+          }}</el-radio>
         </el-form-item>
-        <el-form-item label>
-          <el-select v-model="MyForm.cat_id" :placeholder="$t('all_cat2')">
+        <el-form-item label v-show="MyForm.member_group_id < 2">
+          <el-select
+            style="width:100%"
+            v-model="MyForm.cat_id"
+            :placeholder="$t('all_cat2')"
+          >
             <el-option
               v-for="item in catalogs"
               :key="item.cat_id"
@@ -208,6 +224,7 @@
         <el-table-column prop="cat_id" :label="$t('catalog')" width="130">
           <template slot-scope="scope">
             <el-select
+              v-if="scope.row.member_group_id <= 1"
               size="mini"
               v-model="scope.row.cat_id"
               @change="changeTeamItemMemberCat($event, scope.row.id)"
@@ -246,7 +263,8 @@ export default {
     return {
       MyForm: {
         username: '',
-        is_readonly: false
+        cat_id: '',
+        member_group_id: '1'
       },
       MyForm2: {
         team_id: ''
@@ -260,12 +278,16 @@ export default {
       teamItemMembers: [],
       authorityOptions: [
         {
-          label: '编辑',
+          label: this.$t('edit_member'),
           value: '1'
         },
         {
-          label: '只读',
+          label: this.$t('readonly_member'),
           value: '0'
+        },
+        {
+          label: this.$t('item_admin'),
+          value: '2'
         }
       ],
       memberOptions: []
@@ -338,11 +360,7 @@ export default {
       params.append('item_id', that.$route.params.item_id)
       params.append('username', this.MyForm.username)
       params.append('cat_id', this.MyForm.cat_id)
-      var member_group_id = 1
-      if (this.MyForm.is_readonly) {
-        member_group_id = 0
-      }
-      params.append('member_group_id', member_group_id)
+      params.append('member_group_id', this.MyForm.member_group_id)
 
       that.axios
         .post(url, params)
@@ -351,7 +369,6 @@ export default {
             that.dialogFormVisible = false
             that.get_members()
             that.MyForm.username = ''
-            that.MyForm.is_readonly = false
           } else {
             that.$alert(response.data.error_message)
           }
@@ -514,6 +531,15 @@ export default {
           that.$alert(response.data.error_message)
         }
       })
+    },
+    memberGroupText(member_group_id, cat_name) {
+      if (member_group_id == '2') {
+        return this.$t('item_admin')
+      }
+      if (member_group_id == '1') {
+        return this.$t('edit') + '/' + this.$t('catalog') + '：' + cat_name
+      }
+      return this.$t('readonly') + '/' + this.$t('catalog') + '：' + cat_name
     }
   },
 

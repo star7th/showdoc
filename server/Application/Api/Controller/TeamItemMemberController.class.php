@@ -20,17 +20,12 @@ class TeamItemMemberController extends BaseController {
         $item_id = $teamItemMemberInfo['item_id'] ;
         $team_id = $teamItemMemberInfo['team_id'] ;
 
-
-        if(!$this->checkItemManage($uid , $item_id)){
-            $this->sendError(10303);
+        if(!$this->checkTeamManage($uid , $team_id) ){
+            $this->sendError(10103);
             return ;
         }
 
-        $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
-        if (!$teamInfo) {
-            $this->sendError(10209,"无此团队或者你无管理此团队的权限");
-            return ;
-        } 
+        $teamInfo = D("Team")->where(" id = '$team_id'  ")->find(); 
 
         if(isset($_POST['member_group_id'])){
             $return = D("TeamItemMember")->where(" id = '$id' ")->save(array("member_group_id"=>$member_group_id));
@@ -50,8 +45,9 @@ class TeamItemMemberController extends BaseController {
         $item_id = I("item_id/d");
         $team_id = I("team_id/d");
 
-        if(!$this->checkItemManage($uid , $item_id)){
-            $this->sendError(10303);
+
+        if(!$this->checkTeamManage($uid , $team_id) ){
+            $this->sendError(10103);
             return ;
         }
 

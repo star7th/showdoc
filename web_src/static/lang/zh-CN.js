@@ -490,5 +490,12 @@ exports.default = {
   sharer: '共享人',
   share_to_these_items: '共享到这些项目',
   share_items_tips:
-    '当你选择共享到这些项目后，这些项目的成员都能使用到此共享模板'
+    '当你选择共享到这些项目后，这些项目的成员都能使用到此共享模板',
+
+  ordinary_member: '普通成员',
+  team_admin: '团队管理员',
+
+  edit_member: '编辑成员',
+  readonly_member: '只读成员',
+  item_admin: '项目管理员'
 }

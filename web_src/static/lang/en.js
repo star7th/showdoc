@@ -513,5 +513,12 @@ exports.default = {
   sharer: 'sharer',
   share_to_these_items: 'share to these items',
   share_items_tips:
-    'When you choose to share to these items, members of these items can use this sharing template'
+    'When you choose to share to these items, members of these items can use this sharing template',
+
+  ordinary_member: 'Ordinary member',
+  team_admin: 'Team administrator',
+
+  edit_member: 'Edit member',
+  readonly_member: 'Readonly member',
+  item_admin: 'Item administrator'
 }

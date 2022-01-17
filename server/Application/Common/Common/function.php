@@ -245,3 +245,10 @@ function get_rand_str($len = 32 ){
 
     
 }
+
+// 获取日期
+function date_time($time = 0 ){
+    if(!$time) $time = time() ;
+    return date("Y-m-d H:i:s" , $time) ;
+
+}

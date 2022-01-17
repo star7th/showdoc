@@ -14,11 +14,13 @@ class TeamItemController extends BaseController {
         $item_id = I("post.item_id");
         $team_id = I("post.team_id/d");
         $item_id =  \SQLite3::escapeString($item_id) ;
-        $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
-        if (!$teamInfo) {
-            $this->sendError(10209,"无此团队或者你无管理此团队的权限");
+
+        if(!$this->checkTeamManage($uid , $team_id) ){
+            $this->sendError(10103);
             return ;
         }
+
+        $teamInfo = D("Team")->where(" id = '$team_id'  ")->find();
 
         $item_id_array = explode(",", $item_id);
         foreach ($item_id_array as $key => $value) {
@@ -102,11 +104,13 @@ class TeamItemController extends BaseController {
 
         $team_id = I("team_id/d");
 
-        $teamInfo = D("Team")->where(" id = '$team_id' and uid = '$login_user[uid]' ")->find();
-        if (!$teamInfo) {
-            $this->sendError(10209,"无此团队或者你无管理此团队的权限");
+        if(!$this->checkTeamManage($uid , $team_id) ){
+            $this->sendError(10103);
             return ;
-        } 
+        }
+
+        $teamInfo = D("Team")->where(" id = '$team_id'  ")->find();
+
 
         $sql  = "select item.*,team_item.team_id , team_item.id as id from item left join team_item on item.item_id = team_item.item_id where team_item.team_id = '$team_id' and item.is_del = 0 ";
         $ret = D("Item")->query($sql);
@@ -132,8 +136,8 @@ class TeamItemController extends BaseController {
         $item_id = $teamItemInfo['item_id'] ;
         $team_id = $teamItemInfo['team_id'] ;
 
-        if(!$this->checkItemManage($uid , $item_id)){
-            $this->sendError(10303);
+        if(!$this->checkTeamManage($uid , $team_id) ){
+            $this->sendError(10103);
             return ;
         }
 

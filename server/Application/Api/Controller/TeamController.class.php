@@ -12,9 +12,13 @@ class TeamController extends BaseController {
 
         $team_name = I("post.team_name");
         $id = I("post.id/d");
+        $uid = $login_user['uid'] ;
 
         if ($id) {
-            
+            if(!$this->checkTeamManage($uid , $id) ){
+                $this->sendError(10103);
+                return ;
+            }
             D("Team")->where(" id = '$id' ")->save(array("team_name"=>$team_name));
 
         }else{
@@ -39,8 +43,9 @@ class TeamController extends BaseController {
     //获取列表
     public function getList(){
         $login_user = $this->checkLogin();
-        if ($login_user['uid'] > 0 ) {
-            $ret = D("Team")->where(" uid = '$login_user[uid]' ")->order(" addtime desc  ")->select();
+        $uid = $login_user['uid'] ;
+        if ($uid > 0 ) {
+            $ret = D("Team")->where(" uid = '$uid' or id in ( select team_id from team_member where member_uid = '$uid' and team_member_group_id = 2  )  ")->order(" addtime desc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {
