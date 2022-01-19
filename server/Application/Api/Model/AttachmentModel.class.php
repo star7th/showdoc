@@ -176,6 +176,7 @@ class AttachmentModel extends BaseModel {
 			'accessKeyId' => $oss_setting['key'],
 			'accessKeySecret' => $oss_setting['secret'] ,
 			'endpoint' => $oss_setting['endpoint'] ,
+			'sendChunkedBody' => false
 		]);
 	
 		// Send a PutObject request and get the result object.
