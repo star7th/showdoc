@@ -67,7 +67,8 @@ export default {
       const options = {
         dir: 'auto', // 文字方向
         body: msg, // 通知主体
-        requireInteraction: true // 不自动关闭通知
+        requireInteraction: true, // 不自动关闭通知
+        tag: from_uid + '_' + message_content_id
       }
       // 先检查浏览器是否支持
       if (!window.Notification) {
