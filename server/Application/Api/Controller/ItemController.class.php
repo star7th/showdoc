@@ -155,21 +155,38 @@ class ItemController extends BaseController {
         $item_group_id = I("item_group_id/d") ? I("item_group_id/d") : 0; //项目分组id。默认是0
 
         $where = "uid = '$login_user[uid]' " ;     
-        $member_item_ids = array(-1) ; 
-        $item_members = D("ItemMember")->where("uid = '$login_user[uid]'")->select();
+        $member_item_ids = array(-1) ; // 所有 只读和编辑成员 的项目
+        $manage_member_item_ids = array(-1) ; // 所有拥有项目管理权限的成员的项目
+
+        $item_members = D("ItemMember")->where("uid = '$login_user[uid]' and  member_group_id != '2' ")->select();
         if ($item_members) {
             foreach ($item_members as $key => $value) {
                 $member_item_ids[] = $value['item_id'] ;
             }
         }
-        $team_item_members = D("TeamItemMember")->where("member_uid = '$login_user[uid]'")->select();
+        $team_item_members = D("TeamItemMember")->where("member_uid = '$login_user[uid]' and  member_group_id != '2' ")->select();
         if ($team_item_members) {
             foreach ($team_item_members as $key => $value) {
                 $member_item_ids[] = $value['item_id'] ;
             }
         }
 
+        $item_members = D("ItemMember")->where("uid = '$login_user[uid]' and  member_group_id = '2' ")->select();
+        if ($item_members) {
+            foreach ($item_members as $key => $value) {
+                $manage_member_item_ids[] = $value['item_id'] ;
+            }
+        }
+        $team_item_members = D("TeamItemMember")->where("member_uid = '$login_user[uid]' and  member_group_id = '2' ")->select();
+        if ($team_item_members) {
+            foreach ($team_item_members as $key => $value) {
+                $manage_member_item_ids[] = $value['item_id'] ;
+            }
+        }
+
+
         $where .= " or item_id in ( ".implode(",", $member_item_ids)." ) ";
+        $where .= " or item_id in ( ".implode(",", $manage_member_item_ids)." ) ";
         if($item_group_id){
             $res = D("ItemGroup")->where(" id = '$item_group_id' ")->find();
             if($res){
@@ -180,10 +197,17 @@ class ItemController extends BaseController {
         
         
         foreach ($items as $key => $value) {
+            $items[$key]['s_number'] = 0 ;
             if ($value['uid'] == $login_user['uid']) {
                $items[$key]['creator'] = 1 ;
+               $items[$key]['manage'] = 1 ;
+            }
+            else if( in_array($value['item_id'] , $manage_member_item_ids ) ) {
+                $items[$key]['creator'] = 0 ;
+                $items[$key]['manage'] = 1 ;
             }else{
                $items[$key]['creator'] = 0 ;
+               $items[$key]['manage'] = 0 ;
                unset($items[$key]['password']);
             }
             //判断是否为私密项目
