@@ -76,7 +76,7 @@ class AdminUserController extends BaseController {
         $this->checkAdmin();
         $username = I("post.username");
         $password = I("post.password");
-        $uid = I("post.uid");
+        $uid = I("post.uid/d");
         $name = I("post.name");
         if(!$username){
             $this->sendError(10101,'用户名不允许为空');
