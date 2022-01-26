@@ -78,11 +78,8 @@ class AttachmentController extends BaseController {
         if (!$_FILES['editormd-image-file']) {
            return false;
         }
-        
-        if (strstr(strip_tags(strtolower($_FILES['editormd-image-file']['name'])), ".php") 
-            || strstr(strip_tags(strtolower($_FILES['editormd-image-file']['name'])), ".htm") 
-            || strstr(strip_tags(strtolower($_FILES['editormd-image-file']['name'])), ".svg") 
-            ) {
+
+        if(D("Attachment")->isDangerFilename($_FILES['editormd-image-file']['name'])){
             return false;
         }
 
@@ -111,12 +108,8 @@ class AttachmentController extends BaseController {
         if (!$uploadFile) {
            return false;
         }
-        
-        if (strstr(strip_tags(strtolower($uploadFile['name'])), ".php") 
-            || strstr(strip_tags(strtolower($uploadFile['name'])), ".htm") 
-            || strstr(strip_tags(strtolower($uploadFile['name'])), ".svg") 
-            
-            ) {
+
+        if(D("Attachment")->isDangerFilename($uploadFile['name'])){
             $this->sendError(10100,'不支持此文件类型');
             return false;
         }
