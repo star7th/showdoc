@@ -9,7 +9,7 @@ class UserController extends BaseController {
         $username = trim(I("username"));
         $password = I("password");
         $confirm_password = I("confirm_password");
-        $v_code = I("v_code");
+        $v_code = strtolower(I("v_code"));
         $register_open = D("Options")->get("register_open" ) ;
         if ($register_open === '0') {
            $this->sendError(10101,"管理员已关闭注册");
@@ -100,7 +100,7 @@ class UserController extends BaseController {
     public function login(){
         $username = trim(I("username"));
         $password = I("password");
-        $v_code = I("v_code");
+        $v_code = strtolower(I("v_code"));
         if (!$password) {
                 $this->sendError(10206,"no empty password");
                 return;
