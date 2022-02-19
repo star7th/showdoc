@@ -94,6 +94,8 @@ class AdminSettingController extends BaseController {
                $this->sendError(10011,"Can't connect to LDAP server");
                return ;
             }
+
+            $ldap_form['bind_password'] = htmlspecialchars_decode($ldap_form['bind_password']);
             
             ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $ldap_form['version']);
             $rs=ldap_bind($ldap_conn, $ldap_form['bind_dn'], $ldap_form['bind_password']);//与服务器绑定 用户登录验证 成功返回1 
