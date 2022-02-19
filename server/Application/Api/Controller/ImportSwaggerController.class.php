@@ -178,7 +178,7 @@ class ImportSwaggerController extends BaseController {
                         "name" =>$value["key"],
                         "type" =>'string',
                         "value" =>$value["value"],
-                        "require" =>'1',
+                        "require" =>(!$value["required"])?"0":'1',
                         "remark" =>'',
                     );
             }
@@ -206,7 +206,7 @@ class ImportSwaggerController extends BaseController {
                         "name" =>$value["name"],
                         "type" =>'string',
                         "value" =>$value["value"],
-                        "require" =>'1',
+                        "require" =>(!$value["required"])?"0":'1',
                         "remark" =>$value["description"],
                     );
                 }
