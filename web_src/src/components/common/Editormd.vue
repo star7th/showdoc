@@ -31,6 +31,10 @@
 .markdown-body pre code {
   color: #333;
 }
+.editormd-html-preview blockquote,
+.editormd-preview-container blockquote {
+  font-style: normal;
+}
 </style>
 <script>
 import BigImg from '@/components/common/BigImg'
