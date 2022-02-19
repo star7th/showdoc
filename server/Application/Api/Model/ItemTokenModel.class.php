@@ -8,8 +8,8 @@ use Api\Model\BaseModel;
 class ItemTokenModel extends BaseModel {
 
 	public function createToken($item_id){
-		$api_key = md5(md5($item_id.microtime().rand()."showdoc")."srffsrfgr".rand()).rand();
-		$api_token = md5(md5($item_id.microtime().rand()."showdoc")."rgrhbtgd34".rand()).rand();
+		$api_key = get_rand_str().rand();
+		$api_token = get_rand_str().rand();
 		$data['item_id'] = $item_id ;
 		$data['api_key'] = $api_key ;
 		$data['api_token'] = $api_token ;
@@ -51,6 +51,21 @@ class ItemTokenModel extends BaseModel {
         }else{
             return false;
         }
+	}
+
+	public function resetToken($item_id){
+		$item_id = intval($item_id) ;
+		$item_token = $this->where("item_id='$item_id'")->find();
+		if (!$item_token) {
+			$this->createToken($item_id);
+			sleep(1);
+			$item_token = $this->where("item_id='$item_id'")->find();
+		}
+		$item_token['api_token'] = get_rand_str().rand();
+		$this->where("item_id='$item_id'")->save(array(
+			"api_token"=> $item_token['api_token'] 
+		));
+		return $item_token ;
 	}
 
 	

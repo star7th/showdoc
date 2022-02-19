@@ -469,10 +469,10 @@ class ItemController extends BaseController {
             return ;
         }
 
-        $ret = D("ItemToken")->where("item_id = '$item_id' ")->delete();
+        $item_token = D("ItemToken")->resetToken($item_id);
 
-        if ($ret) {
-            $this->getKey();
+        if ($item_token) {
+            $this->sendResult($item_token);
         }else{
             $this->sendError(10101);
         }
