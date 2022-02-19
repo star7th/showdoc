@@ -552,7 +552,10 @@ class ItemController extends BaseController {
         $password = I("password");
         $item_description = I("item_description");
         $item_type = I("item_type") ? I("item_type") : 1 ;
-        if(!$item_name)return false;
+        if(!$item_name){
+            $this->sendError(10100, '项目名不能为空');
+            return false;
+        }
         if ($item_domain) {
             
             if(!ctype_alnum($item_domain) ||  is_numeric($item_domain) ){
