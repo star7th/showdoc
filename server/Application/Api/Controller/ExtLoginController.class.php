@@ -135,7 +135,16 @@ class ExtLoginController extends BaseController {
 
                 $res_array = json_decode($res, true);
                 if($res_array){
-                    $username = $res_array['preferred_username'] ? $res_array['preferred_username'] : $res_array['username'] ;
+                    $username = '';
+                    if($res_array['preferred_username']){
+                        $username = $res_array['preferred_username'] ;
+                    }
+                    if($res_array['name']){
+                        $username = $res_array['name'] ;
+                    }
+                    if($res_array['username']){
+                        $username = $res_array['username'] ;
+                    }
                     if(!$username){
                         echo "返回信息中无法获取用户名。返回的内容如下：".$res;
                         return ;
