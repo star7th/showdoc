@@ -130,13 +130,16 @@ class ExtLoginController extends BaseController {
                 //echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
                 //echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
                // echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
-                
-                $res = http_post($urlUserInfo,array(
-                    "access_token"=>$accessToken->getToken()
-                ));
+            
+                $res = http_get( $urlUserInfo."?access_token=".$accessToken->getToken() );
+
                 $res_array = json_decode($res, true);
                 if($res_array){
                     $username = $res_array['preferred_username'] ? $res_array['preferred_username'] : $res_array['username'] ;
+                    if(!$username){
+                        echo "返回信息中无法获取用户名。返回的内容如下：".$res;
+                        return ;
+                    }
                     $info = D("User")->where("username='%s'" ,array($username))->find();
                     if(!$info){
                         D("User")->register($username,md5($username.time().rand()));

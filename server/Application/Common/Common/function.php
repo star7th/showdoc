@@ -215,6 +215,19 @@ function http_post($url, $param) {
     return $sContent;
 }
 
+// http get请求
+function http_get($url){
+    $oCurl = curl_init();   //初始化curl，
+    curl_setopt($oCurl, CURLOPT_URL, $url);   //设置网址
+    curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);  //将curl_exec的结果返回
+    curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, FALSE);   
+    curl_setopt($oCurl, CURLOPT_HEADER, 0);         //是否输出返回头信息
+    $response = curl_exec($oCurl);   //执行
+    curl_close($oCurl);          //关闭会话
+    return $response;
+}
+
 function compress_string($string){
     return base64_encode( gzcompress($string, 9)) ;
 }

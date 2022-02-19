@@ -57,13 +57,10 @@ class AttachmentModel extends BaseModel {
 	public function upload($_files , $file_key , $uid , $item_id = 0  , $page_id = 0  ){
 		$uploadFile = $_files[$file_key] ;
 
-		if (strstr(strip_tags(strtolower($uploadFile['name'])), ".php")
-		||  strstr(strip_tags(strtolower($uploadFile['name'])), ".php")
-		||  strstr(strip_tags(strtolower($uploadFile['name'])), ".svg")
-		
-		) {
+		if($this->isDangerFilename($uploadFile['name'])){
 			return false;
-	}
+		}
+
 		$oss_open = D("Options")->get("oss_open" ) ;
 		if ($oss_open) {
 				$url = $this->uploadOss($uploadFile);
@@ -288,6 +285,27 @@ class AttachmentModel extends BaseModel {
 
 		}
 
+	}
+
+	// 判断文件名是否包含危险的扩展名
+	public function isDangerFilename($filename){
+
+		$isDangerStr = function ($filename , $keyword){
+			if(strstr(strip_tags(strtolower( $filename )), $keyword) ){
+				return true ;
+			}
+			return false;
+		};
+		if (
+			 $isDangerStr($filename , ".php")
+			|| $isDangerStr($filename , ".svg")
+			|| $isDangerStr($filename , ".htm")
+			|| $isDangerStr($filename , "%")
+		) {
+			return true;
+		}
+	
+		return false;
 	}
 
 
