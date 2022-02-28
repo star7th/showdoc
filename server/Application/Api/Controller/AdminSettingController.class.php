@@ -83,6 +83,8 @@ class AdminSettingController extends BaseController {
             if (!$ldap_form['user_field']) {
                 $ldap_form['user_field'] = 'cn';
             }
+
+            $ldap_form['user_field'] = strtolower($ldap_form['user_field']);
             
             if( !extension_loaded( 'ldap' ) ) {
                $this->sendError(10011,"你尚未安装php-ldap扩展。如果是普通PHP环境，请手动安装之。如果是使用之前官方docker镜像，则需要重新安装镜像。方法是：备份 /showdoc_data 整个目录，然后全新安装showdoc，接着用备份覆盖/showdoc_data 。然后递归赋予777可写权限。");
