@@ -50,6 +50,18 @@
           </el-tooltip>
 
           <el-tooltip
+            v-if="lang == 'zh-cn'"
+            class="item"
+            effect="dark"
+            content="showdoc推送服务"
+            placement="top"
+          >
+            <a target="_blank" href="https://push.showdoc.com.cn">
+              <i class="el-icon-s-promotion"></i>
+            </a>
+          </el-tooltip>
+
+          <el-tooltip
             class="item"
             effect="dark"
             :content="$t('team_mamage')"
