@@ -232,8 +232,8 @@ export default {
       [
         `${this.editorPath}/../jquery.min.js`,
         `${this.editorPath}/lib/raphael.min.js`,
-        `${this.editorPath}/lib/flowchart.min.js`,
-        `${this.editorPath}/lib/d3@5.min.js`
+        `${this.editorPath}/lib/d3@5.min.js`,
+        `${this.editorPath}/lib/flowchart.min.js`
       ],
       () => {
         $s(
