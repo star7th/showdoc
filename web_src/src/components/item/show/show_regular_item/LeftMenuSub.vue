@@ -7,7 +7,7 @@
         :key="catalog2.cat_id"
       >
         <template slot="title">
-          <img src="static/images/folder.png" />
+          <i class="el-icon-folder"></i>
           {{ catalog2.cat_name }}
         </template>
         <!-- 三级目录的页面 -->
