@@ -35,6 +35,38 @@
 .editormd-preview-container blockquote {
   font-style: normal;
 }
+
+.markdown-body table thead tr {
+  background-color: #409eff;
+  color: #fff;
+}
+
+.markdown-body pre {
+  position: relative;
+  background-color: #fcfcfc;
+  border: 1px solid #e1e1e8;
+}
+
+pre .btn-pre-copy {
+  display: none;
+}
+
+pre:hover .btn-pre-copy {
+  display: block;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  color: hsla(0, 0%, 54.9%, 0.8);
+  transition: color 0.1s;
+}
 </style>
 <script>
 import BigImg from '@/components/common/BigImg'
@@ -444,19 +476,34 @@ export default {
         that.imgSrc = img_url
       })
 
-      // 表格头颜色
-      $('#' + this.id + ' table thead tr').css('background-color', '#409eff')
-      $('#' + this.id + ' table thead tr').css('color', '#fff')
-
-      // 代码块美化
-
-      $('.markdown-body pre').css('background-color', '#fcfcfc')
-      $('.markdown-body pre').css('border', '1px solid #e1e1e8')
-
       // 高亮关键字
       if (this.keyword) $('#' + this.id).mark(this.keyword)
-    },
 
+      // 给每一串代码元素增加复制代码节点
+      // 这种操作dom的方式其实我也不想做的，但是编辑器的代码块无复制功能，只能自己hack
+      let pre = $('#page_md_content pre')
+      let btn = $('<span class="btn-pre-copy" >复制</span>')
+      btn.prependTo(pre)
+      $('#' + this.id).on('click', '.btn-pre-copy', function() {
+        that.doCopy(this)
+      })
+    },
+    // 处理代码块复制
+    doCopy(jqThis) {
+      // 执行复制
+      let btn = $(jqThis)
+      let pre = btn.parent()
+      // 避免复制内容时把按钮文字也复制进去。先临时置空
+      btn.text('')
+      this.$copyText(pre.text()).then(
+        // 修改按钮名
+        btn.text('复制成功')
+      )
+      // 一定时间后吧按钮名改回来
+      setTimeout(() => {
+        btn.text('复制')
+      }, 1500)
+    },
     // 转义
     html_decode(str) {
       var s = ''
