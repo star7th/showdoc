@@ -301,6 +301,7 @@ class AttachmentModel extends BaseModel {
 			|| $isDangerStr($filename , ".svg")
 			|| $isDangerStr($filename , ".htm")
 			|| $isDangerStr($filename , "%")
+			|| $isDangerStr($filename , ".xml")
 		) {
 			return true;
 		}
