@@ -15,6 +15,10 @@ class UserController extends BaseController {
            $this->sendError(10101,"管理员已关闭注册");
            return ;
         }
+        if (strlen($password) > 100 ) {
+            $this->sendError(10101,"密码过长");
+            return ;
+        }
         if (C('CloseVerify') || $v_code && $v_code == session('v_code') ) {
         session('v_code',null) ;
         if ( $password != '' && $password == $confirm_password) {
@@ -231,6 +235,10 @@ class UserController extends BaseController {
            $this->sendError(10101,"管理员已关闭注册");
            return ;
         }
+        if (strlen($password) > 100 ) {
+            $this->sendError(10101,"密码过长");
+            return ;
+        }
         if ( !D("Captcha")->check($captcha_id , $captcha) ) {
             $this->sendError(10206,L('verification_code_are_incorrect'));
             return;
@@ -315,6 +323,10 @@ class UserController extends BaseController {
         $username = $login_user['username'];
         $password = I("password");
         $new_password = I("new_password");
+        if (strlen($new_password) > 100 ) {
+            $this->sendError(10101,"密码过长");
+            return ;
+        }
         $ret = D("User")->checkLogin($username,$password);
         if ($ret) {
                 $ret = D("User")->updatePwd($login_user['uid'],$new_password);
