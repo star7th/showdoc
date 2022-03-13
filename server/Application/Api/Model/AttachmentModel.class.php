@@ -306,6 +306,9 @@ class AttachmentModel extends BaseModel {
 			|| $isDangerStr($filename , ".xxhtml")
 			|| $isDangerStr($filename , ".asp")			
 			|| $isDangerStr($filename , ".xsl")
+			|| $isDangerStr($filename , ".aspx")
+			|| $isDangerStr($filename , ".xsd")
+			|| $isDangerStr($filename , ".asa")
 		) {
 			return true;
 		}
