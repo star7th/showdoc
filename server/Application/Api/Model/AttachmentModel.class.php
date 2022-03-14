@@ -54,10 +54,10 @@ class AttachmentModel extends BaseModel {
 	}
 
 	//上传文件，返回url
-	public function upload($_files , $file_key , $uid , $item_id = 0  , $page_id = 0  ){
+	public function upload($_files , $file_key , $uid , $item_id = 0  , $page_id = 0 , $check_filename = true  ){
 		$uploadFile = $_files[$file_key] ;
 
-		if( !$this->isAllowedFilename($_files[$file_key]['name']) ){
+		if( $check_filename && !$this->isAllowedFilename($_files[$file_key]['name']) ){
 			return false;
 		}
 
@@ -324,14 +324,12 @@ class AttachmentModel extends BaseModel {
 	public function isAllowedFilename($filename){
 		$allow_array = array(
 			'.jpg','.jpeg','.png','.bmp','.gif','.ico','.webp',
-			'.mp3','.wav','.mp4',
-			'.mov','.webmv','.flac','.mkv',
+			'.mp3','.wav','.mp4','.mov','.flac','.mkv',
 			'.zip','.tar','.gz','.tgz','.ipa','.apk','.rar','.iso',
-			'.pdf','.ofd','.swf','.epub','.xps',
-			'.doc','.docx','.wps',
+			'.pdf','.epub','.xps','.doc','.docx','.wps',
 			'.ppt','.pptx','.xls','.xlsx','.txt','.psd','.csv',
 			'.cer','.ppt','.pub','.json','.css',
-			) ;
+		) ;
 
 		$ext = strtolower(substr($filename,strripos($filename,'.')) ); //获取文件扩展名（转为小写后）
 		if(in_array( $ext , $allow_array ) ){
