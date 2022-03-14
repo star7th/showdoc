@@ -324,13 +324,13 @@ class AttachmentModel extends BaseModel {
 	public function isAllowedFilename($filename){
 		$allow_array = array(
 			'.jpg','.jpeg','.png','.bmp','.gif','.ico','.webp',
-			'.mp3','.wav','.m4a','.ogg','.webma','.mp4','.flv',
+			'.mp3','.wav','.mp4',
 			'.mov','.webmv','.flac','.mkv',
-			'.zip','.tar','.gz','.tgz','.ipa','.apk','.rar','.iso','.bz2','.epub',
+			'.zip','.tar','.gz','.tgz','.ipa','.apk','.rar','.iso',
 			'.pdf','.ofd','.swf','.epub','.xps',
-			'.doc','.docx','.odt','.rtf','.docm','.dotm','.dot','.dotx','.wps',
+			'.doc','.docx','.wps',
 			'.ppt','.pptx','.xls','.xlsx','.txt','.psd','.csv',
-			'.cer','.ppt','.pub','.properties','.json','.css',
+			'.cer','.ppt','.pub','.json','.css',
 			) ;
 
 		$ext = strtolower(substr($filename,strripos($filename,'.')) ); //获取文件扩展名（转为小写后）
