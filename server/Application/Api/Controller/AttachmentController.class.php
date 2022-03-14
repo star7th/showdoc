@@ -79,7 +79,9 @@ class AttachmentController extends BaseController {
            return false;
         }
 
-        if(D("Attachment")->isDangerFilename($_FILES['editormd-image-file']['name'])){
+        if(!D("Attachment")->isAllowedFilename($_FILES['editormd-image-file']['name'])){
+            $message = "不支持上传该文件类型。如有需要请联系网站管理员" ;
+            echo json_encode(array("message"=>$message,"success"=>0));
             return false;
         }
 
@@ -109,8 +111,8 @@ class AttachmentController extends BaseController {
            return false;
         }
 
-        if(D("Attachment")->isDangerFilename($uploadFile['name'])){
-            $this->sendError(10100,'不支持此文件类型');
+        if(!D("Attachment")->isAllowedFilename($uploadFile['name'])){
+            $this->sendError(10101,'不支持上传该文件类型。如有需要请联系网站管理员');
             return false;
         }
 

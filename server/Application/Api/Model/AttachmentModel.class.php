@@ -57,7 +57,7 @@ class AttachmentModel extends BaseModel {
 	public function upload($_files , $file_key , $uid , $item_id = 0  , $page_id = 0  ){
 		$uploadFile = $_files[$file_key] ;
 
-		if($this->isDangerFilename($uploadFile['name'])){
+		if( !$this->isAllowedFilename($_files[$file_key]['name']) ){
 			return false;
 		}
 
@@ -288,6 +288,7 @@ class AttachmentModel extends BaseModel {
 	}
 
 	// 判断文件名是否包含危险的扩展名
+	// 准备弃用。因为一个个ban太麻烦了。准备改用白名单机制
 	public function isDangerFilename($filename){
 
 		$isDangerStr = function ($filename , $keyword){
@@ -319,6 +320,24 @@ class AttachmentModel extends BaseModel {
 		return false;
 	}
 
+	// 判断上传的文件扩展名是否处于白名单内
+	public function isAllowedFilename($filename){
+		$allow_array = array(
+			'.jpg','.jpeg','.png','.bmp','.gif','.ico','.webp',
+			'.mp3','.wav','.m4a','.ogg','.webma','.mp4','.flv',
+			'.mov','.webmv','.m3u8a','.flac','.mkv',
+			'.zip','.tar','.gz','.tgz','.ipa','.apk','.rar','.iso','.bz2','.epub',
+			'.pdf','.ofd','.swf','.epub','.xps',
+			'.doc','.docx','.odt','.rtf','.docm','.dotm','.dot','.dotx','.wps','.wpt',
+			'.ppt','.pptx','.xls','.xlsx','.txt','.md','.psd','.csv',
+			'.cer','.ppt','.pub','.properties','.json','.css',
+			) ;
 
+		$ext = strtolower(substr($filename,strripos($filename,'.')) ); //获取文件扩展名（转为小写后）
+		if(in_array( $ext , $allow_array ) ){
+			return true ;
+		}
+		return false;
+	}
 
 }
