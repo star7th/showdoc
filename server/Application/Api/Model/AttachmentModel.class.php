@@ -325,7 +325,7 @@ class AttachmentModel extends BaseModel {
 		$allow_array = array(
 			'.jpg','.jpeg','.png','.bmp','.gif','.ico','.webp',
 			'.mp3','.wav','.m4a','.ogg','.webma','.mp4','.flv',
-			'.mov','.webmv','.m3u8a','.flac','.mkv',
+			'.mov','.webmv','.flac','.mkv',
 			'.zip','.tar','.gz','.tgz','.ipa','.apk','.rar','.iso','.bz2','.epub',
 			'.pdf','.ofd','.swf','.epub','.xps',
 			'.doc','.docx','.odt','.rtf','.docm','.dotm','.dot','.dotx','.wps',
