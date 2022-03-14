@@ -328,7 +328,7 @@ class AttachmentModel extends BaseModel {
 			'.mov','.webmv','.m3u8a','.flac','.mkv',
 			'.zip','.tar','.gz','.tgz','.ipa','.apk','.rar','.iso','.bz2','.epub',
 			'.pdf','.ofd','.swf','.epub','.xps',
-			'.doc','.docx','.odt','.rtf','.docm','.dotm','.dot','.dotx','.wps','.wpt',
+			'.doc','.docx','.odt','.rtf','.docm','.dotm','.dot','.dotx','.wps',
 			'.ppt','.pptx','.xls','.xlsx','.txt','.psd','.csv',
 			'.cer','.ppt','.pub','.properties','.json','.css',
 			) ;
