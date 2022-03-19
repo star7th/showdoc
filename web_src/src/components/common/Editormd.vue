@@ -1,7 +1,5 @@
 <template>
   <div :id="id" class="main-editor">
-    <textarea v-html="content" style="display:none;"></textarea>
-
     <!-- 放大图片 -->
     <BigImg v-if="showImg" @clickit="showImg = false" :imgSrc="imgSrc"></BigImg>
   </div>
@@ -300,14 +298,16 @@ export default {
   methods: {
     initEditor() {
       this.$nextTick((editorMD = window.editormd) => {
+        const editorConfig = this.editorConfig
+        editorConfig.markdown = this.content
         if (editorMD) {
           if (this.type == 'editor') {
-            this.instance = editorMD(this.id, this.editorConfig)
+            this.instance = editorMD(this.id, editorConfig)
             // 草稿
             // this.draft(); 鉴于草稿功能未完善。先停掉。
             // window.addEventListener('beforeunload', e => this.beforeunloadHandler(e));
           } else {
-            this.instance = editorMD.markdownToHTML(this.id, this.editorConfig)
+            this.instance = editorMD.markdownToHTML(this.id, editorConfig)
           }
           this.deal_with_content()
         }
