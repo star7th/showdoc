@@ -65,8 +65,7 @@ export default {
       isUpdate: false,
       cur_version: '',
       new_version: '',
-      url: '',
-      file_url: ''
+      url: ''
     }
   },
   methods: {
@@ -81,7 +80,6 @@ export default {
       this.request('/api/adminUpdate/checkUpdate', {}).then(data => {
         if (data && data.data && data.data.url) {
           this.url = data.data.url
-          this.file_url = data.data.file_url
           this.new_version = data.data.new_version
           this.cur_version = data.data.version
           this.isUpdate = true
@@ -92,10 +90,7 @@ export default {
       let loading = this.$loading({
         text: '正在下载更新包...'
       })
-      this.request('/api/adminUpdate/download', {
-        new_version: this.new_version,
-        file_url: this.file_url
-      }).then(
+      this.request('/api/adminUpdate/download', {}).then(
         data => {
           loading.close()
           loading = this.$loading({

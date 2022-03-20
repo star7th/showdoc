@@ -28,8 +28,21 @@ class AdminUpdateController extends BaseController {
         $this->checkAdmin();
         set_time_limit(1000);
         ini_set('memory_limit','500M');
-        $new_version = I("new_version") ;
-        $file_url = I("file_url") ;
+        //获取当前版本
+        $text = file_get_contents("../composer.json");
+        $composer = json_decode($text, true);
+        $version = $composer['version'] ;
+        $url = "https://www.showdoc.cc/server/api/open/checkUpdate";
+        $res = http_post($url , array("version"=>$version));
+        $res_array = json_decode($res,true);
+        $new_version =$res_array['data']['new_version'] ;
+        $file_url =$res_array['data']['file_url'] ;
+
+        if(!$file_url){
+            $this->sendError(10101,'检测更新时异常');
+            return ;
+        }
+
         $version_num = str_replace("v","",$new_version) ;
 
         $showdoc_path = "../" ;
