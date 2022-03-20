@@ -9,6 +9,7 @@ class ExportController extends BaseController {
         ini_set('memory_limit','800M');
         import("Vendor.Parsedown.Parsedown");
         $Parsedown = new \Parsedown();
+        $convert = new \Api\Helper\Convert();
         $item_id =  I("item_id/d");
         $cat_id =  I("cat_id/d");
         $page_id =  I("page_id/d");
@@ -66,7 +67,7 @@ class ExportController extends BaseController {
                     $data .= "<h1>{$value['page_title']}</h1>";
                 }
                 $data .= '<div style="margin-left:20px;">';
-                $tmp_content = D("Page")->runapiToMd($value['page_content']) ;
+                $tmp_content = $convert->runapiToMd($value['page_content']) ;
                 $value['page_content'] = $tmp_content ? $tmp_content : $value['page_content'] ;
                 $data .= htmlspecialchars_decode($Parsedown->text($value['page_content']));
                 $data .= '</div>';
@@ -83,7 +84,7 @@ class ExportController extends BaseController {
                         foreach ($value['pages'] as $page) {
                             $data .= "<h2>{$parent}.{$child}、{$page['page_title']}</h2>";
                             $data .= '<div style="margin-left:0px;">';
-                            $tmp_content = D("Page")->runapiToMd($page['page_content']) ;
+                            $tmp_content = $convert->runapiToMd($page['page_content']) ;
                             $page['page_content'] = $tmp_content ? $tmp_content : $page['page_content'] ;
                             $data .= htmlspecialchars_decode($Parsedown->text($page['page_content']));
                             $data .= '</div>';
@@ -100,7 +101,7 @@ class ExportController extends BaseController {
                                     foreach ($value3['pages'] as $page3) {
                                         $data .= "<h3>{$parent}.{$parent2}.{$child2}、{$page3['page_title']}</h3>";
                                         $data .= '<div style="margin-left:0px;">';
-                                        $tmp_content = D("Page")->runapiToMd($page3['page_content']) ;
+                                        $tmp_content = $convert->runapiToMd($page3['page_content']) ;
                                         $page3['page_content'] = $tmp_content ? $tmp_content : $page3['page_content'] ;
                                         $data .= htmlspecialchars_decode($Parsedown->text($page3['page_content']));
                                         $data .= '</div>';
@@ -118,7 +119,7 @@ class ExportController extends BaseController {
                                                 foreach ($value4['pages'] as $page4) {
                                                     $data .= "<h3>{$parent}.{$parent2}.{$parent3}.{$child3}、{$page4['page_title']}</h3>";
                                                     $data .= '<div style="margin-left:30px;">';
-                                                    $tmp_content = D("Page")->runapiToMd($page4['page_content']) ;
+                                                    $tmp_content = $convert->runapiToMd($page4['page_content']) ;
                                                     $page4['page_content'] = $tmp_content ? $tmp_content : $page4['page_content'] ;
                                                     $data .= htmlspecialchars_decode($Parsedown->text($page4['page_content']));
                                                     $data .= '</div>';
@@ -135,7 +136,7 @@ class ExportController extends BaseController {
                                                             foreach ($value4['pages'] as $page5) {
                                                                 $data .= "<h3>{$parent}.{$parent2}.{$parent3}.{$parent4}.{$child4}、{$page5['page_title']}</h3>";
                                                                 $data .= '<div style="margin-left:30px;">';
-                                                                $tmp_content = D("Page")->runapiToMd($page5['page_content']) ;
+                                                                $tmp_content = $convert->runapiToMd($page5['page_content']) ;
                                                                 $page5['page_content'] = $tmp_content ? $tmp_content : $page5['page_content'] ;
                                                                 $data .= htmlspecialchars_decode($Parsedown->text($page5['page_content']));
                                                                 $data .= '</div>';

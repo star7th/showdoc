@@ -135,7 +135,8 @@ class ImportPostmanController extends BaseController {
         if($from == 'runapi'){
             return $res ;
         }else{
-            $res['page_content'] = D("Page")->runapiToMd($res['page_content']); 
+            $convert = new \Api\Helper\Convert();
+            $res['page_content'] = $convert->runapiToMd($res['page_content']);
             return $res ;
         }
     }
@@ -281,7 +282,8 @@ class ImportPostmanController extends BaseController {
         if($from == 'runapi'){
             return $res ;
         }else{
-            $res['page_content'] = D("Page")->runapiToMd($res['page_content']); 
+            $convert = new \Api\Helper\Convert();
+            $res['page_content'] = $convert->runapiToMd($res['page_content']); 
             return $res ;
         }
     }

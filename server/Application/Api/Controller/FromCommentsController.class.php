@@ -38,11 +38,12 @@ class FromCommentsController extends BaseController {
     }
 
     private function generate_one($item_id,$content){
+        $convert = new \Api\Helper\Convert();
         $item = D("Item")->where("item_id = '%d'",array($item_id))->find();
         $array = $this->parse_content($content);
         $page_content = $this->_toRunapiFormat($array);
         if($item['item_type'] != '3'){
-            $page_content = D("Page")->runapiToMd($page_content);
+            $page_content = $convert->runapiToMd($page_content);
         }
         $page_title = $array['title'];
         $page_content = $page_content;
@@ -232,7 +233,7 @@ class FromCommentsController extends BaseController {
     private function _indent_json($json) {
 
         $json_new = json_encode(json_decode($json), JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
-        if($json_new){
+        if($json_new && $json_new !='null'){
             return $json_new ;
         }
         return $json ;
