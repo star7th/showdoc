@@ -173,6 +173,13 @@
                 <i class="el-icon-question"></i>
               </el-tooltip>
             </el-form-item>
+            <el-form-item label="Logout_redirect_uri">
+              <el-input
+                v-model="form.oauth2_form.logout_redirect_uri"
+                :placeholder="$t('logout_redirect_uri_desc')"
+                class="form-el"
+              ></el-input>
+            </el-form-item>
           </div>
           <br />
           <el-form-item>
@@ -242,7 +249,8 @@ export default {
           authorize_path: '',
           token_path: '',
           resource_path: '',
-          userinfo_path: ''
+          userinfo_path: '',
+          logout_redirect_uri: ''
         }
       },
       login_secret_key: '',
@@ -305,6 +313,10 @@ export default {
           this.form.oauth2_form = response.data.data.oauth2_form
             ? response.data.data.oauth2_form
             : this.form.oauth2_form
+          this.form.oauth2_form.logout_redirect_uri = response.data.data
+            .oauth2_form.logout_redirect_uri
+            ? response.data.data.oauth2_form.logout_redirect_uri
+            : ''
         } else {
           this.$alert(response.data.error_message)
         }

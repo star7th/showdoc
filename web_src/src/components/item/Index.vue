@@ -524,9 +524,13 @@ export default {
       params.append('confirm', '1')
       that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
-          that.$router.push({
-            path: '/'
-          })
+          if (response.data.data.logout_redirect_uri) {
+            window.location.href = response.data.data.logout_redirect_uri
+          } else {
+            that.$router.push({
+              path: '/'
+            })
+          }
         } else {
           that.$alert(response.data.error_message)
         }

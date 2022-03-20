@@ -501,5 +501,6 @@ exports.default = {
 
   sql_to_markdown_table: 'SQL转表格',
   sql_to_markdown_table_description:
-    '你可以在此输入一段创建表的SQL（通常是以CREATE TABLE开头），程序会根据SQL来自动插入一个markdown格式的表格，用以描述该表的数据字典'
+    '你可以在此输入一段创建表的SQL（通常是以CREATE TABLE开头），程序会根据SQL来自动插入一个markdown格式的表格，用以描述该表的数据字典',
+  logout_redirect_uri_desc: '选填项。当用户退出登录时，将重定向到此url'
 }

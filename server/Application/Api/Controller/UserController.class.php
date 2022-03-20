@@ -346,12 +346,20 @@ class UserController extends BaseController {
     public function logout(){
         $login_user = $this->checkLogin();
         $confirm = I('post.confirm');
-        if($confirm){
+        if($confirm || strstr($_SERVER['HTTP_USER_AGENT'], "Html5Plus") ){
             D("UserToken")->where(" uid = '$login_user[uid]' ")->save(array("token_expire"=>0));
             session("login_user" , NULL);
             cookie('cookie_token',NULL);
             session(null);
-            $this->sendResult(array());
+            $logout_redirect_uri = '';
+            $oauth2_open = D("Options")->get("oauth2_open" ) ;
+            $oauth2_form = D("Options")->get("oauth2_form" ) ;
+            $oauth2_form = htmlspecialchars_decode($oauth2_form);
+            $oauth2_form = json_decode($oauth2_form,1);
+            if($oauth2_open && $oauth2_form && $oauth2_form['logout_redirect_uri']){
+                $logout_redirect_uri = $oauth2_form['logout_redirect_uri'] ;
+            }
+            $this->sendResult(array("logout_redirect_uri"=>$logout_redirect_uri));
         }
 
     }
