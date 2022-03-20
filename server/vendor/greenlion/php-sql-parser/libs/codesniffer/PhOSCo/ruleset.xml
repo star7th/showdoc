@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ruleset name="PhOSCo">
+	<description>A custom coding standard for PHP-SQL-Parser.</description>
+
+	<rule ref="Generic.Files.EndFileNewline" />
+
+	<rule ref="PEAR">
+		<exclude name="Generic.Files.LineLength" />
+		<exclude name="PEAR.Classes.ClassDeclaration" />
+		<exclude name="PEAR.Functions.FunctionDeclaration" />
+		<exclude name="PEAR.Commenting.FileComment" />
+		<exclude name="PEAR.Commenting.ClassComment" />
+		<exclude name="PEAR.ControlStructures.MultiLineCondition" />
+	</rule>
+
+	<!-- Lines can be 120 chars long, but never show errors -->
+	<rule ref="Generic.Files.LineLength">
+		<properties>
+			<property name="lineLimit" value="120" />
+			<property name="absoluteLineLimit" value="0" />
+		</properties>
+	</rule>
+
+</ruleset>

@@ -1,0 +1,1 @@
+SELECT a.*, surveyls_title, surveyls_description, surveyls_welcometext, surveyls_url FROM SURVEYS AS a INNER JOIN SURVEYS_LANGUAGESETTINGS ON (surveyls_survey_id = a.sid and surveyls_language = a.language) ORDER BY active DESC, surveyls_title ASC

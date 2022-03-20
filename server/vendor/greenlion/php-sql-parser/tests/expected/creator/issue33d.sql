@@ -1,0 +1,1 @@
+CREATE TABLE hohoho (a varchar (1000), CONSTRAINT PRIMARY KEY (a), CHECK (a > 5))

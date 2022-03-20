@@ -1,0 +1,108 @@
+a:2:{s:6:"CREATE";a:4:{s:9:"expr_type";s:5:"table";s:10:"not-exists";b:0;s:9:"base_expr";s:5:"TABLE";s:8:"sub_tree";a:1:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:5:"TABLE";}}}s:5:"TABLE";a:6:{s:9:"base_expr";s:2:"ts";s:4:"name";s:2:"ts";s:9:"no_quotes";a:2:{s:5:"delim";b:0;s:5:"parts";a:1:{i:0;s:2:"ts";}}s:10:"create-def";a:3:{s:9:"expr_type";s:18:"bracket_expression";s:9:"base_expr";s:25:" (id INT, purchased DATE)";s:8:"sub_tree";a:2:{i:0;a:3:{s:9:"expr_type";s:10:"column-def";s:9:"base_expr";s:6:"id INT";s:8:"sub_tree";a:2:{i:0;a:3:{s:9:"expr_type";s:6:"colref";s:9:"base_expr";s:2:"id";s:9:"no_quotes";a:2:{s:5:"delim";b:0;s:5:"parts";a:1:{i:0;s:2:"id";}}}i:1;a:7:{s:9:"expr_type";s:11:"column-type";s:9:"base_expr";s:3:"INT";s:8:"sub_tree";a:1:{i:0;a:5:{s:9:"expr_type";s:9:"data-type";s:9:"base_expr";s:3:"INT";s:8:"unsigned";b:0;s:8:"zerofill";b:0;s:6:"length";b:0;}}s:6:"unique";b:0;s:8:"nullable";b:1;s:8:"auto_inc";b:0;s:7:"primary";b:0;}}}i:1;a:3:{s:9:"expr_type";s:10:"column-def";s:9:"base_expr";s:14:"purchased DATE";s:8:"sub_tree";a:2:{i:0;a:3:{s:9:"expr_type";s:6:"colref";s:9:"base_expr";s:9:"purchased";s:9:"no_quotes";a:2:{s:5:"delim";b:0;s:5:"parts";a:1:{i:0;s:9:"purchased";}}}i:1;a:7:{s:9:"expr_type";s:11:"column-type";s:9:"base_expr";s:4:"DATE";s:8:"sub_tree";a:1:{i:0;a:2:{s:9:"expr_type";s:9:"data-type";s:9:"base_expr";s:4:"DATE";}}s:6:"unique";b:0;s:8:"nullable";b:1;s:8:"auto_inc";b:0;s:7:"primary";b:0;}}}}}s:7:"options";b:0;s:17:"partition-options";a:3:{i:0;a:5:{s:9:"expr_type";s:9:"partition";s:9:"base_expr";s:55:"PARTITION BY RANGE COLUMNS(id)
+            PARTITIONS 3";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"PARTITION";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:2:"BY";}i:2;a:3:{s:9:"expr_type";s:15:"partition-range";s:9:"base_expr";s:17:"RANGE COLUMNS(id)";s:8:"sub_tree";a:3:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:5:"RANGE";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:7:"COLUMNS";}i:2;a:3:{s:9:"expr_type";s:11:"column-list";s:9:"base_expr";s:4:"(id)";s:8:"sub_tree";a:1:{i:0;a:3:{s:9:"expr_type";s:6:"colref";s:9:"base_expr";s:2:"id";s:9:"no_quotes";a:2:{s:5:"delim";b:0;s:5:"parts";a:1:{i:0;s:2:"id";}}}}}}}i:3;a:3:{s:9:"expr_type";s:15:"partition-count";s:9:"base_expr";s:12:"PARTITIONS 3";s:8:"sub_tree";a:2:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:10:"PARTITIONS";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:1:"3";}}}}s:2:"by";s:5:"RANGE";s:5:"count";s:1:"3";}i:1;a:5:{s:9:"expr_type";s:13:"sub-partition";s:9:"base_expr";s:76:"SUBPARTITION LINEAR KEY ALGORITHM=2 (purchased) 
+            SUBPARTITIONS 2";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:12:"SUBPARTITION";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:6:"LINEAR";}i:2;a:5:{s:9:"expr_type";s:17:"sub-partition-key";s:9:"base_expr";s:27:"KEY ALGORITHM=2 (purchased)";s:6:"linear";b:1;s:8:"sub_tree";a:3:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:3:"KEY";}i:1;a:3:{s:9:"expr_type";s:27:"sub-partition-key-algorithm";s:9:"base_expr";s:11:"ALGORITHM=2";s:8:"sub_tree";a:3:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"ALGORITHM";}i:1;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:2;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:1:"2";}}}i:2;a:3:{s:9:"expr_type";s:11:"column-list";s:9:"base_expr";s:11:"(purchased)";s:8:"sub_tree";a:1:{i:0;a:3:{s:9:"expr_type";s:6:"colref";s:9:"base_expr";s:9:"purchased";s:9:"no_quotes";a:2:{s:5:"delim";b:0;s:5:"parts";a:1:{i:0;s:9:"purchased";}}}}}}s:9:"algorithm";s:1:"2";}i:3;a:3:{s:9:"expr_type";s:19:"sub-partition-count";s:9:"base_expr";s:15:"SUBPARTITIONS 2";s:8:"sub_tree";a:2:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:13:"SUBPARTITIONS";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:1:"2";}}}}s:2:"by";s:10:"LINEAR KEY";s:5:"count";s:1:"2";}i:2;a:3:{s:9:"expr_type";s:18:"bracket_expression";s:9:"base_expr";s:1512:"(
+                PARTITION p0 VALUES LESS THAN (1990) 
+                ENGINE bla
+                INDEX DIRECTORY = '/bar/foo'
+                MAX_ROWS = 5
+                MIN_ROWS = 2
+                (
+                    SUBPARTITION s0
+                        DATA DIRECTORY = '/disk0/data'
+                        INDEX DIRECTORY = '/disk0/idx',
+                    SUBPARTITION s1
+                        DATA DIRECTORY = '/disk1/data'
+                        INDEX DIRECTORY = '/disk1/idx'
+                ),
+                PARTITION p1 VALUES LESS THAN (2000) 
+                STORAGE ENGINE=bla
+                COMMENT = 'foobar'
+                DATA DIRECTORY '/foo/bar'
+                (
+                    SUBPARTITION s2
+                        DATA DIRECTORY = '/disk2/data'
+                        INDEX DIRECTORY = '/disk2/idx',
+                    SUBPARTITION s3
+                        DATA DIRECTORY = '/disk3/data'
+                        INDEX DIRECTORY = '/disk3/idx'
+                ),
+                PARTITION p2 VALUES LESS THAN MAXVALUE 
+                INDEX DIRECTORY '/foo/bar'
+                MIN_ROWS =10
+                MAX_ROWS  100
+                (
+                    SUBPARTITION s4
+                        DATA DIRECTORY = '/disk4/data'
+                        INDEX DIRECTORY = '/disk4/idx',
+                    SUBPARTITION s5
+                        DATA DIRECTORY = '/disk5/data'
+                        INDEX DIRECTORY = '/disk5/idx'
+                )
+            )";s:8:"sub_tree";a:3:{i:0;a:3:{s:9:"expr_type";s:13:"partition-def";s:9:"base_expr";s:496:"PARTITION p0 VALUES LESS THAN (1990) 
+                ENGINE bla
+                INDEX DIRECTORY = '/bar/foo'
+                MAX_ROWS = 5
+                MIN_ROWS = 2
+                (
+                    SUBPARTITION s0
+                        DATA DIRECTORY = '/disk0/data'
+                        INDEX DIRECTORY = '/disk0/idx',
+                    SUBPARTITION s1
+                        DATA DIRECTORY = '/disk1/data'
+                        INDEX DIRECTORY = '/disk1/idx'
+                )";s:8:"sub_tree";a:8:{i:0;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"PARTITION";s:4:"name";s:2:"p0";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:2:"p0";}i:2;a:3:{s:9:"expr_type";s:16:"partition-values";s:9:"base_expr";s:23:"VALUES LESS THAN (1990)";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:6:"VALUES";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"LESS";}i:2;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"THAN";}i:3;a:3:{s:9:"expr_type";s:18:"bracket_expression";s:9:"base_expr";s:6:"(1990)";s:8:"sub_tree";a:1:{i:0;a:3:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:4:"1990";s:8:"sub_tree";b:0;}}}}}i:3;a:3:{s:9:"expr_type";s:6:"engine";s:9:"base_expr";s:10:"ENGINE bla";s:8:"sub_tree";a:2:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:6:"ENGINE";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:3:"bla";}}}i:4;a:3:{s:9:"expr_type";s:19:"partition-index-dir";s:9:"base_expr";s:28:"INDEX DIRECTORY = '/bar/foo'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:5:"INDEX";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:10:"'/bar/foo'";}}}i:5;a:3:{s:9:"expr_type";s:18:"partition-max-rows";s:9:"base_expr";s:12:"MAX_ROWS = 5";s:8:"sub_tree";a:3:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:8:"MAX_ROWS";}i:1;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:2;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:1:"5";}}}i:6;a:3:{s:9:"expr_type";s:18:"partition-min-rows";s:9:"base_expr";s:12:"MIN_ROWS = 2";s:8:"sub_tree";a:3:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:8:"MIN_ROWS";}i:1;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:2;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:1:"2";}}}i:7;a:3:{s:9:"expr_type";s:18:"bracket_expression";s:9:"base_expr";s:312:"(
+                    SUBPARTITION s0
+                        DATA DIRECTORY = '/disk0/data'
+                        INDEX DIRECTORY = '/disk0/idx',
+                    SUBPARTITION s1
+                        DATA DIRECTORY = '/disk1/data'
+                        INDEX DIRECTORY = '/disk1/idx'
+                )";s:8:"sub_tree";a:2:{i:0;a:3:{s:9:"expr_type";s:17:"sub-partition-def";s:9:"base_expr";s:125:"SUBPARTITION s0
+                        DATA DIRECTORY = '/disk0/data'
+                        INDEX DIRECTORY = '/disk0/idx'";s:8:"sub_tree";a:4:{i:0;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:12:"SUBPARTITION";s:4:"name";s:2:"s0";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:2:"s0";}i:2;a:3:{s:9:"expr_type";s:22:"sub-partition-data-dir";s:9:"base_expr";s:30:"DATA DIRECTORY = '/disk0/data'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"DATA";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:13:"'/disk0/data'";}}}i:3;a:3:{s:9:"expr_type";s:23:"sub-partition-index-dir";s:9:"base_expr";s:30:"INDEX DIRECTORY = '/disk0/idx'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:5:"INDEX";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:12:"'/disk0/idx'";}}}}}i:1;a:3:{s:9:"expr_type";s:17:"sub-partition-def";s:9:"base_expr";s:125:"SUBPARTITION s1
+                        DATA DIRECTORY = '/disk1/data'
+                        INDEX DIRECTORY = '/disk1/idx'";s:8:"sub_tree";a:4:{i:0;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:12:"SUBPARTITION";s:4:"name";s:2:"s1";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:2:"s1";}i:2;a:3:{s:9:"expr_type";s:22:"sub-partition-data-dir";s:9:"base_expr";s:30:"DATA DIRECTORY = '/disk1/data'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"DATA";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:13:"'/disk1/data'";}}}i:3;a:3:{s:9:"expr_type";s:23:"sub-partition-index-dir";s:9:"base_expr";s:30:"INDEX DIRECTORY = '/disk1/idx'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:5:"INDEX";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:12:"'/disk1/idx'";}}}}}}}}}i:1;a:3:{s:9:"expr_type";s:13:"partition-def";s:9:"base_expr";s:478:"PARTITION p1 VALUES LESS THAN (2000) 
+                STORAGE ENGINE=bla
+                COMMENT = 'foobar'
+                DATA DIRECTORY '/foo/bar'
+                (
+                    SUBPARTITION s2
+                        DATA DIRECTORY = '/disk2/data'
+                        INDEX DIRECTORY = '/disk2/idx',
+                    SUBPARTITION s3
+                        DATA DIRECTORY = '/disk3/data'
+                        INDEX DIRECTORY = '/disk3/idx'
+                )";s:8:"sub_tree";a:7:{i:0;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"PARTITION";s:4:"name";s:2:"p1";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:2:"p1";}i:2;a:3:{s:9:"expr_type";s:16:"partition-values";s:9:"base_expr";s:23:"VALUES LESS THAN (2000)";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:6:"VALUES";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"LESS";}i:2;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"THAN";}i:3;a:3:{s:9:"expr_type";s:18:"bracket_expression";s:9:"base_expr";s:6:"(2000)";s:8:"sub_tree";a:1:{i:0;a:3:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:4:"2000";s:8:"sub_tree";b:0;}}}}}i:3;a:3:{s:9:"expr_type";s:6:"engine";s:9:"base_expr";s:18:"STORAGE ENGINE=bla";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:7:"STORAGE";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:6:"ENGINE";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:3:"bla";}}}i:4;a:3:{s:9:"expr_type";s:17:"partition-comment";s:9:"base_expr";s:18:"COMMENT = 'foobar'";s:8:"sub_tree";a:3:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:7:"COMMENT";}i:1;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:2;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:8:"'foobar'";}}}i:5;a:3:{s:9:"expr_type";s:18:"partition-data-dir";s:9:"base_expr";s:25:"DATA DIRECTORY '/foo/bar'";s:8:"sub_tree";a:3:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"DATA";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:10:"'/foo/bar'";}}}i:6;a:3:{s:9:"expr_type";s:18:"bracket_expression";s:9:"base_expr";s:312:"(
+                    SUBPARTITION s2
+                        DATA DIRECTORY = '/disk2/data'
+                        INDEX DIRECTORY = '/disk2/idx',
+                    SUBPARTITION s3
+                        DATA DIRECTORY = '/disk3/data'
+                        INDEX DIRECTORY = '/disk3/idx'
+                )";s:8:"sub_tree";a:2:{i:0;a:3:{s:9:"expr_type";s:17:"sub-partition-def";s:9:"base_expr";s:125:"SUBPARTITION s2
+                        DATA DIRECTORY = '/disk2/data'
+                        INDEX DIRECTORY = '/disk2/idx'";s:8:"sub_tree";a:4:{i:0;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:12:"SUBPARTITION";s:4:"name";s:2:"s2";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:2:"s2";}i:2;a:3:{s:9:"expr_type";s:22:"sub-partition-data-dir";s:9:"base_expr";s:30:"DATA DIRECTORY = '/disk2/data'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"DATA";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:13:"'/disk2/data'";}}}i:3;a:3:{s:9:"expr_type";s:23:"sub-partition-index-dir";s:9:"base_expr";s:30:"INDEX DIRECTORY = '/disk2/idx'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:5:"INDEX";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:12:"'/disk2/idx'";}}}}}i:1;a:3:{s:9:"expr_type";s:17:"sub-partition-def";s:9:"base_expr";s:125:"SUBPARTITION s3
+                        DATA DIRECTORY = '/disk3/data'
+                        INDEX DIRECTORY = '/disk3/idx'";s:8:"sub_tree";a:4:{i:0;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:12:"SUBPARTITION";s:4:"name";s:2:"s3";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:2:"s3";}i:2;a:3:{s:9:"expr_type";s:22:"sub-partition-data-dir";s:9:"base_expr";s:30:"DATA DIRECTORY = '/disk3/data'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"DATA";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:13:"'/disk3/data'";}}}i:3;a:3:{s:9:"expr_type";s:23:"sub-partition-index-dir";s:9:"base_expr";s:30:"INDEX DIRECTORY = '/disk3/idx'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:5:"INDEX";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:12:"'/disk3/idx'";}}}}}}}}}i:2;a:3:{s:9:"expr_type";s:13:"partition-def";s:9:"base_expr";s:470:"PARTITION p2 VALUES LESS THAN MAXVALUE 
+                INDEX DIRECTORY '/foo/bar'
+                MIN_ROWS =10
+                MAX_ROWS  100
+                (
+                    SUBPARTITION s4
+                        DATA DIRECTORY = '/disk4/data'
+                        INDEX DIRECTORY = '/disk4/idx',
+                    SUBPARTITION s5
+                        DATA DIRECTORY = '/disk5/data'
+                        INDEX DIRECTORY = '/disk5/idx'
+                )";s:8:"sub_tree";a:7:{i:0;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"PARTITION";s:4:"name";s:2:"p2";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:2:"p2";}i:2;a:3:{s:9:"expr_type";s:16:"partition-values";s:9:"base_expr";s:25:"VALUES LESS THAN MAXVALUE";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:6:"VALUES";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"LESS";}i:2;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"THAN";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:8:"MAXVALUE";}}}i:3;a:3:{s:9:"expr_type";s:19:"partition-index-dir";s:9:"base_expr";s:26:"INDEX DIRECTORY '/foo/bar'";s:8:"sub_tree";a:3:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:5:"INDEX";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:10:"'/foo/bar'";}}}i:4;a:3:{s:9:"expr_type";s:18:"partition-min-rows";s:9:"base_expr";s:12:"MIN_ROWS =10";s:8:"sub_tree";a:3:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:8:"MIN_ROWS";}i:1;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:2;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:2:"10";}}}i:5;a:3:{s:9:"expr_type";s:18:"partition-max-rows";s:9:"base_expr";s:13:"MAX_ROWS  100";s:8:"sub_tree";a:2:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:8:"MAX_ROWS";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:3:"100";}}}i:6;a:3:{s:9:"expr_type";s:18:"bracket_expression";s:9:"base_expr";s:312:"(
+                    SUBPARTITION s4
+                        DATA DIRECTORY = '/disk4/data'
+                        INDEX DIRECTORY = '/disk4/idx',
+                    SUBPARTITION s5
+                        DATA DIRECTORY = '/disk5/data'
+                        INDEX DIRECTORY = '/disk5/idx'
+                )";s:8:"sub_tree";a:2:{i:0;a:3:{s:9:"expr_type";s:17:"sub-partition-def";s:9:"base_expr";s:125:"SUBPARTITION s4
+                        DATA DIRECTORY = '/disk4/data'
+                        INDEX DIRECTORY = '/disk4/idx'";s:8:"sub_tree";a:4:{i:0;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:12:"SUBPARTITION";s:4:"name";s:2:"s4";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:2:"s4";}i:2;a:3:{s:9:"expr_type";s:22:"sub-partition-data-dir";s:9:"base_expr";s:30:"DATA DIRECTORY = '/disk4/data'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"DATA";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:13:"'/disk4/data'";}}}i:3;a:3:{s:9:"expr_type";s:23:"sub-partition-index-dir";s:9:"base_expr";s:30:"INDEX DIRECTORY = '/disk4/idx'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:5:"INDEX";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:12:"'/disk4/idx'";}}}}}i:1;a:3:{s:9:"expr_type";s:17:"sub-partition-def";s:9:"base_expr";s:125:"SUBPARTITION s5
+                        DATA DIRECTORY = '/disk5/data'
+                        INDEX DIRECTORY = '/disk5/idx'";s:8:"sub_tree";a:4:{i:0;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:12:"SUBPARTITION";s:4:"name";s:2:"s5";}i:1;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:2:"s5";}i:2;a:3:{s:9:"expr_type";s:22:"sub-partition-data-dir";s:9:"base_expr";s:30:"DATA DIRECTORY = '/disk5/data'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"DATA";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:13:"'/disk5/data'";}}}i:3;a:3:{s:9:"expr_type";s:23:"sub-partition-index-dir";s:9:"base_expr";s:30:"INDEX DIRECTORY = '/disk5/idx'";s:8:"sub_tree";a:4:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:5:"INDEX";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:9:"DIRECTORY";}i:2;a:2:{s:9:"expr_type";s:8:"operator";s:9:"base_expr";s:1:"=";}i:3;a:2:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:12:"'/disk5/idx'";}}}}}}}}}}}}}}

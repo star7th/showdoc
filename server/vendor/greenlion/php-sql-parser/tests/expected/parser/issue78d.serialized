@@ -1,0 +1,1 @@
+a:1:{s:8:"DESCRIBE";a:2:{i:0;a:6:{s:9:"expr_type";s:5:"table";s:5:"table";s:3:"foo";s:9:"no_quotes";a:2:{s:5:"delim";b:0;s:5:"parts";a:1:{i:0;s:3:"foo";}}s:5:"alias";b:0;s:9:"base_expr";s:3:"foo";s:8:"position";i:9;}i:1;a:4:{s:9:"expr_type";s:6:"colref";s:9:"base_expr";s:4:"bar%";s:9:"no_quotes";a:2:{s:5:"delim";b:0;s:5:"parts";a:1:{i:0;s:4:"bar%";}}s:8:"position";i:13;}}}

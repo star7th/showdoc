@@ -1,0 +1,1 @@
+SELECT * FROM t1 ORDER BY c2 - c1 ASC

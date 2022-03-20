@@ -6,4 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname(dirname($vendorDir));
 
 return array(
+    'PHPSQLParser\\' => array($vendorDir . '/greenlion/php-sql-parser/src'),
 );

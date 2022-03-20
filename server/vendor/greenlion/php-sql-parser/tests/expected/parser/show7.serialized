@@ -1,0 +1,1 @@
+a:1:{s:4:"SHOW";a:3:{i:0;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:6:"CREATE";}i:1;a:2:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:6:"SCHEMA";}i:2;a:4:{s:9:"expr_type";s:8:"database";s:4:"name";s:5:"`foo`";s:9:"no_quotes";a:2:{s:5:"delim";b:0;s:5:"parts";a:1:{i:0;s:3:"foo";}}s:9:"base_expr";s:5:"`foo`";}}}

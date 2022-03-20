@@ -1,0 +1,1 @@
+CREATE TABLE hohoho (a varchar (1000), PRIMARY KEY USING btree (a(5) ASC) key_block_size 4 with parser haha, CHECK (a > 5))

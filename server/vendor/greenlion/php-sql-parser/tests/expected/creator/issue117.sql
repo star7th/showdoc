@@ -1,0 +1,1 @@
+(SELECT x FROM table) ORDER BY x ASC

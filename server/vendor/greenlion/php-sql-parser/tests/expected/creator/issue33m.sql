@@ -1,0 +1,1 @@
+CREATE TABLE hohoho (a varchar (1000), b float (5,3))

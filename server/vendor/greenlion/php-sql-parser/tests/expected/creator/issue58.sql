@@ -1,0 +1,1 @@
+SELECT a.* FROM tabla_a a WHERE (a.client_id in (1, 2, 3))

@@ -1,0 +1,1 @@
+SELECT CASE WHEN 2 IN (2, 3) THEN "yes" ELSE "no" END

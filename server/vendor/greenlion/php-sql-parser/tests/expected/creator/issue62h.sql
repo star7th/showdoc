@@ -1,0 +1,1 @@
+SELECT col1 FROM tab1 INNER JOIN tab2 ON tab1.col1 = tab2.col1 and col2 in (1, 2) ORDER BY col3 ASC

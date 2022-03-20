@@ -1,0 +1,1 @@
+UPDATE table1, table2 SET table1.col1 = 0 WHERE table1.col2 = table2.col2

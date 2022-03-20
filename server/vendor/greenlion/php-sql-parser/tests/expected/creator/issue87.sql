@@ -1,0 +1,1 @@
+RENAME TABLE a TO b, `c` TO `a`, foo.bar TO hello.world

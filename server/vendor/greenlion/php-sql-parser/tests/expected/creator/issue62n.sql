@@ -1,0 +1,1 @@
+INSERT IGNORE INTO table1 VALUES ('1')

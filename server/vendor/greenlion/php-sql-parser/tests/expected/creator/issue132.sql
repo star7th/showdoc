@@ -1,0 +1,1 @@
+SELECT (c1 - c2) AS c3 FROM t1

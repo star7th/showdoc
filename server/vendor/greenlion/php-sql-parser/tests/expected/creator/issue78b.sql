@@ -1,0 +1,1 @@
+SHOW CREATE DATABASE `foo`

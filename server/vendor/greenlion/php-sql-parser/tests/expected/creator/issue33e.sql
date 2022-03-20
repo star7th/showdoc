@@ -1,0 +1,1 @@
+CREATE TABLE hohoho (a varchar (1000), PRIMARY KEY USING btree (a), CHECK (a > 5))

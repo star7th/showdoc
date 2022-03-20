@@ -1,0 +1,29 @@
+Install PHP_CodeSniffer:
+========================
+
+pear install PHP_CodeSniffer
+
+
+Check the code with:
+====================
+
+phpcs --standard=/path/to/the/PhOSCo/folder /path/to/the/src/folder >/tmp/code-errors.txt
+vi /tmp/code-errors.txt
+
+
+Or integrate it as external tool into Eclipse:
+==============================================
+
+* Open External tool configuration window
+* set the name to "CodeSniffer"
+* set /usr/bin/phpcs as Location
+* set --standard="${project_loc}/libs/codesniffer/PhOSCo" "${selected_resource_loc}" as Arguments
+* on the Build tab set the parameters as needed
+* click "Apply" and "Close"
+
+* select one of the folders or *.php files
+* execute the external tool "CodeSniffer"
+* review the errors within the console output within Eclipse
+
+correct all listed errors (...I hate it)!
+=========================================

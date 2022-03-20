@@ -1,0 +1,1 @@
+SELECT a.* FROM iuz6l_menu_types AS a LEFT JOIN iuz6l_menu AS b ON b.menutype = a.menutype AND b.home != 0 LEFT JOIN iuz6l_languages AS l ON (l.lang_code = language) WHERE (b.client_id = 0 OR b.client_id IS NULL)

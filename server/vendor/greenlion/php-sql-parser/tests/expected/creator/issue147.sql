@@ -1,0 +1,1 @@
+SELECT f FROM t WHERE x in (SELECT x FROM y)

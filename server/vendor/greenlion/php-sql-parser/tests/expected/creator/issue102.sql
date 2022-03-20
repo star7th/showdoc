@@ -1,0 +1,1 @@
+SELECT IF(f = 0 || f = 1,1,0) FROM tbl

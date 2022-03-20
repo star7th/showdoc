@@ -1,0 +1,1 @@
+INSERT INTO newTablename (field1, field2, field3) VALUES (1, 2, 3)

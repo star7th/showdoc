@@ -1,0 +1,1 @@
+CREATE TEMPORARY TABLE IF NOT EXISTS turma (id text NOT NULL, nome text NOT NULL, nota1 int NOT NULL, nota2 int NOT NULL)

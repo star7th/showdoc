@@ -497,5 +497,9 @@ exports.default = {
 
   edit_member: '编辑成员',
   readonly_member: '只读成员',
-  item_admin: '项目管理员'
+  item_admin: '项目管理员',
+
+  sql_to_markdown_table: 'SQL转表格',
+  sql_to_markdown_table_description:
+    '你可以在此输入一段创建表的SQL（通常是以CREATE TABLE开头），程序会根据SQL来自动插入一个markdown格式的表格，用以描述该表的数据字典'
 }

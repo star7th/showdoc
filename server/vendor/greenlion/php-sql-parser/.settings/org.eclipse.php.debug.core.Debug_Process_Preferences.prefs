@@ -1,0 +1,9 @@
+#Tue Apr 15 09:40:02 CEST 2014
+DefaultProjectBasePath=/PHP-SQL-Parser
+eclipse.preferences.version=1
+org.eclipse.php.debug.core.use-project-settings=true
+org.eclipse.php.debug.coredefaultPHP=PHP 5.3.2 (CGI)
+org.eclipse.php.debug.coreoutput_encoding=UTF-8
+org.eclipse.php.debug.corephp_debugger_id=org.eclipse.php.debug.core.zendDebugger
+org.eclipse.php.debug.corestop_at_first_line_string=true
+org.eclipse.php.debug.coretransfer_encoding=UTF-8

@@ -1,0 +1,1 @@
+a:1:{s:4:"SHOW";a:3:{i:0;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:7:"SCHEMAS";s:8:"position";i:5;}i:1;a:3:{s:9:"expr_type";s:8:"reserved";s:9:"base_expr";s:4:"LIKE";s:8:"position";i:13;}i:2;a:3:{s:9:"expr_type";s:5:"const";s:9:"base_expr";s:7:"'%bar%'";s:8:"position";i:18;}}}

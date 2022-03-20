@@ -1,0 +1,5 @@
+a:1:{s:7:"BRACKET";a:1:{i:0;a:4:{s:9:"expr_type";s:18:"bracket_expression";s:9:"base_expr";s:54:"(
+        SELECT CNAME
+        FROM COCKTAIL
+        )";s:8:"sub_tree";a:1:{i:0;a:4:{s:9:"expr_type";s:5:"query";s:9:"base_expr";s:34:"SELECT CNAME
+        FROM COCKTAIL";s:8:"sub_tree";a:2:{s:6:"SELECT";a:1:{i:0;a:7:{s:9:"expr_type";s:6:"colref";s:5:"alias";b:0;s:9:"base_expr";s:5:"CNAME";s:9:"no_quotes";a:2:{s:5:"delim";b:0;s:5:"parts";a:1:{i:0;s:5:"CNAME";}}s:8:"sub_tree";b:0;s:5:"delim";b:0;s:8:"position";i:17;}}s:4:"FROM";a:1:{i:0;a:11:{s:9:"expr_type";s:5:"table";s:5:"table";s:8:"COCKTAIL";s:9:"no_quotes";a:2:{s:5:"delim";b:0;s:5:"parts";a:1:{i:0;s:8:"COCKTAIL";}}s:5:"alias";b:0;s:5:"hints";b:0;s:9:"join_type";s:4:"JOIN";s:8:"ref_type";b:0;s:10:"ref_clause";b:0;s:9:"base_expr";s:8:"COCKTAIL";s:8:"sub_tree";b:0;s:8:"position";i:36;}}}s:8:"position";i:10;}}s:8:"position";i:0;}}}

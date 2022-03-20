@@ -1,0 +1,1 @@
+DELETE QUICK t1, t2 FROM t1 INNER JOIN t2 INNER JOIN t3 WHERE t1.id = t2.id AND t2.id = t3.id

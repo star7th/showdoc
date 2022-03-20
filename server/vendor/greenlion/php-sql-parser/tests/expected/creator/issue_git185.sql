@@ -1,0 +1,1 @@
+SELECT seen, id, name, cep, date_format(created,'%d/%m/%Y %h:%i:%s') AS created FROM user WHERE approved = 0 and canceled = 0

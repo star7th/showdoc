@@ -1,6 +1,8 @@
 <?php
 namespace Api\Controller;
 use Think\Controller;
+use Api\Helper\Convert;
+
 class PageController extends BaseController {
 
     //页面详情
@@ -402,6 +404,15 @@ class PageController extends BaseController {
         $now = time() ;
         D("PageLock")->where( "lock_to < '{$now}' ")->delete();
         $this->sendResult(array("id"=>$id));
+
+    }
+
+    // 转换 SQL 为 Markdown 表格
+    public function sqlToMarkdownTable(){
+        $sql = I("sql");
+        $object = new Convert();
+		$res = $object->convertSqlToMarkdownTable($sql);
+        $this->sendResult(array("markdown"=>$res));
 
     }
 

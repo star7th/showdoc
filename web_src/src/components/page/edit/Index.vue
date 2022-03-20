@@ -119,6 +119,9 @@
               <el-dropdown-item @click.native="ShowPasteTable">{{
                 $t('paste_insert_table')
               }}</el-dropdown-item>
+              <el-dropdown-item @click.native="showSqlToMarkdownTable">{{
+                $t('sql_to_markdown_table')
+              }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <el-button
@@ -181,6 +184,12 @@
 
       <!-- Json格式化 -->
       <JsonBeautify :callback="insertValue" ref="JsonBeautify"></JsonBeautify>
+
+      <!-- sql转表格 -->
+      <SqlToMarkdownTable
+        :callback="insertValue"
+        ref="SqlToMarkdownTable"
+      ></SqlToMarkdownTable>
 
       <!-- 附件列表 -->
       <AttachmentList
@@ -286,6 +295,7 @@
 import Editormd from '@/components/common/Editormd'
 import JsonToTable from '@/components/common/JsonToTable'
 import JsonBeautify from '@/components/common/JsonBeautify'
+import SqlToMarkdownTable from '@/components/common/SqlToMarkdownTable'
 import Mock from '@/components/common/Mock'
 import TemplateList from '@/components/page/edit/TemplateList'
 import HistoryVersion from '@/components/page/edit/HistoryVersion'
@@ -373,7 +383,8 @@ export default {
     PasteTable,
     SortPage,
     Mock,
-    Notify
+    Notify,
+    SqlToMarkdownTable
   },
   methods: {
     // 获取页面内容
@@ -503,7 +514,11 @@ export default {
       let childRef = this.$refs.JsonBeautify // 获取子组件
       childRef.dialogFormVisible = true
     },
-
+    // SQL转表格
+    showSqlToMarkdownTable() {
+      let childRef = this.$refs.SqlToMarkdownTable // 获取子组件
+      childRef.dialogFormVisible = true
+    },
     ShowRunApi() {
       window.open('http://runapi.showdoc.cc/')
     },

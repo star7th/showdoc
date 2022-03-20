@@ -1,0 +1,1 @@
+SELECT col FROM table1 GROUP BY col

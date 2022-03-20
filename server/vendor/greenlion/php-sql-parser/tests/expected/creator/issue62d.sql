@@ -1,0 +1,1 @@
+SELECT * FROM table ORDER BY TIME_FORMAT(column '%H:%i') DESC

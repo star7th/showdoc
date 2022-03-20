@@ -1,0 +1,1 @@
+UPDATE `table` SET a = 15,b = 'haha' WHERE x = now()

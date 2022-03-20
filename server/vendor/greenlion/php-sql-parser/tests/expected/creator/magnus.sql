@@ -1,0 +1,1 @@
+SELECT u.`id` AS userid, u.`user` AS username, u.`firstname`, u.`lastname`, u.`email`, CONCAT(19,lastname,2013) AS test FROM `user` u ORDER BY u.`user` DESC

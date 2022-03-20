@@ -520,5 +520,9 @@ exports.default = {
 
   edit_member: 'Edit member',
   readonly_member: 'Readonly member',
-  item_admin: 'Item administrator'
+  item_admin: 'Item administrator',
+
+  sql_to_markdown_table: 'SQL to table',
+  sql_to_markdown_table_description:
+    'You can enter a paragraph of SQL to create a table here (usually starting with create table). The program will automatically insert a table in markdown format according to the SQL to describe the data dictionary of the table'
 }

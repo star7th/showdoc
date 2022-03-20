@@ -1,0 +1,1 @@
+CREATE unique index i1 using BTREE ON t1 (c1(5) DESC, `col 2`(8) ASC) ALGORITHM = DEFAULT using hash LOCK = SHARED

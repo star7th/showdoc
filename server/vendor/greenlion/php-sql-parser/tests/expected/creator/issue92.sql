@@ -1,0 +1,1 @@
+SELECT cid * 2 FROM cities ORDER BY country ASC

@@ -25,8 +25,8 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => 'v2.10.1',
-    'version' => '2.10.1.0',
+    'pretty_version' => 'v2.10.3',
+    'version' => '2.10.3.0',
     'aliases' => 
     array (
     ),
@@ -52,6 +52,15 @@ private static $installed = array (
       array (
       ),
       'reference' => 'cddc990e50f6db96bab5d1e9e2f814c3d3a9d00b',
+    ),
+    'greenlion/php-sql-parser' => 
+    array (
+      'pretty_version' => 'v4.5.0',
+      'version' => '4.5.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'a5d5c292d97271c95140192e6f0e962916e39b50',
     ),
     'gregwar/captcha' => 
     array (
@@ -218,8 +227,8 @@ private static $installed = array (
     ),
     'showdoc/showdoc' => 
     array (
-      'pretty_version' => 'v2.10.1',
-      'version' => '2.10.1.0',
+      'pretty_version' => 'v2.10.3',
+      'version' => '2.10.3.0',
       'aliases' => 
       array (
       ),
