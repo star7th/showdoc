@@ -154,6 +154,7 @@
           v-if="content"
           ref="Editormd"
           type="editor"
+          id="page-editor"
         ></Editormd>
       </el-row>
 
@@ -258,6 +259,9 @@
         ref="Notify"
       ></Notify>
     </el-container>
+    <!-- 一个隐藏的可编辑元素。用于承载粘贴html代码。后续会用于转markdown -->
+    <div contenteditable="true" id="pastebin"></div>
+
     <Footer></Footer>
     <div class></div>
   </div>
@@ -289,6 +293,12 @@
   cursor: pointer;
   margin-left: 5px;
 }
+#pastebin {
+  opacity: 0.01;
+  width: 100%;
+  height: 1px;
+  overflow: hidden;
+}
 </style>
 
 <script>
@@ -311,6 +321,7 @@ import {
   apiTemplateEn,
   databaseTemplateEn
 } from '@/models/template'
+import TurndownService from 'turndown'
 
 export default {
   data() {
@@ -640,12 +651,20 @@ export default {
       let childRef = this.$refs.AttachmentList // 获取子组件
       childRef.show()
     },
-    /** 粘贴上传图片 **/
-    upload_paste_img(e) {
+    /** 监听剪切板 **/
+    // 以实现粘贴上传图片，html网页转markdown等
+    clipboardEvents(e) {
       var that = this
+      // 如果当前鼠标的焦点不在编辑器内，则中止
+      if (
+        !document.querySelector('#page-editor').contains(document.activeElement)
+      ) {
+        return
+      }
       var url = DocConfig.server + '/api/page/uploadImg'
       var clipboard = e.clipboardData
       for (var i = 0, len = clipboard.items.length; i < len; i++) {
+        // 如果剪切板里的内容是图片
         if (
           clipboard.items[i].kind == 'file' ||
           clipboard.items[i].type.indexOf('image') > -1
@@ -701,6 +720,21 @@ export default {
             }
           })
           e.preventDefault()
+        }
+        // 如果剪切板里的内容是html
+        else if (clipboard.items[i].type == 'text/html') {
+          var pastebin = document.querySelector('#pastebin')
+          pastebin.innerHTML = ''
+          pastebin.focus() // 点睛之笔。鼠标焦点转移到这里后，粘贴就会进那个可编辑元素里了。此时从pastebin元素再获取html即可
+          setTimeout(() => {
+            // 异步延迟，等html粘贴进pastebin元素里再获取
+            var html = pastebin.innerHTML
+            var turndownService = new TurndownService()
+            var markdown = turndownService.turndown(html)
+            that.insertValue(markdown)
+          }, 200)
+        } else {
+          // 无动作。让默认粘贴事件做事。
         }
       }
     },
@@ -855,8 +889,9 @@ export default {
 
     this.heartBeatLock()
     this.remoteIsLock()
-    /** 监听粘贴上传图片 **/
-    document.addEventListener('paste', this.upload_paste_img)
+    /** 监听剪切板 **/
+    document.addEventListener('paste', this.clipboardEvents)
+
     this.lang = DocConfig.lang
     window.addEventListener('beforeunload', this.unLockOnClose)
     let g_open_cat_id = this.$store.state.open_cat_id // 全局变量-当前打开的目录id
@@ -868,8 +903,8 @@ export default {
   },
 
   beforeDestroy() {
-    // 解除对粘贴上传图片的监听
-    document.removeEventListener('paste', this.upload_paste_img)
+    // 解除对剪切板的监听
+    document.removeEventListener('paste', this.clipboardEvents)
     this.$message.closeAll()
     clearInterval(this.intervalId)
     this.unlock()
