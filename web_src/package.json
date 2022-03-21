@@ -19,6 +19,7 @@
     "babel-preset-es2015": "^6.24.1",
     "element-ui": "^2.15.1",
     "moment": "^2.29.1",
+    "turndown": "^7.1.1",
     "url-search-params-polyfill": "^2.0.3",
     "vue": "^2.6.12",
     "vue-clipboard2": "^0.2.1",
