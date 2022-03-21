@@ -328,7 +328,7 @@ function I($name,$default='',$filter=null,$datas=null) {
         	$input =& $_SERVER;    
         	break;
         case 'globals' :   
-        	$input =& $GLOBALS;    
+        	$input = $GLOBALS;    
         	break;
         case 'data'    :   
         	$input =& $datas;      
