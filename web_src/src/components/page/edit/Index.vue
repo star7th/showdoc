@@ -728,10 +728,21 @@ export default {
           pastebin.focus() // 点睛之笔。鼠标焦点转移到这里后，粘贴就会进那个可编辑元素里了。此时从pastebin元素再获取html即可
           setTimeout(() => {
             // 异步延迟，等html粘贴进pastebin元素里再获取
-            var html = pastebin.innerHTML
-            var turndownService = new TurndownService()
-            var markdown = turndownService.turndown(html)
-            that.insertValue(markdown)
+            that
+              .$confirm(that.$t('past_html_tips'), ' ', {
+                confirmButtonText: that.$t('past_html_markdown'),
+                cancelButtonText: that.$t('past_html_text')
+              })
+              .then(data => {
+                var html = pastebin.innerHTML
+                var turndownService = new TurndownService()
+                var markdown = turndownService.turndown(html)
+                that.insertValue(markdown)
+              })
+              .catch(() => {
+                var text = pastebin.innerText
+                that.insertValue(text)
+              })
           }, 200)
         } else {
           // 无动作。让默认粘贴事件做事。
