@@ -497,5 +497,15 @@ exports.default = {
 
   edit_member: '编辑成员',
   readonly_member: '只读成员',
-  item_admin: '项目管理员'
+  item_admin: '项目管理员',
+
+  sql_to_markdown_table: 'SQL转表格',
+  sql_to_markdown_table_description:
+    '你可以在此输入一段创建表的SQL（通常是以CREATE TABLE开头），程序会根据SQL来自动插入一个markdown格式的表格，用以描述该表的数据字典',
+  logout_redirect_uri_desc: '选填项。当用户退出登录时，将重定向到此url',
+
+  past_html_tips:
+    '检测到你要粘贴的内容可能包含html标签和样式，是否需要尝试转换成markdown格式？如不需要，你可以点击下方的粘贴纯文本按钮',
+  past_html_markdown: '尝试 html 转 markdown',
+  past_html_text: '粘贴纯文本'
 }
