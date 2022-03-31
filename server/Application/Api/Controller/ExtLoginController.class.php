@@ -1,193 +1,189 @@
 <?php
+
 namespace Api\Controller;
+
 use Think\Controller;
-class ExtLoginController extends BaseController {
+
+class ExtLoginController extends BaseController
+{
 
 
     // 根据用户名和LoginSecretKey登录
-    public function bySecretKey(){
-        $username = I("username") ;
-        $key = I("key") ;
-        $time = I("time") ;
-        $token = I("token") ;
-        $redirect = I("redirect") ;
+    public function bySecretKey()
+    {
+        $username = I("username");
+        $key = I("key");
+        $time = I("time");
+        $token = I("token");
+        $redirect = I("redirect");
 
-        if($time < (time() - 60) ){
-            $this->sendError(10101,"已过期");
-            return ;
+        if ($time < (time() - 60)) {
+            $this->sendError(10101, "已过期");
+            return;
         }
-        $login_secret_key = D("Options")->get("login_secret_key") ;
-        if(!$login_secret_key) return false ;
-        $new_token = md5($username.$login_secret_key.$time);
-        if( !($token ===  $new_token) ){
-            $this->sendError(10101,"token不正确");
-            return ;
+        $login_secret_key = D("Options")->get("login_secret_key");
+        if (!$login_secret_key) return false;
+        $new_token = md5($username . $login_secret_key . $time);
+        if (!($token ===  $new_token)) {
+            $this->sendError(10101, "token不正确");
+            return;
         }
-        
-        $res = D("User")->where("( username='%s' ) ",array($username))->find();
-        if(!$res){
-            D("User")->register($username,md5("savsnyjh".time().rand()));
-            $res = D("User")->where("( username='%s' ) ",array($username))->find();
 
+        $res = D("User")->where("( username='%s' ) ", array($username))->find();
+        if (!$res) {
+            D("User")->register($username, md5("savsnyjh" . time() . rand()));
+            $res = D("User")->where("( username='%s' ) ", array($username))->find();
         }
-        if($res){
+        if ($res) {
             // var_dump($res); return ;
-            if($res['groupid'] == 1){
-                $this->sendError(10101,"为了安全，禁止管理员通过这种方式登录");
-                return ;
+            if ($res['groupid'] == 1) {
+                $this->sendError(10101, "为了安全，禁止管理员通过这种方式登录");
+                return;
             }
-            
+
             D("User")->setLastTime($res['uid']);
             unset($res['password']);
-            session("login_user" , $res );
-            $token = D("UserToken")->createToken($res['uid'],60*60*24*180);
-            cookie('cookie_token',$token,array('expire'=>60*60*24*180,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
-            if($redirect){
-                $redirect = urldecode($redirect) ;
+            session("login_user", $res);
+            $token = D("UserToken")->createToken($res['uid'], 60 * 60 * 24 * 180);
+            cookie('cookie_token', $token, array('expire' => 60 * 60 * 24 * 180, 'httponly' => 'httponly')); //此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
+            if ($redirect) {
+                $redirect = urldecode($redirect);
                 header("location:{$redirect}");
-            }else{
+            } else {
                 header("location:../web/#/item/index");
             }
-            
         }
     }
 
-    public function oauth2(){
+    public function oauth2()
+    {
         $this->checkComposerPHPVersion();
-        $redirect = I("redirect") ;
-        session('redirect',$redirect) ;
-        $oauth2_open = D("Options")->get("oauth2_open" ) ;
-        $oauth2_form = D("Options")->get("oauth2_form" ) ;
+        $redirect = I("redirect");
+        session('redirect', $redirect);
+        $oauth2_open = D("Options")->get("oauth2_open");
+        $oauth2_form = D("Options")->get("oauth2_form");
         $oauth2_form = htmlspecialchars_decode($oauth2_form);
-        $oauth2_form = json_decode($oauth2_form,1);
+        $oauth2_form = json_decode($oauth2_form, 1);
 
-        if(!$oauth2_open){
+        if (!$oauth2_open) {
             echo "尚未启用oauth2";
-            return ;
+            return;
         }
-        
 
-        $clientId = $oauth2_form['client_id'] ;
-        $clientSecret = $oauth2_form['client_secret']  ;
+
+        $clientId = $oauth2_form['client_id'];
+        $clientSecret = $oauth2_form['client_secret'];
         $redirectUri = $oauth2_form['redirectUri'];
-        $urlAuthorize = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['authorize_path'] ;
-        $urlAccessToken = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['token_path'] ;
-        $urlResourceOwnerDetails = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['resource_path'] ;
-        if(strstr($oauth2_form['userinfo_path'],"://")){
-            $urlUserInfo = $oauth2_form['userinfo_path'] ;
-        }else{
-            $urlUserInfo = $oauth2_form['protocol']."://".$oauth2_form['host'].$oauth2_form['userinfo_path'] ;
+        $urlAuthorize = $oauth2_form['protocol'] . "://" . $oauth2_form['host'] . $oauth2_form['authorize_path'];
+        $urlAccessToken = $oauth2_form['protocol'] . "://" . $oauth2_form['host'] . $oauth2_form['token_path'];
+        $urlResourceOwnerDetails = $oauth2_form['protocol'] . "://" . $oauth2_form['host'] . $oauth2_form['resource_path'];
+        if (strstr($oauth2_form['userinfo_path'], "://")) {
+            $urlUserInfo = $oauth2_form['userinfo_path'];
+        } else {
+            $urlUserInfo = $oauth2_form['protocol'] . "://" . $oauth2_form['host'] . $oauth2_form['userinfo_path'];
         }
-        
-    
+
+
         $provider = new \League\OAuth2\Client\Provider\GenericProvider([
             'clientId'                => $clientId,    // The client ID assigned to you by the provider
             'clientSecret'            => $clientSecret,    // The client password assigned to you by the provider
-            'redirectUri'             => $redirectUri ,
+            'redirectUri'             => $redirectUri,
             'urlAuthorize'            => $urlAuthorize,
             'urlAccessToken'          =>  $urlAccessToken,
             'urlResourceOwnerDetails' => $urlResourceOwnerDetails,
-        ],[
+        ], [
             'httpClient' => new \GuzzleHttp\Client(['verify' => false]),
         ]);
-        
+
         // If we don't have an authorization code then get one
         if (!isset($_GET['code'])) {
-        
+
             // Fetch the authorization URL from the provider; this returns the
             // urlAuthorize option and generates and applies any necessary parameters
             // (e.g. state).
             $authorizationUrl = $provider->getAuthorizationUrl();
-        
+
             // Get the state generated for you and store it to the session.
             $_SESSION['oauth2state'] = $provider->getState();
-        
+
             // Redirect the user to the authorization URL.
             header('Location: ' . $authorizationUrl);
             exit;
-        
-        // Check given state against previously stored one to mitigate CSRF attack
+
+            // Check given state against previously stored one to mitigate CSRF attack
         } elseif (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] !== $_SESSION['oauth2state'])) {
-        
+
             if (isset($_SESSION['oauth2state'])) {
                 unset($_SESSION['oauth2state']);
             }
-        
+
             exit('Invalid state');
-        
         } else {
-        
+
             try {
-        
+
                 // Try to get an access token using the authorization code grant.
                 $accessToken = $provider->getAccessToken('authorization_code', [
                     'code' => $_GET['code']
                 ]);
-        
+
                 // We have an access token, which we may use in authenticated
                 // requests against the service provider's API.
                 //echo 'Access Token: ' . $accessToken->getToken() . "<br>";
                 //echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
                 //echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
-               // echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
-            
-                $res = http_get( $urlUserInfo."?access_token=".$accessToken->getToken() );
+                // echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
+
+                $res = http_get($urlUserInfo . "?access_token=" . $accessToken->getToken());
 
                 $res_array = json_decode($res, true);
-                if($res_array){
+                if ($res_array) {
                     $username = '';
-                    if($res_array['preferred_username']){
-                        $username = $res_array['preferred_username'] ;
+                    if ($res_array['preferred_username']) {
+                        $username = $res_array['preferred_username'];
                     }
-                    if($res_array['name']){
-                        $username = $res_array['name'] ;
+                    if ($res_array['name']) {
+                        $username = $res_array['name'];
                     }
-                    if($res_array['username']){
-                        $username = $res_array['username'] ;
+                    if ($res_array['username']) {
+                        $username = $res_array['username'];
                     }
-                    if(!$username){
-                        echo "返回信息中无法获取用户名。返回的内容如下：".$res;
-                        return ;
+                    if (!$username) {
+                        echo "返回信息中无法获取用户名。返回的内容如下：" . $res;
+                        return;
                     }
-                    $info = D("User")->where("username='%s'" ,array($username))->find();
-                    if(!$info){
-                        D("User")->register($username,md5($username.time().rand()));
-                        $info = D("User")->where("username='%s'" ,array($username))->find();
+                    $info = D("User")->where("username='%s'", array($username))->find();
+                    if (!$info) {
+                        D("User")->register($username, md5($username . time() . rand()));
+                        $info = D("User")->where("username='%s'", array($username))->find();
                     }
-                    
+
                     D("User")->setLastTime($info['uid']);
                     unset($info['password']);
-                    session("login_user" , $info );
-                    $token = D("UserToken")->createToken($info['uid'],60*60*24*180);
-                    cookie('cookie_token',$token,array('expire'=>60*60*24*180,'httponly'=>'httponly'));//此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
-                    if(session('redirect')){
-                        $redirect = urldecode(session('redirect')) ;
+                    session("login_user", $info);
+                    $token = D("UserToken")->createToken($info['uid'], 60 * 60 * 24 * 180);
+                    cookie('cookie_token', $token, array('expire' => 60 * 60 * 24 * 180, 'httponly' => 'httponly')); //此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
+                    if (session('redirect')) {
+                        $redirect = urldecode(session('redirect'));
                         header("location:{$redirect}");
-                        session('redirect',null) ;
-
-                    }else{
+                        session('redirect', null);
+                    } else {
                         header("location:../web/#/item/index");
                     }
-
-                }else{
+                } else {
                     echo "登录成功但无法获取用户信息";
                 }
-
-
-                
-        
             } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
-        
+
                 // Failed to get the access token or user details.
                 exit($e->getMessage());
-        
             }
-        
         }
     }
 
-    
-    public function cas(){
+
+    public function cas()
+    {
         $this->checkComposerPHPVersion();
         define("CAS_VERSION_1_0", '1.0');
         define("CAS_VERSION_2_0", '2.0');
@@ -223,7 +219,7 @@ class ExtLoginController extends BaseController {
         $auth = \phpCAS::forceAuthentication();
         if ($auth) {
             var_dump($auth);
-            return ;
+            return;
             # 8 验证通过，或者说已经登陆系统，可进行已经登陆之后的逻辑处理...
             # 获得登陆CAS用户的名称
             $user_name = \phpCAS::getUser();
@@ -255,11 +251,5 @@ class ExtLoginController extends BaseController {
             # 在此你可以处理验证未通过的各种逻辑
             echo '还未登陆，跳转到CAS进行登陆...<br>';
         }
-
     }
-
-
-
-
-
 }

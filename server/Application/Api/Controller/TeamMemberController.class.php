@@ -1,128 +1,129 @@
 <?php
+
 namespace Api\Controller;
+
 use Think\Controller;
 /*
     团队成员管理
  */
-class TeamMemberController extends BaseController {
+
+class TeamMemberController extends BaseController
+{
 
     //添加和编辑
-    public function save(){
+    public function save()
+    {
         $login_user = $this->checkLogin();
-        $uid = $login_user['uid'] ;
+        $uid = $login_user['uid'];
 
         $member_username = I("member_username");
         $team_id = I("post.team_id/d");
-        $team_member_group_id = I("post.team_member_group_id/d") ? I("post.team_member_group_id/d") :1 ;
+        $team_member_group_id = I("post.team_member_group_id/d") ? I("post.team_member_group_id/d") : 1;
 
-        if(!$this->checkTeamManage($uid , $team_id) ){
+        if (!$this->checkTeamManage($uid, $team_id)) {
             $this->sendError(10103);
-            return ;
+            return;
         }
-        
+
         $teamInfo = D("Team")->where(" id = '$team_id'  ")->find();
 
-        $member_username_array = explode("," , $member_username) ;
-        foreach($member_username_array as $key => $value ){
-            $memberInfo = D("User")->where(" username = '%s' ",array($value))->find();
+        $member_username_array = explode(",", $member_username);
+        foreach ($member_username_array as $key => $value) {
+            $memberInfo = D("User")->where(" username = '%s' ", array($value))->find();
             if (!$memberInfo) {
-                continue ;
+                continue;
             }
             $if_exit = D("TeamMember")->where(" member_uid = '$memberInfo[uid]' and team_id = '$team_id' ")->find();
             if ($if_exit) {
-                continue ;
+                continue;
             }
-            $data = array() ;
-            $data['team_id'] = $team_id ;
-            $data['member_uid'] = $memberInfo['uid'] ;
-            $data['member_username'] = $memberInfo['username'] ;
-            $data['team_member_group_id'] = $team_member_group_id ;
-            $data['addtime'] = time() ;
-            $id = D("TeamMember")->add($data);  
-    
+            $data = array();
+            $data['team_id'] = $team_id;
+            $data['member_uid'] = $memberInfo['uid'];
+            $data['member_username'] = $memberInfo['username'];
+            $data['team_member_group_id'] = $team_member_group_id;
+            $data['addtime'] = time();
+            $id = D("TeamMember")->add($data);
+
             //检查该团队已经加入了哪些项目
-            $teamItems = D("TeamItem")->where("  team_id = '$team_id' ")->select() ;
+            $teamItems = D("TeamItem")->where("  team_id = '$team_id' ")->select();
             if ($teamItems) {
                 foreach ($teamItems as $key2 => $value2) {
-                    $data= array(
-                        "team_id"=>$team_id,
-                        "member_uid"=>$memberInfo['uid'],
-                        "member_username"=>$memberInfo['username'],
-                        "item_id"=>$value2['item_id'],
-                        "member_group_id"=>1, //默认添加的权限为1，即编辑权限
-                        "addtime"=>time()
+                    $data = array(
+                        "team_id" => $team_id,
+                        "member_uid" => $memberInfo['uid'],
+                        "member_username" => $memberInfo['username'],
+                        "item_id" => $value2['item_id'],
+                        "member_group_id" => 1, //默认添加的权限为1，即编辑权限
+                        "addtime" => time()
                     );
                     D("TeamItemMember")->add($data);
                 }
             }
-
         }
 
         $return = D("TeamMember")->where(" id = '$id' ")->find();
 
         if (!$return) {
-            $return['error_code'] = 10103 ;
-            $return['error_message'] = 'request  fail' ;
+            $return['error_code'] = 10103;
+            $return['error_message'] = 'request  fail';
         }
 
         $this->sendResult($return);
-        
     }
 
     //获取列表
-    public function getList(){
+    public function getList()
+    {
         $login_user = $this->checkLogin();
-        $uid = $login_user['uid'] ;
+        $uid = $login_user['uid'];
         $team_id = I("team_id/d");
 
-        if(!$this->checkTeamManage($uid , $team_id) ){
+        if (!$this->checkTeamManage($uid, $team_id)) {
             $this->sendError(10103);
-            return ;
+            return;
         }
 
         $teamInfo = D("Team")->where(" id = '$team_id' ")->find();
 
-        if ($login_user['uid'] > 0 ) {
+        if ($login_user['uid'] > 0) {
             $ret = D("TeamMember")->where(" team_id = '$team_id' ")->join(" left join user on user.uid = team_member.member_uid")->field("team_member.* , user.name as name")->order(" addtime desc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {
-                $value['addtime'] = date("Y-m-d H:i:s" , $value['addtime']);
+                $value['addtime'] = date("Y-m-d H:i:s", $value['addtime']);
             }
-           $this->sendResult($ret);
-        }else{
+            $this->sendResult($ret);
+        } else {
             $this->sendResult(array());
         }
     }
 
     //删除
-    public function delete(){
+    public function delete()
+    {
         $login_user = $this->checkLogin();
-        $uid = $login_user['uid'] ;
-        $id = I("post.id/d")? I("post.id/d") : 0;
+        $uid = $login_user['uid'];
+        $id = I("post.id/d") ? I("post.id/d") : 0;
         $teamMemberInfo = D("TeamMember")->where(" id = '$id'  ")->find();
-        $team_id = $teamMemberInfo['team_id'] ;
+        $team_id = $teamMemberInfo['team_id'];
 
-        if(!$this->checkTeamManage($uid , $team_id) ){
+        if (!$this->checkTeamManage($uid, $team_id)) {
             $this->sendError(10103);
-            return ;
+            return;
         }
 
         $teamInfo = D("Team")->where(" id = '$team_id' ")->find();
         $ret = D("TeamItemMember")->where(" member_uid = '$teamMemberInfo[member_uid]' and  team_id = '$team_id' ")->delete();
         $ret = D("TeamMember")->where(" id = '$id' ")->delete();
-        
+
 
         if ($ret) {
-           $this->sendResult($ret);
-        }else{
-            $return['error_code'] = 10103 ;
-            $return['error_message'] = 'request  fail' ;
+            $this->sendResult($ret);
+        } else {
+            $return['error_code'] = 10103;
+            $return['error_message'] = 'request  fail';
             $this->sendResult($return);
         }
     }
-
-
-
-
 }

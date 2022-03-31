@@ -1,44 +1,50 @@
 <?php
+
 namespace Api\Model;
+
 use Api\Model\BaseModel;
+
 /**
  * 
  * @author star7th      
  */
-class UpdateModel  {
+class UpdateModel
+{
 
-    Protected $autoCheckFields = false;  //一定要关闭字段缓存，不然会报找不到表的错误
+    protected $autoCheckFields = false;  //一定要关闭字段缓存，不然会报找不到表的错误
 
     //检测数据库并更新
-    public function checkDb(){
-        $version_num = 13 ;
+    public function checkDb()
+    {
+        $version_num = 13;
         $db_version_num = D("Options")->get("db_version_num");
-        if(!$db_version_num || $db_version_num < $version_num ){
+        if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
-            if($r){
-                D("Options")->set("db_version_num" , $version_num );
+            if ($r) {
+                D("Options")->set("db_version_num", $version_num);
             }
             //echo '执行数据库升级';
         }
     }
 
-    public function updateSqlite(){
+    public function updateSqlite()
+    {
         //catalog表增加parent_cat_id字段
-        if (!$this->_is_column_exist("catalog","parent_cat_id")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."catalog ADD parent_cat_id INT( 10 ) NOT NULL DEFAULT '0' ;";
+        if (!$this->_is_column_exist("catalog", "parent_cat_id")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "catalog ADD parent_cat_id INT( 10 ) NOT NULL DEFAULT '0' ;";
             D("catalog")->execute($sql);
         }
 
         //catalog表增加level字段
-        if (!$this->_is_column_exist("catalog","level")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."catalog ADD level INT( 10 ) NOT NULL DEFAULT '2'  ;";
+        if (!$this->_is_column_exist("catalog", "level")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "catalog ADD level INT( 10 ) NOT NULL DEFAULT '2'  ;";
             D("catalog")->execute($sql);
         }
 
 
         //item表增加item_domain字段
-        if (!$this->_is_column_exist("item","item_domain")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD item_domain text NOT NULL DEFAULT '';";
+        if (!$this->_is_column_exist("item", "item_domain")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item ADD item_domain text NOT NULL DEFAULT '';";
             D("catalog")->execute($sql);
         }
 
@@ -65,30 +71,30 @@ class UpdateModel  {
         D("UserToken")->execute($sql);
 
         //page表增加page_comments字段
-        if (!$this->_is_column_exist("page","page_comments")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."page ADD page_comments text NOT NULL DEFAULT ''  ;";
+        if (!$this->_is_column_exist("page", "page_comments")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "page ADD page_comments text NOT NULL DEFAULT ''  ;";
             D("catalog")->execute($sql);
         }
 
 
         //page_history 表增加page_comments字段
-        if (!$this->_is_column_exist("PageHistory","page_comments")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."page_history ADD page_comments text NOT NULL DEFAULT '';";
+        if (!$this->_is_column_exist("PageHistory", "page_comments")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "page_history ADD page_comments text NOT NULL DEFAULT '';";
             D("catalog")->execute($sql);
         }
 
 
         //item_member表增加member_group_id字段
-        if (!$this->_is_column_exist("ItemMember","member_group_id")) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."item_member ADD member_group_id INT( 1 ) NOT NULL DEFAULT '1'  ;";
-                D("ItemMember")->execute($sql);
+        if (!$this->_is_column_exist("ItemMember", "member_group_id")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item_member ADD member_group_id INT( 1 ) NOT NULL DEFAULT '1'  ;";
+            D("ItemMember")->execute($sql);
         }
 
 
         //item表增加item_type字段
-        if (!$this->_is_column_exist("Item","item_type")) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD item_type INT( 1 ) NOT NULL DEFAULT '1'  ;";
-                D("ItemMember")->execute($sql);
+        if (!$this->_is_column_exist("Item", "item_type")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item ADD item_type INT( 1 ) NOT NULL DEFAULT '1'  ;";
+            D("ItemMember")->execute($sql);
         }
 
         //创建options表
@@ -120,29 +126,29 @@ class UpdateModel  {
         D("UserToken")->execute($sql);
 
         //item表增加is_archived字段
-        if (!$this->_is_column_exist("Item","is_archived")) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD is_archived INT( 1 ) NOT NULL DEFAULT '0'  ;";
-                D("ItemMember")->execute($sql);
+        if (!$this->_is_column_exist("Item", "is_archived")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item ADD is_archived INT( 1 ) NOT NULL DEFAULT '0'  ;";
+            D("ItemMember")->execute($sql);
         }
 
 
         //管理员账户和权限
-        if(D("User")->where("username = 'showdoc' ")->find()){
-            D("User")->where("username = 'showdoc' ")->save(array("groupid"=> 1)) ;
-        }else{
-             D("User")->add(array('username'=>"showdoc" ,"groupid"=>1,'password'=>"a89da13684490eb9ec9e613f91d24d00" , 'reg_time'=>time()));
+        if (D("User")->where("username = 'showdoc' ")->find()) {
+            D("User")->where("username = 'showdoc' ")->save(array("groupid" => 1));
+        } else {
+            D("User")->add(array('username' => "showdoc", "groupid" => 1, 'password' => "a89da13684490eb9ec9e613f91d24d00", 'reg_time' => time()));
         }
 
         //item表增加is_del字段
-        if (!$this->_is_column_exist("Item","is_del")) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."item ADD is_del INT( 1 ) NOT NULL DEFAULT '0'  ;";
-                D("ItemMember")->execute($sql);
+        if (!$this->_is_column_exist("Item", "is_del")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item ADD is_del INT( 1 ) NOT NULL DEFAULT '0'  ;";
+            D("ItemMember")->execute($sql);
         }
 
         //page表增加is_del字段
-        if (!$this->_is_column_exist("Page","is_del")) {
-                $sql = "ALTER TABLE ".C('DB_PREFIX')."page ADD is_del INT( 1 ) NOT NULL DEFAULT '0'  ;";
-                D("ItemMember")->execute($sql);
+        if (!$this->_is_column_exist("Page", "is_del")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "page ADD is_del INT( 1 ) NOT NULL DEFAULT '0'  ;";
+            D("ItemMember")->execute($sql);
         }
 
         //创建team表
@@ -257,14 +263,14 @@ class UpdateModel  {
         D("User")->execute($sql);
 
         //item_member表增加cat_id字段
-        if (!$this->_is_column_exist("item_member","cat_id")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."item_member ADD cat_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
+        if (!$this->_is_column_exist("item_member", "cat_id")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item_member ADD cat_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
             D("User")->execute($sql);
         }
 
         //team_item_member表增加cat_id字段
-        if (!$this->_is_column_exist("team_item_member","cat_id")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."team_item_member ADD cat_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
+        if (!$this->_is_column_exist("team_item_member", "cat_id")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "team_item_member ADD cat_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
             D("User")->execute($sql);
         }
 
@@ -289,8 +295,8 @@ class UpdateModel  {
         D("User")->execute($sql);
 
         //item_variable表增加env_id字段
-        if (!$this->_is_column_exist("item_variable","env_id")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."item_variable ADD env_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
+        if (!$this->_is_column_exist("item_variable", "env_id")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item_variable ADD env_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
             D("User")->execute($sql);
         }
         //创建runapi_env表
@@ -346,23 +352,23 @@ class UpdateModel  {
         D("User")->execute($sql);
 
         // 如果file_page尚未有数据，则把upload_file表的数据转换过去
-        if( !D("FilePage")->find()){
-            $files = D("UploadFile")->select() ;
-            if($files){
+        if (!D("FilePage")->find()) {
+            $files = D("UploadFile")->select();
+            if ($files) {
                 foreach ($files as $key => $value) {
-                    D("FilePage")->add( array(
-                        "file_id" => $value['file_id'] ,
-                        "page_id" => $value['page_id'] ,
-                        "item_id" => $value['item_id'] ,
-                        "addtime" => $value['addtime'] ,
-                    )) ;
+                    D("FilePage")->add(array(
+                        "file_id" => $value['file_id'],
+                        "page_id" => $value['page_id'],
+                        "item_id" => $value['item_id'],
+                        "addtime" => $value['addtime'],
+                    ));
                 }
             }
         }
 
         //给mock表增加path字段
-        if (!$this->_is_column_exist("mock","path")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."mock ADD path text NOT NULL DEFAULT '';";
+        if (!$this->_is_column_exist("mock", "path")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "mock ADD path text NOT NULL DEFAULT '';";
             D("mock")->execute($sql);
         }
 
@@ -394,14 +400,14 @@ class UpdateModel  {
         D("User")->execute($sql);
 
         //给runapi_flow_page表增加enabled字段
-        if (!$this->_is_column_exist("runapi_flow_page","enabled")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."runapi_flow_page ADD enabled int(1) NOT NULL DEFAULT '1' ;";
+        if (!$this->_is_column_exist("runapi_flow_page", "enabled")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "runapi_flow_page ADD enabled int(1) NOT NULL DEFAULT '1' ;";
             D("mock")->execute($sql);
         }
 
-         //给item_sort表增加item_group_id字段
-         if (!$this->_is_column_exist("item_sort","item_group_id")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."item_sort ADD item_group_id int(10) NOT NULL DEFAULT '0' ;";
+        //给item_sort表增加item_group_id字段
+        if (!$this->_is_column_exist("item_sort", "item_group_id")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item_sort ADD item_group_id int(10) NOT NULL DEFAULT '0' ;";
             D("mock")->execute($sql);
         }
 
@@ -457,8 +463,8 @@ class UpdateModel  {
             `addtime` CHAR(2000) NOT NULL DEFAULT '',
             `readtime` CHAR(2000) NOT NULL DEFAULT ''
             )";
-         D("User")->execute($sql);
-        
+        D("User")->execute($sql);
+
         //创建subscription表
         $sql = "CREATE TABLE IF NOT EXISTS `subscription` (
             `id`  INTEGER PRIMARY KEY ,
@@ -481,30 +487,30 @@ class UpdateModel  {
             )";
         D("User")->execute($sql);
 
-         //给team_member表增加team_member_group_id字段
-         if (!$this->_is_column_exist("team_member","team_member_group_id")) {
-            $sql = "ALTER TABLE ".C('DB_PREFIX')."team_member ADD team_member_group_id int(10) NOT NULL DEFAULT '1' ;";
+        //给team_member表增加team_member_group_id字段
+        if (!$this->_is_column_exist("team_member", "team_member_group_id")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "team_member ADD team_member_group_id int(10) NOT NULL DEFAULT '1' ;";
             D("mock")->execute($sql);
         }
 
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
-        
-        return true ;
+
+        return true;
     }
 
-    private function _is_column_exist($table , $column){
-        $has_it = false ;//是否存在该字段
+    private function _is_column_exist($table, $column)
+    {
+        $has_it = false; //是否存在该字段
         $columns = M($table)->getDbFields();
         if ($columns) {
             foreach ($columns as $key => $value) {
                 if ($value == $column) {
-                    $has_it = true ;
+                    $has_it = true;
                 }
             }
         }
-        return $has_it ;
+        return $has_it;
     }
-
 }
