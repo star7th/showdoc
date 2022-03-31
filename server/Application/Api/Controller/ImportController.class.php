@@ -1,97 +1,102 @@
 <?php
+
 namespace Api\Controller;
+
 use Think\Controller;
-class ImportController extends BaseController {
+
+class ImportController extends BaseController
+{
 
 
     //自动检测导入的文件类型从而选择不同的控制器方法
-    public function auto(){
+    public function auto()
+    {
         set_time_limit(100);
-        ini_set('memory_limit','200M');
+        ini_set('memory_limit', '600M');
         $login_user = $this->checkLogin();
-        $filename = $_FILES["file"]["name"] ;
-        $file = $_FILES["file"]["tmp_name"] ;
+        $filename = $_FILES["file"]["name"];
+        $file = $_FILES["file"]["tmp_name"];
         //文件后缀
         $tail = substr(strrchr($filename, '.'), 1);
-        $item_id = I("item_id") ? I("item_id") : '0' ;
-        if($item_id){
-            if(!$this->checkItemEdit($login_user['uid'] , $item_id)){
+        $item_id = I("item_id") ? I("item_id") : '0';
+        if ($item_id) {
+            if (!$this->checkItemEdit($login_user['uid'], $item_id)) {
                 $this->sendError(10302);
-                return ;
-            } 
+                return;
+            }
         }
 
         if ($tail == 'zip') {
             $zipArc = new \ZipArchive();
             $ret = $zipArc->open($file, \ZipArchive::CREATE);
-            $info = $zipArc->getFromName("prefix_info.json") ;
+            $info = $zipArc->getFromName("prefix_info.json");
             if ($info) {
-                $info_array = json_decode($info ,1 );
+                $info_array = json_decode($info, 1);
                 if ($info_array) {
-                    $info_array['item_id'] = $item_id ;
+                    $info_array['item_id'] = $item_id;
                     $this->markdown($info_array, $item_id);
-                    return ;
+                    return;
                 }
             }
         }
 
         if ($tail == 'json') {
-            $json = file_get_contents($file) ;
-            $json_array = json_decode($json ,1 );
+            $json = file_get_contents($file);
+            $json_array = json_decode($json, 1);
             unset($json);
-            if (( $json_array['swagger'] || $json_array['openapi'] ) && $json_array['info']) {
+            if (($json_array['swagger'] || $json_array['openapi']) && $json_array['info']) {
                 R("ImportSwagger/import");
-                return ;
+                return;
             }
             if ($json_array['id']) {
                 R("ImportPostman/import");
-                return ;
+                return;
             }
             if ($json_array['info']) {
                 R("ImportPostman/import");
-                return ;
+                return;
             }
         }
 
         $this->sendError(10101);
-
-
     }
 
     //导入markdown压缩包
-    public function markdown($info_array, $item_id){
+    public function markdown($info_array, $item_id)
+    {
         set_time_limit(100);
-        ini_set('memory_limit','200M');
+        ini_set('memory_limit', '200M');
 
         $login_user = $this->checkLogin();
 
-        $file = $_FILES["file"]["tmp_name"] ;
+        $file = $_FILES["file"]["tmp_name"];
         //$file = "../Public/markdown.zip" ; //test
 
         if (!$info_array) {
             $zipArc = new \ZipArchive();
             $ret = $zipArc->open($file, \ZipArchive::CREATE);
-            $info = $zipArc->getFromName("prefix_info.json") ;
-            $info_array = json_decode($info ,1 );
+            $info = $zipArc->getFromName("prefix_info.json");
+            $info_array = json_decode($info, 1);
             unset($info);
         }
 
         if ($info_array) {
             // $info_array['item_id'] = '2'; //debug
-            D("Item")->import( json_encode($info_array) , $login_user['uid'], $item_id );
+            D("Item")->import(json_encode($info_array), $login_user['uid'], $item_id);
             $this->sendResult(array());
-            return ;
+            return;
         }
 
         $this->sendError(10101);
     }
 
     //废弃
-    private function _fileToMarkdown( $catalogData ,  $zipArc ){
+    private function _fileToMarkdown($catalogData,  $zipArc)
+    {
         if ($catalogData['pages']) {
             foreach ($catalogData['pages'] as $key => $value) {
                 if ($value['page_content']) {
-                    $catalogData['pages'][$key]['page_content'] = $zipArc->getFromName( $value['page_content']) ;//原来的内容由文件名变为文件内容
+                    $catalogData['pages'][$key]['page_content'] = $zipArc->getFromName($value['page_content']); //原来的内容由文件名变为文件内容
                 }
             }
         }
@@ -99,14 +104,10 @@ class ImportController extends BaseController {
         if ($catalogData['catalogs']) {
             foreach ($catalogData['catalogs'] as $key => $value) {
                 if ($value) {
-                    $catalogData['catalogs'][$key] = $this->_markdownTofile($value ,  $zipArc);
+                    $catalogData['catalogs'][$key] = $this->_markdownTofile($value,  $zipArc);
                 }
-                
             }
-            
         }
-        return $catalogData ;
-
+        return $catalogData;
     }
-
 }
