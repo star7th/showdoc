@@ -144,7 +144,15 @@ class UserController extends BaseController
                 //如果项目表是空的，则生成系统示例项目
                 $this->_importSample(1);
             }
+            // 如果因为历史原因，没有密码盐，则创建一个
+            if (!$ret['salt']) {
+                $salt = get_rand_str();
+                $password = encry_password($password, $salt);
+                D("User")->where("uid ='%d' ", array($ret['uid']))->save(array('salt' => $salt, 'password' => $password));
+            }
+
             unset($ret['password']);
+            unset($ret['salt']);
             session("login_user", $ret);
             D("User")->setLastTime($ret['uid']);
             $token = D("UserToken")->createToken($ret['uid'], 60 * 60 * 24 * 180);
@@ -206,7 +214,15 @@ class UserController extends BaseController
                 $this->_importSample(1);
             }
 
+            // 如果因为历史原因，没有密码盐，则创建一个
+            if (!$ret['salt']) {
+                $salt = get_rand_str();
+                $password = encry_password($password, $salt);
+                D("User")->where("uid ='%d' ", array($ret['uid']))->save(array('salt' => $salt, 'password' => $password));
+            }
+
             unset($ret['password']);
+            unset($ret['salt']);
             session("login_user", $ret);
             D("User")->setLastTime($ret['uid']);
             $token = D("UserToken")->createToken($ret['uid'], 60 * 60 * 24 * 180);

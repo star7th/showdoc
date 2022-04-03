@@ -22,14 +22,17 @@ class UserModel extends BaseModel
      */
     public function register($username, $password)
     {
-        $password = md5(base64_encode(md5($password)) . '576hbgh6');
-        return $this->add(array('username' => $username, 'password' => $password, 'reg_time' => time()));
+        $salt = get_rand_str();
+        $password = encry_password($password, $salt);
+        $uid = $this->add(array('username' => $username, 'password' => $password, 'salt' => $salt,  'reg_time' => time()));
+        return $uid;
     }
 
     //修改用户密码
     public function updatePwd($uid, $password)
     {
-        $password = md5(base64_encode(md5($password)) . '576hbgh6');
+        $res = $this->where("uid = '%d'", array($uid))->find();
+        $password = encry_password($password, $res['salt']);
         return $this->where("uid ='%d' ", array($uid))->save(array('password' => $password));
     }
 
@@ -49,9 +52,15 @@ class UserModel extends BaseModel
 
     public function checkLogin($username, $password)
     {
-        $password = md5(base64_encode(md5($password)) . '576hbgh6');
-        $where = array($username, $password, $username, $password);
-        return $this->where("( username='%s'  and password='%s' ) ", $where)->find();
+        $where = array($username, $username);
+        $res = $this->where(" username='%s' or email='%s'  ", $where)->find();
+        if ($res) {
+            if ($res['password'] === encry_password($password, $res['salt'])) {
+                return $res;
+            }
+        }
+
+        return false;
     }
     //设置最后登录时间
     public function setLastTime($uid)

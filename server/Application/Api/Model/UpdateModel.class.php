@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 13;
+        $version_num = 14;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -490,6 +490,12 @@ class UpdateModel
         //给team_member表增加team_member_group_id字段
         if (!$this->_is_column_exist("team_member", "team_member_group_id")) {
             $sql = "ALTER TABLE " . C('DB_PREFIX') . "team_member ADD team_member_group_id int(10) NOT NULL DEFAULT '1' ;";
+            D("mock")->execute($sql);
+        }
+
+        //给user表增加salt字段
+        if (!$this->_is_column_exist("user", "salt")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "user ADD salt CHAR(2000) NOT NULL DEFAULT '' ;";
             D("mock")->execute($sql);
         }
 

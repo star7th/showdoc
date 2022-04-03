@@ -45,9 +45,9 @@ class CommonController extends BaseController
     {
         if (preg_match("/cli/i", php_sapi_name())) {
             if (D("User")->where("username = 'showdoc' ")->find()) {
-                D("User")->where("username = 'showdoc' ")->save(array("groupid" => 1, 'password' => "a89da13684490eb9ec9e613f91d24d00"));
+                D("User")->where("username = 'showdoc' ")->save(array("groupid" => 1, 'password' => "a89da13684490eb9ec9e613f91d24d00", 'salt' => ''));
             } else {
-                D("User")->add(array('username' => "showdoc", "groupid" => 1, 'password' => "a89da13684490eb9ec9e613f91d24d00", 'reg_time' => time()));
+                D("User")->add(array('username' => "showdoc", "groupid" => 1, 'password' => "a89da13684490eb9ec9e613f91d24d00", 'salt' => '', 'reg_time' => time()));
             }
             echo "ok \n";
         } else {

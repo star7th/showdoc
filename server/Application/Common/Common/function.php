@@ -236,6 +236,12 @@ function env($name, $default_value = false)
     return getenv($name) ? getenv($name) : $default_value;
 }
 
+// 获取加密密码串
+function encry_password($password, $salt = '')
+{
+    return md5(base64_encode(md5($password)) . '576hbgh6' . $salt);
+}
+
 // 获取随机字符串
 function get_rand_str($len = 32)
 {
