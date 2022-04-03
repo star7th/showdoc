@@ -91,6 +91,7 @@
       </span>
     </el-dialog>
     <BackToTop></BackToTop>
+    <Toc v-if="page_id"></Toc>
     <Footer></Footer>
     <div class></div>
   </div>
