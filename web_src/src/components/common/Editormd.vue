@@ -25,6 +25,8 @@
 }
 .markdown-body code {
   color: #d14;
+  font-family: Consolas, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
 }
 .markdown-body pre code {
   color: #d1d2d2;
