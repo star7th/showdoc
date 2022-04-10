@@ -315,6 +315,8 @@ import SortPage from '@/components/page/edit/SortPage'
 import Notify from '@/components/page/edit/Notify'
 import { Base64 } from 'js-base64'
 import { rederPageContent } from '@/models/page'
+const turndownPluginGfm = require('turndown-plugin-gfm')
+
 import {
   apiTemplateZh,
   databaseTemplateZh,
@@ -742,6 +744,10 @@ export default {
                 })
                 .then(data => {
                   var turndownService = new TurndownService()
+                  var gfm = turndownPluginGfm.gfm
+                  var tables = turndownPluginGfm.tables
+                  var strikethrough = turndownPluginGfm.strikethrough
+                  turndownService.use([gfm, tables, strikethrough])
                   var markdown = turndownService.turndown(html)
                   that.insertValue(markdown)
                 })
