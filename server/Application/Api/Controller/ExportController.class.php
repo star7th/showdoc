@@ -24,6 +24,17 @@ class ExportController extends BaseController
             return;
         }
 
+        // 如果改用户是项目成员，且只分配了单个目录权限
+        $tmpRes = D("ItemMember")->where(" item_id = '$item_id' and uid = '$login_user[uid]' and cat_id > 0 ")->find();
+        if ($tmpRes) {
+            $cat_id = $tmpRes['cat_id'];
+        }
+        // 如果改用户是团队成员，且只分配了该项目的单个目录权限
+        $tmpRes = D("TeamItemMember")->where(" item_id = '$item_id' and member_uid = '$login_user[uid]' and cat_id > 0 ")->find();
+        if ($tmpRes) {
+            $cat_id = $tmpRes['cat_id'];
+        }
+
         $item = D("Item")->where("item_id = '$item_id' ")->find();
 
 
