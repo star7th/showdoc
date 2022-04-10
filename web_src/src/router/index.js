@@ -6,6 +6,7 @@ import UserSetting from '@/components/user/Setting'
 import UserRegister from '@/components/user/Register'
 import UserResetPassword from '@/components/user/ResetPassword'
 import ResetPasswordByUrl from '@/components/user/ResetPasswordByUrl'
+import loginByUserToken from '@/components/user/loginByUserToken'
 import ItemIndex from '@/components/item/Index'
 import ItemAdd from '@/components/item/add/Index'
 import ItemPassword from '@/components/item/Password'
@@ -148,6 +149,11 @@ export default new Router({
       path: '/message/index',
       name: 'Message',
       component: Message
+    },
+    {
+      path: '/user/loginByUserToken',
+      name: 'loginByUserToken',
+      component: loginByUserToken
     },
 
     // -------新路由加在分割线前面---------------
