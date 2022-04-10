@@ -507,5 +507,8 @@ exports.default = {
   past_html_tips:
     '检测到你要粘贴的内容可能包含html标签和样式，是否需要尝试转换成markdown格式？如不需要，你可以点击下方的粘贴纯文本按钮',
   past_html_markdown: '尝试 html 转 markdown',
-  past_html_text: '粘贴纯文本'
+  past_html_text: '粘贴纯文本',
+
+  team_exit: '退出团队',
+  team_exit_confirm: '你确认退出团队吗？退出后，你将失去改团队下所有项目权限'
 }

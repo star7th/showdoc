@@ -110,7 +110,8 @@ class TeamItemController extends BaseController
 
         $team_id = I("team_id/d");
 
-        if (!$this->checkTeamManage($uid, $team_id)) {
+        // 权限判断。团队管理者和团队成员可以看到该列表
+        if (!$this->checkTeamManage($uid, $team_id) && !D("TeamMember")->where(" member_uid = '$uid' and team_id = '$team_id' ")->find()) {
             $this->sendError(10103);
             return;
         }

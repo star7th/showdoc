@@ -7,7 +7,11 @@
         <el-button type="text" class="goback-btn" @click="goback"
           ><i class="el-icon-back"></i>&nbsp;{{ $t('goback') }}</el-button
         >
-        <el-button type="text" class="add-cat" @click="addTeamMember"
+        <el-button
+          v-if="team_manage"
+          type="text"
+          class="add-cat"
+          @click="addTeamMember"
           ><i class="el-icon-plus"></i>&nbsp;{{ $t('add_member') }}</el-button
         >
         <el-table align="left" :data="list" height="400" style="width: 100%">
@@ -37,6 +41,7 @@
           <el-table-column prop :label="$t('operation')">
             <template slot-scope="scope">
               <el-button
+                v-if="team_manage"
                 @click="deleteTeamMember(scope.row.id)"
                 type="text"
                 size="small"
@@ -104,7 +109,8 @@ export default {
       list: [],
       dialogFormVisible: false,
       team_id: '',
-      memberOptions: []
+      memberOptions: [],
+      team_manage: 1
     }
   },
   methods: {
@@ -223,6 +229,7 @@ export default {
 
   mounted() {
     this.team_id = this.$route.params.team_id
+    this.team_manage = this.$route.query.team_manage > 0 ? 1 : 0
     this.geList()
     this.getAllUser()
     this.reSetMyForm()

@@ -7,7 +7,11 @@
         <el-button type="text" class="goback-btn" @click="goback"
           ><i class="el-icon-back"></i>&nbsp;{{ $t('goback') }}</el-button
         >
-        <el-button type="text" class="add-cat" @click="addTeamItem"
+        <el-button
+          v-if="team_manage"
+          type="text"
+          class="add-cat"
+          @click="addTeamItem"
           ><i class="el-icon-plus"></i>&nbsp;{{ $t('binding_item') }}</el-button
         >
         <el-table align="left" :data="list" height="400" style="width: 100%">
@@ -27,6 +31,7 @@
               }}</router-link>
 
               <el-button
+                v-if="team_manage"
                 @click="getTeamItemMember(scope.row.item_id)"
                 type="text"
                 size="small"
@@ -34,6 +39,7 @@
               >
 
               <el-button
+                v-if="team_manage"
                 @click="deleteTeamItem(scope.row.id)"
                 type="text"
                 size="small"
@@ -185,7 +191,8 @@ export default {
           value: '2'
         }
       ],
-      catalogs: []
+      catalogs: [],
+      team_manage: 1
     }
   },
   methods: {
@@ -336,6 +343,7 @@ export default {
 
   mounted() {
     this.team_id = this.$route.params.team_id
+    this.team_manage = this.$route.query.team_manage > 0 ? 1 : 0
     this.geList()
     this.getItemList()
   }

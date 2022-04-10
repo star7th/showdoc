@@ -27,9 +27,15 @@
             :label="$t('memberCount')"
           >
             <template slot-scope="scope">
-              <router-link :to="'/team/member/' + scope.row.id">{{
-                scope.row.memberCount
-              }}</router-link>
+              <router-link
+                :to="
+                  '/team/member/' +
+                    scope.row.id +
+                    '?team_manage=' +
+                    scope.row.team_manage
+                "
+                >{{ scope.row.memberCount }}</router-link
+              >
             </template>
           </el-table-column>
           <el-table-column
@@ -38,39 +44,68 @@
             :label="$t('itemCount')"
           >
             <template slot-scope="scope">
-              <router-link :to="'/team/item/' + scope.row.id">{{
-                scope.row.itemCount
-              }}</router-link>
+              <router-link
+                :to="
+                  '/team/item/' +
+                    scope.row.id +
+                    '?team_manage=' +
+                    scope.row.team_manage
+                "
+                >{{ scope.row.itemCount }}</router-link
+              >
             </template>
           </el-table-column>
           <el-table-column prop :label="$t('operation')">
             <template slot-scope="scope">
               <el-button
-                @click="$router.push({ path: '/team/member/' + scope.row.id })"
+                @click="
+                  $router.push({
+                    path: '/team/member/' + scope.row.id,
+                    query: { team_manage: scope.row.team_manage }
+                  })
+                "
                 type="text"
                 size="small"
                 >{{ $t('member') }}</el-button
               >
               <el-button
-                @click="$router.push({ path: '/team/item/' + scope.row.id })"
+                @click="
+                  $router.push({
+                    path: '/team/item/' + scope.row.id,
+                    query: { team_manage: scope.row.team_manage }
+                  })
+                "
                 type="text"
                 size="small"
                 >{{ $t('team_item') }}</el-button
               >
-              <el-button @click="edit(scope.row)" type="text" size="small">{{
-                $t('edit')
-              }}</el-button>
               <el-button
+                v-if="scope.row.team_manage > 0"
+                @click="edit(scope.row)"
+                type="text"
+                size="small"
+                >{{ $t('edit') }}</el-button
+              >
+              <el-button
+                v-if="scope.row.team_manage > 0"
                 @click="attornDialog(scope.row)"
                 type="text"
                 size="small"
                 >{{ $t('attorn') }}</el-button
               >
               <el-button
+                v-if="scope.row.team_manage > 0"
                 @click="deleteTeam(scope.row.id)"
                 type="text"
                 size="small"
                 >{{ $t('delete') }}</el-button
+              >
+              <el-button
+                v-if="scope.row.team_manage <= 0"
+                @click="exitTeam(scope.row.id)"
+                type="text"
+                size="small"
+                >{{ $t('team_exit') }}</el-button
               >
             </template>
           </el-table-column>
@@ -250,6 +285,19 @@ export default {
         } else {
           that.$alert(response.data.error_message)
         }
+      })
+    },
+    exitTeam(id) {
+      var that = this
+
+      this.$confirm(that.$t('team_exit_confirm'), ' ', {
+        confirmButtonText: that.$t('confirm'),
+        cancelButtonText: that.$t('cancel'),
+        type: 'warning'
+      }).then(() => {
+        this.request('/api/team/exit', { id }).then(data => {
+          that.geList()
+        })
       })
     }
   },

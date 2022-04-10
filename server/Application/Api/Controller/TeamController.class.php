@@ -49,10 +49,16 @@ class TeamController extends BaseController
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'];
         if ($uid > 0) {
-            $ret = D("Team")->where(" uid = '$uid' or id in ( select team_id from team_member where member_uid = '$uid' and team_member_group_id = 2  )  ")->order(" addtime desc  ")->select();
+            $ret = D("Team")->where(" uid = '$uid' or id in ( select team_id from team_member where member_uid = '$uid'   )  ")->order(" addtime desc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {
+                // 检测管理权限
+                if ($this->checkTeamManage($uid, $value['id'])) {
+                    $value['team_manage'] = 1;
+                } else {
+                    $value['team_manage'] = 0;
+                }
                 //获取该团队成员数
                 $value['memberCount'] = D("TeamMember")->where(" team_id = '$value[id]' ")->count();
 
@@ -126,5 +132,18 @@ class TeamController extends BaseController
         }
 
         $this->sendResult($return);
+    }
+
+
+    //由当前登录用户主动选择退出团队
+    public function exit()
+    {
+        $id = I("post.id/d") ? I("post.id/d") : 0;
+        $login_user = $this->checkLogin();
+
+        $teamInfo = D("Team")->where(" id = '$id' ")->find();
+        $ret = D("TeamItemMember")->where(" member_uid = '$login_user[uid]' and  team_id = '$id' ")->delete();
+        $ret = D("TeamMember")->where("  member_uid = '$login_user[uid]' and  team_id = '$id' ")->delete();
+        $this->sendResult(array());
     }
 }
