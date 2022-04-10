@@ -108,7 +108,7 @@ function output_word($data, $fileName = '')
     $data = str_replace("<thead>\n<tr>", "<thead><tr style='background-color: rgb(0, 136, 204); color: rgb(255, 255, 255);'>", $data);
     $data = str_replace("<pre><code", "<table width='100%' class='codestyle'><pre><code", $data);
     $data = str_replace("</code></pre>", "</code></pre></table>", $data);
-    $data = str_replace("<img ", "<img width=500 ", $data);
+    $data = str_replace("<img ", "<img style='max-width:500' ", $data);
     $len = strlen($data);
     fwrite($filepath, $data);
     header("Content-type: application/octet-stream");
