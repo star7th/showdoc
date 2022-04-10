@@ -725,13 +725,11 @@ export default {
         }
         // 如果剪切板里的内容是html
         else if (clipboard.items[i].type == 'text/html') {
-          var pastebin = document.querySelector('#pastebin')
-          pastebin.innerHTML = ''
-          pastebin.focus() // 点睛之笔。鼠标焦点转移到这里后，粘贴就会进那个可编辑元素里了。此时从pastebin元素再获取html即可
-          setTimeout(() => {
-            // 异步延迟，等html粘贴进pastebin元素里再获取
-            var html = pastebin.innerHTML
-            var text = pastebin.innerText
+          e.preventDefault() // 阻止默认粘贴事件
+          clipboard.items[i].getAsString(htmlData => {
+            var pastebin = document.querySelector('#pastebin')
+            pastebin.innerHTML = htmlData
+            var text = pastebin.innerText // 利用插入html元素来获取其纯文本
             // 如果其纯文本内容少于200字，那就当作是纯文本粘贴
             if (text.length < 200) {
               that.insertValue(text)
@@ -748,14 +746,14 @@ export default {
                   var tables = turndownPluginGfm.tables
                   var strikethrough = turndownPluginGfm.strikethrough
                   turndownService.use([gfm, tables, strikethrough])
-                  var markdown = turndownService.turndown(html)
+                  var markdown = turndownService.turndown(htmlData)
                   that.insertValue(markdown)
                 })
                 .catch(() => {
                   that.insertValue(text)
                 })
             }
-          }, 200)
+          })
         } else {
           // 无动作。让默认粘贴事件做事。
         }
