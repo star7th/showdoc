@@ -57,6 +57,9 @@ class AttachmentController extends BaseController
                 && !strstr(strtolower($file_path), '.jpg')
                 && !strstr(strtolower($file_path), '.png')
                 && !strstr(strtolower($file_path), '.pdf')
+                && !strstr(strtolower($file_path), '.doc')
+                && !strstr(strtolower($file_path), '.xls')
+                && !strstr(strtolower($file_path), '.ppt')
             ) {
                 $this->_downloadFile($file_path, $ret['display_name']);
             } else {
