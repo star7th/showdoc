@@ -136,7 +136,7 @@ class TeamController extends BaseController
 
 
     //由当前登录用户主动选择退出团队
-    public function exit()
+    public function exitTeam()
     {
         $id = I("post.id/d") ? I("post.id/d") : 0;
         $login_user = $this->checkLogin();

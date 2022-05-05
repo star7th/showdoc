@@ -174,12 +174,12 @@ class MemberController extends BaseController
         // 下面sql的意思是，先查询当前用户的所有项目成员，然后查询当前用户的所有团队成员
         // 然后UNION ALL 成一个临时表table1，然后username去重，addtime排序
         $sql = "
-            select * from (
+            select uid,username,addtime from (
                 select item_member.uid ,item_member.username,item_member.addtime from item_member left join item on item_member.item_id = item.item_id where item.uid = '$uid' 
             UNION ALL
                 select  team_member.member_uid as uid  ,team_member.member_username as username ,team_member.addtime from team_member left join team on team_member.team_id = team.id where team.uid = '$uid' 
             ) as table1
-            group by username order by addtime desc  
+            group by uid,username,addtime order by addtime desc  
         ";
         $res = D("Item")->query($sql);
         $this->sendResult($res);

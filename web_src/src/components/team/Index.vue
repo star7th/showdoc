@@ -295,7 +295,7 @@ export default {
         cancelButtonText: that.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        this.request('/api/team/exit', { id }).then(data => {
+        this.request('/api/team/exitTeam', { id }).then(data => {
           that.geList()
         })
       })
