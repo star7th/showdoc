@@ -131,7 +131,7 @@ class TeamController extends BaseController
             D("Item")->where(" item_id = '$value[item_id]' ")->save($data);
         }
 
-        $this->sendResult($return);
+        $this->sendResult(array());
     }
 
 
