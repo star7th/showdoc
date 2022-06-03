@@ -134,8 +134,17 @@ class ExtLoginController extends BaseController
                 //echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
                 // echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
 
-                $res = http_get($urlUserInfo . "?access_token=" . $accessToken->getToken());
-
+                $access_token_string = $accessToken->getToken();
+                $user_info_url = $urlUserInfo . "?access_token=" . $access_token_string;
+                $oCurl = curl_init();   //初始化curl，
+                curl_setopt($oCurl, CURLOPT_URL, $user_info_url);   //设置网址
+                curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);  //将curl_exec的结果返回
+                curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+                curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, FALSE);
+                curl_setopt($oCurl, CURLOPT_HEADER, 0);         //是否输出返回头信息
+                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Authorization: token {$access_token_string}", "user-agent: showdoc"));
+                $res = curl_exec($oCurl);   //执行
+                curl_close($oCurl);          //关闭会话
                 $res_array = json_decode($res, true);
                 if ($res_array) {
                     $username = '';
@@ -147,6 +156,9 @@ class ExtLoginController extends BaseController
                     }
                     if ($res_array['username']) {
                         $username = $res_array['username'];
+                    }
+                    if ($res_array['login']) {
+                        $username = $res_array['login'];
                     }
                     if (!$username) {
                         echo "返回信息中无法获取用户名。返回的内容如下：" . $res;
