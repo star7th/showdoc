@@ -141,7 +141,7 @@ class ImportController extends BaseController
                     $f = $dir . '/' . $file;
                     if (is_file($f)) {
                         // echo '|--' . $file . '<br>';          //代表文件
-                        $page_title = $file;
+                        $page_title = str_replace('.md', '', $file);
                         $page_content = file_get_contents($f);
                         $cat_name = str_replace($tmp_dir, '', $dir);
                         // echo $cat_name . '<br>';
