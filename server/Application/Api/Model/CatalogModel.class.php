@@ -270,6 +270,10 @@ class CatalogModel extends BaseModel
 	public function saveCatPath($catPath, $item_id)
 	{
 		if (!$catPath) return false;
+		// $catPath是以斜杠 / 开头，且$catPath长度大于1（即不只是 / ）, 则把第一个 / 去掉
+		if (substr($catPath, 0, 1) == '/' && strlen($catPath) > 1) {
+			$catPath = substr($catPath, 1); // 去掉第一个字符
+		}
 		$session_key = 'cat_path_' . md5($item_id . $catPath);
 		// 如果session中有缓存值，则直接从session中获取。这是为了避免重复读数据库
 		if (session($session_key)) {

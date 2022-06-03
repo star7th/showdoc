@@ -30,13 +30,18 @@ class ImportController extends BaseController
             $zipArc = new \ZipArchive();
             $ret = $zipArc->open($file, \ZipArchive::CREATE);
             $info = $zipArc->getFromName("prefix_info.json");
+            // 如有prefix_info.json文件，则导入prefix_info.json文件
             if ($info) {
                 $info_array = json_decode($info, 1);
                 if ($info_array) {
                     $info_array['item_id'] = $item_id;
-                    $this->markdown($info_array, $item_id);
+                    $this->importMarkdownInfo($info_array, $item_id);
                     return;
                 }
+            } else {
+                // 如果没有，则尝试解压压缩包后，遍历markdown文件导入
+                $this->importFromReadingMDFile($file, $filename, $item_id);
+                return;
             }
         }
 
@@ -61,8 +66,8 @@ class ImportController extends BaseController
         $this->sendError(10101);
     }
 
-    //导入markdown压缩包
-    public function markdown($info_array, $item_id)
+    //导入markdown压缩包(根据压缩包内的info文件导入）)
+    public function importMarkdownInfo($info_array, $item_id)
     {
         set_time_limit(100);
         ini_set('memory_limit', '200M');
@@ -90,24 +95,67 @@ class ImportController extends BaseController
         $this->sendError(10101);
     }
 
-    //废弃
-    private function _fileToMarkdown($catalogData,  $zipArc)
+    public function importFromReadingMDFile($file, $filename, $item_id)
     {
-        if ($catalogData['pages']) {
-            foreach ($catalogData['pages'] as $key => $value) {
-                if ($value['page_content']) {
-                    $catalogData['pages'][$key]['page_content'] = $zipArc->getFromName($value['page_content']); //原来的内容由文件名变为文件内容
-                }
-            }
+        // 如果项目id不存在，则新建一个项目
+        if ($item_id <= 0) {
+            $login_user = $this->checkLogin();
+            $item_data = array(
+                "item_name" => str_replace('.zip', '', $filename),
+                "item_domain" => '',
+                "item_type" => 1,
+                "item_description" => '',
+                "password" => get_rand_str(),
+                "uid" => $login_user['uid'],
+                "username" => $login_user['username'],
+                "addtime" => time(),
+            );
+            $item_id = D("Item")->add($item_data);
         }
+        $zipArc = new \ZipArchive();
+        $zipArc->open($file, \ZipArchive::CREATE);
+        // 在系统目录创建一个临时目录路径
+        $tmp_dir = sys_get_temp_dir() . '/' . get_rand_str();
+        mkdir($tmp_dir);
 
-        if ($catalogData['catalogs']) {
-            foreach ($catalogData['catalogs'] as $key => $value) {
-                if ($value) {
-                    $catalogData['catalogs'][$key] = $this->_markdownTofile($value,  $zipArc);
+        // 加入此段是为了某些情况下中文名乱码问题，要先转码
+        $fileNum = $zipArc->numFiles;
+        for ($i = 0; $i < $fileNum; $i++) {
+            $statInfo = $zipArc->statIndex($i, \ZipArchive::FL_ENC_RAW);
+            $current_encode = mb_detect_encoding($statInfo['name'], array("ASCII", "GB2312", "GBK", 'BIG5', 'UTF-8'));
+            $statInfo['name'] = mb_convert_encoding($statInfo['name'], 'UTF-8', $current_encode);
+            $zipArc->renameIndex($i, $statInfo['name']);
+        }
+        $zipArc->close();
+        $zipArc->open($file, \ZipArchive::CREATE);
+        // 截至↑
+
+        $zipArc->extractTo($tmp_dir);
+
+        // 遍历解压后的目录
+        // 定义一个匿名函数，以便使用名字来递归
+        $traverseFiles = function ($dir) use (&$traverseFiles, $item_id, $tmp_dir) {
+            $handle = opendir($dir);
+            while ($file = readdir($handle)) {
+                if ($file !== '..' && $file !== '.') {
+                    $f = $dir . '/' . $file;
+                    if (is_file($f)) {
+                        // echo '|--' . $file . '<br>';          //代表文件
+                        $page_title = $file;
+                        $page_content = file_get_contents($f);
+                        $cat_name = str_replace($tmp_dir, '', $dir);
+                        // echo $cat_name . '<br>';
+                        D("Page")->update_by_title($item_id, $page_title, $page_content, $cat_name);
+                    } else {
+                        // echo  '--' . $file . '<br>';          //代表文件夹
+                        // 这里目录，则继续递归遍历
+                        $traverseFiles($f);
+                    }
                 }
             }
-        }
-        return $catalogData;
+        };
+        $traverseFiles($tmp_dir, $item_id);
+        clear_runtime($tmp_dir); // clear_runtime 函数是可以删除任意目录的。当初写的时候只是用来清除缓存目录。所以命名并不友好
+        $this->sendResult(array());
     }
 }
