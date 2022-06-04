@@ -510,5 +510,7 @@ exports.default = {
   past_html_text: '粘贴纯文本',
 
   team_exit: '退出团队',
-  team_exit_confirm: '你确认退出团队吗？退出后，你将失去改团队下所有项目权限'
+  team_exit_confirm: '你确认退出团队吗？退出后，你将失去改团队下所有项目权限',
+
+  expand_collapse_catalog_tips: '展开全部目录/折叠全部目录'
 }

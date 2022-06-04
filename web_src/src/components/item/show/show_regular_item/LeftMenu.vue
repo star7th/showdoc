@@ -33,9 +33,19 @@
           class="search-box"
           :clearable="true"
           @clear="search_item()"
-          size="medium"
+          size="small"
           v-model="keyword"
         ></el-input>
+        <el-tooltip
+          effect="dark"
+          :content="$t('expand_collapse_catalog_tips')"
+          placement="top"
+        >
+          <i
+            class="el-icon-s-fold cursor-pointer"
+            @click="expandCollapseCatalog"
+          ></i>
+        </el-tooltip>
 
         <!-- 一级页面 -->
         <template v-if="menu.pages && menu.pages.length">
@@ -83,7 +93,8 @@ export default {
       show_menu_btn: false,
       hideScrollbar: true,
       asideWidth: '250px',
-      menuMarginLeft: 'menu-margin-left1'
+      menuMarginLeft: 'menu-margin-left1',
+      expandCollapseCatalogStatus: '0' // 目录状态。0：无设置；1：展开全部；2：折叠全部
     }
   },
   components: {
@@ -150,6 +161,33 @@ export default {
         ? this.item_info.item_domain
         : this.item_info.item_id
       return '#/' + domain + '/' + page_id
+    },
+    expandCollapseCatalog() {
+      if (
+        this.expandCollapseCatalogStatus === '0' ||
+        this.expandCollapseCatalogStatus === '2'
+      ) {
+        this.expandCollapseCatalogStatus = '1'
+        const openeds = [] // 先定义一个空数组
+        // 递归遍历获取目录id并全部展开
+        // 先定义一个遍历函数，以便后续用名字来递归
+        const addCatIdToOpens = catalogs => {
+          console.log(catalogs)
+          if (catalogs && catalogs.length > 0) {
+            catalogs.forEach(element => {
+              openeds.push(element.cat_id)
+              if (element.catalogs && element.catalogs.length > 0) {
+                addCatIdToOpens(element.catalogs)
+              }
+            })
+          }
+        }
+        addCatIdToOpens(this.item_info.menu.catalogs)
+        this.openeds = openeds
+      } else if (this.expandCollapseCatalogStatus === '1') {
+        this.expandCollapseCatalogStatus = '2'
+        this.openeds = []
+      }
     }
   },
   mounted() {
@@ -262,8 +300,9 @@ export default {
   margin-bottom: 4px;
 }
 .search-box {
-  padding: 0px 20px 0px 20px;
+  padding: 0px 0px 0px 20px;
   box-sizing: border-box;
+  width: 90%;
 }
 
 /*隐藏滚动条*/
