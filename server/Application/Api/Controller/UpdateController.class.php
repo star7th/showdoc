@@ -21,6 +21,10 @@ class UpdateController extends BaseController
     // 从最新docker镜像中更新代码
     public function dockerUpdateCode()
     {
+        if (!preg_match("/cli/i", php_sapi_name())) {
+            echo '只能从命令行中调用';
+            return;
+        }
         $showdoc_path = "../";
         // 进行文件读写权限检查
         if (
