@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <BackToTop></BackToTop>
+    <el-backtop></el-backtop>
     <Toc v-if="page_id && showToc"></Toc>
     <Footer></Footer>
     <div class></div>
@@ -116,7 +116,6 @@ pre ol {
 
 <script>
 import Editormd from '@/components/common/Editormd'
-import BackToTop from '@/components/common/BackToTop'
 import Toc from '@/components/common/Toc'
 
 export default {
@@ -135,7 +134,6 @@ export default {
   },
   components: {
     Editormd,
-    BackToTop,
     Toc
   },
   methods: {

@@ -86,7 +86,7 @@
       </div>
     </div>
 
-    <BackToTop></BackToTop>
+    <el-backtop></el-backtop>
     <Toc v-if="page_id && showToc"></Toc>
 
     <!-- 附件列表 -->
@@ -104,7 +104,6 @@
 
 <script>
 import Editormd from '@/components/common/Editormd'
-import BackToTop from '@/components/common/BackToTop'
 import Toc from '@/components/item/show/show_regular_item/Toc'
 import LeftMenu from '@/components/item/show/show_regular_item/LeftMenu'
 import OpBar from '@/components/item/show/show_regular_item/OpBar'
@@ -140,7 +139,6 @@ export default {
     Editormd,
     LeftMenu,
     OpBar,
-    BackToTop,
     Toc,
     AttachmentList
   },
