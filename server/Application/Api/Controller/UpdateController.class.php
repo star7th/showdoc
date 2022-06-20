@@ -41,7 +41,7 @@ class UpdateController extends BaseController
         }
 
         //获取当前版本号
-        $text = file_get_contents("../composer.json");
+        $text = file_get_contents($showdoc_path . "composer.json");
         $composer = json_decode($text, true);
         $cur_version = $composer['version'];
 
