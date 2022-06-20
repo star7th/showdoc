@@ -264,3 +264,14 @@ function date_time($time = 0)
     if (!$time) $time = time();
     return date("Y-m-d H:i:s", $time);
 }
+
+// 获取系统语言
+function get_lang($path="../web/index.html")
+{
+    $text = file_get_contents($path);
+    if( strstr($text , 'zh') ){
+        return 'zh-cn' ;
+    }else{
+        return 'en';
+    }
+}

@@ -138,10 +138,19 @@ class AdminUpdateController extends BaseController
                 $bak_name = $showdoc_path . 'Sqlite/showdoc.db.bak.' . date("Y-m-d-H-i-s") . '.php';
                 copy($showdoc_path . 'Sqlite/showdoc.db.php', $bak_name);
 
+                // 获取原来的语言设置
+                $lang = get_lang($showdoc_path . "web/index.html") ;
+
                 // 目录覆盖
                 $this->copydir($showdoc_path . 'Public/Uploads/update/', $showdoc_path);
                 // 用备份的数据库还原
                 copy($bak_name, $showdoc_path . 'Sqlite/showdoc.db.php');
+
+                // 恢复语言设置
+                if ($lang == 'en') {
+                   $this->replace_file_content($showdoc_path . "web/index.html","zh-cn","en") ;
+                   $this->replace_file_content($showdoc_path . "web_src/index.html","zh-cn","en") ;
+                }
 
                 $this->deldir($showdoc_path . 'Public/Uploads/update/');
 
@@ -245,5 +254,14 @@ class AdminUpdateController extends BaseController
         }
 
         return $writeable;
+    }
+
+    private function replace_file_content($file , $from ,$to )
+    {
+        $content = file_get_contents($file);
+        $content2 = str_replace($from,$to,$content);
+        if ($content2) {
+            file_put_contents($file,$content2);
+        }
     }
 }

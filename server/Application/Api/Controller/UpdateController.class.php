@@ -53,6 +53,9 @@ class UpdateController extends BaseController
         if ($cur_version && $version_in_docker && version_compare($version_in_docker, $cur_version) > 0) {
             // 比较版本后，应该更新
 
+            // 获取原来的语言设置
+            $lang = get_lang($showdoc_path . "web/index.html") ;
+
             //复制数据库文件备份
             $bak_name = $showdoc_path . 'Sqlite/showdoc.db.bak.' . date("Y-m-d-H-i-s") . '.php';
             copy($showdoc_path . 'Sqlite/showdoc.db.php', $bak_name);
@@ -61,6 +64,13 @@ class UpdateController extends BaseController
             $this->copydir('/showdoc_data/html/', $showdoc_path);
             // 用备份的数据库还原
             copy($bak_name, $showdoc_path . 'Sqlite/showdoc.db.php');
+
+
+            // 恢复语言设置
+            if ($lang == 'en') {
+                $this->replace_file_content($showdoc_path . "web/index.html","zh-cn","en") ;
+                $this->replace_file_content($showdoc_path . "web_src/index.html","zh-cn","en") ;
+            }
 
             // echo '升级成功！' ;
             $this->sendResult(array());
@@ -130,5 +140,14 @@ class UpdateController extends BaseController
         }
 
         return $writeable;
+    }
+
+    private function replace_file_content($file , $from ,$to )
+    {
+        $content = file_get_contents($file);
+        $content2 = str_replace($from,$to,$content);
+        if ($content2) {
+            file_put_contents($file,$content2);
+        }
     }
 }
