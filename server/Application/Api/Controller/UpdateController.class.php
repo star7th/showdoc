@@ -25,7 +25,7 @@ class UpdateController extends BaseController
             echo '只能从命令行中调用';
             return;
         }
-        $showdoc_path = "../";
+        $showdoc_path = "/var/www/html/";
         // 进行文件读写权限检查
         if (
             !$this->new_is_writeable($showdoc_path)
