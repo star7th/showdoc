@@ -535,5 +535,7 @@ exports.default = {
 
   team_exit: 'Quit',
   team_exit_confirm:
-    'Are you sure to quit the team? After quitting, you will lose all project permissions under the team'
+    'Are you sure to quit the team? After quitting, you will lose all project permissions under the team',
+
+  expand_collapse_catalog_tips: 'Expand all catalogs / collapse all catalogs'
 }
