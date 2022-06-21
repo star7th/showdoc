@@ -266,60 +266,65 @@ export default {
         loading.close()
         this.saving = false
       }, 30000)
-      var url = DocConfig.server + '/api/adminSetting/saveLdapConfig'
-      this.axios.post(url, this.form).then(response => {
-        if (response.data.error_code === 0) {
-          this.$alert(this.$t('success'))
-        } else {
-          this.$alert(response.data.error_message)
-        }
+
+      this.request(
+        '/api/adminSetting/saveLdapConfig',
+        this.form,
+        'post',
+        true,
+        'json'
+      ).then(data => {
+        this.$alert(this.$t('success'))
         loading.close()
       })
     },
     loadLdapConfig() {
-      var url = DocConfig.server + '/api/adminSetting/loadLdapConfig'
-      this.axios.post(url, this.form).then(response => {
-        if (response.data.error_code === 0) {
-          if (response.data.data.length === 0) {
-            return
-          }
-          this.form.ldap_open = response.data.data.ldap_open > 0
-          this.form.ldap_form = response.data.data.ldap_form
-            ? response.data.data.ldap_form
-            : this.form.ldap_form
-        } else {
-          this.$alert(response.data.error_message)
+      this.request(
+        '/api/adminSetting/loadLdapConfig',
+        this.form,
+        'post',
+        true,
+        'json'
+      ).then(data => {
+        if (data.data.length === 0) {
+          return
         }
+        this.form.ldap_open = data.data.ldap_open > 0
+        this.form.ldap_form = data.data.ldap_form
+          ? data.data.ldap_form
+          : this.form.ldap_form
       })
     },
     saveOauth2Config() {
-      var url = DocConfig.server + '/api/adminSetting/saveOauth2Config'
-      this.axios.post(url, this.form).then(response => {
-        if (response.data.error_code === 0) {
-          this.$alert(this.$t('success'))
-        } else {
-          this.$alert(response.data.error_message)
-        }
+      this.request(
+        '/api/adminSetting/saveOauth2Config',
+        this.form,
+        'post',
+        true,
+        'json'
+      ).then(data => {
+        this.$alert(this.$t('success'))
       })
     },
     loadOauth2Config() {
-      var url = DocConfig.server + '/api/adminSetting/loadOauth2Config'
-      this.axios.post(url, this.form).then(response => {
-        if (response.data.error_code === 0) {
-          if (response.data.data.length === 0) {
-            return
-          }
-          this.form.oauth2_open = response.data.data.oauth2_open > 0
-          this.form.oauth2_form = response.data.data.oauth2_form
-            ? response.data.data.oauth2_form
-            : this.form.oauth2_form
-          this.form.oauth2_form.logout_redirect_uri = response.data.data
-            .oauth2_form.logout_redirect_uri
-            ? response.data.data.oauth2_form.logout_redirect_uri
-            : ''
-        } else {
-          this.$alert(response.data.error_message)
+      this.request(
+        '/api/adminSetting/loadOauth2Config',
+        this.form,
+        'post',
+        true,
+        'json'
+      ).then(data => {
+        if (data.data.length === 0) {
+          return
         }
+        this.form.oauth2_open = data.data.oauth2_open > 0
+        this.form.oauth2_form = data.data.oauth2_form
+          ? data.data.oauth2_form
+          : this.form.oauth2_form
+        this.form.oauth2_form.logout_redirect_uri =
+          data.data.oauth2_form && data.data.oauth2_form.logout_redirect_uri
+            ? data.data.oauth2_form.logout_redirect_uri
+            : ''
       })
     },
 

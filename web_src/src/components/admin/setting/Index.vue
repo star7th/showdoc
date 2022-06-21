@@ -217,76 +217,56 @@ export default {
   },
   methods: {
     onSubmit() {
-      var url = DocConfig.server + '/api/adminSetting/saveConfig'
-      this.axios.post(url, this.form).then(response => {
-        if (response.data.error_code === 0) {
-          this.$alert(this.$t('success'))
-        } else {
-          this.$alert(response.data.error_message)
-        }
+      this.request(
+        '/api/adminSetting/saveConfig',
+        this.form,
+        'post',
+        true,
+        'json'
+      ).then(data => {
+        this.$alert(this.$t('success'))
       })
     },
     loadConfig() {
-      var url = DocConfig.server + '/api/adminSetting/loadConfig'
-      this.axios.post(url, this.form).then(response => {
-        if (response.data.error_code === 0) {
-          if (response.data.data.length === 0) {
-            return
-          }
-          this.form.register_open = response.data.data.register_open > 0
-          this.form.history_version_count = response.data.data
-            .history_version_count
-            ? response.data.data.history_version_count
-            : this.form.history_version_count
-          this.form.oss_open = response.data.data.oss_open > 0
-          this.form.home_page =
-            response.data.data.home_page > 0 ? response.data.data.home_page : 1
-          this.form.home_item =
-            response.data.data.home_item > 0 ? response.data.data.home_item : ''
-          this.form.oss_setting = response.data.data.oss_setting
-            ? response.data.data.oss_setting
-            : this.form.oss_setting
-          this.form.oss_setting.region = this.form.oss_setting.region
-            ? this.form.oss_setting.region
-            : ''
-          this.form.oss_setting.secretId = this.form.oss_setting.secretId
-            ? this.form.oss_setting.secretId
-            : ''
-          this.form.oss_setting.secretKey = this.form.oss_setting.secretKey
-            ? this.form.oss_setting.secretKey
-            : ''
-          this.form.beian = response.data.data.beian
-            ? response.data.data.beian
-            : ''
-          this.form.show_watermark = response.data.data.show_watermark > 0
-          this.form.site_url = response.data.data.site_url
-            ? response.data.data.site_url
-            : ''
-        } else {
-          this.$alert(response.data.error_message)
+      this.request('/api/adminSetting/loadConfig', {}).then(data => {
+        if (data.data.length === 0) {
+          return
         }
+        this.form.register_open = data.data.register_open > 0
+        this.form.history_version_count = data.data.history_version_count
+          ? data.data.history_version_count
+          : this.form.history_version_count
+        this.form.oss_open = data.data.oss_open > 0
+        this.form.home_page = data.data.home_page > 0 ? data.data.home_page : 1
+        this.form.home_item = data.data.home_item > 0 ? data.data.home_item : ''
+        this.form.oss_setting = data.data.oss_setting
+          ? data.data.oss_setting
+          : this.form.oss_setting
+        this.form.oss_setting.region = this.form.oss_setting.region
+          ? this.form.oss_setting.region
+          : ''
+        this.form.oss_setting.secretId = this.form.oss_setting.secretId
+          ? this.form.oss_setting.secretId
+          : ''
+        this.form.oss_setting.secretKey = this.form.oss_setting.secretKey
+          ? this.form.oss_setting.secretKey
+          : ''
+        this.form.beian = data.data.beian ? data.data.beian : ''
+        this.form.show_watermark = data.data.show_watermark > 0
+        this.form.site_url = data.data.site_url ? data.data.site_url : ''
       })
     },
-    get_item_list() {
-      var that = this
-      var url = DocConfig.server + '/api/adminItem/getList'
-
-      var params = new URLSearchParams()
-      params.append('page', 1)
-      params.append('count', 1000)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          // that.$message.success("加载成功");
-          var json = response.data.data
-          that.itemList = json.items
-        } else {
-          that.$alert(response.data.error_message)
-        }
+    getItemList() {
+      this.request('/api/adminItem/getList', {
+        page: 1,
+        count: 100
+      }).then(data => {
+        this.itemList = data.data
       })
     }
   },
   mounted() {
-    this.get_item_list()
+    this.getItemList()
     this.loadConfig()
   },
   beforeDestroy() {

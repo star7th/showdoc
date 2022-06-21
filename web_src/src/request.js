@@ -6,18 +6,24 @@ import axios from '@/http'
 import router from '@/router/index'
 import { MessageBox } from 'element-ui'
 
-const request = (path, data, method = 'post', msgAlert = true) => {
-  var params = new URLSearchParams(data)
+const request = (path, data, method = 'post', msgAlert = true, contentType = 'form') => {
   let url = DocConfig.server + path
+  let axiosConfig = {
+    url: url,
+    method: method,
+    data: new URLSearchParams(data),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+
+  if (contentType == 'json') {
+    axiosConfig.data = data  // 这里使用原始data，不经过URLSearchParams
+    axiosConfig.headers['Content-Type'] = 'application/json'
+  }
+
   return new Promise((resolve, reject) => {
-    axios({
-      url: url,
-      method: method,
-      data: params,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    })
+    axios(axiosConfig)
       .then(
         response => {
           //超时登录

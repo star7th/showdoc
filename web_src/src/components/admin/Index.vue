@@ -14,7 +14,7 @@
             class="el-menu-vertical-demo"
             background-color="#545c64"
             text-color="#fff"
-            @select="select_menu"
+            @select="selectMenu"
             active-text-color="#ffd04b"
           >
             <el-menu-item index="1">
@@ -153,7 +153,7 @@ export default {
     About
   },
   methods: {
-    select_menu(index, indexPath) {
+    selectMenu(index, indexPath) {
       this.open_menu_index = 0
       this.$nextTick(() => {
         this.open_menu_index = index

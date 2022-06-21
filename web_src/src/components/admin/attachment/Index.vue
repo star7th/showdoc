@@ -56,7 +56,7 @@
           <el-button @click="visit(scope.row)" type="text" size="small">{{
             $t('visit')
           }}</el-button>
-          <el-button @click="delete_row(scope.row)" type="text" size="small">{{
+          <el-button @click="deleteRow(scope.row)" type="text" size="small">{{
             $t('delete')
           }}</el-button>
         </template>
@@ -107,11 +107,6 @@ export default {
         this.used = json.used_m
       })
     },
-    // 跳转到项目
-    jump_to_item(row) {
-      let url = '/' + row.item_id
-      window.open(url)
-    },
     handleCurrentChange(currentPage) {
       this.page = currentPage
       this.getList()
@@ -123,7 +118,7 @@ export default {
     visit(row) {
       window.open(row.url)
     },
-    delete_row(row) {
+    deleteRow(row) {
       this.$confirm(this.$t('confirm_delete'), ' ', {
         confirmButtonText: this.$t('confirm'),
         cancelButtonText: this.$t('cancel'),

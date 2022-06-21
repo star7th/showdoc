@@ -36,11 +36,11 @@
       ></el-table-column>
       <el-table-column prop="item_domain" :label="$t('operation')">
         <template slot-scope="scope">
-          <el-button @click="click_edit(scope.row)" type="text" size="small">{{
+          <el-button @click="clickEdit(scope.row)" type="text" size="small">{{
             $t('edit')
           }}</el-button>
           <el-button
-            @click="delete_user(scope.row)"
+            @click="deleteUser(scope.row)"
             v-if="scope.row.groupid != 1"
             type="text"
             size="small"
@@ -101,7 +101,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="resetForm">{{ $t('cancel') }}</el-button>
-        <el-button type="primary" @click="add_user">{{
+        <el-button type="primary" @click="addUser">{{
           $t('confirm')
         }}</el-button>
       </div>
@@ -130,23 +130,14 @@ export default {
     }
   },
   methods: {
-    get_user_list() {
-      var that = this
-      var url = DocConfig.server + '/api/adminUser/getList'
-
-      var params = new URLSearchParams()
-      params.append('username', this.username)
-      params.append('page', this.page)
-      params.append('count', this.count)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          // that.$message.success("加载成功");
-          var json = response.data.data
-          that.itemList = json.users
-          that.total = json.total
-        } else {
-          that.$alert(response.data.error_message)
-        }
+    getUserList() {
+      this.request('/api/adminUser/getList', {
+        username: this.username,
+        page: this.page,
+        count: this.count
+      }).then(data => {
+        this.itemList = data.data.users
+        this.total = data.data.total
       })
     },
     formatGroup(row, column) {
@@ -160,41 +151,30 @@ export default {
         }
       }
     },
-    // 跳转到项目
-    jump_to_item(row) {
-      let url = '#/' + row.item_id
-      window.open(url)
-    },
     handleCurrentChange(currentPage) {
       this.page = currentPage
-      this.get_user_list()
+      this.getUserList()
     },
     onSubmit() {
       this.page = 1
-      this.get_user_list()
+      this.getUserList()
     },
-    delete_user(row) {
-      var that = this
-      var url = DocConfig.server + '/api/adminUser/deleteUser'
-      this.$confirm(that.$t('confirm_delete'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+    deleteUser(row) {
+      this.$confirm(this.$t('confirm_delete'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var params = new URLSearchParams()
-        params.append('uid', row.uid)
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.$message.success('success')
-            that.get_user_list()
-            that.username = ''
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/adminUser/deleteUser', {
+          uid: row.uid
+        }).then(data => {
+          this.$message.success('success')
+          this.getUserList()
+          this.username = ''
         })
       })
     },
-    click_edit(row) {
+    clickEdit(row) {
       this.dialogAddVisible = true
       this.addForm = {
         uid: row.uid,
@@ -203,34 +183,21 @@ export default {
         password: ''
       }
     },
-    add_user() {
-      var that = this
-      var url = DocConfig.server + '/api/adminUser/addUser'
-
-      var params = new URLSearchParams()
-      params.append('username', that.addForm.username)
-      params.append('password', this.addForm.password)
-      params.append('uid', this.addForm.uid)
-      params.append('name', this.addForm.name)
-
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.dialogAddVisible = false
-            that.addForm.password = ''
-            that.addForm.username = ''
-            that.addForm.uid = 0
-            that.addForm.name = ''
-            that.$message.success(that.$t('success'))
-            that.get_user_list()
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+    addUser() {
+      this.request('/api/adminUser/addUser', {
+        username: this.addForm.username,
+        password: this.addForm.password,
+        uid: this.addForm.uid,
+        name: this.addForm.name
+      }).then(data => {
+        this.dialogAddVisible = false
+        this.addForm.password = ''
+        this.addForm.username = ''
+        this.addForm.uid = 0
+        this.addForm.name = ''
+        this.$message.success(this.$t('success'))
+        this.getUserList()
+      })
     },
     resetForm() {
       this.addForm = {
@@ -243,7 +210,7 @@ export default {
     }
   },
   mounted() {
-    this.get_user_list()
+    this.getUserList()
   },
   beforeDestroy() {
     this.$message.closeAll()

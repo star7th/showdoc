@@ -38,12 +38,9 @@
 
       <el-table-column prop="item_id" :label="$t('link')" width="100">
         <template slot-scope="scope">
-          <el-button
-            @click="jump_to_item(scope.row)"
-            type="text"
-            size="small"
-            >{{ $t('link') }}</el-button
-          >
+          <el-button @click="jumpToItem(scope.row)" type="text" size="small">{{
+            $t('link')
+          }}</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -60,12 +57,12 @@
       <el-table-column prop="item_domain" :label="$t('operation')">
         <template slot-scope="scope">
           <el-button
-            @click="click_attorn_item(scope.row)"
+            @click="clickAttornItem(scope.row)"
             type="text"
             size="small"
             >{{ $t('attorn') }}</el-button
           >
-          <el-button @click="delete_item(scope.row)" type="text" size="small">{{
+          <el-button @click="deleteItem(scope.row)" type="text" size="small">{{
             $t('delete')
           }}</el-button>
         </template>
@@ -125,24 +122,16 @@ export default {
     }
   },
   methods: {
-    get_item_list() {
-      var that = this
-      var url = DocConfig.server + '/api/adminItem/getList'
-
-      var params = new URLSearchParams()
-      params.append('item_name', this.item_name)
-      params.append('username', this.username)
-      params.append('page', this.page)
-      params.append('count', this.count)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          // that.$message.success("加载成功");
-          var json = response.data.data
-          that.itemList = json.items
-          that.total = json.total
-        } else {
-          that.$alert(response.data.error_message)
-        }
+    getItemList() {
+      this.request('/api/adminItem/getList', {
+        item_name: this.item_name,
+        username: this.username,
+        page: this.page,
+        count: this.count
+      }).then(data => {
+        var json = data.data
+        this.itemList = json.items
+        this.total = json.total
       })
     },
     formatPrivacy(row, column) {
@@ -155,68 +144,51 @@ export default {
       }
     },
     // 跳转到项目
-    jump_to_item(row) {
+    jumpToItem(row) {
       let url = '#/' + row.item_id
       window.open(url)
     },
     handleCurrentChange(currentPage) {
       this.page = currentPage
-      this.get_item_list()
+      this.getItemList()
     },
     onSubmit() {
       this.page = 1
-      this.get_item_list()
+      this.getItemList()
     },
-    delete_item(row) {
+    deleteItem(row) {
       var that = this
-      var url = DocConfig.server + '/api/adminItem/deleteItem'
       this.$confirm(that.$t('confirm_delete'), ' ', {
         confirmButtonText: that.$t('confirm'),
         cancelButtonText: that.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var params = new URLSearchParams()
-        params.append('item_id', row.item_id)
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.$message.success('删除成功')
-            that.get_item_list()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/adminItem/deleteItem', {
+          item_id: row.item_id
+        }).then(data => {
+          this.$message.success('删除成功')
+          this.getItemList()
         })
       })
     },
-    click_attorn_item(row) {
+    clickAttornItem(row) {
       this.dialogAttornVisible = true
       this.attorn_item_id = row.item_id
     },
     attorn() {
       var that = this
-      var url = DocConfig.server + '/api/adminItem/attorn'
-
-      var params = new URLSearchParams()
-      params.append('item_id', that.attorn_item_id)
-      params.append('username', this.attornForm.username)
-
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.dialogAttornVisible = false
-            that.$message.success(that.$t('success'))
-            that.get_item_list()
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/adminItem/attorn', {
+        item_id: this.attorn_item_id,
+        username: this.attornForm.username
+      }).then(() => {
+        that.dialogAttornVisible = false
+        that.$message.success(that.$t('success'))
+        that.getItemList()
+      })
     }
   },
   mounted() {
-    this.get_item_list()
+    this.getItemList()
   },
   beforeDestroy() {
     this.$message.closeAll()
