@@ -261,7 +261,7 @@ export default {
         page: 1,
         count: 100
       }).then(data => {
-        this.itemList = data.data
+        this.itemList = data.data.items
       })
     }
   },
