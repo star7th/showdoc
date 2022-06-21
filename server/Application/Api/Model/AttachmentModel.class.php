@@ -186,7 +186,12 @@ class AttachmentModel extends BaseModel
 		$resObj = $s3->putObject([
 			'Bucket' => $oss_setting['bucket'],
 			'Key'    => $oss_path,
-			'Body'   => fopen($uploadFile['tmp_name'], 'rb')
+			'Body'   => fopen($uploadFile['tmp_name'], 'rb'),
+			// 增加浏览器的缓存控制头，减缓服务器压力，增加用户体验
+			// 参考文章：https://csswizardry.com/2019/03/cache-control-for-civilians/
+			'CacheControl' => 'public, max-age=31536000, s-maxage=31536000, immutable',
+			// 设置正确的“Content-Type”响应头，避免浏览器将图片等文件当成数据流直接下载
+			'ContentType' => $uploadFile['type']
 		]);
 
 		// 不抛出异常，默认就是成功的
