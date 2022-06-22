@@ -5,7 +5,7 @@
     <el-container>
       <el-card class="center-card">
         <el-row>
-          <el-button type="text" class="add-cat" @click="add_cat()">{{
+          <el-button type="text" class="add-cat" @click="addCat()">{{
             $t('add_cat')
           }}</el-button>
           <el-button type="text" class="goback-btn" @click="goback">{{
@@ -36,7 +36,7 @@
                 size="mini"
                 class="el-icon-plus"
                 :title="$t('add_cat')"
-                @click.stop="add_cat(node, data)"
+                @click.stop="addCat(node, data)"
               ></el-button>
               <el-button
                 type="text"
@@ -56,7 +56,7 @@
                 type="text"
                 size="mini"
                 class="el-icon-delete"
-                @click.stop="delete_cat(node, data)"
+                @click.stop="deleteCat(node, data)"
               ></el-button>
             </span>
           </span>
@@ -90,7 +90,7 @@
           <el-button @click="dialogFormVisible = false">{{
             $t('cancel')
           }}</el-button>
-          <el-button type="primary" @click="MyFormSubmit">{{
+          <el-button type="primary" @click="myFormSubmit">{{
             $t('confirm')
           }}</el-button>
         </div>
@@ -186,7 +186,7 @@ export default {
     }
   },
   methods: {
-    get_catalog() {
+    getCatalog() {
       var that = this
       this.request('/api/catalog/catListGroup', {
         item_id: this.$route.params.item_id
@@ -210,7 +210,7 @@ export default {
         that.treeData = duang(Info)
       })
     },
-    MyFormSubmit() {
+    myFormSubmit() {
       var that = this
       this.request('/api/catalog/save', {
         item_id: this.$route.params.item_id,
@@ -219,7 +219,7 @@ export default {
         cat_name: this.MyForm.cat_name
       }).then(data => {
         that.dialogFormVisible = false
-        that.get_catalog()
+        that.getCatalog()
         that.MyForm = []
       })
     },
@@ -233,7 +233,7 @@ export default {
       this.dialogFormVisible = true
     },
 
-    delete_cat(node, data) {
+    deleteCat(node, data) {
       var that = this
       var cat_id = data.id
 
@@ -246,7 +246,7 @@ export default {
           item_id: this.$route.params.item_id,
           cat_id: cat_id
         }).then(data => {
-          this.get_catalog()
+          this.getCatalog()
         })
       })
     },
@@ -258,7 +258,7 @@ export default {
         s_number: ''
       }
     },
-    add_cat(node, data) {
+    addCat(node, data) {
       if (node && data.id) {
         this.MyForm = {
           cat_id: '',
@@ -317,12 +317,12 @@ export default {
     },
     copyCallback() {
       this.copyFormVisible = false
-      this.get_catalog()
+      this.getCatalog()
     }
   },
 
   mounted() {
-    this.get_catalog()
+    this.getCatalog()
     this.item_id = this.$route.params.item_id
   },
 

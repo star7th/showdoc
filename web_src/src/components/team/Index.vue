@@ -126,7 +126,7 @@
           <el-button @click="dialogFormVisible = false">{{
             $t('cancel')
           }}</el-button>
-          <el-button type="primary" @click="MyFormSubmit">{{
+          <el-button type="primary" @click="myFormSubmit">{{
             $t('confirm')
           }}</el-button>
         </div>
@@ -195,36 +195,21 @@ export default {
   },
   methods: {
     geList() {
-      var that = this
-      var url = DocConfig.server + '/api/team/getList'
-      var params = new URLSearchParams()
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-
-          that.list = Info
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/team/getList', {}).then(data => {
+        this.list = data.data
       })
     },
-    MyFormSubmit() {
-      var that = this
-      var url = DocConfig.server + '/api/team/save'
+    myFormSubmit() {
 
-      var params = new URLSearchParams()
-      params.append('id', this.MyForm.id)
-      params.append('team_name', this.MyForm.team_name)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.dialogFormVisible = false
-          that.geList()
-          that.MyForm = {
-            id: '',
-            team_name: ''
-          }
-        } else {
-          that.$alert(response.data.error_message)
+      this.request('/api/team/save', {
+        id: this.MyForm.id,
+        team_name: this.MyForm.team_name
+      }).then(data => {
+        this.dialogFormVisible = false
+        this.geList()
+        this.MyForm = {
+          id: '',
+          team_name: ''
         }
       })
     },
@@ -243,15 +228,10 @@ export default {
         cancelButtonText: that.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var params = new URLSearchParams()
-        params.append('id', id)
-
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.geList()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/team/delete', {
+          id: id
+        }).then(data => {
+          this.geList()
         })
       })
     },
@@ -270,21 +250,13 @@ export default {
       this.dialogAttornVisible = true
     },
     attorn() {
-      var that = this
-      var url = DocConfig.server + '/api/team/attorn'
-
-      var params = new URLSearchParams()
-      params.append('team_id', this.attornForm.team_id)
-      params.append('username', this.attornForm.username)
-      params.append('password', this.attornForm.password)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.dialogAttornVisible = false
-          that.geList()
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/team/attorn', {
+        team_id: this.attornForm.team_id,
+        username: this.attornForm.username,
+        password: this.attornForm.password
+      }).then(data => {
+        this.dialogAttornVisible = false
+        this.geList()
       })
     },
     exitTeam(id) {

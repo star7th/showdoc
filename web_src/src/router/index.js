@@ -4,8 +4,6 @@ import Index from '@/components/Index'
 import UserLogin from '@/components/user/Login'
 import UserSetting from '@/components/user/Setting'
 import UserRegister from '@/components/user/Register'
-import UserResetPassword from '@/components/user/ResetPassword'
-import ResetPasswordByUrl from '@/components/user/ResetPasswordByUrl'
 import loginByUserToken from '@/components/user/loginByUserToken'
 import ItemIndex from '@/components/item/Index'
 import ItemAdd from '@/components/item/add/Index'
@@ -49,16 +47,6 @@ export default new Router({
       path: '/user/register',
       name: 'UserRegister',
       component: UserRegister
-    },
-    {
-      path: '/user/resetPassword',
-      name: 'UserResetPassword',
-      component: UserResetPassword
-    },
-    {
-      path: '/user/ResetPasswordByUrl',
-      name: 'ResetPasswordByUrl',
-      component: ResetPasswordByUrl
     },
     {
       path: '/item/index',

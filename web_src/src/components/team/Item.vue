@@ -77,7 +77,7 @@
           <el-button @click="dialogFormVisible = false">{{
             $t('cancel')
           }}</el-button>
-          <el-button type="primary" @click="MyFormSubmit">{{
+          <el-button type="primary" @click="myFormSubmit">{{
             $t('confirm')
           }}</el-button>
         </div>
@@ -197,62 +197,38 @@ export default {
   },
   methods: {
     geList() {
-      var that = this
-      var url = DocConfig.server + '/api/teamItem/getListByTeam'
-      var params = new URLSearchParams()
-      params.append('team_id', this.team_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-
-          that.list = Info
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/teamItem/getListByTeam', {
+        team_id: this.team_id
+      }).then(data => {
+        this.list = data.data
       })
     },
     getItemList() {
-      var that = this
       this.request('/api/item/myList', { original: 1 }).then(data => {
-        that.itemList = data.data
+        this.itemList = data.data
       })
     },
-    MyFormSubmit() {
-      var that = this
-      var url = DocConfig.server + '/api/teamItem/save'
-
-      var params = new URLSearchParams()
-      params.append('team_id', this.team_id)
-      params.append('item_id', this.MyForm.item_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.dialogFormVisible = false
-          that.geList()
-          that.MyForm = {}
-        } else {
-          that.$alert(response.data.error_message)
-        }
+    myFormSubmit() {
+      this.request('/api/teamItem/save', {
+        team_id: this.team_id,
+        item_id: this.MyForm.item_id
+      }).then(data => {
+        this.dialogFormVisible = false
+        this.geList()
+        this.MyForm = {}
       })
     },
 
     deleteTeamItem(id) {
-      var that = this
-      var url = DocConfig.server + '/api/teamItem/delete'
-
-      this.$confirm(that.$t('confirm_unassign'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+      this.$confirm(this.$t('confirm_unassign'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var params = new URLSearchParams()
-        params.append('id', id)
-
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.geList()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/teamItem/delete', {
+          id: id
+        }).then(data => {
+          this.geList()
         })
       })
     },
@@ -264,36 +240,21 @@ export default {
       this.$router.push({ path: '/team/index' })
     },
     getTeamItemMember(item_id) {
-      var that = this
       this.dialogFormTeamMemberVisible = true
-      this.get_catalog(item_id)
-      var url = DocConfig.server + '/api/teamItemMember/getList'
-      var params = new URLSearchParams()
-      params.append('item_id', item_id)
-      params.append('team_id', this.team_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          that.teamItemMembers = Info
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.getCatalog(item_id)
+      this.request('/api/teamItemMember/getList', {
+        item_id: item_id,
+        team_id: this.team_id
+      }).then(data => {
+        this.teamItemMembers = data.data
       })
     },
     changeTeamItemMemberGroup(member_group_id, id, showMsg = true) {
-      var that = this
-      var url = DocConfig.server + '/api/teamItemMember/save'
-
-      var params = new URLSearchParams()
-      params.append('member_group_id', member_group_id)
-      params.append('id', id)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          if (showMsg) that.$message(that.$t('auth_success'))
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/teamItemMember/save', {
+        member_group_id: member_group_id,
+        id: id
+      }).then(data => {
+        if (showMsg) this.$message(this.$t('auth_success'))
       })
     },
     changeTeamItemMemberCat(cat_id, id) {
@@ -312,22 +273,16 @@ export default {
         }
       })
     },
-    get_catalog(item_id) {
-      var that = this
-      var url = DocConfig.server + '/api/catalog/catListGroup'
-      var params = new URLSearchParams()
-      params.append('item_id', item_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          Info.unshift({
-            cat_id: '0',
-            cat_name: that.$t('all_cat')
-          })
-          that.catalogs = Info
-        } else {
-          that.$alert(response.data.error_message)
-        }
+    getCatalog(item_id) {
+      this.request('/api/catalog/catListGroup', {
+        item_id: item_id
+      }).then(data => {
+        var Info = data.data
+        Info.unshift({
+          cat_id: '0',
+          cat_name: this.$t('all_cat')
+        })
+        this.catalogs = Info
       })
     },
     // 一键全部设置为只读

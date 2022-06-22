@@ -39,7 +39,7 @@
             <img
               v-bind:src="v_code_img"
               class="v_code_img"
-              v-on:click="change_v_code_img"
+              v-on:click="changeVcodeImg"
             />
           </el-form-item>
 
@@ -85,6 +85,7 @@ export default {
       if (this.is_show_alert) {
         return
       }
+
       // 对redirect参数进行校验，以防止钓鱼跳转
       if (this.$route.query.redirect) {
         let redirect = decodeURIComponent(this.$route.query.redirect)
@@ -97,44 +98,59 @@ export default {
           return false
         }
       }
-      // this.$message.success(this.username);
-      var that = this
-      var url = DocConfig.server + '/api/user/login'
-      var params = new URLSearchParams()
-      params.append('username', this.username)
-      params.append('password', this.password)
-      params.append('v_code', this.v_code)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          // that.$message.success("登录成功");
-          localStorage.setItem('userinfo', JSON.stringify(response.data.data))
-          let redirect = decodeURIComponent(
-            that.$route.query.redirect || '/item/index'
-          )
-          that.$router.replace({
-            path: redirect
-          })
+      this.request(
+        '/api/user/login',
+        {
+          username: this.username,
+          password: this.password,
+          v_code: this.v_code,
+          redirect_login: false
+        },
+        'post',
+        false
+      ).then(data => {
+        if (data.error_code === 0) {
+          this.actionAfterLogin(data.data)
         } else {
-          if (
-            response.data.error_code === 10206 ||
-            response.data.error_code === 10210
-          ) {
-            that.show_v_code = true
-            that.change_v_code_img()
+          if (data.error_code === 10206 || data.error_code === 10210) {
+            this.show_v_code = true
+            this.changeVcodeImg()
           }
-          that.is_show_alert = true
-          that.$alert(response.data.error_message, {
-            callback: function() {
-              setTimeout(function() {
-                that.is_show_alert = false
+          this.is_show_alert = true
+          this.$alert(data.error_message, {
+            callback: () => {
+              setTimeout(() => {
+                this.is_show_alert = false
               }, 500)
             }
           })
         }
       })
     },
-    change_v_code_img() {
+    // 登录成功后，在这里执行一些动作
+    actionAfterLogin(userinfo) {
+      // 对redirect参数进行校验，以防止钓鱼跳转
+      if (this.$route.query.redirect) {
+        let redirect = decodeURIComponent(this.$route.query.redirect)
+        if (
+          redirect.search(/[^A-Za-z0-9/:\?\._\*\+\-]+.*/i) > -1 ||
+          redirect.indexOf('.') > -1 ||
+          redirect.indexOf('//') > -1
+        ) {
+          this.$alert('illegal redirect')
+          return false
+        }
+      }
+
+      localStorage.setItem('userinfo', JSON.stringify(userinfo))
+      let redirect = decodeURIComponent(
+        this.$route.query.redirect || '/item/index'
+      )
+      this.$router.replace({
+        path: redirect
+      })
+    },
+    changeVcodeImg() {
       var rand = '&rand=' + Math.random()
       this.v_code_img += rand
     },

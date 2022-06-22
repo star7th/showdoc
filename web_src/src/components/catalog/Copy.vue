@@ -69,33 +69,27 @@ export default {
       })
     },
     selectItem(item_id) {
-      this.get_catalog(item_id)
+      this.getCatalog(item_id)
     },
-    get_catalog(item_id) {
-      var that = this
-      that
-        .request('/api/catalog/catListName', {
-          item_id: item_id
-        })
-        .then(data => {
-          this.new_p_cat_id = '0'
-          var Info = data.data
-          Info.unshift({ cat_id: '0', cat_name: '/' })
-          that.catalogs = Info
-        })
+    getCatalog(item_id) {
+      this.request('/api/catalog/catListName', {
+        item_id: item_id
+      }).then(data => {
+        this.new_p_cat_id = '0'
+        var Info = data.data
+        Info.unshift({ cat_id: '0', cat_name: '/' })
+        this.catalogs = Info
+      })
     },
     copy() {
-      var that = this
-      that
-        .request('/api/catalog/copy', {
-          cat_id: this.cat_id,
-          new_p_cat_id: this.new_p_cat_id,
-          to_item_id: this.to_item_id,
-          is_del: this.is_del
-        })
-        .then(data => {
-          this.closeDialog()
-        })
+      this.request('/api/catalog/copy', {
+        cat_id: this.cat_id,
+        new_p_cat_id: this.new_p_cat_id,
+        to_item_id: this.to_item_id,
+        is_del: this.is_del
+      }).then(data => {
+        this.closeDialog()
+      })
     },
     closeDialog() {
       if (this.callback) this.callback()
@@ -103,7 +97,7 @@ export default {
   },
   mounted() {
     this.getItemList()
-    this.get_catalog(this.item_id)
+    this.getCatalog(this.item_id)
   }
 }
 </script>

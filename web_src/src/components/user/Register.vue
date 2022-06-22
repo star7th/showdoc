@@ -48,7 +48,7 @@
             <img
               v-bind:src="v_code_img"
               class="v_code_img"
-              v-on:click="change_v_code_img"
+              v-on:click="changeVcodeImg"
             />
           </el-form-item>
 
@@ -85,28 +85,34 @@ export default {
   },
   methods: {
     onSubmit() {
-      // this.$message.success(this.username);
-      var that = this
-      var url = DocConfig.server + '/api/user/register'
+      this.showLoding = true
+      // 如果后面的接口回调关闭不了loading的话，那这个loading最迟3秒关闭
+      setTimeout(() => {
+        this.showLoding = false
+      }, 3000)
 
-      var params = new URLSearchParams()
-      params.append('username', this.username)
-      params.append('password', this.password)
-      params.append('confirm_password', this.confirm_password)
-      params.append('v_code', this.v_code)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          // that.$message.success("注册成功");
-          localStorage.setItem('userinfo', JSON.stringify(response.data.data))
-          that.$router.push({ path: '/item/index' })
+      this.request(
+        '/api/user/register',
+        {
+          username: this.username,
+          password: this.password,
+          confirm_password: this.confirm_password,
+          v_code: this.v_code,
+          inviteCode: this.inviteCode
+        },
+        'post',
+        false
+      ).then(data => {
+        if (data.error_code === 0) {
+          localStorage.setItem('userinfo', JSON.stringify(data.data))
+          this.$router.push({ path: '/item/index' })
         } else {
-          that.change_v_code_img()
-          that.$alert(response.data.error_message)
+          this.changeVcodeImg()
+          this.$alert(data.error_message)
         }
       })
     },
-    change_v_code_img() {
+    changeVcodeImg() {
       var rand = '&rand=' + Math.random()
       this.v_code_img += rand
     }

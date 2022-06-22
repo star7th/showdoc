@@ -115,18 +115,11 @@ export default {
   },
   methods: {
     geList() {
-      var that = this
-      var url = DocConfig.server + '/api/teamMember/getList'
-      var params = new URLSearchParams()
-      params.append('team_id', this.team_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          that.list = Info
-          that.getAllUser()
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/teamMember/getList', {
+        team_id: this.team_id
+      }).then(data => {
+        this.list = data.data
+        list.getAllUser()
       })
     },
     reSetMyForm() {
@@ -137,42 +130,36 @@ export default {
       }
     },
     MyFormSubmit() {
-      var that = this
-      var url = DocConfig.server + '/api/teamMember/save'
-
-      var params = new URLSearchParams()
-      params.append('team_id', this.team_id)
-      params.append('member_username', this.MyForm.member_username)
-      params.append('team_member_group_id', this.MyForm.team_member_group_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.dialogFormVisible = false
-          that.geList()
-          that.reSetMyForm()
+      this.request(
+        '/api/teamMember/save',
+        {
+          team_id: this.team_id,
+          member_username: this.MyForm.member_username,
+          team_member_group_id: this.MyForm.team_member_group_id
+        },
+        'post',
+        false
+      ).then(data => {
+        if (data.error_code === 0) {
+          this.dialogFormVisible = false
+          this.geList()
+          this.reSetMyForm()
         } else {
-          that.$alert(response.data.error_message)
+          this.$alert(response.data.error_message)
         }
       })
     },
 
     deleteTeamMember(id) {
-      var that = this
-      var url = DocConfig.server + '/api/teamMember/delete'
-
-      this.$confirm(that.$t('confirm_delete'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+      this.$confirm(this.$t('confirm_delete'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var params = new URLSearchParams()
-        params.append('id', id)
-
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.geList()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/teamMember/delete', {
+          id: id
+        }).then(data => {
+          this.geList()
         })
       })
     },
@@ -184,33 +171,27 @@ export default {
       this.$router.push({ path: '/team/index' })
     },
     getAllUser() {
-      var that = this
-      var url = DocConfig.server + '/api/user/allUser'
-      var params = new URLSearchParams()
-      params.append('username', '')
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          var newInfo = []
-          // 过滤掉已经是成员的用户
-          for (var i = 0; i < Info.length; i++) {
-            let isMember = that.isMember(Info[i]['value'])
-            if (!isMember) {
-              newInfo.push(Info[i])
-            }
+      this.request('/api/user/allUser', {
+        username: ''
+      }).then(data => {
+        var Info = data.data
+        var newInfo = []
+        // 过滤掉已经是成员的用户
+        for (var i = 0; i < Info.length; i++) {
+          let isMember = this.isMember(Info[i]['value'])
+          if (!isMember) {
+            newInfo.push(Info[i])
           }
-          that.memberOptions = []
-          for (let index = 0; index < newInfo.length; index++) {
-            that.memberOptions.push({
-              value: newInfo[index].username,
-              label: newInfo[index].name
-                ? newInfo[index].username + '(' + newInfo[index].name + ')'
-                : newInfo[index].username,
-              key: newInfo[index].username
-            })
-          }
-        } else {
-          that.$alert(response.data.error_message)
+        }
+        this.memberOptions = []
+        for (let index = 0; index < newInfo.length; index++) {
+          this.memberOptions.push({
+            value: newInfo[index].username,
+            label: newInfo[index].name
+              ? newInfo[index].username + '(' + newInfo[index].name + ')'
+              : newInfo[index].username,
+            key: newInfo[index].username
+          })
         }
       })
     },
