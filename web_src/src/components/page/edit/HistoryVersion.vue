@@ -77,32 +77,19 @@ export default {
   components: {},
   methods: {
     getContent() {
-      var that = this
-      var url = DocConfig.server + '/api/page/history'
-      var params = new URLSearchParams()
-      let page_id = this.page_id ? this.page_id : that.$route.params.page_id
-      params.append('page_id', page_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            // that.$message.success("加载成功");
-            var json = response.data.data
-            if (json.length > 0) {
-              that.content = response.data.data
-              that.dialogTableVisible = true
-            } else {
-              that.dialogTableVisible = false
-              that.$alert('no data')
-            }
-          } else {
-            that.dialogTableVisible = false
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      let page_id = this.page_id ? this.page_id : this.$route.params.page_id
+      this.request('/api/page/history', {
+        page_id: page_id
+      }).then(data => {
+        var json = data.data
+        if (json.length > 0) {
+          this.content = data.data
+          this.dialogTableVisible = true
+        } else {
+          this.dialogTableVisible = false
+          this.$alert('no data')
+        }
+      })
     },
     show() {
       this.getContent()

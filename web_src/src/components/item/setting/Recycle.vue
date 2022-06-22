@@ -53,38 +53,23 @@ export default {
   },
   methods: {
     getList() {
-      var that = this
-      var url = DocConfig.server + '/api/recycle/getList'
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          that.lists = Info
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/recycle/getList', {
+        item_id: this.$route.params.item_id
+      }).then(data => {
+        this.lists = data.data
       })
     },
     recover(page_id) {
-      var that = this
-      var url = DocConfig.server + '/api/recycle/recover'
-
       this.$confirm(this.$t('recover_tips'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var params = new URLSearchParams()
-        params.append('item_id', that.$route.params.item_id)
-        params.append('page_id', page_id)
-
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.getList()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/recycle/recover', {
+          page_id: page_id,
+          item_id: this.$route.params.item_id
+        }).then(data => {
+          this.getList()
         })
       })
     }

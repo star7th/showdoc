@@ -97,7 +97,7 @@ export default {
               showClose: true,
               duration: 10000,
               dangerouslyUseHTMLString: true,
-              message: '<a href="#/notice/index">你有新的未读消息，点击查看</a>'
+              message: '<a href="#/message/index">你有新的未读消息，点击查看</a>'
             })
           }
           // 是否显示水印

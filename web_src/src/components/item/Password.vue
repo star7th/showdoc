@@ -72,32 +72,26 @@ export default {
     onSubmit() {
       var item_id = this.$route.params.item_id ? this.$route.params.item_id : 0
       var page_id = this.$route.query.page_id ? this.$route.query.page_id : 0
-      var that = this
-      var url = DocConfig.server + '/api/item/pwd'
 
-      var params = new URLSearchParams()
-      params.append('item_id', item_id)
-      params.append('page_id', page_id)
-      params.append('password', this.password)
-      params.append('v_code', this.v_code)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
+      this.request('/api/item/pwd', {
+        item_id: item_id,
+        page_id: page_id,
+        password: this.password,
+        v_code: this.v_code
+      }).then(data => {
+        if (data.error_code === 0) {
           let redirect = decodeURIComponent(
-            that.$route.query.redirect || '/' + item_id
+            this.$route.query.redirect || '/' + item_id
           )
-          that.$router.replace({
+          this.$router.replace({
             path: redirect
           })
         } else {
-          if (
-            response.data.error_code === 10206 ||
-            response.data.error_code === 10308
-          ) {
-            that.show_v_code = true
-            that.changeVcodeImg()
+          if (data.error_code === 10206 || data.error_code === 10308) {
+            this.show_v_code = true
+            this.changeVcodeImg()
           }
-          that.$alert(response.data.error_message)
+          this.$alert(data.error_message)
         }
       })
     },

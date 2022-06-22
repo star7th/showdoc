@@ -138,39 +138,42 @@ export default {
   },
   methods: {
     getPageContent() {
-      var that = this
       var url
-      var page_id = that.$route.params.page_id
-      var unique_key = that.$route.params.unique_key
+      var page_id = this.$route.params.page_id ? this.$route.params.page_id : 0 
+      var unique_key = this.$route.params.unique_key
       if (unique_key) {
-        url = DocConfig.server + '/api/page/infoByKey'
+        url = '/api/page/infoByKey'
       } else {
-        url = DocConfig.server + '/api/page/info'
+        url = '/api/page/info'
       }
 
-      var params = new URLSearchParams()
-      params.append('page_id', page_id)
-      params.append('unique_key', unique_key)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          // that.$message.success("加载成功");
-          that.content = response.data.data.page_content
-          that.page_title = response.data.data.page_title
-          that.page_id = response.data.data.page_id
+      this.request(
+        url,
+        {
+          page_id: page_id,
+          unique_key: unique_key
+        },
+        'post',
+        false
+      ).then(data => {
+        if (data.error_code === 0) {
+          this.content = data.data.page_content
+          this.page_title = data.data.page_title
+          this.page_id = data.data.page_id
         } else if (
-          response.data.error_code === 10307 ||
-          response.data.error_code === 10303
+          data.error_code === 10307 ||
+          data.error_code === 10303
         ) {
           // 需要输入密码
-          that.$router.replace({
+          this.$router.replace({
             path: '/item/password/0',
             query: {
               page_id: page_id,
-              redirect: that.$router.currentRoute.fullPath
+              redirect: this.$router.currentRoute.fullPath
             }
           })
         } else {
-          that.$alert(response.data.error_message)
+          this.$alert(data.error_message)
         }
       })
     },

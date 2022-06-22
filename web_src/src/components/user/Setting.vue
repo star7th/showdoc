@@ -149,88 +149,51 @@ export default {
     }
   },
   methods: {
-    get_user_info() {
-      var that = this
-      var url = DocConfig.server + '/api/user/info'
-      var params = new URLSearchParams()
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            var status
-            var userInfo = response.data.data
-            that.userInfo = userInfo
-            that.passwordForm.username = userInfo.username
-            that.emailForm.email = userInfo.email
-            that.infoForm.username = userInfo.username
-            that.infoForm.name = userInfo.name
-            if (userInfo.email.length > 0) {
-              that.emailForm.submit_text = that.$t('modify')
-              if (userInfo.email_verify > 0) {
-                status = that.$t('status_1')
-              } else {
-                status = that.$t('status_2')
-              }
-            } else {
-              status = that.$t('status_3')
-              that.emailForm.submit_text = that.$t('binding')
-            }
-            that.emailForm.status = status
+    getUserInfo() {
+      this.request('/api/user/info', {}).then(data => {
+        var status
+        var userInfo = data.data
+        this.userInfo = userInfo
+        this.passwordForm.username = userInfo.username
+        this.emailForm.email = userInfo.email
+        this.infoForm.username = userInfo.username
+        this.infoForm.name = userInfo.name
+        if (userInfo.email.length > 0) {
+          this.emailForm.submit_text = this.$t('modify')
+          if (userInfo.email_verify > 0) {
+            status = this.$t('status_1')
           } else {
-            that.$alert(response.data.error_message)
+            status = this.$t('status_2')
           }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+        } else {
+          status = this.$t('status_3')
+          this.emailForm.submit_text = this.$t('binding')
+        }
+        this.emailForm.status = status
+      })
     },
     passwordFormSubmit() {
-      var that = this
-      var url = DocConfig.server + '/api/user/resetPassword'
-
-      var params = new URLSearchParams()
-      params.append('new_password', this.passwordForm.new_password)
-      params.append('password', this.passwordForm.password)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.dialogPasswordFormVisible = false
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/user/resetPassword', {
+        new_password: this.passwordForm.new_password,
+        password: this.passwordForm.password
+      }).then(data => {
+        this.dialogPasswordFormVisible = false
       })
     },
     emailFormSubmit() {
-      var that = this
-      var url = DocConfig.server + '/api/user/updateEmail'
-
-      var params = new URLSearchParams()
-      params.append('email', this.emailForm.email)
-      params.append('password', this.emailForm.password)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.dialogEmailFormVisible = false
-          this.get_user_info()
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/user/updateEmail', {
+        email: this.emailForm.email,
+        password: this.emailForm.password
+      }).then(data => {
+        this.dialogEmailFormVisible = false
       })
     },
     formSubmit() {
-      var that = this
-      var url = DocConfig.server + '/api/user/updateInfo'
-
-      var params = new URLSearchParams()
-      params.append('name', this.infoForm.name)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.$message.success(that.$t('modify_success'))
-          this.get_user_info()
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/user/updateInfo', {
+        name: this.infoForm.name
+      }).then(data => {
+        this.$message.success(this.$t('modify_success'))
+        this.getUserInfo()
       })
     },
     goback() {
@@ -239,7 +202,7 @@ export default {
   },
 
   mounted() {
-    this.get_user_info()
+    this.getUserInfo()
   },
 
   beforeDestroy() {}

@@ -405,65 +405,39 @@ export default {
       if (!page_id) {
         page_id = this.page_id
       }
-      var that = this
-      var url = DocConfig.server + '/api/page/info'
-      var params = new URLSearchParams()
-      params.append('page_id', page_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            // that.$message.success("加载成功");
-            that.content = rederPageContent(response.data.data.page_content)
-            setTimeout(function() {
-              that.insertValue(that.content, 1)
-              document.body.scrollTop = document.documentElement.scrollTop = 0 // 回到顶部
-            }, 500)
-            setTimeout(function() {
-              // 如果长度大于3000,则关闭预览
-              if (that.content.length > 3000) {
-                that.editorUnwatch()
-              } else {
-                that.editorWatch()
-              }
-              // 开启草稿
-              that.draft()
-            }, 1000)
-            that.title = response.data.data.page_title
-            that.item_id = response.data.data.item_id
-            that.cat_id = response.data.data.cat_id
-            that.s_number = response.data.data.s_number
-            that.attachment_count =
-              response.data.data.attachment_count > 0 ? '...' : ''
+      this.request('/api/page/info', {
+        page_id: page_id
+      }).then(data => {
+        this.content = rederPageContent(data.data.page_content)
+        setTimeout(() => {
+          this.insertValue(this.content, 1)
+          document.body.scrollTop = document.documentElement.scrollTop = 0 // 回到顶部
+        }, 500)
+        setTimeout(function() {
+          // 如果长度大于3000,则关闭预览
+          if (this.content.length > 3000) {
+            this.editorUnwatch()
           } else {
-            that.$alert(response.data.error_message)
+            this.editorWatch()
           }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+          // 开启草稿
+          this.draft()
+        }, 1000)
+        this.title = data.data.page_title
+        this.item_id = data.data.item_id
+        this.cat_id = data.data.cat_id
+        this.s_number = data.data.s_number
+        this.attachment_count = data.data.attachment_count > 0 ? '...' : ''
+      })
     },
 
     // 获取所有目录
     getCatalog(item_id) {
-      var that = this
-      var url = DocConfig.server + '/api/catalog/catListGroup'
-      var params = new URLSearchParams()
-      params.append('item_id', item_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            var Info = response.data.data
-
-            that.catalogs = Info
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/catalog/catListGroup', {
+        item_id: item_id
+      }).then(data => {
+        this.catalogs = data.data
+      })
     },
 
     // 插入数据到编辑器中。插入到光标处。如果参数is_cover为真，则清空后再插入(即覆盖)。
@@ -575,42 +549,39 @@ export default {
       var item_id = that.$route.params.item_id
       var page_id = that.$route.params.page_id
       var url = DocConfig.server + '/api/page/save'
-      var params = new URLSearchParams()
-      params.append('page_id', page_id)
-      params.append('item_id', item_id)
-      params.append('page_title', that.title)
-      params.append('is_notify', that.is_notify)
-      params.append('notify_content', that.notify_content)
-      params.append('page_content', encodeURIComponent(content))
-      params.append('is_urlencode', 1)
-      params.append('cat_id', cat_id)
-      that.axios.post(url, params).then(function(response) {
+
+      this.request('/api/page/save', {
+        page_id: page_id,
+        item_id: item_id,
+        is_notify: this.is_notify,
+        notify_content: this.notify_content,
+        page_content: encodeURIComponent(content),
+        is_urlencode: 1,
+        cat_id: cat_id
+      }).then(data => {
         loading.close()
-        that.saving = false
-        if (response.data.error_code === 0) {
-          if (typeof callback == 'function') {
-            callback()
-          } else {
-            that.$message({
-              showClose: true,
-              message: that.$t('save_success'),
-              type: 'success'
-            })
-          }
-
-          // 删除草稿
-          that.deleteDraft()
-
-          if (page_id <= 0) {
-            that.$router.push({
-              path: '/page/edit/' + item_id + '/' + response.data.data.page_id
-            })
-            that.page_id = response.data.data.page_id
-          }
+        this.saving = false
+        if (typeof callback == 'function') {
+          callback()
         } else {
-          that.$alert(response.data.error_message)
+          this.$message({
+            showClose: true,
+            message: this.$t('save_success'),
+            type: 'success'
+          })
+        }
+
+        // 删除草稿
+        this.deleteDraft()
+
+        if (page_id <= 0) {
+          this.$router.push({
+            path: '/page/edit/' + item_id + '/' + data.data.page_id
+          })
+          this.page_id = data.data.page_id
         }
       })
+
       // 设置一个最长关闭时间
       setTimeout(() => {
         loading.close()
@@ -634,17 +605,12 @@ export default {
       var that = this
       let childRef = this.$refs.Editormd
       var content = childRef.getMarkdown()
-      this.$prompt(that.$t('save_templ_title'), ' ', {}).then(function(data) {
-        var url = DocConfig.server + '/api/template/save'
-        var params = new URLSearchParams()
-        params.append('template_title', data.value)
-        params.append('template_content', content)
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.$alert(that.$t('save_templ_text'))
-          } else {
-            that.$alert(response.data.error_message)
-          }
+      this.$prompt(that.$t('save_templ_title'), ' ', {}).then(data => {
+        this.request('/api/template/save', {
+          template_title: data.value,
+          template_content: content
+        }).then(data => {
+          this.$alert(this.$t('save_templ_text'))
         })
       })
     },

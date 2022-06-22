@@ -208,27 +208,15 @@ export default {
   },
   methods: {
     getPageContent(page_id) {
-      var that = this
-      var url = DocConfig.server + '/api/page/info'
       if (!page_id) {
-        page_id = that.page_id
+        page_id = this.page_id
       }
-      var params = new URLSearchParams()
-      params.append('page_id', page_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            // that.$message.success("加载成功");
-            that.content = response.data.data.page_content
-            that.page_title = response.data.data.page_title
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/page/info', {
+        page_id: page_id
+      }).then(data => {
+        this.content = data.data.page_content
+        this.page_title = data.data.page_title
+      })
     },
 
     editPage() {

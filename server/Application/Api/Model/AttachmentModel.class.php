@@ -51,8 +51,10 @@ class AttachmentModel extends BaseModel
 		$file_path = "../Public/Uploads/" . $array[1];
 		if (file_exists($file_path)) {
 			@unlink($file_path);
+		}else{
+			$this->deleteOss($real_url);
 		}
-		$this->deleteOss($real_url);
+		
 		D("UploadFile")->where(" file_id = '$file_id' ")->delete();
 		D("FilePage")->where(" file_id = '$file_id' ")->delete();
 		return true;

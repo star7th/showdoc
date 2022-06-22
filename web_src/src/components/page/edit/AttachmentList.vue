@@ -130,18 +130,20 @@ export default {
   },
   methods: {
     getContent() {
-      var that = this
-      var url = DocConfig.server + '/api/page/uploadList'
-      var params = new URLSearchParams()
-      params.append('page_id', this.page_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.dialogTableVisible = true
-          // that.$message.success("加载成功");
-          that.content = response.data.data
+      this.request(
+        '/api/page/uploadList',
+        {
+          page_id: this.page_id
+        },
+        'post',
+        false
+      ).then(data => {
+        if (data.error_code === 0) {
+          this.dialogTableVisible = true
+          this.content = data.data
         } else {
-          that.dialogTableVisible = false
-          that.$alert(response.data.error_message)
+          this.dialogTableVisible = false
+          this.$alert(data.error_message)
         }
       })
     },
@@ -161,17 +163,12 @@ export default {
         type: 'warning'
       }).then(() => {
         var file_id = row['file_id']
-        var that = this
-        var url = DocConfig.server + '/api/page/deleteUploadFile'
-        var params = new URLSearchParams()
-        params.append('file_id', file_id)
-        params.append('page_id', that.page_id)
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.getContent()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+
+        this.request('/api/page/deleteUploadFile', {
+          file_id: file_id,
+          page_id: this.page_id
+        }).then(data => {
+          this.getContent()
         })
       })
     },

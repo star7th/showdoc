@@ -295,197 +295,118 @@ export default {
   },
   methods: {
     getMembers() {
-      var that = this
-      var url = DocConfig.server + '/api/member/getList'
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          that.members = Info
-          that.getAllUser()
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/member/getList', {
+        item_id: this.$route.params.item_id
+      }).then(data => {
+        this.members = data.data
+        this.getAllUser()
       })
     },
     getTeams() {
-      var that = this
-      var url = DocConfig.server + '/api/team/getList'
-      var params = new URLSearchParams()
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          that.teams = Info
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/team/getList', {}).then(data => {
+        this.teams = data.data
       })
     },
     getTeamItem() {
-      var that = this
-      var url = DocConfig.server + '/api/teamItem/getList'
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          that.teamItems = Info
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/teamItem/getList', {
+        item_id: this.$route.params.item_id
+      }).then(data => {
+        this.teamItems = data.data
       })
     },
     getTeamItemMember(team_id) {
-      var that = this
       this.dialogFormTeamMemberVisible = true
-      var url = DocConfig.server + '/api/teamItemMember/getList'
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      params.append('team_id', team_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          that.teamItemMembers = Info
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/teamItemMember/getList', {
+        item_id: this.$route.params.item_id,
+        team_id: team_id
+      }).then(data => {
+        this.teamItemMembers = data.data
       })
     },
     myFormSubmit() {
-      var that = this
-      var url = DocConfig.server + '/api/member/save'
-
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      params.append('username', this.MyForm.username)
-      params.append('cat_id', this.MyForm.cat_id)
-      params.append('member_group_id', this.MyForm.member_group_id)
-
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.dialogFormVisible = false
-            that.getMembers()
-            that.MyForm.username = ''
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/member/save', {
+        item_id: this.$route.params.item_id,
+        username: this.MyForm.username,
+        cat_id: this.MyForm.cat_id,
+        member_group_id: this.MyForm.member_group_id
+      }).then(data => {
+        this.dialogFormVisible = false
+        this.getMembers()
+        this.MyForm.username = ''
+      })
     },
     addTeam() {
-      var that = this
-      var url = DocConfig.server + '/api/teamItem/save'
-
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      params.append('team_id', this.MyForm2.team_id)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.dialogFormTeamVisible = false
-          that.getTeamItem()
-          that.MyForm.team_id = ''
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/teamItem/save', {
+        item_id: this.$route.params.item_id,
+        team_id: this.MyForm2.team_id
+      }).then(data => {
+        this.dialogFormTeamVisible = false
+        this.getTeamItem()
+        this.MyForm2.team_id = ''
       })
     },
     deleteMember(item_member_id) {
-      var that = this
-      var url = DocConfig.server + '/api/member/delete'
-
-      this.$confirm(that.$t('confirm_delete'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+      this.$confirm(this.$t('confirm_delete'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var params = new URLSearchParams()
-        params.append('item_id', that.$route.params.item_id)
-        params.append('item_member_id', item_member_id)
-
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.getMembers()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/member/delete', {
+          item_member_id: item_member_id,
+          item_id: this.$route.params.item_id
+        }).then(data => {
+          this.getMembers()
         })
       })
     },
     deleteTeam(id) {
-      var that = this
-      var url = DocConfig.server + '/api/teamItem/delete'
-
-      this.$confirm(that.$t('confirm_delete'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+      this.$confirm(this.$t('confirm_delete'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var params = new URLSearchParams()
-        params.append('id', id)
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            that.getTeamItem()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/teamItem/delete', {
+          id: id
+        }).then(data => {
+          this.getTeamItem()
         })
       })
     },
     changeTeamItemMemberGroup(member_group_id, id) {
-      var that = this
-      var url = DocConfig.server + '/api/teamItemMember/save'
-
-      var params = new URLSearchParams()
-      params.append('member_group_id', member_group_id)
-      params.append('id', id)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.$message(that.$t('auth_success'))
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/teamItemMember/save', {
+        id: id,
+        member_group_id: member_group_id
+      }).then(data => {
+        this.$message(this.$t('auth_success'))
       })
     },
     getAllUser(queryString, cb) {
-      var that = this
-      var url = DocConfig.server + '/api/user/allUser'
-      var params = new URLSearchParams()
       if (!queryString) {
         queryString = ''
       }
-      params.append('username', queryString)
-      that.axios.post(url, params).then(response => {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          var newInfo = []
-          // 过滤掉已经是成员的用户
-          for (var i = 0; i < Info.length; i++) {
-            let isMember = that.isMember(Info[i]['value'])
-            if (!isMember) {
-              newInfo.push(Info[i])
-            }
+      this.request('/api/user/allUser', {
+        username: queryString
+      }).then(data => {
+        var Info = data.data
+        var newInfo = []
+        // 过滤掉已经是成员的用户
+        for (var i = 0; i < Info.length; i++) {
+          let isMember = this.isMember(Info[i]['value'])
+          if (!isMember) {
+            newInfo.push(Info[i])
           }
-          that.memberOptions = []
-          for (let index = 0; index < newInfo.length; index++) {
-            that.memberOptions.push({
-              value: newInfo[index].username,
-              label: newInfo[index].name
-                ? newInfo[index].username + '(' + newInfo[index].name + ')'
-                : newInfo[index].username,
-              key: newInfo[index].username
-            })
-          }
-          cb(Info)
-        } else {
-          that.$alert(response.data.error_message)
         }
+        this.memberOptions = []
+        for (let index = 0; index < newInfo.length; index++) {
+          this.memberOptions.push({
+            value: newInfo[index].username,
+            label: newInfo[index].name
+              ? newInfo[index].username + '(' + newInfo[index].name + ')'
+              : newInfo[index].username,
+            key: newInfo[index].username
+          })
+        }
+        if (cb) cb(Info)
       })
     },
     // 判断某个用户是否已经是会员
@@ -499,37 +420,23 @@ export default {
       return false
     },
     getCatalog() {
-      var that = this
-      var url = DocConfig.server + '/api/catalog/catListGroup'
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var Info = response.data.data
-          Info.unshift({
-            cat_id: '0',
-            cat_name: that.$t('all_cat')
-          })
-          that.catalogs = Info
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/catalog/catListGroup', {
+        item_id: this.$route.params.item_id
+      }).then(data => {
+        var Info = data.data
+        Info.unshift({
+          cat_id: '0',
+          cat_name: this.$t('all_cat')
+        })
+        this.catalogs = Info
       })
     },
     changeTeamItemMemberCat(cat_id, id) {
-      var that = this
-      var url = DocConfig.server + '/api/teamItemMember/save'
-
-      var params = new URLSearchParams()
-      params.append('cat_id', cat_id)
-      params.append('id', id)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.$message(that.$t('cat_success'))
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/teamItemMember/save', {
+        cat_id: cat_id,
+        id: id
+      }).then(data => {
+        this.$message(this.$t('cat_success'))
       })
     },
     memberGroupText(member_group_id, cat_name) {

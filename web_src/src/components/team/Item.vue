@@ -258,19 +258,11 @@ export default {
       })
     },
     changeTeamItemMemberCat(cat_id, id) {
-      var that = this
-      var url = DocConfig.server + '/api/teamItemMember/save'
-
-      var params = new URLSearchParams()
-      params.append('cat_id', cat_id)
-      params.append('id', id)
-
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.$message(that.$t('cat_success'))
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/teamItemMember/save', {
+        cat_id: cat_id,
+        id: id
+      }).then(data => {
+        this.$message(this.$t('cat_success'))
       })
     },
     getCatalog(item_id) {

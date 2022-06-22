@@ -53,44 +53,19 @@ export default {
   },
   methods: {
     getKeyInfo() {
-      var that = this
-      var url = DocConfig.server + '/api/item/getKey'
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            var Info = response.data.data
-            that.api_key = Info.api_key
-            that.api_token = Info.api_token
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/item/getKey', {
+        item_id: this.$route.params.item_id
+      }).then(data => {
+        this.api_key = data.data.api_key
+        this.api_token = data.data.api_token
+      })
     },
     resetKey() {
-      var that = this
-      var url = DocConfig.server + '/api/item/resetKey'
-
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.getKeyInfo()
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/item/resetKey', {
+        item_id: this.$route.params.item_id
+      }).then(data => {
+        this.getKeyInfo()
+      })
     }
   },
 

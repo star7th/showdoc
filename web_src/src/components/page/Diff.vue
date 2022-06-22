@@ -75,28 +75,17 @@ export default {
   components: {},
   methods: {
     getContent() {
-      var that = this
-      var url = DocConfig.server + '/api/page/diff'
-      var params = new URLSearchParams()
-      params.append('page_id', that.$route.params.page_id)
-      params.append('page_history_id', that.$route.params.page_history_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            var json = response.data.data
-            that.content = json.page.page_content
-            that.historyContent = json.history_page.page_content
-            that.$nextTick(() => {
-              that.diffUsingJS(0)
-            })
-          } else {
-            that.$alert(response.data.error_message)
-          }
+      this.request('/api/page/diff', {
+        page_id: this.$route.params.page_id,
+        page_history_id: this.$route.params.page_history_id
+      }).then(data => {
+        var json = data.data
+        this.content = json.page.page_content
+        this.historyContent = json.history_page.page_content
+        this.$nextTick(() => {
+          this.diffUsingJS(0)
         })
-        .catch(function(error) {
-          console.log(error)
-        })
+      })
     },
     diffUsingJS(viewType) {
       'use strict'

@@ -63,56 +63,33 @@ export default {
   },
   methods: {
     getItemInfo() {
-      var that = this
-      var url = DocConfig.server + '/api/item/detail'
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            var Info = response.data.data
-            if (Info.password) {
-              that.isOpenItem = false
-            }
-            that.infoForm = Info
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/item/detail', {
+        item_id: this.$route.params.item_id
+      }).then(data => {
+        var Info = data.data
+        if (Info.password) {
+          this.isOpenItem = false
+        }
+        this.infoForm = Info
+      })
     },
     formSubmit() {
-      var that = this
-      var url = DocConfig.server + '/api/item/update'
       if (!this.isOpenItem && !this.infoForm.password) {
-        that.$alert(that.$t('private_item_passwrod'))
+        this.$alert(this.$t('private_item_passwrod'))
         return false
       }
       if (this.isOpenItem) {
         this.infoForm.password = ''
       }
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      params.append('item_name', this.infoForm.item_name)
-      params.append('item_description', this.infoForm.item_description)
-      params.append('item_domain', this.infoForm.item_domain)
-      params.append('password', this.infoForm.password)
-
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.$message.success(that.$t('modify_success'))
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/item/update', {
+        item_id: this.$route.params.item_id,
+        item_name: this.infoForm.item_name,
+        item_description: this.infoForm.item_description,
+        item_domain: this.infoForm.item_domain,
+        password: this.infoForm.password
+      }).then(data => {
+        this.$message.success(this.$t('modify_success'))
+      })
     }
   },
 

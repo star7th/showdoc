@@ -15,7 +15,6 @@ import PageIndex from '@/components/page/Index'
 import PageEdit from '@/components/page/edit/Index'
 import PageDiff from '@/components/page/Diff'
 import Catalog from '@/components/catalog/Index'
-import Notice from '@/components/notice/Index'
 import Admin from '@/components/admin/Index'
 import Team from '@/components/team/Index'
 import TeamMember from '@/components/team/Member'
@@ -98,11 +97,7 @@ export default new Router({
       name: 'Catalog',
       component: Catalog
     },
-    {
-      path: '/notice/index',
-      name: 'Notice',
-      component: Notice
-    },
+
     {
       path: '/admin/index',
       name: 'Admin',

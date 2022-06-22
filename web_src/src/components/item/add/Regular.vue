@@ -104,19 +104,15 @@ export default {
       if (this.isOpenItem) {
         this.infoForm.password = ''
       }
-      var params = new URLSearchParams()
-      params.append('item_type', this.infoForm.item_type)
-      params.append('item_name', this.infoForm.item_name)
-      params.append('item_description', this.infoForm.item_description)
-      params.append('item_domain', this.infoForm.item_domain)
-      params.append('password', this.infoForm.password)
 
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.$router.push({ path: '/item/index' })
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/item/add', {
+        item_type: this.infoForm.item_type,
+        item_name: this.infoForm.item_name,
+        item_description: this.infoForm.item_description,
+        item_domain: this.infoForm.item_domain,
+        password: this.infoForm.password
+      }).then(data => {
+        this.$router.push({ path: '/item/index' })
       })
     }
   },

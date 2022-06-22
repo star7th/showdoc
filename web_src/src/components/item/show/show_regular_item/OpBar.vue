@@ -510,22 +510,16 @@ export default {
 
     deletePage() {
       var page_id = this.page_id > 0 ? this.page_id : 0
-      var that = this
-      var url = DocConfig.server + '/api/page/delete'
 
-      this.$confirm(that.$t('comfirm_delete'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+      this.$confirm(this.$t('comfirm_delete'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var params = new URLSearchParams()
-        params.append('page_id', page_id)
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            window.location.reload()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/page/delete', {
+          page_id: page_id
+        }).then(data => {
+          window.location.reload()
         })
       })
     },
@@ -552,22 +546,16 @@ export default {
     },
     createSiglePage() {
       var page_id = this.page_id > 0 ? this.page_id : 0
-      var that = this
-      var url = DocConfig.server + '/api/page/createSinglePage'
-      var params = new URLSearchParams()
-      params.append('page_id', page_id)
-      params.append('isCreateSiglePage', this.isCreateSiglePage)
 
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var unique_key = response.data.data.unique_key
-          if (unique_key) {
-            that.share_single_link = that.getRootPath() + '#/p/' + unique_key
-          } else {
-            that.share_single_link = ''
-          }
+      this.request('/api/page/createSinglePage', {
+        page_id: page_id,
+        isCreateSiglePage: this.isCreateSiglePage
+      }).then(data => {
+        var unique_key = data.data.unique_key
+        if (unique_key) {
+          this.share_single_link = this.getRootPath() + '#/p/' + unique_key
         } else {
-          that.$alert(response.data.error_message)
+          ththisat.share_single_link = ''
         }
       })
     },

@@ -135,81 +135,42 @@ export default {
   },
   methods: {
     deleteItem() {
-      var that = this
-      var url = DocConfig.server + '/api/item/delete'
-
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      params.append('password', this.deleteForm.password)
-
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.dialogDeleteVisible = false
-            that.$message.success(that.$t('success_jump'))
-            setTimeout(function() {
-              that.$router.push({ path: '/item/index' })
-            }, 2000)
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/item/delete', {
+        item_id: this.$route.params.item_id,
+        password: this.deleteForm.password
+      }).then(data => {
+        this.dialogDeleteVisible = false
+        this.$message.success(this.$t('success_jump'))
+        setTimeout(() => {
+          this.$router.push({ path: '/item/index' })
+        }, 2000)
+      })
     },
     archive() {
-      var that = this
-      var url = DocConfig.server + '/api/item/archive'
-
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      params.append('password', this.archiveForm.password)
-
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.dialogArchiveVisible = false
-            that.$message.success(that.$t('success_jump'))
-            setTimeout(function() {
-              that.$router.push({ path: '/item/index' })
-            }, 2000)
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/item/archive', {
+        item_id: this.$route.params.item_id,
+        password: this.archiveForm.password
+      }).then(data => {
+        this.dialogArchiveVisible = false
+        this.$message.success(this.$t('success_jump'))
+        setTimeout(() => {
+          this.$router.push({ path: '/item/index' })
+        }, 2000)
+      })
     },
 
     attorn() {
-      var that = this
-      var url = DocConfig.server + '/api/item/attorn'
-
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      params.append('username', this.attornForm.username)
-      params.append('password', this.attornForm.password)
-
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.dialogAttornVisible = false
-            that.$message.success(that.$t('success_jump'))
-            setTimeout(function() {
-              that.$router.push({ path: '/item/index' })
-            }, 2000)
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/item/attorn', {
+        item_id: this.$route.params.item_id,
+        username: this.attornForm.username,
+        password: this.attornForm.password
+      }).then(data => {
+        this.dialogAttornVisible = false
+        this.$message.success(this.$t('success_jump'))
+        setTimeout(() => {
+          this.$router.push({ path: '/item/index' })
+        }, 2000)
+      })
     }
   },
 

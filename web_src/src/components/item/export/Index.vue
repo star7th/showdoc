@@ -136,24 +136,11 @@ export default {
   methods: {
     // 获取所有目录
     getCatalog(item_id) {
-      var that = this
-      var url = DocConfig.server + '/api/catalog/catListGroup'
-      var params = new URLSearchParams()
-      params.append('item_id', item_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            var Info = response.data.data
-
-            that.catalogs = Info
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/catalog/catListGroup', {
+        item_id: item_id
+      }).then(data => {
+        this.catalogs = data.data
+      })
     },
     onSubmit() {
       if (this.export_type == 1) {
@@ -177,23 +164,17 @@ export default {
     },
     // 获取某目录下的所有页面
     getPages(cat_id) {
-      var that = this
-      var url = DocConfig.server + '/api/catalog/getPagesBycat'
-      var params = new URLSearchParams()
-      params.append('item_id', this.item_id)
-      params.append('cat_id', cat_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          var pages = response.data.data
-          pages.unshift({
-            page_id: '0',
-            page_title: that.$t('all_pages')
-          })
-          that.pages = pages
-          that.page_id = '0'
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/catalog/getPagesBycat', {
+        item_id: this.item_id,
+        cat_id: cat_id
+      }).then(data => {
+        var pages = data.data
+        pages.unshift({
+          page_id: '0',
+          page_title: this.$t('all_pages')
+        })
+        this.pages = pages
+        this.page_id = '0'
       })
     }
   },

@@ -89,7 +89,7 @@
             :content="$t('more')"
             placement="top"
           >
-            <el-dropdown @command="dropdown_callback" trigger="click">
+            <el-dropdown @command="dropdownCallback" trigger="click">
               <span class="el-dropdown-link">
                 <i class="el-icon-caret-bottom el-icon--right"></i>
               </span>
@@ -461,15 +461,10 @@ export default {
         cancelButtonText: that.$t('cancel'),
         type: 'warning'
       }).then(() => {
-        var url = DocConfig.server + '/api/item/exitItem'
-        var params = new URLSearchParams()
-        params.append('item_id', item_id)
-        that.axios.post(url, params).then(function(response) {
-          if (response.data.error_code === 0) {
-            window.location.reload()
-          } else {
-            that.$alert(response.data.error_message)
-          }
+        this.request('/api/item/exitItem', {
+          item_id: item_id
+        }).then(data => {
+          window.location.reload()
         })
       })
     },
@@ -487,19 +482,15 @@ export default {
       // 清空 localStorage
       localStorage.clear()
 
-      var params = new URLSearchParams()
-      params.append('confirm', '1')
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          if (response.data.data.logout_redirect_uri) {
-            window.location.href = response.data.data.logout_redirect_uri
-          } else {
-            that.$router.push({
-              path: '/'
-            })
-          }
+      this.request('/api/user/logout', {
+        confirm: '1'
+      }).then(data => {
+        if (data.data.logout_redirect_uri) {
+          window.location.href = data.data.logout_redirect_uri
         } else {
-          that.$alert(response.data.error_message)
+          this.$router.push({
+            path: '/'
+          })
         }
       })
     },
@@ -514,24 +505,27 @@ export default {
         }
       })
     },
-    dropdown_callback(data) {
+    dropdownCallback(data) {
       if (data) {
         data()
       }
     },
 
-    sort_item(data) {
-      var that = this
-      var url = DocConfig.server + '/api/item/sort'
-      var params = new URLSearchParams()
-      params.append('data', JSON.stringify(data))
-      params.append('item_group_id', this.itemGroupId)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.getItemList()
+    sortItem(data) {
+      this.request(
+        '/api/item/sort',
+        {
+          data: JSON.stringify(data),
+          item_group_id: this.itemGroupId
+        },
+        'post',
+        false
+      ).then(data => {
+        if (data.error_code === 0) {
+          this.getItemList()
           // window.location.reload();
         } else {
-          that.$alert(response.data.error_message, '', {
+          this.$alert(data.error_message, '', {
             callback: function() {
               window.location.reload()
             }
@@ -545,7 +539,7 @@ export default {
         let key = this.itemList[i]['item_id']
         data[key] = i + 1
       }
-      this.sort_item(data)
+      this.sortItem(data)
     },
     script_cron() {
       var url = DocConfig.server + '/api/ScriptCron/run'

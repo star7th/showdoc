@@ -76,19 +76,10 @@ export default {
   },
   methods: {
     getItemList() {
-      var that = this
-      var url = DocConfig.server + '/api/item/myList'
-
-      var params = new URLSearchParams()
-
-      that.axios.get(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          // that.$message.success("加载成功");
-          var json = response.data.data
-          that.itemList = json
-        } else {
-          that.$alert(response.data.error_message)
-        }
+      this.request('/api/item/myList', {
+        item_id: this.item_id
+      }).then(data => {
+        this.itemList = data.data
       })
     },
     chooseCopyItem(item_id) {

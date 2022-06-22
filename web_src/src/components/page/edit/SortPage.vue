@@ -93,23 +93,12 @@ export default {
     },
     // 获取某目录下的所有页面
     getPages() {
-      var that = this
-      var url = DocConfig.server + '/api/catalog/getPagesBycat'
-      var params = new URLSearchParams()
-      params.append('item_id', this.item_id)
-      params.append('cat_id', this.cat_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            that.pages = response.data.data
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
+      this.request('/api/catalog/getPagesBycat', {
+        item_id: this.item_id,
+        cat_id: this.cat_id
+      }).then(data => {
+        this.pages = data.data
+      })
     },
     endMove(evt) {
       let data = {}
@@ -120,17 +109,20 @@ export default {
       this.sortPage(data)
     },
     sortPage(data) {
-      var that = this
-      var url = DocConfig.server + '/api/page/sort'
-      var params = new URLSearchParams()
-      params.append('pages', JSON.stringify(data))
-      params.append('item_id', this.item_id)
-      that.axios.post(url, params).then(function(response) {
-        if (response.data.error_code === 0) {
-          that.getPages()
+      this.request(
+        '/api/page/sort',
+        {
+          pages: JSON.stringify(data),
+          item_id: this.item_id
+        },
+        'post',
+        false
+      ).then(data => {
+        if (data.error_code === 0) {
+          this.getPages()
           // window.location.reload();
         } else {
-          that.$alert(response.data.error_message, '', {
+          this.$alert(data.error_message, '', {
             callback: function() {
               window.location.reload()
             }
