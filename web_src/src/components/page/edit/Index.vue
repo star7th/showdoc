@@ -230,7 +230,7 @@
         v-if="showMockDialog"
         :callback="
           data => {
-            if (data) {
+            if (data && typeof data == 'string') {
               insertValue(data)
             }
             showMockDialog = false
@@ -625,7 +625,9 @@ export default {
       var that = this
       // 如果当前鼠标的焦点不在编辑器内，则中止
       if (
-        !document.querySelector('#page-editor').contains(document.activeElement)
+        !document
+          .querySelector('#page-editor .CodeMirror-wrap')
+          .contains(document.activeElement)
       ) {
         return
       }
