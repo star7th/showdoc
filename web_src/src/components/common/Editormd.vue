@@ -344,11 +344,11 @@ export default {
     getMarkdown() {
       return this.instance.getMarkdown()
     },
-    editor_unwatch() {
+    editorUnwatch() {
       return this.instance.unwatch()
     },
 
-    editor_watch() {
+    editorWatch() {
       return this.instance.watch()
     },
     setCursorToTop() {

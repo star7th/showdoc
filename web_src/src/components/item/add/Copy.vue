@@ -7,7 +7,7 @@
           style="width:100%;"
           v-model="copy_item_id"
           :placeholder="$t('please_choose')"
-          @change="choose_copy_item"
+          @change="chooseCopyItem"
         >
           <el-option
             v-for="item in itemList"
@@ -51,7 +51,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item label>
-        <el-button type="primary" style="width:100%;" @click="FormSubmit">{{
+        <el-button type="primary" style="width:100%;" @click="formSubmit">{{
           $t('submit')
         }}</el-button>
       </el-form-item>
@@ -75,7 +75,7 @@ export default {
     }
   },
   methods: {
-    get_item_list() {
+    getItemList() {
       var that = this
       var url = DocConfig.server + '/api/item/myList'
 
@@ -91,7 +91,7 @@ export default {
         }
       })
     },
-    choose_copy_item(item_id) {
+    chooseCopyItem(item_id) {
       for (var i = 0; i < this.itemList.length; i++) {
         if (item_id == this.itemList[i].item_id) {
           this.item_name = this.itemList[i].item_name + '--copy'
@@ -99,7 +99,7 @@ export default {
         }
       }
     },
-    FormSubmit() {
+    formSubmit() {
       var that = this
       if (!this.isOpenItem && !this.password) {
         that.$alert(that.$t('private_item_passwrod'))
@@ -121,7 +121,7 @@ export default {
   },
 
   mounted() {
-    this.get_item_list()
+    this.getItemList()
   }
 }
 </script>

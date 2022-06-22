@@ -61,7 +61,7 @@
       </el-dialog>
     </el-container>
     <filehub
-      :callback="get_content"
+      :callback="getContent"
       :item_id="item_id"
       :page_id="page_id"
       ref="filehub"
@@ -129,7 +129,7 @@ export default {
     }
   },
   methods: {
-    get_content() {
+    getContent() {
       var that = this
       var url = DocConfig.server + '/api/page/uploadList'
       var params = new URLSearchParams()
@@ -146,7 +146,7 @@ export default {
       })
     },
     show() {
-      this.get_content()
+      this.getContent()
     },
     downloadFile(row) {
       var url = row.url
@@ -168,7 +168,7 @@ export default {
         params.append('page_id', that.page_id)
         that.axios.post(url, params).then(function(response) {
           if (response.data.error_code === 0) {
-            that.get_content()
+            that.getContent()
           } else {
             that.$alert(response.data.error_message)
           }
@@ -178,7 +178,7 @@ export default {
     clearFiles() {
       let childRef = this.$refs.uploadFile // 获取子组件
       childRef.clearFiles()
-      this.get_content()
+      this.getContent()
     },
     insertFile(row) {
       var val =
@@ -199,7 +199,7 @@ export default {
       }
       let childRef = this.$refs.uploadFile // 获取子组件
       childRef.clearFiles()
-      this.get_content()
+      this.getContent()
       this.dialogUploadVisible = false
     },
     // 文件库

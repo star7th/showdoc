@@ -75,7 +75,7 @@
           <el-button @click="dialogFormVisible = false">{{
             $t('cancel')
           }}</el-button>
-          <el-button type="primary" @click="MyFormSubmit">{{
+          <el-button type="primary" @click="myFormSubmit">{{
             $t('confirm')
           }}</el-button>
         </div>
@@ -108,7 +108,7 @@ export default {
         this.list = data.data
       })
     },
-    MyFormSubmit() {
+    myFormSubmit() {
       const group_name = this.MyForm.group_name
         ? this.MyForm.group_name
         : 'default'
@@ -172,7 +172,7 @@ export default {
     goback() {
       this.$router.push({ path: '/item/index' })
     },
-    get_item_list() {
+    getItemList() {
       this.request('/api/item/myList', {}).then(data => {
         this.itemList = data.data
       })
@@ -207,7 +207,7 @@ export default {
 
   mounted() {
     this.geList()
-    this.get_item_list()
+    this.getItemList()
   },
   beforeDestroy() {}
 }

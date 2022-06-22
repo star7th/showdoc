@@ -54,7 +54,7 @@
         ></el-table-column>
         <el-table-column prop :label="$t('operation')">
           <template slot-scope="scope">
-            <el-button type="text" @click="delete_one(scope.row)">{{
+            <el-button type="text" @click="deleteOne(scope.row)">{{
               $t('delete')
             }}</el-button>
           </template>
@@ -217,7 +217,7 @@ export default {
         })
       }
     },
-    delete_one(row) {
+    deleteOne(row) {
       this.request('/api/subscription/deletePage', {
         uids: row.uid,
         page_id: this.page_id

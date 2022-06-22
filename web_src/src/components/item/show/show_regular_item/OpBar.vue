@@ -10,13 +10,13 @@
             $t('goback')
           }}</el-dropdown-item>
           <el-dropdown-item command="share">{{ $t('share') }}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.item_edit" command="new_page">{{
+          <el-dropdown-item v-if="item_info.item_edit" command="newPage">{{
             $t('new_page')
           }}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.item_edit" command="new_catalog">{{
+          <el-dropdown-item v-if="item_info.item_edit" command="newCatalog">{{
             $t('new_catalog')
           }}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.item_edit" command="edit_page">{{
+          <el-dropdown-item v-if="item_info.item_edit" command="editPage">{{
             $t('edit_page')
           }}</el-dropdown-item>
           <el-dropdown-item v-if="item_info.item_edit" command="copy">{{
@@ -24,13 +24,13 @@
           }}</el-dropdown-item>
           <el-dropdown-item
             v-if="item_info.item_edit"
-            command="ShowHistoryVersion"
+            command="showHistoryVersion"
             >{{ $t('history_version') }}</el-dropdown-item
           >
           <el-dropdown-item v-if="item_info.item_edit" command="export">{{
             $t('export')
           }}</el-dropdown-item>
-          <el-dropdown-item v-if="item_info.item_edit" command="delete_page">{{
+          <el-dropdown-item v-if="item_info.item_edit" command="deletePage">{{
             $t('delete_interface')
           }}</el-dropdown-item>
         </el-dropdown-menu>
@@ -55,7 +55,7 @@
           :content="$t('history_version')"
           placement="top"
         >
-          <i class="el-icon-goods" @click="ShowHistoryVersion"></i>
+          <i class="el-icon-goods" @click="showHistoryVersion"></i>
         </el-tooltip>
         <el-tooltip
           class="item"
@@ -88,7 +88,7 @@
           :content="$t('share')"
           placement="top"
         >
-          <i class="el-icon-share" @click="share_page"></i>
+          <i class="el-icon-share" @click="sharePage"></i>
         </el-tooltip>
 
         <el-tooltip
@@ -98,7 +98,7 @@
           :content="$t('detail')"
           placement="top"
         >
-          <i class="el-icon-info" @click="show_page_info"></i>
+          <i class="el-icon-info" @click="showPageInfo"></i>
         </el-tooltip>
 
         <el-tooltip
@@ -119,7 +119,7 @@
           :content="$t('new_page')"
           placement="top"
         >
-          <i class="el-icon-plus" @click="new_page"></i>
+          <i class="el-icon-plus" @click="newPage"></i>
         </el-tooltip>
         <el-tooltip
           class="item"
@@ -127,7 +127,7 @@
           :content="$t('new_catalog')"
           placement="left"
         >
-          <i class="el-icon-folder" @click="mamage_catalog"></i>
+          <i class="el-icon-folder" @click="mamageCatalog"></i>
         </el-tooltip>
         <el-tooltip
           class="item"
@@ -135,7 +135,7 @@
           :content="$t('edit_page')"
           placement="top"
         >
-          <i class="el-icon-edit" @click="edit_page"></i>
+          <i class="el-icon-edit" @click="editPage"></i>
         </el-tooltip>
 
         <el-tooltip
@@ -176,7 +176,7 @@
             :content="$t('history_version')"
             placement="top"
           >
-            <i class="el-icon-goods" @click="ShowHistoryVersion"></i>
+            <i class="el-icon-goods" @click="showHistoryVersion"></i>
           </el-tooltip>
           <el-tooltip
             class="item"
@@ -192,7 +192,7 @@
             :content="$t('detail')"
             placement="top"
           >
-            <i class="el-icon-info" @click="show_page_info"></i>
+            <i class="el-icon-info" @click="showPageInfo"></i>
           </el-tooltip>
           <el-tooltip
             class="item"
@@ -225,7 +225,7 @@
             :content="$t('delete_interface')"
             placement="top"
           >
-            <i class="el-icon-delete" @click="delete_page"></i>
+            <i class="el-icon-delete" @click="deletePage"></i>
           </el-tooltip>
           <el-tooltip
             class="item"
@@ -467,12 +467,12 @@ export default {
     ChangeLog
   },
   methods: {
-    edit_page() {
+    editPage() {
       var page_id = this.page_id > 0 ? this.page_id : 0
       var url = '/page/edit/' + this.item_id + '/' + page_id
       this.$router.push({ path: url })
     },
-    share_page() {
+    sharePage() {
       var page_id = this.page_id > 0 ? this.page_id : 0
       let path = this.item_domain ? this.item_domain : this.item_id
       this.share_page_link = this.getRootPath() + '#/' + path + '/' + page_id
@@ -492,12 +492,7 @@ export default {
       this.copyText2 =
         this.page_info.page_title + '\r\n' + this.share_single_link
     },
-    dropdown_callback(data) {
-      if (data) {
-        data()
-      }
-    },
-    show_page_info() {
+    showPageInfo() {
       var html =
         '本页面由 ' +
         this.page_info.author_username +
@@ -508,12 +503,12 @@ export default {
     },
 
     // 展示历史版本
-    ShowHistoryVersion() {
+    showHistoryVersion() {
       let childRef = this.$refs.HistoryVersion // 获取子组件
       childRef.show()
     },
 
-    delete_page() {
+    deletePage() {
       var page_id = this.page_id > 0 ? this.page_id : 0
       var that = this
       var url = DocConfig.server + '/api/page/delete'
@@ -539,7 +534,7 @@ export default {
     },
     checkCreateSiglePage(newvalue) {
       if (newvalue) {
-        this.CreateSiglePage()
+        this.createSiglePage()
       } else {
         this.$confirm(this.$t('cancelSingle'), ' ', {
           confirmButtonText: this.$t('cancelSingleYes'),
@@ -547,7 +542,7 @@ export default {
           type: 'warning'
         }).then(
           () => {
-            this.CreateSiglePage()
+            this.createSiglePage()
           },
           () => {
             this.isCreateSiglePage = true
@@ -555,7 +550,7 @@ export default {
         )
       }
     },
-    CreateSiglePage() {
+    createSiglePage() {
       var page_id = this.page_id > 0 ? this.page_id : 0
       var that = this
       var url = DocConfig.server + '/api/page/createSinglePage'
@@ -576,12 +571,12 @@ export default {
         }
       })
     },
-    new_page() {
+    newPage() {
       var url = '/page/edit/' + this.item_info.item_id + '/0'
       this.$router.push({ path: url })
     },
 
-    mamage_catalog() {
+    mamageCatalog() {
       var url = '/catalog/' + this.item_info.item_id
       this.$router.push({ path: url })
     },
@@ -609,19 +604,19 @@ export default {
           this.$router.push({ path: '/item/index' })
           break
         case 'share':
-          this.share_page()
+          this.sharePage()
           break
-        case 'new_page':
-          this.new_page()
+        case 'newPage':
+          this.newPage()
           break
-        case 'new_catalog':
-          this.mamage_catalog()
+        case 'newCatalog':
+          this.mamageCatalog()
           break
-        case 'edit_page':
-          this.edit_page()
+        case 'editPage':
+          this.editPage()
           break
-        case 'ShowHistoryVersion':
-          this.ShowHistoryVersion()
+        case 'showHistoryVersion':
+          this.showHistoryVersion()
           break
         case 'copy':
           this.$router.push({
@@ -635,8 +630,8 @@ export default {
         case 'export':
           this.$router.push({ path: '/item/export/' + this.item_info.item_id })
           break
-        case 'delete_page':
-          this.delete_page()
+        case 'deletePage':
+          this.deletePage()
           break
       }
     },
@@ -668,7 +663,7 @@ export default {
       var keyNum = window.event ? e.keyCode : e.which // 获取被按下的键值
       if (keyNum == 69 && e.ctrlKey) {
         // Ctrl +e 为编辑
-        that.edit_page()
+        that.editPage()
         e.preventDefault()
       }
     }

@@ -52,7 +52,7 @@ export default {
     }
   },
   methods: {
-    get_key_info() {
+    getKeyInfo() {
       var that = this
       var url = DocConfig.server + '/api/item/getKey'
       var params = new URLSearchParams()
@@ -83,7 +83,7 @@ export default {
         .post(url, params)
         .then(function(response) {
           if (response.data.error_code === 0) {
-            that.get_key_info()
+            that.getKeyInfo()
           } else {
             that.$alert(response.data.error_message)
           }
@@ -95,7 +95,7 @@ export default {
   },
 
   mounted() {
-    this.get_key_info()
+    this.getKeyInfo()
   }
 }
 </script>

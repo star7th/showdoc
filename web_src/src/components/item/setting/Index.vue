@@ -59,25 +59,6 @@ export default {
     }
   },
   methods: {
-    get_item_info() {
-      var that = this
-      var url = DocConfig.server + '/api/item/detail'
-      var params = new URLSearchParams()
-      params.append('item_id', that.$route.params.item_id)
-      that.axios
-        .post(url, params)
-        .then(function(response) {
-          if (response.data.error_code === 0) {
-            var Info = response.data.data
-            that.infoForm = Info
-          } else {
-            that.$alert(response.data.error_message)
-          }
-        })
-        .catch(function(error) {
-          console.log(error)
-        })
-    },
     goback() {
       this.$router.go(-1)
     }

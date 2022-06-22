@@ -87,7 +87,7 @@
                 $t('visit')
               }}</el-button>
               <el-button
-                @click="delete_row(scope.row)"
+                @click="deleteRow(scope.row)"
                 type="text"
                 size="small"
                 >{{ $t('delete') }}</el-button
@@ -179,7 +179,7 @@ export default {
     visit(row) {
       window.open(row.url)
     },
-    delete_row(row) {
+    deleteRow(row) {
       this.$confirm(this.$t('confirm_delete'), ' ', {
         confirmButtonText: this.$t('confirm'),
         cancelButtonText: this.$t('cancel'),

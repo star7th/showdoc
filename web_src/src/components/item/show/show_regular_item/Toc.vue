@@ -13,13 +13,13 @@ export default {
       try {
         if ($ != undefined) {
           clearInterval(check_jQuery_is_load)
-          that.toc_main_script()
+          that.tocMainScript()
         }
       } catch (e) {}
     }, 200)
   },
   methods: {
-    toc_main_script() {
+    tocMainScript() {
       // 监听点击事件并滑动到相应位置
       $(document).on('click', '.markdown-toc-list a[href]', function(event) {
         event.preventDefault()

@@ -25,7 +25,7 @@
             :content="$t('share')"
             placement="top"
           >
-            <i class="el-icon-share" @click="share_item"></i>
+            <i class="el-icon-share" @click="shareItem"></i>
           </el-tooltip>
           <el-tooltip
             v-if="item_info.item_edit && item_info.is_archived < 1"
@@ -34,7 +34,7 @@
             :content="$t('edit_page')"
             placement="top"
           >
-            <i class="el-icon-edit" @click="edit_page"></i>
+            <i class="el-icon-edit" @click="editPage"></i>
           </el-tooltip>
           <el-dropdown v-if="item_info.item_edit">
             <span class="el-dropdown-link">
@@ -207,7 +207,7 @@ export default {
     Toc
   },
   methods: {
-    get_page_content(page_id) {
+    getPageContent(page_id) {
       var that = this
       var url = DocConfig.server + '/api/page/info'
       if (!page_id) {
@@ -231,12 +231,12 @@ export default {
         })
     },
 
-    edit_page() {
+    editPage() {
       var page_id = this.page_id > 0 ? this.page_id : 0
       var url = '/page/edit/' + this.item_info.item_id + '/' + page_id
       this.$router.push({ path: url })
     },
-    share_item() {
+    shareItem() {
       this.share_item_link = this.getRootPath() + '#/' + this.item_info.item_id
       this.qr_item_link =
         DocConfig.server +
@@ -246,7 +246,7 @@ export default {
       this.copyText =
         this.item_info.item_name + '  -- ShowDoc \r\n' + this.share_item_link
     },
-    AdaptToMobile() {
+    adaptToMobile() {
       var doc_container = document.getElementById('doc-container')
       doc_container.style.width = '95%'
       doc_container.style.padding = '5px'
@@ -260,12 +260,12 @@ export default {
   mounted() {
     this.menu = this.item_info.menu
     this.page_id = this.menu.pages[0].page_id
-    this.get_page_content()
+    this.getPageContent()
 
     // 根据屏幕宽度进行响应(应对移动设备的访问)
     if (this.isMobile() || window.screen.width < 1000) {
       this.$nextTick(() => {
-        this.AdaptToMobile()
+        this.adaptToMobile()
       })
     }
   }

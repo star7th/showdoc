@@ -92,7 +92,7 @@ export default {
       this.dialogTableVisible = true
     },
     // 获取某目录下的所有页面
-    get_pages() {
+    getPages() {
       var that = this
       var url = DocConfig.server + '/api/catalog/getPagesBycat'
       var params = new URLSearchParams()
@@ -117,9 +117,9 @@ export default {
         let key = this.pages[i]['page_id']
         data[key] = i + 1
       }
-      this.sort_page(data)
+      this.sortPage(data)
     },
-    sort_page(data) {
+    sortPage(data) {
       var that = this
       var url = DocConfig.server + '/api/page/sort'
       var params = new URLSearchParams()
@@ -127,7 +127,7 @@ export default {
       params.append('item_id', this.item_id)
       that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
-          that.get_pages()
+          that.getPages()
           // window.location.reload();
         } else {
           that.$alert(response.data.error_message, '', {
@@ -148,11 +148,11 @@ export default {
   },
   watch: {
     cat_id: function() {
-      this.get_pages()
+      this.getPages()
     }
   },
   mounted() {
-    this.get_pages()
+    this.getPages()
     this.getCatListName()
   }
 }

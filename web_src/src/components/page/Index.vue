@@ -137,7 +137,7 @@ export default {
     Toc
   },
   methods: {
-    get_page_content() {
+    getPageContent() {
       var that = this
       var url
       var page_id = that.$route.params.page_id
@@ -207,7 +207,7 @@ export default {
     }
   },
   mounted() {
-    this.get_page_content()
+    this.getPageContent()
     // 根据屏幕宽度进行响应(应对移动设备的访问)
     if (this.isMobile() || window.screen.width < 1000) {
       this.$nextTick(() => {

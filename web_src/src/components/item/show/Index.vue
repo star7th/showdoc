@@ -5,7 +5,7 @@
     <!-- 展示常规项目 -->
     <ShowRegularItem
       :item_info="item_info"
-      :search_item="search_item"
+      :searchItem="searchItem"
       :keyword="keyword"
       v-if="
         item_info &&
@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     // 获取菜单
-    get_item_menu(keyword) {
+    getItemMenu(keyword) {
       if (!keyword) {
         keyword = ''
       }
@@ -123,11 +123,11 @@ export default {
         loading.close()
       }, 20000)
     },
-    search_item(keyword) {
+    searchItem(keyword) {
       this.item_info = ''
       this.$store.dispatch('changeItemInfo', '')
       this.keyword = keyword
-      this.get_item_menu(keyword)
+      this.getItemMenu(keyword)
     },
 
     // 渲染水印
@@ -165,7 +165,7 @@ export default {
     }
   },
   mounted() {
-    this.get_item_menu()
+    this.getItemMenu()
     this.$store.dispatch('changeOpenCatId', 0)
   },
   beforeDestroy() {

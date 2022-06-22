@@ -34,7 +34,7 @@
             <img
               v-bind:src="v_code_img"
               class="v_code_img"
-              v-on:click="change_v_code_img"
+              v-on:click="changeVcodeImg"
             />
           </el-form-item>
 
@@ -95,13 +95,13 @@ export default {
             response.data.error_code === 10308
           ) {
             that.show_v_code = true
-            that.change_v_code_img()
+            that.changeVcodeImg()
           }
           that.$alert(response.data.error_message)
         }
       })
     },
-    change_v_code_img() {
+    changeVcodeImg() {
       var rand = '&rand=' + Math.random()
       this.v_code_img += rand
     }

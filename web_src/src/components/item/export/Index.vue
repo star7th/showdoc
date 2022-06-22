@@ -39,7 +39,7 @@
               class="cat"
               v-model="cat_id"
               v-if="computed_catalogs"
-              @change="get_pages"
+              @change="getPages"
             >
               <el-option
                 v-for="cat in computed_catalogs"
@@ -135,7 +135,7 @@ export default {
   },
   methods: {
     // 获取所有目录
-    get_catalog(item_id) {
+    getCatalog(item_id) {
       var that = this
       var url = DocConfig.server + '/api/catalog/catListGroup'
       var params = new URLSearchParams()
@@ -176,7 +176,7 @@ export default {
       this.$router.go(-1)
     },
     // 获取某目录下的所有页面
-    get_pages(cat_id) {
+    getPages(cat_id) {
       var that = this
       var url = DocConfig.server + '/api/catalog/getPagesBycat'
       var params = new URLSearchParams()
@@ -198,7 +198,7 @@ export default {
     }
   },
   mounted() {
-    this.get_catalog(this.$route.params.item_id)
+    this.getCatalog(this.$route.params.item_id)
     this.item_id = this.$route.params.item_id
   },
   beforeDestroy() {}

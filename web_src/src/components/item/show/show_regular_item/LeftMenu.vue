@@ -4,13 +4,7 @@
       class="el-icon-menu header-left-btn"
       v-if="show_menu_btn"
       id="header-left-btn"
-      @click="show_menu"
-    ></i>
-    <i
-      class="el-icon-menu header-left-btn"
-      v-if="show_menu_btn"
-      id="header-left-btn"
-      @click="show_menu"
+      @click="showMenu"
     ></i>
     <el-aside
       :class="menuMarginLeft"
@@ -20,7 +14,7 @@
       @mouseleave.native="hideScrollbar = true"
     >
       <el-menu
-        @select="select_menu"
+        @select="selectMenu"
         background-color="#fafafa"
         text-color
         active-text-color="#008cff"
@@ -28,11 +22,11 @@
         :default-openeds="openeds"
       >
         <el-input
-          @keyup.enter.native="input_keyword"
+          @keyup.enter.native="inputKeyword"
           :placeholder="$t('input_keyword')"
           class="search-box"
           :clearable="true"
-          @clear="search_item()"
+          @clear="searchItem()"
           size="small"
           v-model="keyword"
         ></el-input>
@@ -81,9 +75,9 @@ import LeftMenuSub from './LeftMenuSub.vue'
 
 export default {
   props: {
-    get_page_content: '',
+    getPageContent: '',
     item_info: '',
-    search_item: '',
+    searchItem: '',
     keyword: ''
   },
   data() {
@@ -102,22 +96,13 @@ export default {
   },
   methods: {
     // 选中菜单的回调
-    select_menu(index, indexPath) {
-      this.change_url(index)
-      this.get_page_content(index)
-    },
-    new_page() {
-      var url = '/page/edit/' + this.item_info.item_id + '/0'
-      this.$router.push({ path: url })
-    },
-
-    mamage_catalog() {
-      var url = '/catalog/' + this.item_info.item_id
-      this.$router.push({ path: url })
+    selectMenu(index, indexPath) {
+      this.changeUrl(index)
+      this.getPageContent(index)
     },
 
     // 改变url
-    change_url(page_id) {
+    changeUrl(page_id) {
       if (
         page_id > 0 &&
         (page_id == this.$route.query.page_id ||
@@ -133,10 +118,10 @@ export default {
       })
     },
 
-    input_keyword() {
-      this.search_item(this.keyword)
+    inputKeyword() {
+      this.searchItem(this.keyword)
     },
-    show_menu() {
+    showMenu() {
       this.show_menu_btn = false
       var element = document.getElementById('left-side-menu')
       element.style.display = 'block'
@@ -146,7 +131,7 @@ export default {
       element = document.getElementById('p-content')
       element.style.display = 'none'
     },
-    hide_menu() {
+    hideMenu() {
       this.show_menu_btn = true
       var element = document.getElementById('left-side-menu')
       element.style.display = 'none'
@@ -196,7 +181,7 @@ export default {
     var item_info = this.item_info
     // 默认展开页面
     if (item_info.default_page_id > 0) {
-      that.select_menu(item_info.default_page_id)
+      that.selectMenu(item_info.default_page_id)
       if (item_info.default_cat_id4) {
         that.openeds = [
           item_info.default_cat_id4,

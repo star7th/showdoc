@@ -183,7 +183,7 @@
                 <!-- 自己创建的话显示项目设置按钮 -->
                 <span
                   class="item-setting"
-                  @click.prevent="click_item_setting(item.item_id)"
+                  @click.prevent="clickItemSetting(item.item_id)"
                   :title="$t('item_setting')"
                   v-if="item.creator"
                 >
@@ -192,7 +192,7 @@
                 <!-- 如果是加入的项目的话，这里显示退出按钮 -->
                 <span
                   class="item-exit"
-                  @click.prevent="click_item_exit(item.item_id)"
+                  @click.prevent="clickItemExit(item.item_id)"
                   :title="$t('item_exit')"
                   v-if="!item.creator"
                 >
@@ -424,7 +424,7 @@ export default {
     }
   },
   methods: {
-    get_item_list() {
+    getItemList() {
       this.loading = true
       const itemGroupId = this.itemGroupId
       this.request('/api/item/myList', {
@@ -449,45 +449,12 @@ export default {
         })
       }
     },
-    item_top_class(top) {
-      if (top) {
-        return 'el-icon-arrow-down'
-      }
-      return 'el-icon-arrow-up'
-    },
-
-    bind_item_even() {
-      // 这里偷个懒，直接用jquery来操作DOM。因为老版本的代码就是基于jquery的，所以复制过来稍微改下
-      $s(['static/jquery.min.js'], () => {
-        // 当鼠标放在项目上时将浮现设置和置顶图标
-        $('.item-thumbnail').mouseover(function() {
-          $(this)
-            .find('.item-setting')
-            .show()
-          // $(this).find(".item-top").show();
-          // $(this).find(".item-down").show();
-        })
-
-        // 当鼠标离开项目上时将隐藏设置和置顶图标
-        $('.item-thumbnail').mouseout(function() {
-          $(this)
-            .find('.item-setting')
-            .hide()
-          $(this)
-            .find('.item-top')
-            .hide()
-          $(this)
-            .find('.item-down')
-            .hide()
-        })
-      })
-    },
 
     // 进入项目设置页
-    click_item_setting(item_id) {
+    clickItemSetting(item_id) {
       this.$router.push({ path: '/item/setting/' + item_id })
     },
-    click_item_exit(item_id) {
+    clickItemExit(item_id) {
       var that = this
       this.$confirm(that.$t('confirm_exit_item'), ' ', {
         confirmButtonText: that.$t('confirm'),
@@ -537,7 +504,7 @@ export default {
       })
     },
 
-    user_info() {
+    userInfo() {
       var that = this
       this.get_user_info(function(response) {
         if (response.data.error_code === 0) {
@@ -561,7 +528,7 @@ export default {
       params.append('item_group_id', this.itemGroupId)
       that.axios.post(url, params).then(function(response) {
         if (response.data.error_code === 0) {
-          that.get_item_list()
+          that.getItemList()
           // window.location.reload();
         } else {
           that.$alert(response.data.error_message, '', {
@@ -594,12 +561,12 @@ export default {
             this.itemGroupId = deaultItemGroupId
           }
         })
-        this.get_item_list()
+        this.getItemList()
       })
     },
     changeGroup() {
       localStorage.setItem('deaultItemGroupId', this.itemGroupId)
-      this.get_item_list()
+      this.getItemList()
     },
     toUserSettingLink() {
       this.$router.push({ path: '/user/setting' })
@@ -612,12 +579,12 @@ export default {
     }
   },
   mounted() {
-    this.user_info()
+    this.userInfo()
     this.lang = DocConfig.lang
     this.script_cron()
     const deaultItemGroupId = localStorage.getItem('deaultItemGroupId')
     if (deaultItemGroupId === null) {
-      this.get_item_list()
+      this.getItemList()
       this.itemGroupId = '0'
     } else {
       this.itemGroupId = deaultItemGroupId

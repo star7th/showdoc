@@ -44,7 +44,7 @@
       <el-table-column prop :label="$t('operation')">
         <template slot-scope="scope">
           <el-button
-            @click="delete_member(scope.row.item_member_id)"
+            @click="deleteMember(scope.row.item_member_id)"
             type="text"
             size="small"
             >{{ $t('delete') }}</el-button
@@ -143,7 +143,7 @@
         <el-button @click="dialogFormVisible = false">{{
           $t('cancel')
         }}</el-button>
-        <el-button type="primary" @click="MyFormSubmit">{{
+        <el-button type="primary" @click="myFormSubmit">{{
           $t('confirm')
         }}</el-button>
       </div>
@@ -294,7 +294,7 @@ export default {
     }
   },
   methods: {
-    get_members() {
+    getMembers() {
       var that = this
       var url = DocConfig.server + '/api/member/getList'
       var params = new URLSearchParams()
@@ -309,7 +309,7 @@ export default {
         }
       })
     },
-    get_teams() {
+    getTeams() {
       var that = this
       var url = DocConfig.server + '/api/team/getList'
       var params = new URLSearchParams()
@@ -352,7 +352,7 @@ export default {
         }
       })
     },
-    MyFormSubmit() {
+    myFormSubmit() {
       var that = this
       var url = DocConfig.server + '/api/member/save'
 
@@ -367,7 +367,7 @@ export default {
         .then(function(response) {
           if (response.data.error_code === 0) {
             that.dialogFormVisible = false
-            that.get_members()
+            that.getMembers()
             that.MyForm.username = ''
           } else {
             that.$alert(response.data.error_message)
@@ -395,7 +395,7 @@ export default {
         }
       })
     },
-    delete_member(item_member_id) {
+    deleteMember(item_member_id) {
       var that = this
       var url = DocConfig.server + '/api/member/delete'
 
@@ -410,7 +410,7 @@ export default {
 
         that.axios.post(url, params).then(function(response) {
           if (response.data.error_code === 0) {
-            that.get_members()
+            that.getMembers()
           } else {
             that.$alert(response.data.error_message)
           }
@@ -498,7 +498,7 @@ export default {
       }
       return false
     },
-    get_catalog() {
+    getCatalog() {
       var that = this
       var url = DocConfig.server + '/api/catalog/catListGroup'
       var params = new URLSearchParams()
@@ -544,11 +544,11 @@ export default {
   },
 
   mounted() {
-    this.get_members()
-    this.get_teams()
+    this.getMembers()
+    this.getTeams()
     this.getTeamItem()
     this.getAllUser()
-    this.get_catalog()
+    this.getCatalog()
   }
 }
 </script>

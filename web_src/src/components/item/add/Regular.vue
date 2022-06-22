@@ -69,7 +69,7 @@
       </el-form-item>
 
       <el-form-item label>
-        <el-button type="primary" style="width:100%;" @click="FormSubmit">{{
+        <el-button type="primary" style="width:100%;" @click="formSubmit">{{
           $t('submit')
         }}</el-button>
       </el-form-item>
@@ -94,7 +94,7 @@ export default {
     }
   },
   methods: {
-    FormSubmit() {
+    formSubmit() {
       var that = this
       var url = DocConfig.server + '/api/item/add'
       if (!this.isOpenItem && !this.infoForm.password) {

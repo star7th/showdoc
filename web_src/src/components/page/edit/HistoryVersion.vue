@@ -35,7 +35,7 @@
           <el-table-column label="操作" width="150">
             <template slot-scope="scope">
               <el-button
-                @click="preview_diff(scope.row)"
+                @click="previewDiff(scope.row)"
                 type="text"
                 size="small"
                 >{{ $t('overview') }}</el-button
@@ -76,7 +76,7 @@ export default {
   },
   components: {},
   methods: {
-    get_content() {
+    getContent() {
       var that = this
       var url = DocConfig.server + '/api/page/history'
       var params = new URLSearchParams()
@@ -105,14 +105,14 @@ export default {
         })
     },
     show() {
-      this.get_content()
+      this.getContent()
     },
     recover(row) {
       this.callback(row.page_content, true)
       this.dialogTableVisible = false
     },
 
-    preview_diff(row) {
+    previewDiff(row) {
       var page_history_id = row['page_history_id']
       let page_id = this.page_id ? this.page_id : this.$route.params.page_id
       var url = '#/page/diff/' + page_id + '/' + page_history_id
@@ -126,7 +126,7 @@ export default {
           page_history_id: row.page_history_id,
           page_comments: data.value
         }).then(() => {
-          this.get_content()
+          this.getContent()
         })
       })
     }

@@ -7,10 +7,10 @@
       <div id="left-side">
         <LeftMenu
           ref="leftMenu"
-          :get_page_content="get_page_content"
+          :getPageContent="getPageContent"
           :keyword="keyword"
           :item_info="item_info"
-          :search_item="search_item"
+          :searchItem="searchItem"
           v-if="item_info"
         ></LeftMenu>
       </div>
@@ -34,7 +34,7 @@
               class="el-icon-upload item"
               id="attachment"
               v-if="attachment_count"
-              @click="ShowAttachment"
+              @click="showAttachment"
             ></i>
           </div>
           <div id="doc-body">
@@ -113,7 +113,7 @@ import { rederPageContent } from '@/models/page'
 export default {
   props: {
     item_info: '',
-    search_item: '',
+    searchItem: '',
     keyword: ''
   },
   data() {
@@ -144,7 +144,7 @@ export default {
   },
   methods: {
     // 获取页面内容
-    get_page_content(page_id) {
+    getPageContent(page_id) {
       if (page_id <= 0) {
         return
       }
@@ -186,7 +186,7 @@ export default {
     // 根据屏幕宽度进行响应(应对移动设备的访问)
     adaptToMobile() {
       let childRef = this.$refs.leftMenu // 获取子组件
-      childRef.hide_menu()
+      childRef.hideMenu()
       this.show_page_bar = false
       var doc_container = document.getElementById('doc-container')
       doc_container.style.width = '95%'
@@ -224,7 +224,7 @@ export default {
     onCopy() {
       this.$message(this.$t('copy_success'))
     },
-    ShowAttachment() {
+    showAttachment() {
       let childRef = this.$refs.AttachmentList // 获取子组件
       childRef.show()
     },

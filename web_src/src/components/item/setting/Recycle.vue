@@ -52,7 +52,7 @@ export default {
     }
   },
   methods: {
-    get_list() {
+    getList() {
       var that = this
       var url = DocConfig.server + '/api/recycle/getList'
       var params = new URLSearchParams()
@@ -81,7 +81,7 @@ export default {
 
         that.axios.post(url, params).then(function(response) {
           if (response.data.error_code === 0) {
-            that.get_list()
+            that.getList()
           } else {
             that.$alert(response.data.error_message)
           }
@@ -91,7 +91,7 @@ export default {
   },
 
   mounted() {
-    this.get_list()
+    this.getList()
   }
 }
 </script>

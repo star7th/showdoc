@@ -43,7 +43,7 @@
       </el-form-item>
 
       <el-form-item label>
-        <el-button type="primary" style="width:100%;" @click="FormSubmit">{{
+        <el-button type="primary" style="width:100%;" @click="formSubmit">{{
           $t('submit')
         }}</el-button>
       </el-form-item>
@@ -62,7 +62,7 @@ export default {
     }
   },
   methods: {
-    get_item_info() {
+    getItemInfo() {
       var that = this
       var url = DocConfig.server + '/api/item/detail'
       var params = new URLSearchParams()
@@ -84,7 +84,7 @@ export default {
           console.log(error)
         })
     },
-    FormSubmit() {
+    formSubmit() {
       var that = this
       var url = DocConfig.server + '/api/item/update'
       if (!this.isOpenItem && !this.infoForm.password) {
@@ -117,7 +117,7 @@ export default {
   },
 
   mounted() {
-    this.get_item_info()
+    this.getItemInfo()
   }
 }
 </script>

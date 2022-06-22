@@ -49,7 +49,7 @@
 
           <el-form-item class="pull-right">
             <el-dropdown
-              @command="dropdown_callback"
+              @command="dropdownCallback"
               split-button
               type="primary"
               size="medium"
@@ -59,7 +59,7 @@
             >
               <span id="save-page">{{ $t('save') }}</span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="save_to_template">{{
+                <el-dropdown-item :command="saveToTemplate">{{
                   $t('save_to_templ')
                 }}</el-dropdown-item>
                 <el-tooltip
@@ -88,10 +88,10 @@
         </el-form>
 
         <el-row class="fun-btn-group">
-          <el-button type size="medium" @click="insert_api_template">{{
+          <el-button type size="medium" @click="insertApiTemplate">{{
             $t('insert_apidoc_template')
           }}</el-button>
-          <el-button type size="medium" @click="insert_database_template">{{
+          <el-button type size="medium" @click="insertDatabaseTemplate">{{
             $t('insert_database_doc_template')
           }}</el-button>
           <el-button
@@ -110,13 +110,13 @@
           >
             {{ $t('format_tools') }}
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="ShowJsonToTable">{{
+              <el-dropdown-item @click.native="showJsonToTable">{{
                 $t('json_to_table')
               }}</el-dropdown-item>
-              <el-dropdown-item @click.native="ShowJsonBeautify">{{
+              <el-dropdown-item @click.native="showJsonBeautify">{{
                 $t('beautify_json')
               }}</el-dropdown-item>
-              <el-dropdown-item @click.native="ShowPasteTable">{{
+              <el-dropdown-item @click.native="showPasteTable">{{
                 $t('paste_insert_table')
               }}</el-dropdown-item>
               <el-dropdown-item @click.native="showSqlToMarkdownTable">{{
@@ -135,16 +135,16 @@
             v-if="lang == 'zh-cn'"
             type
             size="medium"
-            @click="ShowRunApi"
+            @click="showRunApi"
             >{{ $t('http_test_api') }}</el-button
           >
 
           <el-badge :value="attachment_count" class="item">
-            <el-button type size="medium" @click="ShowAttachment">{{
+            <el-button type size="medium" @click="showAttachment">{{
               $t('attachment')
             }}</el-button>
           </el-badge>
-          <el-button size="medium" @click="ShowHistoryVersion">{{
+          <el-button size="medium" @click="showHistoryVersion">{{
             $t('history_version')
           }}</el-button>
         </el-row>
@@ -401,7 +401,7 @@ export default {
   },
   methods: {
     // 获取页面内容
-    get_page_content(page_id) {
+    getPageContent(page_id) {
       if (!page_id) {
         page_id = this.page_id
       }
@@ -422,9 +422,9 @@ export default {
             setTimeout(function() {
               // 如果长度大于3000,则关闭预览
               if (that.content.length > 3000) {
-                that.editor_unwatch()
+                that.editorUnwatch()
               } else {
-                that.editor_watch()
+                that.editorWatch()
               }
               // 开启草稿
               that.draft()
@@ -445,7 +445,7 @@ export default {
     },
 
     // 获取所有目录
-    get_catalog(item_id) {
+    getCatalog(item_id) {
       var that = this
       var url = DocConfig.server + '/api/catalog/catListGroup'
       var params = new URLSearchParams()
@@ -482,7 +482,7 @@ export default {
     },
 
     // 插入api模板
-    insert_api_template() {
+    insertApiTemplate() {
       var val
       if (DocConfig.lang == 'zh-cn') {
         val = apiTemplateZh
@@ -493,7 +493,7 @@ export default {
     },
 
     // 插入数据字典模板
-    insert_database_template() {
+    insertDatabaseTemplate() {
       var val
       if (DocConfig.lang == 'zh-cn') {
         val = databaseTemplateZh
@@ -503,9 +503,9 @@ export default {
       this.insertValue(val)
     },
     // 关闭预览
-    editor_unwatch() {
+    editorUnwatch() {
       let childRef = this.$refs.Editormd // 获取子组件
-      childRef.editor_unwatch()
+      childRef.editorUnwatch()
       if (localStorage.getItem('page_id_unwatch_' + this.page_id)) {
       } else {
         this.$message(this.$t('long_page_tips'))
@@ -513,17 +513,17 @@ export default {
       }
     },
     //
-    editor_watch() {
+    editorWatch() {
       let childRef = this.$refs.Editormd // 获取子组件
-      childRef.editor_watch()
+      childRef.editorWatch()
     },
     // json转参数表格
-    ShowJsonToTable() {
+    showJsonToTable() {
       let childRef = this.$refs.JsonToTable // 获取子组件
       childRef.dialogFormVisible = true
     },
     // json格式化
-    ShowJsonBeautify() {
+    showJsonBeautify() {
       let childRef = this.$refs.JsonBeautify // 获取子组件
       childRef.dialogFormVisible = true
     },
@@ -532,17 +532,17 @@ export default {
       let childRef = this.$refs.SqlToMarkdownTable // 获取子组件
       childRef.dialogFormVisible = true
     },
-    ShowRunApi() {
+    showRunApi() {
       window.open('http://runapi.showdoc.cc/')
     },
     // 粘贴插入表格
-    ShowPasteTable() {
+    showPasteTable() {
       let childRef = this.$refs.PasteTable // 获取子组件
       childRef.dialogFormVisible = true
     },
 
     // 展示历史版本
-    ShowHistoryVersion() {
+    showHistoryVersion() {
       let childRef = this.$refs.HistoryVersion // 获取子组件
       childRef.show()
     },
@@ -550,7 +550,7 @@ export default {
     showSortPage() {
       this.save(() => {
         this.sortPageVisiable = true
-      })
+      })``
     },
     // 展示通知对话框
     showNotify() {
@@ -624,13 +624,13 @@ export default {
         path: url
       })
     },
-    dropdown_callback(data) {
+    dropdownCallback(data) {
       if (data) {
         data()
       }
     },
     // 另存为模板
-    save_to_template() {
+    saveToTemplate() {
       var that = this
       let childRef = this.$refs.Editormd
       var content = childRef.getMarkdown()
@@ -649,7 +649,7 @@ export default {
       })
     },
     // 附件
-    ShowAttachment() {
+    showAttachment() {
       let childRef = this.$refs.AttachmentList // 获取子组件
       childRef.show()
     },
@@ -881,7 +881,7 @@ export default {
     },
     // 刷新目录列表
     refreshCat() {
-      this.get_catalog(this.item_id)
+      this.getCatalog(this.item_id)
     },
     // 去新建目录
     goToCat() {
@@ -900,13 +900,13 @@ export default {
       : ''
 
     if (this.copy_page_id > 0) {
-      this.get_page_content(this.copy_page_id)
+      this.getPageContent(this.copy_page_id)
     } else if (this.page_id > 0) {
-      this.get_page_content(this.page_id)
+      this.getPageContent(this.page_id)
     } else {
       this.content = '\n'
     }
-    this.get_catalog(this.$route.params.item_id)
+    this.getCatalog(this.$route.params.item_id)
 
     this.heartBeatLock()
     this.remoteIsLock()

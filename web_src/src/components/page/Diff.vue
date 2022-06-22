@@ -74,7 +74,7 @@ export default {
   },
   components: {},
   methods: {
-    get_content() {
+    getContent() {
       var that = this
       var url = DocConfig.server + '/api/page/diff'
       var params = new URLSearchParams()
@@ -127,7 +127,7 @@ export default {
   },
   mounted() {
     $s([`static/diff/difflib.js`, `static/diff/diffview.js`], () => {
-      this.get_content()
+      this.getContent()
     })
   },
   beforeDestroy() {}
