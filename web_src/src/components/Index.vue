@@ -251,16 +251,15 @@ export default {
     }
   },
   mounted() {
-    var that = this
     this.lang = DocConfig.lang
     this.getHeight()
     this.homePageSetting()
-    that.link = '/user/login'
-    that.link_text = that.$t('index_login_or_register')
-    this.get_user_info(function(response) {
+    this.link = '/user/login'
+    this.link_text = this.$t('index_login_or_register')
+    this.get_user_info(response => {
       if (response.data.error_code === 0) {
-        that.link = '/item/index'
-        that.link_text = that.$t('my_item')
+        this.link = '/item/index'
+        this.link_text = this.$t('my_item')
       }
     })
   }

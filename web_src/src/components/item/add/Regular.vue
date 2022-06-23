@@ -95,10 +95,9 @@ export default {
   },
   methods: {
     formSubmit() {
-      var that = this
       var url = DocConfig.server + '/api/item/add'
       if (!this.isOpenItem && !this.infoForm.password) {
-        that.$alert(that.$t('private_item_passwrod'))
+        this.$alert(this.$t('private_item_passwrod'))
         return false
       }
       if (this.isOpenItem) {

@@ -157,10 +157,9 @@ export default {
       this.getItemList()
     },
     deleteItem(row) {
-      var that = this
-      this.$confirm(that.$t('confirm_delete'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+      this.$confirm(this.$t('confirm_delete'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
         this.request('/api/adminItem/deleteItem', {
@@ -176,14 +175,13 @@ export default {
       this.attorn_item_id = row.item_id
     },
     attorn() {
-      var that = this
       this.request('/api/adminItem/attorn', {
         item_id: this.attorn_item_id,
         username: this.attornForm.username
       }).then(() => {
-        that.dialogAttornVisible = false
-        that.$message.success(that.$t('success'))
-        that.getItemList()
+        this.dialogAttornVisible = false
+        this.$message.success(this.$t('success'))
+        this.getItemList()
       })
     }
   },

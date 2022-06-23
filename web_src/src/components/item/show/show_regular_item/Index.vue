@@ -154,7 +154,6 @@ export default {
         return
       }
       this.adaptScreen()
-      var that = this
       this.request(
         '/api/page/info',
         {
@@ -165,26 +164,26 @@ export default {
       ).then(data => {
         // loading.close();
         if (data.error_code === 0) {
-          that.content = rederPageContent(
+          this.content = rederPageContent(
             data.data.page_content,
-            that.$store.state.item_info.global_param
+            this.$store.state.item_info.global_param
           )
-          that.$store.dispatch('changeOpenCatId', data.data.cat_id)
-          that.page_title = data.data.page_title
-          that.page_info = data.data
-          that.attachment_count =
+          this.$store.dispatch('changeOpenCatId', data.data.cat_id)
+          this.page_title = data.data.page_title
+          this.page_info = data.data
+          this.attachment_count =
             data.data.attachment_count > 0 ? data.data.attachment_count : ''
           // 切换变量让它重新加载、渲染子组件
-          that.page_id = 0
-          that.item_info.default_page_id = page_id
-          that.$nextTick(() => {
-            that.page_id = page_id
+          this.page_id = 0
+          this.item_info.default_page_id = page_id
+          this.$nextTick(() => {
+            this.page_id = page_id
             // 页面回到顶部
             document.body.scrollTop = document.documentElement.scrollTop = 0
-            document.title = that.page_title + '--ShowDoc'
+            document.title = this.page_title + '--ShowDoc'
           })
         } else {
-          // that.$alert(data.error_message);
+          // this.$alert(data.error_message);
         }
       })
     },

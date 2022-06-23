@@ -176,27 +176,26 @@ export default {
     }
   },
   mounted() {
-    var that = this
     this.menu = this.item_info.menu
     var item_info = this.item_info
     // 默认展开页面
     if (item_info.default_page_id > 0) {
-      that.selectMenu(item_info.default_page_id)
+      this.selectMenu(item_info.default_page_id)
       if (item_info.default_cat_id4) {
-        that.openeds = [
+        this.openeds = [
           item_info.default_cat_id4,
           item_info.default_cat_id3,
           item_info.default_cat_id2,
           item_info.default_page_id
         ]
       } else if (item_info.default_cat_id3) {
-        that.openeds = [
+        this.openeds = [
           item_info.default_cat_id3,
           item_info.default_cat_id2,
           item_info.default_page_id
         ]
       } else if (item_info.default_cat_id2) {
-        that.openeds = [item_info.default_cat_id2, item_info.default_page_id]
+        this.openeds = [item_info.default_cat_id2, item_info.default_page_id]
       }
       // 延迟把左侧栏滚动到默认展开的那个页面
       setTimeout(() => {

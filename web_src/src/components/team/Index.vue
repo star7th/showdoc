@@ -200,7 +200,6 @@ export default {
       })
     },
     myFormSubmit() {
-
       this.request('/api/team/save', {
         id: this.MyForm.id,
         team_name: this.MyForm.team_name
@@ -220,12 +219,10 @@ export default {
     },
 
     deleteTeam(id) {
-      var that = this
       var url = DocConfig.server + '/api/team/delete'
-
-      this.$confirm(that.$t('confirm_delete'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+      this.$confirm(this.$t('confirm_delete'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
         this.request('/api/team/delete', {
@@ -260,15 +257,13 @@ export default {
       })
     },
     exitTeam(id) {
-      var that = this
-
-      this.$confirm(that.$t('team_exit_confirm'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+      this.$confirm(this.$t('team_exit_confirm'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
         this.request('/api/team/exitTeam', { id }).then(data => {
-          that.geList()
+          this.geList()
         })
       })
     }

@@ -455,10 +455,9 @@ export default {
       this.$router.push({ path: '/item/setting/' + item_id })
     },
     clickItemExit(item_id) {
-      var that = this
-      this.$confirm(that.$t('confirm_exit_item'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+      this.$confirm(this.$t('confirm_exit_item'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
         this.request('/api/item/exitItem', {

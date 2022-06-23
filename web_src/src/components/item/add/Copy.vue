@@ -91,9 +91,8 @@ export default {
       }
     },
     formSubmit() {
-      var that = this
       if (!this.isOpenItem && !this.password) {
-        that.$alert(that.$t('private_item_passwrod'))
+        this.$alert(this.$t('private_item_passwrod'))
         return false
       }
       if (this.isOpenItem) {
@@ -106,7 +105,7 @@ export default {
         password: this.password,
         item_description: this.item_description
       }).then(() => {
-        that.$router.push({ path: '/item/index' })
+        this.$router.push({ path: '/item/index' })
       })
     }
   },

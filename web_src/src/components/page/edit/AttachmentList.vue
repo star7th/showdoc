@@ -154,10 +154,9 @@ export default {
     },
 
     deleteFile(row) {
-      var that = this
-      this.$confirm(that.$t('comfirm_delete'), ' ', {
-        confirmButtonText: that.$t('confirm'),
-        cancelButtonText: that.$t('cancel'),
+      this.$confirm(this.$t('comfirm_delete'), ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
         type: 'warning'
       }).then(() => {
         var file_id = row['file_id']

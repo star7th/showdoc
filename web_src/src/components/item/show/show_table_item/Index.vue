@@ -144,9 +144,8 @@ export default {
   components: {},
   methods: {
     getPageContent(page_id) {
-      var that = this
       if (!page_id) {
-        page_id = that.page_id
+        page_id = this.page_id
       }
       this.request('/api/page/info', {
         page_id: page_id
