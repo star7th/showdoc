@@ -105,6 +105,18 @@
           v-if="item_info.item_type == '3'"
           class="item"
           effect="dark"
+          :content="$t('export')"
+          placement="left"
+        >
+          <router-link :to="'/item/export/' + item_info.item_id">
+            <i class="el-icon-download"></i>
+          </router-link>
+        </el-tooltip>
+        
+        <el-tooltip
+          v-if="item_info.item_type == '3'"
+          class="item"
+          effect="dark"
           content="runapi项目请在runapi客户端编辑"
           placement="top"
         >

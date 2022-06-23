@@ -11,7 +11,7 @@
               <el-radio-button label="word">{{
                 $t('export_format_word')
               }}</el-radio-button>
-              <el-radio-button label="markdown">{{
+              <el-radio-button v-show="showMarkdown" label="markdown">{{
                 $t('export_format_markdown')
               }}</el-radio-button>
             </el-radio-group>
@@ -93,7 +93,8 @@ export default {
       item_id: 0,
       export_format: 'word',
       pages: [{ page_id: '0', page_title: this.$t('all_pages') }],
-      page_id: '0'
+      page_id: '0',
+      showMarkdown: true
     }
   },
   computed: {
@@ -181,6 +182,14 @@ export default {
   mounted() {
     this.getCatalog(this.$route.params.item_id)
     this.item_id = this.$route.params.item_id
+    // 获取项目类型。如果是runapi项目，则无法导出markdown压缩包
+    this.request('/api/item/detail', {
+      item_id: this.item_id
+    }).then(data => {
+      if (data.data.item_type == '3') {
+        this.showMarkdown = false // 不显示markdown选项
+      }
+    })
   },
   beforeDestroy() {}
 }
