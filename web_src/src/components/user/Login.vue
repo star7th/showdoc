@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import { getUserInfo } from '@/models/user'
 export default {
   name: 'Login',
   components: {},
@@ -183,7 +184,7 @@ export default {
         return false
       }
     }
-    this.get_user_info(function(response) {
+    getUserInfo(function(response) {
       if (response.data.error_code === 0) {
         let redirect = decodeURIComponent(
           that.$route.query.redirect || '/item/index'

@@ -381,6 +381,7 @@ a {
 <script>
 import Search from './Search'
 import draggable from 'vuedraggable'
+import { getUserInfo } from '@/models/user'
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs')
 }
@@ -495,11 +496,10 @@ export default {
     },
 
     userInfo() {
-      var that = this
-      this.get_user_info(function(response) {
+      getUserInfo((response)=> {
         if (response.data.error_code === 0) {
           if (response.data.data.groupid == 1) {
-            that.isAdmin = true
+            this.isAdmin = true
           }
         }
       })
@@ -583,7 +583,7 @@ export default {
       this.itemGroupId = deaultItemGroupId
     }
     this.getItemGroupList()
-    this.get_user_info(response => {
+    getUserInfo(response => {
       if (response.data.error_code === 0) {
         this.username = response.data.data.username
       }

@@ -27,14 +27,6 @@ export default {
       )
     }
 
-    Vue.prototype.get_user_info = function (callback) {
-      this.request('/api/user/info', {
-        redirect_login: false
-      }, 'post', false).then((data) => {
-        if (callback) { callback({ data }) };
-      })
-    }
-
     Vue.prototype.set_bg_grey = function() {
       /* 给body添加类，设置背景色 */
       document.getElementsByTagName('body')[0].className = 'grey-bg'

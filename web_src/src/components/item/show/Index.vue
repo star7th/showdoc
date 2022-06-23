@@ -41,6 +41,7 @@ import ShowTableItem from '@/components/item/show/show_table_item/Index'
 import watermark from 'watermark-dom'
 import moment from 'moment'
 import Notify from '@/components/common/Notify'
+import { getUserInfo } from '@/models/user'
 
 export default {
   data() {
@@ -149,7 +150,7 @@ export default {
         }
       } else {
         // 网络请求获取用户信息
-        this.get_user_info(response => {
+        getUserInfo(response => {
           if (response.data.error_code === 0) {
             let user_info = response.data.data
             this.$store.dispatch('changeUserInfo', user_info).then(() => {
