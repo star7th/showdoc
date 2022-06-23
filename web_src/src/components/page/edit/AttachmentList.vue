@@ -8,8 +8,9 @@
         :title="$t('attachment')"
         :visible.sync="dialogTableVisible"
         :close-on-click-modal="false"
+        @close="callback()"
       >
-        <el-form :inline="true" class="demo-form-inline">
+        <el-form v-if="manage" :inline="true" class="demo-form-inline">
           <el-form-item>
             <el-button @click="showFilehub">{{
               $t('from_file_gub')
@@ -111,7 +112,7 @@ export default {
     return {
       currentDate: new Date(),
       content: [],
-      dialogTableVisible: false,
+      dialogTableVisible: true,
       uploadUrl: DocConfig.server + '/api/page/upload',
       dialogUploadVisible: false,
       loading: ''
@@ -146,9 +147,6 @@ export default {
           this.$alert(data.error_message)
         }
       })
-    },
-    show() {
-      this.getContent()
     },
     downloadFile(row) {
       var url = row.url
@@ -208,6 +206,8 @@ export default {
       this.loading = this.$loading()
     }
   },
-  mounted() {}
+  mounted() {
+    this.getContent()
+  }
 }
 </script>

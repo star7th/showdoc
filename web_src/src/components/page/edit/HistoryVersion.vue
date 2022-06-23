@@ -9,6 +9,7 @@
         :modal="is_modal"
         :visible.sync="dialogTableVisible"
         :close-on-click-modal="false"
+        @close="callback()"
       >
         <el-table :data="content">
           <el-table-column
@@ -71,7 +72,7 @@ export default {
     return {
       currentDate: new Date(),
       content: [],
-      dialogTableVisible: false
+      dialogTableVisible: true
     }
   },
   components: {},
@@ -90,9 +91,6 @@ export default {
           this.$alert('no data')
         }
       })
-    },
-    show() {
-      this.getContent()
     },
     recover(row) {
       this.callback(row.page_content, true)
@@ -118,6 +116,8 @@ export default {
       })
     }
   },
-  mounted() {}
+  mounted() {
+    this.getContent()
+  }
 }
 </script>

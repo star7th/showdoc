@@ -4,6 +4,7 @@
       :title="$t('json_to_table')"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
+      @close="callback()"
     >
       <el-form>
         <el-input
@@ -15,9 +16,7 @@
         ></el-input>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">{{
-          $t('cancel')
-        }}</el-button>
+        <el-button @click="callback()">{{ $t('cancel') }}</el-button>
         <el-button type="primary" @click="transform">{{
           $t('confirm')
         }}</el-button>
@@ -31,13 +30,13 @@ export default {
   name: 'JsonToTable',
   props: {
     formLabelWidth: '120px',
-    callback: ''
+    callback: () => {}
   },
   data() {
     return {
       content: '',
       json_table_data: '',
-      dialogFormVisible: false
+      dialogFormVisible: true
     }
   },
   methods: {
@@ -58,7 +57,6 @@ export default {
         console.log(e)
         this.$alert('Json解析失败')
       }
-      this.dialogFormVisible = false
     },
     // 将嵌套json转化为二维json，方便用于写参数描述
     // oJson为嵌套json。oJsonDesc是旧描述数据，方便新生产的描述里带上原旧描述

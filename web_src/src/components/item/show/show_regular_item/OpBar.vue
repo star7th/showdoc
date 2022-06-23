@@ -313,8 +313,12 @@
       :page_id="page_id"
       :is_show_recover_btn="false"
       :is_modal="false"
-      callback="insertValue"
-      ref="HistoryVersion"
+      v-if="showHistoryVersionDialog"
+      :callback="
+        data => {
+          this.showHistoryVersionDialog = false
+        }
+      "
     ></HistoryVersion>
 
     <!-- 页面排序 -->
@@ -458,7 +462,8 @@ export default {
       dialogUploadVisible: false,
       importToItemId: '',
       uploadUrl: DocConfig.server + '/api/import/auto',
-      dialogChangeLogVisible: false
+      dialogChangeLogVisible: false,
+      showHistoryVersionDialog: false
     }
   },
   components: {
@@ -504,8 +509,7 @@ export default {
 
     // 展示历史版本
     showHistoryVersion() {
-      let childRef = this.$refs.HistoryVersion // 获取子组件
-      childRef.show()
+      this.showHistoryVersionDialog = true
     },
 
     deletePage() {

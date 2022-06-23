@@ -4,6 +4,7 @@
       :title="$t('sql_to_markdown_table')"
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
+      @close="callback()"
     >
       <el-form>
         <el-input
@@ -15,9 +16,7 @@
         ></el-input>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">{{
-          $t('cancel')
-        }}</el-button>
+        <el-button @click="callback()">{{ $t('cancel') }}</el-button>
         <el-button type="primary" @click="transform">{{
           $t('confirm')
         }}</el-button>
@@ -37,7 +36,7 @@ export default {
     return {
       content: '',
       json_table_data: '',
-      dialogFormVisible: false
+      dialogFormVisible: true
     }
   },
   methods: {

@@ -9,6 +9,7 @@
         :modal="is_modal"
         :visible.sync="dialogFormVisible"
         :close-on-click-modal="false"
+        @close="callback()"
       >
         <el-form>
           <el-input
@@ -20,9 +21,7 @@
           ></el-input>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">{{
-            $t('cancel')
-          }}</el-button>
+          <el-button @click="callback()">{{ $t('cancel') }}</el-button>
           <el-button type="primary" @click="transform">{{
             $t('confirm')
           }}</el-button>
@@ -40,15 +39,12 @@
 export default {
   props: {
     callback: '',
-    page_id: '',
-    is_modal: true,
-    is_show_recover_btn: true
+    is_modal: true
   },
   data() {
     return {
-      currentDate: new Date(),
       content: '',
-      dialogFormVisible: false
+      dialogFormVisible: true
     }
   },
   components: {},
@@ -67,7 +63,6 @@ export default {
         }
       }
       this.callback(sheet_str + '\n\n')
-      this.dialogFormVisible = false
     }
   },
   mounted() {}

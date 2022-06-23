@@ -97,7 +97,7 @@
           <el-button
             type
             size="medium"
-            @click.native="templateVisiable = true"
+            @click.native="showTemplateDialog = true"
             >{{ $t('more_templ') }}</el-button
           >
 
@@ -110,18 +110,19 @@
           >
             {{ $t('format_tools') }}
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="showJsonToTable">{{
+              <el-dropdown-item @click.native="showJsonToTableDialog = true">{{
                 $t('json_to_table')
               }}</el-dropdown-item>
-              <el-dropdown-item @click.native="showJsonBeautify">{{
+              <el-dropdown-item @click.native="showJsonBeautifyDialog = true">{{
                 $t('beautify_json')
               }}</el-dropdown-item>
-              <el-dropdown-item @click.native="showPasteTable">{{
+              <el-dropdown-item @click.native="showPasteTableDialog = true">{{
                 $t('paste_insert_table')
               }}</el-dropdown-item>
-              <el-dropdown-item @click.native="showSqlToMarkdownTable">{{
-                $t('sql_to_markdown_table')
-              }}</el-dropdown-item>
+              <el-dropdown-item
+                @click.native="showSqlToMarkdownTableDialog = true"
+                >{{ $t('sql_to_markdown_table') }}</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
           <el-button
@@ -144,7 +145,7 @@
               $t('attachment')
             }}</el-button>
           </el-badge>
-          <el-button size="medium" @click="showHistoryVersion">{{
+          <el-button size="medium" @click="showHistoryVersionDialog = true">{{
             $t('history_version')
           }}</el-button>
         </el-row>
@@ -160,14 +161,14 @@
 
       <!-- 更多模板 -->
       <TemplateList
-        v-if="templateVisiable"
+        v-if="showTemplateDialog"
         :item_id="item_id"
         :callback="
           data => {
             if (data && typeof data == 'string') {
               insertValue(data)
             }
-            templateVisiable = false
+            showTemplateDialog = false
           }
         "
         ref="TemplateList"
@@ -175,39 +176,84 @@
 
       <!-- 历史版本 -->
       <HistoryVersion
-        :callback="insertValue"
         :is_show_recover_btn="true"
-        ref="HistoryVersion"
+        v-if="showHistoryVersionDialog"
+        :callback="
+          data => {
+            this.showHistoryVersionDialog = false
+            if (data && typeof data == 'string') {
+              insertValue(data)
+            }
+          }
+        "
       ></HistoryVersion>
 
       <!-- Json转表格 组件 -->
-      <JsonToTable :callback="insertValue" ref="JsonToTable"></JsonToTable>
+      <JsonToTable
+        v-if="showJsonToTableDialog"
+        :callback="
+          data => {
+            this.showJsonToTableDialog = false
+            if (data && typeof data == 'string') {
+              insertValue(data)
+            }
+          }
+        "
+      ></JsonToTable>
 
       <!-- Json格式化 -->
-      <JsonBeautify :callback="insertValue" ref="JsonBeautify"></JsonBeautify>
+      <JsonBeautify
+        v-if="showJsonBeautifyDialog"
+        :callback="
+          data => {
+            this.showJsonBeautifyDialog = false
+            if (data && typeof data == 'string') {
+              insertValue(data)
+            }
+          }
+        "
+      ></JsonBeautify>
 
       <!-- sql转表格 -->
       <SqlToMarkdownTable
-        :callback="insertValue"
-        ref="SqlToMarkdownTable"
+        v-if="showSqlToMarkdownTableDialog"
+        :callback="
+          data => {
+            this.showSqlToMarkdownTableDialog = false
+            if (data && typeof data == 'string') {
+              insertValue(data)
+            }
+          }
+        "
       ></SqlToMarkdownTable>
 
       <!-- 附件列表 -->
       <AttachmentList
-        :callback="insertValue"
         :item_id="item_id"
         :manage="true"
         :page_id="page_id"
-        ref="AttachmentList"
+        v-if="showAttachmentListDialog"
+        :callback="
+          data => {
+            this.showAttachmentListDialog = false
+            if (data && typeof data == 'string') {
+              insertValue(data)
+            }
+          }
+        "
       ></AttachmentList>
 
       <!-- 粘贴插入表格 -->
       <PasteTable
-        :callback="insertValue"
-        :item_id="item_id"
-        :manage="true"
-        :page_id="page_id"
-        ref="PasteTable"
+        v-if="showPasteTableDialog"
+        :callback="
+          data => {
+            this.showPasteTableDialog = false
+            if (data && typeof data == 'string') {
+              insertValue(data)
+            }
+          }
+        "
       ></PasteTable>
 
       <!-- 页面排序 -->
@@ -348,7 +394,13 @@ export default {
       notifyVisiable: false,
       is_notify: 0,
       notify_content: '',
-      templateVisiable: false
+      showTemplateDialog: false,
+      showJsonToTableDialog: false,
+      showJsonBeautifyDialog: false,
+      showSqlToMarkdownTableDialog: false,
+      showHistoryVersionDialog: false,
+      showAttachmentListDialog: false,
+      showPasteTableDialog: false
     }
   },
   computed: {
@@ -491,35 +543,20 @@ export default {
       let childRef = this.$refs.Editormd // 获取子组件
       childRef.editorWatch()
     },
-    // json转参数表格
-    showJsonToTable() {
-      let childRef = this.$refs.JsonToTable // 获取子组件
-      childRef.dialogFormVisible = true
-    },
-    // json格式化
-    showJsonBeautify() {
-      let childRef = this.$refs.JsonBeautify // 获取子组件
-      childRef.dialogFormVisible = true
-    },
-    // SQL转表格
-    showSqlToMarkdownTable() {
-      let childRef = this.$refs.SqlToMarkdownTable // 获取子组件
-      childRef.dialogFormVisible = true
-    },
+
     showRunApi() {
       window.open('http://runapi.showdoc.cc/')
     },
-    // 粘贴插入表格
-    showPasteTable() {
-      let childRef = this.$refs.PasteTable // 获取子组件
-      childRef.dialogFormVisible = true
+
+    // 附件
+    showAttachment() {
+      this.showAttachmentListDialog = true
+      localStorage.setItem('attachment', '1')
+      if (this.attachment_count == 'new') {
+        this.attachment_count = ''
+      }
     },
 
-    // 展示历史版本
-    showHistoryVersion() {
-      let childRef = this.$refs.HistoryVersion // 获取子组件
-      childRef.show()
-    },
     // 展示页面排序
     showSortPage() {
       this.save(() => {
@@ -614,11 +651,7 @@ export default {
         })
       })
     },
-    // 附件
-    showAttachment() {
-      let childRef = this.$refs.AttachmentList // 获取子组件
-      childRef.show()
-    },
+
     /** 监听剪切板 **/
     // 以实现粘贴上传图片，html网页转markdown等
     clipboardEvents(e) {

@@ -34,7 +34,7 @@
               class="el-icon-upload item"
               id="attachment"
               v-if="attachment_count"
-              @click="showAttachment"
+              @click="showAttachmentListDialog = true"
             ></i>
           </div>
           <div id="doc-body">
@@ -91,11 +91,15 @@
 
     <!-- 附件列表 -->
     <AttachmentList
-      callback
       :item_id="page_info.item_id"
       :manage="false"
       :page_id="page_info.page_id"
-      ref="AttachmentList"
+      v-if="showAttachmentListDialog"
+      :callback="
+        data => {
+          this.showAttachmentListDialog = false
+        }
+      "
     ></AttachmentList>
 
     <Footer></Footer>
@@ -132,7 +136,8 @@ export default {
       showToc: true,
       showComp: true,
       emptyItem: false,
-      lang: ''
+      lang: '',
+      showAttachmentListDialog: false
     }
   },
   components: {
@@ -223,10 +228,6 @@ export default {
     },
     onCopy() {
       this.$message(this.$t('copy_success'))
-    },
-    showAttachment() {
-      let childRef = this.$refs.AttachmentList // 获取子组件
-      childRef.show()
     },
     clickFullPage() {
       // 点击放大页面。由于历史包袱，只能操作dom。这是不规范的，但是现在没时间重构整块页面
