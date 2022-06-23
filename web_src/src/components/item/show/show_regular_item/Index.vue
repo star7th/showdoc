@@ -258,7 +258,6 @@ export default {
   },
   mounted() {
     this.adaptScreen()
-    this.set_bg_grey()
     this.lang = DocConfig.lang
     if (
       this.item_info &&

@@ -47,7 +47,7 @@
             </el-menu-item>
           </el-menu>
         </el-aside>
-        <el-container>
+        <el-container style="background-color:#fff">
           <el-main>
             <User v-if="open_menu_index == 1"></User>
             <Item v-if="open_menu_index == 2"></Item>
@@ -171,11 +171,9 @@ export default {
     // 只对中文版进行更新检查
     this.lang = DocConfig.lang
     this.checkUpadte()
-    this.unset_bg_grey()
   },
   beforeDestroy() {
     this.$message.closeAll()
-    this.set_bg_grey()
   }
 }
 </script>

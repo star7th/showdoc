@@ -27,16 +27,6 @@ export default {
       )
     }
 
-    Vue.prototype.set_bg_grey = function() {
-      /* 给body添加类，设置背景色 */
-      document.getElementsByTagName('body')[0].className = 'grey-bg'
-    }
-
-    Vue.prototype.unset_bg_grey = function() {
-      /* 去掉添加的背景色 */
-      document.body.removeAttribute('class', 'grey-bg')
-    }
-
     // json格式化与压缩
     // compress=false的时候表示美化json，compress=true的时候表示将美化过的json压缩还原
     Vue.prototype.formatJson = function(txt, compress = false) {
