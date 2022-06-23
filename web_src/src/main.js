@@ -13,13 +13,13 @@ import request from '@/request.js'
 import VueI18n from 'vue-i18n'
 import enLocale from 'element-ui/lib/locale/lang/en'
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
-import myZhLocale from '../static/lang/zh-CN'
-import myEnLocale from '../static/lang/en'
+import myZhLocale from '../src/assets/lang/zh-CN'
+import myEnLocale from '../src/assets/lang/en'
 import 'url-search-params-polyfill'
 import 'babel-polyfill'
 import VueClipboard from 'vue-clipboard2'
 import store from './store/'
-import '../assets/tailwind.css' // 引入tailwind
+import '../src/assets/tailwind.css' // 引入tailwind
 
 Vue.use(util)
 Vue.config.productionTip = false
