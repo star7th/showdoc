@@ -206,15 +206,28 @@ class FromCommentsController extends BaseController
         }
 
         if ($array['param']) {
-            foreach ($array['param'] as $key => $value) {
-                // |参数名|是否必选|类型|说明
-                $content_array['request']['params']['formdata'][] = array(
-                    "name" => $value[0],
-                    "require" => ($value[1] == '必选') ? '1' : '0',
-                    "type" => $value[2],
-                    "value" => '',
-                    "remark" => $value[3],
-                );
+            if (strtolower($array['method']) == 'get') {
+                foreach ($array['param'] as $key => $value) {
+                    // |参数名|是否必选|类型|说明
+                    $content_array['request']['query'][] = array(
+                        "name" => $value[0],
+                        "require" => ($value[1] == '必选') ? '1' : '0',
+                        "type" => $value[2],
+                        "value" => '',
+                        "remark" => $value[3],
+                    );
+                }
+            } else {
+                foreach ($array['param'] as $key => $value) {
+                    // |参数名|是否必选|类型|说明
+                    $content_array['request']['params']['formdata'][] = array(
+                        "name" => $value[0],
+                        "require" => ($value[1] == '必选') ? '1' : '0',
+                        "type" => $value[2],
+                        "value" => '',
+                        "remark" => $value[3],
+                    );
+                }
             }
         }
 
