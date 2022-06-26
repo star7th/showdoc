@@ -24,11 +24,11 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item label v-if="show_v_code">
+          <el-form-item label>
             <el-input
               type="text"
               auto-complete="off"
-              v-model="v_code"
+              v-model="captcha"
               :placeholder="$t('verification_code')"
             ></el-input>
             <img
@@ -63,9 +63,9 @@ export default {
   data() {
     return {
       password: '',
-      v_code: '',
-      v_code_img: DocConfig.server + '/api/common/verify',
-      show_v_code: false
+      captchaId: 0,
+      captcha: '',
+      v_code_img: ''
     }
   },
   methods: {
@@ -73,13 +73,21 @@ export default {
       var item_id = this.$route.params.item_id ? this.$route.params.item_id : 0
       var page_id = this.$route.query.page_id ? this.$route.query.page_id : 0
 
-      this.request('/api/item/pwd', {
-        item_id: item_id,
-        page_id: page_id,
-        password: this.password,
-        v_code: this.v_code
-      }).then(data => {
+      this.request(
+        '/api/item/pwd',
+        {
+          item_id: item_id,
+          page_id: page_id,
+          password: this.password,
+          captcha: this.captcha,
+          captcha_id: this.captchaId
+        },
+        'post',
+        false
+      ).then(data => {
         if (data.error_code === 0) {
+          // _item_pwd参数的作用在于：跨域请求的时候无法带cooies，自然无法记住session。用这个参数使记住用户输入过项目密码。
+          sessionStorage.setItem('_item_pwd', this.password)
           let redirect = decodeURIComponent(
             this.$route.query.redirect || '/' + item_id
           )
@@ -87,20 +95,37 @@ export default {
             path: redirect
           })
         } else {
-          if (data.error_code === 10206 || data.error_code === 10308) {
-            this.show_v_code = true
-            this.changeVcodeImg()
-          }
+          this.changeVcodeImg()
           this.$alert(data.error_message)
         }
       })
     },
     changeVcodeImg() {
-      var rand = '&rand=' + Math.random()
-      this.v_code_img += rand
+      this.request('/api/common/createCaptcha', {}).then(data => {
+        const json = data.data
+        if (DocConfig.server.indexOf('?') > -1) {
+          this.v_code_img =
+            DocConfig.server +
+            '/api/common/showCaptcha&captcha_id=' +
+            json.captcha_id +
+            '&' +
+            Date.parse(new Date())
+        } else {
+          this.v_code_img =
+            DocConfig.server +
+            '/api/common/showCaptcha?captcha_id=' +
+            json.captcha_id +
+            '&' +
+            Date.parse(new Date())
+        }
+
+        this.captchaId = json.captcha_id
+      })
     }
   },
-  mounted() {},
+  mounted() {
+    this.changeVcodeImg()
+  },
   beforeDestroy() {}
 }
 </script>

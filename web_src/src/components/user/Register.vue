@@ -42,7 +42,7 @@
             <el-input
               type="text"
               auto-complete="off"
-              v-model="v_code"
+              v-model="captcha"
               :placeholder="$t('verification_code')"
             ></el-input>
             <img
@@ -79,8 +79,9 @@ export default {
       username: '',
       password: '',
       confirm_password: '',
-      v_code: '',
-      v_code_img: DocConfig.server + '/api/common/verify'
+      v_code_img: '',
+      captchaId: 0,
+      captcha: ''
     }
   },
   methods: {
@@ -92,12 +93,13 @@ export default {
       }, 3000)
 
       this.request(
-        '/api/user/register',
+        '/api/user/registerByVerify',
         {
           username: this.username,
           password: this.password,
           confirm_password: this.confirm_password,
-          v_code: this.v_code,
+          captcha: this.captcha,
+          captcha_id: this.captchaId,
           inviteCode: this.inviteCode
         },
         'post',
@@ -113,11 +115,31 @@ export default {
       })
     },
     changeVcodeImg() {
-      var rand = '&rand=' + Math.random()
-      this.v_code_img += rand
+      this.request('/api/common/createCaptcha', {}).then(data => {
+        const json = data.data
+        if (DocConfig.server.indexOf('?') > -1) {
+          this.v_code_img =
+            DocConfig.server +
+            '/api/common/showCaptcha&captcha_id=' +
+            json.captcha_id +
+            '&' +
+            Date.parse(new Date())
+        } else {
+          this.v_code_img =
+            DocConfig.server +
+            '/api/common/showCaptcha?captcha_id=' +
+            json.captcha_id +
+            '&' +
+            Date.parse(new Date())
+        }
+
+        this.captchaId = json.captcha_id
+      })
     }
   },
-  mounted() {},
+  mounted() {
+    this.changeVcodeImg()
+  },
   beforeDestroy() {}
 }
 </script>

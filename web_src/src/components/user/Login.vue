@@ -29,11 +29,11 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item label v-if="show_v_code">
+          <el-form-item label>
             <el-input
               type="text"
               auto-complete="off"
-              v-model="v_code"
+              v-model="captcha"
               :placeholder="$t('verification_code')"
             ></el-input>
             <img
@@ -73,12 +73,12 @@ export default {
     return {
       username: '',
       password: '',
-      v_code: '',
-      v_code_img: DocConfig.server + '/api/common/verify',
-      show_v_code: false,
+      v_code_img: '',
       is_show_alert: false,
       oauth2_entrance_tips: '',
-      oauth2_url: DocConfig.server + '/api/ExtLogin/oauth2'
+      oauth2_url: DocConfig.server + '/api/ExtLogin/oauth2',
+      captchaId: 0,
+      captcha: ''
     }
   },
   methods: {
@@ -100,11 +100,12 @@ export default {
         }
       }
       this.request(
-        '/api/user/login',
+        '/api/user/loginByVerify',
         {
           username: this.username,
           password: this.password,
-          v_code: this.v_code,
+          captcha: this.captcha,
+          captcha_id: this.captchaId,
           redirect_login: false
         },
         'post',
@@ -113,10 +114,7 @@ export default {
         if (data.error_code === 0) {
           this.actionAfterLogin(data.data)
         } else {
-          if (data.error_code === 10206 || data.error_code === 10210) {
-            this.show_v_code = true
-            this.changeVcodeImg()
-          }
+          this.changeVcodeImg()
           this.is_show_alert = true
           this.$alert(data.error_message, {
             callback: () => {
@@ -152,8 +150,26 @@ export default {
       })
     },
     changeVcodeImg() {
-      var rand = '&rand=' + Math.random()
-      this.v_code_img += rand
+      this.request('/api/common/createCaptcha', {}).then(data => {
+        const json = data.data
+        if (DocConfig.server.indexOf('?') > -1) {
+          this.v_code_img =
+            DocConfig.server +
+            '/api/common/showCaptcha&captcha_id=' +
+            json.captcha_id +
+            '&' +
+            Date.parse(new Date())
+        } else {
+          this.v_code_img =
+            DocConfig.server +
+            '/api/common/showCaptcha?captcha_id=' +
+            json.captcha_id +
+            '&' +
+            Date.parse(new Date())
+        }
+
+        this.captchaId = json.captcha_id
+      })
     },
     script_cron() {
       var url = DocConfig.server + '/api/ScriptCron/run'
@@ -197,6 +213,7 @@ export default {
 
     this.script_cron()
     this.getOauth()
+    this.changeVcodeImg()
   },
   watch: {
     $route(to, from) {

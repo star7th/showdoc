@@ -8,7 +8,7 @@ class UserController extends BaseController
 {
 
 
-    //注册
+    //注册。慢慢废弃，将主用registerByVerify()
     public function register()
     {
         $username = trim(I("username"));
@@ -105,7 +105,7 @@ class UserController extends BaseController
         return false;
     }
 
-    //登录
+    //登录。慢慢废弃，将主用loginByVerify()
     public function login()
     {
         $username = trim(I("username"));

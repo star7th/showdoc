@@ -246,7 +246,7 @@ class BaseController extends Controller
 		}
 
 		$item = D("Item")->where("item_id = '%d' ", array($item_id))->find();
-		if ($item['password']) {
+		if ($item['password'] && $item['password'] != I('_item_pwd')) { // _item_pwd参数的作用在于：跨域请求的时候无法带cooies，自然无法记住session。用这个参数使记住用户输入过项目密码。
 			return false;
 		} else {
 			return true;

@@ -23,6 +23,7 @@ class CaptchaModel extends BaseModel
 		} else {
 			//删除掉所有过期的二维码
 			//$this->where(" expire_time < '$time' ")->delete();
+			$this->where(" captcha_id = '$captcha_id'")->save(array("expire_time" => ($captcha_array['expire_time'] - 10)));
 		}
 		return false;
 	}

@@ -59,7 +59,11 @@ class CommonController extends BaseController
 
   public function createCaptcha()
   {
-    $captcha = rand(1000, 9999);
+    if (version_compare(PHP_VERSION, COMPOSER_PHP_VERSION, '>')) {
+      $captcha = get_rand_str(4);
+    } else {
+      $captcha = rand(1000, 9999);
+    }
     $data = array(
       "mobile" => "",
       "captcha" => $captcha,
