@@ -207,6 +207,7 @@ class FromCommentsController extends BaseController
         // 
         if ($array['param']) {
             if (strtolower($array['method']) == 'get') {
+                $query_str = '';
                 foreach ($array['param'] as $key => $value) {
                     // |参数名|是否必选|类型|说明
                     $content_array['request']['query'][] = array(
@@ -216,6 +217,13 @@ class FromCommentsController extends BaseController
                         "value" => '',
                         "remark" => $value[3],
                     );
+                    $query_str .= $value[0] . "=" . '&';
+                }
+                // 为了兼容，还要把query参数追加到url里去
+                if (strstr($content_array['info']['url'], "?")) {
+                    $content_array['info']['url'] .= "&" . $query_str;
+                } else {
+                    $content_array['info']['url'] .= "?" . $query_str;
                 }
             } else {
                 foreach ($array['param'] as $key => $value) {
