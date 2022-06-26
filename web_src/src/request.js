@@ -6,8 +6,23 @@ import axios from '@/http'
 import router from '@/router/index'
 import { MessageBox } from 'element-ui'
 
-const request = (path, data, method = 'post', msgAlert = true, contentType = 'form') => {
+const request = (
+  path,
+  data,
+  method = 'post',
+  msgAlert = true,
+  contentType = 'form'
+) => {
   let url = DocConfig.server + path
+
+  const userinfostr = localStorage.getItem('userinfo')
+  if (userinfostr) {
+    const userinfo = JSON.parse(userinfostr)
+    if (userinfo && userinfo.user_token) {
+      data.user_token = userinfo.user_token
+    }
+  }
+
   let axiosConfig = {
     url: url,
     method: method,
@@ -18,7 +33,7 @@ const request = (path, data, method = 'post', msgAlert = true, contentType = 'fo
   }
 
   if (contentType == 'json') {
-    axiosConfig.data = data  // 这里使用原始data，不经过URLSearchParams
+    axiosConfig.data = data // 这里使用原始data，不经过URLSearchParams
     axiosConfig.headers['Content-Type'] = 'application/json'
   }
 
