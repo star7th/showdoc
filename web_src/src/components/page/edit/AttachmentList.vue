@@ -101,6 +101,8 @@
 
 <script>
 import filehub from '@/components/page/edit/Filehub'
+import { getUserInfoFromStorage } from '@/models/user.js'
+
 export default {
   props: {
     callback: '',
@@ -115,7 +117,8 @@ export default {
       dialogTableVisible: true,
       uploadUrl: DocConfig.server + '/api/page/upload',
       dialogUploadVisible: false,
-      loading: ''
+      loading: '',
+      user_token: ''
     }
   },
   components: {
@@ -125,7 +128,8 @@ export default {
     uploadData: function() {
       return {
         page_id: this.page_id,
-        item_id: this.item_id
+        item_id: this.item_id,
+        user_token: this.user_token
       }
     }
   },
@@ -207,6 +211,8 @@ export default {
   },
   mounted() {
     this.getContent()
+    const userInfo = getUserInfoFromStorage()
+    this.user_token = userInfo.user_token
   }
 }
 </script>

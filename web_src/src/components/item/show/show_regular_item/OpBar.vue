@@ -112,7 +112,7 @@
             <i class="el-icon-download"></i>
           </router-link>
         </el-tooltip>
-        
+
         <el-tooltip
           v-if="item_info.item_type == '3'"
           class="item"
@@ -364,7 +364,10 @@
             drag
             name="file"
             :action="uploadUrl"
-            :data="{ item_id: this.importToItemId }"
+            :data="{
+              item_id: this.importToItemId,
+              user_token: this.user_token
+            }"
             :before-upload="beforeUpload"
             :on-success="uploadCallback"
             :show-file-list="false"
@@ -446,6 +449,7 @@ a {
 import HistoryVersion from '@/components/page/edit/HistoryVersion'
 import SortPage from '@/components/page/edit/SortPage'
 import ChangeLog from './ChangeLog'
+import { getUserInfoFromStorage } from '@/models/user.js'
 
 export default {
   props: {
@@ -475,7 +479,8 @@ export default {
       importToItemId: '',
       uploadUrl: DocConfig.server + '/api/import/auto',
       dialogChangeLogVisible: false,
-      showHistoryVersionDialog: false
+      showHistoryVersionDialog: false,
+      user_token: ''
     }
   },
   components: {
@@ -690,6 +695,8 @@ export default {
       this.showMoreAction()
     }
     this.importToItemId = this.item_id
+    const userInfo = getUserInfoFromStorage()
+    this.user_token = userInfo.user_token
   },
   watch: {
     page_info: function() {

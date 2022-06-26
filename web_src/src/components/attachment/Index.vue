@@ -103,6 +103,7 @@
       >
         <p>
           <el-upload
+            :data="{ user_token: user_token }"
             drag
             name="file"
             :action="uploadUrl"
@@ -124,6 +125,7 @@
 </template>
 
 <script>
+import { getUserInfoFromStorage } from '@/models/user.js'
 export default {
   name: '',
   components: {},
@@ -141,7 +143,8 @@ export default {
       used_flow: 0,
       uploadUrl: DocConfig.server + '/api/page/upload',
       dialogFormVisible: false,
-      loading: ''
+      loading: '',
+      user_token: ''
     }
   },
   methods: {
@@ -210,6 +213,8 @@ export default {
 
   mounted() {
     this.getList()
+    const userInfo = getUserInfoFromStorage()
+    this.user_token = userInfo.user_token
   },
   beforeDestroy() {}
 }

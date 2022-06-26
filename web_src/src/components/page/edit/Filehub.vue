@@ -35,6 +35,7 @@
           </el-form-item>
           <el-form-item>
             <el-upload
+              :data="{ user_token: user_token }"
               class="upload-file"
               :action="uploadUrl"
               :before-upload="beforeUpload"
@@ -115,6 +116,7 @@
 <style></style>
 
 <script>
+import { getUserInfoFromStorage } from '@/models/user.js'
 export default {
   props: {
     callback: '',
@@ -136,7 +138,8 @@ export default {
       used: 0,
       used_flow: 0,
       uploadUrl: DocConfig.server + '/api/page/upload',
-      loading: ''
+      loading: '',
+      user_token: ''
     }
   },
   components: {},
@@ -215,6 +218,9 @@ export default {
       this.loading = this.$loading()
     }
   },
-  mounted() {}
+  mounted() {
+    const userInfo = getUserInfoFromStorage()
+    this.user_token = userInfo.user_token
+  }
 }
 </script>
