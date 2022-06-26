@@ -582,6 +582,7 @@ export default {
       var loading = that.$loading()
       let childRef = this.$refs.Editormd
       var content = childRef.getMarkdown()
+      var page_title = this.title
       var cat_id = this.cat_id
       var item_id = that.$route.params.item_id
       var page_id = that.$route.params.page_id
@@ -593,6 +594,7 @@ export default {
         is_notify: this.is_notify,
         notify_content: this.notify_content,
         page_content: encodeURIComponent(content),
+        page_title: page_title,
         is_urlencode: 1,
         cat_id: cat_id
       }).then(data => {
