@@ -362,6 +362,7 @@ import Notify from '@/components/page/edit/Notify'
 import { Base64 } from 'js-base64'
 import { rederPageContent } from '@/models/page'
 const turndownPluginGfm = require('turndown-plugin-gfm')
+import { getUserInfoFromStorage } from '@/models/user.js'
 
 import {
   apiTemplateZh,
@@ -400,7 +401,8 @@ export default {
       showSqlToMarkdownTableDialog: false,
       showHistoryVersionDialog: false,
       showAttachmentListDialog: false,
-      showPasteTableDialog: false
+      showPasteTableDialog: false,
+      user_token: ''
     }
   },
   computed: {
@@ -678,6 +680,7 @@ export default {
           var form = new FormData()
           form.append('t', 'ajax-uploadpic')
           form.append('editormd-image-file', imageFile)
+          form.append('user_token', that.user_token)
           var loading = ''
           var callback = function(type, data) {
             type = type || 'before'
@@ -859,14 +862,7 @@ export default {
     },
     // 由于页面关闭事件无法直接发起异步的ajax请求，所以用浏览器的navigator.sendBeacon来实现
     unLockOnClose() {
-      let user_token = ''
-      const userinfostr = localStorage.getItem('userinfo')
-      if (userinfostr) {
-        const userinfo = JSON.parse(userinfostr)
-        if (userinfo && userinfo.user_token) {
-          user_token = userinfo.user_token
-        }
-      }
+      let user_token = this.user_token
       let analyticsData = new URLSearchParams({
         page_id: this.page_id,
         item_id: this.item_id,
@@ -924,6 +920,8 @@ export default {
     if (this.page_id <= 0 && g_open_cat_id > 0) {
       this.cat_id = g_open_cat_id
     }
+    const userInfo = getUserInfoFromStorage()
+    this.user_token = userInfo.user_token
   },
 
   beforeDestroy() {

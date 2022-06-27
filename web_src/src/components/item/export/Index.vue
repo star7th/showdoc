@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { getUserInfoFromStorage } from '@/models/user.js'
 export default {
   name: 'Login',
   components: {},
@@ -94,7 +95,8 @@ export default {
       export_format: 'word',
       pages: [{ page_id: '0', page_title: this.$t('all_pages') }],
       page_id: '0',
-      showMarkdown: true
+      showMarkdown: true,
+      user_token: ''
     }
   },
   computed: {
@@ -154,9 +156,16 @@ export default {
         '&cat_id=' +
         this.cat_id +
         '&page_id=' +
-        this.page_id
+        this.page_id +
+        '&user_token=' +
+        this.user_token
       if (this.export_format == 'markdown') {
-        url = DocConfig.server + '/api/export/markdown&item_id=' + this.item_id
+        url =
+          DocConfig.server +
+          '/api/export/markdown&item_id=' +
+          this.item_id +
+          '&user_token=' +
+          this.user_token
       }
       window.location.href = url
     },
@@ -190,6 +199,8 @@ export default {
         this.showMarkdown = false // 不显示markdown选项
       }
     })
+    const userInfo = getUserInfoFromStorage()
+    this.user_token = userInfo.user_token
   },
   beforeDestroy() {}
 }
