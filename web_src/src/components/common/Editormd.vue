@@ -90,6 +90,7 @@
 </style>
 <script>
 import BigImg from '@/components/common/BigImg'
+import { getUserInfoFromStorage } from '@/models/user.js'
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs')
 }
@@ -147,7 +148,7 @@ export default {
             'BMP',
             'WEBP'
           ],
-          imageUploadURL: DocConfig.server + '/api/page/uploadImg',
+          imageUploadURL: '',
           onload: () => {
             console.log('onload')
           },
@@ -274,11 +275,14 @@ export default {
     return {
       instance: null,
       showImg: false,
-      imgSrc: ''
+      imgSrc: '',
+      user_token: ''
     }
   },
   computed: {},
   mounted() {
+    const userInfo = getUserInfoFromStorage()
+    this.user_token = userInfo.user_token
     // 加载依赖""
     $s(
       [
@@ -322,6 +326,17 @@ export default {
       this.$nextTick((editorMD = window.editormd) => {
         const editorConfig = this.editorConfig
         editorConfig.markdown = this.content
+        if (DocConfig.server.indexOf('?') > -1) {
+          editorConfig.imageUploadURL =
+            DocConfig.server +
+            '/api/page/uploadImg&user_token=' +
+            this.user_token
+        } else {
+          editorConfig.imageUploadURL =
+            DocConfig.server +
+            '/api/page/uploadImg?user_token=' +
+            this.user_token
+        }
         if (editorMD) {
           if (this.type == 'editor') {
             this.instance = editorMD(this.id, editorConfig)
