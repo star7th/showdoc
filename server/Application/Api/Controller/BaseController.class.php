@@ -43,18 +43,13 @@ class BaseController extends Controller
 	public function checkLogin($redirect = true)
 	{
 
-		//debug
-		if ($this->is_local_debug > 0) {
-			$login_user = D("User")->where("username = 'showdoc' ")->find();
-			session("login_user", $login_user);
-		}
-
 		if (!session("login_user")) {
-			$cookie_token = I("user_token") ? I("user_token") : cookie('cookie_token');
-			if ($cookie_token) {
-				$ret = D("UserToken")->getToken($cookie_token);
+			$user_token = I("user_token") ? I("user_token") : cookie('cookie_token');
+			$user_token = $user_token ? $user_token : $_REQUEST['user_token'];
+			if ($user_token) {
+				$ret = D("UserToken")->getToken($user_token);
 				if ($ret && $ret['token_expire'] > time()) {
-					D("UserToken")->setLastTime($cookie_token);
+					D("UserToken")->setLastTime($user_token);
 					$login_user = D("User")->where("uid = $ret[uid]")->find();
 					unset($ret['password']);
 					session("login_user", $login_user);
