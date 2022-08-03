@@ -171,7 +171,4 @@ export default {
 .page_content_main .markdown-toc li ul {
   padding-left: 15px;
 }
-.page_content_main .markdown-toc li li a {
-  padding-left: 15px;
-}
 </style>
