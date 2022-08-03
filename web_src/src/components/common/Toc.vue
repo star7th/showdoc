@@ -169,9 +169,9 @@ export default {
   transition: 0s;
 }
 .page_content_main .markdown-toc li ul {
-  padding: 0;
+  padding-left: 15px;
 }
 .page_content_main .markdown-toc li li a {
-  padding-left: 30px;
+  padding-left: 15px;
 }
 </style>
