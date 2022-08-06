@@ -171,7 +171,21 @@ export default {
 .page_content_main .markdown-toc li ul {
   padding: 0;
 }
-.page_content_main .markdown-toc li li a {
+.page_content_main .markdown-toc li ul li a {
+  padding-left: 15px;
+}
+.page_content_main .markdown-toc li ul li li a {
+  padding-left: 15px;
+}
+
+.page_content_main .markdown-toc-list li ul li a {
   padding-left: 30px;
+}
+
+.page_content_main .markdown-toc-list li ul li ul li a {
+  padding-left: 45px;
+}
+.page_content_main .markdown-toc-list li ul li ul li ul li a {
+  padding-left: 60px;
 }
 </style>

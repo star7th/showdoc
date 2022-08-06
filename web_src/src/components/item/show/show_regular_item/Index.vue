@@ -108,7 +108,7 @@
 
 <script>
 import Editormd from '@/components/common/Editormd'
-import Toc from '@/components/item/show/show_regular_item/Toc'
+import Toc from '@/components/common/Toc'
 import LeftMenu from '@/components/item/show/show_regular_item/LeftMenu'
 import OpBar from '@/components/item/show/show_regular_item/OpBar'
 import AttachmentList from '@/components/page/edit/AttachmentList'
