@@ -124,7 +124,7 @@ export default {
   border: 1px solid #dcdfe6;
   border-radius: 5px;
   box-shadow: 0 5px 5px #f2f6fc;
-  max-height: 400px;
+  max-height: calc(100vh - 350px);
   overflow-y: auto;
   transform: scale(0);
   margin-right: -230px;
