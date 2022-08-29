@@ -3745,9 +3745,13 @@
 
     if (!editormd.isIE8) {
       if (settings.flowChart) {
-        div.find('.flowchart').flowChart()
-        // tag@a:plantuml
-        $(div).plantuml()
+        try {
+          div.find('.flowchart').flowChart()
+          // tag@a:plantuml
+          $(div).plantuml()
+        } catch (error) {
+          console.log(error)
+        }
       }
 
       if (settings.sequenceDiagram) {
