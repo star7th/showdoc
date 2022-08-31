@@ -186,12 +186,12 @@
       <div class="wrapper">
         <h2>{{ $t('section_description9') }}</h2>
         <p class="case-logo">
-          <img src="/static/imgs/case-logo/tencent.png" />
-          <img src="/static/imgs/case-logo/huawei_logo.png" />
-          <img src="/static/imgs/case-logo/baidu.png" />
-          <img src="/static/imgs/case-logo/jingdong.png" />
-          <img src="/static/imgs/case-logo/zijie.png" />
-          <img src="/static/imgs/case-logo/shunfeng.png" />
+          <img src="static/imgs/case-logo/tencent.png" />
+          <img src="static/imgs/case-logo/huawei_logo.png" />
+          <img src="static/imgs/case-logo/baidu.png" />
+          <img src="static/imgs/case-logo/jingdong.png" />
+          <img src="static/imgs/case-logo/zijie.png" />
+          <img src="static/imgs/case-logo/shunfeng.png" />
         </p>
         <router-link to="/user/login" class="btn">{{
           $t('section_title9')
