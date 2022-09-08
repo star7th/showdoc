@@ -103,6 +103,12 @@
                 <el-dropdown-item :command="toAttachmentLink">
                   {{ $t('my_attachment') }}
                 </el-dropdown-item>
+                <el-dropdown-item v-if="lang == 'zh-cn'" :command="toDfyunLink">
+                  CDN加速
+                </el-dropdown-item>
+                <el-dropdown-item v-if="lang == 'zh-cn'" :command="toPushLink">
+                  推送服务
+                </el-dropdown-item>
                 <el-dropdown-item :command="logout">{{
                   $t('logout')
                 }}</el-dropdown-item>
@@ -496,7 +502,7 @@ export default {
     },
 
     userInfo() {
-      getUserInfo((response)=> {
+      getUserInfo(response => {
         if (response.data.error_code === 0) {
           if (response.data.data.groupid == 1) {
             this.isAdmin = true
@@ -569,6 +575,12 @@ export default {
     },
     toMessageLink() {
       this.$router.push({ path: '/message/index' })
+    },
+    toPushLink() {
+      window.open('https://push.showdoc.com.cn')
+    },
+    toDfyunLink() {
+      window.open('https://www.dfyun.com.cn')
     }
   },
   mounted() {
