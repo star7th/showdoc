@@ -145,7 +145,7 @@ export default {
           this.geList()
           this.reSetMyForm()
         } else {
-          this.$alert(response.data.error_message)
+          this.$alert(data.error_message)
         }
       })
     },
