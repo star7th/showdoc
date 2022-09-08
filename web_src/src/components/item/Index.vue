@@ -60,7 +60,17 @@
               <i class="el-icon-s-promotion"></i>
             </a>
           </el-tooltip>
-
+          <el-tooltip
+            v-if="lang == 'zh-cn'"
+            class="item"
+            effect="dark"
+            content="CDN加速服务"
+            placement="top"
+          >
+            <a target="_blank" href="https://www.dfyun.com.cn">
+              <i class="el-icon-s-marketing"></i>
+            </a>
+          </el-tooltip>
           <el-tooltip
             class="item"
             effect="dark"
@@ -102,12 +112,6 @@
                 </el-dropdown-item>
                 <el-dropdown-item :command="toAttachmentLink">
                   {{ $t('my_attachment') }}
-                </el-dropdown-item>
-                <el-dropdown-item v-if="lang == 'zh-cn'" :command="toDfyunLink">
-                  CDN加速
-                </el-dropdown-item>
-                <el-dropdown-item v-if="lang == 'zh-cn'" :command="toPushLink">
-                  推送服务
                 </el-dropdown-item>
                 <el-dropdown-item :command="logout">{{
                   $t('logout')
@@ -575,12 +579,6 @@ export default {
     },
     toMessageLink() {
       this.$router.push({ path: '/message/index' })
-    },
-    toPushLink() {
-      window.open('https://push.showdoc.com.cn')
-    },
-    toDfyunLink() {
-      window.open('https://www.dfyun.com.cn')
     }
   },
   mounted() {
