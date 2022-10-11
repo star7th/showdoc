@@ -283,31 +283,37 @@ export default {
   mounted() {
     const userInfo = getUserInfoFromStorage()
     this.user_token = userInfo.user_token
-    // 加载依赖""
+    // 加载依赖
     $s(
       [
         `${this.editorPath}/../jquery.min.js`,
-        `${this.editorPath}/lib/raphael.min.js`,
-        `${this.editorPath}/lib/d3@5.min.js`,
-        `${this.editorPath}/lib/flowchart.min.js`
+        `${this.editorPath}/lib/raphael.min.js`
       ],
       () => {
         $s(
           [
-            `${this.editorPath}/../xss.min.js`,
-            `${this.editorPath}/lib/marked.min.js`,
-            `${this.editorPath}/lib/underscore.min.js`,
-            `${this.editorPath}/lib/sequence-diagram.min.js`,
-            `${this.editorPath}/lib/jquery.flowchart.min.js`,
-            `${this.editorPath}/lib/jquery.mark.min.js`,
-            `${this.editorPath}/lib/plantuml.js?v=2`,
-            `${this.editorPath}/lib/view.min.js`,
-            `${this.editorPath}/lib/transform.min.js`
+            `${this.editorPath}/lib/d3@5.min.js`,
+            `${this.editorPath}/lib/flowchart.min.js`
           ],
           () => {
-            $s(`${this.editorPath}/editormd.js`, () => {
-              this.initEditor()
-            })
+            $s(
+              [
+                `${this.editorPath}/../xss.min.js`,
+                `${this.editorPath}/lib/marked.min.js`,
+                `${this.editorPath}/lib/underscore.min.js`,
+                `${this.editorPath}/lib/sequence-diagram.min.js`,
+                `${this.editorPath}/lib/jquery.flowchart.min.js`,
+                `${this.editorPath}/lib/jquery.mark.min.js`,
+                `${this.editorPath}/lib/plantuml.js?v=2`,
+                `${this.editorPath}/lib/view.min.js`,
+                `${this.editorPath}/lib/transform.min.js`
+              ],
+              () => {
+                $s(`${this.editorPath}/editormd.js`, () => {
+                  this.initEditor()
+                })
+              }
+            )
           }
         )
       }
