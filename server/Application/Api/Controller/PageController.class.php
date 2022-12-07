@@ -27,6 +27,11 @@ class PageController extends BaseController
         if ($page) {
             //unset($page['page_content']);
             $page['addtime'] = date("Y-m-d H:i:s", $page['addtime']);
+            if ($page['page_addtime'] > 0) {
+                $page['page_addtime'] = date("Y-m-d H:i:s", $page['page_addtime']);
+            } else {
+                $page['page_addtime'] = $page['addtime'];
+            }
             //判断是否包含附件信息
             $page['attachment_count'] = D("FilePage")->where("page_id = '$page_id' ")->count();
 
@@ -100,6 +105,7 @@ class PageController extends BaseController
         $data['item_id'] = $item_id;
         $data['cat_id'] = $cat_id;
         $data['addtime'] = time();
+        $data['page_addtime'] = time();
         $data['author_uid'] = $login_user['uid'];
         $data['author_username'] = $login_user['username'];
 
@@ -134,6 +140,9 @@ class PageController extends BaseController
             );
             D("PageHistory")->add($insert_history);
 
+            if ($page['page_addtime'] > 0) {
+                $data['page_addtime'] = $page['page_addtime'];
+            }
             $ret = D("Page")->where(" page_id = '$page_id' ")->save($data);
 
             D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'update', 'page', $page_id, $page_title);

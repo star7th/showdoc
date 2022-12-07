@@ -629,7 +629,8 @@ class ItemController extends BaseController
                     "item_id" => $item_id,
                     "cat_id" => 0,
                     "page_content" => '欢迎使用showdoc。点击右上方的编辑按钮进行编辑吧！',
-                    "addtime" => time()
+                    "addtime" => time(),
+                    "page_addtime" => time(),
                 );
                 $page_id = D("Page")->add($insert);
             }
@@ -642,7 +643,8 @@ class ItemController extends BaseController
                     "item_id" => $item_id,
                     "cat_id" => 0,
                     "page_content" => '',
-                    "addtime" => time()
+                    "addtime" => time(),
+                    "page_addtime" => time(),
                 );
                 $page_id = D("Page")->add($insert);
             }

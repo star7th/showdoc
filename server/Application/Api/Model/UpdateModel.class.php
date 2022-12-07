@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 14;
+        $version_num = 15;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -149,6 +149,12 @@ class UpdateModel
         if (!$this->_is_column_exist("Page", "is_del")) {
             $sql = "ALTER TABLE " . C('DB_PREFIX') . "page ADD is_del INT( 1 ) NOT NULL DEFAULT '0'  ;";
             D("ItemMember")->execute($sql);
+        }
+
+        //page表增加page_addtime字段
+        if (!$this->_is_column_exist("Page", "page_addtime")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "page ADD page_addtime INT( 11 ) NOT NULL DEFAULT '0'  ;";
+            D("Page")->execute($sql);
         }
 
         //创建team表
