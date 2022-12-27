@@ -40,7 +40,6 @@
     <div class="op-bar" v-if="show_op_bar">
       <span v-if="!item_info.is_login">
         <el-tooltip
-          class="item"
           effect="dark"
           :content="$t('index_login_or_register')"
           placement="top"
@@ -50,7 +49,6 @@
           </router-link>
         </el-tooltip>
         <el-tooltip
-          class="item"
           effect="dark"
           :content="$t('history_version')"
           placement="top"
@@ -58,7 +56,6 @@
           <i class="el-icon-goods" @click="showHistoryVersion"></i>
         </el-tooltip>
         <el-tooltip
-          class="item"
           effect="dark"
           v-if="lang == 'zh-cn'"
           :content="$t('about_showdoc')"
@@ -71,29 +68,18 @@
       </span>
 
       <span v-if="item_info.is_login">
-        <el-tooltip
-          class="item"
-          effect="dark"
-          :content="$t('goback')"
-          placement="left"
-        >
+        <el-tooltip effect="dark" :content="$t('goback')" placement="left">
           <router-link to="/item/index">
             <i class="el-icon-back"></i>
           </router-link>
         </el-tooltip>
 
-        <el-tooltip
-          class="item"
-          effect="dark"
-          :content="$t('share')"
-          placement="top"
-        >
+        <el-tooltip effect="dark" :content="$t('share')" placement="top">
           <i class="el-icon-share" @click="sharePage"></i>
         </el-tooltip>
 
         <el-tooltip
           v-if="!item_info.item_edit"
-          class="item"
           effect="dark"
           :content="$t('detail')"
           placement="top"
@@ -103,7 +89,6 @@
 
         <el-tooltip
           v-if="item_info.item_type == '3'"
-          class="item"
           effect="dark"
           :content="$t('export')"
           placement="left"
@@ -115,7 +100,6 @@
 
         <el-tooltip
           v-if="item_info.item_type == '3'"
-          class="item"
           effect="dark"
           content="runapi项目请在runapi客户端编辑"
           placement="top"
@@ -125,34 +109,18 @@
       </span>
 
       <span v-if="item_info.item_edit">
-        <el-tooltip
-          class="item"
-          effect="dark"
-          :content="$t('new_page')"
-          placement="top"
-        >
+        <el-tooltip effect="dark" :content="$t('new_page')" placement="top">
           <i class="el-icon-plus" @click="newPage"></i>
         </el-tooltip>
-        <el-tooltip
-          class="item"
-          effect="dark"
-          :content="$t('new_catalog')"
-          placement="left"
-        >
+        <el-tooltip effect="dark" :content="$t('new_catalog')" placement="left">
           <i class="el-icon-folder" @click="mamageCatalog"></i>
         </el-tooltip>
-        <el-tooltip
-          class="item"
-          effect="dark"
-          :content="$t('edit_page')"
-          placement="top"
-        >
+        <el-tooltip effect="dark" :content="$t('edit_page')" placement="top">
           <i class="el-icon-edit" @click="editPage"></i>
         </el-tooltip>
 
         <el-tooltip
           v-show="!showMore"
-          class="item"
           effect="dark"
           :content="$t('more')"
           placement="top"
@@ -161,7 +129,6 @@
         </el-tooltip>
         <el-tooltip
           v-show="showMore"
-          class="item"
           effect="dark"
           :content="$t('more')"
           placement="top"
@@ -170,12 +137,7 @@
         </el-tooltip>
 
         <span v-show="showMore">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="$t('copy')"
-            placement="left"
-          >
+          <el-tooltip effect="dark" :content="$t('copy')" placement="left">
             <router-link
               :to="'/page/edit/' + item_id + '/0?copy_page_id=' + page_id"
             >
@@ -183,35 +145,19 @@
             </router-link>
           </el-tooltip>
           <el-tooltip
-            class="item"
             effect="dark"
             :content="$t('history_version')"
             placement="top"
           >
             <i class="el-icon-goods" @click="showHistoryVersion"></i>
           </el-tooltip>
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="$t('sort_pages')"
-            placement="top"
-          >
+          <el-tooltip effect="dark" :content="$t('sort_pages')" placement="top">
             <i class="el-icon-sort" @click="sortPageVisiable = true"></i>
           </el-tooltip>
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="$t('detail')"
-            placement="top"
-          >
+          <el-tooltip effect="dark" :content="$t('detail')" placement="top">
             <i class="el-icon-info" @click="showPageInfo"></i>
           </el-tooltip>
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="$t('export')"
-            placement="left"
-          >
+          <el-tooltip effect="dark" :content="$t('export')" placement="left">
             <router-link
               :to="'/item/export/' + item_info.item_id"
               v-if="item_info.item_edit"
@@ -219,12 +165,7 @@
               <i class="el-icon-download"></i>
             </router-link>
           </el-tooltip>
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="$t('import')"
-            placement="left"
-          >
+          <el-tooltip effect="dark" :content="$t('import')" placement="left">
             <i
               v-if="item_info.item_edit"
               class="el-icon-upload2"
@@ -232,7 +173,6 @@
             ></i>
           </el-tooltip>
           <el-tooltip
-            class="item"
             effect="dark"
             :content="$t('delete_interface')"
             placement="top"
@@ -240,7 +180,6 @@
             <i class="el-icon-delete" @click="deletePage"></i>
           </el-tooltip>
           <el-tooltip
-            class="item"
             effect="dark"
             :content="$t('item_change_log')"
             placement="top"
@@ -253,7 +192,6 @@
 
           <span v-if="item_info.item_manage">
             <el-tooltip
-              class="item"
               effect="dark"
               :content="$t('item_setting')"
               placement="left"

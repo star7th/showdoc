@@ -102,7 +102,6 @@
                 class="form-el"
               ></el-input>
               <el-tooltip
-                class="item"
                 effect="dark"
                 :content="$t('entrance_tips_content')"
                 placement="top"
@@ -165,7 +164,6 @@
                 class="form-el"
               ></el-input>
               <el-tooltip
-                class="item"
                 effect="dark"
                 :content="$t('userinfo_path_content')"
                 placement="top"

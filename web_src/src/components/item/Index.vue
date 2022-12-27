@@ -14,12 +14,7 @@
           </h2>
         </div>
         <div class="header-btn-group pull-right">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="$t('feedback')"
-            placement="top"
-          >
+          <el-tooltip effect="dark" :content="$t('feedback')" placement="top">
             <router-link to>
               <i @click="feedback" class="el-icon-phone-outline"></i>
             </router-link>
@@ -27,7 +22,6 @@
 
           <el-tooltip
             v-if="lang == 'zh-cn'"
-            class="item"
             effect="dark"
             content="客户端"
             placement="top"
@@ -39,7 +33,6 @@
 
           <el-tooltip
             v-if="lang == 'zh-cn'"
-            class="item"
             effect="dark"
             content="接口开发调试工具RunApi"
             placement="top"
@@ -51,7 +44,6 @@
 
           <el-tooltip
             v-if="lang == 'zh-cn'"
-            class="item"
             effect="dark"
             content="showdoc推送服务"
             placement="top"
@@ -62,7 +54,6 @@
           </el-tooltip>
           <el-tooltip
             v-if="lang == 'zh-cn'"
-            class="item"
             effect="dark"
             content="CDN加速服务"
             placement="top"
@@ -72,7 +63,6 @@
             </a>
           </el-tooltip>
           <el-tooltip
-            class="item"
             effect="dark"
             :content="$t('team_mamage')"
             placement="top"
@@ -84,7 +74,6 @@
 
           <el-tooltip
             v-if="isAdmin"
-            class="item"
             effect="dark"
             :content="$t('background')"
             placement="top"
@@ -93,12 +82,7 @@
               <i class="el-icon-s-tools"></i>
             </router-link> </el-tooltip
           >&nbsp;&nbsp;
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="$t('more')"
-            placement="top"
-          >
+          <el-tooltip effect="dark" :content="$t('more')" placement="top">
             <el-dropdown @command="dropdownCallback" trigger="click">
               <span class="el-dropdown-link">
                 <i class="el-icon-caret-bottom el-icon--right"></i>
@@ -212,7 +196,6 @@
                 <!-- 如果是加密项目的话，这里显示一个加密图标 -->
                 <span class="item-private" v-if="item.is_private">
                   <el-tooltip
-                    class="item"
                     effect="dark"
                     :content="$t('private_tips')"
                     placement="right"

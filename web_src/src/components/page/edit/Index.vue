@@ -31,18 +31,18 @@
           </el-form-item>
 
           <el-form-item label>
-            <el-tooltip class="item" effect="dark" :content="$t('refresh_cat')">
+            <el-tooltip effect="dark" :content="$t('refresh_cat')">
               <i class="el-icon-refresh-right icon-btn" @click="refreshCat"></i>
             </el-tooltip>
           </el-form-item>
           <el-form-item label>
-            <el-tooltip class="item" effect="dark" :content="$t('go_add_cat')">
+            <el-tooltip effect="dark" :content="$t('go_add_cat')">
               <i class="el-icon-plus icon-btn" @click="goToCat"></i>
             </el-tooltip>
           </el-form-item>
 
           <el-form-item label>
-            <el-tooltip class="item" effect="dark" :content="$t('sort_pages')">
+            <el-tooltip effect="dark" :content="$t('sort_pages')">
               <i class="el-icon-sort icon-btn" @click="showSortPage"></i>
             </el-tooltip>
           </el-form-item>
@@ -63,7 +63,6 @@
                   $t('save_to_templ')
                 }}</el-dropdown-item>
                 <el-tooltip
-                  class="item"
                   effect="dark"
                   :content="$t('lock_edit_tips')"
                   placement="left"
@@ -140,7 +139,7 @@
             >{{ $t('http_test_api') }}</el-button
           >
 
-          <el-badge :value="attachment_count" class="item">
+          <el-badge :value="attachment_count">
             <el-button type size="medium" @click="showAttachment">{{
               $t('attachment')
             }}</el-button>

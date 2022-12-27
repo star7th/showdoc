@@ -33,7 +33,6 @@
       <el-form-item v-show="$lang == 'zh-cn'" label="备案号">
         <el-input v-model="form.beian" class="form-el"></el-input>
         <el-tooltip
-          class="item"
           effect="dark"
           content="设置后会展示在网站首页最下方"
           placement="top"
@@ -48,7 +47,6 @@
           class="form-el"
         ></el-input>
         <el-tooltip
-          class="item"
           effect="dark"
           :content="$t('history_version_count_content')"
           placement="top"
@@ -60,7 +58,6 @@
       <el-form-item :label="$t('watermark')">
         <el-switch v-model="form.show_watermark"></el-switch>
         <el-tooltip
-          class="item"
           effect="dark"
           :content="$t('watermark_tips')"
           placement="top"
@@ -75,7 +72,6 @@
           placeholder="https://www.your-site.com"
         ></el-input>
         <el-tooltip
-          class="item"
           effect="dark"
           :content="$t('site_url_tips')"
           placement="top"

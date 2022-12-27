@@ -20,7 +20,6 @@
 
       <el-form-item>
         <el-tooltip
-          class="item"
           effect="dark"
           :content="$t('copy_item_tips2')"
           placement="right"

@@ -9,27 +9,16 @@
         <h2 id="doc-title">{{ page_title }}</h2>
 
         <div class="tool-bar pull-right">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="$t('goback')"
-            placement="left"
-          >
+          <el-tooltip effect="dark" :content="$t('goback')" placement="left">
             <router-link to="/item/index">
               <i class="el-icon-back"></i>
             </router-link>
           </el-tooltip>
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="$t('share')"
-            placement="top"
-          >
+          <el-tooltip effect="dark" :content="$t('share')" placement="top">
             <i class="el-icon-share" @click="shareItem"></i>
           </el-tooltip>
           <el-tooltip
             v-if="item_info.item_edit && item_info.is_archived < 1"
-            class="item"
             effect="dark"
             :content="$t('edit_page')"
             placement="top"

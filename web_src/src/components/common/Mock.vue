@@ -32,7 +32,6 @@
           }}</el-button
           >&nbsp;
           <el-tooltip
-            class="item"
             effect="dark"
             content="假如上面填写的是一段符合json语法的字符串，点此按钮可以对json字符串进行快速格式化（美化）"
             placement="top"

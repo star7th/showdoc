@@ -93,11 +93,7 @@
               :value="item.uid"
             ></el-option>
           </el-select>
-          <el-tooltip
-            class="item"
-            effect="dark"
-            :content="$t('refresh_member_list')"
-          >
+          <el-tooltip effect="dark" :content="$t('refresh_member_list')">
             <i
               class="el-icon-refresh-right icon-btn"
               @click="getAllItemMemberList"

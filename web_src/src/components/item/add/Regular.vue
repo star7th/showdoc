@@ -8,7 +8,6 @@
           <el-radio label="2">
             {{ $t('single_item') }}
             <el-tooltip
-              class="item"
               effect="dark"
               :content="$t('single_item_tips')"
               placement="top"
@@ -19,12 +18,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item>
-        <el-tooltip
-          class="item"
-          effect="dark"
-          :content="$t('item_name')"
-          placement="right"
-        >
+        <el-tooltip effect="dark" :content="$t('item_name')" placement="right">
           <el-input
             type="text"
             auto-complete="off"
@@ -36,7 +30,6 @@
 
       <el-form-item>
         <el-tooltip
-          class="item"
           effect="dark"
           :content="$t('item_description')"
           placement="right"
