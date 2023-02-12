@@ -11,22 +11,6 @@
           <i class="el-icon-s-flag"></i>
         </div>
       </el-tooltip>
-      <el-tooltip effect="dark" content="客户端" placement="top">
-        <div
-          @click="toOutLink('https://www.showdoc.com.cn/clients')"
-          class="icon-item"
-        >
-          <i class="el-icon-s-platform"></i>
-        </div>
-      </el-tooltip>
-      <el-tooltip effect="dark" content="runapi" placement="top">
-        <div
-          @click="toOutLink('https://www.showdoc.com.cn/runapi')"
-          class="icon-item"
-        >
-          <i class="el-icon-s-promotion"></i>
-        </div>
-      </el-tooltip>
       <el-tooltip effect="dark" :content="$t('my_attachment')" placement="top">
         <div @click="showAttachment = true" class="icon-item">
           <i class="el-icon-upload"></i>
@@ -40,6 +24,32 @@
       <el-tooltip effect="dark" :content="$t('user_center')" placement="top">
         <div @click="showUserSetting = true" class="icon-item">
           <i class="el-icon-user-solid"></i>
+        </div>
+      </el-tooltip>
+      <el-tooltip
+        v-if="$lang == 'zh-cn'"
+        effect="dark"
+        content="客户端"
+        placement="top"
+      >
+        <div
+          @click="toOutLink('https://www.showdoc.com.cn/clients')"
+          class="icon-item"
+        >
+          <i class="el-icon-s-platform"></i>
+        </div>
+      </el-tooltip>
+      <el-tooltip
+        v-if="$lang == 'zh-cn'"
+        effect="dark"
+        content="runapi"
+        placement="top"
+      >
+        <div
+          @click="toOutLink('https://www.showdoc.com.cn/runapi')"
+          class="icon-item"
+        >
+          <i class="el-icon-s-promotion"></i>
         </div>
       </el-tooltip>
       <el-tooltip
@@ -61,12 +71,14 @@
           </div>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item
+              v-if="$lang == 'zh-cn'"
               @click.native="toOutLink('https://www.dfyun.com.cn/')"
             >
               <i class="el-icon-s-marketing"></i>
               CDN加速
             </el-dropdown-item>
             <el-dropdown-item
+              v-if="$lang == 'zh-cn'"
               @click.native="toOutLink('https://push.showdoc.com.cn')"
             >
               <i class="el-icon-s-promotion"></i>
@@ -168,9 +180,6 @@ export default {
           dangerouslyUseHTMLString: true
         })
       }
-    },
-    toOutLink(url) {
-      window.open(url)
     },
     toPath(path) {
       this.$router.push({ path: path })
