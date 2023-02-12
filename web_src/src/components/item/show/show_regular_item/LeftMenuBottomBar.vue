@@ -124,7 +124,7 @@ export default {
 }
 
 .left-menu-bottom-bar .bottom-bar-item-icon {
-  width: calc(25% - 3px);
+  width: calc(25% - 4px);
   height: 50px;
   font-size: 20px;
   justify-content: center; /*水平居中*/
