@@ -217,6 +217,13 @@ class ExportController extends BaseController
         unlink($temp_file);
     }
 
+    public function checkMarkdownLimit()
+    {
+        $login_user = $this->checkLogin();
+        $export_format =  I("export_format");
+        $this->sendResult(array());
+    }
+
     private function _markdownTofile($catalogData,  $temp_dir)
     {
         if ($catalogData['pages']) {
