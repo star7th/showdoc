@@ -22,8 +22,16 @@
         ></el-option>
       </el-select>
       <draggable v-model="pages" tag="div" group="page" @end="endMove">
-        <div class="page-box" v-for="page in pages" :key="page.page_id">
-          <span class="page-name">{{ page.page_title }}</span>
+        <div
+          class="page-box cursor-move"
+          v-for="page in pages"
+          :key="page.page_id"
+        >
+          <span class="page-name "
+            ><i class="el-icon-sort font-bold	"></i>&nbsp;&nbsp;{{
+              page.page_title
+            }}</span
+          >
         </div>
       </draggable>
     </SDialog>
@@ -41,7 +49,7 @@
 }
 .page-name {
   line-height: 40px;
-  margin-left: 20px;
+  margin-left: 10px;
   color: #262626;
 }
 </style>

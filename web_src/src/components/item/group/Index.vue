@@ -23,11 +23,13 @@
           style="width: 100%"
         >
           <el-table-column prop="group_name" :label="$t('group_name')">
-            <template slot-scope="scope"
-              ><i class="el-icon-sort text-lg	 font-extrabold	"></i>&nbsp;{{
-                scope.row.group_name
-              }}</template
-            >
+            <template slot-scope="scope">
+              <span class="cursor-move">
+                <i class="el-icon-sort font-bold 	"></i>&nbsp;{{
+                  scope.row.group_name
+                }}
+              </span>
+            </template>
           </el-table-column>
 
           <el-table-column width="120" prop :label="$t('operation')">
