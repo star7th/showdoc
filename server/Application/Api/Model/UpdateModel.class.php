@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 15;
+        $version_num = 16;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -504,6 +504,17 @@ class UpdateModel
             $sql = "ALTER TABLE " . C('DB_PREFIX') . "user ADD salt CHAR(2000) NOT NULL DEFAULT '' ;";
             D("mock")->execute($sql);
         }
+
+        //创建item_star表
+        $sql = "CREATE TABLE IF NOT EXISTS `item_star` (
+            `id`  INTEGER PRIMARY KEY ,
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `s_number` int(11) NOT NULL DEFAULT '0',
+            `created_at` CHAR(2000) NOT NULL DEFAULT '',
+            `updated_at` CHAR(2000) NOT NULL DEFAULT ''
+            )";
+        D("User")->execute($sql);
 
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num

@@ -158,8 +158,7 @@ class ItemController extends BaseController
     {
         $login_user = $this->checkLogin();
         $original = I("original/d") ? I("original/d") : 0; //1：只返回自己原创的项目;默认是0 
-        $item_group_id = I("item_group_id/d") ? I("item_group_id/d") : 0; //项目分组id。默认是0
-
+        $item_group_id = I("item_group_id/d") ? I("item_group_id/d") : 0; //项目分组id。默认是0,即所有项目。当为-1的时候，表示返回标星项目
         $where = "uid = '$login_user[uid]' ";
         $member_item_ids = array(-1); // 所有 只读和编辑成员 的项目
         $manage_member_item_ids = array(-1); // 所有拥有项目管理权限的成员的项目
@@ -193,12 +192,33 @@ class ItemController extends BaseController
 
         $where .= " or item_id in ( " . implode(",", $member_item_ids) . " ) ";
         $where .= " or item_id in ( " . implode(",", $manage_member_item_ids) . " ) ";
-        if ($item_group_id) {
+        if ($item_group_id > 0) {
             $res = D("ItemGroup")->where(" id = '$item_group_id' ")->find();
             if ($res) {
                 $where = " ({$where}) and item_id in ({$res['item_ids']}) ";
             }
         }
+
+        $star_item_id_array = array();
+        // 将star的项目都先读取出来，因为后面有两处需要用到：返回项目是否已经被标星字段，根据标星返回所有标星项目
+        $res = D("ItemStar")->where(" uid = '$login_user[uid]' ")->select();
+
+        if ($res) {
+            foreach ($res as $key => $value) {
+                $star_item_id_array[] = intval($value['item_id']);
+            }
+        }
+
+        // 当强等于-1的时候。表示筛选出星标项目
+        if ($item_group_id === -1) {
+            if ($star_item_id_array) {
+                $star_item_ids = implode(",", $star_item_id_array);
+                $where = " ({$where}) and item_id in ({$star_item_ids}) ";
+            } else {
+                $where = " ({$where}) and item_id in (0) ";
+            }
+        }
+
         $items  = D("Item")->field("item_id,uid,item_name,item_domain,item_type,last_update_time,item_description,is_del,password")->where($where)->order("item_id asc")->select();
 
 
@@ -225,11 +245,19 @@ class ItemController extends BaseController
             //如果项目已标识为删除
             if ($value['is_del'] == 1) {
                 unset($items[$key]);
+                continue;
             }
 
             //如果有参数指定了只返回原创项目
             if ($original > 0 && $value['uid'] != $login_user['uid']) {
                 unset($items[$key]);
+                continue;
+            }
+            // 判断项目是否被标星
+            if (in_array(intval($value['item_id']), $star_item_id_array)) {
+                $items[$key]['is_star'] = 1;
+            } else {
+                $items[$key]['is_star'] = 0;
             }
         }
         $items = array_values($items);
@@ -749,5 +777,34 @@ class ItemController extends BaseController
         $list = D("ItemChangeLog")->getLog($item_id, $page, $count);
         $list = $list ? $list : array();
         $this->sendResult($list);
+    }
+
+    //标星一个项目
+    public function star()
+    {
+        $item_id = I("post.item_id/d");
+        $login_user = $this->checkLogin();
+
+        if (!$this->checkItemVisit($login_user['uid'], $item_id)) {
+            $this->sendError(10103);
+            return;
+        }
+
+        $data = array();
+        $data['uid'] = $login_user['uid'];
+        $data['item_id'] = $item_id;
+        $data['created_at'] = date("Y-m-d H:i:s");
+        $data['updated_at'] = date("Y-m-d H:i:s");
+        $id = D("ItemStar")->add($data);
+        $this->sendResult($id);
+    }
+
+    //取消标星一个项目
+    public function unstar()
+    {
+        $item_id = I("post.item_id/d");
+        $login_user = $this->checkLogin();
+        D("ItemStar")->where(" uid = '$login_user[uid]' and item_id = '$item_id' ")->delete();
+        $this->sendResult(array());
     }
 }
