@@ -340,6 +340,7 @@
       :callback="
         () => {
           showAttorn = false
+          goback()
         }
       "
       :item_id="item_info.item_id"
@@ -352,6 +353,7 @@
       :callback="
         () => {
           showDelete = false
+          goback()
         }
       "
       :item_id="item_info.item_id"
@@ -498,6 +500,14 @@ export default {
           window.location.reload()
         })
       })
+    },
+    goback() {
+      // 为了防止对话框遮罩来不及关闭，延迟0.5秒
+      setTimeout(() => {
+        this.$router.push({
+          path: '/item/index'
+        })
+      }, 500)
     }
   },
   mounted() {
