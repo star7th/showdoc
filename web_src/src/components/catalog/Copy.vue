@@ -1,5 +1,11 @@
 <template>
-  <el-dialog :visible="true" :close-on-click-modal="false" width="350px">
+  <SDialog
+    :title="$t('copy')"
+    :onCancel="closeDialog"
+    :showCancel="false"
+    :onOK="copy"
+    width="350px"
+  >
     <el-form>
       <el-form-item label class="text-left">
         <el-select
@@ -43,11 +49,7 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="closeDialog">{{ $t('cancel') }}</el-button>
-      <el-button type="primary" @click="copy">{{ $t('confirm') }}</el-button>
-    </div>
-  </el-dialog>
+  </SDialog>
 </template>
 <script>
 export default {

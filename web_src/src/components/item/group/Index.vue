@@ -2,94 +2,96 @@
   <div class="hello">
     <Header></Header>
 
-    <el-container>
-      <el-card class="center-card">
-        <el-button type="text" class="goback-btn" @click="goback"
-          ><i class="el-icon-back"></i>&nbsp;{{ $t('goback') }}</el-button
+    <SDialog
+      :title="$t('manage_item_group')"
+      :btn1Text="$t('add_group')"
+      btn1Icon="el-icon-plus"
+      :btn1Medthod="addDialog"
+      :onCancel="callback"
+      :onOK="callback"
+    >
+      <p class="tips" v-show="list && list.length > 1">
+        {{ $t('draggable_tips') }}
+      </p>
+      <el-table-draggable animate="200" @drop="onDropEnd">
+        <el-table
+          :show-header="false"
+          align="left"
+          :empty-text="$t('item_group_empty_tips')"
+          :data="list"
+          height="400"
+          style="width: 100%"
         >
-        <el-button type="text" class="add-cat" @click="addDialog"
-          ><i class="el-icon-plus"></i>&nbsp;{{ $t('add_group') }}</el-button
+          <el-table-column prop="group_name" :label="$t('group_name')">
+            <template slot-scope="scope"
+              ><i class="el-icon-sort text-lg	 font-extrabold	"></i>&nbsp;{{
+                scope.row.group_name
+              }}</template
+            >
+          </el-table-column>
+
+          <el-table-column width="120" prop :label="$t('operation')">
+            <template slot-scope="scope">
+              <el-button @click="edit(scope.row)" type="text" size="small">{{
+                $t('edit')
+              }}</el-button>
+
+              <el-button @click="del(scope.row.id)" type="text" size="small">{{
+                $t('delete')
+              }}</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-table-draggable>
+    </SDialog>
+    <SDialog
+      :title="$t('edit_group')"
+      v-if="dialogFormVisible"
+      width="500px"
+      :onCancel="
+        () => {
+          dialogFormVisible = false
+        }
+      "
+      :onOK="myFormSubmit"
+    >
+      <el-form>
+        <el-form-item>
+          <el-input v-model="MyForm.group_name" placeholder="组名"></el-input>
+        </el-form-item>
+      </el-form>
+      <div>
+        <p>{{ $t('select_item') }}</p>
+        <el-table
+          :show-header="false"
+          ref="multipleTable"
+          :data="itemList"
+          tooltip-effect="dark"
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
         >
-        <p class="tips" v-show="list && list.length > 1">
-          {{ $t('draggable_tips') }}
-        </p>
-        <el-table-draggable animate="200" @drop="onDropEnd">
-          <el-table
-            :show-header="false"
-            align="left"
-            :empty-text="$t('item_group_empty_tips')"
-            :data="list"
-            height="400"
-            style="width: 100%"
-          >
-            <el-table-column
-              prop="group_name"
-              :label="$t('group_name')"
-            ></el-table-column>
-
-            <el-table-column width="120" prop :label="$t('operation')">
-              <template slot-scope="scope">
-                <el-button @click="edit(scope.row)" type="text" size="small">{{
-                  $t('edit')
-                }}</el-button>
-
-                <el-button
-                  @click="del(scope.row.id)"
-                  type="text"
-                  size="small"
-                  >{{ $t('delete') }}</el-button
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-table-draggable>
-      </el-card>
-      <el-dialog
-        :visible.sync="dialogFormVisible"
-        v-if="dialogFormVisible"
-        width="500px"
-        :close-on-click-modal="false"
-      >
-        <el-form>
-          <el-form-item>
-            <el-input v-model="MyForm.group_name" placeholder="组名"></el-input>
-          </el-form-item>
-        </el-form>
-        <div>
-          <p>{{ $t('select_item') }}</p>
-          <el-table
-            :show-header="false"
-            ref="multipleTable"
-            :data="itemList"
-            tooltip-effect="dark"
-            style="width: 100%"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="item_name" :label="$t('item_name')">
-            </el-table-column>
-          </el-table>
-        </div>
-
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">{{
-            $t('cancel')
-          }}</el-button>
-          <el-button type="primary" @click="myFormSubmit">{{
-            $t('confirm')
-          }}</el-button>
-        </div>
-      </el-dialog>
-    </el-container>
-
+          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column prop="item_name" :label="$t('item_name')">
+          </el-table-column>
+        </el-table>
+      </div>
+    </SDialog>
     <Footer></Footer>
   </div>
 </template>
 
 <script>
 import ElTableDraggable from '@/components/common/ElTableDraggable'
+
 export default {
   components: { ElTableDraggable },
+  props: {
+    callback: {
+      type: Function,
+      required: false,
+      default: () => {}
+    }
+  },
   data() {
     return {
       MyForm: {

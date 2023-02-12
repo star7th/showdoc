@@ -1,60 +1,53 @@
 <!-- 更多模板 -->
 <template>
-  <div class="hello">
-    <Header></Header>
-
-    <el-container class="container-narrow">
-      <el-dialog
-        :title="$t('history_version')"
-        :modal="is_modal"
-        :visible.sync="dialogTableVisible"
-        :close-on-click-modal="false"
-        @close="callback()"
-      >
-        <el-table :data="content">
-          <el-table-column
-            property="addtime"
-            :label="$t('update_time')"
-            width="170"
-          ></el-table-column>
-          <el-table-column
-            property="author_username"
-            :label="$t('update_by_who')"
-          ></el-table-column>
-          <el-table-column property="page_comments" :label="$t('remark')">
-            <template slot-scope="scope">
-              {{ scope.row.page_comments }}
-              <el-button
-                v-if="is_show_recover_btn"
-                @click="editComments(scope.row)"
-                type="text"
-                size="small"
-                >{{ $t('edit') }}</el-button
-              >
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="150">
-            <template slot-scope="scope">
-              <el-button
-                @click="previewDiff(scope.row)"
-                type="text"
-                size="small"
-                >{{ $t('overview') }}</el-button
-              >
-              <el-button
-                v-if="is_show_recover_btn"
-                type="text"
-                size="small"
-                @click="recover(scope.row)"
-                >{{ $t('recover_to_this_version') }}</el-button
-              >
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-dialog>
-    </el-container>
-    <Footer></Footer>
-    <div class></div>
+  <div class="">
+    <SDialog
+      :title="$t('history_version')"
+      :onCancel="callback"
+      :showCancel="false"
+      :onOK="callback"
+    >
+      <el-table :data="content">
+        <el-table-column
+          property="addtime"
+          :label="$t('update_time')"
+          width="170"
+        ></el-table-column>
+        <el-table-column
+          property="author_username"
+          :label="$t('update_by_who')"
+        ></el-table-column>
+        <el-table-column property="page_comments" :label="$t('remark')">
+          <template slot-scope="scope">
+            {{ scope.row.page_comments }}
+            <el-button
+              v-if="is_show_recover_btn"
+              @click="editComments(scope.row)"
+              type="text"
+              size="small"
+              >{{ $t('edit') }}</el-button
+            >
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="150">
+          <template slot-scope="scope">
+            <el-button
+              @click="previewDiff(scope.row)"
+              type="text"
+              size="small"
+              >{{ $t('overview') }}</el-button
+            >
+            <el-button
+              v-if="is_show_recover_btn"
+              type="text"
+              size="small"
+              @click="recover(scope.row)"
+              >{{ $t('recover_to_this_version') }}</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </SDialog>
   </div>
 </template>
 
@@ -78,13 +71,14 @@ export default {
   components: {},
   methods: {
     getContent() {
-      let page_id = this.page_id ? this.page_id : this.$route.params.page_id
+      let page_id = this.page_id
+
       this.request('/api/page/history', {
         page_id: page_id
       }).then(data => {
-        var json = data.data
+        const json = data.data
         if (json.length > 0) {
-          this.content = data.data
+          this.content = json
           this.dialogTableVisible = true
         } else {
           this.dialogTableVisible = false
@@ -100,7 +94,7 @@ export default {
     previewDiff(row) {
       var page_history_id = row['page_history_id']
       let page_id = this.page_id ? this.page_id : this.$route.params.page_id
-      var url = '#/page/diff/' + page_id + '/' + page_history_id
+      var url = '/page/diff/' + page_id + '/' + page_history_id
       window.open(url)
     },
     editComments(row) {

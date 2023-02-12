@@ -1,12 +1,15 @@
 <template>
   <div class="hello">
     <Header></Header>
-
-    <el-container>
-      <el-card class="hor-center-card">
-        <el-button type="text" @click="goback" class="goback-btn">
-          <i class="el-icon-back"></i>
-        </el-button>
+    <SDialog
+      :title="$t('my_attachment')"
+      :onCancel="callback"
+      :showCancel="false"
+      :onOK="callback"
+      top="10vh"
+      width="60%"
+    >
+      <div>
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label>
             <el-input
@@ -68,7 +71,7 @@
             :label="$t('add_time')"
             width="100"
           ></el-table-column>
-          <el-table-column prop :label="$t('operation')">
+          <el-table-column prop :label="operation">
             <template slot-scope="scope">
               <el-button @click="visit(scope.row)" type="text" size="small">{{
                 $t('visit')
@@ -95,30 +98,41 @@
             :total="total"
           ></el-pagination>
         </div>
-      </el-card>
-      <el-dialog
-        :visible.sync="dialogFormVisible"
-        :close-on-click-modal="false"
-        width="400px"
-      >
-        <p>
-          <el-upload
-            :data="{ user_token: user_token }"
-            drag
-            name="file"
-            :action="uploadUrl"
-            :before-upload="beforeUpload"
-            :on-success="uploadCallback"
-            :show-file-list="false"
-          >
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">
-              <span v-html="$t('import_file_tips2')"></span>
-            </div>
-          </el-upload>
-        </p>
-      </el-dialog>
-    </el-container>
+      </div>
+    </SDialog>
+
+    <SDialog
+      v-if="dialogFormVisible"
+      :title="$t('upload')"
+      :onCancel="
+        () => {
+          dialogFormVisible = false
+        }
+      "
+      :onOK="
+        () => {
+          dialogFormVisible = false
+        }
+      "
+      width="400px"
+    >
+      <p>
+        <el-upload
+          :data="{ user_token: user_token }"
+          drag
+          name="file"
+          :action="uploadUrl"
+          :before-upload="beforeUpload"
+          :on-success="uploadCallback"
+          :show-file-list="false"
+        >
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">
+            <span class="tips-text" v-html="$t('import_file_tips2')"></span>
+          </div>
+        </el-upload>
+      </p>
+    </SDialog>
 
     <Footer></Footer>
   </div>
@@ -129,10 +143,17 @@ import { getUserInfoFromStorage } from '@/models/user.js'
 export default {
   name: '',
   components: {},
+  props: {
+    callback: {
+      type: Function,
+      required: false,
+      default: () => {}
+    }
+  },
   data() {
     return {
       page: 1,
-      count: 6,
+      count: 5,
       display_name: '',
       username: '',
       dataList: [],
@@ -163,7 +184,6 @@ export default {
         this.used_flow = json.used_flow_m
       })
     },
-
     handleCurrentChange(currentPage) {
       this.page = currentPage
       this.getList()
@@ -221,18 +241,4 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.hor-center-card a {
-  font-size: 12px;
-}
-
-.hor-center-card {
-  width: 1000px;
-}
-
-.goback-btn {
-  font-size: 18px;
-  margin-right: 800px;
-  margin-bottom: 5px;
-}
-</style>
+<style scoped></style>

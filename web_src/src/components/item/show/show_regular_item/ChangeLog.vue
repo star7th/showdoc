@@ -1,14 +1,13 @@
 <!-- 附件 -->
 <template>
-  <div class="hello">
-    <Header></Header>
-
-    <el-dialog
+  <div class="">
+    <SDialog
       :title="$t('item_change_log_dialog_title')"
-      :visible.sync="dialogTableVisible"
-      :close-on-click-modal="false"
-      :before-close="callback"
+      :onCancel="callback"
+      :showCancel="false"
+      :onOK="callback"
       width="70%"
+      top="5vh"
     >
       <el-table :data="dataList">
         <el-table-column
@@ -66,7 +65,7 @@
           :total="total"
         ></el-pagination>
       </div>
-    </el-dialog>
+    </SDialog>
   </div>
 </template>
 

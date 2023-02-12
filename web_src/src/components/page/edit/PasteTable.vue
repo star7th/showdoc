@@ -1,35 +1,22 @@
 <!-- 更多模板 -->
 <template>
-  <div class="hello">
-    <Header></Header>
-
-    <el-container class="container-narrow">
-      <el-dialog
-        :title="$t('paste_insert_table')"
-        :modal="is_modal"
-        :visible.sync="dialogFormVisible"
-        :close-on-click-modal="false"
-        @close="callback()"
-      >
-        <el-form>
-          <el-input
-            type="textarea"
-            class="dialoContent"
-            :placeholder="$t('paste_insert_table_tips')"
-            :rows="10"
-            v-model="content"
-          ></el-input>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="callback()">{{ $t('cancel') }}</el-button>
-          <el-button type="primary" @click="transform">{{
-            $t('confirm')
-          }}</el-button>
-        </div>
-      </el-dialog>
-    </el-container>
-    <Footer></Footer>
-    <div class></div>
+  <div class="">
+    <SDialog
+      v-if="dialogFormVisible"
+      :title="$t('paste_insert_table')"
+      :onCancel="callback"
+      :onOK="transform"
+    >
+      <el-form>
+        <el-input
+          type="textarea"
+          class="dialoContent"
+          :placeholder="$t('paste_insert_table_tips')"
+          :rows="10"
+          v-model="content"
+        ></el-input>
+      </el-form>
+    </SDialog>
   </div>
 </template>
 

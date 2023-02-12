@@ -45,8 +45,8 @@
           </el-form-item>
 
           <el-form-item label>
-            <router-link to="/user/login">{{ $t('login') }}</router-link>
-            &nbsp;&nbsp;&nbsp;
+            <router-link to="/user/login">{{ $t('login') }}</router-link
+            >&nbsp;&nbsp;&nbsp;
           </el-form-item>
         </el-form>
       </el-card>
@@ -72,19 +72,14 @@ export default {
     onSubmit() {
       var item_id = this.$route.params.item_id ? this.$route.params.item_id : 0
       var page_id = this.$route.query.page_id ? this.$route.query.page_id : 0
-
-      this.request(
-        '/api/item/pwd',
-        {
-          item_id: item_id,
-          page_id: page_id,
-          password: this.password,
-          captcha: this.captcha,
-          captcha_id: this.captchaId
-        },
-        'post',
-        false
-      ).then(data => {
+      let params = {
+        item_id: item_id,
+        page_id: page_id,
+        password: this.password,
+        captcha: this.captcha,
+        captcha_id: this.captchaId
+      }
+      this.request('/api/item/pwd', params, 'post', false).then(data => {
         if (data.error_code === 0) {
           // _item_pwd参数的作用在于：跨域请求的时候无法带cooies，自然无法记住session。用这个参数使记住用户输入过项目密码。
           sessionStorage.setItem('_item_pwd', this.password)

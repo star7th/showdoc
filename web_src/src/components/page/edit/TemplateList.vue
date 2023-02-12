@@ -1,91 +1,90 @@
 <!-- 更多模板 -->
 <template>
-  <div class="hello">
-    <Header></Header>
+  <div class="">
+    <SDialog
+      :title="$t('templ_list')"
+      :onCancel="callback"
+      :showCancel="false"
+      :onOK="callback"
+    >
+      <el-tabs value="myList" type="card">
+        <el-tab-pane :label="$t('my_template')" name="myList">
+          <el-table :data="myList" :empty-text="$t('no_my_template_text')">
+            <el-table-column
+              property="addtime"
+              :label="$t('save_time')"
+              width="170"
+            ></el-table-column>
+            <el-table-column
+              property="template_title"
+              :label="$t('templ_title')"
+            ></el-table-column>
+            <el-table-column :label="$t('operation')" width="300">
+              <template slot-scope="scope">
+                <el-button
+                  @click="insertTemplate(scope.row)"
+                  type="text"
+                  size="small"
+                  >{{ $t('insert_templ') }}</el-button
+                >
+                <el-button
+                  @click="shareToClick(scope.row)"
+                  type="text"
+                  size="small"
+                  >{{ $t('share_to_these_items') }}({{
+                    scope.row.share_item_count
+                  }})</el-button
+                >
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="deleteTemplate(scope.row)"
+                  >{{ $t('delete_templ') }}</el-button
+                >
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane :label="$t('item_template')" name="itemList">
+          <el-table :data="itemList" :empty-text="$t('no_item_template_text')">
+            <el-table-column
+              property="created_at"
+              :label="$t('save_time')"
+              width="170"
+            ></el-table-column>
+            <el-table-column
+              property="username"
+              :label="$t('sharer')"
+            ></el-table-column>
+            <el-table-column
+              property="template_title"
+              :label="$t('templ_title')"
+            ></el-table-column>
+            <el-table-column :label="$t('operation')" width="150">
+              <template slot-scope="scope">
+                <el-button
+                  @click="insertTemplate(scope.row)"
+                  type="text"
+                  size="small"
+                  >{{ $t('insert_templ') }}</el-button
+                >
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
+    </SDialog>
 
-    <el-container class="container-narrow">
-      <el-dialog
-        :title="$t('templ_list')"
-        :visible.sync="dialogTableVisible"
-        :close-on-click-modal="false"
-        :before-close="callback"
-      >
-        <el-tabs value="myList" type="card">
-          <el-tab-pane :label="$t('my_template')" name="myList">
-            <el-table :data="myList" :empty-text="$t('no_my_template_text')">
-              <el-table-column
-                property="addtime"
-                :label="$t('save_time')"
-                width="170"
-              ></el-table-column>
-              <el-table-column
-                property="template_title"
-                :label="$t('templ_title')"
-              ></el-table-column>
-              <el-table-column :label="$t('operation')" width="300">
-                <template slot-scope="scope">
-                  <el-button
-                    @click="insertTemplate(scope.row)"
-                    type="text"
-                    size="small"
-                    >{{ $t('insert_templ') }}</el-button
-                  >
-                  <el-button
-                    @click="shareToClick(scope.row)"
-                    type="text"
-                    size="small"
-                    >{{ $t('share_to_these_items') }}({{
-                      scope.row.share_item_count
-                    }})</el-button
-                  >
-                  <el-button
-                    type="text"
-                    size="small"
-                    @click="deleteTemplate(scope.row)"
-                    >{{ $t('delete_templ') }}</el-button
-                  >
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-          <el-tab-pane :label="$t('item_template')" name="itemList">
-            <el-table
-              :data="itemList"
-              :empty-text="$t('no_item_template_text')"
-            >
-              <el-table-column
-                property="created_at"
-                :label="$t('save_time')"
-                width="170"
-              ></el-table-column>
-              <el-table-column
-                property="username"
-                :label="$t('sharer')"
-              ></el-table-column>
-              <el-table-column
-                property="template_title"
-                :label="$t('templ_title')"
-              ></el-table-column>
-              <el-table-column :label="$t('operation')" width="150">
-                <template slot-scope="scope">
-                  <el-button
-                    @click="insertTemplate(scope.row)"
-                    type="text"
-                    size="small"
-                    >{{ $t('insert_templ') }}</el-button
-                  >
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-        </el-tabs>
-      </el-dialog>
-    </el-container>
     <!-- 共享到这些项目 -->
-    <el-dialog
-      :visible.sync="dialogItemVisible"
-      width="300px"
-      :close-on-click-modal="false"
+    <SDialog
+      v-if="dialogItemVisible"
+      :onCancel="
+        () => {
+          dialogItemVisible = false
+        }
+      "
+      :onOK="shareToItem"
+      width="400px"
     >
       <el-form>
         <el-select
@@ -101,19 +100,8 @@
           ></el-option>
         </el-select>
       </el-form>
-      <p>{{ $t('share_items_tips') }}</p>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogItemVisible = false">{{
-          $t('cancel')
-        }}</el-button>
-        <el-button type="primary" @click="shareToItem">{{
-          $t('confirm')
-        }}</el-button>
-      </div>
-    </el-dialog>
-
-    <Footer></Footer>
-    <div class></div>
+      <p class="tips-text">{{ $t('share_items_tips') }}</p>
+    </SDialog>
   </div>
 </template>
 

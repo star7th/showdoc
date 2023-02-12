@@ -56,7 +56,7 @@ export default {
       var domain = this.item_info.item_domain
         ? this.item_info.item_domain
         : this.item_info.item_id
-      return '#/' + domain + '/' + page_id
+      return '/' + domain + '/' + page_id
     }
   },
   mounted() {
@@ -103,6 +103,7 @@ export default {
   margin-right: 10px;
   margin-bottom: 4px;
 }
+
 .el-menu-item:not(.is-active) a {
   color: #303133;
 }

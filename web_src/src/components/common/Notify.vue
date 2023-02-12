@@ -41,24 +41,39 @@ export default {
               toUrl
             )
           }
+          if (json['remind'].object_type == 'vip') {
+            let msg =
+              '你在showdoc购买的付费版资格很快过期了，你可以点此进入用户中心进行续费(如已续费请忽略该通知)'
+
+            let routeUrl = this.$router.resolve({
+              path: '/user/setting'
+            })
+            const toUrl = routeUrl.href
+            this.brownNotify(
+              msg,
+              json['remind'].from_uid,
+              json['remind'].message_content_id,
+              toUrl
+            )
+          }
         }
         // 公告类消息
-        // if (json['announce'] && json['announce'].id) {
-        //   const msg = '你有未读的公告消息，点此查看'
-        //   let routeUrl = this.$router.resolve({
-        //     path: '/message/index',
-        //     query: {
-        //       dtab: 'announcementList'
-        //     }
-        //   })
-        //   const toUrl = routeUrl.href
-        //   this.brownNotify(
-        //     msg,
-        //     json['announce'].from_uid,
-        //     json['announce'].message_content_id,
-        //     toUrl
-        //   )
-        // }
+        if (json['announce'] && json['announce'].id) {
+          const msg = '你有未读的公告消息，点此查看'
+          let routeUrl = this.$router.resolve({
+            path: '/message/index',
+            query: {
+              dtab: 'announcementList'
+            }
+          })
+          const toUrl = routeUrl.href
+          this.brownNotify(
+            msg,
+            json['announce'].from_uid,
+            json['announce'].message_content_id,
+            toUrl
+          )
+        }
       })
     },
     // 浏览器通知
@@ -149,10 +164,10 @@ export default {
     setTimeout(() => {
       this.getUnread()
     }, 2000)
-    // 5分钟重复获取未读提醒
+    // 60分钟重复获取未读提醒
     this.intervalId = setInterval(() => {
       this.getUnread()
-    }, 5 * 60 * 1000)
+    }, 60 * 60 * 1000)
   },
 
   destroyed() {

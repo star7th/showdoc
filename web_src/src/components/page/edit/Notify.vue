@@ -1,13 +1,20 @@
 <!-- 附件 -->
 <template>
   <div class="hello">
-    <Header></Header>
-
-    <el-dialog
+    <SDialog
+      v-if="dialogVisible"
       :title="$t('save_and_notify')"
-      :visible.sync="dialogVisible"
-      :close-on-click-modal="false"
-      :before-close="callback"
+      :onCancel="
+        () => {
+          callback('')
+        }
+      "
+      :onOK="
+        () => {
+          callback(textarea)
+        }
+      "
+      width="500px"
     >
       <div>
         <el-input
@@ -22,60 +29,71 @@
         <el-button @click="dialogVisible2 = true" type="text">{{
           $t('click_to_edit_member')
         }}</el-button>
-        ( {{ $t('cur_setting_notify') }} {{ list.length }} {{ $t('people') }} )
+        <span class="tips-text"
+          >( {{ $t('cur_setting_notify') }} {{ list.length }}
+          {{ $t('people') }} )</span
+        >
       </p>
-      <p>
+      <p class="tips-text">
         {{ $t('notify_tips1') }}
       </p>
-
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="callback('')">{{ $t('cancel') }}</el-button>
-        <el-button type="primary" @click="callback(textarea)">{{
-          $t('confirm')
-        }}</el-button>
-      </span>
-    </el-dialog>
+    </SDialog>
 
     <!-- 通知人员列表的对话框 -->
-    <el-dialog :visible.sync="dialogVisible2" :close-on-click-modal="false">
-      <el-button @click="dialogVisible3 = true">{{
-        $t('add_single_member')
-      }}</el-button>
-      <el-button @click="addAllMember">{{ $t('add_all_member') }}</el-button>
-      <el-table :data="list">
-        <el-table-column
-          property="username"
-          :label="$t('username')"
-        ></el-table-column>
-        <el-table-column property="name" :label="$t('name')"></el-table-column>
-        <el-table-column
-          property="sub_time"
-          :label="$t('addtime')"
-        ></el-table-column>
-        <el-table-column prop :label="$t('operation')">
-          <template slot-scope="scope">
-            <el-button type="text" @click="deleteOne(scope.row)">{{
-              $t('delete')
-            }}</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible2 = false">{{
-          $t('cancel')
+    <SDialog
+      v-if="dialogVisible2"
+      :onCancel="
+        () => {
+          dialogVisible2 = false
+        }
+      "
+      :onOK="
+        () => {
+          dialogVisible2 = false
+        }
+      "
+      width="500px"
+    >
+      <div>
+        <el-button @click="dialogVisible3 = true">{{
+          $t('add_single_member')
         }}</el-button>
-        <el-button type="primary" @click="dialogVisible2 = false">{{
-          $t('confirm')
-        }}</el-button>
+        <el-button @click="addAllMember">{{ $t('add_all_member') }}</el-button>
+        <br />
+        <el-table :data="list">
+          <el-table-column
+            property="username"
+            :label="$t('username')"
+          ></el-table-column>
+          <el-table-column
+            property="name"
+            :label="$t('name')"
+          ></el-table-column>
+          <el-table-column
+            property="sub_time"
+            :label="$t('addtime')"
+          ></el-table-column>
+          <el-table-column prop :label="$t('operation')">
+            <template slot-scope="scope">
+              <el-button type="text" @click="DeleteOne(scope.row)">{{
+                $t('delete')
+              }}</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
-    </el-dialog>
+    </SDialog>
 
     <!-- 添加人员对话框 -->
-
-    <el-dialog
-      :visible.sync="dialogVisible3"
-      width="350px"
-      :close-on-click-modal="false"
+    <SDialog
+      v-if="dialogVisible3"
+      :onCancel="
+        () => {
+          dialogVisible3 = false
+        }
+      "
+      :onOK="addMember"
+      width="400px"
     >
       <el-form>
         <el-form-item :label="$t('username') + ':'">
@@ -99,30 +117,12 @@
               @click="getAllItemMemberList"
             ></i>
           </el-tooltip>
-          <div>
+          <p class="leading-8	v3-font-size-sm v3-color-aux">
             {{ $t('notify_add_member_tips1') }}
-          </div>
-          <div>
-            {{ $t('quick_entrance') }}:
-            <el-button @click="toItemSetting()" type="text">{{
-              $t('to_item_setting')
-            }}</el-button>
-            <el-button @click="toTeam()" type="text">{{
-              $t('to_team')
-            }}</el-button>
-          </div>
+          </p>
         </el-form-item>
       </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible3 = false">{{
-          $t('cancel')
-        }}</el-button>
-        <el-button type="primary" @click="addMember">{{
-          $t('confirm')
-        }}</el-button>
-      </div>
-    </el-dialog>
+    </SDialog>
   </div>
 </template>
 
@@ -213,7 +213,7 @@ export default {
         })
       }
     },
-    deleteOne(row) {
+    DeleteOne(row) {
       this.request('/api/subscription/deletePage', {
         uids: row.uid,
         page_id: this.page_id

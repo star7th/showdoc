@@ -17,6 +17,7 @@
         {{ item.item_description }}
       </p>
     </div>
+
     <div class="resultList" v-for="item in resultList" :key="item.item_id">
       <div v-for="page in item.pages" :key="page.page_id">
         <hr />

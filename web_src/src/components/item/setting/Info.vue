@@ -7,21 +7,40 @@
       v-model="infoForm"
     >
       <el-form-item>
-        <el-input
-          type="text"
-          auto-complete="off"
-          v-model="infoForm.item_name"
-          placeholder
-        ></el-input>
+        <el-tooltip effect="dark" content="项目名" placement="right">
+          <el-input
+            type="text"
+            auto-complete="off"
+            v-model="infoForm.item_name"
+            placeholder
+          ></el-input>
+        </el-tooltip>
       </el-form-item>
 
       <el-form-item>
-        <el-input
-          type="text"
-          auto-complete="off"
-          v-model="infoForm.item_description"
-          :placeholder="$t('item_description')"
-        ></el-input>
+        <el-tooltip effect="dark" content="项目描述" placement="right">
+          <el-input
+            type="text"
+            auto-complete="off"
+            v-model="infoForm.item_description"
+            :placeholder="$t('item_description')"
+          ></el-input>
+        </el-tooltip>
+      </el-form-item>
+
+      <el-form-item>
+        <el-tooltip
+          effect="dark"
+          content="假如你的个性域名设置为abc，则你的项目地址为www.showdoc.com.cn/abc"
+          placement="top-end"
+        >
+          <el-input
+            type="text"
+            auto-complete="off"
+            v-model="infoForm.item_domain"
+            :placeholder="$t('info_item_domain')"
+          ></el-input>
+        </el-tooltip>
       </el-form-item>
 
       <el-form-item label>
@@ -66,11 +85,11 @@ export default {
       this.request('/api/item/detail', {
         item_id: this.$route.params.item_id
       }).then(data => {
-        var Info = data.data
-        if (Info.password) {
+        const json = data.data
+        if (json.password) {
           this.isOpenItem = false
         }
-        this.infoForm = Info
+        this.infoForm = json
       })
     },
     formSubmit() {

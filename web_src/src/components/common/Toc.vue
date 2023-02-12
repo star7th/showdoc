@@ -13,13 +13,13 @@ export default {
       try {
         if ($ != undefined) {
           clearInterval(check_jQuery_is_load)
-          that.toc_main_script()
+          that.tocMainScript()
         }
       } catch (e) {}
     }, 200)
   },
   methods: {
-    toc_main_script() {
+    tocMainScript() {
       // 监听点击事件并滑动到相应位置
       $(document).on('click', '.markdown-toc-list a[href]', function(event) {
         event.preventDefault()
@@ -63,7 +63,7 @@ export default {
         this.$nextTick(() => {
           setTimeout(function() {
             $('.markdown-toc').click()
-          }, 500)
+          }, 200)
         })
       }
     }
@@ -81,7 +81,7 @@ export default {
 .page_content_main .markdown-toc {
   position: fixed;
   top: 230px;
-  margin-left: 800px;
+  margin-left: 820px;
   min-width: 32px;
   min-height: 32px;
   cursor: pointer;
@@ -168,6 +168,7 @@ export default {
   color: #40a9ff;
   transition: 0s;
 }
+
 .page_content_main .markdown-toc li ul {
   padding-left: 15px;
 }

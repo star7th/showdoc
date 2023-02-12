@@ -17,10 +17,6 @@
               <Member></Member>
             </el-tab-pane>
 
-            <el-tab-pane :label="$t('advance_setting')" name="third">
-              <Advanced></Advanced>
-            </el-tab-pane>
-
             <el-tab-pane :label="$t('open_api')" name="four">
               <OpenApi></OpenApi>
             </el-tab-pane>
@@ -40,16 +36,13 @@
 <script>
 import Info from '@/components/item/setting/Info'
 import Member from '@/components/item/setting/Member'
-import Advanced from '@/components/item/setting/Advanced'
 import OpenApi from '@/components/item/setting/OpenApi'
 import Recycle from '@/components/item/setting/Recycle'
-
 export default {
   name: 'Login',
   components: {
     Info,
     Member,
-    Advanced,
     OpenApi,
     Recycle
   },

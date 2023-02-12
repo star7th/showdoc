@@ -9,7 +9,6 @@
     <el-aside
       :class="menuMarginLeft"
       id="left-side-menu"
-      :width="asideWidth"
       @mouseenter.native="hideScrollbar = false"
       @mouseleave.native="hideScrollbar = true"
     >
@@ -29,17 +28,9 @@
           @clear="searchItem()"
           size="small"
           v-model="keyword"
-        ></el-input>
-        <el-tooltip
-          effect="dark"
-          :content="$t('expand_collapse_catalog_tips')"
-          placement="top"
+          suffix-icon="el-icon-search"
         >
-          <i
-            class="el-icon-s-fold cursor-pointer"
-            @click="expandCollapseCatalog"
-          ></i>
-        </el-tooltip>
+        </el-input>
 
         <!-- 一级页面 -->
         <template v-if="menu.pages && menu.pages.length">
@@ -72,12 +63,11 @@
 
 <script>
 import LeftMenuSub from './LeftMenuSub.vue'
-
 export default {
   props: {
     getPageContent: '',
     item_info: '',
-    searchItem: '',
+    searchItem: () => {},
     keyword: ''
   },
   data() {
@@ -86,7 +76,6 @@ export default {
       menu: '',
       show_menu_btn: false,
       hideScrollbar: true,
-      asideWidth: '250px',
       menuMarginLeft: 'menu-margin-left1',
       expandCollapseCatalogStatus: '0' // 目录状态。0：无设置；1：展开全部；2：折叠全部
     }
@@ -100,8 +89,7 @@ export default {
       this.changeUrl(index)
       this.getPageContent(index)
     },
-
-    // 改变url
+    // 改变url.
     changeUrl(page_id) {
       if (
         page_id > 0 &&
@@ -145,7 +133,7 @@ export default {
       var domain = this.item_info.item_domain
         ? this.item_info.item_domain
         : this.item_info.item_id
-      return '#/' + domain + '/' + page_id
+      return '/' + domain + '/' + page_id
     },
     expandCollapseCatalog() {
       if (
@@ -205,16 +193,6 @@ export default {
         element.scrollIntoView()
       }, 1000)
     }
-
-    // 如果是大屏幕且存在目录，则把侧边栏调大
-    if (
-      window.screen.width >= 1600 &&
-      this.menu.catalogs &&
-      this.menu.catalogs.length > 0
-    ) {
-      this.asideWidth = '300px'
-      this.menuMarginLeft = 'menu-margin-left2'
-    }
   }
 }
 </script>
@@ -229,14 +207,13 @@ export default {
 #left-side-menu {
   color: #333;
   position: fixed;
-  margin-top: -20px;
-  height: calc(100% - 90px);
+  height: calc(100% - 150px);
 }
 .menu-margin-left1 {
-  margin-left: -273px;
+  margin-left: 0px;
 }
 .menu-margin-left2 {
-  margin-left: -323px;
+  margin-left: 0px;
 }
 
 .el-input-group__append button.el-button {
@@ -286,7 +263,7 @@ export default {
 .search-box {
   padding: 0px 0px 0px 20px;
   box-sizing: border-box;
-  width: 90%;
+  width: 95%;
 }
 
 /*隐藏滚动条*/
@@ -304,6 +281,8 @@ export default {
   margin-top: 5px;
   cursor: pointer;
   position: fixed;
+  top: 10px;
+  left: 15px;
 }
 .el-menu-item:not(.is-active) a {
   color: #303133;
@@ -322,7 +301,7 @@ export default {
   text-overflow: ellipsis;
 }
 .hide-scrollbar li {
-  /* white-space: normal;*/
+  /*white-space: normal;*/
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -332,10 +311,5 @@ export default {
 }
 .normal-scrollbar li {
   font-size: 12px;
-}
-
-#left-side-menu .el-input__suffix {
-  right: 25px;
-  padding-right: 10px;
 }
 </style>

@@ -537,5 +537,57 @@ exports.default = {
   team_exit_confirm:
     'Are you sure to quit the team? After quitting, you will lose all project permissions under the team',
 
-  expand_collapse_catalog_tips: 'Expand all catalogs / collapse all catalogs'
+  expand_collapse_catalog_tips: 'Expand all catalogs / collapse all catalogs',
+
+  edit_group: 'Create/Edit Group',
+  star_items: 'Star Items',
+  unstar_item: 'Unstar item',
+  star_item: 'Star Item',
+  open_item: 'Open Item',
+  user_center: 'User Center',
+  create_new_item: 'Create Item',
+  regular_item_desc: 'Multi-page online documents',
+  single_item_desc: 'One-page online document',
+  table_item: 'Spreadsheet',
+  table_item_desc: 'Online spreadsheets',
+  import_file_desc: 'Import supported files',
+  auto_create: 'Auto Create',
+  auto_create_desc: 'Automatic Create',
+  home_logo_title: 'Online API & Technical Documentation',
+  group: 'group',
+  item_group_desc: 'Create groups/Manage groups',
+  empty_team_member_tips:
+    'No member data. You can try to add members by clicking on the top right corner',
+  empty_team_item_tips:
+    'There is no item data. You can try to bind items by clicking the upper right corner',
+
+  update_user_name_tips:
+    'Please enter your nickname below. It is recommended to use your real name so that other members can easily identify you when collaborating on items and documents',
+
+  accessibility: 'Accessibility',
+  vip: 'Vip',
+  default_title: 'Default title',
+  doc_tool: 'Document Tools',
+  add_from_template: 'Add from template',
+  click_to_edit_page_title: 'Click to edit the page title',
+  select_catalog: 'Select catalog',
+  update_base_info: 'Update base info',
+  no_member_tips:
+    'There is no team or member information, you can click the button above to add',
+  select_member_before: 'Select the member name added before',
+  item_member: 'Item Member',
+  item_team_info: 'Team info',
+
+  copy_page: 'Copy page',
+  page_history_version: 'Page history version',
+  page_info: 'Page info',
+  sort_page: 'Sort page',
+  delete_page: 'Delete page',
+  update_item_base_info: 'Update item info',
+  attorn_item: 'Attorn item',
+  archive_item: 'Archive item',
+  delete_item: 'Delete item',
+  table_item_auto_save_tips:
+    'Spreadsheet items will be saved automatically when you edit them',
+  do_not_remind_again: 'Don not remind me again'
 }

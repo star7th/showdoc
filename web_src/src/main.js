@@ -20,6 +20,7 @@ import 'babel-polyfill'
 import VueClipboard from 'vue-clipboard2'
 import store from './store/'
 import '../src/assets/tailwind.css' // 引入tailwind
+import SDialog from '@/components/common/SDialog'
 
 Vue.use(util)
 Vue.config.productionTip = false
@@ -28,6 +29,9 @@ Vue.component('Footer', Footer)
 Vue.use(ElementUI)
 Vue.use(VueI18n)
 Vue.use(VueClipboard)
+
+// 注册为全局组件
+Vue.component('SDialog', SDialog)
 
 // 多语言相关
 var allZhLocale = Object.assign(zhLocale, myZhLocale)

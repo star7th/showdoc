@@ -1,51 +1,36 @@
 <!-- 页面排序 -->
 <template>
-  <div class="hello">
-    <Header></Header>
-
-    <el-container class="container-narrow">
-      <el-dialog
-        :title="$t('sort_pages')"
-        :modal="is_modal"
-        :visible.sync="dialogTableVisible"
-        :close-on-click-modal="false"
-        :before-close="callback"
+  <div class="">
+    <SDialog
+      :title="$t('sort_pages')"
+      :onCancel="callback"
+      :showCancel="false"
+      :onOK="callback"
+    >
+      <p class="tips-text">{{ $t('sort_pages_tips') }}</p>
+      <el-select
+        :placeholder="$t('optional')"
+        class="select-cat"
+        v-model="cat_id"
+        v-if="belong_to_catalogs"
       >
-        <div class="dialog-body">
-          <p class="tips">{{ $t('sort_pages_tips') }}</p>
-          <el-select
-            :placeholder="$t('optional')"
-            class="select-cat"
-            v-model="cat_id"
-            v-if="belong_to_catalogs"
-          >
-            <el-option
-              v-for="cat in belong_to_catalogs"
-              :key="cat.cat_name"
-              :label="cat.cat_name"
-              :value="cat.cat_id"
-            ></el-option>
-          </el-select>
-          <draggable v-model="pages" tag="div" group="page" @end="endMove">
-            <div class="page-box" v-for="page in pages" :key="page.page_id">
-              <span class="page-name">{{ page.page_title }}</span>
-            </div>
-          </draggable>
+        <el-option
+          v-for="cat in belong_to_catalogs"
+          :key="cat.cat_name"
+          :label="cat.cat_name"
+          :value="cat.cat_id"
+        ></el-option>
+      </el-select>
+      <draggable v-model="pages" tag="div" group="page" @end="endMove">
+        <div class="page-box" v-for="page in pages" :key="page.page_id">
+          <span class="page-name">{{ page.page_title }}</span>
         </div>
-      </el-dialog>
-    </el-container>
-    <Footer></Footer>
-    <div class></div>
+      </draggable>
+    </SDialog>
   </div>
 </template>
 
 <style scoped>
-.dialog-body {
-  min-height: 400px;
-  max-height: 90%;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
 .page-box {
   background-color: rgb(250, 250, 250);
   width: 98%;
@@ -58,11 +43,6 @@
   line-height: 40px;
   margin-left: 20px;
   color: #262626;
-}
-.tips {
-  margin-left: 10px;
-  color: #9ea1a6;
-  font-size: 11px;
 }
 </style>
 
@@ -78,8 +58,6 @@ export default {
   },
   data() {
     return {
-      currentDate: new Date(),
-      dialogTableVisible: true,
       pages: [],
       belong_to_catalogs: []
     }
@@ -88,9 +66,6 @@ export default {
     draggable
   },
   methods: {
-    show() {
-      this.dialogTableVisible = true
-    },
     // 获取某目录下的所有页面
     getPages() {
       this.request('/api/catalog/getPagesBycat', {
@@ -109,15 +84,10 @@ export default {
       this.sortPage(data)
     },
     sortPage(data) {
-      this.request(
-        '/api/page/sort',
-        {
-          pages: JSON.stringify(data),
-          item_id: this.item_id
-        },
-        'post',
-        false
-      ).then(data => {
+      this.request('/api/page/sort', {
+        pages: JSON.stringify(data),
+        item_id: this.item_id
+      }).then(data => {
         if (data.error_code === 0) {
           this.getPages()
           // window.location.reload();

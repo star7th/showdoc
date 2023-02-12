@@ -1,9 +1,15 @@
 <template>
   <div class="hello" v-if="showComp">
-    <Header></Header>
-    <div id="header"></div>
+    <Header id="header" :item_info="item_info">
+      <HeaderRight
+        :page_id="page_id"
+        :item_info="item_info"
+        :page_info="page_info"
+        :searchItem="searchItem"
+      ></HeaderRight>
+    </Header>
 
-    <div class="container doc-container" id="doc-container">
+    <div class="doc-container" id="doc-container">
       <div id="left-side">
         <LeftMenu
           ref="leftMenu"
@@ -13,6 +19,14 @@
           :searchItem="searchItem"
           v-if="item_info"
         ></LeftMenu>
+
+        <LeftMenuBottomBar
+          :item_id="item_info.item_id"
+          :page_info="page_info"
+          :searchItem="searchItem"
+          :page_id="page_id"
+          v-if="item_info"
+        ></LeftMenuBottomBar>
       </div>
 
       <div id="right-side">
@@ -22,14 +36,9 @@
           @mouseleave="showfullPageBtn = false"
         >
           <div class="doc-title-box" id="doc-title-box">
-            <span id="doc-title-span" class="dn"></span>
-            <h2 id="doc-title">{{ page_title }}</h2>
-            <i
-              class="el-icon-full-screen"
-              id="full-page"
-              v-show="showfullPageBtn && page_id"
-              @click="clickFullPage"
-            ></i>
+            <span class="v3-font-size-lg font-bold " id="doc-title">{{
+              page_title
+            }}</span>
             <i
               class="el-icon-upload item"
               id="attachment"
@@ -46,7 +55,7 @@
                 :keyword="keyword"
               ></Editormd>
             </div>
-            <div v-if="emptyItem && lang == 'zh-cn'" class="empty-tips">
+            <div v-if="emptyItem" class="empty-tips">
               <div class="icon"><i class="el-icon-shopping-cart-2"></i></div>
               <div class="text">
                 <p>
@@ -76,13 +85,6 @@
             </div>
           </div>
         </div>
-
-        <OpBar
-          :page_id="page_id"
-          :item_id="item_info.item_id"
-          :item_info="item_info"
-          :page_info="page_info"
-        ></OpBar>
       </div>
     </div>
 
@@ -101,8 +103,6 @@
         }
       "
     ></AttachmentList>
-
-    <Footer></Footer>
   </div>
 </template>
 
@@ -110,14 +110,15 @@
 import Editormd from '@/components/common/Editormd'
 import Toc from '@/components/common/Toc'
 import LeftMenu from '@/components/item/show/show_regular_item/LeftMenu'
-import OpBar from '@/components/item/show/show_regular_item/OpBar'
 import AttachmentList from '@/components/page/edit/AttachmentList'
 import { rederPageContent } from '@/models/page'
-
+import HeaderRight from './HeaderRight'
+import Header from '../Header'
+import LeftMenuBottomBar from './LeftMenuBottomBar'
 export default {
   props: {
     item_info: '',
-    searchItem: '',
+    searchItem: () => {},
     keyword: ''
   },
   data() {
@@ -136,16 +137,17 @@ export default {
       showToc: true,
       showComp: true,
       emptyItem: false,
-      lang: '',
       showAttachmentListDialog: false
     }
   },
   components: {
     Editormd,
     LeftMenu,
-    OpBar,
     Toc,
-    AttachmentList
+    AttachmentList,
+    Header,
+    HeaderRight,
+    LeftMenuBottomBar
   },
   methods: {
     // 获取页面内容
@@ -162,43 +164,43 @@ export default {
         'post',
         false
       ).then(data => {
-        // loading.close();
-        if (data.error_code === 0) {
-          this.content = rederPageContent(
-            data.data.page_content,
-            this.$store.state.item_info.global_param
-          )
-          this.$store.dispatch('changeOpenCatId', data.data.cat_id)
-          this.page_title = data.data.page_title
-          this.page_info = data.data
-          this.attachment_count =
-            data.data.attachment_count > 0 ? data.data.attachment_count : ''
-          // 切换变量让它重新加载、渲染子组件
-          this.page_id = 0
-          this.item_info.default_page_id = page_id
-          this.$nextTick(() => {
-            this.page_id = page_id
-            // 页面回到顶部
-            document.body.scrollTop = document.documentElement.scrollTop = 0
-            document.title = this.page_title + '--ShowDoc'
-          })
-        } else {
-          // this.$alert(data.error_message);
-        }
+        this.content = rederPageContent(
+          data.data.page_content,
+          this.$store.state.item_info.global_param
+        )
+        this.$store.dispatch('changeOpenCatId', data.data.cat_id)
+        this.page_title = data.data.page_title
+        this.page_info = data.data
+        this.attachment_count =
+          data.data.attachment_count > 0 ? data.data.attachment_count : ''
+        // 切换变量让它重新加载、渲染子组件
+        this.page_id = 0
+        this.item_info.default_page_id = page_id
+        this.$nextTick(() => {
+          this.page_id = page_id
+          // 页面回到顶部
+          document.body.scrollTop = document.documentElement.scrollTop = 0
+          document.title = this.page_title + '--ShowDoc'
+        })
       })
     },
     // 根据屏幕宽度进行响应(应对移动设备的访问)
     adaptToMobile() {
       let childRef = this.$refs.leftMenu // 获取子组件
       childRef.hideMenu()
-      this.show_page_bar = false
       var doc_container = document.getElementById('doc-container')
-      doc_container.style.width = '95%'
       doc_container.style.padding = '5px'
+      doc_container.style.width = 'calc( 100vw - 10px )'
+      doc_container.style.minWidth = 'calc( 100vw - 10px )'
+      doc_container.style.maxWidth = 'calc( 100vw - 10px )'
+      doc_container.style.margin = '0px'
       var header = document.getElementById('header')
-      header.style.height = '10px'
+      header.style.display = 'none'
+
+      var rightSide = document.getElementById('right-side')
+      rightSide.style.marginLeft = '0px'
       var docTitle = document.getElementById('doc-title-box')
-      docTitle.style.marginTop = '40px'
+      docTitle.style.marginTop = '0px'
       this.showToc = false
     },
     // 根据屏幕宽度进行响应。应对小屏幕pc设备(如笔记本)的访问
@@ -248,17 +250,15 @@ export default {
             $('.editormd-html-preview').css('font-size', '16px')
           }, 200)
         })
-
         $('#left-side').hide()
         $('.op-bar').hide()
       }
-
       this.fullPage = !this.fullPage
     }
   },
   mounted() {
     this.adaptScreen()
-    this.lang = DocConfig.lang
+    // console.log(this.$store.state.item_info)
     if (
       this.item_info &&
       this.item_info.menu &&
@@ -273,27 +273,29 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.el-dropdown-link,
+a {
+  color: #343a40;
+}
 .page_content_main {
-  width: 800px;
   margin: 0 auto;
   height: 50%;
   overflow: visible;
 }
 
 .editormd-html-preview {
-  width: 95%;
-  font-size: 16px;
+  width: 100%;
   overflow-y: hidden;
 }
 
 #attachment {
   float: right;
   font-size: 25px;
-  margin-top: -40px;
-  margin-right: 5px;
+  margin-right: 20px;
   cursor: pointer;
   color: #abd1f1;
 }
+
 #full-page {
   float: right;
   font-size: 25px;
@@ -305,46 +307,51 @@ export default {
 #page_md_content {
   padding: 10px 10px 90px 10px;
   overflow: hidden;
-  font-size: 11pt;
-  line-height: 1.7;
   color: #333;
 }
 
 .doc-container {
   position: static;
-  -webkit-box-shadow: 0px 1px 6px #ccc;
-  -moz-box-shadow: 0px 1px 6px #ccc;
-  -ms-box-shadow: 0px 1px 6px #ccc;
-  -o-box-shadow: 0px 1px 6px #ccc;
-  box-shadow: 0px 1px 6px #ccc;
-  background-color: #fff;
-  border-bottom: 1px solid #d9d9d9;
   margin-bottom: 20px;
-  width: 800px;
   min-height: 750px;
   margin-left: auto;
   margin-right: auto;
-  padding: 20px;
+  margin-top: 110px;
+  max-width: 1150px;
+  min-width: 655px;
 }
 
-#header {
-  height: 80px;
+#left-side {
+  position: absolute;
+}
+
+#right-side {
+  margin-left: 320px;
+  background-color: #fff;
+  box-shadow: 0 0 4px #0000001a;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  min-width: 355px;
+  max-width: 850px;
+  border-radius: 8px;
 }
 
 #doc-body {
-  width: 95%;
-  margin: 0 auto;
-  background-color: #fff;
+  width: calc(100% - 20px);
+  margin-left: 20px;
 }
 
 .doc-title-box {
   height: auto;
   width: auto;
-  border-bottom: 1px solid #ebebeb;
-  padding-bottom: 10px;
-  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 25px;
+  padding-top: 25px;
   margin: 10px auto;
   text-align: center;
+}
+
+#doc-title {
+  padding-left: 60p;
 }
 
 pre ol {
@@ -352,11 +359,11 @@ pre ol {
 }
 
 .markdown-body pre {
-  background-color: #f7f7f9;
-  border: 1px solid #e1e1e8;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 .hljs {
-  background-color: #f7f7f9;
+  background-color: #fff;
 }
 .tool-bar {
   margin-top: -38px;
@@ -364,13 +371,15 @@ pre ol {
 .editormd-html-preview,
 .editormd-preview-container {
   padding: 0px;
-  font-size: 14px;
+  font-size: 13px;
 }
+
 .empty-tips {
   margin: 5% auto;
   width: 400px;
   text-align: center;
   color: #909399;
+  min-height: 50vh;
 }
 
 .empty-tips .icon {

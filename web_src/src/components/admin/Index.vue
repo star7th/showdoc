@@ -47,7 +47,7 @@
             </el-menu-item>
           </el-menu>
         </el-aside>
-        <el-container style="background-color:#fff">
+        <el-container>
           <el-main>
             <User v-if="open_menu_index == 1"></User>
             <Item v-if="open_menu_index == 2"></Item>
@@ -67,7 +67,6 @@
 
 <style scoped>
 .el-header {
-  background-color: #fff;
   color: #333;
   text-align: center;
   line-height: 60px;

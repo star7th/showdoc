@@ -50,5 +50,13 @@ export default {
         return txt
       }
     }
+
+    /* 刷新 */
+    Vue.prototype.reload = function() {
+      return window.location.reload()
+    }
+    Vue.prototype.toOutLink = function(url) {
+      return window.open(url)
+    }
   }
 }

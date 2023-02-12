@@ -1,27 +1,23 @@
 <template>
   <div>
-    <el-dialog
+    <SDialog
+      v-if="dialogFormVisible"
       :title="$t('sql_to_markdown_table')"
-      :visible.sync="dialogFormVisible"
-      :close-on-click-modal="false"
-      @close="callback()"
+      :onCancel="callback"
+      :onOK="transform"
     >
       <el-form>
-        <el-input
-          type="textarea"
-          class="dialoContent"
-          :placeholder="$t('sql_to_markdown_table_description')"
-          :rows="10"
-          v-model="content"
-        ></el-input>
+        <el-form>
+          <el-input
+            type="textarea"
+            class="dialoContent"
+            :placeholder="$t('sql_to_markdown_table_description')"
+            :rows="10"
+            v-model="content"
+          ></el-input>
+        </el-form>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="callback()">{{ $t('cancel') }}</el-button>
-        <el-button type="primary" @click="transform">{{
-          $t('confirm')
-        }}</el-button>
-      </div>
-    </el-dialog>
+    </SDialog>
   </div>
 </template>
 

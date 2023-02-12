@@ -1,80 +1,49 @@
 <template>
   <div class="hello">
-    <Header></Header>
-
-    <el-container>
-      <el-card class="center-card">
-        <el-button type="text" class="goback-btn" @click="goback"
-          ><i class="el-icon-back"></i>&nbsp;{{ $t('goback') }}</el-button
-        >
-        <el-button type="text" class="add-cat" @click="addTeam"
-          ><i class="el-icon-plus"></i>&nbsp;{{ $t('add_team') }}</el-button
-        >
-        <el-table
-          align="left"
-          :empty-text="$t('empty_team_tips')"
-          :data="list"
-          height="400"
-          style="width: 100%"
-        >
+    <SDialog
+      :title="$t('team_mamage')"
+      :btn1Text="$t('add_team')"
+      btn1Icon="el-icon-plus"
+      :btn1Medthod="addTeam"
+      :onCancel="callback"
+      :onOK="callback"
+    >
+      <div class="">
+        <el-table align="left" :empty-text="$t('empty_team_tips')" :data="list">
           <el-table-column
             prop="team_name"
             :label="$t('team_name')"
           ></el-table-column>
-          <el-table-column
-            prop="memberCount"
-            width="100"
-            :label="$t('memberCount')"
-          >
+          <el-table-column prop="memberCount" :label="$t('memberCount')">
             <template slot-scope="scope">
-              <router-link
-                :to="
-                  '/team/member/' +
-                    scope.row.id +
-                    '?team_manage=' +
-                    scope.row.team_manage
-                "
-                >{{ scope.row.memberCount }}</router-link
+              <el-button
+                @click="clickToMember(scope.row)"
+                type="text"
+                size="small"
+                >{{ scope.row.memberCount }}</el-button
               >
             </template>
           </el-table-column>
-          <el-table-column
-            prop="itemCount"
-            width="100"
-            :label="$t('itemCount')"
-          >
+          <el-table-column prop="itemCount" :label="$t('itemCount')">
             <template slot-scope="scope">
-              <router-link
-                :to="
-                  '/team/item/' +
-                    scope.row.id +
-                    '?team_manage=' +
-                    scope.row.team_manage
-                "
-                >{{ scope.row.itemCount }}</router-link
+              <el-button
+                @click="clickToItem(scope.row)"
+                type="text"
+                size="small"
+                >{{ scope.row.itemCount }}</el-button
               >
             </template>
           </el-table-column>
           <el-table-column prop :label="$t('operation')">
             <template slot-scope="scope">
               <el-button
-                @click="
-                  $router.push({
-                    path: '/team/member/' + scope.row.id,
-                    query: { team_manage: scope.row.team_manage }
-                  })
-                "
+                @click="clickToMember(scope.row)"
                 type="text"
                 size="small"
                 >{{ $t('member') }}</el-button
               >
               <el-button
-                @click="
-                  $router.push({
-                    path: '/team/item/' + scope.row.id,
-                    query: { team_manage: scope.row.team_manage }
-                  })
-                "
+                @click="clickToItem(scope.row)"
                 type="text"
                 size="small"
                 >{{ $t('team_item') }}</el-button
@@ -110,72 +79,100 @@
             </template>
           </el-table-column>
         </el-table>
-      </el-card>
-      <el-dialog
-        :visible.sync="dialogFormVisible"
-        width="300px"
-        :close-on-click-modal="false"
-      >
-        <el-form>
-          <el-form-item :label="$t('team_name') + ':'">
-            <el-input v-model="MyForm.team_name"></el-input>
-          </el-form-item>
-        </el-form>
+      </div>
+    </SDialog>
 
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">{{
-            $t('cancel')
-          }}</el-button>
-          <el-button type="primary" @click="myFormSubmit">{{
-            $t('confirm')
-          }}</el-button>
-        </div>
-      </el-dialog>
+    <!-- 添加/编辑团队 -->
+    <SDialog
+      v-if="dialogFormVisible"
+      :onCancel="
+        () => {
+          dialogFormVisible = false
+        }
+      "
+      :onOK="myFormSubmit"
+      width="400px"
+    >
+      <el-form>
+        <el-form-item :label="$t('team_name') + ':'">
+          <el-input v-model="MyForm.team_name"></el-input>
+        </el-form-item>
+      </el-form>
+    </SDialog>
 
-      <el-dialog
-        :visible.sync="dialogAttornVisible"
-        :modal="false"
-        width="300px"
-        :close-on-click-modal="false"
-      >
-        <el-form>
-          <el-form-item label>
-            <el-input
-              :placeholder="$t('attorn_username')"
-              auto-complete="new-password"
-              v-model="attornForm.username"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label>
-            <el-input
-              type="password"
-              auto-complete="new-password"
-              :placeholder="$t('input_login_password')"
-              v-model="attornForm.password"
-            ></el-input>
-          </el-form-item>
-        </el-form>
-        <p class="tips">
-          <small>{{ $t('attornTeamTips') }}</small>
-        </p>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogAttornVisible = false">{{
-            $t('cancel')
-          }}</el-button>
-          <el-button type="primary" @click="attorn">{{
-            $t('attorn')
-          }}</el-button>
-        </div>
-      </el-dialog>
-    </el-container>
+    <SDialog
+      v-if="dialogAttornVisible"
+      :title="$t('attorn')"
+      :onCancel="
+        () => {
+          dialogAttornVisible = false
+        }
+      "
+      :onOK="attorn"
+      width="400px"
+    >
+      <el-form>
+        <el-form-item label>
+          <el-input
+            :placeholder="$t('attorn_username')"
+            auto-complete="new-password"
+            v-model="attornForm.username"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label>
+          <el-input
+            type="password"
+            auto-complete="new-password"
+            :placeholder="$t('input_login_password')"
+            v-model="attornForm.password"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <p class="tips-text">
+        {{ $t('attornTeamTips') }}
+      </p>
+    </SDialog>
+
+    <ItemCom
+      v-if="dialogItemVisible"
+      :team_id="currentOperationRow.id"
+      :team_manage="currentOperationRow.team_manage"
+      :callback="
+        () => {
+          dialogItemVisible = false
+          geList()
+        }
+      "
+    ></ItemCom>
+
+    <MemberCom
+      v-if="dialogMemberVisible"
+      :team_id="currentOperationRow.id"
+      :team_manage="currentOperationRow.team_manage"
+      :callback="
+        () => {
+          dialogMemberVisible = false
+          geList()
+        }
+      "
+    ></MemberCom>
 
     <Footer></Footer>
   </div>
 </template>
 
 <script>
+import ItemCom from './Item.vue'
+import MemberCom from './Member.vue'
 export default {
-  components: {},
+  components: { ItemCom, MemberCom },
+  props: {
+    callback: {
+      type: Function,
+      required: false,
+      default: () => {}
+    }
+  },
   data() {
     return {
       MyForm: {
@@ -184,12 +181,18 @@ export default {
       },
       list: [],
       dialogFormVisible: false,
-      dialogMemberVisible: false,
       dialogAttornVisible: false,
       attornForm: {
         team_id: '',
         username: '',
         password: ''
+      },
+      dialogMemberVisible: false,
+      dialogItemVisible: false,
+      currentOperationRow: {
+        id: 0,
+        team_manage: 0,
+        team_name: ''
       }
     }
   },
@@ -219,7 +222,6 @@ export default {
     },
 
     deleteTeam(id) {
-      var url = DocConfig.server + '/api/team/delete'
       this.$confirm(this.$t('confirm_delete'), ' ', {
         confirmButtonText: this.$t('confirm'),
         cancelButtonText: this.$t('cancel'),
@@ -266,6 +268,14 @@ export default {
           this.geList()
         })
       })
+    },
+    clickToMember(row) {
+      this.currentOperationRow = row
+      this.dialogMemberVisible = true
+    },
+    clickToItem(row) {
+      this.currentOperationRow = row
+      this.dialogItemVisible = true
     }
   },
 
@@ -305,7 +315,6 @@ export default {
 .el-table .success-row {
   background: #f0f9eb;
 }
-
 .el-table__empty-text {
   text-align: left;
   line-height: 30px !important;

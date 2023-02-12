@@ -1,44 +1,56 @@
 <template>
   <div class="hello">
-    <p class="tips">{{ $t('recycle_tips') }}</p>
-    <!-- 页面列表 -->
-    <el-table
-      align="left"
-      class="recycle-table"
-      v-if="lists.length > 0"
-      :data="lists"
-      style="width: 100%"
+    <SDialog
+      :onCancel="callback"
+      :title="$t('recycle')"
+      width="550px"
+      :onOK="callback"
+      :showCancel="false"
     >
-      <el-table-column
-        prop="page_title"
-        :label="$t('page_title')"
-      ></el-table-column>
-      <el-table-column
-        prop="del_by_username"
-        :label="$t('deleter')"
-      ></el-table-column>
-      <el-table-column
-        prop="del_time"
-        :label="$t('del_time')"
-      ></el-table-column>
-      <el-table-column prop :label="$t('operation')">
-        <template slot-scope="scope">
-          <el-button
-            @click="recover(scope.row.page_id)"
-            type="text"
-            size="small"
-            >{{ $t('recover') }}</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
+      <p class="v3-font-size-sm v3-color-aux">{{ $t('recycle_tips') }}</p>
+      <!-- 页面列表 -->
+      <el-table
+        align="left"
+        class="recycle-table"
+        v-if="lists.length > 0"
+        :data="lists"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="page_title"
+          :label="$t('page_title')"
+        ></el-table-column>
+        <el-table-column
+          prop="del_by_username"
+          :label="$t('deleter')"
+        ></el-table-column>
+        <el-table-column
+          prop="del_time"
+          :label="$t('del_time')"
+        ></el-table-column>
+        <el-table-column prop :label="$t('operation')">
+          <template slot-scope="scope">
+            <el-button
+              @click="recover(scope.row.page_id)"
+              type="text"
+              size="small"
+              >{{ $t('recover') }}</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </SDialog>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Login',
+  name: '',
   components: {},
+  props: {
+    callback: () => {},
+    item_id: 0
+  },
   data() {
     return {
       MyForm: {
@@ -54,9 +66,10 @@ export default {
   methods: {
     getList() {
       this.request('/api/recycle/getList', {
-        item_id: this.$route.params.item_id
+        item_id: this.item_id
       }).then(data => {
-        this.lists = data.data
+        const json = data.data
+        this.lists = json
       })
     },
     recover(page_id) {
@@ -66,8 +79,8 @@ export default {
         type: 'warning'
       }).then(() => {
         this.request('/api/recycle/recover', {
-          page_id: page_id,
-          item_id: this.$route.params.item_id
+          item_id: this.item_id,
+          page_id: page_id
         }).then(data => {
           this.getList()
         })
@@ -82,16 +95,4 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.hello {
-  text-align: left;
-}
-.tips {
-  margin-left: 10px;
-  color: #9ea1a6;
-}
-.recycle-table {
-  max-height: 400px;
-  overflow: auto;
-}
-</style>
+<style scoped></style>

@@ -11,6 +11,10 @@
   min-height: 60%;
 }
 
+.markdown-body {
+  font-size: 13px;
+}
+
 .markdown-body h1 {
   font-size: 1.8em !important;
 }
@@ -86,6 +90,14 @@
 .hljs-comment,
 .hljs-quote {
   color: #aaa;
+}
+
+/* 调整下编辑器的按钮样式 */
+.editormd-menu > li {
+  margin-left: 10px;
+}
+.editormd-menu > li > a > .fa {
+  font-size: 13px;
 }
 </style>
 <script>

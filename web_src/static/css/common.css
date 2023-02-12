@@ -83,3 +83,56 @@ li {
 .cursor-click {
   cursor: pointer;
 }
+
+/* 3.0开始，找设计师重定义UI ，这里根据新UI定义一些类，方便复用 */
+
+.v3-font-size{
+  font-size: 13px;
+}
+.v3-font-size-lg{
+  font-size: 24px;
+}
+.v3-font-size-sm{
+  font-size: 11px;
+}
+.v3-color-primary{
+  /* 主要文本颜色 */
+  color: #343A40;
+}
+.v3-color-aux{
+  /* 辅助文本颜色 */
+  color: #9B9B9B;
+}
+.v3-color-sec{
+  /* 次要文本颜色 */
+  color: rgba(0, 0, 0, 0.05);
+}
+.v3-bg-color-primary{
+  color: #f9f9f9;
+}
+.v3-btn-primary{
+  color: #343A40;
+}
+.v3-accent-color-blue{
+  /* 如特别需要强调的按钮背景色、文字链 */
+  color: #007BFF;
+}
+.v3-lg-btn{
+  width: 160px;
+  height: 50px;
+  border-radius: 8px;
+}
+.v3-text-link{
+  color: #9B9B9B;
+  cursor: pointer;
+  text-decoration:underline ;
+
+}
+
+.tips-text{
+  /* 辅助文本颜色 */
+  color: #9B9B9B;
+  font-size: 11px;
+  line-height: 1.5rem;
+
+}

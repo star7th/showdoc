@@ -1,9 +1,12 @@
 <template>
-  <div class="hello">
-    <Header></Header>
-
-    <el-container>
-      <el-card class="center-card">
+  <div class="">
+    <SDialog
+      :onCancel="callback"
+      :title="$t('export')"
+      width="400px"
+      :onOK="onSubmit"
+    >
+      <div class="text-center">
         <el-form status-icon label-width="0px" class="demo-ruleForm">
           <h2></h2>
           <el-form-item label>
@@ -27,7 +30,7 @@
           </el-form-item>
 
           <el-form-item label v-if="export_format == 'markdown'">
-            <p class="markdown-tips">{{ $t('export_markdown_tips') }}</p>
+            <p class="tips-text">{{ $t('export_markdown_tips') }}</p>
           </el-form-item>
 
           <el-form-item
@@ -62,22 +65,9 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label>
-            <el-button type="primary" style="width:100%;" @click="onSubmit">{{
-              $t('begin_export')
-            }}</el-button>
-          </el-form-item>
-
-          <el-form-item label>
-            <el-button type="text" @click="goback" class="goback-btn">{{
-              $t('goback')
-            }}</el-button>
-          </el-form-item>
         </el-form>
-      </el-card>
-    </el-container>
-
-    <Footer></Footer>
+      </div>
+    </SDialog>
   </div>
 </template>
 
@@ -86,12 +76,15 @@ import { getUserInfoFromStorage } from '@/models/user.js'
 export default {
   name: 'Login',
   components: {},
+  props: {
+    callback: () => {},
+    item_id: 0
+  },
   data() {
     return {
       catalogs: [],
       cat_id: '',
       export_type: '1',
-      item_id: 0,
       export_format: 'word',
       pages: [{ page_id: '0', page_title: this.$t('all_pages') }],
       page_id: '0',
@@ -142,32 +135,38 @@ export default {
       this.request('/api/catalog/catListGroup', {
         item_id: item_id
       }).then(data => {
-        this.catalogs = data.data
+        const json = data.data
+        this.catalogs = json
       })
     },
     onSubmit() {
-      if (this.export_type == 1) {
-        this.cat_id = ''
-      }
-      var url =
-        DocConfig.server +
-        '/api/export/word&item_id=' +
-        this.item_id +
-        '&cat_id=' +
-        this.cat_id +
-        '&page_id=' +
-        this.page_id +
-        '&user_token=' +
-        this.user_token
-      if (this.export_format == 'markdown') {
-        url =
+      this.request('/api/export/checkMarkdownLimit', {
+        export_format: this.export_format
+      }).then(data => {
+        if (this.export_type == 1) {
+          this.cat_id = ''
+        }
+        var url =
           DocConfig.server +
-          '/api/export/markdown&item_id=' +
+          '/api/export/word&item_id=' +
           this.item_id +
+          '&cat_id=' +
+          this.cat_id +
+          '&page_id=' +
+          this.page_id +
           '&user_token=' +
           this.user_token
-      }
-      window.location.href = url
+        if (this.export_format == 'markdown') {
+          url =
+            DocConfig.server +
+            '/api/export/markdown&item_id=' +
+            this.item_id +
+            '&user_token=' +
+            this.user_token
+        }
+        window.location.href = url
+        this.callback()
+      })
     },
     goback() {
       this.$router.go(-1)
@@ -189,8 +188,7 @@ export default {
     }
   },
   mounted() {
-    this.getCatalog(this.$route.params.item_id)
-    this.item_id = this.$route.params.item_id
+    this.getCatalog(this.item_id)
     // 获取项目类型。如果是runapi项目，则无法导出markdown压缩包
     this.request('/api/item/detail', {
       item_id: this.item_id
@@ -220,6 +218,6 @@ export default {
 .markdown-tips {
   text-align: left;
   margin-left: 25px;
-  font-size: 12px;
+  font-size: 11px;
 }
 </style>
