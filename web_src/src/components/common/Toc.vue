@@ -28,7 +28,8 @@ export default {
           .attr('href')
           .substring(1)
         var top_at_window = $('[name="' + name + '"]').offset().top
-        $('html, body').animate({ scrollTop: top_at_window }, 300)
+        var offset = -110
+        $('html, body').animate({ scrollTop: top_at_window + offset }, 300)
       })
       // 监听展开事件
       $(document).on('click', '.markdown-toc', function(event) {
