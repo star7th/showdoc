@@ -32,19 +32,24 @@
       <div id="right-side">
         <div
           id="p-content"
-          @mouseenter="showfullPageBtn = true"
-          @mouseleave="showfullPageBtn = false"
         >
           <div class="doc-title-box" id="doc-title-box">
             <span class="v3-font-size-lg font-bold " id="doc-title">{{
               page_title
             }}</span>
-            <i
-              class="el-icon-upload item"
-              id="attachment"
-              v-if="attachment_count"
-              @click="showAttachmentListDialog = true"
-            ></i>
+            <span class="float-right">
+              <i
+                class="el-icon-upload item"
+                id="attachment"
+                v-if="attachment_count"
+                @click="showAttachmentListDialog = true"
+              ></i>
+              <i
+                class="el-icon-full-screen"
+                id="full-page"
+                @click="clickFullPage"
+              ></i>
+            </span>
           </div>
           <div id="doc-body">
             <div id="page_md_content" class="page_content_main">
@@ -133,7 +138,6 @@ export default {
       copyText: '',
       attachment_count: '',
       fullPage: false,
-      showfullPageBtn: false,
       showToc: true,
       showComp: true,
       emptyItem: false,
@@ -198,6 +202,9 @@ export default {
       header.style.display = 'none'
 
       var rightSide = document.getElementById('right-side')
+      rightSide.style.width = 'calc (100% -15px)'
+      rightSide.style.minWidth = 'calc( 100% - 15px )'
+      rightSide.style.maxWidth = 'calc( 100% - 15px )'
       rightSide.style.marginLeft = '0px'
       var docTitle = document.getElementById('doc-title-box')
       docTitle.style.marginTop = '0px'
@@ -251,7 +258,6 @@ export default {
           }, 200)
         })
         $('#left-side').hide()
-        $('.op-bar').hide()
       }
       this.fullPage = !this.fullPage
     }
@@ -299,11 +305,11 @@ a {
 #full-page {
   float: right;
   font-size: 25px;
-  margin-top: -50px;
-  margin-right: 30px;
+  margin-right: 20px;
   cursor: pointer;
   color: #ccc;
 }
+
 #page_md_content {
   padding: 10px 10px 90px 10px;
   overflow: hidden;
@@ -348,10 +354,6 @@ a {
   padding-top: 25px;
   margin: 10px auto;
   text-align: center;
-}
-
-#doc-title {
-  padding-left: 60p;
 }
 
 pre ol {
