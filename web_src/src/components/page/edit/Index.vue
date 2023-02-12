@@ -118,7 +118,7 @@
               >
 
               <el-dropdown-item
-                v-if="lang == 'zh-cn'"
+                v-if="$lang == 'zh-cn'"
                 @click.native="showRunApi"
                 ><i class="el-icon-video-camera"> </i
                 >{{ $t('http_test_api') }}</el-dropdown-item
@@ -355,7 +355,6 @@ export default {
       isLock: 0,
       intervalId: 0,
       saving: false,
-      lang: '',
       sortPageVisiable: false,
       notifyVisiable: false,
       is_notify: 0,
@@ -884,7 +883,6 @@ export default {
     this.remoteIsLock()
     /** 监听剪切板 **/
     document.addEventListener('paste', this.clipboardEvents)
-    this.lang = DocConfig.lang
     window.addEventListener('beforeunload', this.unLockOnClose)
     let g_open_cat_id = this.$store.state.open_cat_id // 全局变量-当前打开的目录id
     // 如果this.page_id无效，则可以判定用户是在新建页面

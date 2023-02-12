@@ -453,7 +453,6 @@ export default {
   },
   data() {
     return {
-      lang: '',
       showPageEdit: false,
       showCatalog: false,
       item_id: '',
@@ -511,9 +510,7 @@ export default {
     }
   },
   mounted() {
-    this.lang = DocConfig.lang
     this.item_id = this.item_info.item_id
-    // this.lang = 'en'
   }
 }
 </script>

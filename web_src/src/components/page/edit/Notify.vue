@@ -144,7 +144,6 @@ export default {
     return {
       list: [],
       textarea: '',
-      lang: '',
       dialogVisible: true,
       dialogVisible2: false,
       dialogVisible3: false,
@@ -225,8 +224,6 @@ export default {
   mounted() {
     this.getAllItemMemberList()
     this.getList()
-    this.lang = DocConfig.lang
-    // this.lang = 'en'
   }
 }
 </script>

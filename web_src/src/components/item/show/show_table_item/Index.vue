@@ -389,7 +389,7 @@ export default {
           `/static/xspreadsheet/locale/en.js`
         ],
         () => {
-          if (DocConfig.lang == 'en') {
+          if (this.$lang == 'en') {
             x_spreadsheet.locale('en')
           } else {
             x_spreadsheet.locale('zh-cn')

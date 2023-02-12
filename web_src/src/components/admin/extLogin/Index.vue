@@ -188,7 +188,7 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="通用接入" v-if="lang == 'zh-cn'">
+      <el-tab-pane label="通用接入" v-if="$lang == 'zh-cn'">
         <div style="min-height:600px;margin-top:50px;margin-left:30px;">
           <p>
             LoginSecretKey:&nbsp;
@@ -252,8 +252,7 @@ export default {
         }
       },
       login_secret_key: '',
-      itemList: [],
-      lang: ''
+      itemList: []
     }
   },
   methods: {
@@ -347,7 +346,6 @@ export default {
     this.loadLdapConfig()
     this.loadOauth2Config()
     this.getLoginSecretKey()
-    this.lang = DocConfig.lang
   },
   beforeDestroy() {
     this.$message.closeAll()

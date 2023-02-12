@@ -37,7 +37,7 @@
               <i class="el-icon-tickets"></i>
               <span slot="title">{{ $t('web_setting') }}</span>
             </el-menu-item>
-            <el-menu-item index="6" v-show="lang == 'zh-cn'">
+            <el-menu-item index="6" v-show="$lang == 'zh-cn'">
               <i class="el-icon-tickets"></i>
               <span slot="title"
                 ><el-badge :value="isUpdate ? 'new' : ''"
@@ -139,8 +139,7 @@ export default {
   data() {
     return {
       open_menu_index: 1,
-      isUpdate: false,
-      lang: ''
+      isUpdate: false
     }
   },
   components: {
@@ -167,8 +166,6 @@ export default {
     }
   },
   mounted() {
-    // 只对中文版进行更新检查
-    this.lang = DocConfig.lang
     this.checkUpadte()
   },
   beforeDestroy() {

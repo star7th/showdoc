@@ -160,15 +160,14 @@ export default {
       itemGroupId: '',
       itemGroupList: [],
       loading: false,
-      showItemGroupCom: false,
-      lang: ''
+      showItemGroupCom: false
     }
   },
   computed: {
     // 已选中的分组名字
     selectedGroupName: function() {
       if (this.keyword) {
-        if (this.lang == 'en') {
+        if (this.$lang == 'en') {
           return `Search results with "${this.keyword}"`
         } else {
           return `含有"${this.keyword}"的搜索结果`
@@ -262,7 +261,6 @@ export default {
     } else {
       this.itemGroupId = parseInt(deaultItemGroupId)
     }
-    this.lang = DocConfig.lang
 
     this.getItemGroupList()
     this.checkAdmin()

@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     feedback() {
-      if (DocConfig.lang == 'en') {
+      if (this.$lang == 'en') {
         window.open('https://github.com/star7th/showdoc/issues')
       } else {
         var msg =

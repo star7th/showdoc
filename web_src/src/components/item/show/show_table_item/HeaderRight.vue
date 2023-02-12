@@ -227,7 +227,6 @@ export default {
   },
   data() {
     return {
-      lang: '',
       item_id: '',
       showTeam: false,
       copy_page_id: 0,
@@ -254,9 +253,7 @@ export default {
     }
   },
   mounted() {
-    this.lang = DocConfig.lang
     this.item_id = this.item_info.item_id
-    // this.lang = 'en'
   }
 }
 </script>
