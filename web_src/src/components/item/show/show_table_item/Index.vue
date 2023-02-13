@@ -4,7 +4,7 @@
     @keydown.ctrl.83.prevent="save"
     @keydown.meta.83.prevent="save"
   >
-    <link href="/static/xspreadsheet/xspreadsheet.css" rel="stylesheet" />
+    <link href="static/xspreadsheet/xspreadsheet.css" rel="stylesheet" />
     <Header :item_info="item_info">
       <HeaderRight
         :item_info="item_info"
@@ -382,11 +382,11 @@ export default {
     this.page_id = this.menu.pages[0].page_id
 
     // 加载依赖""
-    $s([`/static/xspreadsheet/xspreadsheet.js`], () => {
+    $s([`static/xspreadsheet/xspreadsheet.js`], () => {
       $s(
         [
-          `/static/xspreadsheet/locale/zh-cn.js`,
-          `/static/xspreadsheet/locale/en.js`
+          `static/xspreadsheet/locale/zh-cn.js`,
+          `static/xspreadsheet/locale/en.js`
         ],
         () => {
           if (this.$lang == 'en') {
@@ -401,7 +401,7 @@ export default {
           }
         }
       )
-      $s([`/static/xspreadsheet/xlsx.full.min.js`])
+      $s([`static/xspreadsheet/xlsx.full.min.js`])
     })
     window.addEventListener('beforeunload', this.unLockOnClose)
   },

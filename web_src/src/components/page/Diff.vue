@@ -2,7 +2,7 @@
 <template>
   <div class="hello">
     <Header></Header>
-    <link href="/static/diff/diffview.css" rel="stylesheet" />
+    <link href="static/diff/diffview.css" rel="stylesheet" />
     <el-container class="container-narrow">
       <div class="textInput">
         <textarea
@@ -115,7 +115,7 @@ export default {
     }
   },
   mounted() {
-    $s([`/static/diff/difflib.js`, `/static/diff/diffview.js`], () => {
+    $s([`static/diff/difflib.js`, `static/diff/diffview.js`], () => {
       this.getContent()
     })
   },

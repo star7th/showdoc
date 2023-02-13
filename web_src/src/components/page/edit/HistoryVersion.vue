@@ -94,7 +94,7 @@ export default {
     previewDiff(row) {
       var page_history_id = row['page_history_id']
       let page_id = this.page_id ? this.page_id : this.$route.params.page_id
-      var url = '/page/diff/' + page_id + '/' + page_history_id
+      var url = '#/page/diff/' + page_id + '/' + page_history_id
       window.open(url)
     },
     editComments(row) {

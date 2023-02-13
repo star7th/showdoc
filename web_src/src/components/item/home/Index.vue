@@ -4,7 +4,7 @@
       <div @click="reload" class="logo float-left mt-4 ml-10  cursor-pointer">
         <div>
           <div class="inline-block align-middle">
-            <img src="/static/logo/b_64.png" />
+            <img src="static/logo/b_64.png" />
           </div>
           <div class="inline-block align-middle">
             <div class="v3-font-size-lg font-bold">ShowDoc</div>

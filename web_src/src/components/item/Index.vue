@@ -8,7 +8,7 @@
         <div class="logo-title">
           <h2 class="muted">
             <img
-              src="/static/logo/b_64.png"
+              src="static/logo/b_64.png"
               style="width:50px;height:50px;margin-bottom:-10px;"
               alt
             />ShowDoc
