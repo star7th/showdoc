@@ -42,13 +42,13 @@
           v-if="showCancel"
           class="v3-lg-btn"
           @click="!isEmptyFunction(onCancel) ? onCancel() : goHome()"
-          >{{ $t('cancel') }}</el-button
+          >{{  cancelText ? cancelText :  $t('cancel') }}</el-button
         >
         <el-button
           class="v3-lg-btn"
           type="primary"
           @click="!isEmptyFunction(onOK) ? onOK() : goHome()"
-          >{{ $t('confirm') }}</el-button
+          >{{  okText ? okText :  $t('confirm') }}</el-button
         >
       </div>
     </el-dialog>
@@ -158,6 +158,16 @@ export default {
       type: String,
       required: false,
       default: '15vh'
+    },
+    cancelText: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    okText: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
   data() {

@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="hello"
-    @keydown.ctrl.83.prevent="save"
-    @keydown.meta.83.prevent="save"
-  >
+  <div>
     <el-dialog
       class="sdialog"
       width="98%"
@@ -76,7 +72,7 @@
         </div>
       </div>
 
-      <div>
+      <div @keydown.ctrl.83.prevent="save" @keydown.meta.83.prevent="save">
         <el-row class="fun-btn-group">
           <el-dropdown type class="" size="medium" trigger="hover">
             <el-button icon="el-icon-s-tools">
@@ -116,7 +112,11 @@
                 ><i class="el-icon-takeaway-box"> </i
                 >{{ $t('sql_to_markdown_table') }}</el-dropdown-item
               >
-
+              <el-dropdown-item
+                v-if="$lang == 'zh-cn'"
+                @click.native="showMock = true"
+                ><i class="el-icon-video-camera"> </i>Mock
+              </el-dropdown-item>
               <el-dropdown-item
                 v-if="$lang == 'zh-cn'"
                 @click.native="showRunApi"
@@ -306,6 +306,17 @@
       "
     ></SelectCat>
 
+    <Mock
+      :page_id="page_id"
+      :item_id="item_id"
+      v-if="showMock"
+      :callback="
+        () => {
+          showMock = false
+        }
+      "
+    ></Mock>
+
     <!-- 一个隐藏的可编辑元素。用于承载粘贴html代码。后续会用于转markdown -->
     <div contenteditable="true" id="pastebin"></div>
   </div>
@@ -322,6 +333,7 @@ import AttachmentList from '@/components/page/edit/AttachmentList'
 import PasteTable from '@/components/page/edit/PasteTable'
 import SortPage from '@/components/page/edit/SortPage'
 import Notify from '@/components/page/edit/Notify'
+import Mock from '@/components/page/edit/Mock'
 import SelectCat from '@/components/catalog/Select'
 import { Base64 } from 'js-base64'
 import { rederPageContent } from '@/models/page'
@@ -370,7 +382,8 @@ export default {
       dialogVisible: true,
       showSelectCat: false,
       currentCatName: '/',
-      showContent: false
+      showContent: false,
+      showMock: false
     }
   },
   components: {
@@ -384,7 +397,8 @@ export default {
     SortPage,
     Notify,
     SqlToMarkdownTable,
-    SelectCat
+    SelectCat,
+    Mock
   },
   methods: {
     // 获取页面内容
@@ -460,12 +474,20 @@ export default {
 
     // 插入api模板
     insertApiTemplate() {
-      this.insertValue(apiTemplateZh)
+      if (this.$lang == 'zh-cn') {
+        this.insertValue(apiTemplateZh)
+      } else {
+        this.insertValue(apiTemplateEn)
+      }
     },
 
     // 插入数据字典模板
     insertDatabaseTemplate() {
-      this.insertValue(databaseTemplateZh)
+      if (this.$lang == 'zh-cn') {
+        this.insertValue(databaseTemplateZh)
+      } else {
+        this.insertValue(databaseTemplateEn)
+      }
     },
     // 关闭预览
     editorUnwatch() {
