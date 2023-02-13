@@ -1,6 +1,6 @@
 <!-- 附件 -->
 <template>
-  <div class="left-menu-bottom-bar">
+  <div class="left-menu-bottom-bar" id="left-menu-bottom-bar">
     <div class="bottom-bar-item-icon" @click="showPageEdit = true">
       <el-tooltip effect="dark" :content="$t('new_page')" placement="top">
         <i class="el-icon-circle-plus-outline"></i>

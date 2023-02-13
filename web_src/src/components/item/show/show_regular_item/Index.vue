@@ -30,9 +30,7 @@
       </div>
 
       <div id="right-side">
-        <div
-          id="p-content"
-        >
+        <div id="p-content">
           <div class="doc-title-box" id="doc-title-box">
             <span class="v3-font-size-lg font-bold " id="doc-title">{{
               page_title
@@ -45,6 +43,7 @@
                 @click="showAttachmentListDialog = true"
               ></i>
               <i
+                v-if="page_id && !isMobile()"
                 class="el-icon-full-screen"
                 id="full-page"
                 @click="clickFullPage"
@@ -204,13 +203,15 @@ export default {
       header.style.display = 'none'
 
       var rightSide = document.getElementById('right-side')
-      rightSide.style.width = 'calc (100% -15px)'
-      rightSide.style.minWidth = 'calc( 100% - 15px )'
-      rightSide.style.maxWidth = 'calc( 100% - 15px )'
+      rightSide.style.width = 'calc (100% -1px)'
+      rightSide.style.minWidth = 'calc( 100% - 1px )'
+      rightSide.style.maxWidth = 'calc( 100% - 1px )'
       rightSide.style.marginLeft = '0px'
       var docTitle = document.getElementById('doc-title-box')
       docTitle.style.marginTop = '0px'
       this.showToc = false
+      var leftMenuBottomBar = document.getElementById('left-menu-bottom-bar')
+      leftMenuBottomBar.style.display = 'none'
     },
     // 根据屏幕宽度进行响应。应对小屏幕pc设备(如笔记本)的访问
     adaptToSmallpc() {
@@ -260,6 +261,7 @@ export default {
           }, 200)
         })
         $('#left-side').hide()
+        $('#left-menu-bottom-bar').hide()
       }
       this.fullPage = !this.fullPage
     }
