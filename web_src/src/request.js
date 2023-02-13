@@ -8,7 +8,7 @@ import { MessageBox } from 'element-ui'
 
 const request = (
   path,
-  data,
+  data = {},
   method = 'post',
   msgAlert = true,
   contentType = 'form'
