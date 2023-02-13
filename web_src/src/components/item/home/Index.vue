@@ -100,6 +100,13 @@
         >
         </ItemListCom>
 
+        <div v-if="itemList.length === 0" class="empty">
+          <div class="icon">
+            <i class="el-icon-warning"></i>
+          </div>
+          <div class="text">{{ $t('no_items') }}</div>
+        </div>
+
         <!-- 搜索结果列表组件 -->
         <Search
           v-if="showSearch"
@@ -339,5 +346,20 @@ a {
 }
 .search-input {
   width: 600px;
+}
+.empty {
+  margin: 5% auto;
+  width: 400px;
+  text-align: center;
+  color: #000;
+  margin-top: 30%;
+  opacity: 0.25;
+}
+.empty .icon {
+  font-size: 50px;
+}
+
+.empty .text {
+  font-size: 11px;
 }
 </style>

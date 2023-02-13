@@ -61,7 +61,9 @@
               ></Editormd>
             </div>
             <div v-if="emptyItem" class="empty-tips">
-              <div class="icon"><i class="el-icon-shopping-cart-2"></i></div>
+              <div class="icon">
+                <i class="el-icon-warning"></i>
+              </div>
               <div class="text">
                 <p>
                   当前项目是空的，你可以点击右上方的 + 以手动添加页面。
@@ -74,7 +76,7 @@
                       >使用runapi工具自动生成（推荐）</a
                     ><br />
                     <a
-                      href="https://www.showdoc.com.cn/page/741656402509783"
+                      href="https://www.showdoc.com.cn/page/7416564025093"
                       target="_blank"
                     >
                       使用程序注释自动生成</a
@@ -380,12 +382,13 @@ pre ol {
   margin: 5% auto;
   width: 400px;
   text-align: center;
-  color: #909399;
+  color: #000;
   min-height: 50vh;
+  opacity: 0.3;
 }
 
 .empty-tips .icon {
-  font-size: 100px;
+  font-size: 80px;
   margin-left: -50px;
 }
 
@@ -397,7 +400,6 @@ pre ol {
   line-height: 2em;
 }
 .empty-tips .links a {
-  color: #909399;
   text-decoration: underline;
 }
 </style>

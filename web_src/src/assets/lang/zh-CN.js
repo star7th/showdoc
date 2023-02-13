@@ -559,5 +559,6 @@ exports.default = {
   archive_item: '归档项目',
   delete_item: '删除项目',
   table_item_auto_save_tips: '电子表格项目会在你编辑的时候自动保存',
-  do_not_remind_again: '知道了,不用再提醒我'
+  do_not_remind_again: '知道了,不用再提醒我',
+  no_items: '暂无项目'
 }

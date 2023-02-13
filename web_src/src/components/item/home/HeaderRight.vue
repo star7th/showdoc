@@ -214,7 +214,7 @@ export default {
   background-color: white;
   width: 40px;
   height: 40px;
-  font-size: 20px;
+  font-size: 16px;
   justify-content: center; /*水平居中*/
   align-items: center; /*垂直居中*/
   display: inline-flex;
@@ -226,7 +226,7 @@ export default {
   color: black;
 }
 .header-right .el-dropdown {
-  font-size: 20px;
+  font-size: 16px;
 }
 .header-right .icon-item {
   cursor: pointer;

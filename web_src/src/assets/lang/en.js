@@ -589,5 +589,6 @@ exports.default = {
   delete_item: 'Delete item',
   table_item_auto_save_tips:
     'Spreadsheet items will be saved automatically when you edit them',
-  do_not_remind_again: 'Don not remind me again'
+  do_not_remind_again: 'Don not remind me again',
+  no_items: 'No items'
 }

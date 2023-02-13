@@ -40,15 +40,16 @@
 
 <style scoped>
 .page-box {
-  background-color: rgb(250, 250, 250);
   width: 98%;
-  height: 40px;
+  height: 60px;
   margin-top: 10px;
-  border: 1px solid #d9d9d9;
-  border-radius: 2px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.page-box:hover {
+  background-color: white;
 }
 .page-name {
-  line-height: 40px;
+  line-height: 60px;
   margin-left: 10px;
   color: #262626;
 }

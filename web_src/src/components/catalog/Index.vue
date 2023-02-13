@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div >
     <SDialog
       :onCancel="callback"
       :title="$t('add_cat')"
@@ -334,13 +334,25 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .tree-node {
-  padding-top: 10px;
+  margin-top: 10px;
+  background-color: #f9f9f9;
 }
 .custom-tree-node {
   width: 100%;
+  margin-top: 5px;
 }
 .right-bar {
   float: right;
   margin-right: 20px;
+}
+</style>
+
+<style>
+.tree-node .el-tree-node__content {
+  height: 60px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.tree-node .el-tree-node__content:hover {
+  background-color: white;
 }
 </style>

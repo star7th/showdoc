@@ -1,5 +1,5 @@
 <template>
-  <div ref="wrapper">
+  <div class="eltabledra" ref="wrapper">
     <div :key="tableKey">
       <slot></slot>
     </div>
@@ -69,3 +69,8 @@ export default {
   }
 }
 </script>
+<style>
+.eltabledra tr {
+  height: 60px;
+}
+</style>
