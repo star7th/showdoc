@@ -200,6 +200,12 @@ export default {
         return false
       }
     }
+    // 如果是从对话框中跳转到登录页面，可能遮罩层来不及关闭，导致登录页面无法点击。这个时候，写js去掉遮罩层。
+    const eles = document.getElementsByClassName('v-modal-leave')
+    for (let index = 0; index < eles.length; index++) {
+      const element = eles[index]
+      element.remove()
+    }
     getUserInfo(function(response) {
       if (response.data.error_code === 0) {
         let redirect = decodeURIComponent(
