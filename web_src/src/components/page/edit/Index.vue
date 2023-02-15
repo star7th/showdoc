@@ -8,6 +8,7 @@
       :show-close="false"
       top="2vh"
       :append-to-body="true"
+      :close-on-press-escape="false"
     >
       <div slot="title" class="title-header pt-4">
         <div class="inline-block">

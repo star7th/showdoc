@@ -10,6 +10,7 @@
       :modal="modal"
       :append-to-body="true"
       :top="top"
+      :close-on-press-escape="false"
     >
       <div slot="title" class="title-header">
         <span class="title-text  float-left mt-4"
