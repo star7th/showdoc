@@ -1,4 +1,4 @@
-FROM  webdevops/php-nginx:8.2-alpine
+FROM  webdevops/php-nginx:7.4-alpine
 
 COPY ./ /var/www/html/
 RUN mkdir -p /showdoc_data/html
@@ -16,7 +16,7 @@ RUN mv /showdoc_data/html/mock/ /showdoc_data/mock
 RUN (cd /showdoc_data/mock/ && npm install )
 
 # 写环境变量
-ENV SHOWDOC_DOCKER_VERSION 2.3
+ENV SHOWDOC_DOCKER_VERSION 2.4
 
 CMD if [ ! -f "/var/www/html/index.php" ]; then \cp -fr /showdoc_data/html/ /var/www/ ;fi \ 
     ;chmod 777 -R /var/www/ \ 
