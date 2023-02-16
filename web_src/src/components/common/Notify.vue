@@ -167,7 +167,7 @@ export default {
     // 60分钟重复获取未读提醒
     this.intervalId = setInterval(() => {
       this.getUnread()
-    }, 60 * 60 * 1000)
+    }, 5 * 60 * 1000)
   },
 
   destroyed() {

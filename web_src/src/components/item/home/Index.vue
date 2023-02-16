@@ -134,6 +134,9 @@
       "
     ></itemGroupCom>
 
+    <!-- 引入通知组件  -->
+    <Notify ></Notify>
+
     <!-- 返回顶部 -->
     <el-backtop></el-backtop>
   </div>
@@ -146,6 +149,7 @@ import itemAdd from '@/components/item/add/Index'
 import HeaderRight from './HeaderRight.vue'
 import Search from './Search.vue'
 import ItemListCom from './ItemList.vue'
+import Notify from '@/components/common/Notify'
 import { getUserInfo } from '@/models/user.js'
 export default {
   components: {
@@ -154,7 +158,8 @@ export default {
     HeaderRight,
     itemAdd,
     Search,
-    ItemListCom
+    ItemListCom,
+    Notify
   },
   data() {
     return {
