@@ -85,6 +85,22 @@
       <div
         v-if="item_info.is_login"
         class="icon-item"
+        @click="
+          () => {
+            $store.dispatch('changeNewMsg', 0)
+            showMessage = true
+          }
+        "
+      >
+        <el-tooltip effect="dark" :content="$t('my_notice')" placement="top">
+          <el-badge :value="$store.state.new_msg ? 'New' : ''">
+            <i class="el-icon-bell"></i
+          ></el-badge>
+        </el-tooltip>
+      </div>
+      <div
+        v-if="item_info.is_login"
+        class="icon-item"
         @click="showUserSetting = true"
       >
         <el-tooltip effect="dark" :content="$t('user_center')" placement="top">
@@ -405,6 +421,16 @@
         }
       "
     ></UserSetting>
+
+    <!-- 我的消息 -->
+    <Message
+      v-if="showMessage"
+      :callback="
+        () => {
+          showMessage = false
+        }
+      "
+    ></Message>
   </div>
 </template>
 
@@ -425,6 +451,7 @@ import ItemUpdate from '@/components/item/add/Basic'
 import ItemExport from '@/components/item/export/Index'
 import ItemImport from '@/components/item/import/Index'
 import UserSetting from '@/components/user/setting/Index'
+import Message from '@/components/message/Index'
 
 export default {
   components: {
@@ -443,7 +470,8 @@ export default {
     ItemExport,
     ItemImport,
     Share,
-    UserSetting
+    UserSetting,
+    Message
   },
   props: {
     searchItem: () => {},
@@ -472,7 +500,8 @@ export default {
       showItemExport: false,
       showItemImport: false,
       showShare: false,
-      showUserSetting: false
+      showUserSetting: false,
+      showMessage: false
     }
   },
   computed: {},

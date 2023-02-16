@@ -3,7 +3,13 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    popup: {
+      type: Boolean,
+      required: false,
+      default: true
+    }
+  },
   data() {
     return {
       intervalId: 0,
@@ -18,6 +24,7 @@ export default {
         // 提醒类消息
         if (json['remind'] && json['remind'].id) {
           if (json['remind'].object_type == 'page') {
+            this.$store.dispatch('changeNewMsg', 1) // 设置全局new标识
             let msg =
               json['remind'].from_name +
               ' ' +
@@ -59,6 +66,7 @@ export default {
         }
         // 公告类消息
         if (json['announce'] && json['announce'].id) {
+          this.$store.dispatch('changeNewMsg', 1) // 设置全局new标识
           const msg = '你有未读的公告消息，点此查看'
           let routeUrl = this.$router.resolve({
             path: '/message/index',
@@ -78,6 +86,7 @@ export default {
     },
     // 浏览器通知
     brownNotify(msg, from_uid, message_content_id, toUrl) {
+      if (!this.popup) return false
       const title = 'showdoc通知'
       const options = {
         dir: 'auto', // 文字方向
@@ -152,6 +161,7 @@ export default {
 
     // 设置已读
     setRead(from_uid, message_content_id) {
+      this.$store.dispatch('changeNewMsg', 0)
       setTimeout(() => {
         this.request('/api/message/setRead', {
           from_uid: from_uid,

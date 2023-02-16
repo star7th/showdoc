@@ -14,6 +14,9 @@ export default {
   changeUserInfo(state, val) {
     state.user_info = val
   },
+  changeNewMsg(state, val) {
+    state.new_msg = val
+  },
   [SOME_MUTATION](state) {
     // mutate state
   }

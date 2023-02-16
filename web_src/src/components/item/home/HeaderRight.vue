@@ -17,8 +17,18 @@
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('my_notice')" placement="top">
-        <div @click="showMessage = true" class="icon-item">
-          <i class="el-icon-message-solid"></i>
+        <div
+          @click="
+            () => {
+              $store.dispatch('changeNewMsg', 0)
+              showMessage = true
+            }
+          "
+          class="icon-item"
+        >
+          <el-badge :value="$store.state.new_msg ? 'New' : ''">
+            <i class="el-icon-message-solid"></i
+          ></el-badge>
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('user_center')" placement="top">

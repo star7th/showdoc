@@ -134,8 +134,8 @@
       "
     ></itemGroupCom>
 
-    <!-- 引入通知组件  -->
-    <Notify ></Notify>
+    <!-- 则引入通知组件  -->
+    <Notify :popup="false"></Notify>
 
     <!-- 返回顶部 -->
     <el-backtop></el-backtop>

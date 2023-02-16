@@ -177,6 +177,23 @@ export default {
     handleCurrentChange(currentPage) {
       this.page = currentPage
       this.getRemindList()
+    },
+    // 获取用户未读的提醒
+    getUnread() {
+      this.request('/api/message/getUnread', {}, 'post', false).then(data => {
+        const json = data.data
+        // 提醒类消息
+        if (json['remind'] && json['remind'].id) {
+          // 有未读的提醒消息
+        }
+        // 公告类消息
+        if (json['announce'] && json['announce'].id) {
+          // 有未读的公告消息,且没有从参数中指定tab，则默认打开公告
+          if (!this.$route.query.dtab) {
+            this.dtab = 'announcementList'
+          }
+        }
+      })
     }
   },
 
@@ -186,6 +203,7 @@ export default {
     if (this.$route.query.dtab) {
       this.dtab = this.$route.query.dtab
     }
+    this.getUnread()
   },
   beforeDestroy() {}
 }
