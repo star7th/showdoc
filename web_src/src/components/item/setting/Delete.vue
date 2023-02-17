@@ -4,7 +4,7 @@
       :title="$t('delete')"
       :onCancel="callback"
       :onOK="deleteItem"
-      width="400px"
+      width="500px"
     >
       <el-form>
         <el-form-item label>
