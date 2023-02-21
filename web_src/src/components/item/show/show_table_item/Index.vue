@@ -135,8 +135,11 @@ export default {
         mode: mode, // edit | read
         showToolbar: true,
         row: {
-          len: 500,
+          len: 800,
           height: 25
+        },
+        view: {
+          height: () => document.documentElement.clientHeight - 90
         }
       }).loadData(this.spreadsheetData) // load data
       this.spreadsheetObj.on('cell-edited', (text, ri, ci) => {
