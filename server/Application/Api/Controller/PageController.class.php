@@ -78,7 +78,7 @@ class PageController extends BaseController
         $is_urlencode = I("is_urlencode/d") ? I("is_urlencode/d") : 0; //页面内容是否经过了转义
         $page_title = I("page_title") ? I("page_title") : L("default_title");
         $page_comments = I("page_comments") ? I("page_comments") : '';
-        $page_content = I("post.page_content", "", ""); // 不进行htmlspecialchars过滤
+        $page_content = I("post.page_content", "", ""); // 不进行htmlspecialchars过滤，后面再手工过滤
         $cat_id = I("cat_id/d") ? I("cat_id/d") : 0;
         $item_id = I("item_id/d") ? I("item_id/d") : 0;
         $s_number = I("s_number/d") ? I("s_number/d") : '';
@@ -87,10 +87,7 @@ class PageController extends BaseController
 
 
         $login_user = $this->checkLogin();
-        if (!$this->checkItemEdit($login_user['uid'], $item_id)) {
-            $this->sendError(10103);
-            return;
-        }
+
         if (!$page_content) {
             $this->sendError(10103, "不允许保存空内容，请随便写点什么");
             return;
@@ -98,6 +95,15 @@ class PageController extends BaseController
         if ($is_urlencode) {
             $page_content = urldecode($page_content);
         }
+        // htmlspecialchars过滤
+        $page_content = htmlspecialchars($page_content);
+
+        if (!$this->checkItemEdit($login_user['uid'], $item_id)) {
+            $this->sendError(10103);
+            return;
+        }
+        $data = array();
+
         $data['page_title'] = $page_title;
         $data['page_content'] = $page_content;
         $data['page_comments'] = $page_comments;

@@ -62,6 +62,7 @@
 <script>
 import Header from '../Header'
 import HeaderRight from './HeaderRight'
+import { unescapeHTML } from '@/models/page'
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs')
 }
@@ -98,19 +99,6 @@ export default {
         if (response.data.page_content) {
           let objData
           try {
-            // 先定义一个html反转义的函数
-            const unescapeHTML = str =>
-              str.replace(
-                /&amp;|&lt;|&gt;|&#39;|&quot;/g,
-                tag =>
-                  ({
-                    '&amp;': '&',
-                    '&lt;': '<',
-                    '&gt;': '>',
-                    '&#39;': "'",
-                    '&quot;': '"'
-                  }[tag] || tag)
-              )
             objData = JSON.parse(unescapeHTML(response.data.page_content))
           } catch (error) {
             objData = {}
