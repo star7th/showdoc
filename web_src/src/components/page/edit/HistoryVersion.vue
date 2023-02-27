@@ -54,6 +54,7 @@
 <style></style>
 
 <script>
+import { unescapeHTML } from '@/models/page'
 export default {
   props: {
     callback: '',
@@ -87,7 +88,7 @@ export default {
       })
     },
     recover(row) {
-      this.callback(row.page_content, true)
+      this.callback(unescapeHTML(row.page_content), true)
       this.dialogTableVisible = false
     },
 

@@ -221,6 +221,7 @@ class PageController extends BaseController
                 $page_content = uncompress_string($value['page_content']);
                 if (!empty($page_content)) {
                     $value['page_content'] = htmlspecialchars_decode($page_content);
+                    $value['page_content'] = htmlspecialchars($value['page_content'], ENT_NOQUOTES); // 不编码任何引号,以兼容json.同时转义其他字符串，以免xss
                 }
             }
 

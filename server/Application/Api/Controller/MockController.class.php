@@ -64,10 +64,10 @@ class MockController extends BaseController
     // 根据页面id获取mock信息
     public function infoByPageId()
     {
+        $login_user = $this->checkLogin(false);
         $page_id = I("page_id/d");
         $uid = $login_user['uid'];
         $page = D("Mock")->where(" page_id = '$page_id' ")->find();
-        $login_user = $this->checkLogin(false);
         if (!$this->checkItemVisit($login_user['uid'], $page['item_id'])) {
             $this->sendError(10103);
             return;
@@ -90,6 +90,7 @@ class MockController extends BaseController
                 $this->sendError(10101, '为了服务器安全，只允许写符合json语法的字符串');
                 return;
             }
+            $res = htmlspecialchars($res, ENT_NOQUOTES); // 不编码任何引号,以兼容json.同时转义其他字符串，以免xss
             echo $res;
         } else {
             echo "mock服务暂时不可用。网站管理员需要另行安装mock服务，详情请打开https://www.showdoc.com.cn/p/1ee8a176dd0ccc65609005f3a36c2cc7";
@@ -120,6 +121,7 @@ class MockController extends BaseController
                 $this->sendError(10101, '为了服务器安全，只允许写符合json语法的字符串');
                 return;
             }
+            $res = htmlspecialchars($res, ENT_NOQUOTES); // 不编码任何引号,以兼容json.同时转义其他字符串，以免xss
             echo $res;
         } else {
             echo "mock服务暂时不可用。网站管理员安装完showdoc后需要另行安装mock服务，详情请打开https://www.showdoc.com.cn/p/1ee8a176dd0ccc65609005f3a36c2cc7";
