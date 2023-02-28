@@ -115,6 +115,7 @@ pre ol {
 <script>
 import Editormd from '@/components/common/Editormd'
 import Toc from '@/components/common/Toc'
+import { rederPageContent } from '@/models/page'
 
 export default {
   data() {
@@ -154,7 +155,7 @@ export default {
         false
       ).then(data => {
         if (data.error_code === 0) {
-          this.content = data.data.page_content
+          this.content = rederPageContent(data.data.page_content)
           this.page_title = data.data.page_title
           this.page_id = data.data.page_id
         } else if (data.error_code === 10307 || data.error_code === 10303) {
