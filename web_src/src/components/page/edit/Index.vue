@@ -128,6 +128,16 @@
             </el-dropdown-menu>
           </el-dropdown>
 
+          <el-button
+            icon="el-icon-takeaway-box"
+            v-if="$lang == 'zh-cn' && showAIBtn"
+            style="padding-top: 12px;padding-bottom: 12px;"
+            @click.native="showAI = true"
+            size="medium"
+            @click="createContent"
+            >{{ $t('ai_assistant') }}</el-button
+          >
+
           <el-dropdown type class="" size="medium" trigger="hover">
             <el-button icon="el-icon-document">
               {{ $t('add_from_template')
@@ -319,6 +329,20 @@
       "
     ></Mock>
 
+    <AI
+      :page_id="page_id"
+      :item_id="item_id"
+      v-if="showAI"
+      :callback="
+        data => {
+          this.showAI = false
+          if (data && typeof data == 'string') {
+            insertValue(data)
+          }
+        }
+      "
+    ></AI>
+
     <!-- 一个隐藏的可编辑元素。用于承载粘贴html代码。后续会用于转markdown -->
     <div contenteditable="true" id="pastebin"></div>
   </div>
@@ -340,6 +364,8 @@ import SelectCat from '@/components/catalog/Select'
 import { Base64 } from 'js-base64'
 import { rederPageContent } from '@/models/page'
 import { getUserInfoFromStorage } from '@/models/user.js'
+import AI from '@/components/page/edit/AI'
+
 import {
   apiTemplateZh,
   databaseTemplateZh,
@@ -385,7 +411,9 @@ export default {
       showSelectCat: false,
       currentCatName: '/',
       showContent: false,
-      showMock: false
+      showMock: false,
+      showAI: false,
+      showAIBtn: false
     }
   },
   components: {
@@ -400,7 +428,8 @@ export default {
     Notify,
     SqlToMarkdownTable,
     SelectCat,
-    Mock
+    Mock,
+    AI
   },
   methods: {
     // 获取页面内容
@@ -887,6 +916,14 @@ export default {
       this.$prompt('', '', { inputValue: defaultVar }).then(data => {
         this.title = data.value
       })
+    },
+    isShowAI() {
+      // 判断是否应该展示AI助手按钮
+      this.request('/api/common/homePageSetting', {}).then(res => {
+        if (res.data && res.data.is_show_ai) {
+          this.showAIBtn = true
+        }
+      })
     }
   },
 
@@ -916,6 +953,7 @@ export default {
     }
     const userInfo = getUserInfoFromStorage()
     this.user_token = userInfo.user_token
+    this.isShowAI()
   },
 
   beforeDestroy() {

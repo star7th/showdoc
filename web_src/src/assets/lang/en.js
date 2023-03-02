@@ -590,5 +590,7 @@ exports.default = {
   table_item_auto_save_tips:
     'Spreadsheet items will be saved automatically when you edit them',
   do_not_remind_again: 'Don not remind me again',
-  no_items: 'No items'
+  no_items: 'No items',
+
+  ai_assistant: 'Ai assistant'
 }

@@ -79,6 +79,24 @@
           <i class="el-icon-question"></i>
         </el-tooltip>
       </el-form-item>
+      <el-form-item v-show="$lang == 'zh-cn'" label="AI助手认证KEY">
+        <el-input
+          v-model="form.open_api_key"
+          class="form-el"
+          placeholder=""
+        ></el-input>
+
+        <el-tooltip effect="dark" content="点击查看填写说明" placement="top">
+          <i
+            class="el-icon-question cursor-pointer "
+            @click="
+              toOutLink(
+                'https://www.showdoc.com.cn/p/30dd0637811cd5c690ffd547f3c46889'
+              )
+            "
+          ></i>
+        </el-tooltip>
+      </el-form-item>
       <el-form-item :label="$t('oss_open')">
         <el-switch v-model="form.oss_open"></el-switch>
       </el-form-item>
@@ -206,7 +224,8 @@ export default {
         history_version_count: 20,
         beian: '',
         show_watermark: false,
-        site_url: ''
+        site_url: '',
+        open_api_key: ''
       },
       itemList: []
     }
@@ -250,6 +269,9 @@ export default {
         this.form.beian = data.data.beian ? data.data.beian : ''
         this.form.show_watermark = data.data.show_watermark > 0
         this.form.site_url = data.data.site_url ? data.data.site_url : ''
+        this.form.open_api_key = data.data.open_api_key
+          ? data.data.open_api_key
+          : ''
       })
     },
     getItemList() {

@@ -21,12 +21,14 @@ class AdminSettingController extends BaseController
         $show_watermark = intval(I("show_watermark"));
         $beian = I("beian");
         $site_url = I("site_url");
+        $open_api_key = I("open_api_key");
         D("Options")->set("history_version_count", $history_version_count);
         D("Options")->set("register_open", $register_open);
         D("Options")->set("home_page", $home_page);
         D("Options")->set("home_item", $home_item);
         D("Options")->set("beian", $beian);
         D("Options")->set("site_url", $site_url);
+        D("Options")->set("open_api_key", $open_api_key);
         D("Options")->set("show_watermark", $show_watermark);
 
         if ($oss_open) {
@@ -52,7 +54,7 @@ class AdminSettingController extends BaseController
         $home_item = D("Options")->get("home_item");
         $beian = D("Options")->get("beian");
         $site_url = D("Options")->get("site_url");
-        $ldap_form = json_decode($ldap_form, 1);
+        $open_api_key = D("Options")->get("open_api_key");
         $oss_setting = json_decode($oss_setting, 1);
 
         //如果强等于false，那就是尚未有数据。关闭注册应该是有数据且数据为字符串0
@@ -69,6 +71,7 @@ class AdminSettingController extends BaseController
                 "beian" => $beian,
                 "site_url" => $site_url,
                 "oss_setting" => $oss_setting,
+                "open_api_key" => $open_api_key,
             );
             $this->sendResult($array);
         }
