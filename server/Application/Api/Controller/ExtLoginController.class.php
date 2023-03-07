@@ -142,7 +142,7 @@ class ExtLoginController extends BaseController
                 curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
                 curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, FALSE);
                 curl_setopt($oCurl, CURLOPT_HEADER, 0);         //是否输出返回头信息
-                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Authorization: token {$access_token_string}", "user-agent: showdoc"));
+                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Authorization: bearer {$access_token_string}", "user-agent: showdoc","accept:application/json"));
                 $res = curl_exec($oCurl);   //执行
                 curl_close($oCurl);          //关闭会话
                 $res_array = json_decode($res, true);
