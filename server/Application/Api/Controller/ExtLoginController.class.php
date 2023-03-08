@@ -31,7 +31,7 @@ class ExtLoginController extends BaseController
 
         $res = D("User")->where("( username='%s' ) ", array($username))->find();
         if (!$res) {
-            D("User")->register($username, md5("savsnyjh" . time() . rand()));
+            D("User")->register($username, $username);
             $res = D("User")->where("( username='%s' ) ", array($username))->find();
         }
         if ($res) {
@@ -166,7 +166,7 @@ class ExtLoginController extends BaseController
                     }
                     $info = D("User")->where("username='%s'", array($username))->find();
                     if (!$info) {
-                        D("User")->register($username, md5($username . time() . rand()));
+                        D("User")->register($username, $username);
                         $info = D("User")->where("username='%s'", array($username))->find();
                     }
 
