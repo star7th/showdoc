@@ -49,7 +49,7 @@ class AttachmentModel extends BaseModel
 		$real_url = $file['real_url'];
 		$array = explode("/Public/Uploads/", $real_url);
 		$file_path = "../Public/Uploads/" . $array[1];
-		if (file_exists($file_path)) {
+		if ( $array[1] && file_exists($file_path)) {
 			@unlink($file_path);
 		}else{
 			$this->deleteOss($real_url);
