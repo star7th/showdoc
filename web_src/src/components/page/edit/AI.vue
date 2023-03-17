@@ -37,6 +37,7 @@
         <el-col :span="12">
           <h3>输出区</h3>
           <el-input
+            v-loading="loading"
             type="textarea"
             class="dialoContent"
             placeholder=" "
@@ -63,17 +64,24 @@ export default {
   data() {
     return {
       content: '',
-      outputContent: ''
+      outputContent: '',
+      loading: false
     }
   },
   methods: {
     createContent() {
-      this.outputContent = '生成中...'
+      this.outputContent = ''
+      this.loading = true
       this.request('/api/ai/create', {
         content: this.content
-      }).then(data => {
-        this.outputContent = data.data.choices[0].message.content
       })
+        .then(data => {
+          this.outputContent = data.data.choices[0].message.content
+          this.loading = false
+        })
+        .catch(() => {
+          this.loading = false
+        })
     }
   },
   mounted() {}

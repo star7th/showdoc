@@ -150,6 +150,8 @@ import Editormd from '@/components/common/Editormd'
 import Toc from '@/components/common/Toc'
 import Header from '../Header'
 import HeaderRight from './HeaderRight'
+import { rederPageContent } from '@/models/page'
+
 export default {
   props: {
     item_info: ''
@@ -181,7 +183,7 @@ export default {
         page_id: page_id
       }).then(data => {
         const json = data.data
-        this.content = json.page_content
+        this.content = rederPageContent(json.page_content)
         this.page_title = json.page_title
       })
     },

@@ -6,7 +6,7 @@ import axios from 'axios'
 import router from '@/router/index'
 
 // axios 配置
-axios.defaults.timeout = 20000
+axios.defaults.timeout = 60000
 axios.defaults.baseURL = DocConfig.server
 
 // http request 拦截器

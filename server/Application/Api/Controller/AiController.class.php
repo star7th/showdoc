@@ -48,7 +48,7 @@ class AiController extends BaseController
         $curl = curl_init();  //初始化
         curl_setopt($curl, CURLOPT_URL, $api_base_url . '/v1/chat/completions');  //设置url
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);  //设置http验证方法
-        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 120);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  //设置curl_exec获取的信息的返回方式
         curl_setopt($curl, CURLOPT_POST, 1);  //设置发送方式为post请求
         curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);  //设置post的数据
