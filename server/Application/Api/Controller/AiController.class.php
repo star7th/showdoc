@@ -46,6 +46,7 @@ class AiController extends BaseController
         ));
         $api_base_url = env('API_BASE_URL', 'https://api.openai.com');
         $curl = curl_init();  //初始化
+        curl_setopt($curl, CURLOPT_ENCODING, '');
         curl_setopt($curl, CURLOPT_URL, $api_base_url . '/v1/chat/completions');  //设置url
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);  //设置http验证方法
         curl_setopt($curl, CURLOPT_TIMEOUT, 120);
