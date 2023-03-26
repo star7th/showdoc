@@ -1,14 +1,14 @@
-﻿name: ci
-
+﻿name: Build and push Docker image
 on:
-  push:
-    branches:
-      - "master"
+  release:
+    types: [published]
 
 jobs:
-  docker:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -23,4 +23,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: star7th/showdoc:latest
+          tags: star7th/showdoc:${{ github.event.release.tag_name }}
