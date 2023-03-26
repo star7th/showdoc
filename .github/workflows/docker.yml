@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "master"
+    tags:
+      - "v*.*.*" # 匹配以 v 开头，后跟三个数字的标签
 
 jobs:
   docker:
@@ -23,4 +25,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: star7th/showdoc:latest
+          tags: |
+            star7th/showdoc:latest
+            star7th/showdoc:${{ github.ref }}
+            star7th/showdoc:${{ github.ref | replace('refs/tags/', '') }}
