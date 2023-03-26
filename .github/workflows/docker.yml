@@ -25,7 +25,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: |
-            star7th/showdoc:latest
+          tags: star7th/showdoc:latest
             star7th/showdoc:${{ github.ref }}
-            star7th/showdoc:${{ github.ref | replace('refs/tags/', '') }}
+            star7th/showdoc:${{ github.ref | replace('refs/tags/','') }}
