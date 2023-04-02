@@ -97,6 +97,20 @@
           ></i>
         </el-tooltip>
       </el-form-item>
+      <el-form-item v-show="$lang == 'zh-cn'" label="AI助手代理HOST">
+        <el-input
+          v-model="form.open_api_host"
+          class="form-el"
+          placeholder="可选"
+        ></el-input>
+
+        <el-tooltip effect="dark" content="点击查看填写说明" placement="top">
+          <i
+            class="el-icon-question cursor-pointer "
+            @click="toOutLink('https://github.com/star7th/showdoc/issues/1904')"
+          ></i>
+        </el-tooltip>
+      </el-form-item>
       <el-form-item :label="$t('oss_open')">
         <el-switch v-model="form.oss_open"></el-switch>
       </el-form-item>
@@ -225,7 +239,8 @@ export default {
         beian: '',
         show_watermark: false,
         site_url: '',
-        open_api_key: ''
+        open_api_key: '',
+        open_api_host: ''
       },
       itemList: []
     }
@@ -271,6 +286,9 @@ export default {
         this.form.site_url = data.data.site_url ? data.data.site_url : ''
         this.form.open_api_key = data.data.open_api_key
           ? data.data.open_api_key
+          : ''
+        this.form.open_api_host = data.data.open_api_host
+          ? data.data.open_api_host
           : ''
       })
     },
