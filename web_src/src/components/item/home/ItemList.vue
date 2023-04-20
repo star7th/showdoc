@@ -232,7 +232,7 @@ import Recycle from '@/components/item/setting/Recycle'
 import Archive from '@/components/item/setting/Archive'
 import Attorn from '@/components/item/setting/Attorn'
 import Delete from '@/components/item/setting/Delete'
-import Share from '@/components/item/home/share'
+import Share from '@/components/item/home/Share'
 export default {
   name: 'ItemList',
   components: {

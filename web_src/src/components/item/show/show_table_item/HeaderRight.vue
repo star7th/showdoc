@@ -209,7 +209,7 @@ import Archive from '@/components/item/setting/Archive'
 import Attorn from '@/components/item/setting/Attorn'
 import Delete from '@/components/item/setting/Delete'
 import ItemUpdate from '@/components/item/add/Basic'
-import Share from '@/components/item/home/share'
+import Share from '@/components/item/home/Share'
 export default {
   components: {
     Member,
