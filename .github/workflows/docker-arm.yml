@@ -23,5 +23,5 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: star7th/showdoc::arm-latest
+          tags: star7th/showdoc:arm-latest
           file: DockerfileARM # 使用仓库下的DockerfileARM文件进行构建
