@@ -1,0 +1,13 @@
+FROM  arm64v8/wordpress:php7.4
+
+COPY ./ /var/www/html/
+RUN mkdir -p /showdoc_data/html
+RUN cp -R /var/www/html/ /showdoc_data/
+RUN rm -rf /usr/src/wordpress
+COPY ./ /usr/src/wordpress
+RUN echo "<?php echo file_get_contents('index.html'); ?>" > /var/www/html/web/index.php
+RUN chmod -R 777  /var/www/html/
+
+# 写环境变量
+ENV SHOWDOC_DOCKER_VERSION 2.4
+ENV SHOWDOC_DOCKER_ARM 1
