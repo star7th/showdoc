@@ -44,9 +44,20 @@ class AiController extends BaseController
                 ),
             ),
         ));
-        $api_base_url = env('API_BASE_URL', 'https://api.openai.com');
+        $open_api_host = D("Options")->get("open_api_host");
+        if (!$open_api_host) {
+            $open_api_host = 'https://api.openai.com';
+        }
+        if (!strstr($open_api_host, 'http')) {
+            $open_api_host = 'https://' . $open_api_host;
+        }
+        if (substr($open_api_host, -1) === '/') { // 如果字符串以 / 符号结尾:
+            $open_api_host = substr($open_api_host, 0, -1); // 将字符串的最后一个字符剪切掉
+
+        }
         $curl = curl_init();  //初始化
-        curl_setopt($curl, CURLOPT_URL, $api_base_url . '/v1/chat/completions');  //设置url
+        curl_setopt($curl, CURLOPT_ENCODING, '');
+        curl_setopt($curl, CURLOPT_URL, $open_api_host . '/v1/chat/completions');  //设置url
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);  //设置http验证方法
         curl_setopt($curl, CURLOPT_TIMEOUT, 120);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  //设置curl_exec获取的信息的返回方式

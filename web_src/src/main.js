@@ -20,7 +20,7 @@ import 'babel-polyfill'
 import VueClipboard from 'vue-clipboard2'
 import store from './store/'
 import '../src/assets/tailwind.css' // 引入tailwind
-import SDialog from '@/components/common/SDialog'
+import SDialog from '@/components/common/Sdialog'
 
 Vue.use(util)
 Vue.config.productionTip = false
