@@ -84,6 +84,7 @@ class PageController extends BaseController
         $s_number = I("s_number/d") ? I("s_number/d") : '';
         $is_notify = I("is_notify/d") ? I("is_notify/d") : 0;
         $notify_content = I("notify_content") ? I("notify_content") : '';
+        $ext_info = I("ext_info") ? I("ext_info") : '';
 
 
         $login_user = $this->checkLogin();
@@ -114,8 +115,24 @@ class PageController extends BaseController
         $data['page_addtime'] = time();
         $data['author_uid'] = $login_user['uid'];
         $data['author_username'] = $login_user['username'];
+        $data['ext_info'] = $ext_info;
 
-
+        $item_array = D("Item")->where(" item_id = '$item_id' ")->find();
+        
+        // 这里插入一段逻辑，对于runapi项目类型，填充ext_info字段
+        if(!$data['ext_info'] && $item_array['item_type'] == 3){
+            $content_json = htmlspecialchars_decode($page_content);
+            $content = json_decode($content_json, true);
+            if ($content && $content['info'] && $content['info']['url']) {
+                $ext_info_array = array(
+                    "page_type"=>"api",
+                    "api_info"=>array(
+                        "method"=>"post",
+                    )
+                    );
+                $data['ext_info'] = json_encode($ext_info_array);
+            }
+        }
 
         if ($page_id > 0) {
 
@@ -143,6 +160,7 @@ class PageController extends BaseController
                 'addtime' => $page['addtime'],
                 'author_uid' => $page['author_uid'],
                 'author_username' => $page['author_username'],
+                'ext_info' => $page['ext_info'],
             );
             D("PageHistory")->add($insert_history);
 

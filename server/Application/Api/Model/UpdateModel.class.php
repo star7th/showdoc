@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 16;
+        $version_num = 17;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -515,6 +515,18 @@ class UpdateModel
             `updated_at` CHAR(2000) NOT NULL DEFAULT ''
             )";
         D("User")->execute($sql);
+
+        //给page表增加ext_info字段
+        if (!$this->_is_column_exist("page", "ext_info")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "page ADD ext_info CHAR(2000) NOT NULL DEFAULT '' ;";
+            D("page")->execute($sql);
+        }
+
+        //给page_history表增加ext_info字段
+        if (!$this->_is_column_exist("page_history", "ext_info")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "page_history ADD ext_info CHAR(2000) NOT NULL DEFAULT '' ;";
+            D("page")->execute($sql);
+        }
 
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num

@@ -95,7 +95,7 @@ class ItemModel extends BaseModel
     //获取菜单结构
     public function getMemu($item_id)
     {
-        $page_field = "page_id,author_uid,cat_id,page_title,addtime";
+        $page_field = "page_id,author_uid,cat_id,page_title,addtime,ext_info";
         $catalog_field = '*';
         $data = $this->getContent($item_id, $page_field, $catalog_field);
         return $data;
