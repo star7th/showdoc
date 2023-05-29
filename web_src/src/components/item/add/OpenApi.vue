@@ -19,6 +19,9 @@
         <p>
           <span v-html="$t('open_api_tips4')"></span>
         </p>
+        <p>
+          <span v-html="$t('open_api_tips5')"></span>
+        </p>
       </div>
     </SDialog>
   </div>

@@ -118,6 +118,18 @@ li {
   /* 如特别需要强调的按钮背景色、文字链 */
   color: #007BFF;
 }
+.v3-color-blue{
+  color: #007BFF;
+}
+.v3-color-yellow{
+  color: #ffc107;
+}
+.v3-color-red{
+  color: #DC3545;
+}
+.v3-color-green{
+  color: #28A745;
+}
 .v3-lg-btn{
   width: 160px;
   height: 50px;

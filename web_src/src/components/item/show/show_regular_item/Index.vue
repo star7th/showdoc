@@ -71,9 +71,10 @@
                 <div>
                   除了手动添加外，你还可以通过以下三种方式自动化生成文档：
                   <p class="links">
-                    <a href="https://www.showdoc.com.cn/runapi" target="_blank"
-                      >使用runapi工具自动生成（推荐）</a
-                    ><br />
+                    <i class="el-icon-star-on v3-color-yellow"></i>
+                    <a href="https://www.showdoc.com.cn/runapi" target="_blank">
+                      使用runapi工具自动生成（推荐）</a
+                    ><i class="el-icon-star-on v3-color-yellow"></i><br />
                     <a
                       href="https://www.showdoc.com.cn/page/7416564025093"
                       target="_blank"
@@ -380,28 +381,31 @@ pre ol {
   font-size: 13px;
 }
 
+
 .empty-tips {
   margin: 5% auto;
   width: 400px;
   text-align: center;
-  color: #000;
   min-height: 50vh;
-  opacity: 0.3;
+  opacity: 0.5;
 }
 
 .empty-tips .icon {
   font-size: 80px;
-  margin-left: -50px;
 }
 
 .empty-tips .text {
-  text-align: left;
+  text-align: center;
 }
 
 .empty-tips .links {
   line-height: 2em;
+  text-align: center;
+
 }
 .empty-tips .links a {
   text-decoration: underline;
+  color: #007bff;
+
 }
 </style>

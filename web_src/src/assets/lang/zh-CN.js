@@ -130,10 +130,12 @@ exports.default = {
   open_api_tips1:
     'showdoc开放文档编辑的API，供使用者更加方便地操作文档数据。<br>利用开放API，你可以自动化地完成很多事',
   open_api_tips2:
-    '如果你想自动化生成API文档，则可参考<a target="_bank" href="https://www.showdoc.cc/page/741656402509783">API文档</a>',
+    '如果你想利用runapi客户端生成API文档，则可参考<a target="_bank" href="https://www.showdoc.cc/runapi">runapi介绍</a>',
   open_api_tips3:
-    '如果你想自动化生成数据字典，则可参考<a target="_bank" href="https://www.showdoc.cc/page/312209902620725">数据字典</a>',
+    '如果你想通过程序注释生成API文档，则可参考<a target="_bank" href="https://www.showdoc.cc/page/741656402509783">API文档</a>',
   open_api_tips4:
+    '如果你想自动化生成数据字典，则可参考<a target="_bank" href="https://www.showdoc.cc/page/312209902620725">数据字典</a>',
+  open_api_tips5:
     '如果你更自由地生成自己所需要的格式，则可参考<a target="_bank" href="https://www.showdoc.cc/page/102098">开放API</a>',
 
   // item/show

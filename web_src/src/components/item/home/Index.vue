@@ -38,7 +38,7 @@
             @click="changeGroup(-1)"
           >
             <div class="item-one-block-content">
-              <i class="el-icon-star-on mr-1"></i>{{ $t('star_items') }}
+              <i class="el-icon-star-on mr-1 v3-color-yellow"></i>{{ $t('star_items') }}
             </div>
           </div>
         </div>

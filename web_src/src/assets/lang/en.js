@@ -139,12 +139,15 @@ exports.default = {
   open_api_tips1:
     'Showdoc opens the API for document editing, making it easier for users to manipulate document data. <br>With the open API, you can do a lot of things automatically',
   open_api_tips2:
-    'If you want to automate the generation of API documentation, you can refer to<a target="_bank" href="https://www.showdoc.cc/page/741656402509783">API documentation</a>',
+    'If you want to use the runAPI client to generate API documents, you can refer to the <a target="_bank" href="https://www.showdoc.cc/runapi">runapi introduction</a>',
   open_api_tips3:
-    'If you want to automate the generation of a data dictionary, you can refer to<a target="_bank" href="https://www.showdoc.cc/page/312209902620725">Data dictionary</a>',
+    'If you want to automate the generation of API documentation, you can refer to<a target="_bank" href="https://www.showdoc.cc/page/741656402509783">API documentation</a>',
   open_api_tips4:
+    'If you want to automate the generation of a data dictionary, you can refer to<a target="_bank" href="https://www.showdoc.cc/page/312209902620725">Data dictionary</a>',
+  open_api_tips5:
     'If you are more free to generate the format you need, you can refer to<a target="_bank" href="https://www.showdoc.cc/page/102098">Open API</a>',
-  // item/show
+
+    // item/show
   item: 'Item',
   share: 'Share',
   export: 'Export',
