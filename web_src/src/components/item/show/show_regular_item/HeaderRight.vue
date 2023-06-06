@@ -1,6 +1,6 @@
 <!-- 附件 -->
 <template>
-  <div class="header-right float-right  mt-5 mr-5">
+  <div class="header-right float-right  mt-6 mr-5">
     <div>
       <div
         v-if="item_info.item_edit"
@@ -11,7 +11,7 @@
         "
       >
         <el-tooltip effect="dark" :content="$t('new_page')" placement="top">
-          <i class="el-icon-plus"></i>
+          <font-awesome-icon :icon="['far', 'plus']" />
         </el-tooltip>
       </div>
       <div
@@ -23,7 +23,7 @@
         "
       >
         <el-tooltip effect="dark" :content="$t('edit_page')">
-          <i class="el-icon-edit-outline"></i>
+          <font-awesome-icon :icon="['far', 'edit']" />
         </el-tooltip>
       </div>
       <div
@@ -31,7 +31,10 @@
         class="icon-item"
       >
         <el-tooltip effect="dark" content="runapi项目请在runapi客户端编辑">
-          <i class=" cursor-not-allowed el-icon-edit-outline"></i>
+          <font-awesome-icon
+            class=" cursor-not-allowed"
+            :icon="['far', 'edit']"
+          />
         </el-tooltip>
       </div>
       <div
@@ -40,12 +43,12 @@
         @click="showCatalog = true"
       >
         <el-tooltip effect="dark" :content="$t('new_catalog')" placement="top">
-          <i class="el-icon-folder-add"></i>
+          <font-awesome-icon :icon="['far', 'folder-plus']" />
         </el-tooltip>
       </div>
       <div class="icon-item" @click="showShare = true">
         <el-tooltip effect="dark" :content="$t('share')" placement="top">
-          <i class="el-icon-share"></i>
+          <font-awesome-icon :icon="['far', 'share-nodes']" />
         </el-tooltip>
       </div>
       <div
@@ -57,7 +60,7 @@
         @click="showItemExport = true"
       >
         <el-tooltip effect="dark" :content="$t('export')" placement="top">
-          <i class="el-icon-download"></i>
+          <font-awesome-icon :icon="['far', 'arrow-down-to-bracket']" />
         </el-tooltip>
       </div>
       <div
@@ -66,7 +69,10 @@
         @click="showItemImport = true"
       >
         <el-tooltip effect="dark" :content="$t('import')" placement="top">
-          <i class="el-icon-upload2"></i>
+          <font-awesome-icon
+            :icon="['far', 'arrow-down-to-bracket']"
+            rotation="180"
+          />
         </el-tooltip>
       </div>
       <div
@@ -79,7 +85,7 @@
           :content="$t('member_manage')"
           placement="top"
         >
-          <i class="el-icon-wind-power"></i>
+          <font-awesome-icon :icon="['far', 'flag']" />
         </el-tooltip>
       </div>
       <div
@@ -94,8 +100,8 @@
       >
         <el-tooltip effect="dark" :content="$t('my_notice')" placement="top">
           <el-badge :value="$store.state.new_msg ? 'New' : ''">
-            <i class="el-icon-bell"></i
-          ></el-badge>
+            <font-awesome-icon :icon="['far', 'bell']"
+          /></el-badge>
         </el-tooltip>
       </div>
       <div
@@ -104,7 +110,7 @@
         @click="showUserSetting = true"
       >
         <el-tooltip effect="dark" :content="$t('user_center')" placement="top">
-          <i class="el-icon-user"></i>
+          <font-awesome-icon :icon="['far', 'user']" />
         </el-tooltip>
       </div>
       <div
@@ -119,7 +125,7 @@
         "
       >
         <el-tooltip effect="dark" :content="$t('login')" placement="top">
-          <i class="el-icon-user"></i>
+          <font-awesome-icon :icon="['far', 'user']" />
         </el-tooltip>
       </div>
       <div
@@ -132,7 +138,7 @@
           :content="$t('about_showdoc')"
           placement="top"
         >
-          <i class="el-icon-help"></i>
+          <font-awesome-icon :icon="['far', 'circle-info']" />
         </el-tooltip>
       </div>
 
@@ -140,7 +146,7 @@
         <el-dropdown :show-timeout="0" trigger="hover">
           <div class="icon-item">
             <span class="el-dropdown-link">
-              <i class="el-icon-more"></i>
+              <font-awesome-icon :icon="['far', 'ellipsis']" />
             </span>
           </div>
 
@@ -152,31 +158,34 @@
                 showPageEdit = true
               "
             >
-              <i class="el-icon-document"></i>
+              <font-awesome-icon class="mr-2" :icon="['fas', 'clone']" />
               {{ $t('copy_page') }}
             </el-dropdown-item>
             <el-dropdown-item @click.native="showHistoryVersiong = true">
-              <i class="el-icon-goods"></i>
+              <font-awesome-icon
+                class="mr-2"
+                :icon="['far', 'rectangle-history']"
+              />
               {{ $t('page_history_version') }}
             </el-dropdown-item>
 
             <el-dropdown-item @click.native="showSortPage = true">
-              <i class="el-icon-sort"></i>
+              <font-awesome-icon class="mr-2" :icon="['far', 'sort']" />
               {{ $t('sort_page') }}
             </el-dropdown-item>
             <el-dropdown-item @click.native="showPageInfo">
-              <i class="el-icon-info"></i>
+              <font-awesome-icon class="mr-2" :icon="['far', 'circle-info']" />
               {{ $t('page_info') }}
             </el-dropdown-item>
             <el-dropdown-item @click.native="deletePage">
-              <i class="el-icon-delete"></i>
+              <font-awesome-icon class="mr-2" :icon="['far', 'trash-can']" />
               {{ $t('delete_page') }}
             </el-dropdown-item>
             <el-dropdown-item
               v-if="item_info.item_manage"
               @click.native="showRecycle = true"
             >
-              <i class="el-icon-coffee"></i>
+              <font-awesome-icon class="mr-2" :icon="['far', 'trash']" />
               {{ $t('recycle') }}
             </el-dropdown-item>
             <el-dropdown-item
@@ -184,11 +193,14 @@
               divided
               @click.native="showItemUpdate = true"
             >
-              <i class="el-icon-edit-outline"></i>
+              <font-awesome-icon class="mr-2" :icon="['far', 'edit']" />
               {{ $t('update_item_base_info') }}
             </el-dropdown-item>
             <el-dropdown-item @click.native="showChangeLog = true">
-              <i class="el-icon-toilet-paper"></i>
+              <font-awesome-icon
+                class="mr-2"
+                :icon="['far', 'rectangle-vertical-history']"
+              />
               {{ $t('item_change_log') }}
             </el-dropdown-item>
 
@@ -196,28 +208,28 @@
               v-if="item_info.item_manage"
               @click.native="showAttorn = true"
             >
-              <i class="el-icon-refresh"></i>
+              <font-awesome-icon class="mr-2" :icon="['fas', 'recycle']" />
               {{ $t('attorn_item') }}
             </el-dropdown-item>
             <el-dropdown-item
               v-if="item_info.item_manage"
               @click.native="showArchive = true"
             >
-              <i class="el-icon-dish"></i>
+              <font-awesome-icon class="mr-2" :icon="['far', 'box-archive']" />
               {{ $t('archive_item') }}
             </el-dropdown-item>
             <el-dropdown-item
               v-if="item_info.item_manage"
               @click.native="showDelete = true"
             >
-              <i class="el-icon-delete"></i>
+              <font-awesome-icon class="mr-2" :icon="['far', 'trash-can']" />
               {{ $t('delete_item') }}
             </el-dropdown-item>
             <el-dropdown-item
               v-if="item_info.item_manage"
               @click.native="showOpenApi = true"
             >
-              <i class="el-icon-magic-stick"></i>
+              <font-awesome-icon class="mr-2" :icon="['fas', 'terminal']" />
               {{ $t('open_api') }}
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -551,7 +563,6 @@ export default {
   background-color: white;
   width: 40px;
   height: 40px;
-  font-size: 16px;
   justify-content: center; /*水平居中*/
   align-items: center; /*垂直居中*/
   display: inline-flex;

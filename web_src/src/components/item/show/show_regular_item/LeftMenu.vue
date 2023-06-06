@@ -39,7 +39,7 @@
             :index="page.page_id"
             :key="page.page_id"
           >
-            <i class="el-icon-document"></i>
+            <font-awesome-icon class="mr-1" :icon="['far', 'file-alt']" />
             <a
               :href="randerUrl(page.page_id)"
               @click.prevent="() => {}"

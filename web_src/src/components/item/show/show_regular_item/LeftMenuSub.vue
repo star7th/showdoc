@@ -7,7 +7,7 @@
         :key="catalog2.cat_id"
       >
         <template slot="title">
-          <i class="el-icon-folder"></i>
+          <font-awesome-icon class="mr-1" :icon="['far', 'folder-closed']" />
           {{ catalog2.cat_name }}
         </template>
         <!-- 三级目录的页面 -->
@@ -17,7 +17,7 @@
             :index="page3.page_id"
             :key="page3.page_id"
           >
-            <i class="el-icon-document"></i>
+            <font-awesome-icon class="mr-1" :icon="['far', 'file-alt']" />
             <a
               :href="randerUrl(page3.page_id)"
               @click.prevent="() => {}"

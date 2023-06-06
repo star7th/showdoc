@@ -1,12 +1,12 @@
 <!-- 附件 -->
 <template>
   <div class="header grey-bg">
-    <div class="logo float-left mt-4 ml-5  cursor-pointer">
+    <div class="logo float-left mt-6 ml-5  cursor-pointer">
       <div>
         <div class="inline-block align-middle">
           <router-link to="/item/index">
             <div class="icon-item">
-              <i class="el-icon-back"></i>
+              <font-awesome-icon :icon="['far', 'arrow-left']" />
             </div>
           </router-link>
         </div>

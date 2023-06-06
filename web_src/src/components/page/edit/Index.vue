@@ -77,84 +77,99 @@
       <div @keydown.ctrl.83.prevent="save" @keydown.meta.83.prevent="save">
         <el-row class="fun-btn-group">
           <el-dropdown type class="" size="medium" trigger="hover">
-            <el-button icon="el-icon-s-tools">
-              {{ $t('doc_tool')
-              }}<i class="el-icon-arrow-down el-icon--right"></i>
+            <el-button>
+              <font-awesome-icon class="mr-1" :icon="['fas', 'gear']" />
+              {{ $t('doc_tool') }}
+              <i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="showHistoryVersionDialog = true"
-                ><i class="el-icon-lock"> </i
-                >{{ $t('history_version') }}</el-dropdown-item
+              <el-dropdown-item @click.native="showHistoryVersionDialog = true">
+                <font-awesome-icon
+                  class="mr-1"
+                  :icon="['far', 'rectangle-history']"
+                />
+                {{ $t('history_version') }}</el-dropdown-item
               >
               <el-dropdown-item @click.native="showAttachment">
-                <el-badge :value="attachment_count"
-                  ><i class="el-icon-upload"> </i
-                  >{{ $t('attachment') }}</el-badge
+                <el-badge :value="attachment_count">
+                  <font-awesome-icon
+                    class="mr-1"
+                    :icon="['far', 'cloud-arrow-up']"
+                  />
+                  {{ $t('attachment') }}</el-badge
                 ></el-dropdown-item
               >
-              <el-dropdown-item @click.native="showSortPage"
-                ><i class="el-icon-sort"> </i
-                >{{ $t('sort_pages') }}</el-dropdown-item
+              <el-dropdown-item @click.native="showSortPage">
+                <font-awesome-icon class="mr-1" :icon="['far', 'sort']" />
+                {{ $t('sort_pages') }}</el-dropdown-item
               >
 
-              <el-dropdown-item @click.native="showJsonToTableDialog = true"
-                ><i class="el-icon-film"> </i
-                >{{ $t('json_to_table') }}</el-dropdown-item
+              <el-dropdown-item @click.native="showJsonToTableDialog = true">
+                <font-awesome-icon class="mr-1" :icon="['far', 'table']" />
+                {{ $t('json_to_table') }}</el-dropdown-item
               >
-              <el-dropdown-item @click.native="showJsonBeautifyDialog = true"
-                ><i class="el-icon-scissors"> </i
-                >{{ $t('beautify_json') }}</el-dropdown-item
+              <el-dropdown-item @click.native="showJsonBeautifyDialog = true">
+                <font-awesome-icon class="mr-1" :icon="['far', 'goal-net']" />
+                {{ $t('beautify_json') }}</el-dropdown-item
               >
-              <el-dropdown-item @click.native="showPasteTableDialog = true"
-                ><i class="el-icon-attract"> </i
-                >{{ $t('paste_insert_table') }}</el-dropdown-item
+              <el-dropdown-item @click.native="showPasteTableDialog = true">
+                <font-awesome-icon class="mr-1" :icon="['far', 'table']" />
+                {{ $t('paste_insert_table') }}</el-dropdown-item
               >
               <el-dropdown-item
                 @click.native="showSqlToMarkdownTableDialog = true"
-                ><i class="el-icon-takeaway-box"> </i
-                >{{ $t('sql_to_markdown_table') }}</el-dropdown-item
+              >
+                <font-awesome-icon class="mr-1" :icon="['far', 'table']" />
+                {{ $t('sql_to_markdown_table') }}</el-dropdown-item
               >
               <el-dropdown-item
                 v-if="$lang == 'zh-cn'"
                 @click.native="showMock = true"
-                ><i class="el-icon-video-camera"> </i>Mock
+              >
+                <font-awesome-icon
+                  class="mr-1"
+                  :icon="['far', 'database']"
+                />Mock
               </el-dropdown-item>
               <el-dropdown-item
                 v-if="$lang == 'zh-cn'"
                 @click.native="showRunApi"
-                ><i class="el-icon-video-camera"> </i
-                >{{ $t('http_test_api') }}</el-dropdown-item
+              >
+                <font-awesome-icon class="mr-1" :icon="['fas', 'link']" />
+                {{ $t('http_test_api') }}</el-dropdown-item
               >
             </el-dropdown-menu>
           </el-dropdown>
 
           <el-button
-            icon="el-icon-takeaway-box"
             v-if="$lang == 'zh-cn' && showAIBtn"
             style="padding-top: 12px;padding-bottom: 12px;"
             @click.native="showAI = true"
             size="medium"
             @click="createContent"
-            >{{ $t('ai_assistant') }}</el-button
+          >
+            <font-awesome-icon class="mr-1" :icon="['far', 'robot']" />
+            {{ $t('ai_assistant') }}</el-button
           >
 
           <el-dropdown type class="" size="medium" trigger="hover">
-            <el-button icon="el-icon-document">
+            <el-button>
+              <font-awesome-icon class="mr-1" :icon="['fas', 'files']" />
               {{ $t('add_from_template')
               }}<i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="insertApiTemplate"
-                ><i class="el-icon-chicken"> </i
-                >{{ $t('insert_apidoc_template') }}</el-dropdown-item
+              <el-dropdown-item @click.native="insertApiTemplate">
+                <font-awesome-icon class="mr-1" :icon="['far', 'plug']" />
+                {{ $t('insert_apidoc_template') }}</el-dropdown-item
               >
-              <el-dropdown-item @click.native="insertDatabaseTemplate"
-                ><i class="el-icon-sugar"> </i
-                >{{ $t('insert_database_doc_template') }}</el-dropdown-item
+              <el-dropdown-item @click.native="insertDatabaseTemplate">
+                <font-awesome-icon class="mr-1" :icon="['far', 'database']" />
+                {{ $t('insert_database_doc_template') }}</el-dropdown-item
               >
-              <el-dropdown-item @click.native="showTemplateDialog = true"
-                ><i class="el-icon-document-copy"> </i
-                >{{ $t('more_templ') }}</el-dropdown-item
+              <el-dropdown-item @click.native="showTemplateDialog = true">
+                <font-awesome-icon class="mr-1" :icon="['far', 'files']" />
+                {{ $t('more_templ') }}</el-dropdown-item
               >
             </el-dropdown-menu>
           </el-dropdown>

@@ -3,90 +3,108 @@
     <el-dropdown trigger="hover" :show-timeout="0">
       <div class="el-dropdown-link">
         <div class="create-item-btn">
-          <i class="el-icon-plus ml-6 mr-2"></i>
+          <font-awesome-icon class=" ml-6 mr-2" :icon="['fas', 'plus']" />
           <span>{{ $t('create_new_item') }}</span>
           <span class="line"></span>
-          <i class=" ml-10 el-icon-more"></i>
+          <font-awesome-icon class="  ml-10" :icon="['fas', 'ellipsis']" />
         </div>
       </div>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item @click.native="regularItem">
+      <el-dropdown-menu class="more-drd" slot="dropdown">
+        <el-dropdown-item class="more-drd-item" @click.native="regularItem">
           <div class="mt-2 mb-2">
             <div class="inline-block align-middle">
-              <i class="v3-font-size-lg el-icon-copy-document"></i>
+              <font-awesome-icon
+                class=" font-icon mr-2"
+                :icon="['fas', 'files']"
+              />
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">{{ $t('regular_item') }}</div>
-              <div class="v3-font-size-sm v3-color-aux leading-6">
+              <div class="v3-font-size-sm v3-color-aux ">
                 {{ $t('regular_item_desc') }}
               </div>
             </div>
           </div>
         </el-dropdown-item>
-        <el-dropdown-item @click.native="singleItem">
+        <el-dropdown-item class="more-drd-item" @click.native="singleItem">
           <div class="mb-2">
             <div class="inline-block align-middle">
-              <i class="v3-font-size-lg el-icon-document"></i>
+              <font-awesome-icon
+                class="font-icon mr-2"
+                :icon="['fas', 'file']"
+              />
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">
                 {{ $t('single_item') }}
               </div>
-              <div class="v3-font-size-sm v3-color-aux leading-6">
+              <div class="v3-font-size-sm v3-color-aux ">
                 {{ $t('single_item_desc') }}
               </div>
             </div>
           </div>
         </el-dropdown-item>
-        <el-dropdown-item @click.native="tableItem">
+        <el-dropdown-item class="more-drd-item" @click.native="tableItem">
           <div class="mb-2">
             <div class="inline-block align-middle">
-              <i class="v3-font-size-lg el-icon-bank-card"></i>
+              <font-awesome-icon
+                class="font-icon mr-2"
+                :icon="['fas', 'table']"
+              />
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">
                 {{ $t('table_item') }}
               </div>
-              <div class="v3-font-size-sm v3-color-aux leading-6">
+              <div class="v3-font-size-sm v3-color-aux">
                 {{ $t('table_item_desc') }}
               </div>
             </div>
           </div>
         </el-dropdown-item>
-        <el-dropdown-item @click.native="importFile">
+        <el-dropdown-item class="more-drd-item" @click.native="importFile">
           <div class="mb-2">
             <div class="inline-block align-middle">
-              <i class="v3-font-size-lg el-icon-upload2"></i>
+              <font-awesome-icon
+                class="font-icon mr-2"
+                :icon="['fas', 'upload']"
+              />
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">{{ $t('import_file') }}</div>
-              <div class="v3-font-size-sm v3-color-aux leading-6">
+              <div class="v3-font-size-sm v3-color-aux ">
                 {{ $t('import_file_desc') }}
               </div>
             </div>
           </div>
         </el-dropdown-item>
-        <el-dropdown-item @click.native="copyItem">
+        <el-dropdown-item class="more-drd-item" @click.native="copyItem">
           <div class="mb-2">
             <div class="inline-block align-middle">
-              <i class="v3-font-size-lg el-icon-document-copy"></i>
+              <font-awesome-icon
+                class="font-icon mr-2"
+                :icon="['fas', 'copy']"
+              />
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">{{ $t('copy_item') }}</div>
-              <div class="v3-font-size-sm v3-color-aux leading-6">
+              <div class="v3-font-size-sm v3-color-aux ">
                 {{ $t('copy_item_tips1') }}
               </div>
             </div>
           </div>
         </el-dropdown-item>
-        <el-dropdown-item @click.native="autoCreate">
+        <el-dropdown-item class="more-drd-item" @click.native="autoCreate">
           <div class="mb-2">
             <div class="inline-block align-middle">
-              <i class="v3-font-size-lg el-icon-magic-stick"></i>
+              <font-awesome-icon
+                class="font-icon mr-2"
+                :icon="['fas', 'terminal']"
+              />
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">{{ $t('auto_create') }}</div>
-              <div class="v3-font-size-sm v3-color-aux leading-6">
+              <div class="v3-font-size-sm v3-color-aux ">
                 {{ $t('auto_create_desc') }}
               </div>
             </div>
@@ -234,5 +252,12 @@ export default {
 .el-dropdown-link,
 a {
   color: #343a40;
+}
+.more-drd .font-icon {
+  font-size: 18px;
+}
+.more-drd-item {
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 </style>

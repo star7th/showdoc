@@ -1,19 +1,19 @@
 <template>
-  <div class="header-right float-right  mt-5 mr-10">
+  <div class="header-right float-right  mt-6 mr-10">
     <div>
       <el-tooltip effect="dark" :content="$t('feedback')" placement="top">
         <div @click="feedback" class="icon-item">
-          <i class="el-icon-phone"></i>
+          <font-awesome-icon :icon="['fas', 'phone']" />
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('team_mamage')" placement="top">
         <div @click="showTeam = true" class="icon-item">
-          <i class="el-icon-s-flag"></i>
+          <font-awesome-icon :icon="['fas', 'flag']" />
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('my_attachment')" placement="top">
         <div @click="showAttachment = true" class="icon-item">
-          <i class="el-icon-upload"></i>
+          <font-awesome-icon :icon="['fas', 'cloud-arrow-up']" />
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('my_notice')" placement="top">
@@ -27,13 +27,13 @@
           class="icon-item"
         >
           <el-badge :value="$store.state.new_msg ? 'New' : ''">
-            <i class="el-icon-message-solid"></i
-          ></el-badge>
+            <font-awesome-icon :icon="['fas', 'bell']" />
+          </el-badge>
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('user_center')" placement="top">
         <div @click="showUserSetting = true" class="icon-item">
-          <i class="el-icon-user-solid"></i>
+          <font-awesome-icon :icon="['fas', 'user']" />
         </div>
       </el-tooltip>
       <el-tooltip
@@ -46,7 +46,7 @@
           @click="toOutLink('https://www.showdoc.com.cn/clients')"
           class="icon-item"
         >
-          <i class="el-icon-s-platform"></i>
+          <font-awesome-icon :icon="['fas', 'desktop']" />
         </div>
       </el-tooltip>
       <el-tooltip
@@ -59,7 +59,7 @@
           @click="toOutLink('https://www.showdoc.com.cn/runapi')"
           class="icon-item"
         >
-          <i class="el-icon-s-promotion"></i>
+          <font-awesome-icon :icon="['fas', 'link']" />
         </div>
       </el-tooltip>
       <el-tooltip
@@ -69,14 +69,14 @@
         placement="top"
       >
         <div @click="toPath('/admin/index')" class="icon-item">
-          <i class="el-icon-s-tools"></i>
+          <font-awesome-icon :icon="['fas', 'gear']" />
         </div>
       </el-tooltip>
       <div class="inline">
         <el-dropdown :show-timeout="0" trigger="hover">
           <div class="icon-item">
             <span class="el-dropdown-link">
-              <i class="el-icon-more"></i>
+              <font-awesome-icon :icon="['fas', 'ellipsis']" />
             </span>
           </div>
           <el-dropdown-menu slot="dropdown">
@@ -84,20 +84,23 @@
               v-if="$lang == 'zh-cn'"
               @click.native="toOutLink('https://www.dfyun.com.cn/')"
             >
-              <i class="el-icon-s-marketing"></i>
+              <font-awesome-icon :icon="['fas', 'rocket']" />
               CDN加速
             </el-dropdown-item>
             <el-dropdown-item
               v-if="$lang == 'zh-cn'"
               @click.native="toOutLink('https://push.showdoc.com.cn')"
             >
-              <i class="el-icon-s-promotion"></i>
+              <font-awesome-icon :icon="['fas', 'car-side']" />
               推送服务
             </el-dropdown-item>
 
             <el-dropdown-item @click.native="logout">
-              <i class="el-icon-s-unfold"></i
-              >{{ $t('logout') }}</el-dropdown-item
+              <font-awesome-icon
+                :icon="['fas', 'right-from-bracket']"
+                rotation="180"
+              />
+              {{ $t('logout') }}</el-dropdown-item
             >
           </el-dropdown-menu>
         </el-dropdown>
@@ -224,7 +227,6 @@ export default {
   background-color: white;
   width: 40px;
   height: 40px;
-  font-size: 16px;
   justify-content: center; /*水平居中*/
   align-items: center; /*垂直居中*/
   display: inline-flex;
@@ -233,10 +235,9 @@ export default {
   box-shadow: 0 0 4px #0000001a;
 }
 .icon-item a {
-  color: black;
+  color: #343a40;
 }
 .header-right .el-dropdown {
-  font-size: 16px;
 }
 .header-right .icon-item {
   cursor: pointer;

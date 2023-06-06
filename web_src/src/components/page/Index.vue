@@ -104,7 +104,7 @@ pre ol {
 
 #full-page {
   float: right;
-  font-size: 25px;
+  font-size: 18px;
   margin-top: -50px;
   margin-right: 30px;
   cursor: pointer;

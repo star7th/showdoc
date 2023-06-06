@@ -3,31 +3,32 @@
   <div class="left-menu-bottom-bar" id="left-menu-bottom-bar">
     <div class="bottom-bar-item-icon" @click="showPageEdit = true">
       <el-tooltip effect="dark" :content="$t('new_page')" placement="top">
-        <i class="el-icon-circle-plus-outline"></i>
+        <font-awesome-icon :icon="['far', 'plus']" />
       </el-tooltip>
     </div>
     <div class="bottom-bar-item-icon" @click="showCatalog = true">
       <el-tooltip effect="dark" :content="$t('new_catalog')" placement="top">
-        <i class="el-icon-folder-add"></i>
+        <font-awesome-icon :icon="['far', 'edit']" />
       </el-tooltip>
     </div>
     <div class="bottom-bar-item-icon" @click="showSortPage = true">
       <el-tooltip effect="dark" :content="$t('sort_page')" placement="top">
-        <i class="el-icon-sort"></i>
+        <font-awesome-icon class="mr-2" :icon="['far', 'sort']" />
       </el-tooltip>
     </div>
     <div class="bottom-bar-item-icon">
       <el-dropdown :show-timeout="0" trigger="hover">
         <div class="bottom-bar-item-icon">
           <span class="el-dropdown-link">
-            <i class="item-icon-more el-icon-more"></i>
+            <font-awesome-icon :icon="['far', 'ellipsis']" />
           </span>
         </div>
 
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="showRecycle = true">{{
-            $t('recycle')
-          }}</el-dropdown-item>
+          <el-dropdown-item @click.native="showRecycle = true">
+            <font-awesome-icon class="mr-2" :icon="['far', 'trash']" />
+            {{ $t('recycle') }}</el-dropdown-item
+          >
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -126,7 +127,6 @@ export default {
 .left-menu-bottom-bar .bottom-bar-item-icon {
   width: calc(25% - 4px);
   height: 50px;
-  font-size: 20px;
   justify-content: center; /*水平居中*/
   align-items: center; /*垂直居中*/
   display: inline-flex;

@@ -309,7 +309,7 @@ a {
 
 #full-page {
   float: right;
-  font-size: 25px;
+  font-size: 18px;
   margin-right: 20px;
   cursor: pointer;
   color: #ccc;
@@ -381,7 +381,6 @@ pre ol {
   font-size: 13px;
 }
 
-
 .empty-tips {
   margin: 5% auto;
   width: 400px;
@@ -401,11 +400,9 @@ pre ol {
 .empty-tips .links {
   line-height: 2em;
   text-align: center;
-
 }
 .empty-tips .links a {
   text-decoration: underline;
   color: #007bff;
-
 }
 </style>
