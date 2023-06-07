@@ -6,7 +6,7 @@
         <div class="inline-block align-middle">
           <router-link to="/item/index">
             <div class="icon-item">
-              <font-awesome-icon :icon="['far', 'arrow-left']" />
+              <i class="far fa-arrow-left"></i>
             </div>
           </router-link>
         </div>

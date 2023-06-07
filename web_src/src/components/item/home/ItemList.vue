@@ -15,37 +15,20 @@
         @click="toOneItem(item)"
       >
         <div class="left   float-left">
-          <font-awesome-icon
-            v-if="item.item_type == '2'"
-            class="item-icon"
-            :icon="['fas', 'file']"
-          />
-          <font-awesome-icon
-            v-else-if="item.item_type == '4'"
-            class="item-icon"
-            :icon="['fas', 'table']"
-          />
-          <font-awesome-icon
-            v-else
-            class="item-icon"
-            :icon="['fas', 'files']"
-          />
+
+          <i v-if="item.item_type == '2'" class="item-icon fas fa-file"></i>
+          <i v-else-if="item.item_type == '4'" class="item-icon fas fa-table"></i>
+          <i v-else class="item-icon fas fa-files"></i>
           {{ item.item_name }}
         </div>
         <div class="right show-more  float-right" @click.stop="() => {}">
           <el-dropdown :show-timeout="0" trigger="hover">
             <span class="el-dropdown-link">
-              <font-awesome-icon
-                class="item-icon-more"
-                :icon="['fas', 'ellipsis']"
-              />
+              <i class="item-icon-more fas fa-ellipsis"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="toOneItem(item)">
-                <font-awesome-icon
-                  class="mr-2"
-                  :icon="['fas', 'right-to-bracket']"
-                />
+                <i class="mr-2 fas fa-right-to-bracket"></i>
                 {{ $t('open_item') }}
               </el-dropdown-item>
               <el-dropdown-item
@@ -54,17 +37,15 @@
                   showShare = true
                 "
               >
-                <font-awesome-icon
-                  class="mr-2"
-                  :icon="['fas', 'share-nodes']"
-                />
+                <i class="mr-2 fas fa-share-nodes"></i>
                 {{ $t('share') }}
               </el-dropdown-item>
               <el-dropdown-item
                 v-if="item.is_star <= 0"
                 @click.native="clickStar(item)"
               >
-                <font-awesome-icon class="mr-2" :icon="['far', 'star']" />{{
+                <i class="mr-2 far fa-star"></i>
+                {{
                   $t('star_item')
                 }}
               </el-dropdown-item>
@@ -72,7 +53,8 @@
                 v-if="item.is_star > 0"
                 @click.native="clickStar(item)"
               >
-                <font-awesome-icon class="mr-2" :icon="['fas', 'star']" />{{
+                <i class="mr-2 fas fa-star"></i>
+                {{
                   $t('unstar_item')
                 }}
               </el-dropdown-item>
@@ -84,7 +66,7 @@
                   showItemUpdate = true
                 "
               >
-                <font-awesome-icon class="mr-2" :icon="['fas', 'edit']" />
+                <i class="mr-2 fas fa-edit"></i>
                 {{ $t('update_base_info') }}
               </el-dropdown-item>
               <el-dropdown-item
@@ -94,7 +76,7 @@
                   showMember = true
                 "
               >
-                <font-awesome-icon class="mr-2" :icon="['fas', 'flag']" />
+                <i class="mr-2 fas fa-flag"></i>
                 {{ $t('member_manage') }}
               </el-dropdown-item>
               <el-dropdown-item
@@ -104,7 +86,7 @@
                   showOpenApi = true
                 "
               >
-                <font-awesome-icon class="mr-2" :icon="['fas', 'plug']" />
+                <i class="mr-2 fas fa-plug"></i>
                 {{ $t('open_api') }}
               </el-dropdown-item>
               <el-dropdown-item
@@ -114,7 +96,7 @@
                   showRecycle = true
                 "
               >
-                <font-awesome-icon class="mr-2" :icon="['fas', 'trash']" />
+                <i class="mr-2 fas fa-trash"></i>
                 {{ $t('recycle') }}
               </el-dropdown-item>
               <el-dropdown-item
@@ -125,7 +107,7 @@
                   showAttorn = true
                 "
               >
-                <font-awesome-icon class="mr-2" :icon="['fas', 'recycle']" />
+                <i class="mr-2 fas fa-recycle"></i>
                 {{ $t('attorn') }}
               </el-dropdown-item>
               <el-dropdown-item
@@ -135,10 +117,7 @@
                   showArchive = true
                 "
               >
-                <font-awesome-icon
-                  class="mr-2"
-                  :icon="['fas', 'box-archive']"
-                />
+                <i class="mr-2 far fa-box-archive"></i>
                 {{ $t('archive') }}
               </el-dropdown-item>
               <el-dropdown-item
@@ -148,7 +127,7 @@
                   showDelete = true
                 "
               >
-                <font-awesome-icon class="mr-2" :icon="['fas', 'trash-can']" />
+                <i class="mr-2 far fa-trash-can"></i>
                 {{ $t('delete') }}
               </el-dropdown-item>
             </el-dropdown-menu>

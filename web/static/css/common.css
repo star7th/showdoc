@@ -93,7 +93,7 @@ li {
 .v3-font-size-lg{
   font-size: 24px;
 }
-.v3-font-size-sm{
+.v3-font-size-sm,.v3-font-size-s{
   font-size: 11px;
 }
 .v3-color-primary{

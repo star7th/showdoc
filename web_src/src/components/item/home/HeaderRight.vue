@@ -3,17 +3,17 @@
     <div>
       <el-tooltip effect="dark" :content="$t('feedback')" placement="top">
         <div @click="feedback" class="icon-item">
-          <font-awesome-icon :icon="['fas', 'phone']" />
+          <i class="fas fa-phone"></i>
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('team_mamage')" placement="top">
         <div @click="showTeam = true" class="icon-item">
-          <font-awesome-icon :icon="['fas', 'flag']" />
+          <i class="fas fa-flag"></i>
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('my_attachment')" placement="top">
         <div @click="showAttachment = true" class="icon-item">
-          <font-awesome-icon :icon="['fas', 'cloud-arrow-up']" />
+          <i class="fas fa-cloud-arrow-up"></i>
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('my_notice')" placement="top">
@@ -27,13 +27,13 @@
           class="icon-item"
         >
           <el-badge :value="$store.state.new_msg ? 'New' : ''">
-            <font-awesome-icon :icon="['fas', 'bell']" />
+            <i class="fas fa-bell"></i>
           </el-badge>
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('user_center')" placement="top">
         <div @click="showUserSetting = true" class="icon-item">
-          <font-awesome-icon :icon="['fas', 'user']" />
+          <i class="fas fa-user"></i>
         </div>
       </el-tooltip>
       <el-tooltip
@@ -46,7 +46,7 @@
           @click="toOutLink('https://www.showdoc.com.cn/clients')"
           class="icon-item"
         >
-          <font-awesome-icon :icon="['fas', 'desktop']" />
+          <i class="fas fa-desktop"></i>
         </div>
       </el-tooltip>
       <el-tooltip
@@ -59,7 +59,7 @@
           @click="toOutLink('https://www.showdoc.com.cn/runapi')"
           class="icon-item"
         >
-          <font-awesome-icon :icon="['fas', 'link']" />
+          <i class="fas fa-link"></i>
         </div>
       </el-tooltip>
       <el-tooltip
@@ -69,14 +69,14 @@
         placement="top"
       >
         <div @click="toPath('/admin/index')" class="icon-item">
-          <font-awesome-icon :icon="['fas', 'gear']" />
+          <i class="fas fa-gear"></i>
         </div>
       </el-tooltip>
       <div class="inline">
         <el-dropdown :show-timeout="0" trigger="hover">
           <div class="icon-item">
             <span class="el-dropdown-link">
-              <font-awesome-icon :icon="['fas', 'ellipsis']" />
+              <i class="fas fa-ellipsis"></i>
             </span>
           </div>
           <el-dropdown-menu slot="dropdown">
@@ -84,22 +84,19 @@
               v-if="$lang == 'zh-cn'"
               @click.native="toOutLink('https://www.dfyun.com.cn/')"
             >
-              <font-awesome-icon :icon="['fas', 'rocket']" />
+              <i class="fas fa-rocket"></i>
               CDN加速
             </el-dropdown-item>
             <el-dropdown-item
               v-if="$lang == 'zh-cn'"
               @click.native="toOutLink('https://push.showdoc.com.cn')"
             >
-              <font-awesome-icon :icon="['fas', 'car-side']" />
+              <i class="fas fa-car-side"></i>
               推送服务
             </el-dropdown-item>
 
             <el-dropdown-item @click.native="logout">
-              <font-awesome-icon
-                :icon="['fas', 'right-from-bracket']"
-                rotation="180"
-              />
+              <i class="fas fa-right-from-bracket" style="transform: rotate(180deg)" ></i>
               {{ $t('logout') }}</el-dropdown-item
             >
           </el-dropdown-menu>

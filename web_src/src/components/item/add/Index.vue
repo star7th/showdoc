@@ -3,20 +3,17 @@
     <el-dropdown trigger="hover" :show-timeout="0">
       <div class="el-dropdown-link">
         <div class="create-item-btn">
-          <font-awesome-icon class=" ml-6 mr-2" :icon="['fas', 'plus']" />
+          <i class="ml-6 mr-2 fas fa-plus"></i>
           <span>{{ $t('create_new_item') }}</span>
           <span class="line"></span>
-          <font-awesome-icon class="  ml-10" :icon="['fas', 'ellipsis']" />
+          <i class=" ml-10 far fa-ellipsis"></i>
         </div>
       </div>
       <el-dropdown-menu class="more-drd" slot="dropdown">
         <el-dropdown-item class="more-drd-item" @click.native="regularItem">
           <div class="mt-2 mb-2">
             <div class="inline-block align-middle">
-              <font-awesome-icon
-                class=" font-icon mr-2"
-                :icon="['fas', 'files']"
-              />
+              <i class="font-icon mr-2 fas fa-files"></i>
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">{{ $t('regular_item') }}</div>
@@ -29,10 +26,7 @@
         <el-dropdown-item class="more-drd-item" @click.native="singleItem">
           <div class="mb-2">
             <div class="inline-block align-middle">
-              <font-awesome-icon
-                class="font-icon mr-2"
-                :icon="['fas', 'file']"
-              />
+              <i class="font-icon mr-2 fas fa-file"></i>
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">
@@ -47,10 +41,7 @@
         <el-dropdown-item class="more-drd-item" @click.native="tableItem">
           <div class="mb-2">
             <div class="inline-block align-middle">
-              <font-awesome-icon
-                class="font-icon mr-2"
-                :icon="['fas', 'table']"
-              />
+              <i class="font-icon mr-2 fas fa-table"></i>
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">
@@ -65,10 +56,7 @@
         <el-dropdown-item class="more-drd-item" @click.native="importFile">
           <div class="mb-2">
             <div class="inline-block align-middle">
-              <font-awesome-icon
-                class="font-icon mr-2"
-                :icon="['fas', 'upload']"
-              />
+              <i class="font-icon mr-2 fas fa-upload"></i>
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">{{ $t('import_file') }}</div>
@@ -81,10 +69,7 @@
         <el-dropdown-item class="more-drd-item" @click.native="copyItem">
           <div class="mb-2">
             <div class="inline-block align-middle">
-              <font-awesome-icon
-                class="font-icon mr-2"
-                :icon="['fas', 'copy']"
-              />
+              <i class="font-icon mr-2 fas fa-copy"></i>
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">{{ $t('copy_item') }}</div>
@@ -97,10 +82,7 @@
         <el-dropdown-item class="more-drd-item" @click.native="autoCreate">
           <div class="mb-2">
             <div class="inline-block align-middle">
-              <font-awesome-icon
-                class="font-icon mr-2"
-                :icon="['fas', 'terminal']"
-              />
+              <i class="font-icon mr-2 fas fa-terminal"></i>
             </div>
             <div class="inline-block align-middle">
               <div class="font-bold leading-6">{{ $t('auto_create') }}</div>

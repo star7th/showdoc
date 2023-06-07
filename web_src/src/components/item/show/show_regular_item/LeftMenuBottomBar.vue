@@ -3,30 +3,30 @@
   <div class="left-menu-bottom-bar" id="left-menu-bottom-bar">
     <div class="bottom-bar-item-icon" @click="showPageEdit = true">
       <el-tooltip effect="dark" :content="$t('new_page')" placement="top">
-        <font-awesome-icon :icon="['far', 'plus']" />
+        <i class="far fa-plus"></i>
       </el-tooltip>
     </div>
     <div class="bottom-bar-item-icon" @click="showCatalog = true">
       <el-tooltip effect="dark" :content="$t('new_catalog')" placement="top">
-        <font-awesome-icon :icon="['far', 'edit']" />
+        <i class="far fa-edit"></i>
       </el-tooltip>
     </div>
     <div class="bottom-bar-item-icon" @click="showSortPage = true">
       <el-tooltip effect="dark" :content="$t('sort_page')" placement="top">
-        <font-awesome-icon class="mr-2" :icon="['far', 'sort']" />
+        <i class="far fa-sort"></i>
       </el-tooltip>
     </div>
     <div class="bottom-bar-item-icon">
       <el-dropdown :show-timeout="0" trigger="hover">
         <div class="bottom-bar-item-icon">
           <span class="el-dropdown-link">
-            <font-awesome-icon :icon="['far', 'ellipsis']" />
+            <i class="far fa-ellipsis"></i>
           </span>
         </div>
 
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="showRecycle = true">
-            <font-awesome-icon class="mr-2" :icon="['far', 'trash']" />
+            <i class="far fa-trash"></i>
             {{ $t('recycle') }}</el-dropdown-item
           >
         </el-dropdown-menu>

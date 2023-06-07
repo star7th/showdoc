@@ -21,7 +21,7 @@ import VueClipboard from 'vue-clipboard2'
 import store from './store/'
 import '../src/assets/tailwind.css' // 引入tailwind
 import SDialog from '@/components/common/Sdialog'
-import { useFontAwesome } from './fontawesome.js'
+import './assets/fontawesome.scss'
 
 Vue.use(util)
 Vue.config.productionTip = false
@@ -33,7 +33,6 @@ Vue.use(VueClipboard)
 
 // 注册为全局组件
 Vue.component('SDialog', SDialog)
-Vue.component('font-awesome-icon', useFontAwesome())
 
 // 多语言相关
 var allZhLocale = Object.assign(zhLocale, myZhLocale)

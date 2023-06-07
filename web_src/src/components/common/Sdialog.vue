@@ -173,7 +173,7 @@ export default {
   },
   data() {
     return {
-      dialogVisible: true
+      dialogVisible: false
     }
   },
   methods: {
@@ -194,7 +194,11 @@ export default {
       this.$router.push({ path: '/item/index' })
     }
   },
-  mounted() {}
+  mounted() {
+    setTimeout(() => {
+      this.dialogVisible = true
+    }, 200)
+  }
 }
 </script>
 

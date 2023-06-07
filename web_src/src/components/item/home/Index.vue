@@ -26,7 +26,8 @@
             @click="changeGroup(0)"
           >
             <div class="item-one-block-content">
-              <font-awesome-icon class="mr-1" :icon="['fas', 'files']" />{{
+              <i class="mr-1 fas fa-files"></i>
+              {{
                 $t('all_items')
               }}
             </div>
@@ -40,10 +41,7 @@
             @click="changeGroup(-1)"
           >
             <div class="item-one-block-content">
-              <font-awesome-icon
-                class="mr-1 v3-color-yellow"
-                :icon="['fas', 'star']"
-              />
+              <i class="mr-1 v3-color-yellow fas fa-star"></i>
               {{ $t('star_items') }}
             </div>
           </div>
@@ -57,7 +55,8 @@
               :content="$t('item_group_desc')"
               placement="top"
               ><i class="el-icon-plus mr-1"></i
-            ></el-tooltip>
+            >
+          </el-tooltip>
           </div>
         </div>
         <div>
@@ -72,7 +71,7 @@
             @click="changeGroup(one.id)"
           >
             <div class="item-one-block-content">
-              <font-awesome-icon class="mr-1" :icon="['far', 'hashtag']" />
+              <i class="mr-1 far v3-font-size-sm fa-hashtag"></i>
               {{ one.group_name }}
             </div>
           </div>

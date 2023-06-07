@@ -14,14 +14,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.4.0",
-    "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@fortawesome/free-regular-svg-icons": "^6.4.0",
-    "@fortawesome/free-solid-svg-icons": "^6.4.0",
-    "@fortawesome/pro-light-svg-icons": "^6.4.0",
-    "@fortawesome/pro-regular-svg-icons": "^6.4.0",
-    "@fortawesome/pro-solid-svg-icons": "^6.4.0",
-    "@fortawesome/vue-fontawesome": "^2.0.10",
+    "@fortawesome/fontawesome-pro": "^6.4.0",
     "axios": "^0.21.3",
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",

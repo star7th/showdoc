@@ -4,12 +4,12 @@
     <div>
       <div class="icon-item" @click="showShare = true">
         <el-tooltip effect="dark" :content="$t('share')" placement="top">
-          <font-awesome-icon :icon="['far', 'share-nodes']" />
+          <i class="far fa-share-nodes"></i>
         </el-tooltip>
       </div>
       <div v-if="item_info.item_manage" class="icon-item" @click="exportFile">
         <el-tooltip effect="dark" :content="$t('export')" placement="top">
-          <font-awesome-icon :icon="['far', 'arrow-down-to-bracket']" />
+          <i class="far fa-arrow-down-to-bracket"></i>
         </el-tooltip>
       </div>
       <div
@@ -18,10 +18,7 @@
         @click="showImport = true"
       >
         <el-tooltip effect="dark" :content="$t('import')" placement="top">
-          <font-awesome-icon
-            :icon="['far', 'arrow-down-to-bracket']"
-            rotation="180"
-          />
+          <i class="far fa-arrow-down-to-bracket" style="transform: rotate(180deg)"></i>
         </el-tooltip>
       </div>
       <div
@@ -34,7 +31,7 @@
           :content="$t('member_manage')"
           placement="top"
         >
-          <font-awesome-icon :icon="['far', 'flag']" />
+          <i class="far fa-flag"></i>
         </el-tooltip>
       </div>
       <div
@@ -49,7 +46,7 @@
         "
       >
         <el-tooltip effect="dark" :content="$t('login')" placement="top">
-          <font-awesome-icon :icon="['far', 'user']" />
+          <i class="far fa-user"></i>
         </el-tooltip>
       </div>
       <div
@@ -62,33 +59,33 @@
           :content="$t('about_showdoc')"
           placement="top"
         >
-          <font-awesome-icon :icon="['far', 'circle-info']" />
+          <i class="far fa-circle-info"></i>
         </el-tooltip>
       </div>
       <div class="inline" v-if="item_info.item_manage">
         <el-dropdown :show-timeout="0" trigger="hover">
           <div class="icon-item">
             <span class="el-dropdown-link">
-              <font-awesome-icon :icon="['far', 'ellipsis']" />
+              <i class="far fa-ellipsis"></i>
             </span>
           </div>
 
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item divided @click.native="showItemUpdate = true">
-              <font-awesome-icon class="mr-2" :icon="['far', 'edit']" />
+              <i class="mr-2 far fa-edit"></i>
               {{ $t('update_item_base_info') }}
             </el-dropdown-item>
 
             <el-dropdown-item @click.native="showAttorn = true">
-              <font-awesome-icon class="mr-2" :icon="['fas', 'recycle']" />
+              <i class="mr-2 far fa-recycle"></i>
               {{ $t('attorn_item') }}
             </el-dropdown-item>
             <el-dropdown-item @click.native="showArchive = true">
-              <font-awesome-icon class="mr-2" :icon="['far', 'box-archive']" />
+              <i class="mr-2 far fa-archive"></i>
               {{ $t('archive_item') }}
             </el-dropdown-item>
             <el-dropdown-item @click.native="showDelete = true">
-              <font-awesome-icon class="mr-2" :icon="['far', 'trash-can']" />
+              <i class="mr-2 far fa-trash-can"></i>
               {{ $t('delete_item') }}
             </el-dropdown-item>
           </el-dropdown-menu>
