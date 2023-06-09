@@ -99,6 +99,11 @@
 .editormd-menu > li > a > .fa {
   font-size: 13px;
 }
+
+/* 因跟fa 图标的样式冲突，这个按钮冒出来了。这里强制把它隐藏 */
+.editormd-preview-close-btn{
+  display: none !important;
+}
 </style>
 <script>
 import BigImg from '@/components/common/BigImg'
@@ -202,13 +207,12 @@ export default {
               'pagebreak',
               '|',
               'watch',
-              'preview',
+
               'fullscreen',
               'clear',
               'search',
               '|',
               'help',
-              'info'
             ]
           },
           toolbarIconsClass: {

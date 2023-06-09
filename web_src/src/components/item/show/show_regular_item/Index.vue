@@ -59,7 +59,7 @@
                 :keyword="keyword"
               ></Editormd>
             </div>
-            <div v-if="emptyItem" class="empty-tips">
+            <div v-if="emptyItem  && $lang == 'zh-cn'" class="empty-tips">
               <div class="icon">
                 <i class="el-icon-warning"></i>
               </div>
