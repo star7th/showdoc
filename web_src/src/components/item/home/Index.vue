@@ -26,7 +26,7 @@
             @click="changeGroup(0)"
           >
             <div class="item-one-block-content">
-              <i class="mr-1 fas fa-files"></i>
+              <i class="mr-1 fas fa-notes"></i>
               {{
                 $t('all_items')
               }}
@@ -301,11 +301,11 @@ a {
 }
 
 .container {
-  width: 850px;
+  width: 860px;
   margin: 0 auto;
 }
 .left-side {
-  width: 220px;
+  width: 230px;
   padding-top: 40px;
   border-right: 1px solid rgba(0, 0, 0, 0.05);
   min-height: calc(100vh - 150px);
@@ -316,13 +316,16 @@ a {
   position: relative;
   border-radius: 8px;
   cursor: pointer;
+  padding-left: 10px;
 }
 
 .item-one-block:hover {
   background-color: white;
+  margin-right: 10px;
 }
 .item-one-block-active {
   background-color: white;
+  margin-right: 10px;
 }
 
 .item-one-block-content {
@@ -333,6 +336,7 @@ a {
 }
 
 .divider-text {
+  padding-left: 10px;
   font-size: 9px;
   color: #9b9b9b;
   display: inline;

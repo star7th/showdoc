@@ -6,6 +6,7 @@
       width="500px"
       :onOK="callback"
       :showCancel="false"
+      :showOk="false"
     >
       <div class="text-center">
         <el-form status-icon label-width="100px" class="infoForm">

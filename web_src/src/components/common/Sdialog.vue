@@ -13,28 +13,27 @@
       :close-on-press-escape="false"
     >
       <div slot="title" class="title-header">
-        <span class="title-text  float-left mt-4"
-          ><i :class="titleIcon"></i>&nbsp;{{ title }}</span
+        <span class="title-header-left float-left "
+          ><i :class="titleIcon"></i>&nbsp;&nbsp;{{ title }}</span
         >
         <span class="title-header-right float-right mr-2">
-          <el-button v-if="btn1Text" :icon="btn1Icon" @click="btn1Medthod">
-            {{ btn1Text }}
-          </el-button>
-          <el-button v-if="btn2Text" :icon="btn2Icon" @click="btn2Medthod">
-            {{ btn2Text }}
-          </el-button>
-          <el-button v-if="btn3Text" :icon="btn3Icon" @click="btn3Medthod">
-            {{ btn3Text }}
-          </el-button>
-          <el-button v-if="btn4Text" :icon="btn3Icon" @click="btn4Medthod">
-            {{ btn3Text }}
-          </el-button>
-          <el-button
-            class="close-btn"
-            type="text"
-            icon="el-icon-close"
+          <div v-if="btn1Text" class="btn-div" @click="btn1Medthod">
+            <i :class="btn1Icon"></i> {{ btn1Text }}
+          </div>
+          <div v-if="btn2Text" class="btn-div" @click="btn2Medthod">
+            <i :class="btn2Icon"></i> {{ btn2Text }}
+          </div>
+          <div v-if="btn3Text" class="btn-div" @click="btn3Medthod">
+            <i :class="btn3Icon"></i> {{ btn3Text }}
+          </div>
+          <div v-if="btn4Text" class="btn-div" @click="btn4Medthod">
+            <i :class="btn4Icon"></i> {{ btn4Text }}
+          </div>
+
+          <i
+            class="close-btn far fa-close"
             @click="!isEmptyFunction(onCancel) ? onCancel() : goHome()"
-          ></el-button>
+          ></i>
         </span>
       </div>
       <slot></slot>
@@ -43,13 +42,14 @@
           v-if="showCancel"
           class="v3-lg-btn"
           @click="!isEmptyFunction(onCancel) ? onCancel() : goHome()"
-          >{{  cancelText ? cancelText :  $t('cancel') }}</el-button
+          >{{ cancelText ? cancelText : $t('cancel') }}</el-button
         >
         <el-button
+          v-if="showOk"
           class="v3-lg-btn"
           type="primary"
           @click="!isEmptyFunction(onOK) ? onOK() : goHome()"
-          >{{  okText ? okText :  $t('confirm') }}</el-button
+          >{{ okText ? okText : $t('confirm') }}</el-button
         >
       </div>
     </el-dialog>
@@ -81,6 +81,11 @@ export default {
       default: () => {}
     },
     showCancel: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
+    showOk: {
       type: Boolean,
       required: false,
       default: true
@@ -205,24 +210,43 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .title-header {
-  min-height: 40px;
+  height: 40px;
   padding-bottom: 10px;
-}
-.title-header .el-button--text {
-  color: #343a40 !important;
-  font-weight: 400w;
+  font-size: 13px;
+  color: #343a40;
 }
 
-.title-header-right .el-button {
-  font-weight: 600;
+.title-header-left {
+  line-height: 50px;
 }
+
+.title-header-right {
+  line-height: 50px;
+}
+
 .close-btn {
-  font-size: 18px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.btn-div {
+  height: 36px;
+  background: #ffffff;
+  border-radius: 8px;
+  line-height: 36px;
+  display: inline-block;
+  cursor: pointer;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-right: 10px;
+  font-weight: 600;
+  color: #343a40;
 }
 </style>
 
 <style>
 .sdialog .el-dialog__header {
+  padding-top: 0px;
+  padding-bottom: 0px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 

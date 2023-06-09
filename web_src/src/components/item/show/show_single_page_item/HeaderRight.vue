@@ -26,7 +26,7 @@
           :content="$t('member_manage')"
           placement="top"
         >
-          <i class="far fa-flag"></i>
+          <i class="fal fa-users"></i>
         </el-tooltip>
       </div>
       <div

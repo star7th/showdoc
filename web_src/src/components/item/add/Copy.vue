@@ -76,6 +76,11 @@ export default {
       type: Function,
       required: false,
       default: () => {}
+    },
+    item_id: {
+      type: Number,
+      required: false,
+      default: '0'
     }
   },
   data() {
@@ -125,6 +130,9 @@ export default {
   },
 
   mounted() {
+    if (this.item_id > 0) {
+      this.copy_item_id = this.item_id
+    }
     this.getItemList()
   }
 }

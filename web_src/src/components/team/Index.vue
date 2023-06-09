@@ -7,6 +7,8 @@
       :btn1Medthod="addTeam"
       :onCancel="callback"
       :onOK="callback"
+      :showCancel="false"
+      :showOk="false"
     >
       <div class="">
         <el-table align="left" :empty-text="$t('empty_team_tips')" :data="list">

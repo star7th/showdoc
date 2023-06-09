@@ -5,6 +5,7 @@
       :title="$t('item_change_log_dialog_title')"
       :onCancel="callback"
       :showCancel="false"
+      :showOk="false"
       :onOK="callback"
       width="70%"
       top="5vh"

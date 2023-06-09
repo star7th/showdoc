@@ -133,7 +133,7 @@ exports.default = {
   delete_tips: 'After deleting it, it can not be restored!',
   attorn_username: 'Username of receiver',
   archive_tips2:
-    'Note: After archiving a project, the project will no longer be able to add and modify content and will not be able to unarchive. If you want to modify the content again, you can copy the project and modify it on the basis of the new project. The way to copy a project is to choose to copy from an existing project when you create the project.',
+    'Note: After archiving a project, the project will no longer be able to add and modify content and will not be able to unarchive. If you want to modify the content again, you can copy the project and modify it on the basis of the new project.',
   success_jump: 'The operation is successful! Skipping...',
   reset_token: 'Reset token',
   open_api_tips1:
@@ -595,5 +595,7 @@ exports.default = {
   do_not_remind_again: 'Don not remind me again',
   no_items: 'No items',
 
-  ai_assistant: 'Ai assistant'
+  ai_assistant: 'Ai assistant',
+
+  create: 'Create'
 }

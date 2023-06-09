@@ -5,6 +5,7 @@
       :title="$t('file_gub')"
       :onCancel="callback"
       :showCancel="false"
+      :showOk="false"
       :onOK="callback"
     >
       <el-form :inline="true" class="demo-form-inline">

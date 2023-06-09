@@ -8,6 +8,7 @@
       :btn1Medthod="addTeamItem"
       :onCancel="callback"
       :showCancel="false"
+      :showOk="false"
       :onOK="callback"
       width="40%"
     >

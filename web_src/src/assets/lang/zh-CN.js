@@ -124,7 +124,7 @@ exports.default = {
     '警告！你现在的操作会删除整个项目，所有页面和目录数据在删除后将不可恢复！',
   attorn_username: '接受者用户名',
   archive_tips2:
-    '说明： 归档项目后，项目将无法再新增和修改内容，并且无法取消归档状态。 如想再次修改内容，可复制本项目，在新的项目基础上修改。复制项目的方法是，在创建项目的时候，选择从已有项目里复制。',
+    '说明： 归档项目后，项目将无法再新增和修改内容，并且无法取消归档状态。 如想再次修改内容，可复制本项目，在新的项目基础上修改。',
   success_jump: '操作成功！正在跳转...',
   reset_token: '重新生成api_token',
   open_api_tips1:
@@ -565,5 +565,7 @@ exports.default = {
   do_not_remind_again: '知道了,不用再提醒我',
   no_items: '暂无项目',
 
-  ai_assistant: 'AI助手生成'
+  ai_assistant: 'AI助手生成',
+
+  create: '创建'
 }

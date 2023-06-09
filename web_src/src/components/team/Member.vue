@@ -9,6 +9,7 @@
       :btn1Medthod="addTeamMember"
       :onCancel="callback"
       :showCancel="false"
+      :showOk="false"
       :onOK="callback"
     >
       <div>

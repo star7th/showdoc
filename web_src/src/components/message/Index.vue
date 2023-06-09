@@ -5,6 +5,7 @@
       :title="$t('my_notice')"
       :onCancel="callback"
       :showCancel="false"
+      :showOk="false"
       :onOK="callback"
       top="10vh"
     >

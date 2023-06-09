@@ -1,99 +1,23 @@
 <template>
   <div class="create-item-btn-div">
-    <el-dropdown trigger="hover" :show-timeout="0">
-      <div class="el-dropdown-link">
-        <div class="create-item-btn">
-          <i class="ml-6 mr-2 fas fa-plus"></i>
-          <span>{{ $t('create_new_item') }}</span>
-          <span class="line"></span>
-          <i class=" ml-10 far fa-ellipsis"></i>
-        </div>
+    <div class="left">
+      <div @click="regularItem" class="create-item-left-btn">
+        <i class="mr-3 fas fa-plus"></i>
+        <span>{{ $t('create_new_item') }}</span>
       </div>
-      <el-dropdown-menu class="more-drd" slot="dropdown">
-        <el-dropdown-item class="more-drd-item" @click.native="regularItem">
-          <div class="mt-2 mb-2">
-            <div class="inline-block align-middle">
-              <i class="font-icon mr-2 fas fa-files"></i>
-            </div>
-            <div class="inline-block align-middle">
-              <div class="font-bold leading-6">{{ $t('regular_item') }}</div>
-              <div class="v3-font-size-sm v3-color-aux ">
-                {{ $t('regular_item_desc') }}
-              </div>
-            </div>
-          </div>
-        </el-dropdown-item>
-        <el-dropdown-item class="more-drd-item" @click.native="singleItem">
-          <div class="mb-2">
-            <div class="inline-block align-middle">
-              <i class="font-icon mr-2 fas fa-file"></i>
-            </div>
-            <div class="inline-block align-middle">
-              <div class="font-bold leading-6">
-                {{ $t('single_item') }}
-              </div>
-              <div class="v3-font-size-sm v3-color-aux ">
-                {{ $t('single_item_desc') }}
-              </div>
-            </div>
-          </div>
-        </el-dropdown-item>
-        <el-dropdown-item class="more-drd-item" @click.native="tableItem">
-          <div class="mb-2">
-            <div class="inline-block align-middle">
-              <i class="font-icon mr-2 fas fa-table"></i>
-            </div>
-            <div class="inline-block align-middle">
-              <div class="font-bold leading-6">
-                {{ $t('table_item') }}
-              </div>
-              <div class="v3-font-size-sm v3-color-aux">
-                {{ $t('table_item_desc') }}
-              </div>
-            </div>
-          </div>
-        </el-dropdown-item>
-        <el-dropdown-item class="more-drd-item" @click.native="importFile">
-          <div class="mb-2">
-            <div class="inline-block align-middle">
-              <i class="font-icon mr-2 fas fa-upload"></i>
-            </div>
-            <div class="inline-block align-middle">
-              <div class="font-bold leading-6">{{ $t('import_file') }}</div>
-              <div class="v3-font-size-sm v3-color-aux ">
-                {{ $t('import_file_desc') }}
-              </div>
-            </div>
-          </div>
-        </el-dropdown-item>
-        <el-dropdown-item class="more-drd-item" @click.native="copyItem">
-          <div class="mb-2">
-            <div class="inline-block align-middle">
-              <i class="font-icon mr-2 fas fa-copy"></i>
-            </div>
-            <div class="inline-block align-middle">
-              <div class="font-bold leading-6">{{ $t('copy_item') }}</div>
-              <div class="v3-font-size-sm v3-color-aux ">
-                {{ $t('copy_item_tips1') }}
-              </div>
-            </div>
-          </div>
-        </el-dropdown-item>
-        <el-dropdown-item class="more-drd-item" @click.native="autoCreate">
-          <div class="mb-2">
-            <div class="inline-block align-middle">
-              <i class="font-icon mr-2 fas fa-terminal"></i>
-            </div>
-            <div class="inline-block align-middle">
-              <div class="font-bold leading-6">{{ $t('auto_create') }}</div>
-              <div class="v3-font-size-sm v3-color-aux ">
-                {{ $t('auto_create_desc') }}
-              </div>
-            </div>
-          </div>
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+    </div>
+    <div class="right">
+      <SDropdown
+        :title="$t('create_new_item')"
+        titleIcon="fas fa-plus"
+        :menuListGroup="menuListGroup"
+        placement="top-start"
+      >
+        <div class="create-item-right-btn">
+          <i class="fas fa-ellipsis"></i>
+        </div>
+      </SDropdown>
+    </div>
 
     <Basic
       v-if="showBasic"
@@ -116,16 +40,7 @@
       "
     >
     </Import>
-    <Copy
-      v-if="showCopy"
-      :callback="
-        () => {
-          showCopy = false
-          callback()
-        }
-      "
-    >
-    </Copy>
+
     <OpenApi
       v-if="showOpenApi"
       :callback="
@@ -141,17 +56,17 @@
 
 <script>
 import Basic from '@/components/item/add/Basic'
-import Copy from '@/components/item/add/Copy'
 import OpenApi from '@/components/item/add/OpenApi'
 import Import from '@/components/item/add/Import'
+import SDropdown from '@/components/common/SDropdown.vue'
 
 export default {
   name: 'Login',
   components: {
     Basic,
-    Copy,
     OpenApi,
-    Import
+    Import,
+    SDropdown
   },
   props: {
     callback: {
@@ -165,8 +80,9 @@ export default {
       showBasic: false,
       showImportFile: false,
       defaultItemType: '1',
-      showCopy: false,
-      showOpenApi: false
+      showOpenApi: false,
+      showPopover: false,
+      menuListGroup: []
     }
   },
   methods: {
@@ -185,15 +101,55 @@ export default {
     importFile() {
       this.showImportFile = true
     },
-    copyItem() {
-      this.showCopy = true
-    },
     autoCreate() {
       this.showOpenApi = true
     }
   },
 
-  mounted() {},
+  mounted() {
+    this.menuListGroup = [
+      {
+        group_name: this.$t('create'),
+        listMenu: [
+          {
+            title: this.$t('regular_item'),
+            icon: 'fas fa-notes',
+            desc: this.$t('regular_item_desc'),
+            method: this.regularItem
+          },
+          {
+            title: this.$t('single_item'),
+            icon: 'fas fa-file',
+            desc: this.$t('single_item_desc'),
+            method: this.singleItem
+          },
+          {
+            title: this.$t('table_item'),
+            icon: 'fas fa-table',
+            desc: this.$t('table_item_desc'),
+            method: this.tableItem
+          }
+        ]
+      },
+      {
+        group_name: this.$t('import'),
+        listMenu: [
+          {
+            title: this.$t('import_file'),
+            icon: 'fas fa-upload',
+            desc: this.$t('import_file_desc'),
+            method: this.importFile
+          },
+          {
+            title: this.$t('auto_create'),
+            icon: 'fas fa-terminal',
+            desc: this.$t('auto_create_desc'),
+            method: this.autoCreate
+          }
+        ]
+      }
+    ]
+  },
   beforeDestroy() {}
 }
 </script>
@@ -206,40 +162,39 @@ export default {
   height: 60px;
   bottom: 20px;
   position: fixed;
-}
-
-.create-item-btn-div .line {
-  height: 60px;
-  border-left: 1px solid rgba(0, 0, 0, 0.05);
-  /* border-left: 5px solid; */
-  position: relative;
-  left: 15px;
-}
-
-.create-item-btn {
-  width: 200px;
-  background: #ffffff;
-  border-radius: 10px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  display: -webkit-flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
   box-shadow: 0 0 8px #0000001a;
+  border-radius: 10px;
+  background: #ffffff;
   font-weight: 600;
+}
+
+.create-item-btn-div .left,
+.create-item-btn-div .right {
+  height: 60px;
+  display: inline-block;
+}
+
+.create-item-left-btn {
+  width: 135px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+/* >>> 符号表示对子组件生效 */
+.create-item-btn-div >>> .create-item-right-btn {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .el-dropdown-link,
 a {
   color: #343a40;
-}
-.more-drd .font-icon {
-  font-size: 18px;
-}
-.more-drd-item {
-  padding-top: 10px;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 </style>

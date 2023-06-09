@@ -2,18 +2,13 @@
   <div class="header-right float-right  mt-6 mr-10">
     <div>
       <el-tooltip effect="dark" :content="$t('feedback')" placement="top">
-        <div @click="feedback" class="icon-item">
-          <i class="fas fa-phone"></i>
-        </div>
-      </el-tooltip>
-      <el-tooltip effect="dark" :content="$t('team_mamage')" placement="top">
-        <div @click="showTeam = true" class="icon-item">
-          <i class="fas fa-flag"></i>
+        <div @click="showFeedback = true" class="icon-item">
+          <i class="fas fa-headphones"></i>
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('my_attachment')" placement="top">
         <div @click="showAttachment = true" class="icon-item">
-          <i class="fas fa-cloud-arrow-up"></i>
+          <i class="fas fa-folder-arrow-up"></i>
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('my_notice')" placement="top">
@@ -27,8 +22,13 @@
           class="icon-item"
         >
           <el-badge :value="$store.state.new_msg ? 'New' : ''">
-            <i class="fas fa-bell"></i>
+            <i class="fas fa-message"></i>
           </el-badge>
+        </div>
+      </el-tooltip>
+      <el-tooltip effect="dark" :content="$t('team_mamage')" placement="top">
+        <div @click="showTeam = true" class="icon-item">
+          <i class="fas fa-users"></i>
         </div>
       </el-tooltip>
       <el-tooltip effect="dark" :content="$t('user_center')" placement="top">
@@ -46,22 +46,10 @@
           @click="toOutLink('https://www.showdoc.com.cn/clients')"
           class="icon-item"
         >
-          <i class="fas fa-desktop"></i>
+          <i class="fas fa-laptop-arrow-down"></i>
         </div>
       </el-tooltip>
-      <el-tooltip
-        v-if="$lang == 'zh-cn'"
-        effect="dark"
-        content="runapi"
-        placement="top"
-      >
-        <div
-          @click="toOutLink('https://www.showdoc.com.cn/runapi')"
-          class="icon-item"
-        >
-          <i class="fas fa-link"></i>
-        </div>
-      </el-tooltip>
+
       <el-tooltip
         v-if="isAdmin"
         effect="dark"
@@ -72,35 +60,19 @@
           <i class="fas fa-gear"></i>
         </div>
       </el-tooltip>
-      <div class="inline">
-        <el-dropdown :show-timeout="0" trigger="hover">
+      <div class="inline" v-if="$lang == 'zh-cn'">
+        <SDropdown
+          title="更多产品功能"
+          titleIcon="fas fa-ellipsis"
+          :menuList="menuList"
+          width="270px"
+        >
           <div class="icon-item">
             <span class="el-dropdown-link">
               <i class="fas fa-ellipsis"></i>
             </span>
           </div>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item
-              v-if="$lang == 'zh-cn'"
-              @click.native="toOutLink('https://www.dfyun.com.cn/')"
-            >
-              <i class="fas fa-rocket"></i>
-              CDN加速
-            </el-dropdown-item>
-            <el-dropdown-item
-              v-if="$lang == 'zh-cn'"
-              @click.native="toOutLink('https://push.showdoc.com.cn')"
-            >
-              <i class="fas fa-car-side"></i>
-              推送服务
-            </el-dropdown-item>
-
-            <el-dropdown-item @click.native="logout">
-              <i class="fas fa-right-from-bracket" style="transform: rotate(180deg)" ></i>
-              {{ $t('logout') }}</el-dropdown-item
-            >
-          </el-dropdown-menu>
-        </el-dropdown>
+        </SDropdown>
       </div>
     </div>
 
@@ -143,6 +115,17 @@
         }
       "
     ></UserSetting>
+
+    <!-- 反馈 -->
+    <Feedback
+      v-if="showFeedback"
+      :callback="
+        () => {
+          showFeedback = false
+        }
+      "
+    ></Feedback>
+
   </div>
 </template>
 
@@ -151,13 +134,18 @@ import Team from '@/components/team/Index'
 import Attachment from '@/components/attachment/Index'
 import Message from '@/components/message/Index'
 import UserSetting from '@/components/user/setting/Index'
+import Feedback from '@/components/common/Feedback.vue'
+import SDropdown from '@/components/common/SDropdown.vue'
+
 export default {
   name: 'HeaderRight',
   components: {
     Team,
     Attachment,
     Message,
-    UserSetting
+    UserSetting,
+    Feedback,
+    SDropdown
   },
   props: {
     isAdmin: {
@@ -172,48 +160,43 @@ export default {
       showTeam: false,
       showAttachment: false,
       showMessage: false,
-      showUserSetting: false
+      showUserSetting: false,
+      showFeedback: false,
+      menuList: []
     }
   },
   methods: {
-    feedback() {
-      if (this.$lang == 'en') {
-        window.open('https://github.com/star7th/showdoc/issues')
-      } else {
-        var msg =
-          '你正在使用免费开源版showdoc，如有问题或者建议，请到github提issue：'
-        msg +=
-          "<a href='https://github.com/star7th/showdoc/issues' target='_blank'>https://github.com/star7th/showdoc/issues</a><br>"
-        msg +=
-          '如果你觉得showdoc好用，不妨给开源项目点一个star。良好的关注度和参与度有助于开源项目的长远发展。'
-        this.$alert(msg, {
-          dangerouslyUseHTMLString: true
-        })
-      }
-    },
     toPath(path) {
       this.$router.push({ path: path })
     },
-    logout() {
-      this.request('/api/user/logout', {
-        confirm: '1'
-      }).then(data => {
-        // 清空所有cookies
-        var keys = document.cookie.match(/[^ =;]+(?=\=)/g)
-        if (keys) {
-          for (var i = keys.length; i--; ) {
-            document.cookie =
-              keys[i] + '=0;expires=' + new Date(0).toUTCString()
-          }
+  },
+  mounted() {
+    this.menuList = [
+      {
+        title: 'RunApi',
+        icon: 'fas fa-terminal',
+        desc: '自动生成 API 接口文档',
+        method: () => {
+          this.toOutLink('https://www.showdoc.com.cn/runapi')
         }
-        // 清空 localStorage
-        localStorage.clear()
-
-        this.$router.push({
-          path: '/'
-        })
-      })
-    }
+      },
+      {
+        title: 'CDN',
+        icon: 'fas fa-rocket',
+        desc: '高可用、性价比超高的 CDN 服务',
+        method: () => {
+          this.toOutLink('https://www.dfyun.com.cn')
+        }
+      },
+      {
+        title: '推送服务',
+        icon: 'fas fa-car-side',
+        desc: '从服务器推送消息到手机的工具',
+        method: () => {
+          this.toOutLink('https://push.showdoc.com.cn')
+        }
+      }
+    ]
   }
 }
 </script>
@@ -242,5 +225,9 @@ export default {
 .el-dropdown-link,
 a {
   color: #343a40;
+}
+
+.header-right >>> .el-popover__reference {
+  display: inline;
 }
 </style>

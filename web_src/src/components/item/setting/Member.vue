@@ -6,6 +6,7 @@
       width="650px"
       :onOK="callback"
       :showCancel="false"
+      :showOk="false"
       :btn1Text="$t('add_member')"
       btn1Icon="el-icon-plus"
       :btn1Medthod="

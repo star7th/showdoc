@@ -5,6 +5,7 @@
       :title="$t('attachment')"
       :onCancel="callback"
       :showCancel="false"
+      :showOk="false"
       :onOK="callback"
       width="45%"
     >

@@ -5,6 +5,7 @@
       :title="$t('share')"
       :onCancel="callback"
       :showCancel="false"
+      :showOk="false"
       :onOK="callback"
       width="600px"
     >

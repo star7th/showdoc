@@ -1,3 +1,8 @@
+// 修改elementUI主题
+
+// 关于主题变量有哪些key和取值，可以参考文件 node_modules/element-ui/packages/theme-chalk/src/common/var.scss
+
+
 /* 一些基本颜色 */
 $--color-primary: #343a40;
 $--color-success: #28a745;
@@ -23,7 +28,8 @@ $--button-font-size: 13px ;
 $--checkbox-font-size:13px ;
 $--select-input-font-size:13px ;
 
-
+$--popover-padding:0px ;
+$--popover-title-font-size:$--font-size-base ;
 
 /* 改变 icon 字体路径变量，一定要写，不然错误 */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';

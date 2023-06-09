@@ -6,6 +6,7 @@
       width="550px"
       :onOK="callback"
       :showCancel="false"
+      :showOk="false"
     >
       <p class="v3-font-size-sm v3-color-aux">{{ $t('recycle_tips') }}</p>
       <!-- 页面列表 -->

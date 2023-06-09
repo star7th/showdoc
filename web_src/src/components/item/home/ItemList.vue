@@ -18,7 +18,7 @@
 
           <i v-if="item.item_type == '2'" class="item-icon fas fa-file"></i>
           <i v-else-if="item.item_type == '4'" class="item-icon fas fa-table"></i>
-          <i v-else class="item-icon fas fa-files"></i>
+          <i v-else class="item-icon fas fa-notes"></i>
           {{ item.item_name }}
         </div>
         <div class="right show-more  float-right" @click.stop="() => {}">
@@ -76,7 +76,7 @@
                   showMember = true
                 "
               >
-                <i class="mr-2 fas fa-flag"></i>
+                <i class="mr-2 fal fa-users"></i>
                 {{ $t('member_manage') }}
               </el-dropdown-item>
               <el-dropdown-item
@@ -109,6 +109,16 @@
               >
                 <i class="mr-2 fas fa-recycle"></i>
                 {{ $t('attorn') }}
+              </el-dropdown-item>
+              <el-dropdown-item
+                v-if="item.manage"
+                @click.native="
+                  opItemRow = item
+                  showCopy = true
+                "
+              >
+                <i class="mr-2 fas fa-copy"></i>
+                {{ $t('copy') }}
               </el-dropdown-item>
               <el-dropdown-item
                 v-if="item.manage"
@@ -225,6 +235,19 @@
     >
     </Attorn>
 
+        <!-- 复制项目 -->
+        <Copy
+      :item_id="opItemRow.item_id"
+      v-if="showCopy"
+      :callback="
+        () => {
+          showCopy = false
+          getItemList()
+        }
+      "
+    >
+    </Copy>
+
     <!-- 删除项目 -->
     <Delete
       v-if="showDelete"
@@ -250,6 +273,8 @@ import Archive from '@/components/item/setting/Archive'
 import Attorn from '@/components/item/setting/Attorn'
 import Delete from '@/components/item/setting/Delete'
 import Share from '@/components/item/home/Share'
+import Copy from '@/components/item/add/Copy'
+
 export default {
   name: 'ItemList',
   components: {
@@ -261,7 +286,8 @@ export default {
     Archive,
     Attorn,
     Delete,
-    Share
+    Share,
+    Copy
   },
   props: {
     callback: {
@@ -296,7 +322,8 @@ export default {
       showRecycle: false,
       showArchive: false,
       showAttorn: false,
-      showDelete: false
+      showDelete: false,
+      showCopy: false
     }
   },
 
@@ -324,6 +351,7 @@ export default {
             // 如果当前用户正在查看星标项目选项卡，那么，取消星标后，应该重刷新项目列表，以便消息该非星标项目
             this.getItemList()
           }
+          this.$message(this.$t('op_success'))
         })
       } else {
         this.request('/api/item/star', {
@@ -335,6 +363,7 @@ export default {
               this.itemList[index]['is_star'] = 1
             }
           }
+          this.$message(this.$t('op_success'))
         })
       }
     },

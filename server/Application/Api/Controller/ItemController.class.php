@@ -194,8 +194,10 @@ class ItemController extends BaseController
         $where .= " or item_id in ( " . implode(",", $manage_member_item_ids) . " ) ";
         if ($item_group_id > 0) {
             $res = D("ItemGroup")->where(" id = '$item_group_id' ")->find();
-            if ($res) {
+            if ($res && $res['item_ids']) {
                 $where = " ({$where}) and item_id in ({$res['item_ids']}) ";
+            } else {
+                $where = " ({$where}) and item_id in (-1) ";
             }
         }
 

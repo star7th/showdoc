@@ -70,19 +70,6 @@
         </el-tooltip>
       </div>
       <div
-        v-if="item_info.item_manage"
-        class="icon-item"
-        @click="showMember = true"
-      >
-        <el-tooltip
-          effect="dark"
-          :content="$t('member_manage')"
-          placement="top"
-        >
-          <i class="far fa-flag"></i>
-        </el-tooltip>
-      </div>
-      <div
         v-if="item_info.is_login"
         class="icon-item"
         @click="
@@ -94,8 +81,21 @@
       >
         <el-tooltip effect="dark" :content="$t('my_notice')" placement="top">
           <el-badge :value="$store.state.new_msg ? 'New' : ''">
-          <i class="far fa-bell"></i>
+          <i class="far fa-message"></i>
         </el-badge>
+        </el-tooltip>
+      </div>
+      <div
+        v-if="item_info.item_manage"
+        class="icon-item"
+        @click="showMember = true"
+      >
+        <el-tooltip
+          effect="dark"
+          :content="$t('member_manage')"
+          placement="top"
+        >
+          <i class="fal fa-users"></i>
         </el-tooltip>
       </div>
       <div

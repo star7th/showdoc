@@ -3,17 +3,13 @@
   <SDialog
     :onCancel="callback"
     :title="$t('share')"
-    width="400px"
-    :onOK="callback"
-    :showCancel="false"
+    width="450px"
+    :onOK="copy"
+    okText="复制分享链接"
   >
     <p>
       {{ $t('item_address') }} : <code>{{ shareItemLink }}</code>
-      <i
-        class="el-icon-document-copy cursor-pointer"
-        v-clipboard:copy="shareItemLink"
-        v-clipboard:success="onCopy"
-      ></i>
+
     </p>
   </SDialog>
 </template>
@@ -33,7 +29,8 @@ export default {
   },
 
   methods: {
-    onCopy() {
+    async copy() {
+      await this.$copyText(this.shareItemLink)
       this.$message(this.$t('copy_success'))
     }
   },
