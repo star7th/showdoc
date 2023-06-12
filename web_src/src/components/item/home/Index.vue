@@ -27,9 +27,7 @@
           >
             <div class="item-one-block-content">
               <i class="mr-1 fas fa-notes"></i>
-              {{
-                $t('all_items')
-              }}
+              {{ $t('all_items') }}
             </div>
           </div>
           <div
@@ -54,9 +52,8 @@
               effect="dark"
               :content="$t('item_group_desc')"
               placement="top"
-              ><i class="el-icon-plus mr-1"></i
-            >
-          </el-tooltip>
+              ><i class="el-icon-plus mr-1"></i>
+            </el-tooltip>
           </div>
         </div>
         <div>
@@ -391,7 +388,7 @@ a {
 
 .left-bottom-bar {
   position: fixed;
-  bottom: 15px;
+  bottom: 10px;
   text-align: center;
   width: 230px;
   display: flex;
@@ -407,6 +404,7 @@ a {
   font-size: 12px;
   color: #856404;
   border: #ffeeba;
+  border-radius: 8px;
 }
 .left-bottom-bar .content .text-link {
   font-size: 12px;
