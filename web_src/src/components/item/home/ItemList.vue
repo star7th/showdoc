@@ -8,141 +8,142 @@
       ghostClass="sortable-chosen"
     >
       <div
-        class="item-list-one"
         v-loading="loading"
         v-for="item in itemList"
         :key="item.item_id"
         @click="toOneItem(item)"
+        class="item-list-one"
       >
-        <div class="left   float-left">
-
-          <i v-if="item.item_type == '2'" class="item-icon fas fa-file"></i>
-          <i v-else-if="item.item_type == '4'" class="item-icon fas fa-table"></i>
-          <i v-else class="item-icon fas fa-notes"></i>
-          {{ item.item_name }}
+        <div class="item-list-one-block">
+          <div class="left   float-left">
+            <i v-if="item.item_type == '2'" class="item-icon fas fa-file"></i>
+            <i
+              v-else-if="item.item_type == '4'"
+              class="item-icon fas fa-table"
+            ></i>
+            <i v-else class="item-icon fas fa-notes"></i>
+            {{ item.item_name }}
+          </div>
+          <div class="right show-more  float-right" @click.stop="() => {}">
+            <el-dropdown :show-timeout="0" trigger="hover">
+              <span class="el-dropdown-link">
+                <i class="item-icon-more fas fa-ellipsis"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="toOneItem(item)">
+                  <i class="mr-2 fas fa-right-to-bracket"></i>
+                  {{ $t('open_item') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  @click.native="
+                    opItemRow = item
+                    showShare = true
+                  "
+                >
+                  <i class="mr-2 fas fa-share-nodes"></i>
+                  {{ $t('share') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="item.is_star <= 0"
+                  @click.native="clickStar(item)"
+                >
+                  <i class="mr-2 far fa-star"></i>
+                  {{ $t('star_item') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="item.is_star > 0"
+                  @click.native="clickStar(item)"
+                >
+                  <i class="mr-2 fas fa-star"></i>
+                  {{ $t('unstar_item') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="item.manage"
+                  divided
+                  @click.native="
+                    opItemRow = item
+                    showItemUpdate = true
+                  "
+                >
+                  <i class="mr-2 fas fa-edit"></i>
+                  {{ $t('update_base_info') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="item.manage"
+                  @click.native="
+                    opItemRow = item
+                    showMember = true
+                  "
+                >
+                  <i class="mr-2 fal fa-users"></i>
+                  {{ $t('member_manage') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="item.manage"
+                  @click.native="
+                    opItemRow = item
+                    showOpenApi = true
+                  "
+                >
+                  <i class="mr-2 fas fa-plug"></i>
+                  {{ $t('open_api') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="item.manage"
+                  @click.native="
+                    opItemRow = item
+                    showRecycle = true
+                  "
+                >
+                  <i class="mr-2 fas fa-trash"></i>
+                  {{ $t('recycle') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="item.manage"
+                  divided
+                  @click.native="
+                    opItemRow = item
+                    showAttorn = true
+                  "
+                >
+                  <i class="mr-2 fas fa-recycle"></i>
+                  {{ $t('attorn') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="item.manage"
+                  @click.native="
+                    opItemRow = item
+                    showCopy = true
+                  "
+                >
+                  <i class="mr-2 fas fa-copy"></i>
+                  {{ $t('copy') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="item.manage"
+                  @click.native="
+                    opItemRow = item
+                    showArchive = true
+                  "
+                >
+                  <i class="mr-2 far fa-box-archive"></i>
+                  {{ $t('archive') }}
+                </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="item.manage"
+                  @click.native="
+                    opItemRow = item
+                    showDelete = true
+                  "
+                >
+                  <i class="mr-2 far fa-trash-can"></i>
+                  {{ $t('delete') }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
         </div>
-        <div class="right show-more  float-right" @click.stop="() => {}">
-          <el-dropdown :show-timeout="0" trigger="hover">
-            <span class="el-dropdown-link">
-              <i class="item-icon-more fas fa-ellipsis"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="toOneItem(item)">
-                <i class="mr-2 fas fa-right-to-bracket"></i>
-                {{ $t('open_item') }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                @click.native="
-                  opItemRow = item
-                  showShare = true
-                "
-              >
-                <i class="mr-2 fas fa-share-nodes"></i>
-                {{ $t('share') }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="item.is_star <= 0"
-                @click.native="clickStar(item)"
-              >
-                <i class="mr-2 far fa-star"></i>
-                {{
-                  $t('star_item')
-                }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="item.is_star > 0"
-                @click.native="clickStar(item)"
-              >
-                <i class="mr-2 fas fa-star"></i>
-                {{
-                  $t('unstar_item')
-                }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="item.manage"
-                divided
-                @click.native="
-                  opItemRow = item
-                  showItemUpdate = true
-                "
-              >
-                <i class="mr-2 fas fa-edit"></i>
-                {{ $t('update_base_info') }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="item.manage"
-                @click.native="
-                  opItemRow = item
-                  showMember = true
-                "
-              >
-                <i class="mr-2 fal fa-users"></i>
-                {{ $t('member_manage') }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="item.manage"
-                @click.native="
-                  opItemRow = item
-                  showOpenApi = true
-                "
-              >
-                <i class="mr-2 fas fa-plug"></i>
-                {{ $t('open_api') }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="item.manage"
-                @click.native="
-                  opItemRow = item
-                  showRecycle = true
-                "
-              >
-                <i class="mr-2 fas fa-trash"></i>
-                {{ $t('recycle') }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="item.manage"
-                divided
-                @click.native="
-                  opItemRow = item
-                  showAttorn = true
-                "
-              >
-                <i class="mr-2 fas fa-recycle"></i>
-                {{ $t('attorn') }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="item.manage"
-                @click.native="
-                  opItemRow = item
-                  showCopy = true
-                "
-              >
-                <i class="mr-2 fas fa-copy"></i>
-                {{ $t('copy') }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="item.manage"
-                @click.native="
-                  opItemRow = item
-                  showArchive = true
-                "
-              >
-                <i class="mr-2 far fa-box-archive"></i>
-                {{ $t('archive') }}
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="item.manage"
-                @click.native="
-                  opItemRow = item
-                  showDelete = true
-                "
-              >
-                <i class="mr-2 far fa-trash-can"></i>
-                {{ $t('delete') }}
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </div>
+        <div class="item-list-one-block-bg"></div>
       </div>
     </draggable>
 
@@ -235,8 +236,8 @@
     >
     </Attorn>
 
-        <!-- 复制项目 -->
-        <Copy
+    <!-- 复制项目 -->
+    <Copy
       :item_id="opItemRow.item_id"
       v-if="showCopy"
       :callback="
@@ -410,15 +411,32 @@ a {
   color: #343a40;
 }
 .item-list-one {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.item-list-one-block {
   width: 600px;
   height: 60px;
   background-color: white;
-  margin-top: 10px;
-  margin-bottom: 10px;
   color: #343a40;
   border-radius: 12px;
   box-shadow: 0 0 2px #0000001a;
-  cursor: pointer;
+  float: left;
+  opacity: 1;
+  position: relative;
+  bottom: 5px;
+  right: 5px;
+}
+
+.item-list-one-block-bg {
+  width: 600px;
+  height: 60px;
+  background-color: white;
+  color: #343a40;
+  border-radius: 12px;
+  box-shadow: 0 0 2px #0000001a;
 }
 .item-list-one .left {
   position: relative;

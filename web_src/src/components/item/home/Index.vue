@@ -76,6 +76,17 @@
             </div>
           </div>
         </div>
+        <div v-if="$lang == 'zh-cn'" class="left-bottom-bar">
+          <div class="content">
+            <i class="far fa-fire "></i>
+            调试API并自动生成文档
+            <a
+              class="text-link ml-2"
+              @click="toOutLink('https://www.showdoc.com.cn/runapi')"
+              >试试</a
+            >
+          </div>
+        </div>
       </div>
       <div class="right-side align-top  inline-block">
         <div class="search-box-div">
@@ -376,5 +387,31 @@ a {
 
 .empty .text {
   font-size: 11px;
+}
+
+.left-bottom-bar {
+  position: fixed;
+  bottom: 15px;
+  text-align: center;
+  width: 230px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left-bottom-bar .content {
+  width: 200px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #fff3cd;
+  font-size: 12px;
+  color: #856404;
+  border: #ffeeba;
+}
+.left-bottom-bar .content .text-link {
+  font-size: 12px;
+  color: #856404;
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>
