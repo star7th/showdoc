@@ -13,8 +13,15 @@
         :key="item.item_id"
         @click="toOneItem(item)"
         class="item-list-one"
+        :class="
+          item.item_type == '1' || item.item_type == '3' ? 'shadow-hover' : ''
+        "
       >
-        <div class="item-list-one-block">
+        <div class="item-list-one-block"
+        :class="
+            item.item_type == '1' || item.item_type == '3' ? '' : 'shadow-hover'
+          "
+        >
           <div class="left   float-left">
             <i v-if="item.item_type == '2'" class="item-icon fas fa-file"></i>
             <i
@@ -143,7 +150,14 @@
             </el-dropdown>
           </div>
         </div>
-        <div class="item-list-one-block-bg"></div>
+        <div
+          class="item-list-one-block-bg"
+          :class="
+            item.item_type == '1' || item.item_type == '3'
+              ? ''
+              : 'item-list-one-block-bg-none'
+          "
+        ></div>
       </div>
     </draggable>
 
@@ -410,10 +424,30 @@ export default {
 a {
   color: #343a40;
 }
+.item-list {
+  padding-left: 5px;
+}
+
 .item-list-one {
   margin-top: 10px;
   margin-bottom: 10px;
   cursor: pointer;
+  border-radius: 8px;
+}
+
+/* 定义一个类 ".shadow-hover"，指定 mouse-hover 时添加阴影，并使其透明度为0 */
+.shadow-hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0);
+  transition: box-shadow 0.1s linear;
+}
+/* 当鼠标悬浮在元素上时，让阴影逐渐出现 */
+.shadow-hover:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+/* 当离开元素时，让阴影逐渐消失 */
+.shadow-hover:hover:after {
+  opacity: 0;
+  transition: 0.1s opacity linear 0.1s;
 }
 
 .item-list-one-block {
@@ -421,7 +455,7 @@ a {
   height: 60px;
   background-color: white;
   color: #343a40;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 0 2px #0000001a;
   float: left;
   opacity: 1;
@@ -435,9 +469,14 @@ a {
   height: 60px;
   background-color: white;
   color: #343a40;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 0 2px #0000001a;
 }
+
+.item-list-one-block-bg-none {
+  visibility: hidden;
+}
+
 .item-list-one .left {
   position: relative;
   top: 50%;

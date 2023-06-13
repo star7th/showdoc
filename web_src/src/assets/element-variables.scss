@@ -17,6 +17,10 @@ $--link-hover-color: mix($--color-white, $--link-color, 20%);
 $--font-size-base :13px ;
 $--size-base:13px ;
 
+$--border-color-base:#0000001a ;
+$--border-color-hover:#0000001a ;
+$--input-focus-border:#0000001a ;
+
 // 对话框
 $--dialog-background-color:$--background-color-base ;
 $--dialog-content-font-size: 13px;

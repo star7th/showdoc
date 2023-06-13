@@ -597,5 +597,7 @@ exports.default = {
 
   ai_assistant: 'Ai assistant',
 
-  create: 'Create'
+  create: 'Create',
+
+  search_keyword: 'Please enter search keywords'
 }
