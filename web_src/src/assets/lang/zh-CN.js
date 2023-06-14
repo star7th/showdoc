@@ -567,7 +567,5 @@ exports.default = {
 
   ai_assistant: 'AI助手生成',
 
-  create: '创建',
-
-  search_keyword: '请输入搜索关键词'
+  create: '创建'
 }

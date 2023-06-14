@@ -97,13 +97,9 @@
               validateevent="true"
               :clearable="true"
               v-model="keyword"
-              :placeholder="$t('search_keyword')"
             />
             <span class="el-input__prefix">
-              <i
-                style="font-size: 16px;line-height: 60px;margin-left: 5px;"
-                class="el-input__icon el-icon-search"
-              ></i>
+              <i class="el-input__icon el-icon-search"></i>
             </span>
           </div>
         </div>
@@ -355,7 +351,6 @@ a {
   border-radius: 8px;
   cursor: pointer;
   padding-left: 10px;
-  margin-bottom: 2px;
 }
 
 .item-one-block:hover {
@@ -375,10 +370,11 @@ a {
 }
 
 .divider-text {
+  padding-left: 10px;
   font-size: 9px;
   color: #9b9b9b;
   display: inline;
-  margin-left: 15px;
+  margin-left: 10px;
 }
 .divider-icon {
   font-size: 11px;
@@ -400,13 +396,6 @@ a {
 .search-input {
   width: 600px;
 }
-
-.search-input >>> input {
-  border-radius: 8px;
-  height: 60px;
-  padding-left: 40px;
-}
-
 .empty {
   margin: 5% auto;
   width: 400px;
@@ -425,7 +414,7 @@ a {
 
 .left-bottom-bar {
   position: fixed;
-  bottom: 35px;
+  bottom: 10px;
   text-align: center;
   width: 230px;
   display: flex;

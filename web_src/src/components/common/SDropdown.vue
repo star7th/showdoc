@@ -104,7 +104,7 @@ export default {
   border-radius: 8px;
   padding-left: 20px;
   padding-right: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
   background: #f9f9f9;
 }
 

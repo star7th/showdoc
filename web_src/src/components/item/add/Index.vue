@@ -157,7 +157,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .create-item-btn-div {
-  margin-left: 210px;
+  margin-left: 250px;
   width: 200px;
   height: 60px;
   bottom: 20px;
@@ -191,7 +191,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
 }
 
 .el-dropdown-link,
