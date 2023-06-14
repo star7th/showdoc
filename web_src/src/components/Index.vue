@@ -3,11 +3,12 @@
     <!--header-->
     <div class="header">
       <div class="header-wrap">
-        <div class="logo">
-          <a href="/">
-            <img src="static/imgs/Logo.png" />
-          </a>
-        </div>
+        <a href="/">
+          <div class="logo">
+            <img class="logo-img" src="@/assets/Logo.svg" />
+            <span class="logo-title">ShowDoc</span>
+          </div>
+        </a>
         <input type="checkbox" name id="mobile-menu-toggle" value />
         <label class="gh" for="mobile-menu-toggle">
           <span></span>

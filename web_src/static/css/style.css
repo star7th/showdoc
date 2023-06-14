@@ -532,3 +532,26 @@ padding-top: 24px;
 .regbg{
 	background:#111111 url(../imgs/regbg.jpg) no-repeat center top;
 }
+
+.logo {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+  }
+  .logo-img {
+	width: 50px;
+	height: 50px;
+	margin-right: 5px;
+  }
+  .logo-title {
+	font-size: 20px;
+	font-weight: 700;
+  }
+  
+  .recommend-item-block {
+	display: none;
+  }
+  .case-logo img {
+	width: 200px;
+	padding: 20px;
+  }

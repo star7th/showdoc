@@ -195,6 +195,14 @@ export default {
         method: () => {
           this.toOutLink('https://push.showdoc.com.cn')
         }
+      },
+      {
+        title: '返回首页',
+        icon: 'fas fa-backward',
+        desc: '回到showdoc官网首页',
+        method: () => {
+          this.$router.push({ path: '/' })
+        }
       }
     ]
   }

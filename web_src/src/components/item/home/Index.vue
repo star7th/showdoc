@@ -1,14 +1,16 @@
 <template>
   <div class="hello">
     <div class="header">
-      <div @click="reload" class="logo float-left mt-4 ml-10  cursor-pointer">
-        <div>
-          <div class="inline-block align-middle">
-            <img src="static/logo/b_64.png" />
+      <div @click="reload" class="float-left ml-10">
+        <div class="logo">
+          <div class="logo-img-div">
+            <img class="logo-img" src="@/assets/Logo.svg" />
           </div>
-          <div class="inline-block align-middle">
-            <div class="v3-font-size-lg font-bold">ShowDoc</div>
-            <div class=" v3-color-aux">{{ $t('home_logo_title') }}</div>
+          <div class="">
+            <div class=" font-bold logo-title">ShowDoc</div>
+            <div class="v3-color-aux logo-desc">
+              {{ $t('home_logo_title') }}
+            </div>
           </div>
         </div>
       </div>
@@ -305,6 +307,30 @@ export default {
 .header {
   height: 90px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 90px;
+}
+
+.logo-img-div {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.logo-img {
+  width: 50px;
+  height: 50px;
+}
+.logo-title {
+  font-size: 20px;
+}
+.logo-desc {
+  font-size: 10px;
 }
 
 .el-dropdown-link,
