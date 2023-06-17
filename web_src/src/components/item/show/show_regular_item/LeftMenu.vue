@@ -248,8 +248,8 @@ export default {
   height: 40px;
   font-size: 12px;
 }
-.el-menu-item:hover,
-.el-menu-item:active {
+#left-side-menu .el-menu-item:hover,
+#left-side-menu .el-menu-item:active {
   background-color: white !important;
   margin-right: 10px;
   border-radius: 4px;

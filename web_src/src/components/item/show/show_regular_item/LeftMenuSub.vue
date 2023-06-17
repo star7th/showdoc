@@ -5,6 +5,7 @@
         v-for="catalog2 in catalog"
         :index="catalog2.cat_id"
         :key="catalog2.cat_id"
+        class="submenu"
       >
         <template slot="title">
           <i class="far mr-1 fa-folder-closed"></i>
@@ -83,8 +84,8 @@ export default {
   height: 46px;
   line-height: 46px;
 }
-.el-submenu__title:hover,
-.el-menu-item:hover {
+.submenu .el-submenu__title:hover,
+.submenu .el-menu-item:hover {
   background: #ffffff !important;
   border-radius: 4px;
 }
