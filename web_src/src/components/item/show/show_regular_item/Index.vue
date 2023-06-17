@@ -350,8 +350,8 @@ a {
   min-width: 830px;
   max-width: 850px;
   border-radius: 8px;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 #right-side {

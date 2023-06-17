@@ -16,6 +16,98 @@ a {
   text-decoration: none;
 }
 
+/* WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+/* 适用于纵滚动条 */
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+/* 适用于纵滚动条 */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+/* 适用于纵滚动条 */
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+/* 适用于横滚动条 */
+::-webkit-scrollbar-track-x {
+  background-color: #f1f1f1;
+}
+/* 适用于横滚动条 */
+::-webkit-scrollbar-thumb-x {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+/* 适用于横滚动条 */
+::-webkit-scrollbar-thumb-x:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Firefox */
+/* 适用于纵滚动条 */
+::-moz-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+/* 适用于纵滚动条 */
+::-moz-scrollbar-track {
+  background-color: #f1f1f1;
+}
+/* 适用于纵滚动条 */
+::-moz-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+/* 适用于纵滚动条 */
+::-moz-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+/* 适用于横滚动条 */
+::-moz-scrollbar-track-x {
+  background-color: #f1f1f1;
+}
+/* 适用于横滚动条 */
+::-moz-scrollbar-thumb-x {
+  background-color:  rgba(0, 0, 0, 0.05);
+}
+/* 适用于横滚动条 */
+::-moz-scrollbar-thumb-x:hover {
+  background-color:  rgba(0, 0, 0, 0.05);
+}
+
+/* Edge and Internet Explorer */
+/* 适用于纵滚动条 */
+::-ms-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+/* 适用于纵滚动条 */
+::-ms-scrollbar-track {
+  background-color: #f1f1f1;
+}
+/* 适用于纵滚动条 */
+::-ms-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+/* 适用于纵滚动条 */
+::-ms-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+/* 适用于横滚动条 */
+::-ms-scrollbar-track-x {
+  background-color: #f1f1f1;
+}
+/* 适用于横滚动条 */
+::-ms-scrollbar-thumb-x {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+/* 适用于横滚动条 */
+::-ms-scrollbar-thumb-x:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 .center-card {
   width: 300px;
   position: absolute;

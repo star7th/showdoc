@@ -83,6 +83,11 @@ export default {
   height: 46px;
   line-height: 46px;
 }
+.el-submenu__title:hover,
+.el-menu-item:hover {
+  background: #ffffff !important;
+  border-radius: 4px;
+}
 .el-submenu .el-menu-item {
   height: 40px;
   line-height: 40px;

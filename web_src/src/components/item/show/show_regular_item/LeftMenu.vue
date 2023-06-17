@@ -248,6 +248,13 @@ export default {
   height: 40px;
   font-size: 12px;
 }
+.el-menu-item:hover,
+.el-menu-item:active {
+  background-color: white !important;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
 .el-menu-item [class^='el-icon-'] {
   font-size: 17px;
   margin-bottom: 4px;
@@ -307,6 +314,11 @@ export default {
 
 .normal-scrollbar .el-submenu__title {
   font-size: 12px;
+}
+.normal-scrollbar .el-submenu__title:hover,
+.el-menu-item:hover {
+  background: #ffffff !important;
+  border-radius: 4px;
 }
 .normal-scrollbar li {
   font-size: 12px;
