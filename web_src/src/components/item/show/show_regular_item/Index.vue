@@ -29,7 +29,7 @@
         ></LeftMenuBottomBar>
       </div>
 
-      <div id="right-side">
+      <div id="content-side">
         <div id="p-content">
           <div class="doc-title-box" id="doc-title-box">
             <span class="v3-font-size-lg font-bold " id="doc-title">{{
@@ -59,7 +59,7 @@
                 :keyword="keyword"
               ></Editormd>
             </div>
-            <div v-if="emptyItem  && $lang == 'zh-cn'" class="empty-tips">
+            <div v-if="emptyItem && $lang == 'zh-cn'" class="empty-tips">
               <div class="icon">
                 <i class="el-icon-warning"></i>
               </div>
@@ -92,6 +92,10 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div id="right-side">
+        <div id="toc-pos"></div>
       </div>
     </div>
 
@@ -203,7 +207,7 @@ export default {
       var header = document.getElementById('header')
       header.style.display = 'none'
 
-      var rightSide = document.getElementById('right-side')
+      var rightSide = document.getElementById('content-side')
       rightSide.style.width = 'calc (100% -1px)'
       rightSide.style.minWidth = 'calc( 100% - 1px )'
       rightSide.style.maxWidth = 'calc( 100% - 1px )'
@@ -224,6 +228,7 @@ export default {
       header.style.height = '20px'
       var docTitle = document.getElementById('doc-title-box')
       docTitle.style.marginTop = '30px'
+      this.showToc = false
     },
     // 响应式
     adaptScreen() {
@@ -262,6 +267,7 @@ export default {
           }, 200)
         })
         $('#left-side').hide()
+        $('#right-side').hide()
         $('#left-menu-bottom-bar').hide()
       }
       this.fullPage = !this.fullPage
@@ -322,28 +328,33 @@ a {
 }
 
 .doc-container {
-  position: static;
   margin-bottom: 20px;
   min-height: 750px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 110px;
-  max-width: 1150px;
-  min-width: 655px;
+  max-width: 1500px;
+  min-width: 855px;
+  display: flex;
+  justify-content: center;
 }
 
 #left-side {
-  position: absolute;
+  width: 300px;
 }
 
-#right-side {
-  margin-left: 320px;
+#content-side {
   background-color: #fff;
   box-shadow: 0 0 4px #0000001a;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  min-width: 355px;
+  min-width: 830px;
   max-width: 850px;
   border-radius: 8px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#right-side {
 }
 
 #doc-body {

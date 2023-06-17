@@ -115,7 +115,6 @@ export default {
       element.style.display = 'block'
       element.style.marginLeft = '0px'
       element.style.marginTop = '0px'
-      element.style.position = 'static'
       element = document.getElementById('p-content')
       element.style.display = 'none'
     },
