@@ -267,9 +267,18 @@ export default {
   margin-bottom: 4px;
 }
 .search-box {
-  padding: 0px 0px 0px 20px;
   box-sizing: border-box;
-  width: 95%;
+  width: calc(100% - 10px - 10px);
+  margin-bottom: 5px;
+  border-color: #0000001a;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.search-box >>> input {
+  border-radius: 6px;
+  height: 40px;
+  border-color: #0000001a;
 }
 
 /*隐藏滚动条*/

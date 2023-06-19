@@ -341,6 +341,7 @@ a {
 
 #left-side {
   width: 300px;
+  background-color: #f9f9f9;
 }
 
 #content-side {

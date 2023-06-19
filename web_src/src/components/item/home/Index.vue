@@ -370,11 +370,10 @@ a {
 }
 
 .divider-text {
-  padding-left: 10px;
   font-size: 9px;
   color: #9b9b9b;
   display: inline;
-  margin-left: 10px;
+  margin-left: 1px;
 }
 .divider-icon {
   font-size: 11px;

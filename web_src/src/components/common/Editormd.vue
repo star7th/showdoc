@@ -28,9 +28,10 @@
   font-size: 1.1em !important;
 }
 .markdown-body code {
-  color: #d14;
+  color: #409eff;
   font-family: Consolas, Monaco, Lucida Console, Liberation Mono,
     DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+  background: #f9f9f9;
 }
 .markdown-body pre code {
   color: #d1d2d2;
@@ -41,7 +42,7 @@
 }
 
 .markdown-body table thead tr {
-  background-color: #409eff;
+  background-color: #343a40;
   color: #fff;
 }
 
@@ -50,6 +51,12 @@
   background-color: #384548;
   padding: 0;
   color: #d1d2d2;
+  padding: 1em;
+  border-radius: 4px;
+}
+
+.markdown-body pre code {
+  padding: 0em; /* .markdown-body pre 已经设置 padding: 1em , 所以代码块不再需要边距 */
 }
 
 .markdown-body pre .btn-pre-copy {
@@ -66,7 +73,7 @@
   position: absolute;
   top: 10px;
   right: 12px;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1;
   cursor: pointer;
   color: #999;
@@ -84,7 +91,7 @@
   margin-bottom: 0;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  background-position: 10px 10px;
+  background-position: 0px 10px;
 }
 /* 默认的代码高亮主题样式里，对代码注释的颜色看不清楚，所以重写下 */
 .hljs-comment,
@@ -101,7 +108,7 @@
 }
 
 /* 因跟fa 图标的样式冲突，这个按钮冒出来了。这里强制把它隐藏 */
-.editormd-preview-close-btn{
+.editormd-preview-close-btn {
   display: none !important;
 }
 </style>
@@ -212,7 +219,7 @@ export default {
               'clear',
               'search',
               '|',
-              'help',
+              'help'
             ]
           },
           toolbarIconsClass: {
