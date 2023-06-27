@@ -55,7 +55,7 @@
       </div>
     </SDialog>
 
-    <el-backtop></el-backtop>
+    <el-backtop right="40" bottom="40"></el-backtop>
     <Toc v-if="page_id"></Toc>
     <Footer></Footer>
     <div class></div>

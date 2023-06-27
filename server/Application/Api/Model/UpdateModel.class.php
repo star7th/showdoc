@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 17;
+        $version_num = 18;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -527,6 +527,14 @@ class UpdateModel
             $sql = "ALTER TABLE " . C('DB_PREFIX') . "page_history ADD ext_info CHAR(2000) NOT NULL DEFAULT '' ;";
             D("page")->execute($sql);
         }
+
+        // 设置自增id从 10000000 开始
+        $randomNumber1 = mt_rand(100000000, 299999999);
+        $randomNumber2 = mt_rand(400000000, 499999999);
+        $randomNumber3 = mt_rand(600000000, 699999999);
+        D("page")->execute("INSERT INTO sqlite_sequence (name, seq) VALUES ('page', {$randomNumber1})");
+        D("page")->execute("INSERT INTO sqlite_sequence (name, seq) VALUES ('catalog', {$randomNumber2})");
+        D("page")->execute("INSERT INTO sqlite_sequence (name, seq) VALUES ('item', {$randomNumber3})");
 
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num

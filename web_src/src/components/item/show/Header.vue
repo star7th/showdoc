@@ -36,7 +36,7 @@ export default {
 
 <style scoped>
 .header {
-  height: 90px;
+  height: 90px !important;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   position: fixed;
   top: 0;

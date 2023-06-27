@@ -567,5 +567,13 @@ exports.default = {
 
   ai_assistant: 'AI助手生成',
 
-  create: '创建'
+  create: '创建',
+
+  search_keyword: '请输入搜索关键词',
+
+  add_sub_page: '添加页面',
+  add_sub_cat: '添加子文件夹',
+  add_si_bling_cat: '添加同级文件夹',
+  edt_cat: '编辑文件夹',
+  clone_move: '克隆/移动'
 }

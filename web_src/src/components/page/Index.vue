@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <el-backtop></el-backtop>
+    <el-backtop right="40" bottom="40"></el-backtop>
     <Toc v-if="page_id && showToc"></Toc>
     <Footer></Footer>
     <div class></div>

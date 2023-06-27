@@ -108,6 +108,16 @@ a {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+/*隐藏滚动条*/
+.hide-scrollbar ::-webkit-scrollbar {
+  display: none;
+}
+/*隐藏滚动条*/
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .center-card {
   width: 300px;
   position: absolute;

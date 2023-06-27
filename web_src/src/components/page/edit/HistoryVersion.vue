@@ -84,7 +84,6 @@ export default {
           this.dialogTableVisible = true
         } else {
           this.dialogTableVisible = false
-          this.$alert('no data')
         }
       })
     },

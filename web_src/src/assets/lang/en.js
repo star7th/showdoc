@@ -597,5 +597,13 @@ exports.default = {
 
   ai_assistant: 'Ai assistant',
 
-  create: 'Create'
+  create: 'Create',
+
+  search_keyword: 'Please enter search keywords',
+
+  add_sub_page: 'Add Page',
+  add_sub_cat: 'Add Sub Folder',
+  add_si_bling_cat: 'Add Peer Folder',
+  edt_cat: 'Edit Folder',
+  clone_move: 'Clone/Move'
 }

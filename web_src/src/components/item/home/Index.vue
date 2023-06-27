@@ -335,7 +335,7 @@ a {
 }
 
 .container {
-  width: 870px;
+  max-width: 870px;
   margin: 0 auto;
 }
 .left-side {

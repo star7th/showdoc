@@ -27,42 +27,64 @@
           draggable
         >
           <span class="custom-tree-node" slot-scope="{ node, data }">
-            <span>{{ node.label }}</span>
+            <i class="mr-2 fas fa-folder"></i><span>{{ node.label }}</span>
             <span class="right-bar">
-              <el-button
-                type="text"
-                size="mini"
-                :title="$t('edit')"
-                class="el-icon-edit-outline"
-                @click.stop="edit(node, data)"
-              ></el-button>
-              <el-button
-                type="text"
-                size="mini"
-                class="el-icon-plus"
-                :title="$t('add_cat')"
-                @click.stop="addCat(node, data)"
-              ></el-button>
-              <el-button
-                type="text"
-                size="mini"
-                class="el-icon-document"
-                :title="$t('sort_pages')"
-                @click.stop="showSortPage(node, data)"
-              ></el-button>
-              <el-button
-                type="text"
-                size="mini"
-                class="el-icon-copy-document"
-                :title="$t('copy_or_mv_cat')"
-                @click.stop="copyCat(node, data)"
-              ></el-button>
-              <el-button
-                type="text"
-                size="mini"
-                class="el-icon-delete"
-                @click.stop="deleteCat(node, data)"
-              ></el-button>
+              <el-tooltip effect="dark" :content="$t('edit')" placement="top">
+                <el-button
+                  type="text"
+                  size="mini"
+                  :title="$t('edit')"
+                  class="el-icon-edit-outline"
+                  @click.stop="edit(node, data)"
+                ></el-button>
+              </el-tooltip>
+              <el-tooltip
+                effect="dark"
+                :content="$t('add_cat')"
+                placement="top"
+              >
+                <el-button
+                  type="text"
+                  size="mini"
+                  class="el-icon-plus"
+                  :title="$t('add_cat')"
+                  @click.stop="addCat(node, data)"
+                ></el-button>
+              </el-tooltip>
+              <el-tooltip
+                effect="dark"
+                :content="$t('sort_pages')"
+                placement="top"
+              >
+                <el-button
+                  type="text"
+                  size="mini"
+                  class="el-icon-document"
+                  :title="$t('sort_pages')"
+                  @click.stop="showSortPage(node, data)"
+                ></el-button>
+              </el-tooltip>
+              <el-tooltip
+                effect="dark"
+                :content="$t('copy_or_mv_cat')"
+                placement="top"
+              >
+                <el-button
+                  type="text"
+                  size="mini"
+                  class="el-icon-copy-document"
+                  :title="$t('copy_or_mv_cat')"
+                  @click.stop="copyCat(node, data)"
+                ></el-button>
+              </el-tooltip>
+              <el-tooltip effect="dark" :content="$t('delete')" placement="top">
+                <el-button
+                  type="text"
+                  size="mini"
+                  class="el-icon-delete"
+                  @click.stop="deleteCat(node, data)"
+                ></el-button>
+              </el-tooltip>
             </span>
           </span>
         </el-tree>

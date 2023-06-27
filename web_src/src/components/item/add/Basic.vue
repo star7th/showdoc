@@ -3,7 +3,7 @@
     <SDialog
       :onCancel="callback"
       :title="item_id ? $t('update_base_info') : $t('create_new_item')"
-      width="500px"
+      width="550px"
       :onOK="formSubmit"
     >
       <div class="p-6">
@@ -24,8 +24,8 @@
           </el-radio-group>
         </div>
         <el-row class="leading-10 mb-4">
-          <el-col :span="4">&nbsp;&nbsp;{{ $t('item_name') }} : </el-col>
-          <el-col :span="20">
+          <el-col :span="6">&nbsp;&nbsp;{{ $t('item_name') }} : </el-col>
+          <el-col :span="18">
             <el-input
               type="text"
               auto-complete="off"
@@ -34,8 +34,8 @@
           ></el-col>
         </el-row>
         <el-row class="leading-10 mb-4">
-          <el-col :span="4">{{ $t('item_description') }} : </el-col>
-          <el-col :span="20">
+          <el-col :span="6">{{ $t('item_description') }} : </el-col>
+          <el-col :span="18">
             <el-input
               type="text"
               auto-complete="off"
@@ -44,8 +44,8 @@
           ></el-col>
         </el-row>
         <el-row class="leading-10 mb-4">
-          <el-col :span="4">{{ $t('accessibility') }} : </el-col>
-          <el-col :span="20">
+          <el-col :span="6">{{ $t('accessibility') }} : </el-col>
+          <el-col :span="18">
             <el-select class="w-full" v-model="isOpenItem" placeholder="">
               <el-option :value="true" :label="$t('Open_item')"> </el-option>
               <el-option :value="false" :label="$t('private_item')">
@@ -54,8 +54,8 @@
           </el-col>
         </el-row>
         <el-row class="leading-10 mb-4" v-show="!isOpenItem">
-          <el-col :span="4">&nbsp;</el-col>
-          <el-col :span="20">
+          <el-col :span="6">&nbsp;</el-col>
+          <el-col :span="18">
             <el-input
               type="password"
               auto-complete="off"
