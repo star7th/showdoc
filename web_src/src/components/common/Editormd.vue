@@ -13,6 +13,7 @@
 
 .markdown-body {
   font-size: 13px;
+  line-height:1.75;
 }
 
 .markdown-body h1 {
@@ -42,8 +43,7 @@
 }
 
 .markdown-body table thead tr {
-  background-color: #343a40;
-  color: #fff;
+  background-color: rgba(64, 158, 255, 0.1);
 }
 
 .markdown-body pre {
@@ -111,6 +111,32 @@
 .editormd-preview-close-btn {
   display: none !important;
 }
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-bottom: 1.5em;
+  line-height: 1.75;
+}
+.markdown-body p,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body dl,
+.markdown-body table,
+.markdown-body pre {
+  margin-bottom: 1.5em;
+}
+.markdown-body dl dd {
+  margin-bottom: 1.5em;
+}
+.markdown-body .highlight {
+  margin-bottom: 1.5em;
+}
+
 </style>
 <script>
 import BigImg from '@/components/common/BigImg'

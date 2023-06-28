@@ -233,7 +233,9 @@ export default {
       docTitle.style.marginTop = '0px'
       this.showToc = false
       var leftMenuBottomBar = document.getElementById('left-menu-bottom-bar')
-      leftMenuBottomBar.style.display = 'none'
+      if (leftMenuBottomBar) {
+        leftMenuBottomBar.style.display = 'none'
+      }
     },
     // 响应式
     adaptScreen() {
