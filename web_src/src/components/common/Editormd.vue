@@ -12,7 +12,7 @@
 }
 
 .markdown-body {
-  font-size: 13px;
+  font-size: 14px;
   line-height:1.75;
 }
 

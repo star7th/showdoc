@@ -24,7 +24,7 @@
           :keyword="keyword"
           :item_info="item_info"
           :searchItem="searchItem"
-          v-if="item_info"
+          v-if="item_info && !showMobileHeader"
         ></LeftMenu>
 
         <LeftMenuBottomBar
@@ -259,9 +259,11 @@ export default {
           this.showToc = true
           this.showPCHeader = true
           this.showMobileHeader = false
+          this.device = 'pc'
         })
       } else {
         this.adaptToMobile()
+        this.showMobileHeader = false
         // 切换变量让它重新加载、渲染子组件
         var page_id = this.page_id
         this.page_id = 0
@@ -400,7 +402,7 @@ pre ol {
 .editormd-html-preview,
 .editormd-preview-container {
   padding: 0px;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .empty-tips {
