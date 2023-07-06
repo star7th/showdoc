@@ -23,6 +23,7 @@
         :draggable="item_info.item_edit ? true : false"
         :allow-drop="allowDrop"
         @node-drag-end="handleDragEnd"
+        :auto-expand-parent="false"
       >
         <span
           class="custom-tree-node"
@@ -40,7 +41,11 @@
             class="custom-tree-node node-folder"
             :id="'node-' + node.data.id"
           >
-            <i class="mr-2 far fa-folder-closed"></i>
+          <i
+              v-if="openeds.includes(node.data.id) && node.data.children.length"
+              class="mr-2 far fa-folder-open"
+            ></i>
+            <i v-else class="mr-2 far fa-folder-closed"></i>
             <span class="node-label">{{ node.label }}</span>
           </span>
           <span
@@ -380,6 +385,17 @@ export default {
     handleNodeClick(data) {
       if (data.page_id) {
         this.selectMenu(data.page_id)
+      }
+      if (data.type == 'folder') {
+        // 如果点击的是目录，则展开目录
+        const list = this.openeds
+        const findIndex = list.findIndex(v => v === data.id)
+        if (findIndex === -1) {
+          list.push(data.id)
+        } else {
+          list.splice(findIndex, 1)
+        }
+        this.openeds = list
       }
     },
     // 选中菜单的回调
