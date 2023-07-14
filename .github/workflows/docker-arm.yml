@@ -24,7 +24,7 @@ jobs:
         with:
           push: true
           tags: star7th/showdoc:arm-latest
-          file: DockerfileARM # 使用仓库下的DockerfileARM文件进行构建
+          file: Dockerfile.ARM # 使用仓库下的Dockerfile.ARM文件进行构建
           platforms: |
             linux/arm/v5
             linux/arm/v7

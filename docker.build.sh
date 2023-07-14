@@ -22,6 +22,6 @@ apk add --update nodejs npm
 
 cd /showdoc_data/mock || exit 1
 if [ "$IN_CHINA" = true ]; then
-    npm config set registry https://registry.npm.taobao.org/
+    npm config set registry https://registry.npmmirror.com/
 fi
 npm install
