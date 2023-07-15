@@ -31,8 +31,9 @@ fi
 apk update
 apk add --update --no-cache nodejs npm
 
-mv /showdoc_data/html/mock /showdoc_data/
-cd /showdoc_data/mock || exit 1
+showdoc_dir='/showdoc_data'
+mv $showdoc_dir/html/mock $showdoc_dir/
+cd $showdoc_dir/mock || exit 1
 if [ "$IN_CHINA" = true ]; then
     npm config set registry https://registry.npmmirror.com/
 fi

@@ -3,11 +3,28 @@
 set -e
 
 ## web site dir
-if [ ! -f "/var/www/html/index.php" ]; then
-    \cp -fr /showdoc_data/html/* /var/www/html/
+showdoc_dir='/showdoc_data'
+showdoc_html_dir="$showdoc_dir/html"
+web_dir='/var/www/html'
+file_ver=$web_dir/.ver
+if [ -f "$web_dir/index.php" ]; then
+    echo "Found $web_dir/index.php, skip copy."
+else
+    echo "Not found $web_dir/index.php, copy..."
+    rsync -a $showdoc_html_dir/ $web_dir/
+fi
+if [ -f $file_ver ]; then
+    if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $file_ver)" ]]; then
+        echo "Same version, skip upgrade."
+    else
+        echo "Upgrade application files..."
+        rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' $showdoc_html_dir/ $web_dir/
+    fi
+else
+    echo "$SHOWDOC_DOCKER_VERSION" >$file_ver
 fi
 ## set file mode
-chown -R 1000:1000 /var/www/html/Sqlite /var/www/html/Public/Uploads
+chown -R 1000:1000 $web_dir/Sqlite $web_dir/Public/Uploads
 
 _kill() {
     echo "receive SIGTERM, kill $pids"
@@ -18,7 +35,7 @@ _kill() {
 }
 
 ## backup sqlite file every day
-db_file=/var/www/html/Sqlite/showdoc.db.php
+db_file=$web_dir/Sqlite/showdoc.db.php
 while [ -f $db_file ]; do
     # backup on 20:01 (UTC) every day
     if [[ $(date +%H%M) == 2001 ]]; then
@@ -33,13 +50,13 @@ pids="$pids $!"
 
 (
     sleep 3
-    cd /showdoc_data/html/server
+    cd $showdoc_html_dir/server
     php index.php /api/update/dockerUpdateCode
 )
 (
     echo "delay 30s start mock..."
     sleep 30
-    cd /showdoc_data/mock/
+    cd $showdoc_dir/mock/
     npm run start
 ) &
 pids="$pids $!"
@@ -51,4 +68,3 @@ pids="$pids $!"
 trap _kill HUP INT QUIT TERM
 
 wait
-
