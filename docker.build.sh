@@ -2,6 +2,7 @@
 
 set -xe
 
+rm -rf /app
 ln -sf /var/www/html /app
 ## php setting
 (
@@ -38,5 +39,3 @@ fi
 ## fix old warn
 rm -f package-lock.json
 npm install
-
-chown -R 1000:1000 /var/www/ /showdoc_data
