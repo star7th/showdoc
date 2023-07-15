@@ -2,9 +2,20 @@
 
 set -e
 
+## web site dir
 if [ ! -f "/var/www/html/index.php" ]; then
     \cp -fr /showdoc_data/html/* /var/www/html/
 fi
+## set file mode
+chown -R 1000:1000 /var/www/html/Sqlite /var/www/html/Public/Uploads
+
+_kill() {
+    echo "receive SIGTERM, kill $pids"
+    for pid in $pids; do
+        kill "$pid"
+        wait "$pid"
+    done
+}
 
 ## backup sqlite file every day
 db_file=/var/www/html/Sqlite/showdoc.db.php
@@ -18,18 +29,26 @@ while [ -f $db_file ]; do
     fi
     sleep 50
 done &
+pids="$pids $!"
 
-chmod 777 -R /var/www/
 (
     sleep 3
     cd /showdoc_data/html/server
     php index.php /api/update/dockerUpdateCode
-    chmod 777 -R /var/www/
 )
 (
+    echo "delay 30s start mock..."
     sleep 30
     cd /showdoc_data/mock/
     npm run start
 ) &
+pids="$pids $!"
 
-supervisord
+supervisord -c /opt/docker/etc/supervisor.conf &
+pids="$pids $!"
+
+## 识别中断信号，停止进程
+trap _kill HUP INT QUIT TERM
+
+wait
+
