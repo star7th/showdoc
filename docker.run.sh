@@ -24,7 +24,13 @@ else
     echo "$SHOWDOC_DOCKER_VERSION" >$file_ver
 fi
 ## set file mode
-chown -R 1000:1000 $web_dir/Sqlite $web_dir/Public/Uploads
+[[ -d $web_dir/server/Application/Runtime ]] ||
+    mkdir -p $web_dir/server/Application/Runtime
+chown -R 1000:1000 \
+    $web_dir/Sqlite \
+    $web_dir/Public/Uploads \
+    $web_dir/install \
+    $web_dir/server/Application/Runtime
 
 _kill() {
     echo "receive SIGTERM, kill $pids"
