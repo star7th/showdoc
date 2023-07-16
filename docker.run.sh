@@ -13,6 +13,7 @@ else
     echo "Not found $web_dir/index.php, copy..."
     rsync -a $showdoc_html_dir/ $web_dir/
 fi
+## upgrade
 if [ -f $file_ver ]; then
     if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $file_ver)" ]]; then
         echo "Same version, skip upgrade."
@@ -23,7 +24,10 @@ if [ -f $file_ver ]; then
 else
     echo "$SHOWDOC_DOCKER_VERSION" >$file_ver
 fi
-## set file mode
+## fix file permission
+# find $web_dir -type f -exec chmod 644 {} \;
+# find $web_dir -type d -exec chmod 755 {} \;
+# find $web_dir -type f -iname '*.sh' -exec chmod 755 {} \;
 [[ -d $web_dir/server/Application/Runtime ]] ||
     mkdir -p $web_dir/server/Application/Runtime
 chown -R 1000:1000 \
