@@ -9,14 +9,17 @@ showdoc_dir_old_skip='/showdoc_data_old/.skip_old'
 showdoc_html_dir="$showdoc_dir/html"
 web_dir='/var/www/html'
 file_ver=$web_dir/.ver
+# file_ver_json=$web_dir/.json.ver
+file_json=$showdoc_html_dir/composer.json
 
 db_file=$web_dir/Sqlite/showdoc.db.php
 
+## 首次启动需要 copy to /var/www/html
 if [ -f "$web_dir/index.php" ]; then
     echo "Found $web_dir/index.php, skip copy."
 else
     echo "Not found $web_dir/index.php, copy..."
-    ## 兼容历史版本
+    ## 兼容历史版本 宿主机 /showdoc_data
     if [[ -f $showdoc_dir_old/html/index.php && ! -f $showdoc_dir_old_skip ]]; then
         echo "Found old version of \"showdoc_data\", copy..."
         rsync -a $showdoc_dir_old/html/ $web_dir/ &&
@@ -26,8 +29,11 @@ else
     fi
 fi
 ## upgrade (通过 Dockerfile 的环境变量 变更版本)
+version_json=$(grep -o '"version":.*"' $file_json | awk '{print $2}')
+version_json="${version_json//\"/}"
 if [ -f $file_ver ]; then
-    if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $file_ver)" ]]; then
+    # if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $file_ver)" ]]; then
+    if [[ "${version_json}" == "$(cat $file_ver)" ]]; then
         echo "Same version, skip upgrade."
     else
         echo "Backup db file before upgrade..."
@@ -41,7 +47,8 @@ if [ -f $file_ver ]; then
         fi
     fi
 else
-    echo "$SHOWDOC_DOCKER_VERSION" >$file_ver
+    # echo "$SHOWDOC_DOCKER_VERSION" >$file_ver
+    echo "$version_json" >$file_ver
 fi
 ## fix file permission
 # find $web_dir -type f -exec chmod 644 {} \;
