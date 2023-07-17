@@ -20,6 +20,8 @@ services:
     ports:
       - 4999:80
     volumes:
+      ## 兼容历史版本文件
+      - /showdoc_data:/showdoc_data_old
       - ./showdocdata/html:/var/www/html
     restart: always
     tty: true

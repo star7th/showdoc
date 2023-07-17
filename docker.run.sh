@@ -4,6 +4,8 @@ set -e
 
 ## web site dir
 showdoc_dir='/showdoc_data'
+showdoc_dir_old='/showdoc_data_old'
+showdoc_dir_old_skip='/showdoc_data_old/.skip_old'
 showdoc_html_dir="$showdoc_dir/html"
 web_dir='/var/www/html'
 file_ver=$web_dir/.ver
@@ -14,7 +16,14 @@ if [ -f "$web_dir/index.php" ]; then
     echo "Found $web_dir/index.php, skip copy."
 else
     echo "Not found $web_dir/index.php, copy..."
-    rsync -a $showdoc_html_dir/ $web_dir/
+    ## 兼容历史版本
+    if [[ -f $showdoc_dir_old/html/index.php && ! -f $showdoc_dir_old_skip ]]; then
+        echo "Found old version of \"showdoc_data\", copy..."
+        rsync -a $showdoc_dir_old/html/ $web_dir/ &&
+            touch $showdoc_dir_old_skip
+    else
+        rsync -a $showdoc_html_dir/ $web_dir/
+    fi
 fi
 ## upgrade (通过 Dockerfile 的环境变量 变更版本)
 if [ -f $file_ver ]; then
