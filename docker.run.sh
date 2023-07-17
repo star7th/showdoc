@@ -13,7 +13,7 @@ else
     echo "Not found $web_dir/index.php, copy..."
     rsync -a $showdoc_html_dir/ $web_dir/
 fi
-## upgrade
+## upgrade (通过 Dockerfile 的环境变量 变更版本)
 if [ -f $file_ver ]; then
     if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $file_ver)" ]]; then
         echo "Same version, skip upgrade."
