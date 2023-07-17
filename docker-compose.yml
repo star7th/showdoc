@@ -1,0 +1,29 @@
+version: '3'
+
+networks:
+  showdocnet:
+
+services:
+  showdoc:
+    ## 官方 image ################################
+    # image: star7th/showdoc
+    ## 官方 image ################################
+    ## 源码 build image ################################
+    build:
+      context: ./
+      args:
+        - IN_CHINA=false
+    ## 国内构建镜像， docker compose build --build-arg IN_CHINA=true
+    ## 启动， docker compose up -d
+    ## 源码 build image ################################
+    hostname: showdoc
+    ports:
+      - 4999:80
+    volumes:
+      ## 兼容历史版本文件
+      - /showdoc_data:/showdoc_data_old
+      - ./showdocdata/html:/var/www/html
+    restart: always
+    tty: true
+    networks:
+      - showdocnet
