@@ -7,6 +7,9 @@ showdoc_dir='/showdoc_data'
 showdoc_html_dir="$showdoc_dir/html"
 web_dir='/var/www/html'
 file_ver=$web_dir/.ver
+
+db_file=$web_dir/Sqlite/showdoc.db.php
+
 if [ -f "$web_dir/index.php" ]; then
     echo "Found $web_dir/index.php, skip copy."
 else
@@ -18,8 +21,14 @@ if [ -f $file_ver ]; then
     if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $file_ver)" ]]; then
         echo "Same version, skip upgrade."
     else
+        echo "Backup db file before upgrade..."
+        \cp -av $db_file ${db_file}."$(date +%F-%H-%M-%S)".php
         echo "Upgrade application files..."
         rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' $showdoc_html_dir/ $web_dir/
+        ## revert lang if lang=en
+        if grep -q 'lang:.*en' $web_dir/web/index.html; then
+            sed -i -e "/lang:.*zh-cn.*/s//lang: 'zh-cn'/" $web_dir/web/index.html $web_dir/web_src/index.html
+        fi
     fi
 else
     echo "$SHOWDOC_DOCKER_VERSION" >$file_ver
@@ -45,7 +54,6 @@ _kill() {
 }
 
 ## backup sqlite file every day
-db_file=$web_dir/Sqlite/showdoc.db.php
 while [ -f $db_file ]; do
     # backup on 20:01 (UTC) every day
     if [[ $(date +%H%M) == 2001 ]]; then
