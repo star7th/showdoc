@@ -1,0 +1,17 @@
+version: '3'
+
+networks:
+  showdocnet:
+
+services:
+  showdoc:
+    image: star7th/showdoc
+    hostname: showdoc
+    ports:
+      - 4999:80
+    volumes:
+      - ./showdocdata/html:/var/www/html
+    restart: always
+    tty: true
+    networks:
+      - showdocnet
