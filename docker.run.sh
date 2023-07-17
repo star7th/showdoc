@@ -24,6 +24,7 @@ if [ -f $file_ver ]; then
         echo "Backup db file before upgrade..."
         \cp -av $db_file ${db_file}."$(date +%F-%H-%M-%S)".php
         echo "Upgrade application files..."
+        ## 此处不同步 db 文件和 upload 文件，自动排除
         rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' $showdoc_html_dir/ $web_dir/
         ## revert lang if lang=en
         if grep -q 'lang:.*en' $web_dir/web/index.html; then
