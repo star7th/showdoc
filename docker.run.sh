@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 ## web site dir
 showdoc_dir='/showdoc_data'
 showdoc_dir_old='/showdoc_data_old'
@@ -29,6 +27,7 @@ else
     fi
 fi
 ## upgrade (通过 Dockerfile 的环境变量 变更版本)
+## upgrade (通过 composer.json "version" 变更版本)
 version_json=$(grep -o '"version":.*"' $file_json | awk '{print $2}')
 version_json="${version_json//\"/}"
 if [ -f $file_ver ]; then
@@ -78,20 +77,21 @@ while [ -f $db_file ]; do
         ## remove old files (15 days ago)
         find ${db_file}.* -type f -ctime +15 -print0 |
             xargs -t -0 rm -f >/dev/null
+        sleep 2
     fi
-    sleep 50
+    sleep 58
 done &
 pids="$pids $!"
 
 (
     sleep 3
-    cd $showdoc_html_dir/server
+    cd $showdoc_html_dir/server || exit 1
     php index.php /api/update/dockerUpdateCode
 )
 (
     echo "delay 30s start mock..."
     sleep 30
-    cd $showdoc_dir/mock/
+    cd $showdoc_dir/mock/ || exit 1
     npm run start
 ) &
 pids="$pids $!"
