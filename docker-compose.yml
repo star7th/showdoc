@@ -5,17 +5,19 @@ networks:
 
 services:
   showdoc:
-    ## 官方 image ################################
+    ## 方式1: 官方 image ################################
     # image: star7th/showdoc
-    ## 官方 image ################################
-    ## 源码 build image ################################
+
+    ## 方式2: 源码 build image ################################
+    ## 国内构建镜像方式1: docker compose build --build-arg IN_CHINA=true
+    ## 国内构建镜像方式2: IN_CHINA=true docker compose build
+    ## 启动: IN_CHINA=true docker compose up -d
     build:
       context: ./
       args:
-        - IN_CHINA=false
-    ## 国内构建镜像， docker compose build --build-arg IN_CHINA=true
-    ## 启动， docker compose up -d
-    ## 源码 build image ################################
+        - IN_CHINA=${IN_CHINA:-false}
+    environment:
+      IN_CHINA: ${IN_CHINA:-false}
     hostname: showdoc
     ports:
       - 4999:80
