@@ -3,6 +3,7 @@
 .gitignore
 Dockerfile*
 docker-compose.yml
+showdocdata/
 
 .git/
 Application/Runtime/
@@ -24,5 +25,3 @@ web_src/*.suo
 web_src/*.ntvs*
 web_src/*.njsproj
 web_src/*.sln
-
-
