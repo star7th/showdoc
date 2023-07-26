@@ -52,6 +52,18 @@ _kill() {
     done
 }
 
+_backup_dbfile() {
+    if [[ "${IN_CHINA}" == true ]]; then
+        backup_time="$(TZ='Asia/Shanghai' date +%F-%H-%M-%S)"
+    else
+        backup_time="$(date +%F-%H-%M-%S)"
+    fi
+    \cp $db_file ${db_file}."$backup_time".php
+    ## remove old files (15 days ago)
+    find ${db_file}.* -type f -ctime +15 -print0 |
+        xargs -t -0 rm -f >/dev/null
+}
+
 _docker_run() {
     pids=()
     ## 首次启动需要 copy to /var/www/html
@@ -73,15 +85,15 @@ _docker_run() {
     ver_file=$web_dir/.ver
     # ver_file_json=$web_dir/.json.ver
     json_file=$showdoc_dir_html/composer.json
-    version_json=$(grep -o '"version":.*"' $json_file | awk '{print $2}')
-    version_json="${version_json//\"/}"
+    version_json=$(grep -o '"version":.*"' $json_file | awk '{split($2,a,"\""); print a[2]}')
+    # version_json=$(grep -o '"version":.*"' $json_file | awk '{print substr($2,2,6)}')
     if [ -f $ver_file ]; then
         # if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $ver_file)" ]]; then
         if [[ "${version_json}" == "$(cat $ver_file)" ]]; then
             echo "Same version, skip upgrade."
         else
             echo "Backup db file before upgrade..."
-            \cp -av $db_file ${db_file}."$backup_time".php
+            _backup_dbfile
             echo "Upgrade application files..."
             ## 此处不同步 db 文件和 upload 文件，自动排除
             rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' $showdoc_dir_html/ $web_dir/
@@ -108,15 +120,12 @@ _docker_run() {
 
     ## backup sqlite file every day
     while [ -f $db_file ]; do
-        # backup on 20:01 (UTC) every day
+        # backup on (20:01 UTC) (04:01 Asia/Shanghai) every day
         if [[ $(date +%H%M) == 2001 ]]; then
-            \cp $db_file ${db_file}."$backup_time".php
-            ## remove old files (15 days ago)
-            find ${db_file}.* -type f -ctime +15 -print0 |
-                xargs -t -0 rm -f >/dev/null
-            sleep 2
+            _backup_dbfile
+            sleep 5
         fi
-        sleep 58
+        sleep 55
     done &
     pids+=("$!")
 
@@ -151,11 +160,6 @@ main() {
     web_dir='/var/www/html'
 
     db_file=$web_dir/Sqlite/showdoc.db.php
-    if [[ "${IN_CHINA}" == true ]]; then
-        backup_time="$(TZ='Asia/Shanghai' date +%F-%H-%M-%S)"
-    else
-        backup_time="$(date +%F-%H-%M-%S)"
-    fi
 
     case $1 in
     -b | --build)
