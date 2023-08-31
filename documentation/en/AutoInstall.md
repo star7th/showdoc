@@ -1,29 +1,30 @@
 ### Foreword
 
 The automatic script uses Docker to install the runtime environment for Linux servers. If your server does't have a Docker service, the script will try to install it. The process of installing Docker maybe a bit slow. If you have already installed Docker, the script will omit some of the steps to speed up the ShowDoc installation.
- 
+
 When the script fails to install Docker, you should manually install Docker before executing the script. If you still have problem in installing Docker, you can (un/re-)install and debug it step by step according to this tutorial: [ByDocker.md](https://github.com/star7th/showdoc/blob/master/documentation/en/ByDocker.md)
 
 If the server does't support Docker, you can only run ShowDoc by manually installing the PHP environment:  [DeployManual.md](https://github.com/star7th/showdoc/blob/master/documentation/en/DeployManual.md)
 
 ### Instructions
- 
- ```bash
- # Download the script and give permission
- wget https://www.showdoc.cc/script/showdoc;chmod +x showdoc;
-  
- # Default installation is the Chinese version. If you want to install the English version, please add the en parameter, such as ./showdoc en
- ./showdoc en
- ```
+
+```bash
+# Download the script and run
+curl -fL https://www.showdoc.cc/script/showdoc | bash
+
+# Default is the Chinese version. If you want to install the English version, please add the en parameter
+curl -fL https://www.showdoc.cc/script/showdoc | bash -s en
+```
 
 
 ### Post-installation instructions
 
-Once installed, the ShowDoc data will be stored in the /showdoc_data/html directory. The ./showdoc script can be placed in any directory for later use. You can also re-download it from the official address.
+Once installed, the ShowDoc data will be stored in the /showdoc_data/html directory.
 
-You can open ShowDoc by opening http://your-domain.com:4999 (replace your-domain.com with your server domain name or IP-address). 
+You can open ShowDoc by opening http://your-domain.com:4999 (replace your-domain.com with your server domain name or IP-address).
 
-The default admin account is Username: showdoc Password: 123456. 
+The default admin account is: `showdoc`.
+The default admin password is: `123456`.
 
 After logging in, you can see the management background entry in the upper right. It is recommended to change the password.
 
@@ -47,7 +48,7 @@ Upgrade method:
 
 ```bash
 chmod 777 -R /showdoc_data/html
-./showdoc update
+curl -fL https://www.showdoc.cc/script/showdoc | bash -s update
 ```
 
 
@@ -56,14 +57,14 @@ chmod 777 -R /showdoc_data/html
 ```bash
 # Attach the script to other commands, so you can use it when managing ShowDoc.
 # Stop ShowDoc
-./showdoc stop
+curl -fL https://www.showdoc.cc/script/showdoc | bash -s stop
 
 # Restart ShowDoc
-./showdoc restart
+curl -fL https://www.showdoc.cc/script/showdoc | bash -s restart
 
 # Update ShowDoc to the latest version
-./showdoc update
-  
+curl -fL https://www.showdoc.cc/script/showdoc | bash -s update
+
 # Uninstall ShowDoc
-./showdoc uninstall
+curl -fL https://www.showdoc.cc/script/showdoc | bash -s uninstall
 ```
