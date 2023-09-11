@@ -181,14 +181,6 @@ export default {
         }
       },
       {
-        title: 'CDN',
-        icon: 'fas fa-rocket',
-        desc: '高可用、性价比超高的 CDN 服务',
-        method: () => {
-          this.toOutLink('https://www.dfyun.com.cn')
-        }
-      },
-      {
         title: '推送服务',
         icon: 'fas fa-car-side',
         desc: '从服务器推送消息到手机的工具',

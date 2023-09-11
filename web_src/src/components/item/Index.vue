@@ -72,9 +72,6 @@
                 <el-dropdown-item :command="toAttachmentLink">
                   {{ $t('my_attachment') }}
                 </el-dropdown-item>
-                <el-dropdown-item :command="toDfyunLink">
-                  CDN加速
-                </el-dropdown-item>
                 <el-dropdown-item :command="toPushLink">
                   推送服务
                 </el-dropdown-item>
@@ -547,9 +544,6 @@ export default {
     },
     toPushLink() {
       window.open('https://push.showdoc.com.cn')
-    },
-    toDfyunLink() {
-      window.open('https://www.dfyun.com.cn')
     }
   },
   created() {
