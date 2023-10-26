@@ -89,6 +89,7 @@
     >
       <el-form>
         <el-select
+          filterable
           multiple
           v-model="shareItemId"
           :placeholder="$t('please_choose')"

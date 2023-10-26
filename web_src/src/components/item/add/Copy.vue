@@ -16,6 +16,7 @@
         >
           <el-form-item label class="text-left">
             <el-select
+              filterable
               style="width:100%;"
               v-model="copy_item_id"
               :placeholder="$t('please_choose')"

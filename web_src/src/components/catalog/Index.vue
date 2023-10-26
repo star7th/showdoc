@@ -130,7 +130,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('parent_cat_name') + ' : '">
-          <el-select v-model="MyForm.parent_cat_id" :placeholder="$t('none')">
+          <el-select filterable v-model="MyForm.parent_cat_id" :placeholder="$t('none')">
             <el-option
               v-for="item in belong_to_catalogs"
               :key="item.cat_id"

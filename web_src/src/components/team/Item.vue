@@ -70,6 +70,7 @@
       <el-form>
         <el-select
           multiple
+          filterable
           v-model="MyForm.item_id"
           :placeholder="$t('please_choose')"
         >

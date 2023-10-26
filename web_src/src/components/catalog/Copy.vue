@@ -9,6 +9,7 @@
     <el-form>
       <el-form-item label class="text-left">
         <el-select
+          filterable
           style="width:100%;"
           v-model="is_del"
           :placeholder="$t('please_choose')"
@@ -20,6 +21,7 @@
       </el-form-item>
       <el-form-item label class="text-left">
         <el-select
+          filterable
           style="width:100%;"
           v-model="to_item_id"
           :placeholder="$t('please_choose')"
@@ -36,6 +38,7 @@
 
       <el-form-item label class="text-left">
         <el-select
+          filterable
           style="width:100%;"
           v-model="new_p_cat_id"
           :placeholder="$t('please_choose')"

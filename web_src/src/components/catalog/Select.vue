@@ -20,6 +20,7 @@
       <el-form>
         <el-form-item :label="$t('select_catalog')" class="text-left">
           <el-select
+            filterable
             style="width:100%;"
             v-model="new_p_cat_id"
             :placeholder="$t('select_catalog')"

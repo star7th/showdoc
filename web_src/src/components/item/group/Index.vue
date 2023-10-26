@@ -127,9 +127,9 @@ export default {
           this.geList()
           this.dialogFormVisible = false
           this.multipleSelection = []
-          this.$nextTick(() => {
+          setTimeout(() => {
             this.toggleSelection(this.multipleSelection)
-          })
+          }, 500)
           this.MyForm.id = ''
           this.MyForm.group_name = ''
         }
@@ -148,9 +148,9 @@ export default {
         })
       })
       this.dialogFormVisible = true
-      this.$nextTick(() => {
+      setTimeout(() => {
         this.toggleSelection(this.multipleSelection)
-      })
+      }, 500)
     },
 
     del(id) {

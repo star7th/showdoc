@@ -147,6 +147,7 @@
         </el-form-item>
         <el-form-item label v-show="MyForm.member_group_id < 2">
           <el-select
+            filterable
             style="width:100%"
             v-model="MyForm.cat_id"
             :placeholder="$t('all_cat2')"
@@ -192,7 +193,7 @@
       <div>
         <el-form>
           <el-form-item :label="$t('c_team')">
-            <el-select class v-model="MyForm2.team_id">
+            <el-select filterable class v-model="MyForm2.team_id">
               <el-option
                 v-for="team in teams"
                 :key="team.team_name"

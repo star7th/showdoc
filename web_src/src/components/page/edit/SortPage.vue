@@ -13,6 +13,7 @@
         class="select-cat"
         v-model="cat_id"
         v-if="belong_to_catalogs"
+        filterable
       >
         <el-option
           v-for="cat in belong_to_catalogs"

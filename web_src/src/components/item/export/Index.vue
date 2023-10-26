@@ -38,6 +38,7 @@
             v-if="export_format == 'word' && export_type == 2"
           >
             <el-select
+              filterable
               :placeholder="$t('catalog')"
               class="cat"
               v-model="cat_id"
@@ -56,7 +57,7 @@
             label
             v-if="export_format == 'word' && export_type == 2"
           >
-            <el-select class="cat" v-model="page_id" v-if="pages">
+            <el-select filterable class="cat" v-model="page_id" v-if="pages">
               <el-option
                 v-for="page in pages"
                 :key="page.page_title"
