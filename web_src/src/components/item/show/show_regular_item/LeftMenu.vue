@@ -349,6 +349,12 @@ export default {
     handleDragEnd() {
       const treeData = this.menu
       // 将拖动的顺序和层级信息保存到后台
+      
+      // 如果是搜索结果，则不保存目录层级关系到后台
+      if (this.keyword) {
+        return false
+      }
+
       // 先定义一个函数，将目录数组降维
       const dimensionReduction = treeData => {
         const treeData2 = []

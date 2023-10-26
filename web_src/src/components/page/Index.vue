@@ -158,6 +158,7 @@ export default {
           this.content = rederPageContent(data.data.page_content)
           this.page_title = data.data.page_title
           this.page_id = data.data.page_id
+          document.title = data.data.page_title
         } else if (data.error_code === 10307 || data.error_code === 10303) {
           // 需要输入密码
           this.$router.replace({
@@ -214,6 +215,8 @@ export default {
       })
     }
   },
-  beforeDestroy() {}
+  beforeDestroy() {
+    document.title = 'ShowDoc'
+  }
 }
 </script>
