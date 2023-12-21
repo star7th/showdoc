@@ -80,8 +80,8 @@ a {
 /* Edge and Internet Explorer */
 /* 适用于纵滚动条 */
 ::-ms-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
 /* 适用于纵滚动条 */
 ::-ms-scrollbar-track {
@@ -129,6 +129,7 @@ a {
   padding-right: 15px;
   padding-bottom: 0px;
   box-sizing: border-box;
+  border-radius: 4px;
 }
 
 /* 水平居中的卡片 */
