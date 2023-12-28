@@ -74,7 +74,7 @@ const itemMenuDataToTreeData = menu => {
 const getParentIds = (tree, pageId) => {
   for (let i = 0; i < tree.length; i++) {
     const node = tree[i]
-    if (node.id === pageId) {
+    if (node.id == pageId) {
       return []
     }
     if (node.children && node.children.length > 0) {
