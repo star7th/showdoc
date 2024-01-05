@@ -210,6 +210,16 @@ class ImportSwaggerController extends BaseController
                     $content_array['request']['params']['mode'] = 'json';
                     $content_array['request']['params']['json'] = $json_str;
                     $content_array['request']['params']['jsonDesc'] = $json_array;
+                }
+                // 如果in字段是header的话，则说明该参数是放在header里面的
+                if ($value["in"] == 'header') {
+                    $content_array['request']['headers'][] = array(
+                        "name" => $value["name"],
+                        "type" => 'string',
+                        "value" => $value["example"] ? $value["example"] : '',
+                        "require" => (!$value["required"]) ? "0" : '1',
+                        "remark" =>  $value["description"],
+                    );
                 } else {
                     $content_array['request']['params']['formdata'][] = array(
                         "name" => $value["name"],
@@ -217,6 +227,34 @@ class ImportSwaggerController extends BaseController
                         "value" => $value["value"],
                         "require" => (!$value["required"]) ? "0" : '1',
                         "remark" => $value["description"],
+                    );
+                }
+            }
+        }
+
+        // 把请求参数写进requestBody的情况
+        if ($request['requestBody']['content']) {
+            // 参数为 form-data 的场景
+            if ($request['requestBody']['content']['application/json']) {
+                $properties_tmp = $request['requestBody']['content']['application/json']['schema']['properties'];
+                $re_json = [];
+                foreach ($properties_tmp as $key => $value) {
+                    $re_json[$key] = '';
+                }
+                $content_array['request']['params']['mode'] = 'json';
+                $content_array['request']['params']['json'] = json_encode($re_json);
+            }
+            // 参数为 form-data 的场景
+            if ($request['requestBody']['content']["multipart/form-data"]) {
+                $content_array['request']['params']['mode'] = 'formdata';
+                $properties_tmp = $request['requestBody']['content']['multipart/form-data']['schema']['properties'];
+                foreach ($properties_tmp as $key => $value) {
+                    $content_array['request']['params']['formdata'][] = array(
+                        "name" => $key,
+                        "type" =>  $value["type"],
+                        "value" => $value["example"] ? $value["example"] : '',
+                        "require" => (!$value["required"]) ? "0" : '1',
+                        "remark" => $value["description"] ? $value["description"] : '',
                     );
                 }
             }

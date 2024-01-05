@@ -4,7 +4,7 @@
       :onCancel="callback"
       :title="$t('import')"
       width="400px"
-      :onOK="onSubmit"
+      :showOk="false"
     >
       <div>
         <div class="ml-6">
@@ -65,9 +65,11 @@ export default {
   methods: {
     uploadCallback(data) {
       if (this.importToItemId > 0) {
+        window.location.reload()
       } else {
         this.$router.push({ path: '/item/index' })
         window.location.reload()
+        
       }
     }
   },
