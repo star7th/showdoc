@@ -31,7 +31,7 @@ class IndexController extends BaseController
 	 * @param string $file 文件/目录
 	 * @return boolean
 	 */
-	public function new_is_writeable($file)
+	private function new_is_writeable($file)
 	{
 		if (is_dir($file)) {
 			$dir = $file;
