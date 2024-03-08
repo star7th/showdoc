@@ -269,7 +269,7 @@ class CatalogModel extends BaseModel
 	// 用路径的形式（比如'二级目录/三级目录/四级目录'）来保存目录信息并返回最后一层目录的id
 	public function saveCatPath($catPath, $item_id)
 	{
-		if (!$catPath) return false;
+		if (!$catPath) return 0;
 		// $catPath是以斜杠 / 开头，且$catPath长度大于1（即不只是 / ）, 则把第一个 / 去掉
 		if (substr($catPath, 0, 1) == '/' && strlen($catPath) > 1) {
 			$catPath = substr($catPath, 1); // 去掉第一个字符
