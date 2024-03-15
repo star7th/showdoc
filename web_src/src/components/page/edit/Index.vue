@@ -647,10 +647,17 @@ export default {
     },
     goback() {
       var url = '/' + this.item_id + '/' + this.page_id
-      this.$router.push({
+      if(this.page_id){
+        this.callback()
+      }else{
+        this.$router.push({
         path: url
-      })
-      this.callback()
+        }).then(()=>{
+          this.callback()
+        })
+      }
+
+      
     },
     // 另存为模板
     saveToTemplate() {
