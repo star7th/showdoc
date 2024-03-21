@@ -4,7 +4,6 @@
       class="sdialog"
       width="98%"
       :visible.sync="dialogVisible"
-      @close="goback"
       :show-close="false"
       top="2vh"
       :append-to-body="true"
