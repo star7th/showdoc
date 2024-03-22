@@ -55,7 +55,7 @@ export default {
             .substring(1)
           if (
             $('[name="' + name + '"]').offset().top - $(window).scrollTop() <
-            120
+            150
           ) {
             activeName = name
           } else {
