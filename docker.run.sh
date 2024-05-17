@@ -58,7 +58,7 @@ _backup_dbfile() {
     else
         backup_time="$(date +%F-%H-%M-%S)"
     fi
-    \cp $db_file ${db_file}."$backup_time".php
+    \cp $db_file backup.full.${db_file}."$backup_time".php
     ## remove old files (15 days ago)
     find ${db_file}.* -type f -ctime +15 -print0 |
         xargs -t -0 rm -f >/dev/null
