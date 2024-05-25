@@ -35,8 +35,10 @@ class AiController extends BaseController
 
     public function send($content)
     {
+        $ai_model_name = D("Options")->get("ai_model_name");
+        $ai_model_name = $ai_model_name ? $ai_model_name : 'gpt-4o';
         $postData = json_encode(array(
-            "model" => "gpt-3.5-turbo-16k",
+            "model" =>  $ai_model_name,
             "messages" => array(
                 array(
                     "role" => 'user',

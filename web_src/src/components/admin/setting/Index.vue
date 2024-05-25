@@ -111,6 +111,13 @@
           ></i>
         </el-tooltip>
       </el-form-item>
+      <el-form-item v-show="$lang == 'zh-cn'" label="AI助手使用模型名">
+        <el-input
+          v-model="form.ai_model_name"
+          class="form-el"
+          placeholder="可选"
+        ></el-input>
+      </el-form-item>
       <el-form-item :label="$t('oss_open')">
         <el-switch v-model="form.oss_open"></el-switch>
       </el-form-item>
@@ -240,7 +247,8 @@ export default {
         show_watermark: false,
         site_url: '',
         open_api_key: '',
-        open_api_host: ''
+        open_api_host: '',
+        ai_model_name: '',
       },
       itemList: []
     }
@@ -289,6 +297,9 @@ export default {
           : ''
         this.form.open_api_host = data.data.open_api_host
           ? data.data.open_api_host
+          : ''
+        this.form.ai_model_name = data.data.ai_model_name
+          ? data.data.ai_model_name
           : ''
       })
     },
