@@ -574,9 +574,9 @@ class ItemController extends BaseController
                 $item_id = $page['item_id'];
             }
         }
-        $item = D("Item")->where("item_id = '$item_id' ")->find();
+        $item = D("Item")->where("item_id = '%d'", array($item_id))->find();
         if ($password && $item['password'] == $password) {
-            session("visit_item_" . $item_id, 1);
+            session("visit_item_" . $item['item_id'], 1);
             $this->sendResult(array("refer_url" => base64_decode($refer_url)));
         } else {
             $this->sendError(10010, L('access_password_are_incorrect'));
