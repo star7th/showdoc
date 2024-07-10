@@ -13,11 +13,15 @@ class PageModel extends BaseModel
 
 
   //搜索某个项目下的页面
-  public function search($item_id, $keyword)
+  public function search($item_id,$cat_id = 0 , $keyword)
   {
     $return_pages = array();
     $item = D("Item")->where("item_id = '%d' and is_del = 0 ", array($item_id))->find();
-    $pages = $this->where("item_id = '$item_id' and is_del = 0")->order(" s_number asc  ")->select();
+    $where = "item_id = '$item_id' and is_del = 0";
+    if ($cat_id > 0) {
+      $where .= " and cat_id = '$cat_id' ";
+    }
+    $pages = $this->where($where)->order(" s_number asc  ")->select();
     if (!empty($pages)) {
       foreach ($pages as $key => &$value) {
         $page_content = $value['page_content'];

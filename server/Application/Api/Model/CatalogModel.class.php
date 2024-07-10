@@ -151,16 +151,8 @@ class CatalogModel extends BaseModel
 		}
 		$item_id = $catData[0]['item_id'];
 		$cat_id = 0;
-		//首先看是否被添加为项目成员
-		$itemMember = D("ItemMember")->where("uid = '%d' and item_id = '%d' ", array($uid, $item_id))->find();
-		if ($itemMember && $itemMember['cat_id'] > 0) {
-			$cat_id = $itemMember['cat_id'];
-		}
-		//再看是否添加为团队-项目成员
-		$teamItemMember = D("TeamItemMember")->where("member_uid = '%d' and item_id = '%d' ", array($uid, $item_id))->find();
-		if ($teamItemMember && $teamItemMember['cat_id'] > 0) {
-			$cat_id = $teamItemMember['cat_id'];
-		}
+		// 如果用户被分配了 目录权限 ，则获取他在该项目下拥有权限的目录id
+		$cat_id = D("Member")->getCatId($item_id, $uid);
 		//开始根据cat_id过滤
 		if ($cat_id > 0) {
 			foreach ($catData as $key => $value) {
