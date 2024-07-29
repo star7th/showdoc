@@ -52,13 +52,23 @@ class ExportController extends BaseController
                             if ($cat_id == $value2['cat_id']) {
                                 $pages = $value2['pages'];
                                 $catalogs = $value2['catalogs'];
-                            }
-                        }
-                        if ($value2['catalogs']) {
-                            foreach ($value2['catalogs'] as $key3 => $value3) {
-                                if ($cat_id == $value3['cat_id']) {
-                                    $pages = $value3['pages'];
-                                    $catalogs = $value3['catalogs'];
+                            } else {
+                                if ($value2['catalogs']) {
+                                    foreach ($value2['catalogs'] as $key3 => $value3) {
+                                        if ($cat_id == $value3['cat_id']) {
+                                            $pages = $value3['pages'];
+                                            $catalogs = $value3['catalogs'];
+                                        } else {
+                                            if ($value3['catalogs']) {
+                                                foreach ($value3['catalogs'] as $key4 => $value4) {
+                                                    if ($cat_id == $value4['cat_id']) {
+                                                        $pages = $value4['pages'];
+                                                        $catalogs = $value4['catalogs'];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
