@@ -361,7 +361,7 @@ export default {
 
         const pushTreeData = (OneData, parent_cat_id, level, i) => {
           treeData2.push({
-            cat_id: OneData.id || 0,
+            cat_id: OneData.cat_id || 0,
             cat_name: OneData.title || '',
             page_id: OneData.page_id || 0,
             parent_cat_id: parent_cat_id || 0,
@@ -408,7 +408,7 @@ export default {
     selectMenu(page_id) {
       this.changeUrl(page_id)
       this.getPageContent(page_id)
-      this.$refs.tree.setCurrentKey(parseInt(page_id))
+      this.$refs.tree.setCurrentKey(`page_${page_id}`)
     },
     // 改变url.
     changeUrl(page_id) {
@@ -468,7 +468,7 @@ export default {
         this.openeds = openeds
         // 延迟把左侧栏滚动到默认展开的那个页面，同时设置选中当前页面
         setTimeout(() => {
-          const element = document.querySelector('#node-' + page_id)
+          const element = document.querySelector('#node-page_' + page_id)
           element.scrollIntoView()
           this.selectMenu(page_id)
         }, 1000)

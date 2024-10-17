@@ -9,7 +9,7 @@ const itemMenuDataToTreeData = menu => {
       let type = 'page'
       treeData.push({
         title: value.page_title,
-        id: value.page_id,
+        id: `page_${value.page_id}`,
         page_id: value.page_id,
         page_cat_id: 0,
         key: `page_${value.page_id}`,
@@ -26,7 +26,7 @@ const itemMenuDataToTreeData = menu => {
       let oneCat = {
         children: [],
         title: catData[index].cat_name,
-        id: catData[index].cat_id,
+        id: `cat_${catData[index].cat_id}`,
         cat_id: catData[index].cat_id,
         parent_cat_id: parent_cat_id,
         key: `cat_${catData[index].cat_id}`,
@@ -40,7 +40,7 @@ const itemMenuDataToTreeData = menu => {
           let type = 'page'
           oneCat.children.push({
             title: catData[index].pages[k].page_title,
-            id: catData[index].pages[k].page_id,
+            id: `page_${catData[index].pages[k].page_id}`,
             page_id: catData[index].pages[k].page_id,
             page_cat_id: catData[index].pages[k].cat_id,
             key: `page_${catData[index].pages[k].page_id}`,
@@ -74,13 +74,13 @@ const itemMenuDataToTreeData = menu => {
 const getParentIds = (tree, pageId) => {
   for (let i = 0; i < tree.length; i++) {
     const node = tree[i]
-    if (node.id == pageId) {
+    if (node.page_id && node.page_id == pageId) {
       return []
     }
     if (node.children && node.children.length > 0) {
       const parentIds = getParentIds(node.children, pageId)
       if (parentIds !== null) {
-        parentIds.push(node.id)
+        parentIds.push(`cat_${node.cat_id}`)
         return parentIds
       }
     }
