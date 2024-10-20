@@ -11,7 +11,7 @@
       :close-on-click-modal="false"
     >
       <div slot="title" class="title-header pt-4">
-        <div class="inline-block">
+        <div class="title-header-left">
           <el-button
             class="close-btn"
             type="text"
@@ -20,7 +20,19 @@
           ></el-button>
 
           <el-tooltip effect="dark" :content="$t('click_to_edit_page_title')">
-            <span @click="editTitle" class="page-title">{{ title }}</span>
+            <span
+              @click="isEditingTitle = true"
+              class="page-title"
+              v-if="!isEditingTitle"
+              >{{ title }}</span
+            >
+            <el-input
+              v-model="title"
+              class="page-title-input"
+              v-if="isEditingTitle"
+              @blur="isEditingTitle = false"
+              @keyup.enter.native="isEditingTitle = false"
+            />
           </el-tooltip>
 
           <el-tooltip effect="dark" :content="$t('select_catalog')">
@@ -33,7 +45,7 @@
           </el-tooltip>
         </div>
 
-        <div class="inline-block float-right">
+        <div  class="title-header-right">
           <el-button class="mr-2" type size="medium" @click="showNotify"
             ><i class="el-icon-s-comment mr-2"></i
             >{{ $t('save_and_notify') }}</el-button
@@ -419,7 +431,8 @@ export default {
       showContent: false,
       showMock: false,
       showAI: false,
-      showAIBtn: false
+      showAIBtn: false,
+      isEditingTitle: false
     }
   },
   components: {
@@ -1032,12 +1045,27 @@ export default {
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 4px;
   cursor: pointer;
+  max-width: 300px; /* 设置最大宽度 */
+  overflow: hidden; /* 超出部分隐藏 */
+  text-overflow: ellipsis; /* 显示省略号 */
+  white-space: nowrap; /* 防止换行 */
 }
 
 .title-header {
+  display: flex;
+  justify-content: space-between; /* 在容器内的子元素之间均匀分配空间 */
+  align-items: center; /* 垂直居中对齐 */
   min-height: 40px;
   padding-bottom: 10px;
 }
+.title-header-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap; /* 防止换行 */
+}
+.title-header-right {
+}
+
 .page-title {
   margin-left: 10px;
   margin-right: 10px;
@@ -1045,6 +1073,12 @@ export default {
 }
 .page-title:hover {
   text-decoration: underline;
+}
+.page-title-input {
+  margin-left: 10px;
+  margin-right: 10px;
+  max-width: 30vw;
+  min-width: 20vw;
 }
 </style>
 
