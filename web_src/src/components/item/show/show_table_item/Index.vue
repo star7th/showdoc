@@ -10,6 +10,7 @@
         :item_info="item_info"
         :exportFile="exportFile"
         :improtFile="improtFile"
+        :save="save"
       ></HeaderRight>
     </Header>
 

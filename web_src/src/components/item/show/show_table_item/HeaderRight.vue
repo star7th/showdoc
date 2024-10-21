@@ -7,6 +7,11 @@
           <i class="far fa-share-nodes"></i>
         </el-tooltip>
       </div>
+      <div v-if="item_info.item_manage" class="icon-item" @click="save">
+        <el-tooltip effect="dark" :content="$t('save')" placement="top">
+          <i class="el-icon-s-shop"></i>
+        </el-tooltip>
+      </div>
       <div v-if="item_info.item_manage" class="icon-item" @click="exportFile">
         <el-tooltip effect="dark" :content="$t('export')" placement="top">
           <i class="far fa-arrow-down-to-bracket"></i>
@@ -223,7 +228,8 @@ export default {
     item_info: {},
     spreadsheetObj: {},
     exportFile: () => {},
-    improtFile: () => {}
+    improtFile: () => {},
+    save: () => {}
   },
   data() {
     return {
