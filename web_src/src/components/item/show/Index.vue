@@ -5,6 +5,7 @@
     <!-- 展示常规项目 -->
     <ShowRegularItem
       :item_info="item_info"
+      :key="item_key"
       :searchItem="searchItem"
       :keyword="keyword"
       v-if="
@@ -19,12 +20,14 @@
     <!-- 展示单页项目 -->
     <ShowSinglePageItem
       :item_info="item_info"
+      :key="item_key"
       v-if="item_info && item_info.item_type == 2"
     ></ShowSinglePageItem>
 
     <!-- 展示表格项目 -->
     <ShowTableItem
       :item_info="item_info"
+      :key="item_key"
       v-if="item_info && item_info.item_type == 4"
     ></ShowTableItem>
 
@@ -49,7 +52,8 @@ export default {
     return {
       item_info: '',
       keyword: '',
-      watermark_txt: '测试水印，1021002301，测试水印，100101010111101'
+      watermark_txt: '测试水印，1021002301，测试水印，100101010111101',
+      item_key: 1
     }
   },
   components: {
@@ -96,6 +100,7 @@ export default {
 
           this.item_info = json
           this.$store.dispatch('changeItemInfo', json)
+          this.item_key = this.item_key + 1 // key自增以便重新渲染组件
           document.title = this.item_info.item_name + '--ShowDoc'
           if (json.show_watermark > 0) {
             this.renderWatermark()
@@ -163,6 +168,14 @@ export default {
   mounted() {
     this.getItemMenu()
     this.$store.dispatch('changeOpenCatId', 0)
+  },
+  watch: {
+    '$store.state.item_key': {
+      handler() {
+        this.getItemMenu()
+        this.$store.dispatch('changeOpenCatId', 0)
+      }
+    }
   },
   beforeDestroy() {
     this.$message.closeAll()

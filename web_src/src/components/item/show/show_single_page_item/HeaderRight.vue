@@ -95,7 +95,7 @@
       :callback="
         () => {
           showPageEdit = false
-          reload()
+          $store.dispatch('reloadItem')
         }
       "
     ></PageEdit>

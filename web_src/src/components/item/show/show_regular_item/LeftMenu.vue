@@ -77,7 +77,7 @@
         :callback="
           () => {
             showPageEdit = false
-            reload()
+            $store.dispatch('reloadItem')
           }
         "
       ></PageEdit>
@@ -89,24 +89,10 @@
         :callback="
           () => {
             showCatalog = false
-            reload()
+            $store.dispatch('reloadItem')
           }
         "
       ></Catalog>
-
-      <!-- 页面排序 -->
-      <SortPage
-        v-if="showSortPage"
-        :callback="
-          () => {
-            showSortPage = false
-            reload()
-          }
-        "
-        :item_id="item_id"
-        :page_id="page_id"
-        :cat_id="page_info.cat_id"
-      ></SortPage>
 
       <!-- 历史版本 -->
       <HistoryVersion
@@ -127,7 +113,7 @@
         :cat_id="editCatId"
         :callback="
           () => {
-            reload()
+            $store.dispatch('reloadItem')
           }
         "
       ></CopyCatalog>
@@ -241,7 +227,7 @@ export default {
               this.request('/api/page/delete', {
                 page_id: page_id
               }).then(data => {
-                window.location.reload()
+                this.$store.dispatch('reloadItem')
               })
             })
           }
@@ -270,7 +256,7 @@ export default {
                 parent_cat_id: nodeData.cat_id,
                 cat_name: data.value
               }).then(data => {
-                this.reload()
+                this.$store.dispatch('reloadItem')
               })
             })
           }
@@ -286,7 +272,7 @@ export default {
                 parent_cat_id: nodeData.parent_cat_id,
                 cat_name: data.value
               }).then(data => {
-                this.reload()
+                this.$store.dispatch('reloadItem')
               })
             })
           }
@@ -302,7 +288,7 @@ export default {
                 parent_cat_id: nodeData.parent_cat_id,
                 cat_name: data.value
               }).then(data => {
-                this.reload()
+                this.$store.dispatch('reloadItem')
               })
             })
           }
@@ -329,7 +315,7 @@ export default {
                 item_id: this.item_info.item_id,
                 cat_id: cat_id
               }).then(data => {
-                this.reload()
+                this.$store.dispatch('reloadItem')
               })
             })
           }

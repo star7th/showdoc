@@ -163,22 +163,11 @@
       :callback="
         () => {
           showPageEdit = false
-          reload()
+          $store.dispatch('reloadItem')
         }
       "
     ></PageEdit>
 
-    <!-- 目录管理 -->
-    <Catalog
-      v-if="showCatalog"
-      :item_id="item_info.item_id"
-      :callback="
-        () => {
-          showCatalog = false
-          reload()
-        }
-      "
-    ></Catalog>
 
     <!-- 分享页面 -->
     <Share
@@ -216,20 +205,6 @@
         }
       "
     ></HistoryVersion>
-
-    <!-- 页面排序 -->
-    <SortPage
-      v-if="showSortPage"
-      :callback="
-        () => {
-          showSortPage = false
-          reload()
-        }
-      "
-      :item_id="item_id"
-      :page_id="page_id"
-      :cat_id="page_info.cat_id"
-    ></SortPage>
 
     <!-- 回收站的弹窗 -->
     <Recycle
@@ -411,13 +386,11 @@ export default {
   data() {
     return {
       showPageEdit: false,
-      showCatalog: false,
       item_id: '',
       edit_page_id: 0, // 给PageEdit组件区分新建页面和编辑页面
       showTeam: false,
       copy_page_id: 0,
       showHistoryVersiong: false,
-      showSortPage: false,
       showMember: false,
       showOpenApi: false,
       showRecycle: false,

@@ -70,7 +70,7 @@
         :callback="
           () => {
             showPageEdit = false
-            reload()
+            $store.dispatch('reloadItem')
           }
         "
       ></PageEdit>
@@ -82,24 +82,10 @@
         :callback="
           () => {
             showCatalog = false
-            reload()
+            $store.dispatch('reloadItem')
           }
         "
       ></Catalog>
-
-      <!-- 页面排序 -->
-      <SortPage
-        v-if="showSortPage"
-        :callback="
-          () => {
-            showSortPage = false
-            reload()
-          }
-        "
-        :item_id="item_id"
-        :page_id="page_id"
-        :cat_id="page_info.cat_id"
-      ></SortPage>
 
       <!-- 回收站的弹窗 -->
       <Recycle
@@ -132,7 +118,7 @@
         :callback="
           () => {
             showSortPage = false
-            reload()
+            $store.dispatch('reloadItem')
           }
         "
         :item_id="item_id"
@@ -192,7 +178,7 @@ export default {
         this.request('/api/page/delete', {
           page_id: page_id
         }).then(data => {
-          window.location.reload()
+          this.$store.dispatch('reloadItem')
         })
       })
     }

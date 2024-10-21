@@ -325,7 +325,9 @@ export default {
       instance: null,
       showImg: false,
       imgSrc: '',
-      user_token: ''
+      user_token: '',
+      intervalId: 0
+
     }
   },
   computed: {},
@@ -370,10 +372,7 @@ export default {
   },
   beforeDestroy() {
     // 清理所有定时器
-    for (var i = 1; i < 999; i++) {
-      window.clearInterval(i)
-    }
-
+    window.clearInterval(this.intervalId)
     // window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
   },
   methods: {
@@ -433,7 +432,7 @@ export default {
     draft() {
       var that = this
       // 定时保存文本内容到localStorage
-      setInterval(() => {
+      this.intervalId = setInterval(() => {
         localStorage.page_content = that.getMarkdown()
       }, 60000)
 
