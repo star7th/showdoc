@@ -132,6 +132,7 @@
 
         <!-- 新建项目按钮 -->
         <itemAdd
+          :itemGroupId="itemGroupId"
           :callback="
             () => {
               getItemList()

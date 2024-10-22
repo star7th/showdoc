@@ -88,7 +88,8 @@ export default {
       type: String || Number,
       required: false,
       default: 0
-    }
+    },
+    itemGroupId: 0
   },
   data() {
     return {
@@ -131,7 +132,8 @@ export default {
             item_name: this.infoForm.item_name,
             item_description: this.infoForm.item_description,
             item_domain: this.infoForm.item_domain,
-            password: this.infoForm.password
+            password: this.infoForm.password,
+            item_group_id: this.itemGroupId
           },
           'post',
           false

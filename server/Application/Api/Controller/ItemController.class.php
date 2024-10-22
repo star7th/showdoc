@@ -603,10 +603,11 @@ class ItemController extends BaseController
         $login_user = $this->checkLogin();
         $item_name = I("post.item_name");
         $item_domain = I("item_domain") ? I("item_domain") : '';
-        $copy_item_id = I("copy_item_id");
+        $copy_item_id = I("copy_item_id/d");
         $password = I("password");
         $item_description = I("item_description");
         $item_type = I("item_type") ? I("item_type") : 1;
+        $item_group_id = I("item_group_id/d") ? I("item_group_id/d") : 0;
         if (!$item_name) {
             $this->sendError(10100, '项目名不能为空');
             return false;
@@ -683,6 +684,25 @@ class ItemController extends BaseController
                 );
                 $page_id = D("Page")->add($insert);
             }
+
+            // 如果传递了分组id，则把该项目也加入该分组下
+            if ($item_group_id > 0) {
+                $res = D("ItemGroup")->where(" id = '$item_group_id' ")->find();
+                if ($res && $res['item_ids']) {
+                    $item_ids = explode(',', $res['item_ids']);
+                    if (!in_array($item_id, $item_ids)) {
+                        $item_ids[] = $item_id;
+                    }
+                    $new_item_ids = implode(',', $item_ids);
+
+                    // 更新项目分组
+                    $result = D("ItemGroup")->where("id = '$item_group_id'")->save(['item_ids' => $new_item_ids]);
+                } else {
+                    // 如果不存在则初始化
+                    $result = D("ItemGroup")->where("id = '$item_group_id'")->save(['item_ids' => $item_id]);
+                }
+            }
+
             $this->sendResult(array("item_id" => $item_id));
         } else {
             $this->sendError(10101);

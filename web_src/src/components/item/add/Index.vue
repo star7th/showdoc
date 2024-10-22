@@ -28,6 +28,7 @@
         }
       "
       :defaultItemType="defaultItemType"
+      :itemGroupId="itemGroupId"
     >
     </Basic>
     <Import
@@ -72,8 +73,10 @@ export default {
     callback: {
       type: Function,
       required: false,
-      default: () => {}
-    }
+      default: () => {},
+    },
+    itemGroupId: 0
+
   },
   data() {
     return {
