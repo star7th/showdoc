@@ -3,7 +3,7 @@
   <div class="">
     <SDialog
       :title="$t('history_version')"
-      :onCancel="callback"
+      :onCancel="cancel"
       :showCancel="false"
       :showOk="false"
       :onOK="callback"
@@ -59,6 +59,7 @@ import { unescapeHTML } from '@/models/page'
 export default {
   props: {
     callback: '',
+    cancel: () => {},
     page_id: '',
     is_modal: true,
     is_show_recover_btn: true

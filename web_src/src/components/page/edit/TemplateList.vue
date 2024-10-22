@@ -3,7 +3,7 @@
   <div class="">
     <SDialog
       :title="$t('templ_list')"
-      :onCancel="callback"
+      :onCancel="cancel"
       :showCancel="false"
       :showOk="false"
       :onOK="callback"
@@ -113,6 +113,7 @@
 export default {
   props: {
     callback: () => {},
+    cancel: () => {},
     item_id: 0,
     opRow: {}
   },

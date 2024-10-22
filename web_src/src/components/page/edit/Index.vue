@@ -193,11 +193,14 @@
     <TemplateList
       v-if="showTemplateDialog"
       :item_id="item_id"
+      :cancel="
+        () => {
+          showTemplateDialog = false
+        }
+      "
       :callback="
         data => {
-          if (data && typeof data == 'string') {
-            insertValue(data)
-          }
+          insertValue(data)
           showTemplateDialog = false
         }
       "
@@ -209,12 +212,15 @@
       :is_show_recover_btn="true"
       v-if="showHistoryVersionDialog"
       :page_id="page_id"
+      :cancel="
+        () => {
+          showHistoryVersionDialog = false
+        }
+      "
       :callback="
         data => {
           this.showHistoryVersionDialog = false
-          if (data && typeof data == 'string') {
-            insertValue(data)
-          }
+          insertValue(data)
         }
       "
     ></HistoryVersion>
@@ -222,12 +228,15 @@
     <!-- Json转表格 组件 -->
     <JsonToTable
       v-if="showJsonToTableDialog"
+      :cancel="
+        () => {
+          showJsonToTableDialog = false
+        }
+      "
       :callback="
         data => {
           this.showJsonToTableDialog = false
-          if (data && typeof data == 'string') {
-            insertValue(data)
-          }
+          insertValue(data)
         }
       "
     ></JsonToTable>
@@ -235,25 +244,30 @@
     <!-- Json格式化 -->
     <JsonBeautify
       v-if="showJsonBeautifyDialog"
+      :cancel="
+        () => {
+          showJsonBeautifyDialog = false
+        }
+      "
       :callback="
         data => {
           this.showJsonBeautifyDialog = false
-          if (data && typeof data == 'string') {
-            insertValue(data)
-          }
+          insertValue(data)
         }
       "
     ></JsonBeautify>
-
     <!-- sql转表格 -->
     <SqlToMarkdownTable
       v-if="showSqlToMarkdownTableDialog"
+      :cancel="
+        () => {
+          showSqlToMarkdownTableDialog = false
+        }
+      "
       :callback="
         data => {
           this.showSqlToMarkdownTableDialog = false
-          if (data && typeof data == 'string') {
-            insertValue(data)
-          }
+          insertValue(data)
         }
       "
     ></SqlToMarkdownTable>
@@ -264,12 +278,15 @@
       :manage="true"
       :page_id="page_id"
       v-if="showAttachmentListDialog"
+      :cancel="
+        () => {
+          showAttachmentListDialog = false
+        }
+      "
       :callback="
         data => {
           this.showAttachmentListDialog = false
-          if (data && typeof data == 'string') {
-            insertValue(data)
-          }
+          insertValue(data)
         }
       "
     ></AttachmentList>
@@ -277,12 +294,15 @@
     <!-- 粘贴插入表格 -->
     <PasteTable
       v-if="showPasteTableDialog"
+      :cancel="
+        () => {
+          showPasteTableDialog = false
+        }
+      "
       :callback="
         data => {
           this.showPasteTableDialog = false
-          if (data && typeof data == 'string') {
-            insertValue(data)
-          }
+          insertValue(data)
         }
       "
     ></PasteTable>
@@ -306,16 +326,19 @@
       :page_id="page_id"
       :item_id="item_id"
       v-if="notifyVisiable"
+      :cancel="
+        () => {
+          notifyVisiable = false
+        }
+      "
       :callback="
         data => {
           notifyVisiable = false
-          if (data && typeof data == 'string') {
-            is_notify = 1
-            notify_content = data
-            save(() => {
-              goback()
-            })
-          }
+          is_notify = 1
+          notify_content = data
+          save(() => {
+            goback()
+          })
         }
       "
       ref="Notify"
@@ -325,13 +348,16 @@
       :cat_id="cat_id"
       :item_id="item_id"
       v-if="showSelectCat"
+      :cancel="
+        () => {
+          showSelectCat = false
+        }
+      "
       :callback="
         data => {
           this.showSelectCat = false
-          if (data && (typeof data == 'string' || typeof data == 'number')) {
-            this.cat_id = data
-            refreshCat()
-          }
+          this.cat_id = data
+          refreshCat()
         }
       "
     ></SelectCat>
@@ -351,12 +377,15 @@
       :page_id="page_id"
       :item_id="item_id"
       v-if="showAI"
+      :cancel="
+        () => {
+          showAI = false
+        }
+      "
       :callback="
         data => {
           this.showAI = false
-          if (data && typeof data == 'string') {
-            insertValue(data)
-          }
+          insertValue(data)
         }
       "
     ></AI>

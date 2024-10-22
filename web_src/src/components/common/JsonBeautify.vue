@@ -3,7 +3,7 @@
     <SDialog
       v-if="dialogFormVisible"
       :title="$t('beautify_json')"
-      :onCancel="callback"
+      :onCancel="cancel"
       :onOK="transform"
     >
       <el-form>
@@ -24,7 +24,8 @@ export default {
   name: 'JsonBeautify',
   props: {
     formLabelWidth: '120px',
-    callback: ''
+    callback: '',
+    cancel: ''
   },
   data() {
     return {

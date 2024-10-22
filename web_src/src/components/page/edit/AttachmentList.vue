@@ -3,7 +3,7 @@
   <div class="">
     <SDialog
       :title="$t('attachment')"
-      :onCancel="callback"
+      :onCancel="cancel"
       :showCancel="false"
       :showOk="false"
       :onOK="callback"
@@ -120,6 +120,7 @@ import { getUserInfoFromStorage } from '@/models/user.js'
 export default {
   props: {
     callback: '',
+    cancel: '',
     page_id: '',
     item_id: '',
     manage: true

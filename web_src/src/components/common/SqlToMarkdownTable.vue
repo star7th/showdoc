@@ -3,7 +3,7 @@
     <SDialog
       v-if="dialogFormVisible"
       :title="$t('sql_to_markdown_table')"
-      :onCancel="callback"
+      :onCancel="cancel"
       :onOK="transform"
     >
       <el-form>
@@ -26,7 +26,8 @@ export default {
   name: 'SqlToMarkdownTable',
   props: {
     formLabelWidth: '120px',
-    callback: ''
+    callback: '',
+    cancel: ''
   },
   data() {
     return {
