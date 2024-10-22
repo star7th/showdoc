@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 18;
+        $version_num = 19;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -526,6 +526,12 @@ class UpdateModel
         if (!$this->_is_column_exist("page_history", "ext_info")) {
             $sql = "ALTER TABLE " . C('DB_PREFIX') . "page_history ADD ext_info CHAR(2000) NOT NULL DEFAULT '' ;";
             D("page")->execute($sql);
+        }
+
+        // 检查 upload_file 表是否有 last_visit_time 字段，如果没有则添加
+        if (!$this->_is_column_exist("upload_file", "last_visit_time")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "upload_file ADD last_visit_time INT(11) NOT NULL DEFAULT '0';";
+            D("User")->execute($sql);
         }
 
         // 设置自增id从 10000000 开始
