@@ -16,6 +16,7 @@ class ExtLoginController extends BaseController
         $time = I("time");
         $token = I("token");
         $redirect = I("redirect");
+        $name = I("name"); 
 
         if ($time < (time() - 60)) {
             $this->sendError(10101, "已过期");
@@ -31,8 +32,12 @@ class ExtLoginController extends BaseController
 
         $res = D("User")->where("( username='%s' ) ", array($username))->find();
         if (!$res) {
-            D("User")->register($username, md5("savsnyjh" . time() . rand()));
+            $new_uid = D("User")->register($username, md5("savsnyjh" . time() . rand()));
             $res = D("User")->where("( username='%s' ) ", array($username))->find();
+            if($name){
+                D("User")->where(" uid = '$new_uid' ")->save(array("name" => $name));
+            }
+            
         }
         if ($res) {
             // var_dump($res); return ;
@@ -40,11 +45,16 @@ class ExtLoginController extends BaseController
                 $this->sendError(10101, "为了安全，禁止管理员通过这种方式登录");
                 return;
             }
+            $uid = $res['uid'] ;
+            if($name){
 
-            D("User")->setLastTime($res['uid']);
+                D("User")->where(" uid = '$uid' ")->save(array("name" => $name));
+            }
+            D("User")->setLastTime($uid);
+
             unset($res['password']);
             session("login_user", $res);
-            $token = D("UserToken")->createToken($res['uid'], 60 * 60 * 24 * 180);
+            $token = D("UserToken")->createToken($uid, 60 * 60 * 24 * 180);
             cookie('cookie_token', $token, array('expire' => 60 * 60 * 24 * 180, 'httponly' => 'httponly')); //此处由服务端控制token是否过期，所以cookies过期时间设置多久都无所谓
             if ($redirect) {
                 $redirect = urldecode($redirect);
