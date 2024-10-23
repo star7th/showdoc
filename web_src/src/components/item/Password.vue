@@ -45,7 +45,9 @@
           </el-form-item>
 
           <el-form-item label>
-            <router-link to="/user/login">{{ $t('login') }}</router-link
+            <router-link :to="'/user/login?redirect=' + redirect">{{
+              $t('login')
+            }}</router-link
             >&nbsp;&nbsp;&nbsp;
           </el-form-item>
         </el-form>
@@ -65,7 +67,8 @@ export default {
       password: '',
       captchaId: 0,
       captcha: '',
-      v_code_img: ''
+      v_code_img: '',
+      redirect: ''
     }
   },
   methods: {
@@ -120,6 +123,8 @@ export default {
   },
   mounted() {
     this.changeVcodeImg()
+    var item_id = this.$route.params.item_id ? this.$route.params.item_id : 0
+    this.redirect = this.$route.query.redirect || '/' + item_id
   },
   beforeDestroy() {}
 }
