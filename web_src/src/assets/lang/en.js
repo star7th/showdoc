@@ -605,5 +605,7 @@ exports.default = {
   add_sub_cat: 'Add Sub Folder',
   add_si_bling_cat: 'Add Peer Folder',
   edt_cat: 'Edit Folder',
-  clone_move: 'Clone/Move'
+  clone_move: 'Clone/Move',
+
+  subcat: 'subcatalog'
 }

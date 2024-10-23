@@ -194,6 +194,13 @@
           ></el-input>
         </el-form-item>
 
+        <el-form-item :label="$t('subcat') + '(' + $t('optional') + ')'">
+          <el-input
+            v-model="form.oss_setting.subcat"
+            class="form-el"
+          ></el-input>
+        </el-form-item>
+
         <el-form-item :label="$t('oss_domain')">
           <el-select v-model="form.oss_setting.protocol" style="width:100px;">
             <el-option label="http://" value="http"></el-option>
@@ -236,6 +243,7 @@ export default {
           secret: '',
           endpoint: '',
           bucket: '',
+          subcat: '',
           protocol: 'http',
           domain: '',
           region: '',
@@ -248,7 +256,7 @@ export default {
         site_url: '',
         open_api_key: '',
         open_api_host: '',
-        ai_model_name: '',
+        ai_model_name: ''
       },
       itemList: []
     }
@@ -277,9 +285,14 @@ export default {
         this.form.oss_open = data.data.oss_open > 0
         this.form.home_page = data.data.home_page > 0 ? data.data.home_page : 1
         this.form.home_item = data.data.home_item > 0 ? data.data.home_item : ''
-        this.form.oss_setting = data.data.oss_setting
-          ? data.data.oss_setting
-          : this.form.oss_setting
+        // 逐一填充 oss_setting 的属性
+        if (data.data.oss_setting) {
+          Object.keys(this.form.oss_setting).forEach(key => {
+            this.form.oss_setting[key] = data.data.oss_setting[key] !== undefined 
+              ? data.data.oss_setting[key] 
+              : this.form.oss_setting[key];
+          });
+        }
         this.form.oss_setting.region = this.form.oss_setting.region
           ? this.form.oss_setting.region
           : ''
@@ -288,6 +301,9 @@ export default {
           : ''
         this.form.oss_setting.secretKey = this.form.oss_setting.secretKey
           ? this.form.oss_setting.secretKey
+          : ''
+        this.form.oss_setting.subcat = this.form.oss_setting.subcat
+          ? this.form.oss_setting.subcat
           : ''
         this.form.beian = data.data.beian ? data.data.beian : ''
         this.form.show_watermark = data.data.show_watermark > 0

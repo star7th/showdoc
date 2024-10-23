@@ -170,7 +170,13 @@ class AttachmentModel extends BaseModel
 	{
 
 		$ext = strrchr($uploadFile['name'], '.'); //获取扩展名
-		$oss_path = "showdoc_" . get_rand_str() . $ext;
+		
+		if($oss_setting['subcat']){
+			$oss_path = $oss_setting['subcat']."/showdoc_" . get_rand_str() . $ext;
+		}else{
+			$oss_path = "showdoc_" . get_rand_str() . $ext;
+		}
+		
 
 		// 如果不包含协议头，自己给它补充
 		if (!strstr($oss_setting['endpoint'], '://')) {
@@ -267,7 +273,7 @@ class AttachmentModel extends BaseModel
 	}
 
 	// 由于历史原因，当初没有让用户填写七牛云的region。而且即使填写了，也不能直接获取到七牛云s3兼容协议上传的endpoint
-	// 所以，需要自己调接口查询然后拼凑。七牛这个坑货。
+	// 所以，需要自己调接口查询
 	public function getQiuniuEndpointByKey($key, $bucket)
 	{
 
@@ -275,28 +281,9 @@ class AttachmentModel extends BaseModel
 		$res = http_post($query_url, array());
 
 		$array = json_decode($res, true);
-		// var_dump($array);exit();
-		if ($array && $array['region']) {
-			switch ($array['region']) {
-				case 'z0':
-					return 'https://s3-cn-east-1.qiniucs.com';
-					break;
-				case 'z1':
-					return 'https://s3-cn-north-1.qiniucs.com';
-					break;
-				case 'z2':
-					return 'https://s3-cn-south-1.qiniucs.com';
-					break;
-				case 'na0':
-					return 'https://s3-us-north-1.qiniucs.com';
-					break;
-				case 'as0':
-					return 'https://s3-ap-southeast-1.qiniucs.com';
-					break;
-				default:
-					return false;
-					break;
-			}
+		// var_dump('https://'.$array['s3']['src']['main']['0']);exit();
+		if($array && $array['s3']['src']['main']['0']){
+			return 'https://'.$array['s3']['src']['main']['0'];
 		}
 	}
 

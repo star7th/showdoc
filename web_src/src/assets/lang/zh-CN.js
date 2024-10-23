@@ -575,5 +575,7 @@ exports.default = {
   add_sub_cat: '添加子文件夹',
   add_si_bling_cat: '添加同级文件夹',
   edt_cat: '编辑文件夹',
-  clone_move: '克隆/移动'
+  clone_move: '克隆/移动',
+
+  subcat: '子目录'
 }
