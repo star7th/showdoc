@@ -37,6 +37,9 @@ class ImportSwaggerController extends BaseController
             if ($json_array['host']) {
                 $this->url_pre = $scheme . "://" . $json_array['host'] . $json_array['basePath'];
             }
+            if ($json_array['servers'][0]['url']) {
+                $this->url_pre = $json_array['servers'][0]['url'];
+            }
             // 转换10次。我觉得可能解析的思路不对，以至于要用这种别扭的方法。以后再完善吧
             for ($i = 0; $i < 10; $i++) {
                 $this->json_array = $this->_transferDefinition($json_array);
@@ -149,6 +152,9 @@ class ImportSwaggerController extends BaseController
     {
         $return = array();
         $page_title = $request['summary'] ? $request['summary'] : $request['description'];
+        if (!$page_title && $request['operationId']) {
+            $page_title = $request['operationId'];
+        }
         $page_title = mb_substr($page_title, 0, 50, 'utf-8');
         $return['page_title'] = $page_title;
         $return['s_number'] = 99;
@@ -158,7 +164,7 @@ class ImportSwaggerController extends BaseController
             "info" => array(
                 "from" =>  'runapi',
                 "type" =>  'api',
-                "title" =>  $request['summary'] ? $request['summary'] : $request['description'],
+                "title" => $request['summary'] ? $request['summary'] : $request['description'],
                 "description" =>  $request['description'],
                 "method" =>  strtolower($method),
                 "url" =>  $this->url_pre . $url,
@@ -172,6 +178,7 @@ class ImportSwaggerController extends BaseController
                     'urlencoded' => array(),
                     'formdata' => array(),
                 ),
+                "query" => array(),
                 "headers" => array(),
                 "cookies" => array(),
                 "auth" => array(),
@@ -180,118 +187,92 @@ class ImportSwaggerController extends BaseController
             "extend" => array(),
         );
 
-        if ($request['headerData']) {
-            $tmp_array = array();
-            foreach ($request['headerData'] as $key => $value) {
+        // 添加请求头处理
+        if (isset($request['headers'])) {
+            foreach ($request['headers'] as $header) {
                 $content_array['request']['headers'][] = array(
-                    "name" => $value["key"],
+                    "name" => $header["name"],
                     "type" => 'string',
-                    "value" => $value["value"],
-                    "require" => (!$value["required"]) ? "0" : '1',
-                    "remark" => '',
+                    "value" => $header["value"] ?? '',
+                    "require" => ($header["required"] ?? false) ? '1' : '0',
+                    "remark" => $header["description"] ?? '',
                 );
             }
         }
 
-        if ($request['parameters']) {
-
-            foreach ($request['parameters'] as $key => $value) {
-                // 如果in字段是body的话，应该就是参数为json的情况了
-                if ($value["in"] == 'body') {
-                    $ref_str = $value['schema']['$ref'];
-                    //如果含有引用标识，则获取引用
-                    if ($ref_str) {
-                        $ref_array = $this->_getDefinition($ref_str);
-                    } else {
-                        $ref_array = $value['schema'];
+        // 处理请求体
+        if (isset($request['requestBody']['content'])) {
+            foreach ($request['requestBody']['content'] as $contentType => $content) {
+                if (isset($content['schema'])) {
+                    $schema = $content['schema'];
+                    if ($schema['type'] === 'object') {
+                        $properties = $schema['properties'];
+                        foreach ($properties as $key => $value) {
+                            // 如果有 items，则处理 map 类型
+                            if (isset($value['type']) && $value['type'] === 'object' && isset($value['properties'])) {
+                                $subProperties = $this->_definitionToJsonArray($value);
+                                foreach ($subProperties as $sub) {
+                                    $content_array['request']['params']['formdata'][] = array(
+                                        "name" => $key . '[' . $sub['name'] . ']',
+                                        "type" => $sub['type'],
+                                        "value" => $sub['value'] ?? '',
+                                        "require" => ($sub['require'] ?? false) ? '1' : '0',
+                                        "remark" => $sub['remark'] ?? '',
+                                    );
+                                }
+                            } else {
+                                $content_array['request']['params']['formdata'][] = array(
+                                    "name" => $key,
+                                    "type" => $value['type'] ?? 'string',
+                                    "value" => '',
+                                    "require" => ($value["required"] ?? false) ? '1' : '0',
+                                    "remark" => $value["description"] ?? '',
+                                );
+                            }
+                        }
                     }
-                    $json_array = $this->_definitionToJsonArray($ref_array);
-                    $json_str = $this->_jsonArrayToStr($ref_array);
-                    $content_array['request']['params']['mode'] = 'json';
-                    $content_array['request']['params']['json'] = $json_str;
-                    $content_array['request']['params']['jsonDesc'] = $json_array;
                 }
-                // 如果in字段是header的话，则说明该参数是放在header里面的
-                if ($value["in"] == 'header') {
-                    $content_array['request']['headers'][] = array(
-                        "name" => $value["name"],
-                        "type" => 'string',
-                        "value" => $value["example"] ? $value["example"] : '',
-                        "require" => (!$value["required"]) ? "0" : '1',
-                        "remark" =>  $value["description"],
-                    );
-                } else {
-                    $content_array['request']['params']['formdata'][] = array(
-                        "name" => $value["name"],
-                        "type" => 'string',
-                        "value" => $value["value"],
-                        "require" => (!$value["required"]) ? "0" : '1',
-                        "remark" => $value["description"],
+            }
+        }
+
+        // 处理查询参数
+        if (isset($request['parameters'])) {
+            foreach ($request['parameters'] as $param) {
+                if ($param['in'] == 'query') {
+                    $content_array['request']['query'][] = array(
+                        "name" => $param["name"],
+                        "type" => $param["type"],
+                        "value" => $param["example"] ?? '',
+                        "require" => ($param["required"] ?? false) ? '1' : '0',
+                        "remark" => $param["description"] ?? '',
                     );
                 }
             }
         }
 
-        // 把请求参数写进requestBody的情况
-        if ($request['requestBody']['content']) {
-            // 参数为 form-data 的场景
-            if ($request['requestBody']['content']['application/json']) {
-                $properties_tmp = $request['requestBody']['content']['application/json']['schema']['properties'];
-                $re_json = [];
-                foreach ($properties_tmp as $key => $value) {
-                    $re_json[$key] = '';
-                }
-                $content_array['request']['params']['mode'] = 'json';
-                $content_array['request']['params']['json'] = json_encode($re_json);
-            }
-            // 参数为 form-data 的场景
-            if ($request['requestBody']['content']["multipart/form-data"]) {
-                $content_array['request']['params']['mode'] = 'formdata';
-                $properties_tmp = $request['requestBody']['content']['multipart/form-data']['schema']['properties'];
-                foreach ($properties_tmp as $key => $value) {
-                    $content_array['request']['params']['formdata'][] = array(
-                        "name" => $key,
-                        "type" =>  $value["type"],
-                        "value" => $value["example"] ? $value["example"] : '',
-                        "require" => (!$value["required"]) ? "0" : '1',
-                        "remark" => $value["description"] ? $value["description"] : '',
-                    );
-                }
-            }
-        }
-
-        //处理返回结果情况
+        // 处理返回结果情况
         if ($request['responses'] && $request['responses']['200']) {
             $ref_array = array();
-            if ($request['responses']['200']['schema']) {
+            if (isset($request['responses']['200']['schema'])) {
                 $ref_array = $request['responses']['200']['schema'];
             }
 
-            if ($request['responses']['200']['content']) {
-                if ($request['responses']['200']['content']['text/json']) {
-                    $ref_array = $request['responses']['200']['content']['text/json']['schema'];
+            if (isset($request['responses']['200']['content'])) {
+                foreach ($request['responses']['200']['content'] as $contentType => $content) {
+                    if (isset($content['schema'])) {
+                        $ref_array = $content['schema'];
+                    }
                 }
-                if ($request['responses']['200']['content']['text/plain']) {
-                    $ref_array = $request['responses']['200']['content']['text/plain']['schema'];
-                }
-                if ($request['responses']['200']['content']['application/json']) {
-                    $ref_array = $request['responses']['200']['content']['application/json']['schema'];
-                }
+                $json_array = $this->_definitionToJsonArray($ref_array);
+                $json_str = $this->_jsonArrayToStr($ref_array);
+                $content_array['response']['responseExample'] = $json_str;
+                $content_array['response']['responseParamsDesc'] = $json_array;
             }
-
-
-
-
-            $json_array = $this->_definitionToJsonArray($ref_array);
-            $json_str = $this->_jsonArrayToStr($ref_array);
-            $content_array['response']['responseExample'] = $json_str;
-            $content_array['response']['responseParamsDesc'] = $json_array;
         }
 
         $return['page_content'] = json_encode($content_array);
         return $return;
     }
-
     // 获取引用，返回数组。
     //$ref_str 是swagger里引用的字符串，比如"#/definitions/Petoo",比如"#/components/schemas/TenantArticleResult"
     private function _getDefinition($ref_str)

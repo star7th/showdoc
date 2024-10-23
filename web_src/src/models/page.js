@@ -153,7 +153,7 @@ const rederPageContent = (page_content, globalParams = {}) => {
     newContent += `
 ##### Header
 
-|header|示例值|必选|类型|说明|
+|字段名|示例值|必选|类型|说明|
 |:-----  |:-----|-----|
 `
     const headers = obj.request.headers
