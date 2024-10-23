@@ -45,8 +45,11 @@ class PageModel extends BaseModel
       return false;
     }
 
-    // 用路径的形式（比如'二级目录/三级目录/四级目录'）来保存目录信息并返回最后一层目录的id
-    $cat_id = D("Catalog")->saveCatPath($cat_name, $item_id);
+    $cat_id = 0;
+    if ($cat_name) {
+      // 用路径的形式（比如'二级目录/三级目录/四级目录'）来保存目录信息并返回最后一层目录的id
+      $cat_id = D("Catalog")->saveCatPath($cat_name, $item_id);
+    }
 
     $this->cat_name_id[$cat_name] = $cat_id;
 
