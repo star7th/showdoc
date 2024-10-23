@@ -153,19 +153,14 @@ class AdminSettingController extends BaseController
         $ldap_form = D("Options")->get("ldap_form");
         $ldap_form = json_decode($ldap_form, 1);
 
-        //如果强等于false，那就是尚未有数据。关闭注册应该是有数据且数据为字符串0
-        if ($register_open === false) {
-            $this->sendResult(array());
-        } else {
-            if ($ldap_form && $ldap_form['host'] && !$ldap_form['search_filter']) {
-                $ldap_form['search_filter'] = '(cn=*)';
-            }
-            $array = array(
-                "ldap_open" => $ldap_open,
-                "ldap_form" => $ldap_form,
-            );
-            $this->sendResult($array);
+        if ($ldap_form && $ldap_form['host'] && !$ldap_form['search_filter']) {
+            $ldap_form['search_filter'] = '(cn=*)';
         }
+        $array = array(
+            "ldap_open" => $ldap_open,
+            "ldap_form" => $ldap_form,
+        );
+        $this->sendResult($array);
     }
 
     //保存Oauth2配置
@@ -191,16 +186,11 @@ class AdminSettingController extends BaseController
         $oauth2_form = htmlspecialchars_decode($oauth2_form);
         $oauth2_form = json_decode($oauth2_form, 1);
 
-        //如果强等于false，那就是尚未有数据。关闭注册应该是有数据且数据为字符串0
-        if ($register_open === false) {
-            $this->sendResult(array());
-        } else {
-            $array = array(
-                "oauth2_open" => $oauth2_open,
-                "oauth2_form" => $oauth2_form,
-            );
-            $this->sendResult($array);
-        }
+        $array = array(
+            "oauth2_open" => $oauth2_open,
+            "oauth2_form" => $oauth2_form,
+        );
+        $this->sendResult($array);
     }
 
     public function getLoginSecretKey()

@@ -74,6 +74,9 @@
             <el-button type="primary" @click="saveLdapConfig">{{
               $t('save')
             }}</el-button>
+            <el-button v-show="form.ldap_open"  @click="saveLdapConfig">{{
+              $t('sync')
+            }}</el-button>
             <el-button>{{ $t('cancel') }}</el-button>
           </el-form-item>
         </el-form>

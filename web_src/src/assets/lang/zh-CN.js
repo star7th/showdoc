@@ -577,5 +577,6 @@ exports.default = {
   edt_cat: '编辑文件夹',
   clone_move: '克隆/移动',
 
-  subcat: '子目录'
+  subcat: '子目录',
+  sync: '同步'
 }

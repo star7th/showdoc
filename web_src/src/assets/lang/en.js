@@ -607,5 +607,6 @@ exports.default = {
   edt_cat: 'Edit Folder',
   clone_move: 'Clone/Move',
 
-  subcat: 'subcatalog'
+  subcat: 'subcatalog',
+  sync: 'synchronizing'
 }
