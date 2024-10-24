@@ -65,6 +65,16 @@
           <i class="el-icon-question"></i>
         </el-tooltip>
       </el-form-item>
+      <el-form-item :label="$t('force_login')">
+        <el-switch v-model="form.force_login"></el-switch>
+        <el-tooltip
+          effect="dark"
+          :content="$t('force_login_tips')"
+          placement="top"
+        >
+          <i class="el-icon-question"></i>
+        </el-tooltip>
+      </el-form-item>
       <el-form-item :label="$t('site_url')">
         <el-input
           v-model="form.site_url"
@@ -256,7 +266,8 @@ export default {
         site_url: '',
         open_api_key: '',
         open_api_host: '',
-        ai_model_name: ''
+        ai_model_name: '',
+        force_login:false
       },
       itemList: []
     }
@@ -317,6 +328,7 @@ export default {
         this.form.ai_model_name = data.data.ai_model_name
           ? data.data.ai_model_name
           : ''
+        this.form.force_login = data.data.force_login > 0
       })
     },
     getItemList() {

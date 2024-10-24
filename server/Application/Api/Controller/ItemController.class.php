@@ -56,6 +56,15 @@ class ItemController extends BaseController
         $login_user = session("login_user");
         $uid = $login_user['uid'] ? $login_user['uid'] : 0;
         $is_login =   $uid > 0 ? true : false;
+
+        $force_login = D("Options")->get("force_login");
+        if($force_login > 0 ){
+            // 如果管理员设置了强制登录，则对 未登录的游客 返回未登录状态
+            if(!$is_login){
+                $this->sendError(10312);
+                return ;
+            }
+        }
         $menu = array(
             "pages" => array(),
             "catalogs" => array(),

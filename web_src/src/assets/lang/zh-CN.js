@@ -578,5 +578,7 @@ exports.default = {
   clone_move: '克隆/移动',
 
   subcat: '子目录',
-  sync: '同步'
+  sync: '同步',
+  force_login: '强制登录后才能访问',
+  force_login_tips: '访问任意项目的时候，游客都会被要求登录账号，不允许以非登录身份访问'
 }

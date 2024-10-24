@@ -114,7 +114,16 @@ export default {
               redirect: this.$router.currentRoute.fullPath
             }
           })
-        } else {
+        } else if (data.error_code === 10312) {
+          // 强制登录
+          this.$router.replace({
+            path: '/user/login/',
+            query: {
+              redirect: this.$router.currentRoute.fullPath
+            }
+          })
+        }
+         else {
           this.$alert(data.error_message)
         }
       })

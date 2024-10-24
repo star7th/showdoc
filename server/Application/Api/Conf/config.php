@@ -34,6 +34,7 @@ return array(
 		10306 => 'api_key 或 api_token 不匹配',		
 		10307 => ' password is wrong',	//输入项目密码错误	
 		10308 => ' password is wrong',	//输入项目密码错误，并且输入错误次数过多	
+		10312 => 'force login',	// 项目被要求强制登录	
 				
 		),
 	'API_LOG' => false ,  //是否开启API请求日志记录。如果开启，则记录每一个API请求的参数和返回结果，会生成很多日志

@@ -608,5 +608,7 @@ exports.default = {
   clone_move: 'Clone/Move',
 
   subcat: 'subcatalog',
-  sync: 'synchronizing'
+  sync: 'synchronizing',
+  force_login: 'Force login',
+  force_login_tips: 'When accessing any item, tourists will be required to log in to their account and are not allowed to access as non logged in individuals'
 }
