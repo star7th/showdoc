@@ -89,74 +89,6 @@
         <el-row class="fun-btn-group">
           <el-dropdown type class="" size="medium" trigger="hover">
             <el-button>
-              <i class="mr-1 fas fa-gear"></i>
-              {{ $t('doc_tool') }}
-              <i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="showHistoryVersionDialog = true">
-                <i class="mr-1 far fa-rectangle-history"></i>
-                {{ $t('history_version') }}</el-dropdown-item
-              >
-              <el-dropdown-item @click.native="showAttachment">
-                <el-badge :value="attachment_count">
-                  <i class="mr-1 far fa-cloud-arrow-up"></i>
-                  {{ $t('attachment') }}</el-badge
-                ></el-dropdown-item
-              >
-              <el-dropdown-item @click.native="showSortPage">
-                <i class="mr-1 far fa-sort"></i>
-                {{ $t('sort_pages') }}</el-dropdown-item
-              >
-
-              <el-dropdown-item @click.native="showJsonToTableDialog = true">
-                <i class="mr-1 far fa-table"></i>
-                {{ $t('json_to_table') }}</el-dropdown-item
-              >
-              <el-dropdown-item @click.native="showJsonBeautifyDialog = true">
-                <i class="mr-1 far fa-goal-net"></i>
-                {{ $t('beautify_json') }}</el-dropdown-item
-              >
-              <el-dropdown-item @click.native="showPasteTableDialog = true">
-                <i class="mr-1 far fa-table"></i>
-                {{ $t('paste_insert_table') }}</el-dropdown-item
-              >
-              <el-dropdown-item
-                @click.native="showSqlToMarkdownTableDialog = true"
-              >
-                <i class="mr-1 far fa-table"></i>
-                {{ $t('sql_to_markdown_table') }}</el-dropdown-item
-              >
-              <el-dropdown-item
-                v-if="$lang == 'zh-cn'"
-                @click.native="showMock = true"
-              >
-                <i class="mr-1 far fa-database"></i>
-                Mock
-              </el-dropdown-item>
-              <el-dropdown-item
-                v-if="$lang == 'zh-cn'"
-                @click.native="showRunApi"
-              >
-                <i class="mr-1 far fa-link"></i>
-                {{ $t('http_test_api') }}</el-dropdown-item
-              >
-            </el-dropdown-menu>
-          </el-dropdown>
-
-          <el-button
-            v-if="$lang == 'zh-cn' && showAIBtn"
-            style="padding-top: 12px;padding-bottom: 12px;"
-            @click.native="showAI = true"
-            size="medium"
-            @click="createContent"
-          >
-            <i class="mr-1 far fa-robot"></i>
-            {{ $t('ai_assistant') }}</el-button
-          >
-
-          <el-dropdown type class="" size="medium" trigger="hover">
-            <el-button>
               <i class="mr-1 fas fa-files"></i>
               {{ $t('add_from_template')
               }}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -176,6 +108,85 @@
               >
             </el-dropdown-menu>
           </el-dropdown>
+          <el-dropdown type class="" size="medium" trigger="hover">
+            <el-button>
+              <i class="mr-1 far fa-gear"></i>
+              {{ $t('format_tools') }}
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="showJsonToTableDialog = true">
+                <i class="mr-1 far fa-table"></i>
+                {{ $t('json_to_table') }}</el-dropdown-item
+              >
+              <el-dropdown-item @click.native="showJsonBeautifyDialog = true">
+                <i class="mr-1 far fa-goal-net"></i>
+                {{ $t('beautify_json') }}</el-dropdown-item
+              >
+              <el-dropdown-item @click.native="showPasteTableDialog = true">
+                <i class="mr-1 far fa-table"></i>
+                {{ $t('paste_insert_table') }}</el-dropdown-item
+              >
+              <el-dropdown-item
+                @click.native="showSqlToMarkdownTableDialog = true"
+              >
+                <i class="mr-1 far fa-table"></i>
+                {{ $t('sql_to_markdown_table') }}</el-dropdown-item
+              >
+            </el-dropdown-menu>
+          </el-dropdown>
+          <el-dropdown type class="" size="medium" trigger="hover">
+            <el-button>
+              <i class="mr-1 fas fa-gear"></i>
+              {{ $t('doc_tool') }}
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="showHistoryVersionDialog = true">
+                <i class="mr-1 fas fa-rectangle-history"></i>
+                {{ $t('history_version') }}</el-dropdown-item
+              >
+              <el-dropdown-item
+                v-if="$lang == 'zh-cn' && showAIBtn"
+                @click.native="showAI = true"
+              >
+                <i class="mr-1 far fa-robot"></i>
+                {{ $t('ai_assistant') }}</el-dropdown-item
+              >
+              <el-dropdown-item @click.native="showSortPage">
+                <i class="mr-1 fas fa-sort"></i>
+                {{ $t('sort_pages') }}</el-dropdown-item
+              >
+              <el-dropdown-item
+                v-if="$lang == 'zh-cn'"
+                @click.native="showMock = true"
+              >
+                <i class="mr-1 far fa-database"></i>
+                Mock
+              </el-dropdown-item>
+
+              <el-dropdown-item
+                v-if="$lang == 'zh-cn'"
+                @click.native="showRunApi"
+              >
+                <i class="mr-1 fas fa-link"></i>
+                {{ $t('http_test_api') }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+
+          <el-button
+            style="padding-top: 12px;padding-bottom: 12px;"
+            size="medium"
+            @click.native="showAttachment"
+          >
+            <el-badge :value="attachment_count">
+              <i class="mr-1 fas fa-cloud-arrow-up"></i>
+              {{ $t('attachment') }}</el-badge
+            ></el-button
+          >
         </el-row>
         <Editormd
           v-bind:content="content"
