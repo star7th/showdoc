@@ -30,8 +30,18 @@
               v-model="title"
               class="page-title-input"
               v-if="isEditingTitle"
-              @blur="isEditingTitle = false"
-              @keyup.enter.native="isEditingTitle = false"
+              @blur="
+                () => {
+                  save()
+                  isEditingTitle = false
+                }
+              "
+              @keyup.enter.native="
+                () => {
+                  save()
+                  isEditingTitle = false
+                }
+              "
             />
           </el-tooltip>
 
@@ -369,6 +379,7 @@
           this.showSelectCat = false
           this.cat_id = data
           refreshCat()
+          save()
         }
       "
     ></SelectCat>
