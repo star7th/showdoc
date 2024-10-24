@@ -142,7 +142,7 @@ export default {
           }
           setTimeout(() => {
             watermark.load({
-              monitor: false, // monitor 是否监控， true: 不可删除水印; false: 可删水印。
+              monitor: true, // monitor 是否监控， true: 不可删除水印; false: 可删水印。
               watermark_txt: this.watermark_txt,
               watermark_alpha: 0.05
             })
