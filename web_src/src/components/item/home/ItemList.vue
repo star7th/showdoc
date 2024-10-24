@@ -58,6 +58,13 @@
                   {{ $t('unstar_item') }}
                 </el-dropdown-item>
                 <el-dropdown-item
+                  v-if="!item.manage"
+                  @click.native="exitItem(item.item_id)"
+                >
+                  <i class="mr-2 fas fa-trash"></i>
+                  {{ $t('item_exit') }}
+                </el-dropdown-item>
+                <el-dropdown-item
                   v-if="item.manage"
                   divided
                   @click.native="
@@ -397,6 +404,20 @@ export default {
         data[key] = i + 1
       }
       this.sortItem(data)
+    },
+    // 退出项目
+    exitItem(item_id) {
+      this.$confirm(this.$t('confirm_exit_item'), this.$t('warning'), {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
+        type: 'warning'
+      }).then(() => {
+        this.request('/api/item/exitItem', {
+          item_id: item_id
+        }).then(response => {
+          this.getItemList()
+        })
+      })
     }
   },
 
