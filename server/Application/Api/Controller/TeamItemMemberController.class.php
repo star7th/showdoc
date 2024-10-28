@@ -68,6 +68,9 @@ class TeamItemMemberController extends BaseController
                         $value['cat_name'] =  $row['cat_name'];
                     }
                 }
+                $uid = $value['member_uid'];
+                $row = D("User")->where(" uid = '$uid' ")->find();
+                $value['name'] = $row['name'];
             }
             $this->sendResult($ret);
         } else {
