@@ -229,7 +229,7 @@ export default {
     },
     homePageSetting() {
       var url = DocConfig.server + '/api/common/homePageSetting'
-      this.axios.post(url, this.form).then(response => {
+      this.request(url, this.form,'post',false).then(response => {
         if (response.data.error_code === 0) {
           this.beian = response.data.data.beian
           if (response.data.data.home_page == 2) {

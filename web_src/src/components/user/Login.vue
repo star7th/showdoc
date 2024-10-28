@@ -172,12 +172,10 @@ export default {
       })
     },
     script_cron() {
-      var url = DocConfig.server + '/api/ScriptCron/run'
-      this.axios.get(url)
+      this.request('/api/ScriptCron/run', {}, 'get',false)
     },
     getOauth() {
-      var url = DocConfig.server + '/api/user/oauthInfo'
-      this.axios.get(url).then(response => {
+      this.request('/api/user/oauthInfo', {}, 'get',false).then(response => {
         if (response.data.error_code === 0) {
           if (response.data.data.oauth2_open > 0) {
             this.oauth2_entrance_tips = response.data.data.oauth2_entrance_tips

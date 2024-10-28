@@ -2,9 +2,11 @@
  *
  */
 
-import axios from '@/http'
+import axios from 'axios'
 import router from '@/router/index'
 import { MessageBox } from 'element-ui'
+
+axios.defaults.timeout = 60000
 
 const request = (
   path,
@@ -41,27 +43,25 @@ const request = (
     axios(axiosConfig)
       .then(
         response => {
-          //超时登录
-          if (
-            response.data.error_code === 10102 &&
-            response.config.data.indexOf('redirect_login=false') === -1
-          ) {
-            var redirect = router.currentRoute.fullPath.repeat(1)
-            if (redirect.indexOf('redirect=') > -1) {
-              return false
-            }
-            router.replace({
-              path: '/user/login',
-              query: { redirect: redirect }
-            })
-            reject(new Error('登录态无效'))
-          }
-
           if (msgAlert && response.data && response.data.error_code !== 0) {
-            MessageBox.alert(response.data.error_message)
-            return reject(new Error('业务级别的错误'))
+            // 超时登录
+            if (response.data.error_code === 10102) {
+              var redirect = router.currentRoute.fullPath.repeat(1)
+              if (redirect.indexOf('redirect=') > -1) {
+                // 防止重复redirect
+                return false
+              }
+              router.replace({
+                path: '/user/login',
+                query: { redirect: redirect }
+              })
+              reject(new Error('登录态无效'))
+            } else {
+              MessageBox.alert(response.data.error_message)
+              return reject(new Error('业务级别的错误'))
+            }
           }
-          //上面没有return的话，最后返回这个
+          // 上面没有return的话，最后返回这个
           resolve(response.data)
         },
         err => {

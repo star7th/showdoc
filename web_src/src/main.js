@@ -8,7 +8,6 @@ import './assets/element-variables.scss'
 import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
 import util from '@/util.js'
-import axios from '@/http'
 import request from '@/request.js'
 import VueI18n from 'vue-i18n'
 import enLocale from 'element-ui/lib/locale/lang/en'
@@ -41,8 +40,6 @@ Vue.config.lang = DocConfig.lang
 Vue.locale('zh-cn', allZhLocale)
 Vue.locale('en', allEnLocale)
 
-// 将axios挂载到prototype上，在组件中可以直接使用this.axios访问
-Vue.prototype.axios = axios
 Vue.prototype.request = request
 
 Vue.prototype.$lang = DocConfig.lang // 把语言放进里面，这样组件中可以this.$lang来读取
