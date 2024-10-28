@@ -14,7 +14,7 @@ class FromCommentsController extends BaseController
     {
         //return ;
         header('Content-Type:text/html;charset=utf-8 ');
-        $content = I("content");
+        $content = htmlspecialchars_decode(I("content", null)); // 不进行过滤,并且进行html反转义
         $api_key = I("api_key");
         $api_token = I("api_token");
 
@@ -51,7 +51,7 @@ class FromCommentsController extends BaseController
             $page_content = $convert->runapiToMd($page_content);
         }
         $page_title = $array['title'];
-        $page_content = $page_content;
+        $page_content = htmlspecialchars($page_content);
         $cat_name = $array['cat_name'];
         $s_number = $array['s_number'] ? $array['s_number'] : 99;
         $page_id = D("Page")->update_by_title($item_id, $page_title, $page_content, $cat_name, $s_number);
