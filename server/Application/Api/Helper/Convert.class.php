@@ -185,31 +185,34 @@ class Convert
         }
 
         if ($content['request']['headers'] && $content['request']['headers'][0] && $content['request']['headers'][0]['name']) {
-            $new_content .= " \n##### Header \n\n|header|必选|类型|说明|\n|:-----  |:-----|-----|\n";
+            $new_content .= " \n##### Header \n\n|字段名|示例值|必选|类型|说明|\n|:-----  |:-----|-----|\n";
             foreach ($content['request']['headers'] as $key => $value) {
                 $value['require'] = $value['require'] > 0 ? "是" : "否";
                 $value['remark'] = $value['remark'] ? $value['remark'] : '无';
-                $new_content .= "|{$value['name']}|  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
+                $value['value'] = $value['value'] ? $value['value'] : '';
+                $new_content .= "|{$value['name']}|  {$value['value']} |  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
             }
         }
 
         $query = $content['request']['query'];
         if ($query && is_array($query) && $query[0] && $query[0]['name']) {
-            $new_content .= " \n##### 请求Query参数\n\n|参数名|必选|类型|说明|\n|:-----  |:-----|-----|\n";
+            $new_content .= " \n##### 请求Query参数\n\n|参数名|示例值|必选|类型|说明|\n|:-----  |:-----|-----|\n";
             foreach ($query as $key => $value) {
                 $value['require'] = $value['require'] > 0 ? "是" : "否";
                 $value['remark'] = $value['remark'] ? $value['remark'] : '无';
-                $new_content .= "|{$value['name']}|  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
+                $value['value'] = $value['value'] ? $value['value'] : '';
+                $new_content .= "|{$value['name']}|  {$value['value']}|  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
             }
         }
 
         $params = $content['request']['params'][$content['request']['params']['mode']];
         if ($params && is_array($params) && $params[0] && $params[0]['name']) {
-            $new_content .= " \n##### 请求Body参数\n\n|参数名|必选|类型|说明|\n|:-----  |:-----|-----|\n";
+            $new_content .= " \n##### 请求Body参数\n\n|参数名|示例值|必选|类型|说明|\n|:-----  |:-----|-----|\n";
             foreach ($params as $key => $value) {
                 $value['require'] = $value['require'] > 0 ? "是" : "否";
                 $value['remark'] = $value['remark'] ? $value['remark'] : '无';
-                $new_content .= "|{$value['name']}|  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
+                $value['value'] = $value['value'] ? $value['value'] : '';
+                $new_content .= "|{$value['name']}|  {$value['value']} |  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
             }
         }
         //如果参数类型为json
@@ -267,7 +270,6 @@ class Convert
 
         return $new_content;
     }
-
     // json美化
     private function _indent_json($json)
     {

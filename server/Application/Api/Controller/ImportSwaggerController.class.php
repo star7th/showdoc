@@ -250,6 +250,21 @@ class ImportSwaggerController extends BaseController
             }
         }
 
+        // 如果在参数里定义了header，则也加进来
+        if (isset($request['parameters'])) {
+            foreach ($request['parameters'] as $param) {
+                if ($param['in'] == 'header') {
+                    $content_array['request']['headers'][] = array(
+                        "name" => $param["name"],
+                        "type" => "string",
+                        "value" => $param["example"] ?? '',
+                        "require" => ($param["required"] ?? false) ? '1' : '0',
+                        "remark" => $param["description"] ?? '',
+                    );
+                }
+            }
+        }
+
         // 处理返回结果情况
         if ($request['responses'] && $request['responses']['200']) {
             $ref_array = array();
