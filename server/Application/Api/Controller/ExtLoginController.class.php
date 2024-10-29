@@ -178,6 +178,10 @@ class ExtLoginController extends BaseController
                     if (!$info) {
                         D("User")->register($username, md5($username . time() . rand()));
                         $info = D("User")->where("username='%s'", array($username))->find();
+                        if($res_array['name']){
+                            D("User")->where("username='%s'", array($username))->save(array("name" =>$res_array['name']));
+                        }
+                        
                     }
 
                     D("User")->setLastTime($info['uid']);
