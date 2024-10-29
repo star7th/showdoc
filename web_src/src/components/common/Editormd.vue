@@ -1,7 +1,5 @@
 <template>
   <div :id="id" class="main-editor">
-    <!-- 放大图片 -->
-    <BigImg v-if="showImg" @clickit="showImg = false" :imgSrc="imgSrc"></BigImg>
   </div>
 </template>
 <style src="@/../static/editor.md/css/editormd.min.css"></style>
@@ -139,8 +137,9 @@
 
 </style>
 <script>
-import BigImg from '@/components/common/BigImg'
 import { getUserInfoFromStorage } from '@/models/user.js'
+import 'viewerjs/dist/viewer.css'
+import { api as viewerApi } from 'v-viewer'
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs')
 }
@@ -318,12 +317,11 @@ export default {
     }
   },
   components: {
-    BigImg
+    
   },
   data() {
     return {
       instance: null,
-      showImg: false,
       imgSrc: '',
       user_token: '',
       intervalId: 0
@@ -563,8 +561,10 @@ export default {
       // 图片点击放大
       $('#' + this.id + ' img').click(function() {
         var img_url = $(this).attr('src')
-        that.showImg = true // 获取当前图片地址
         that.imgSrc = img_url
+        viewerApi({
+          images: [img_url]
+        })
       })
 
       // 高亮关键字

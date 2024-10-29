@@ -23,6 +23,8 @@
     "turndown": "^7.1.1",
     "turndown-plugin-gfm": "^1.0.2",
     "url-search-params-polyfill": "^2.0.3",
+    "v-viewer": "1.7.4",
+    "viewerjs": "1.11.6",
     "vue": "^2.6.12",
     "vue-clipboard2": "^0.2.1",
     "vue-i18n": "5.0.3",
