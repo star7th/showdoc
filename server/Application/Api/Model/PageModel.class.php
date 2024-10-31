@@ -13,7 +13,7 @@ class PageModel extends BaseModel
 
 
   //搜索某个项目下的页面
-  public function search($item_id,$cat_id = 0 , $keyword)
+  public function search($item_id,$cat_id = 0 , $keyword = "")
   {
     $return_pages = array();
     $item = D("Item")->where("item_id = '%d' and is_del = 0 ", array($item_id))->find();
