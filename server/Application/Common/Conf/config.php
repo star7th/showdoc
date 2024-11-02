@@ -12,6 +12,9 @@ return array(
     'DB_PREFIX' => '', // 数据库表前缀
     'DB_CHARSET'=> 'utf8', // 字符集
     'DB_DEBUG'  =>  TRUE, // 数据库调试模式 开启后可以记录SQL日志
+    'DB_PARAMS' => array(
+        PDO::ATTR_STRINGIFY_FETCHES => true, // 设置为true,强制把数字读取成字符串返回
+    ),
     'URL_HTML_SUFFIX' => '',//url伪静态后缀
     'URL_MODEL' => 3 ,//URL兼容模式
     'URL_ROUTER_ON'   => true, 
