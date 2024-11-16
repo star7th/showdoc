@@ -299,6 +299,7 @@ class CatalogController extends BaseController
                     ));
                 }
             }
+            D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'drag', 'tree', 0, '目录树');
         }
 
         $this->sendResult(array());

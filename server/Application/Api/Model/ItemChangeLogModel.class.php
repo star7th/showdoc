@@ -81,6 +81,9 @@ class ItemChangeLogModel extends BaseModel
             case 'unbound':
                 $one['op_action_type_desc'] = '解绑';
                 break;
+            case 'drag':
+                $one['op_action_type_desc'] = '拖曳修改';
+                break;
             default:
                 $one['op_action_type_desc'] = '未定义';
                 break;
@@ -98,6 +101,9 @@ class ItemChangeLogModel extends BaseModel
                 break;
             case 'member':
                 $one['op_object_type_desc'] = '成员';
+                break;
+            case 'tree':
+                $one['op_object_type_desc'] = '目录树';
                 break;
             default:
                 $one['op_object_type_desc'] = '未定义';
