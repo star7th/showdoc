@@ -173,7 +173,7 @@ export default {
       default() {
         return {
           path: 'static/editor.md/lib/',
-          height: 750,
+          height: '70vh',
           taskList: true,
           atLink: false,
           emailLink: false,
