@@ -107,7 +107,12 @@
         v-if="showHistoryVersiong"
         :callback="
           data => {
-            this.showHistoryVersiong = false
+            showHistoryVersiong = false
+          }
+        "
+        :cancel="
+          () => {
+            showHistoryVersiong = false
           }
         "
       ></HistoryVersion>

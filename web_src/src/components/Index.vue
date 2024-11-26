@@ -228,7 +228,7 @@ export default {
       this.height = winHeight + 'px'
     },
     homePageSetting() {
-      var url = DocConfig.server + '/api/common/homePageSetting'
+      var url = '/api/common/homePageSetting'
       this.request(url, this.form,'post',false).then(response => {
         if (response.data.error_code === 0) {
           this.beian = response.data.data.beian
