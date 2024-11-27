@@ -229,22 +229,22 @@ export default {
     },
     homePageSetting() {
       var url = '/api/common/homePageSetting'
-      this.request(url, this.form,'post',false).then(response => {
-        if (response.data.error_code === 0) {
-          this.beian = response.data.data.beian
-          if (response.data.data.home_page == 2) {
+      this.request(url, this.form,'post',false).then(data => {
+        if (data.error_code === 0) {
+          this.beian = data.data.beian
+          if (data.data.home_page == 2) {
             // 跳转到登录页面
             this.$router.replace({
               path: '/user/login'
             })
           }
           if (
-            response.data.data.home_page == 3 &&
-            response.data.data.home_item
+            data.data.home_page == 3 &&
+            data.data.home_item
           ) {
             // 跳转到指定项目
             this.$router.replace({
-              path: '/' + response.data.data.home_item
+              path: '/' + data.data.home_item
             })
           }
         }
