@@ -256,8 +256,8 @@ export default {
     this.homePageSetting()
     this.link = '/user/login'
     this.link_text = this.$t('index_login_or_register')
-    getUserInfo(response => {
-      if (response.data.error_code === 0) {
+    getUserInfo(data => {
+      if (data.error_code === 0) {
         this.link = '/item/index'
         this.link_text = this.$t('my_item')
       }

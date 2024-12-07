@@ -175,10 +175,10 @@ export default {
       this.request('/api/ScriptCron/run', {}, 'get',false)
     },
     getOauth() {
-      this.request('/api/user/oauthInfo', {}, 'get',false).then(response => {
-        if (response.data.error_code === 0) {
-          if (response.data.data.oauth2_open > 0) {
-            this.oauth2_entrance_tips = response.data.data.oauth2_entrance_tips
+      this.request('/api/user/oauthInfo', {}, 'get',false).then(data => {
+        if (data.error_code === 0) {
+          if (data.data.oauth2_open > 0) {
+            this.oauth2_entrance_tips = data.data.oauth2_entrance_tips
           }
         }
       })
@@ -204,8 +204,8 @@ export default {
       const element = eles[index]
       element.remove()
     }
-    getUserInfo(function(response) {
-      if (response.data.error_code === 0) {
+    getUserInfo(function(data) {
+      if (data.error_code === 0) {
         let redirect = decodeURIComponent(
           that.$route.query.redirect || '/item/index'
         )

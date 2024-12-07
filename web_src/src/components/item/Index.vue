@@ -488,14 +488,14 @@ export default {
     // 检测邮箱绑定情况
     checkEmail() {
       var that = this
-      getUserInfo(function(response) {
-        if (response.data.error_code === 0) {
-          that.username = response.data.data.username
-          if (response.data.data.groupid == 1) {
+      getUserInfo(function(data) {
+        if (data.error_code === 0) {
+          that.username = data.data.username
+          if (data.data.groupid == 1) {
             that.isAdmin = true
           }
-          if (response.data.data.email_verify < 1) {
-            if (response.data.data.email.length > 0) {
+          if (data.data.email_verify < 1) {
+            if (data.data.email.length > 0) {
               that.$message({
                 showClose: true,
                 duration: 10000,

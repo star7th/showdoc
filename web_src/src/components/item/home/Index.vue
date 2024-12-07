@@ -272,10 +272,10 @@ export default {
     },
     checkAdmin() {
       var that = this
-      getUserInfo(function(response) {
-        if (response.data.error_code === 0) {
-          that.username = response.data.data.username
-          if (response.data.data.groupid == 1) {
+      getUserInfo(function(data) {
+        if (data.error_code === 0) {
+          that.username = data.data.username
+          if (data.data.groupid == 1) {
             that.isAdmin = true
           }
         }

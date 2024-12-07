@@ -159,9 +159,9 @@ export default {
         }
       } else {
         // 网络请求获取用户信息
-        getUserInfo(response => {
-          if (response.data.error_code === 0) {
-            let user_info = response.data.data
+        getUserInfo(data => {
+          if (data.error_code === 0) {
+            let user_info = data.data
             this.$store.dispatch('changeUserInfo', user_info).then(() => {
               this.renderWatermark()
             })

@@ -41,7 +41,7 @@
             class="custom-tree-node node-folder"
             :id="'node-' + node.data.id"
           >
-          <i
+            <i
               v-if="openeds.includes(node.data.id) && node.data.children.length"
               class="mr-2 far fa-folder-open"
             ></i>
@@ -101,6 +101,11 @@
         :is_modal="false"
         v-if="showHistoryVersiong"
         :callback="
+          data => {
+            this.showHistoryVersiong = false
+          }
+        "
+        :cancel="
           data => {
             this.showHistoryVersiong = false
           }
@@ -335,7 +340,7 @@ export default {
     handleDragEnd() {
       const treeData = this.menu
       // 将拖动的顺序和层级信息保存到后台
-      
+
       // 如果是搜索结果，则不保存目录层级关系到后台
       if (this.keyword) {
         return false

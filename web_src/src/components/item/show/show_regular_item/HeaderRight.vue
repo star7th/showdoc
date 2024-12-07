@@ -204,6 +204,11 @@
           this.showHistoryVersiong = false
         }
       "
+      :cancel="
+        data => {
+          this.showHistoryVersiong = false
+        }
+      "
     ></HistoryVersion>
 
     <!-- 回收站的弹窗 -->
