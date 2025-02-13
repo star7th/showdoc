@@ -121,6 +121,11 @@
           this.showAttachmentListDialog = false
         }
       "
+      :cancel="
+        () => {
+          showAttachmentListDialog = false
+        }
+      "
     ></AttachmentList>
   </div>
 </template>

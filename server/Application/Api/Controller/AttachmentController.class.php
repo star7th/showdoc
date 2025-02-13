@@ -119,7 +119,7 @@ class AttachmentController extends BaseController
         }
 
         if (!D("Attachment")->isAllowedFilename($uploadFile['name'])) {
-            $this->sendError(10101, '不支持上传该文件类型。如有需要请联系网站管理员');
+            $this->sendError(10101, '为了安全考虑，不支持上传该文件类型。你可以将文件压缩到压缩包后再上传');
             return false;
         }
 
