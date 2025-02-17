@@ -31,7 +31,7 @@ _docker_build() {
         sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
     fi
     apk update
-    apk add --update --no-cache nodejs npm
+    apk add --update --no-cache nodejs npm sqlite sqlite-dev
 
     mv $showdoc_dir_html/mock $showdoc_dir/
     cd $showdoc_dir/mock || exit 1
