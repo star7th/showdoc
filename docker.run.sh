@@ -31,7 +31,7 @@ _docker_build() {
         sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
     fi
     apk update
-    apk add --update --no-cache nodejs npm
+    apk add --update --no-cache nodejs@nodejs-18 npm@npm-9
 
     mv $showdoc_dir_html/mock $showdoc_dir/
     cd $showdoc_dir/mock || exit 1
@@ -39,7 +39,7 @@ _docker_build() {
         npm config set registry https://registry.npmmirror.com/
     fi
     ## fix old warn
-    rm -f package-lock.json
+    # rm -f package-lock.json
 
     npm install
 }
