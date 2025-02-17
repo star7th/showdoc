@@ -9,5 +9,5 @@ RUN echo "<?php echo file_get_contents('index.html'); ?>" > /var/www/html/web/in
 RUN chmod -R 777  /var/www/html/
 
 # 写环境变量
-ENV SHOWDOC_DOCKER_VERSION 2.4
+ENV SHOWDOC_DOCKER_VERSION 2.7
 ENV SHOWDOC_DOCKER_ARM 1
