@@ -8,9 +8,8 @@
   },
   "dependencies": {
     "mockjs": "^1.1.0",
-    "pm2": "^4.5.5"
+    "pm2": "^5.4.3"
   },
-  "devDependencies": {},
   "engines": {
     "node": ">=10.0.0"
   },
