@@ -181,6 +181,22 @@ export default {
         }
       },
       {
+        title: '极速箱',
+        icon: 'fas fa-toolbox',
+        desc: '高效开发工具集成平台',
+        method: () => {
+          this.toOutLink('https://www.jisuxiang.com')
+        }
+      },
+      {
+        title: '大风云CDN',
+        icon: 'fas fa-cloud',
+        desc: '高性价比的全球CDN加速服务',
+        method: () => {
+          this.toOutLink('https://www.dfyun.com.cn')
+        }
+      },
+      {
         title: '推送服务',
         icon: 'fas fa-car-side',
         desc: '从服务器推送消息到手机的工具',
