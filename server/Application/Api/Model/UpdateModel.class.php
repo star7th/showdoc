@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 20;
+        $version_num = 21;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -551,6 +551,12 @@ class UpdateModel
         `addtime` text NOT NULL DEFAULT ''
         )";
         D("UserSetting")->execute($sql);
+
+        //给single_page表增加expire_time字段
+        if (!$this->_is_column_exist("single_page", "expire_time")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "single_page ADD expire_time INT(11) NOT NULL DEFAULT '0';";
+            D("page")->execute($sql);
+        }
 
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num

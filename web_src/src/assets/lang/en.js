@@ -416,10 +416,17 @@ exports.default = {
 
   cancelSingle:
     'Are you sure you want to cancel the single page link? After cancellation, the original link will be invalid immediately',
-  cancelSingleYes: 'Unlink single page',
-  cancelSingleNo: 'Keep single page',
+  cancelSingleYes: 'Cancel Single Page',
+  cancelSingleNo: 'Keep Single Page',
 
-  from_file_gub: 'From FileHub',
+  expire_time: 'Expiration',
+  permanent: 'Permanent',
+  one_day: 'One Day',
+  seven_days: 'Seven Days',
+  one_month: 'One Month',
+  half_year: 'Half Year',
+
+  from_file_gub: 'Select From Library',
   file_gub: 'FileHub',
   select: 'select',
 

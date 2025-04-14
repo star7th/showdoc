@@ -37,7 +37,14 @@ class PageController extends BaseController
 
             $singlePage = M("SinglePage")->where(" page_id = '%d' ", array($page_id))->limit(1)->find();
             if ($singlePage) {
-                $page['unique_key'] =  $singlePage['unique_key'];
+                // 检查单页链接是否已过期
+                if ($singlePage['expire_time'] > 0 && $singlePage['expire_time'] < time()) {
+                    // 链接已过期，从数据库中删除记录
+                    M("SinglePage")->where(" page_id = '%d' ", array($page_id))->delete();
+                    $page['unique_key'] = '';
+                } else {
+                    $page['unique_key'] = $singlePage['unique_key'];
+                }
             } else {
                 $page['unique_key'] = '';
             }
@@ -330,6 +337,7 @@ class PageController extends BaseController
     {
         $page_id = I("page_id/d");
         $isCreateSiglePage = I("isCreateSiglePage");
+        $expire_days = I("expire_days/d", 0); // 获取有效期天数，默认为0表示永久有效
         $page = M("Page")->where(" page_id = '$page_id' ")->find();
         if (!$page || $page['is_del'] == 1) {
             sleep(1);
@@ -343,9 +351,17 @@ class PageController extends BaseController
         }
         D("SinglePage")->where(" page_id = '$page_id' ")->delete();
         $unique_key = md5(time() . rand() . "gbgdhbdgtfgfK3@bv45342regdhbdgtfgftghsdg");
+
+        // 计算过期时间
+        $expire_time = 0; // 默认为0表示永久有效
+        if ($expire_days > 0) {
+            $expire_time = time() + ($expire_days * 24 * 60 * 60); // 当前时间加上天数换算成的秒数
+        }
+
         $add = array(
             "unique_key" => $unique_key,
             "page_id" => $page_id,
+            "expire_time" => $expire_time
         );
         if ($isCreateSiglePage == 'true') { //这里的布尔值被转成字符串了
             D("SinglePage")->add($add);
@@ -365,6 +381,14 @@ class PageController extends BaseController
         $singlePage = M("SinglePage")->where(" unique_key = '%s' ", array($unique_key))->find();
         $page_id = $singlePage['page_id'];
 
+        // 检查链接是否已过期
+        if ($singlePage && $singlePage['expire_time'] > 0 && $singlePage['expire_time'] < time()) {
+            // 链接已过期，从数据库中删除记录
+            M("SinglePage")->where(" unique_key = '%s' ", array($unique_key))->delete();
+            $this->sendError(10101, "该分享链接已过期");
+            return false;
+        }
+
         $page = M("Page")->where(" page_id = '$page_id' ")->find();
         if (!$page || $page['is_del'] == 1) {
             sleep(1);
@@ -379,6 +403,10 @@ class PageController extends BaseController
             $page['addtime'] = date("Y-m-d H:i:s", $page['addtime']);
             //判断是否包含附件信息
             $page['attachment_count'] = D("FilePage")->where("page_id = '$page_id' ")->count();
+            // 添加单页链接过期时间字段
+            if ($singlePage) {
+                $page['expire_time'] = $singlePage['expire_time'];
+            }
         }
         $this->sendResult($page);
     }

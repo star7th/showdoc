@@ -400,6 +400,14 @@ exports.default = {
   cancelSingle: '是否确定取消单页链接？取消后，原链接会立马失效',
   cancelSingleYes: '取消单页链接',
   cancelSingleNo: '保留单页链接',
+  
+  expire_time: '有效期',
+  permanent: '永久有效',
+  one_day: '一天',
+  seven_days: '七天',
+  one_month: '一个月',
+  half_year: '半年',
+
 
   from_file_gub: '从文件库选择',
   file_gub: '文件库',
