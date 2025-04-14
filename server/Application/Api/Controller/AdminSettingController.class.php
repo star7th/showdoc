@@ -106,6 +106,15 @@ class AdminSettingController extends BaseController
             }
 
             $ldap_form['user_field'] = strtolower($ldap_form['user_field']);
+            
+            // 如果未配置姓名字段，则默认为空
+            if (!isset($ldap_form['name_field'])) {
+                $ldap_form['name_field'] = '';
+            }
+            
+            if ($ldap_form['name_field']) {
+                $ldap_form['name_field'] = strtolower($ldap_form['name_field']);
+            }
 
             if (!extension_loaded('ldap')) {
                 $this->sendError(10011, "你尚未安装php-ldap扩展。如果是普通PHP环境，请手动安装之。如果是使用之前官方docker镜像，则需要重新安装镜像。方法是：备份 /showdoc_data 整个目录，然后全新安装showdoc，接着用备份覆盖/showdoc_data 。然后递归赋予777可写权限。");
@@ -137,9 +146,24 @@ class AdminSettingController extends BaseController
                 if (!$ldap_user) {
                     continue;
                 }
+                
+                // 获取用户姓名
+                $ldap_name = '';
+                if ($ldap_form['name_field'] && isset($data[$i][$ldap_form['name_field']]) && $data[$i][$ldap_form['name_field']]['count'] > 0) {
+                    $ldap_name = $data[$i][$ldap_form['name_field']][0];
+                }
+                
                 //如果该用户不在数据库里，则帮助其注册
-                if (!D("User")->isExist($ldap_user)) {
-                    D("User")->register($ldap_user, $ldap_user . get_rand_str());
+                $userInfo = D("User")->isExist($ldap_user);
+                if (!$userInfo) {
+                    $uid = D("User")->register($ldap_user, $ldap_user . get_rand_str());
+                    // 如果有姓名字段，则更新用户姓名
+                    if ($ldap_name) {
+                        D("User")->where("uid = '%d'", array($uid))->save(array("name" => $ldap_name));
+                    }
+                } else if ($ldap_name) {
+                    // 如果用户已存在且有姓名字段，则更新用户姓名
+                    D("User")->where("uid = '%d'", array($userInfo['uid']))->save(array("name" => $ldap_name));
                 }
             }
 
@@ -161,6 +185,12 @@ class AdminSettingController extends BaseController
         if ($ldap_form && $ldap_form['host'] && !$ldap_form['search_filter']) {
             $ldap_form['search_filter'] = '(cn=*)';
         }
+        
+        // 确保name_field字段存在
+        if ($ldap_form && !isset($ldap_form['name_field'])) {
+            $ldap_form['name_field'] = '';
+        }
+        
         $array = array(
             "ldap_open" => $ldap_open,
             "ldap_form" => $ldap_form,
@@ -254,11 +284,27 @@ class AdminSettingController extends BaseController
             $ldap_user = $data[$i][$ldap_form['user_field']][0];
             $dn = $data[$i]["dn"];
             if ($ldap_user == $username) {
+                // 获取用户姓名
+                $ldap_name = '';
+                if (isset($ldap_form['name_field']) && $ldap_form['name_field'] && 
+                    isset($data[$i][$ldap_form['name_field']]) && 
+                    $data[$i][$ldap_form['name_field']]['count'] > 0) {
+                    $ldap_name = $data[$i][$ldap_form['name_field']][0];
+                }
+                
                 //如果该用户不在数据库里，则帮助其注册
                 $userInfo = D("User")->isExist($username);
                 if (!$userInfo) {
-                    D("User")->register($ldap_user, $ldap_user . get_rand_str());
+                    $uid = D("User")->register($ldap_user, $ldap_user . get_rand_str());
+                    // 如果有姓名字段，则设置用户姓名
+                    if ($ldap_name) {
+                        D("User")->where("uid = '%d'", array($uid))->save(array("name" => $ldap_name));
+                    }
+                } else if ($ldap_name) {
+                    // 如果用户已存在且有姓名字段，则更新用户姓名
+                    D("User")->where("uid = '%d'", array($userInfo['uid']))->save(array("name" => $ldap_name));
                 }
+                
                 $rs2 = ldap_bind($ldap_conn, $dn, $password);
                 if ($rs2) {
                     D("User")->updatePwd($userInfo['uid'], $password);

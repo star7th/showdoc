@@ -60,6 +60,22 @@
                 placeholder="例如 cn 或者 sAMAccountName"
               ></el-input>
             </el-form-item>
+            
+            <el-form-item label="ldap name field">
+              <el-input
+                v-model="form.ldap_form.name_field"
+                class="form-el"
+                placeholder="例如 displayName 或者 givenName"
+              ></el-input>
+              <el-tooltip
+                effect="dark"
+                content="用于同步LDAP用户姓名到ShowDoc的名称字段，可留空"
+                placement="top"
+              >
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </el-form-item>
+            
             <el-form-item label="search filter">
               <el-input
                 v-model="form.ldap_form.search_filter"
@@ -237,6 +253,7 @@ export default {
           bind_dn: '',
           bind_password: '',
           user_field: '',
+          name_field: '',
           search_filter: '(cn=*)'
         },
         oauth2_open: false,

@@ -111,11 +111,34 @@ class UserModel extends BaseModel
             $ldap_user = $data[$i][$ldap_form['user_field']][0];
             $dn = $data[$i]["dn"];
             if ($ldap_user == $username) {
+                // 获取用户姓名
+                $ldap_name = '';
+                $name_field = strtolower($ldap_form['name_field']);
+
+                if ($name_field) {
+                    // 因为LDAP属性可能大小写不同，遍历所有属性找到匹配的
+                    foreach ($data[$i] as $key => $value) {
+                        if (strtolower($key) === $name_field && isset($value['count']) && $value['count'] > 0) {
+                            $ldap_name = $value[0];
+                            break;
+                        }
+                    }
+                }
+                
                 //如果该用户不在数据库里，则帮助其注册
                 $userInfo = D("User")->isExist($username);
                 if (!$userInfo) {
-                    D("User")->register($ldap_user, $ldap_user . get_rand_str());
+                    $uid = D("User")->register($ldap_user, $ldap_user . get_rand_str());
+                    // 如果有姓名字段，则设置用户姓名
+                    if ($ldap_name) {
+                        D("User")->where("uid = '%d'", array($uid))->save(array("name" => $ldap_name));
+                    }
+                    $userInfo = D("User")->isExist($username);
+                } else if ($ldap_name) {
+                    // 如果用户已存在且有姓名字段，则更新用户姓名
+                    D("User")->where("uid = '%d'", array($userInfo['uid']))->save(array("name" => $ldap_name));
                 }
+                
                 $rs2 = ldap_bind($ldap_conn, $dn, $password);
                 if ($rs2) {
                     D("User")->updatePwd($userInfo['uid'], $password);
