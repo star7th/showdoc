@@ -547,6 +547,8 @@ exports.default = {
     'Are you sure to quit the team? After quitting, you will lose all project permissions under the team',
 
   expand_collapse_catalog_tips: 'Expand all catalogs / collapse all catalogs',
+  expand_all: 'Expand all catalogs',
+  collapse_all: 'Collapse all catalogs',
 
   edit_group: 'Create/Edit Group',
   star_items: 'Star Items',

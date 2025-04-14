@@ -522,6 +522,8 @@ exports.default = {
   team_exit_confirm: '你确认退出团队吗？退出后，你将失去改团队下所有项目权限',
 
   expand_collapse_catalog_tips: '展开全部目录/折叠全部目录',
+  expand_all: '展开全部',
+  collapse_all: '折叠全部',
 
   edit_group: '新建/编辑分组',
   star_items: '星标项目',

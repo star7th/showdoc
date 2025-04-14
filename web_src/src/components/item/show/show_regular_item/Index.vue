@@ -33,6 +33,8 @@
           :searchItem="searchItem"
           :page_id="page_id"
           :item_info="item_info"
+          :expandAllCatalogs="expandAllCatalogs"
+          :collapseAllCatalogs="collapseAllCatalogs"
           v-if="item_info"
         ></LeftMenuBottomBar>
       </div>
@@ -211,6 +213,18 @@ export default {
           document.title = this.page_title + '--ShowDoc'
         })
       })
+    },
+    // 展开所有目录
+    expandAllCatalogs() {
+      if (this.$refs.leftMenu) {
+        this.$refs.leftMenu.expandAllCatalogs()
+      }
+    },
+    // 折叠所有目录
+    collapseAllCatalogs() {
+      if (this.$refs.leftMenu) {
+        this.$refs.leftMenu.collapseAllCatalogs()
+      }
     },
     // 根据屏幕宽度进行响应(应对移动设备的访问)
     adaptToMobile() {

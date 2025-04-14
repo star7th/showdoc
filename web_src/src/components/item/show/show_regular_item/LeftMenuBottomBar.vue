@@ -57,6 +57,14 @@
               <i class=" far fa-trash-can"></i>
               {{ $t('delete_page') }}
             </el-dropdown-item>
+            <el-dropdown-item @click.native="expandAllCatalogs">
+              <i class=" far fa-folder-open"></i>
+              {{ $t('expand_all') }}
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="collapseAllCatalogs">
+              <i class=" far fa-folder-closed"></i>
+              {{ $t('collapse_all') }}
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -149,7 +157,9 @@ export default {
     page_id: '',
     item_id: '',
     page_info: {},
-    item_info: {}
+    item_info: {},
+    expandAllCatalogs: Function,
+    collapseAllCatalogs: Function
   },
   data() {
     return {

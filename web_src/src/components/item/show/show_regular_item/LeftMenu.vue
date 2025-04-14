@@ -454,6 +454,41 @@ export default {
         ? this.item_info.item_domain
         : this.item_info.item_id
       return '/' + domain + '/' + page_id
+    },
+    // 展开所有目录
+    expandAllCatalogs() {
+      this.expandCollapseCatalogStatus = '1'
+      const allIds = this.getAllFolderIds(this.menu)
+      this.openeds = allIds
+    },
+    // 折叠所有目录
+    collapseAllCatalogs() {
+      this.expandCollapseCatalogStatus = '2'
+      this.openeds = []
+      if (this.$refs.tree && this.$refs.tree.store) {
+        for (let i = 0; i < this.$refs.tree.store._getAllNodes().length; i++) {
+          this.$refs.tree.store._getAllNodes()[i].expanded = false
+        }
+      }
+    },
+    // 获取所有目录节点的ID
+    getAllFolderIds(nodes) {
+      let ids = []
+      const collectIds = items => {
+        if (!items || !items.length) return
+
+        items.forEach(item => {
+          if (item.type === 'folder') {
+            ids.push(item.id)
+            if (item.children && item.children.length) {
+              collectIds(item.children)
+            }
+          }
+        })
+      }
+
+      collectIds(nodes)
+      return ids
     }
   },
   mounted() {
