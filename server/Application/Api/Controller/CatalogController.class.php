@@ -48,7 +48,7 @@ class CatalogController extends BaseController
     }
 
 
-    //获取目录列表，其中目录名将按层级描述。比如某个目录的名字为“我的项目/用户接口/用户登录”
+    //获取目录列表，其中目录名将按层级描述。比如某个目录的名字为"我的项目/用户接口/用户登录"
     public function catListName()
     {
         $login_user = $this->checkLogin();
@@ -275,6 +275,11 @@ class CatalogController extends BaseController
     {
         $cats = I("post.cats");
         $item_id = I("post.item_id/d");
+        // 获取拖动元素的信息
+        $dragged_id = I("post.dragged_id/d") ? I("post.dragged_id/d") : 0;
+        $dragged_title = I("post.dragged_title");
+        $dragged_type = I("post.dragged_type");
+        
         $login_user = $this->checkLogin();
         if (!$this->checkItemEdit($login_user['uid'], $item_id)) {
             $this->sendError(10103);
@@ -299,7 +304,18 @@ class CatalogController extends BaseController
                     ));
                 }
             }
-            D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'drag', 'tree', 0, '目录树');
+            
+            // 组装日志信息
+            $log_message = '目录树';
+            if ($dragged_id > 0 && $dragged_title) {
+                if ($dragged_type == 'page') {
+                    $log_message = '拖动页面「'.$dragged_title.'」';
+                } else if ($dragged_type == 'catalog') {
+                    $log_message = '拖动目录「'.$dragged_title.'」';
+                }
+            }
+            
+            D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'drag', 'tree', 0, $log_message);
         }
 
         $this->sendResult(array());

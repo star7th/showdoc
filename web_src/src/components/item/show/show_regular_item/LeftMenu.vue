@@ -337,7 +337,7 @@ export default {
       }
       return true
     },
-    handleDragEnd() {
+    handleDragEnd(draggingNode, dropNode, dropType, event) {
       const treeData = this.menu
       // 将拖动的顺序和层级信息保存到后台
 
@@ -345,6 +345,12 @@ export default {
       if (this.keyword) {
         return false
       }
+      
+      // 获取拖动元素的信息
+      const draggedData = draggingNode.data
+      const draggedId = draggedData.page_id > 0 ? draggedData.page_id : draggedData.cat_id
+      const draggedTitle = draggedData.title || ''
+      const draggedType = draggedData.page_id > 0 ? 'page' : 'catalog'
 
       // 先定义一个函数，将目录数组降维
       const dimensionReduction = treeData => {
@@ -376,7 +382,10 @@ export default {
       const tdata = dimensionReduction(treeData)
       this.request('/api/catalog/batUpdate', {
         item_id: this.item_info.item_id,
-        cats: JSON.stringify(tdata)
+        cats: JSON.stringify(tdata),
+        dragged_id: draggedId,
+        dragged_title: draggedTitle,
+        dragged_type: draggedType
       })
     },
     handleNodeClick(data) {
