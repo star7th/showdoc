@@ -18,6 +18,15 @@
               class="el-icon-edit-outline cursor-pointer"
             ></i>
           </div>
+          
+          <!-- 添加推送地址设置 - 只对中文用户显示 -->
+          <div v-if="isZhCn">
+            微信推送地址 :&nbsp;
+            {{ pushUrlForm.url ? "已设置": '未设置' }}&nbsp;<i
+              @click="pushUrlFormSubmit"
+              class="el-icon-edit-outline cursor-pointer"
+            ></i>
+          </div>
         </div>
 
         <div>
@@ -94,7 +103,11 @@ export default {
       passwordForm: {
         password: '',
         new_password: ''
-      }
+      },
+      pushUrlForm: {
+        url: ''
+      },
+      isZhCn: window.DocConfig.lang.toLowerCase() === 'zh-cn'
     }
   },
   computed: {},
@@ -103,6 +116,8 @@ export default {
       this.request('/api/user/info', {}).then(data => {
         var userInfo = data.data
         this.userInfo = userInfo
+        // 获取用户推送地址
+        this.getPushUrl()
       })
     },
     nameFormSubmit() {
@@ -141,6 +156,45 @@ export default {
         this.$router.push({
           path: '/'
         })
+      })
+    },
+    // 获取用户推送地址
+    getPushUrl() {
+      this.request('/api/user/getPushUrl', {}).then(data => {
+        if (data.data) {
+          this.pushUrlForm.url = data.data
+        }
+      })
+    },
+    // 保存用户推送地址
+    savePushUrl() {
+      this.request('/api/user/savePushUrl', {
+        push_url: this.pushUrlForm.url
+      }).then(data => {
+        this.$message.success('保存成功')
+      })
+    },
+    // 编辑推送地址
+    pushUrlFormSubmit() {
+      this.$prompt('输入推送地址', ' ', {
+        inputValue: this.pushUrlForm.url,
+        inputPlaceholder: '从 push.showdoc.com.cn 获取您的推送地址',
+        dangerouslyUseHTMLString: true,
+        message: `
+          <div style="margin-bottom: 10px; line-height: 1.5; color: #666;">
+            <p>请按照以下步骤获取您的推送地址：</p>
+            <ol style="padding-left: 20px; margin: 5px 0;">
+              <li>访问 <a href="https://push.showdoc.com.cn" target="_blank">push.showdoc.com.cn</a></li>
+              <li>使用微信扫码登录</li>
+              <li>在"推送"导航菜单找到您的专属推送地址</li>
+              <li>复制该地址粘贴到此处</li>
+            </ol>
+            <p>绑定后，当有消息时会自动推送到您的微信</p>
+          </div>
+        `
+      }).then(data => {
+        this.pushUrlForm.url = data.value
+        this.savePushUrl()
       })
     }
   },

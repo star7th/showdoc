@@ -59,6 +59,13 @@ exports.default = {
   modify_success: '修改成功',
   update_email_success: '更新邮箱成功！请登录邮箱查收验证邮件',
 
+  // push notification
+  push_url: '推送地址',
+  not_set: '未设置',
+  input_push_url: '输入推送地址',
+  input_push_url_tips: '从 push.showdoc.com.cn 获取您的推送地址',
+  save_success: '保存成功',
+
   // item/index
   personal_setting: '个人设置',
   web_home: '网站首页',
@@ -202,16 +209,15 @@ exports.default = {
   overview: '预览',
   save_templ_title: '请为要保存的模板设置标题',
   save_templ_text:
-    '已经保存好模板。你以后新建或者编辑编辑页面时，点击“更多模板”按钮，便可以使用你保存的模板',
+    '已经保存好模板。你以后新建或者编辑编辑页面时，点击"更多模板"按钮，便可以使用你保存的模板',
   welcome_use_showdoc: '欢迎使用ShowDoc！',
   templ_list: '模板列表',
   templ_title: '模板标题',
   no_templ_text:
-    '你尚未保存过任何模板。你可以在编辑页面时，在“保存”按钮右边点击，在下拉菜单中选择“另存为模板”。把页面内容保存为模板后，你下次新建或者编辑页面时便可以使用你之前保存的模板',
+    '你尚未保存过任何模板。你可以在编辑页面时，在"保存"按钮右边点击，在下拉菜单中选择"另存为模板"。把页面内容保存为模板后，你下次新建或者编辑页面时便可以使用你之前保存的模板',
   save_time: '保存时间',
   insert_templ: '插入此模板',
   delete_templ: '删除模板',
-  save_success: '保存成功',
   paste_insert_table: '粘贴插入表格',
   paste_insert_table_tips:
     '你可以从网页或者excel中复制表格，然后粘贴在此处。粘贴并确定后，程序将自动把源表格转为markdown格式的表格。注：复制excel后，请鼠标右击，粘贴为纯文本。否则会当做图片上传。',
@@ -343,7 +349,7 @@ exports.default = {
   export_format_word: 'word格式',
   export_format_markdown: 'markdown压缩包',
   export_markdown_tips:
-    '导出的压缩包可以重新导入showdoc，在新建项目的时候选择“文件导入”即可',
+    '导出的压缩包可以重新导入showdoc，在新建项目的时候选择"文件导入"即可',
 
   private_tips: '这是一个私密项目',
 
@@ -471,7 +477,7 @@ exports.default = {
   cur_setting_notify: '当前已设置通知',
   people: '人',
   notify_tips1:
-    '处于通知名单里的人会收到当前页面被修改了的提醒，同时会附上修改备注',
+    '处于通知名单里的人会收到当前页面被修改了的提醒，同时会附上修改备注。如果对方在用户中心绑定了微信推送地址，则还会收到微信提醒',
   input_update_remark: '请输入修改备注',
   update_remark: '修改备注',
   add_single_member: '单独添加人员',
@@ -487,9 +493,9 @@ exports.default = {
   my_template: '我的模板',
   item_template: '共享到本项目的模板',
   no_my_template_text:
-    '你尚未保存过任何模板。你可以在编辑页面时，在“保存”按钮右边点击，在下拉菜单中选择“另存为模板”。把页面内容保存为模板后，你下次新建或者编辑页面时便可以使用你之前保存的模板。如果你想使用别人共享的模板，可以切换到‘共享到本项目的模板’标签页去看',
+    '你尚未保存过任何模板。你可以在编辑页面时，在"保存"按钮右边点击，在下拉菜单中选择"另存为模板"。把页面内容保存为模板后，你下次新建或者编辑页面时便可以使用你之前保存的模板。如果你想使用别人共享的模板，可以切换到"共享到本项目的模板"标签页去看',
   no_item_template_text:
-    '当前没有任何共享到本项目的模板。你以及其他成员都可以选择把自己的模板共享到本项目。在‘我的模板’处便可以设置。共享后，所有成员都能看到本项目下共享的模板',
+    '当前没有任何共享到本项目的模板。你以及其他成员都可以选择把自己的模板共享到本项目。在"我的模板"处便可以设置。共享后，所有成员都能看到本项目下共享的模板',
   sharer: '共享人',
   share_to_these_items: '共享到这些项目',
   share_items_tips:

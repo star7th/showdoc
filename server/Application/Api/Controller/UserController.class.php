@@ -395,6 +395,27 @@ class UserController extends BaseController
         $this->sendResult(array());
     }
 
+    /**
+     * 获取用户的推送地址
+     */
+    public function getPushUrl()
+    {
+        $info = $this->checkLogin();
+        $push_url = D("UserSetting")->getPushUrl($info['uid']);
+        $this->sendResult($push_url);
+    }
+
+    /**
+     * 保存用户的推送地址
+     */
+    public function savePushUrl()
+    {
+        $info = $this->checkLogin();
+        $push_url = I("push_url");
+        D("UserSetting")->savePushUrl($info['uid'], $push_url);
+        $this->sendResult(array());
+    }
+
     public function oauthInfo()
     {
         $oauth2_open = D("Options")->get("oauth2_open");

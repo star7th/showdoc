@@ -68,6 +68,13 @@ exports.default = {
   update_email_success:
     'Update your mailbox successfully! Please log in to check the email to check the email.',
 
+  // push notification
+  push_url: 'Push URL',
+  not_set: 'Not set',
+  input_push_url: 'Input push URL',
+  input_push_url_tips: 'Get your push URL from push.showdoc.com.cn',
+  save_success: 'Save success',
+
   // item/index
   personal_setting: 'Personal settings',
   web_home: 'Home',
@@ -223,7 +230,6 @@ exports.default = {
   save_time: 'Save time',
   insert_templ: 'Insert',
   delete_templ: 'Delete',
-  save_success: 'Save success',
   paste_insert_table: 'Insert table from paste',
   paste_insert_table_tips:
     'Paste (Ctrl + V) below an existing table data copied (Ctrl + C) from a spreadsheet (e.g. Microsoft Excel), a text document, a Markdown code, or even a website.',

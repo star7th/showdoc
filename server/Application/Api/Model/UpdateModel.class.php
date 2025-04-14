@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 19;
+        $version_num = 20;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -541,6 +541,16 @@ class UpdateModel
         D("page")->execute("INSERT INTO sqlite_sequence (name, seq) VALUES ('page', {$randomNumber1})");
         D("page")->execute("INSERT INTO sqlite_sequence (name, seq) VALUES ('catalog', {$randomNumber2})");
         D("page")->execute("INSERT INTO sqlite_sequence (name, seq) VALUES ('item', {$randomNumber3})");
+
+        //创建user_setting表
+        $sql = "CREATE TABLE IF NOT EXISTS `user_setting` (
+        `id`  INTEGER PRIMARY KEY ,
+        `uid` int(10) NOT NULL DEFAULT '0',
+        `key_name` CHAR(200) NOT NULL DEFAULT '',
+        `key_value` text NOT NULL DEFAULT '' ,
+        `addtime` text NOT NULL DEFAULT ''
+        )";
+        D("UserSetting")->execute($sql);
 
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
