@@ -24,6 +24,19 @@ class ExportController extends BaseController
             return;
         }
 
+        // 获取项目信息
+        $item = D("Item")->where("item_id = '$item_id' ")->find();
+        
+        // 检查是否为runapi项目并获取全局header
+        $global_headers = array();
+        if ($item['item_type'] == '3') { // runapi项目类型为3
+            $runapiModel = new \Api\Model\RunapiModel();
+            $globalParam = $runapiModel->getGlobalParam($item_id);
+            if (isset($globalParam['header']) && !empty($globalParam['header'])) {
+                $global_headers = $globalParam['header'];
+            }
+        }
+
         // 如果改用户是项目成员，且只分配了单个目录权限
         $tmpRes = D("ItemMember")->where(" item_id = '$item_id' and uid = '$login_user[uid]' and cat_id > 0 ")->find();
         if ($tmpRes) {
@@ -34,9 +47,6 @@ class ExportController extends BaseController
         if ($tmpRes) {
             $cat_id = $tmpRes['cat_id'];
         }
-
-        $item = D("Item")->where("item_id = '$item_id' ")->find();
-
 
         $menu = D("Item")->getContent($item_id, "*", "*", 1);
         if ($page_id > 0) {
@@ -80,9 +90,27 @@ class ExportController extends BaseController
             $catalogs = $menu['catalogs'];
         }
 
-
         $data = '';
         $parent = 1;
+
+        // 如果是runapi项目且有全局header，则先添加全局header信息
+        if (!empty($global_headers)) {
+            $data .= "<h1>全局Header参数</h1>";
+            $data .= '<div style="margin-left:20px;">';
+            $data .= "<table>";
+            $data .= "<thead><tr><th>参数名</th><th>值</th><th>是否启用</th><th>备注</th></tr></thead>";
+            $data .= "<tbody>";
+            foreach ($global_headers as $header) {
+                $enabled = isset($header['enabled']) && $header['enabled'] ? '是' : '否';
+                $name = isset($header['name']) ? $header['name'] : '';
+                $value = isset($header['value']) ? $header['value'] : '';
+                $remark = isset($header['remark']) ? $header['remark'] : '';
+                $data .= "<tr><td>{$name}</td><td>{$value}</td><td>{$enabled}</td><td>{$remark}</td></tr>";
+            }
+            $data .= "</tbody></table>";
+            $data .= '</div>';
+            $parent++;
+        }
 
         if ($pages) {
             foreach ($pages as $key => $value) {
