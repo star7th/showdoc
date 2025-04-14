@@ -16,7 +16,7 @@
       </div>
       <HeaderRight :isAdmin="isAdmin"></HeaderRight>
     </div>
-    <div class="container">
+    <div class="container" :class="{ 'card-view-mode': viewMode === 'card' }">
       <div class="left-side inline-block">
         <div class="all-star-item-group">
           <div
@@ -88,33 +88,71 @@
         </div>
       </div>
       <div class="right-side align-top  inline-block">
-        <div class="search-box-div">
-          <div class="search-box el-input el-input--prefix">
-            <el-input
-              autocomplete="off"
-              type="text"
-              class="search-input"
-              validateevent="true"
-              :clearable="true"
-              v-model="keyword"
-            />
-            <span class="el-input__prefix">
-              <i class="el-input__icon el-icon-search"></i>
-            </span>
+        <!-- 搜索区域 -->
+        <div class="search-and-view-control">
+          <div class="search-box-div">
+            <div class="search-box el-input el-input--prefix">
+              <el-input
+                autocomplete="off"
+                type="text"
+                class="search-input"
+                validateevent="true"
+                :clearable="true"
+                v-model="keyword"
+                :placeholder="$t('search_keyword')"
+              />
+              <span class="el-input__prefix">
+                <i
+                  style="font-size: 16px;line-height: 60px;margin-left: 5px;"
+                  class="el-input__icon el-icon-search"
+                ></i>
+              </span>
+            </div>
           </div>
         </div>
-        <div class="divider-item-block  mt-3 mb-3">
+
+        <div class="divider-item-block mt-3 mb-3">
           <div class="divider-text">{{ selectedGroupName }}</div>
+          <!-- 视图切换按钮 -->
+          <div class="view-switcher">
+            <el-tooltip :content="$t('list_view')" placement="top">
+              <div
+                class="view-switch-btn"
+                :class="{ active: viewMode === 'list' }"
+                @click="viewMode = 'list'"
+              >
+                <i class="fas fa-list-ul"></i>
+              </div>
+            </el-tooltip>
+            <el-tooltip :content="$t('card_view')" placement="top">
+              <div
+                class="view-switch-btn"
+                :class="{ active: viewMode === 'card' }"
+                @click="viewMode = 'card'"
+              >
+                <i class="fas fa-th-large"></i>
+              </div>
+            </el-tooltip>
+          </div>
         </div>
 
         <!-- 项目列表组件  -->
         <ItemListCom
-          v-if="!showSearch"
+          v-if="!showSearch && viewMode === 'list'"
           :itemList="itemList"
           :getItemList="getItemList"
           :itemGroupId="itemGroupId"
         >
         </ItemListCom>
+
+        <!-- 项目卡片视图组件 -->
+        <ItemCardList
+          v-if="!showSearch && viewMode === 'card'"
+          :itemList="itemList"
+          :getItemList="getItemList"
+          :itemGroupId="itemGroupId"
+        >
+        </ItemCardList>
 
         <div v-if="itemList.length === 0" class="empty">
           <div class="icon">
@@ -131,14 +169,19 @@
         ></Search>
 
         <!-- 新建项目按钮 -->
-        <itemAdd
-          :itemGroupId="itemGroupId"
-          :callback="
-            () => {
-              getItemList()
-            }
-          "
-        ></itemAdd>
+        <div
+          class="content-wrapper"
+          :class="{ 'card-view-mode': viewMode === 'card' }"
+        >
+          <itemAdd
+            :itemGroupId="itemGroupId"
+            :callback="
+              () => {
+                getItemList()
+              }
+            "
+          ></itemAdd>
+        </div>
       </div>
     </div>
     <itemGroupCom
@@ -167,6 +210,7 @@ import HeaderRight from './HeaderRight.vue'
 import Search from './Search.vue'
 import ItemListCom from './ItemList.vue'
 import Notify from '@/components/common/Notify'
+import ItemCardList from './ItemCardList.vue'
 import { getUserInfo } from '@/models/user.js'
 export default {
   components: {
@@ -176,6 +220,7 @@ export default {
     itemAdd,
     Search,
     ItemListCom,
+    ItemCardList,
     Notify
   },
   data() {
@@ -189,7 +234,8 @@ export default {
       itemGroupId: '',
       itemGroupList: [],
       loading: false,
-      showItemGroupCom: false
+      showItemGroupCom: false,
+      viewMode: 'list' // 默认为列表视图
     }
   },
   computed: {
@@ -234,6 +280,10 @@ export default {
       } else {
         this.showSearch = false
       }
+    },
+    // 保存视图模式到本地存储
+    viewMode: function(val) {
+      localStorage.setItem('defaultViewMode', val)
     }
   },
   methods: {
@@ -282,6 +332,10 @@ export default {
       })
     }
   },
+  // 跳转到外部链接
+  toOutLink(url) {
+    window.open(url)
+  },
   mounted() {
     const deaultItemGroupId = localStorage.getItem('deaultItemGroupId')
     if (deaultItemGroupId === null) {
@@ -289,6 +343,12 @@ export default {
       this.itemGroupId = 0
     } else {
       this.itemGroupId = parseInt(deaultItemGroupId)
+    }
+
+    // 从本地存储中获取视图模式
+    const defaultViewMode = localStorage.getItem('defaultViewMode')
+    if (defaultViewMode) {
+      this.viewMode = defaultViewMode
     }
 
     this.getItemGroupList()
@@ -338,12 +398,25 @@ a {
 .container {
   max-width: 870px;
   margin: 0 auto;
+  transition: max-width 0.2s ease;
 }
+
+/* 卡片视图模式下容器变宽 */
+.container.card-view-mode {
+  max-width: 1050px;
+}
+
 .left-side {
   width: 230px;
   padding-top: 40px;
   border-right: 1px solid rgba(0, 0, 0, 0.05);
   min-height: calc(100vh - 150px);
+  transition: width 0.3s ease;
+}
+
+/* 卡片视图下左侧侧边栏可以更窄一些 */
+.card-view-mode .left-side {
+  width: 200px;
 }
 
 .item-one-block {
@@ -352,6 +425,7 @@ a {
   border-radius: 8px;
   cursor: pointer;
   padding-left: 10px;
+  margin-bottom: 2px;
 }
 
 .item-one-block:hover {
@@ -371,9 +445,8 @@ a {
 }
 
 .divider-text {
-  font-size: 9px;
+  font-size: 11px;
   color: #9b9b9b;
-  display: inline;
   margin-left: 1px;
 }
 .divider-icon {
@@ -390,31 +463,103 @@ a {
 }
 
 .right-side {
-  padding-top: 50px;
+  padding-top: 40px;
   padding-left: 20px;
+  width: calc(100% - 250px);
+  box-sizing: border-box;
+  transition: width 0.3s ease, padding-left 0.3s ease;
 }
+
+/* 卡片视图下右侧内容区更宽 */
+.card-view-mode .right-side {
+  width: calc(100% - 220px);
+  padding-left: 30px;
+}
+
 .search-input {
-  width: 600px;
+  width: 100%;
+  max-width: 600px;
+  transition: max-width 0.2s ease;
 }
+
+.card-view-mode .search-input {
+  max-width: 100%;
+}
+
+.search-input >>> input {
+  border-radius: 8px;
+  height: 50px;
+  padding-left: 40px;
+  font-size: 14px;
+}
+
+.search-and-view-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.search-box-div {
+  flex: 1;
+}
+
+.view-switcher {
+  display: flex;
+  align-items: center;
+}
+
+.view-switch-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-left: 5px;
+  background: #f9f9f9;
+  color: #9b9b9b;
+  transition: all 0.2s;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.view-switch-btn:hover {
+  background: #f0f0f0;
+  color: #606266;
+}
+
+.view-switch-btn.active {
+  background: #f0f0f0;
+  color: #333;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
 .empty {
-  margin: 5% auto;
+  margin: 10% auto;
   width: 400px;
   text-align: center;
-  color: #000;
-  margin-top: 30%;
-  opacity: 0.25;
+  color: #909399;
+  opacity: 0.7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
+
 .empty .icon {
-  font-size: 50px;
+  font-size: 60px;
+  margin-bottom: 20px;
+  color: #dcdfe6;
 }
 
 .empty .text {
-  font-size: 11px;
+  font-size: 14px;
+  margin-bottom: 20px;
 }
-
 .left-bottom-bar {
   position: fixed;
-  bottom: 10px;
+  bottom: 35px;
   text-align: center;
   width: 230px;
   display: flex;
@@ -437,5 +582,27 @@ a {
   color: #856404;
   cursor: pointer;
   text-decoration: underline;
+}
+
+.divider-item-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 10px;
+}
+
+/* 内容包装器样式 */
+.content-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100px;
+}
+
+/* 卡片视图模式下的内容包装器 */
+.content-wrapper.card-view-mode {
+  width: 100%;
 }
 </style>

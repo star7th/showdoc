@@ -610,5 +610,11 @@ exports.default = {
   subcat: 'subcatalog',
   sync: 'synchronizing',
   force_login: 'Force login',
-  force_login_tips: 'When accessing any item, tourists will be required to log in to their account and are not allowed to access as non logged in individuals'
+  force_login_tips:
+    'When accessing any item, tourists will be required to log in to their account and are not allowed to access as non logged in individuals',
+
+  // 视图模式
+  list_view: 'List',
+  card_view: 'Card',
+  no_description: 'No description'
 }

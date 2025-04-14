@@ -160,7 +160,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .create-item-btn-div {
-  margin-left: 250px;
   width: 200px;
   height: 60px;
   bottom: 20px;
@@ -169,6 +168,14 @@ export default {
   border-radius: 10px;
   background: #ffffff;
   font-weight: 600;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  margin-left: 115px;
+}
+
+.card-view-mode >>> .create-item-btn-div {
+  margin-left: 100px;
 }
 
 .create-item-btn-div .left,
@@ -187,13 +194,13 @@ export default {
   cursor: pointer;
 }
 
-/* >>> 符号表示对子组件生效 */
 .create-item-btn-div >>> .create-item-right-btn {
   width: 60px;
   height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .el-dropdown-link,
