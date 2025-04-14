@@ -26,10 +26,33 @@
       size="80%"
     >
       <div class="tree-div hide-scrollbar">
+        <!-- 搜索框放在目录树上方 -->
+        <div class="search-box-container">
+          <div class="search-input-wrapper">
+            <el-input
+              @keyup.enter.native="searchLocalTree"
+              :placeholder="$t('input_keyword')"
+              class="search-box"
+              :clearable="true"
+              @clear="resetTree"
+              size="small"
+              v-model="searchKeyword"
+            >
+            </el-input>
+            <div class="search-icon-btn" @click="searchLocalTree">
+              <i class="el-icon-search"></i><span class="btn-text">{{ $t('search') }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="isSearching" class="search-loading">
+          <i class="el-icon-loading"></i> {{ $t('searching') }}...
+        </div>
+
         <el-tree
           ref="tree"
-          :data="menu"
-          v-if="menu && menu.length > 0"
+          :data="currentMenu"
+          v-if="currentMenu && currentMenu.length > 0"
           :props="defaultProps"
           :default-expanded-keys="openeds"
           @node-click="handleNodeClick"
@@ -56,6 +79,10 @@
             </span>
           </span>
         </el-tree>
+
+        <div v-if="noSearchResults" class="no-results">
+          {{ $t('no_results_found') }}
+        </div>
       </div>
     </el-drawer>
   </div>
@@ -82,13 +109,18 @@ export default {
     return {
       drawer: false,
       menu: [],
+      originalMenu: [], // 保存原始目录树
+      currentMenu: [], // 当前显示的目录树（可能是搜索结果）
       defaultProps: {
         children: 'children',
         label: 'title'
       },
       openeds: [],
       hideElement: false,
-      lastScrollTop: 0
+      lastScrollTop: 0,
+      searchKeyword: '',
+      isSearching: false,
+      noSearchResults: false
     }
   },
   methods: {
@@ -136,10 +168,94 @@ export default {
       }
 
       this.lastScrollTop = scrollTop
+    },
+    // 局部搜索目录树
+    searchLocalTree() {
+      if (!this.searchKeyword.trim()) {
+        this.resetTree()
+        return
+      }
+
+      this.isSearching = true
+      this.noSearchResults = false
+
+      const item_id = this.item_info.item_id
+
+      // 使用与主搜索相同的接口获取搜索结果
+      this.request(
+        '/api/item/info',
+        {
+          item_id: item_id,
+          keyword: this.searchKeyword
+        },
+        'post',
+        false
+      )
+        .then(data => {
+          this.isSearching = false
+
+          if (data.error_code === 0) {
+            const filteredMenu = itemMenuDataToTreeData(data.data.menu)
+            this.currentMenu = filteredMenu
+
+            // 展开所有搜索结果
+            this.openeds = this.getAllNodeIds(filteredMenu)
+
+            // 检查是否有搜索结果
+            this.noSearchResults = !filteredMenu.length
+          } else {
+            this.$message.error(data.error_message || '搜索失败')
+            this.noSearchResults = true
+          }
+        })
+        .catch(err => {
+          this.isSearching = false
+          this.noSearchResults = true
+          console.error('搜索出错:', err)
+        })
+    },
+    // 重置目录树到原始状态
+    resetTree() {
+      this.searchKeyword = ''
+      this.currentMenu = this.originalMenu
+      this.noSearchResults = false
+
+      // 重置展开状态
+      const page_id = this.item_info.default_page_id
+        ? this.item_info.default_page_id
+        : 0
+      if (page_id) {
+        const openeds = getParentIds(this.originalMenu, page_id)
+        if (openeds) {
+          this.openeds = openeds
+        }
+      }
+    },
+    // 获取所有节点ID以便全部展开
+    getAllNodeIds(nodes) {
+      const ids = []
+      const traverse = node => {
+        if (node.id) ids.push(node.id)
+        if (node.children && node.children.length) {
+          node.children.forEach(child => traverse(child))
+        }
+      }
+
+      if (Array.isArray(nodes)) {
+        nodes.forEach(node => traverse(node))
+      } else if (nodes) {
+        traverse(nodes)
+      }
+
+      return ids
     }
   },
   mounted() {
-    this.menu = itemMenuDataToTreeData(this.item_info.menu)
+    const menuData = itemMenuDataToTreeData(this.item_info.menu)
+    this.menu = menuData
+    this.originalMenu = menuData // 保存原始目录
+    this.currentMenu = menuData // 设置当前目录
+
     window.addEventListener('scroll', this.handleScroll)
 
     // 默认展开页面
@@ -194,11 +310,14 @@ export default {
   height: 40px;
   line-height: 40px;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
 }
 
 .logo {
   margin-left: 20px;
-  float: left;
   align-items: center;
 }
 
@@ -215,16 +334,56 @@ export default {
 
 .cat-btn-div {
   margin-right: 20px;
-  float: right;
   background: #ffffff;
   border-radius: 8px;
   cursor: pointer;
   padding-left: 15px;
   padding-right: 15px;
-  margin-right: 25px;
   color: #343a40;
   font-weight: 700;
+}
+
+.search-box-container {
+  padding: 15px 15px;
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.search-box {
+  flex: 1;
+}
+
+.search-icon-btn {
+  margin-left: 5px;
+  height: 32px;
+  padding: 0 10px;
+  background-color: #ffffff;
+  color: #343a40;
+  font-weight: 700;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+}
+
+.search-icon-btn .btn-text {
+  margin-left: 5px;
+}
+
+.search-loading {
+  text-align: center;
+  padding: 10px 0;
+  color: #909399;
+}
+
+.no-results {
+  text-align: center;
+  padding: 20px 0;
+  color: #909399;
 }
 
 .tree-div {
@@ -247,9 +406,5 @@ export default {
   background-color: #ffffff;
   border-radius: 6px;
   /* margin-top: 2px; */
-}
-.tree-div >>> .is-current > .el-tree-node__content .node-page .node-label {
-  color: #409eff;
-  font-weight: 700;
 }
 </style>
