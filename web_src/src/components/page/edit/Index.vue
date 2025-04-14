@@ -483,7 +483,8 @@ export default {
       showMock: false,
       showAI: false,
       showAIBtn: false,
-      isEditingTitle: false
+      isEditingTitle: false,
+      draftIntervalId: null
     }
   },
   components: {
@@ -668,6 +669,9 @@ export default {
         loading.close()
         that.saving = false
         if (data.error_code === 0) {
+          // 删除草稿（放在成功回调之前，确保无论是否有回调都会删除草稿）
+          that.deleteDraft()
+          
           if (typeof callback == 'function') {
             callback()
           } else {
@@ -678,8 +682,6 @@ export default {
             })
           }
 
-          // 删除草稿
-          that.deleteDraft()
           if (that.page_id <= 0) {
             that.page_id = data.data.page_id
             // 更改url
@@ -700,6 +702,11 @@ export default {
         } else {
           that.$alert(data.error_message)
         }
+      }).catch(() => {
+        // 保存失败时关闭加载
+        loading.close()
+        that.saving = false
+        that.$alert(that.$t('save_fail') || '保存失败')
       })
 
       // 设置一个最长关闭时间
@@ -854,10 +861,22 @@ export default {
       var that = this
       var pkey = 'page_content_' + this.page_id
       let childRef = this.$refs.Editormd
+      
+      // 清除原有的草稿定时器（如果存在）
+      if (this.draftIntervalId) {
+        clearInterval(this.draftIntervalId);
+      }
+      
       // 定时保存文本内容到localStorage
-      setInterval(() => {
-        var content = childRef.getMarkdown()
-        localStorage.setItem(pkey, content)
+      this.draftIntervalId = setInterval(() => {
+        // 确保有页面ID时才保存草稿
+        if (that.page_id) {
+          var pkey = 'page_content_' + that.page_id;
+          var content = childRef.getMarkdown();
+          if (content && content.length > 10) {
+            localStorage.setItem(pkey, content);
+          }
+        }
       }, 30 * 1000)
 
       // 检测是否有定时保存的内容
@@ -886,10 +905,22 @@ export default {
 
     // 遍历删除草稿
     deleteDraft() {
+      // 保存当前页面ID，防止在循环中i值变化导致localStorage.key(i)获取错误
+      const currentPageId = this.page_id;
+      
+      // 直接删除当前页面的草稿
+      if (currentPageId) {
+        const pkey = 'page_content_' + currentPageId;
+        localStorage.removeItem(pkey);
+      }
+      
+      // 遍历删除所有草稿（向后兼容旧的实现）
       for (var i = 0; i < localStorage.length; i++) {
-        var name = localStorage.key(i)
-        if (name.indexOf('page_content_') > -1) {
-          localStorage.removeItem(name)
+        var name = localStorage.key(i);
+        if (name && name.indexOf('page_content_') > -1) {
+          localStorage.removeItem(name);
+          // 由于删除了一项，需要调整索引以免漏掉项目
+          i--;
         }
       }
     },
@@ -1038,6 +1069,12 @@ export default {
     document.removeEventListener('paste', this.clipboardEvents)
     this.$message.closeAll()
     clearInterval(this.intervalId)
+    // 清除草稿定时器
+    if (this.draftIntervalId) {
+      clearInterval(this.draftIntervalId);
+    }
+    // 保存时清除草稿
+    this.deleteDraft();
     this.unlock()
     window.removeEventListener('beforeunload', this.unLockOnClose)
   }
