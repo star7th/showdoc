@@ -50,7 +50,7 @@
           </el-form-item>
 
           <el-form-item label>
-            <router-link to="/user/register">{{
+            <router-link v-if="register_open" to="/user/register">{{
               $t('register_new_account')
             }}</router-link
             >&nbsp;&nbsp;&nbsp;
@@ -78,7 +78,8 @@ export default {
       oauth2_entrance_tips: '',
       oauth2_url: DocConfig.server + '/api/ExtLogin/oauth2',
       captchaId: 0,
-      captcha: ''
+      captcha: '',
+      register_open: true
     }
   },
   methods: {
@@ -182,6 +183,13 @@ export default {
           }
         }
       })
+    },
+    getRegisterConfig() {
+      this.request('/api/common/homePageSetting', {}, 'post', false).then(data => {
+        if (data.error_code === 0 && data.data) {
+          this.register_open = data.data.register_open > 0
+        }
+      })
     }
   },
   mounted() {
@@ -217,6 +225,7 @@ export default {
 
     this.script_cron()
     this.getOauth()
+    this.getRegisterConfig()
     this.changeVcodeImg()
   },
   watch: {

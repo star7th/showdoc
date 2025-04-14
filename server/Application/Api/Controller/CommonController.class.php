@@ -113,11 +113,13 @@ class CommonController extends BaseController
     $home_item = D("Options")->get("home_item");
     $open_api_key = D("Options")->get("open_api_key");
     $beian = D("Options")->get("beian");
+    $register_open = D("Options")->get("register_open");
     $array = array(
       "home_page" => $home_page,
       "home_item" => $home_item,
       "beian" => $beian ? $beian : '',
       "is_show_ai" => $open_api_key ? 1 : 0,
+      "register_open" => $register_open === false ? 1 : intval($register_open),
     );
     $this->sendResult($array);
   }
