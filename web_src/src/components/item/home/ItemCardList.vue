@@ -1,7 +1,14 @@
 <template>
   <div class="item-card-list">
     <div class="card-container">
-      <el-row :gutter="15">
+      <draggable
+        v-model="itemList"
+        tag="div"
+        group="item"
+        @end="endMove"
+        ghostClass="sortable-chosen"
+        class="draggable-container"
+      >
         <el-col
           :xs="24"
           :sm="12"
@@ -9,6 +16,7 @@
           :lg="6"
           v-for="item in itemList"
           :key="item.item_id"
+          class="card-item-col"
         >
           <div
             class="item-card"
@@ -145,7 +153,7 @@
             </div>
           </div>
         </el-col>
-      </el-row>
+      </draggable>
     </div>
 
     <!-- 分享项目 -->
@@ -264,6 +272,7 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import Share from '@/components/item/home/Share'
 import ItemUpdate from '@/components/item/add/Basic'
 import Member from '@/components/item/setting/Member'
@@ -282,6 +291,7 @@ export default {
     itemGroupId: Number
   },
   components: {
+    draggable,
     Share,
     ItemUpdate,
     Member,
@@ -335,6 +345,35 @@ export default {
           this.getItemList()
         })
       })
+    },
+    sortItem(data) {
+      this.request(
+        '/api/item/sort',
+        {
+          data: JSON.stringify(data),
+          item_group_id: this.itemGroupId
+        },
+        'post',
+        false
+      ).then(data => {
+        if (data.error_code === 0) {
+          this.getItemList()
+        } else {
+          this.$alert(data.error_message, '', {
+            callback: function() {
+              window.location.reload()
+            }
+          })
+        }
+      })
+    },
+    endMove(evt) {
+      let data = {}
+      for (var i = 0; i < this.itemList.length; i++) {
+        let key = this.itemList[i]['item_id']
+        data[key] = i + 1
+      }
+      this.sortItem(data)
     }
   }
 }
@@ -350,6 +389,18 @@ export default {
 .card-container {
   margin-top: 20px;
   width: 100%;
+}
+
+.draggable-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -7.5px;
+  width: calc(100% + 15px);
+}
+
+.card-item-col {
+  padding: 0 7.5px;
+  box-sizing: border-box;
 }
 
 .el-row {
@@ -436,5 +487,9 @@ export default {
   content: none;
 }
 
-/* 移除悬浮描述样式 */
+/* 拖拽时的样式 */
+.sortable-chosen {
+  background: #f9f9f9;
+  opacity: 0.8;
+}
 </style>
