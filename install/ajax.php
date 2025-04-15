@@ -1,80 +1,55 @@
 <?php
-// --------
-// 	如果你能在浏览器中看到本句话，则证明你没有安装好PHP运行环境。请先安装好PHP运行环境
-// --------
+/**
+ * ShowDoc安装脚本 - AJAX处理
+ */
 ini_set("display_errors", "Off");
 error_reporting(E_ALL | E_STRICT);
 header("Content-type: text/html; charset=utf-8"); 
 include("common.php");
-$lang = $_REQUEST['lang'] ? $_REQUEST['lang'] :"zh";
 
-if(file_exists('./install.lock') && $f = file_get_contents("./install.lock")){
-	ajax_out(L("lock"),10099);
+// 获取请求语言
+$lang = isset($_REQUEST['lang']) ? $_REQUEST['lang'] : "zh";
+
+// 检查安装锁
+if (is_install_locked()) {
+    ajax_out(L("lock"), 10099);
 }
 
-if(!new_is_writeable("./")){
-	ajax_out(L("not_writable_install"),10098);
+// 检查环境
+$check_result = check_environment();
+if (!$check_result['status']) {
+    ajax_out(implode('<br>', $check_result['messages']), 10095);
 }
 
-if(!new_is_writeable("../Public/Uploads")){
-	ajax_out(L("not_writable_upload"),10098);
-}
-
-
-if(!new_is_writeable("../server/Application/Runtime")){
-    ajax_out(L("not_writable_server_runtime"),10095);
-}
-
-
-if(!new_is_writeable("../Sqlite")){
-    ajax_out(L("not_writable_sqlite"),10097);
-}
-
-if(!new_is_writeable("../Sqlite/showdoc.db.php")){
-    ajax_out(L("not_writable_sqlite_db"),10096);
-}
-
-
-if($lang == 'en'){
-
-    if(!new_is_writeable("../server/Application/Home/Conf/config.php")){
-        ajax_out(L("not_writable_home_config"),10096);
-    }
-    if(!new_is_writeable("../web/index.html")){
-        ajax_out(L("not_writable_web_docconfig"),10096);
-    }
-    if(!new_is_writeable("../web_src/index.html")){
-        ajax_out(L("not_writable_web_src_docconfig"),10096);
-    }    
-
-    replace_file_content("../web/index.html","zh-cn","en") ;
-    replace_file_content("../web_src/index.html","zh-cn","en") ;
-
-    clear_runtime();//清除缓存
+// 额外检查英文环境下需要的文件权限
+if ($lang == 'en') {
+    $en_files = [
+        "../server/Application/Home/Conf/config.php" => L("not_writable_home_config"),
+        "../web/index.html" => L("not_writable_web_docconfig"),
+        "../web_src/index.html" => L("not_writable_web_src_docconfig")
+    ];
     
-    $config = "<?php ";
-    $config .= "
-    return array(
-    //'配置项'=>'配置值'
-    'DB_TYPE'   => 'Sqlite', 
-    'DB_NAME'   => './Sqlite/showdoc.db.php', 
-    'LANG_SWITCH_ON' => true,   // 开启语言包功能
-    'LANG_AUTO_DETECT' => false, // 自动侦测语言 开启多语言功能后有效
-    'DEFAULT_LANG' => 'en-us', // 默认语言
-    'LANG_LIST'        => 'zh-cn,en-us', // 允许切换的语言列表 用逗号分隔
-    'VAR_LANGUAGE'     => 'l', // 默认语言切换变量
-    );";
-
-    $ret = file_put_contents("../server/Application/Home/Conf/config.php", $config);
-
-    if (!$ret) {
-        ajax_out(L("not_writable_home_config"),10001);
+    foreach ($en_files as $file => $message) {
+        if (!new_is_writeable($file)) {
+            ajax_out($message, 10096);
+        }
     }
 }
 
-clear_runtime();//清除缓存
+// 设置安装配置
+if (!set_install_config($lang)) {
+    ajax_out(L("install_config_not_writable"), 10001);
+}
 
-file_put_contents("./install.lock","https://www.showdoc.com.cn/");
+// 清除缓存
+clear_runtime();
+
+// 设置安装锁
+if (!set_install_lock()) {
+    ajax_out(L("install_config_not_writable"), 10001);
+}
+
+// 安装成功
 ajax_out(L("install_success"));
 
 

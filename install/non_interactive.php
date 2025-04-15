@@ -1,15 +1,38 @@
 <?php
-// --------
-//  如果你能在浏览器中看到本句话，则证明你没有安装好PHP运行环境。请先安装好PHP运行环境
-// --------
+/**
+ * ShowDoc安装脚本 - 非交互式安装
+ */
 ini_set("display_errors", "Off");
 error_reporting(E_ALL | E_STRICT);
 header("Content-type: text/html; charset=utf-8"); 
 include("common.php");
-if(file_exists('./install.lock') && $f = file_get_contents("./install.lock")){
+
+// 获取语言
+$lang = isset($_REQUEST['lang']) ? $_REQUEST['lang'] : "zh";
+
+// 检查是否已安装
+if (is_install_locked()) {
   echo L("lock")."\n";
-}else{
-  user_sqlite();
+  exit();
+}
+
+// 检查环境
+$check_result = check_environment();
+if (!$check_result['status']) {
+  echo implode("\n", $check_result['messages'])."\n";
+  exit();
+}
+
+// 设置安装配置
+if (set_install_config($lang)) {
+  // 设置安装锁
+  if (set_install_lock()) {
+    echo 'install success !!!'."\n";
+  } else {
+    echo L("install_config_not_writable")."\n";
+  }
+} else {
+  echo L("not_writable_home_config")."\n";
 }
 
 
