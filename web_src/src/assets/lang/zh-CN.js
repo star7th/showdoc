@@ -599,6 +599,10 @@ exports.default = {
   force_login_tips:
     '访问任意项目的时候，游客都会被要求登录账号，不允许以非登录身份访问',
 
+  // 搜索面包屑相关
+  search_results_for: '搜索结果',
+  home: '首页',
+
   // 视图模式
   list_view: '列表',
   card_view: '卡片',

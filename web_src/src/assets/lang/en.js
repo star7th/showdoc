@@ -631,5 +631,9 @@ exports.default = {
   // 视图模式
   list_view: 'List',
   card_view: 'Card',
-  no_description: 'No description'
+  no_description: 'No description',
+
+  // search breadcrumb
+  search_results_for: 'Search results for',
+  home: 'Home'
 }

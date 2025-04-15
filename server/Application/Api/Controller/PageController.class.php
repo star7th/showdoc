@@ -12,6 +12,7 @@ class PageController extends BaseController
     public function info()
     {
         $page_id = I("page_id/d");
+        $with_path = I("with_path/d"); // 是否需要返回完整的路径信息
         $page = D("Page")->where(" page_id = '$page_id' ")->find();
         if (!$page  || $page['is_del'] == 1) {
             sleep(1);
@@ -48,9 +49,76 @@ class PageController extends BaseController
             } else {
                 $page['unique_key'] = '';
             }
+
+            // 如果请求了完整路径信息，获取该页面的所有上级目录
+            if ($with_path && $page['cat_id']) {
+                $full_path = $this->getFullPath($page['cat_id'], $page['item_id']);
+                // 添加当前页面作为路径的最后一个元素
+                $full_path[] = array(
+                    'page_id' => $page['page_id'],
+                    'page_title' => $page['page_title']
+                );
+                $page['full_path'] = $full_path;
+            }
         }
         $this->sendResult($page);
     }
+
+    /**
+     * 获取目录的完整路径
+     * @param int $cat_id 当前目录ID
+     * @param int $item_id 项目ID
+     * @return array 完整路径数组
+     */
+    private function getFullPath($cat_id, $item_id)
+    {
+        if (!$cat_id || !$item_id) {
+            return array();
+        }
+
+        // 获取项目的目录结构
+        $item = D("Item")->where("item_id = '%d'", array($item_id))->find();
+        if (!$item) {
+            return array();
+        }
+
+        // 递归查找目录路径
+        $path = array();
+        $this->findCatPath($cat_id, $item_id, $path);
+
+        // 返回路径（从上到下排序）
+        return array_reverse($path);
+    }
+
+    /**
+     * 递归查找目录路径
+     * @param int $cat_id 当前目录ID
+     * @param int $item_id 项目ID
+     * @param array &$path 路径数组（引用传递）
+     * @return boolean 是否找到路径
+     */
+    private function findCatPath($cat_id, $item_id, &$path)
+    {
+        // 查找当前目录信息
+        $catalog = D("Catalog")->where("cat_id = '%d' AND item_id = '%d'", array($cat_id, $item_id))->find();
+        if (!$catalog) {
+            return false;
+        }
+
+        // 添加当前目录到路径
+        $path[] = array(
+            'cat_id' => $catalog['cat_id'],
+            'cat_name' => $catalog['cat_name']
+        );
+
+        // 如果有父目录，继续递归查找
+        if ($catalog['parent_cat_id'] > 0) {
+            return $this->findCatPath($catalog['parent_cat_id'], $item_id, $path);
+        }
+
+        return true;
+    }
+
     //删除页面
     public function delete()
     {

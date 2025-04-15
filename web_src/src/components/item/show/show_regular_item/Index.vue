@@ -41,6 +41,12 @@
 
       <div id="content-side">
         <div id="p-content">
+          <SearchBreadcrumb
+            v-if="keyword && page_info"
+            :page_info="page_info"
+            :item_info="item_info"
+            :keyword="keyword"
+          ></SearchBreadcrumb>
           <div class="doc-title-box" id="doc-title-box">
             <span class="v3-font-size-lg font-bold " id="doc-title">{{
               page_title
@@ -142,6 +148,7 @@ import HeaderRight from './HeaderRight'
 import Header from '../Header'
 import MobileHeader from '../MobileHeader'
 import LeftMenuBottomBar from './LeftMenuBottomBar'
+import SearchBreadcrumb from '@/components/common/SearchBreadcrumb'
 export default {
   props: {
     item_info: '',
@@ -177,7 +184,32 @@ export default {
     Header,
     HeaderRight,
     LeftMenuBottomBar,
-    MobileHeader
+    MobileHeader,
+    SearchBreadcrumb
+  },
+  watch: {
+    keyword: {
+      handler(newVal) {
+        // 如果有搜索关键词，立即创建一个搜索结果的page_info
+        if (newVal) {
+          // 创建一个搜索结果的page_info
+          const searchResultPage = {
+            page_title: this.$t('search_results_for') + ' "' + newVal + '"',
+            cat_id: 0, // 没有分类
+            is_search_result: true // 添加一个标记，表明这是搜索结果
+          }
+
+          this.page_info = searchResultPage
+
+          // 更新页面标题
+          this.page_title = searchResultPage.page_title
+        } else if (!this.page_id) {
+          // 如果清空搜索词且没有选中页面，则清空page_info
+          this.page_info = ''
+        }
+      },
+      immediate: true
+    }
   },
   methods: {
     // 获取页面内容
@@ -186,20 +218,33 @@ export default {
         return
       }
       this.adaptScreen()
-      this.request(
-        '/api/page/info',
-        {
-          page_id: page_id
-        },
-        'post',
-        false
-      ).then(data => {
+
+      // 判断是否在搜索模式下
+      const hasKeyword = !!this.keyword
+
+      // 准备请求参数
+      const params = {
+        page_id: page_id
+      }
+
+      // 在搜索模式下，添加请求完整路径的参数
+      if (hasKeyword) {
+        params.with_path = 1 // 请求后端返回完整路径
+      }
+
+      this.request('/api/page/info', params, 'post', false).then(data => {
         this.content = rederPageContent(
           data.data.page_content,
           this.$store.state.item_info.global_param
         )
         this.$store.dispatch('changeOpenCatId', data.data.cat_id)
         this.page_title = data.data.page_title
+
+        // 如果是搜索状态，标记这是搜索结果中的页面
+        if (hasKeyword) {
+          data.data.from_search_result = true
+        }
+
         this.page_info = data.data
         this.attachment_count =
           data.data.attachment_count > 0 ? data.data.attachment_count : ''
