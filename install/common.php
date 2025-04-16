@@ -196,25 +196,14 @@ function set_install_config($lang = 'zh') {
   if ($lang == 'en') {
     replace_file_content("../web/index.html", "zh-cn", "en");
     replace_file_content("../web_src/index.html", "zh-cn", "en");
+    // 清除缓存
+    clear_runtime();
+    
   }
-  
-  // 2. 写入配置文件
-  $config = "<?php\nreturn array(\n"
-    . "  //'配置项'=>'配置值'\n"
-    . "  'DB_TYPE'   => 'Sqlite',\n" 
-    . "  'DB_NAME'   => './Sqlite/showdoc.db.php',\n" 
-    . "  'LANG_SWITCH_ON' => true,   // 开启语言包功能\n"
-    . "  'LANG_AUTO_DETECT' => false, // 自动侦测语言 开启多语言功能后有效\n"
-    . "  'DEFAULT_LANG' => '{$default_lang}', // 默认语言\n"
-    . "  'LANG_LIST'        => 'zh-cn,en-us', // 允许切换的语言列表 用逗号分隔\n"
-    . "  'VAR_LANGUAGE'     => 'l', // 默认语言切换变量\n"
-    . ");";
 
-  // 清除缓存
-  clear_runtime();
+  return true;
   
-  // 写入配置文件
-  return file_put_contents("../server/Application/Home/Conf/config.php", $config) !== false;
+
 }
 
 /**
