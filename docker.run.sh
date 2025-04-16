@@ -117,6 +117,11 @@ _docker_run() {
         $web_dir/Public/Uploads \
         $web_dir/install \
         $runtime_dir
+    
+    # 确保 install/ajax.php 中提到的文件有写入权限
+    chmod 666 "$web_dir/server/Application/Home/Conf/config.php"
+    chmod 666 "$web_dir/web/index.html"
+    chmod 666 "$web_dir/web_src/index.html"
 
     ## backup sqlite file every day
     while [ -f $db_file ]; do
