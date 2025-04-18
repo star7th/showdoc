@@ -129,8 +129,8 @@ export default {
       this.getList()
     },
     goToItem(item) {
-      let url = '/#/' + (item.item_domain || item.item_id)
-      window.open(url, '_blank')
+      let routePath = '/' + (item.item_domain || item.item_id)
+      window.open(this.$router.resolve(routePath).href, '_blank')
     }
   },
   mounted() {
