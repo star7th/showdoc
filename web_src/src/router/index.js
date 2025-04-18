@@ -22,6 +22,7 @@ import TeamItem from '@/components/team/Item'
 import Attachment from '@/components/attachment/Index'
 import ItemGroup from '@/components/item/group/Index'
 import Message from '@/components/message/Index'
+import PublicSquare from '@/components/public-square/Index'
 
 Vue.use(Router)
 
@@ -97,7 +98,6 @@ export default new Router({
       name: 'Catalog',
       component: Catalog
     },
-
     {
       path: '/admin/index',
       name: 'Admin',
@@ -138,8 +138,6 @@ export default new Router({
       name: 'loginByUserToken',
       component: loginByUserToken
     },
-
-    // -------新路由加在分割线前面---------------
     {
       path: '/:item_id',
       name: 'ItemShow',
@@ -149,6 +147,16 @@ export default new Router({
       path: '/:item_id/:page_id(\\d+)',
       name: 'ItemShow',
       component: ItemShow
+    },
+    {
+      path: '/public-square',
+      name: 'PublicSquare',
+      component: PublicSquare
+    },
+    {
+      path: '/public-square/index',
+      name: 'PublicSquare',
+      component: PublicSquare
     }
   ]
 })

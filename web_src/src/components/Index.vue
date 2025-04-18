@@ -18,6 +18,9 @@
             <li>
               <router-link :to="link">{{ link_text }}</router-link>
             </li>
+            <li v-if="publicSquareEnabled">
+              <a @click="openPublicSquare" style="cursor: pointer;">{{ $t('public_square') }}</a>
+            </li>
             <li>
               <a
                 target="_blank"
@@ -214,7 +217,8 @@ export default {
       height: '',
       link: '',
       link_text: '',
-      beian: ''
+      beian: '',
+      publicSquareEnabled: false
     }
   },
   methods: {
@@ -249,11 +253,25 @@ export default {
           }
         }
       })
+    },
+    checkPublicSquareEnabled() {
+      this.request('/api/publicSquare/checkEnabled', {})
+        .then(data => {
+          this.publicSquareEnabled = data.data.enable === 1
+        })
+        .catch(() => {
+          this.publicSquareEnabled = false
+        })
+    },
+    openPublicSquare() {
+      const routeData = this.$router.resolve({ path: '/public-square/index' });
+      window.open(routeData.href, '_blank');
     }
   },
   mounted() {
     this.getHeight()
     this.homePageSetting()
+    this.checkPublicSquareEnabled()
     this.link = '/user/login'
     this.link_text = this.$t('index_login_or_register')
     getUserInfo(data => {

@@ -75,6 +75,16 @@
           <i class="el-icon-question"></i>
         </el-tooltip>
       </el-form-item>
+      <el-form-item :label="$t('enable_public_square')">
+        <el-switch v-model="form.enable_public_square"></el-switch>
+        <el-tooltip
+          effect="dark"
+          :content="$t('enable_public_square_tips')"
+          placement="top"
+        >
+          <i class="el-icon-question"></i>
+        </el-tooltip>
+      </el-form-item>
       <el-form-item :label="$t('site_url')">
         <el-input
           v-model="form.site_url"
@@ -267,7 +277,8 @@ export default {
         open_api_key: '',
         open_api_host: '',
         ai_model_name: '',
-        force_login:false
+        force_login:false,
+        enable_public_square: false
       },
       itemList: []
     }
@@ -329,6 +340,7 @@ export default {
           ? data.data.ai_model_name
           : ''
         this.form.force_login = data.data.force_login > 0
+        this.form.enable_public_square = data.data.enable_public_square > 0
       })
     },
     getItemList() {

@@ -599,12 +599,25 @@ exports.default = {
   force_login_tips:
     '访问任意项目的时候，游客都会被要求登录账号，不允许以非登录身份访问',
 
-  // 搜索面包屑相关
-  search_results_for: '搜索结果',
-  home: '首页',
-
   // 视图模式
   list_view: '列表',
   card_view: '卡片',
-  no_description: '暂无描述'
+  no_description: '暂无描述',
+
+  // common
+  home: '首页',
+
+  // 搜索面包屑相关
+  search_results_for: '搜索结果',
+  
+  // 公开广场相关
+  public_square: '公开广场',
+  search_placeholder: '搜索项目',
+  search_title: '搜索标题',
+  search_content: '搜索内容',
+  no_description_item: '暂无描述',
+  project_update_time: '更新时间',
+  no_public_items: '暂无项目',
+  enable_public_square: '启用公开广场',
+  enable_public_square_tips: '启用后，网站将显示公开广场入口，用户可以浏览网站中的公开项目'
 }

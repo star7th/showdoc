@@ -41,8 +41,18 @@
             @click="changeGroup(-1)"
           >
             <div class="item-one-block-content">
-              <i class="mr-1 v3-color-yellow fas fa-star"></i>
+              <i class="mr-1 fas fa-star v3-color-yellow"></i>
               {{ $t('star_items') }}
+            </div>
+          </div>
+          <div
+            v-if="publicSquareEnabled"
+            class="item-one-block public-square-link"
+            @click="openPublicSquare"
+          >
+            <div class="item-one-block-content">
+              <i class="mr-1 fas fa-globe"></i>
+              {{ $t('public_square') }}
             </div>
           </div>
         </div>
@@ -235,7 +245,8 @@ export default {
       itemGroupList: [],
       loading: false,
       showItemGroupCom: false,
-      viewMode: 'list' // 默认为列表视图
+      viewMode: 'list', // 默认为列表视图
+      publicSquareEnabled: false
     }
   },
   computed: {
@@ -330,6 +341,22 @@ export default {
           }
         }
       })
+    },
+    openPublicSquare() {
+      const routeData = this.$router.resolve({ path: '/public-square/index' });
+      window.open(routeData.href, '_blank');
+    },
+    checkPublicSquareEnabled() {
+      this.request('/api/publicSquare/checkEnabled', {})
+        .then(data => {
+          this.publicSquareEnabled = data.data.enable === 1
+        })
+        .catch(() => {
+          this.publicSquareEnabled = false
+        })
+    },
+    goOutLink(url) {
+      window.open(url)
     }
   },
   // 跳转到外部链接
@@ -339,20 +366,20 @@ export default {
   mounted() {
     const deaultItemGroupId = localStorage.getItem('deaultItemGroupId')
     if (deaultItemGroupId === null) {
-      this.getItemList()
       this.itemGroupId = 0
     } else {
       this.itemGroupId = parseInt(deaultItemGroupId)
     }
+
+    this.getItemGroupList()
+    this.checkPublicSquareEnabled()
+    this.checkAdmin()
 
     // 从本地存储中获取视图模式
     const defaultViewMode = localStorage.getItem('defaultViewMode')
     if (defaultViewMode) {
       this.viewMode = defaultViewMode
     }
-
-    this.getItemGroupList()
-    this.checkAdmin()
   },
   beforeDestroy() {
     this.$message.closeAll()
@@ -604,5 +631,10 @@ a {
 /* 卡片视图模式下的内容包装器 */
 .content-wrapper.card-view-mode {
   width: 100%;
+}
+
+.public-square-link {
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
 }
 </style>

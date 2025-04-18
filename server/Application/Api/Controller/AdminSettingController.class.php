@@ -25,6 +25,7 @@ class AdminSettingController extends BaseController
         $open_api_host = I("open_api_host");
         $ai_model_name = I("ai_model_name");
         $force_login = intval(I("force_login"));
+        $enable_public_square = intval(I("enable_public_square"));
 
         D("Options")->set("history_version_count", $history_version_count);
         D("Options")->set("register_open", $register_open);
@@ -37,6 +38,7 @@ class AdminSettingController extends BaseController
         D("Options")->set("ai_model_name", $ai_model_name);
         D("Options")->set("show_watermark", $show_watermark);
         D("Options")->set("force_login", $force_login);
+        D("Options")->set("enable_public_square", $enable_public_square);
 
         if ($oss_open) {
             $this->checkComposerPHPVersion();
@@ -65,6 +67,7 @@ class AdminSettingController extends BaseController
         $open_api_host = D("Options")->get("open_api_host");
         $ai_model_name = D("Options")->get("ai_model_name");
         $force_login = D("Options")->get("force_login");
+        $enable_public_square = D("Options")->get("enable_public_square");
         $oss_setting = json_decode($oss_setting, 1);
 
         //如果强等于false，那就是尚未有数据。关闭注册应该是有数据且数据为字符串0
@@ -85,6 +88,7 @@ class AdminSettingController extends BaseController
                 "open_api_host" => $open_api_host,
                 "ai_model_name" => $ai_model_name,
                 "force_login" => $force_login,
+                "enable_public_square" => $enable_public_square,
             );
             $this->sendResult($array);
         }

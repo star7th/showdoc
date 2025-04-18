@@ -635,5 +635,16 @@ exports.default = {
 
   // search breadcrumb
   search_results_for: 'Search results for',
-  home: 'Home'
+  home: 'Home',
+
+  // 公开广场相关
+  public_square: 'Public Square',
+  search_placeholder: 'Search projects',
+  search_title: 'Search title',
+  search_content: 'Search content',
+  no_description_item: 'No description',
+  project_update_time: 'Update time',
+  no_public_items: 'No public projects',
+  enable_public_square: 'Enable Public Square',
+  enable_public_square_tips: 'When enabled, the website will display a Public Square entry, allowing users to browse public projects'
 }
