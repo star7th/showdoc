@@ -28,13 +28,12 @@ class AdminItemController extends BaseController
         }
         $items = D("Item")->where($where)->order(" addtime desc  ")->page($page, $count)->select();
         $total = D("Item")->where($where)->count();
-        $item_members = D("ItemMember")->field("item_id , count(uid) as member_num")->group("item_id")->select();
         $return = array();
         $return['total'] = (int)$total;
         if ($items) {
             foreach ($items as $key => &$value) {
                 $value['addtime'] = date("Y-m-d H:i:s", $value['addtime']);
-                $value['member_num'] = $this->_get_member_num($item_members, $value['item_id']);
+                $value['member_num'] = D("ItemMember")->where(" item_id = '$value[item_id]' ")->count()  + D("TeamItemMember")->where(" item_id = '$value[item_id]' ")->count();
             }
             $return['items'] = $items;
             $this->sendResult($return);
@@ -43,17 +42,6 @@ class AdminItemController extends BaseController
         }
     }
 
-    private function _get_member_num($item_members, $item_id)
-    {
-        if ($item_members) {
-            foreach ($item_members as $key => $value) {
-                if ($value['item_id'] == $item_id) {
-                    return $value['member_num'] + 1;
-                }
-            }
-        }
-        return 1;
-    }
 
     //删除项目
     public function deleteItem()

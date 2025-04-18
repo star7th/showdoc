@@ -275,6 +275,10 @@ class BaseController extends Controller
 			return true;
 		}
 
+		if ($this->checkAdmin(false)) {
+			return true;
+		}
+
 		return false;
 	}
 }
