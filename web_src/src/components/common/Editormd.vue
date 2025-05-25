@@ -331,7 +331,11 @@ actor 用户
           onchange: () => {
             this.deal_with_content()
           },
-          previewCodeHighlight: false // 关闭编辑默认的代码高亮模块。用其他插件实现高亮
+          previewCodeHighlight: false , // 关闭编辑默认的代码高亮模块。用其他插件实现高亮
+          katexURL: {
+            css: '',
+            js: ''
+          }
         }
       }
     }
@@ -378,7 +382,7 @@ actor 用户
                 `${this.editorPath}/lib/transform.min.js`
               ],
               () => {
-                $s(`${this.editorPath}/editormd.js`, () => {
+                $s(`${this.editorPath}/editormd.js?v=34`, () => {
                   this.initEditor()
                 })
               }
@@ -398,6 +402,11 @@ actor 用户
       this.$nextTick((editorMD = window.editormd) => {
         const editorConfig = this.editorConfig
         editorConfig.markdown = this.content
+        // 设置 katex 路径
+        editorConfig.katexURL = {
+          css: `${this.editorPath}/katex/katex.min`,
+          js: `${this.editorPath}/katex/katex.min`
+        }
         if (DocConfig.server.indexOf('?') > -1) {
           editorConfig.imageUploadURL =
             DocConfig.server +

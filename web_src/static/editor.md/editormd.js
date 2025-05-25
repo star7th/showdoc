@@ -11,42 +11,46 @@
  * @update by star7th 2020-7-1
  */
 
-; (function (factory) {
+;(function(factory) {
   'use strict'
 
   // CommonJS/Node.js
-  if (typeof require === 'function' && typeof exports === 'object' && typeof module === 'object') {
+  if (
+    typeof require === 'function' &&
+    typeof exports === 'object' &&
+    typeof module === 'object'
+  ) {
     module.exports = factory
-  } else if (typeof define === 'function')  // AMD/CMD/Sea.js
-  {
-    if (define.amd) // for Require.js
-    {
+  } else if (typeof define === 'function') {
+    // AMD/CMD/Sea.js
+    if (define.amd) {
+      // for Require.js
       /* Require.js define replace */
     } else {
-      define(['jquery'], factory)  // for Sea.js
+      define(['jquery'], factory) // for Sea.js
     }
   } else {
     window.editormd = factory()
   }
-}(function () {
+})(function() {
   /* Require.js assignment replace */
 
   'use strict'
 
-  var $ = (typeof (jQuery) !== 'undefined') ? jQuery : Zepto
+  var $ = typeof jQuery !== 'undefined' ? jQuery : Zepto
 
-  if (typeof ($) === 'undefined') {
+  if (typeof $ === 'undefined') {
     return
   }
 
   $.fn.extend({
     // tag@a:plantuml
-    plantuml: function () {
+    plantuml: function() {
       var previewContainer = $(this)
-      previewContainer.find('pre:has(.lang-plantuml)').each(function () {
+      previewContainer.find('pre:has(.lang-plantuml)').each(function() {
         var $uml = $(this)
         var lines = []
-        $uml.find('.lang-plantuml').each(function () {
+        $uml.find('.lang-plantuml').each(function() {
           lines.push($(this).text())
         })
         var img = '<img src="' + plantuml_imgsrc(lines.join('\n')) + '"><br>'
@@ -63,7 +67,7 @@
    * @returns {Object} editormd     返回editormd对象
    */
 
-  var editormd = function (id, options) {
+  var editormd = function(id, options) {
     return new editormd.fn.init(id, options)
   }
 
@@ -74,44 +78,97 @@
 
   editormd.toolbarModes = {
     full: [
-      'undo', 'redo', '|',
-      'bold', 'del', 'italic', 'quote', 'ucwords', 'uppercase', 'lowercase', '|',
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '|',
-      'list-ul', 'list-ol', 'hr', '|',
-      'link', 'reference-link', 'image', 'code', 'preformatted-text', 'code-block', 'table', 'datetime', 'emoji', 'html-entities', 'pagebreak', '|',
-      'goto-line', 'watch', 'preview', 'fullscreen', 'clear', 'search', '|',
-      'help', 'info'
+      'undo',
+      'redo',
+      '|',
+      'bold',
+      'del',
+      'italic',
+      'quote',
+      'ucwords',
+      'uppercase',
+      'lowercase',
+      '|',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      '|',
+      'list-ul',
+      'list-ol',
+      'hr',
+      '|',
+      'link',
+      'reference-link',
+      'image',
+      'code',
+      'preformatted-text',
+      'code-block',
+      'table',
+      'datetime',
+      'emoji',
+      'html-entities',
+      'pagebreak',
+      '|',
+      'goto-line',
+      'watch',
+      'preview',
+      'fullscreen',
+      'clear',
+      'search',
+      '|',
+      'help',
+      'info'
     ],
     simple: [
-      'undo', 'redo', '|',
-      'bold', 'del', 'italic', 'quote', 'uppercase', 'lowercase', '|',
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '|',
-      'list-ul', 'list-ol', 'hr', '|',
-      'watch', 'preview', 'fullscreen', '|',
-      'help', 'info'
+      'undo',
+      'redo',
+      '|',
+      'bold',
+      'del',
+      'italic',
+      'quote',
+      'uppercase',
+      'lowercase',
+      '|',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      '|',
+      'list-ul',
+      'list-ol',
+      'hr',
+      '|',
+      'watch',
+      'preview',
+      'fullscreen',
+      '|',
+      'help',
+      'info'
     ],
-    mini: [
-      'undo', 'redo', '|',
-      'watch', 'preview', '|',
-      'help', 'info'
-    ]
+    mini: ['undo', 'redo', '|', 'watch', 'preview', '|', 'help', 'info']
   }
 
   editormd.defaults = {
-    mode: 'gfm',          // gfm or markdown
-    name: '',             // Form element name
-    value: '',             // value for CodeMirror, if mode not gfm/markdown
-    theme: '',             // Editor.md self themes, before v1.5.0 is CodeMirror theme, default empty
-    editorTheme: 'default',      // Editor area, this is CodeMirror theme at v1.5.0
-    previewTheme: '',             // Preview area theme, default empty
-    markdown: '',             // Markdown source code
-    appendMarkdown: '',             // if in init textarea value not empty, append markdown to textarea
+    mode: 'gfm', // gfm or markdown
+    name: '', // Form element name
+    value: '', // value for CodeMirror, if mode not gfm/markdown
+    theme: '', // Editor.md self themes, before v1.5.0 is CodeMirror theme, default empty
+    editorTheme: 'default', // Editor area, this is CodeMirror theme at v1.5.0
+    previewTheme: '', // Preview area theme, default empty
+    markdown: '', // Markdown source code
+    appendMarkdown: '', // if in init textarea value not empty, append markdown to textarea
     width: '100%',
     height: '100%',
-    path: './lib/',       // Dependents module file directory
-    pluginPath: '',             // If this empty, default use settings.path + "../plugins/"
-    delay: 300,            // Delay parse markdown to html, Uint : ms
-    autoLoadModules: true,           // Automatic load dependent module files
+    path: './lib/', // Dependents module file directory
+    pluginPath: '', // If this empty, default use settings.path + "../plugins/"
+    delay: 300, // Delay parse markdown to html, Uint : ms
+    autoLoadModules: true, // Automatic load dependent module files
     watch: true,
     placeholder: 'Enjoy Markdown! coding now...',
     gotoLine: true,
@@ -120,7 +177,7 @@
     autoFocus: true,
     autoCloseTags: true,
     searchReplace: true,
-    syncScrolling: true,           // true | false | "single", default true
+    syncScrolling: true, // true | false | "single", default true
     readOnly: false,
     tabSize: 4,
     indentUnit: 4,
@@ -131,8 +188,8 @@
     matchBrackets: true,
     indentWithTabs: true,
     styleSelectedText: true,
-    matchWordHighlight: true,           // options: true, false, "onselected"
-    styleActiveLine: true,           // Highlight the current line
+    matchWordHighlight: true, // options: true, false, "onselected"
+    styleActiveLine: true, // Highlight the current line
     dialogLockScreen: true,
     dialogShowMask: true,
     dialogDraggable: true,
@@ -141,18 +198,22 @@
     fontSize: '13px',
     saveHTMLToTextarea: false,
     disabledKeyMaps: [],
+    katexURL: {
+      css: '/static/editor.md/katex/katex.min',
+      js: '/static/editor.md/katex/katex.min'
+    },
 
-    onload: function () { },
-    onresize: function () { },
-    onchange: function () { },
+    onload: function() {},
+    onresize: function() {},
+    onchange: function() {},
     onwatch: null,
     onunwatch: null,
-    onpreviewing: function () { },
-    onpreviewed: function () { },
-    onfullscreen: function () { },
-    onfullscreenExit: function () { },
-    onscroll: function () { },
-    onpreviewscroll: function () { },
+    onpreviewing: function() {},
+    onpreviewed: function() {},
+    onfullscreen: function() {},
+    onfullscreenExit: function() {},
+    onscroll: function() {},
+    onpreviewscroll: function() {},
 
     imageUpload: false,
     imageFormats: ['jpg', 'jpeg', 'gif', 'png', 'bmp', 'webp'],
@@ -160,41 +221,44 @@
     crossDomainUpload: false,
     uploadCallbackURL: '',
 
-    toc: true,           // Table of contents
-    tocm: false,           // Using [TOCM], auto create ToC dropdown menu
-    tocTitle: '',             // for ToC dropdown menu btn
+    toc: true, // Table of contents
+    tocm: false, // Using [TOCM], auto create ToC dropdown menu
+    tocTitle: '', // for ToC dropdown menu btn
     tocDropdown: false,
     tocContainer: '',
-    tocStartLevel: 1,              // Said from H1 to create ToC
-    htmlDecode: false,          // Open the HTML tag identification
-    pageBreak: true,           // Enable parse page break [========]
-    atLink: true,           // for @link
-    emailLink: true,           // for email address auto link
-    taskList: false,          // Enable Github Flavored Markdown task lists
-    emoji: false,          // :emoji: , Support Github emoji, Twitter Emoji (Twemoji);
+    tocStartLevel: 1, // Said from H1 to create ToC
+    htmlDecode: false, // Open the HTML tag identification
+    pageBreak: true, // Enable parse page break [========]
+    atLink: true, // for @link
+    emailLink: true, // for email address auto link
+    taskList: false, // Enable Github Flavored Markdown task lists
+    emoji: false, // :emoji: , Support Github emoji, Twitter Emoji (Twemoji);
     // Support FontAwesome icon emoji :fa-xxx: > Using fontAwesome icon web fonts;
     // Support Editor.md logo icon emoji :editormd-logo: :editormd-logo-1x: > 1~8x;
-    tex: false,          // TeX(LaTeX), based on KaTeX
-    flowChart: false,          // flowChart.js only support IE9+
-    sequenceDiagram: false,          // sequenceDiagram.js only support IE9+
+    tex: false, // TeX(LaTeX), based on KaTeX
+    flowChart: false, // flowChart.js only support IE9+
+    sequenceDiagram: false, // sequenceDiagram.js only support IE9+
     previewCodeHighlight: true,
     mindMap: true,
 
-    toolbar: true,           // show/hide toolbar
-    toolbarAutoFixed: true,           // on window scroll auto fixed position
+    toolbar: true, // show/hide toolbar
+    toolbarAutoFixed: true, // on window scroll auto fixed position
     toolbarIcons: 'full',
     toolbarTitles: {},
     toolbarHandlers: {
-      ucwords: function () {
+      ucwords: function() {
         return editormd.toolbarHandlers.ucwords
       },
-      lowercase: function () {
+      lowercase: function() {
         return editormd.toolbarHandlers.lowercase
       }
     },
-    toolbarCustomIcons: {               // using html tag create toolbar icon, unused default <a> tag.
-      lowercase: '<a href="javascript:;" title="Lowercase" unselectable="on"><i class="fa" name="lowercase" style="font-size:24px;margin-top: -10px;">a</i></a>',
-      'ucwords': '<a href="javascript:;" title="ucwords" unselectable="on"><i class="fa" name="ucwords" style="font-size:20px;margin-top: -3px;">Aa</i></a>'
+    toolbarCustomIcons: {
+      // using html tag create toolbar icon, unused default <a> tag.
+      lowercase:
+        '<a href="javascript:;" title="Lowercase" unselectable="on"><i class="fa" name="lowercase" style="font-size:24px;margin-top: -10px;">a</i></a>',
+      ucwords:
+        '<a href="javascript:;" title="ucwords" unselectable="on"><i class="fa" name="ucwords" style="font-size:20px;margin-top: -3px;">Aa</i></a>'
     },
     toolbarIconsClass: {
       undo: 'fa-undo',
@@ -238,7 +302,8 @@
 
     lang: {
       name: 'zh-cn',
-      description: '开源在线Markdown编辑器<br/>Open source online Markdown editor.',
+      description:
+        '开源在线Markdown编辑器<br/>Open source online Markdown editor.',
       tocTitle: '目录',
       toolbar: {
         undo: '撤销（Ctrl+Z）',
@@ -310,7 +375,8 @@
           uploadButton: '本地上传',
           imageURLEmpty: '错误：图片地址不能为空。',
           uploadFileEmpty: '错误：上传的图片不能为空。',
-          formatNotAllowed: '错误：只允许上传图片文件，允许上传的图片文件格式有：'
+          formatNotAllowed:
+            '错误：只允许上传图片文件，允许上传的图片文件格式有：'
         },
         preformattedText: {
           title: '添加预格式文本或代码块',
@@ -364,7 +430,7 @@
      * @returns {editormd}               返回editormd的实例对象
      */
 
-    init: function (id, options) {
+    init: function(id, options) {
       options = options || {}
 
       if (typeof id === 'object') {
@@ -372,58 +438,97 @@
       }
 
       var _this = this
-      var classPrefix = this.classPrefix = editormd.classPrefix
-      var settings = this.settings = $.extend(true, editormd.defaults, options)
+      var classPrefix = (this.classPrefix = editormd.classPrefix)
+      var settings = (this.settings = $.extend(
+        true,
+        editormd.defaults,
+        options
+      ))
 
-      id = (typeof id === 'object') ? settings.id : id
+      id = typeof id === 'object' ? settings.id : id
 
-      var editor = this.editor = $('#' + id)
+      var editor = (this.editor = $('#' + id))
 
       this.id = id
       this.lang = settings.lang
 
-      var classNames = this.classNames = {
+      var classNames = (this.classNames = {
         textarea: {
           html: classPrefix + 'html-textarea',
           markdown: classPrefix + 'markdown-textarea'
         }
-      }
+      })
 
-      settings.pluginPath = (settings.pluginPath === '') ? settings.path + '../plugins/' : settings.pluginPath
+      settings.pluginPath =
+        settings.pluginPath === ''
+          ? settings.path + '../plugins/'
+          : settings.pluginPath
 
-      this.state.watching = !!(settings.watch)
+      this.state.watching = !!settings.watch
 
       if (!editor.hasClass('editormd')) {
         editor.addClass('editormd')
       }
 
       editor.css({
-        width: (typeof settings.width === 'number') ? settings.width + 'px' : settings.width,
-        height: (typeof settings.height === 'number') ? settings.height + 'px' : settings.height
+        width:
+          typeof settings.width === 'number'
+            ? settings.width + 'px'
+            : settings.width,
+        height:
+          typeof settings.height === 'number'
+            ? settings.height + 'px'
+            : settings.height
       })
 
       if (settings.autoHeight) {
         editor.css('height', 'auto')
       }
 
-      var markdownTextarea = this.markdownTextarea = editor.children('textarea')
+      var markdownTextarea = (this.markdownTextarea = editor.children(
+        'textarea'
+      ))
 
       if (markdownTextarea.length < 1) {
         editor.append('<textarea></textarea>')
         markdownTextarea = this.markdownTextarea = editor.children('textarea')
       }
 
-      markdownTextarea.addClass(classNames.textarea.markdown).attr('placeholder', settings.placeholder)
+      markdownTextarea
+        .addClass(classNames.textarea.markdown)
+        .attr('placeholder', settings.placeholder)
 
-      if (typeof markdownTextarea.attr('name') === 'undefined' || markdownTextarea.attr('name') === '') {
-        markdownTextarea.attr('name', (settings.name !== '') ? settings.name : id + '-markdown-doc')
+      if (
+        typeof markdownTextarea.attr('name') === 'undefined' ||
+        markdownTextarea.attr('name') === ''
+      ) {
+        markdownTextarea.attr(
+          'name',
+          settings.name !== '' ? settings.name : id + '-markdown-doc'
+        )
       }
 
       var appendElements = [
-        (!settings.readOnly) ? '<a href="javascript:;" class="fa fa-close ' + classPrefix + 'preview-close-btn"></a>' : '',
-        ((settings.saveHTMLToTextarea) ? '<textarea class="' + classNames.textarea.html + '" name="' + id + '-html-code"></textarea>' : ''),
-        '<div class="' + classPrefix + 'preview"><div class="markdown-body ' + classPrefix + 'preview-container"></div></div>',
-        '<div class="' + classPrefix + 'container-mask" style="display:block;"></div>',
+        !settings.readOnly
+          ? '<a href="javascript:;" class="fa fa-close ' +
+            classPrefix +
+            'preview-close-btn"></a>'
+          : '',
+        settings.saveHTMLToTextarea
+          ? '<textarea class="' +
+            classNames.textarea.html +
+            '" name="' +
+            id +
+            '-html-code"></textarea>'
+          : '',
+        '<div class="' +
+          classPrefix +
+          'preview"><div class="markdown-body ' +
+          classPrefix +
+          'preview-container"></div></div>',
+        '<div class="' +
+          classPrefix +
+          'container-mask" style="display:block;"></div>',
         '<div class="' + classPrefix + 'mask"></div>'
       ].join('\n')
 
@@ -446,10 +551,14 @@
 
       this.htmlTextarea = editor.children('.' + classNames.textarea.html)
       this.preview = editor.children('.' + classPrefix + 'preview')
-      this.previewContainer = this.preview.children('.' + classPrefix + 'preview-container')
+      this.previewContainer = this.preview.children(
+        '.' + classPrefix + 'preview-container'
+      )
 
       if (settings.previewTheme !== '') {
-        this.preview.addClass(classPrefix + 'preview-theme-' + settings.previewTheme)
+        this.preview.addClass(
+          classPrefix + 'preview-theme-' + settings.previewTheme
+        )
       }
 
       if (typeof define === 'function' && define.amd) {
@@ -459,11 +568,16 @@
 
         if (settings.searchReplace && !settings.readOnly) {
           editormd.loadCSS(settings.path + 'codemirror/addon/dialog/dialog')
-          editormd.loadCSS(settings.path + 'codemirror/addon/search/matchesonscrollbar')
+          editormd.loadCSS(
+            settings.path + 'codemirror/addon/search/matchesonscrollbar'
+          )
         }
       }
 
-      if ((typeof define === 'function' && define.amd) || !settings.autoLoadModules) {
+      if (
+        (typeof define === 'function' && define.amd) ||
+        !settings.autoLoadModules
+      ) {
         if (typeof CodeMirror !== 'undefined') {
           editormd.$CodeMirror = CodeMirror
         }
@@ -472,7 +586,9 @@
           editormd.$marked = marked
         }
 
-        this.setCodeMirror().setToolbar().loadedDisplay()
+        this.setCodeMirror()
+          .setToolbar()
+          .loadedDisplay()
       } else {
         this.loadQueues()
       }
@@ -487,12 +603,12 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    loadQueues: function () {
+    loadQueues: function() {
       var _this = this
       var settings = this.settings
       var loadPath = settings.path
 
-      var loadFlowChartOrSequenceDiagram = function () {
+      var loadFlowChartOrSequenceDiagram = function() {
         if (editormd.isIE8) {
           _this.loadedDisplay()
 
@@ -500,25 +616,37 @@
         }
 
         if (settings.flowChart || settings.sequenceDiagram) {
-          editormd.loadScript(loadPath + 'raphael.min', function () {
-            editormd.loadScript(loadPath + 'underscore.min', function () {
+          editormd.loadScript(loadPath + 'raphael.min', function() {
+            editormd.loadScript(loadPath + 'underscore.min', function() {
               if (!settings.flowChart && settings.sequenceDiagram) {
-                editormd.loadScript(loadPath + 'sequence-diagram.min', function () {
-                  _this.loadedDisplay()
-                })
-              } else if (settings.flowChart && !settings.sequenceDiagram) {
-                editormd.loadScript(loadPath + 'flowchart.min', function () {
-                  editormd.loadScript(loadPath + 'jquery.flowchart.min', function () {
+                editormd.loadScript(
+                  loadPath + 'sequence-diagram.min',
+                  function() {
                     _this.loadedDisplay()
-                  })
+                  }
+                )
+              } else if (settings.flowChart && !settings.sequenceDiagram) {
+                editormd.loadScript(loadPath + 'flowchart.min', function() {
+                  editormd.loadScript(
+                    loadPath + 'jquery.flowchart.min',
+                    function() {
+                      _this.loadedDisplay()
+                    }
+                  )
                 })
               } else if (settings.flowChart && settings.sequenceDiagram) {
-                editormd.loadScript(loadPath + 'flowchart.min', function () {
-                  editormd.loadScript(loadPath + 'jquery.flowchart.min', function () {
-                    editormd.loadScript(loadPath + 'sequence-diagram.min', function () {
-                      _this.loadedDisplay()
-                    })
-                  })
+                editormd.loadScript(loadPath + 'flowchart.min', function() {
+                  editormd.loadScript(
+                    loadPath + 'jquery.flowchart.min',
+                    function() {
+                      editormd.loadScript(
+                        loadPath + 'sequence-diagram.min',
+                        function() {
+                          _this.loadedDisplay()
+                        }
+                      )
+                    }
+                  )
                 })
               }
             })
@@ -532,18 +660,20 @@
 
       if (settings.searchReplace && !settings.readOnly) {
         editormd.loadCSS(loadPath + 'codemirror/addon/dialog/dialog')
-        editormd.loadCSS(loadPath + 'codemirror/addon/search/matchesonscrollbar')
+        editormd.loadCSS(
+          loadPath + 'codemirror/addon/search/matchesonscrollbar'
+        )
       }
 
       if (settings.codeFold) {
         editormd.loadCSS(loadPath + 'codemirror/addon/fold/foldgutter')
       }
 
-      editormd.loadScript(loadPath + 'codemirror/codemirror.min', function () {
+      editormd.loadScript(loadPath + 'codemirror/codemirror.min', function() {
         editormd.$CodeMirror = CodeMirror
 
-        editormd.loadScript(loadPath + 'codemirror/modes.min', function () {
-          editormd.loadScript(loadPath + 'codemirror/addons.min', function () {
+        editormd.loadScript(loadPath + 'codemirror/modes.min', function() {
+          editormd.loadScript(loadPath + 'codemirror/addons.min', function() {
             _this.setCodeMirror()
 
             if (settings.mode !== 'gfm' && settings.mode !== 'markdown') {
@@ -554,11 +684,11 @@
 
             _this.setToolbar()
 
-            editormd.loadScript(loadPath + 'marked.min', function () {
+            editormd.loadScript(loadPath + 'marked.min', function() {
               editormd.$marked = marked
 
               if (settings.previewCodeHighlight) {
-                editormd.loadScript(loadPath + 'prettify.min', function () {
+                editormd.loadScript(loadPath + 'prettify.min', function() {
                   loadFlowChartOrSequenceDiagram()
                 })
               } else {
@@ -579,7 +709,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    setTheme: function (theme) {
+    setTheme: function(theme) {
       var editor = this.editor
       var oldTheme = this.settings.theme
       var themePrefix = this.classPrefix + 'theme-'
@@ -598,12 +728,14 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    setEditorTheme: function (theme) {
+    setEditorTheme: function(theme) {
       var settings = this.settings
       settings.editorTheme = theme
 
       if (theme !== 'default') {
-        editormd.loadCSS(settings.path + 'codemirror/theme/' + settings.editorTheme)
+        editormd.loadCSS(
+          settings.path + 'codemirror/theme/' + settings.editorTheme
+        )
       }
 
       this.cm.setOption('theme', theme)
@@ -618,7 +750,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    setCodeMirrorTheme: function (theme) {
+    setCodeMirrorTheme: function(theme) {
       this.setEditorTheme(theme)
 
       return this
@@ -631,7 +763,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    setPreviewTheme: function (theme) {
+    setPreviewTheme: function(theme) {
       var preview = this.preview
       var oldTheme = this.settings.previewTheme
       var themePrefix = this.classPrefix + 'preview-theme-'
@@ -650,12 +782,14 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    setCodeMirror: function () {
+    setCodeMirror: function() {
       var settings = this.settings
       var editor = this.editor
 
       if (settings.editorTheme !== 'default') {
-        editormd.loadCSS(settings.path + 'codemirror/theme/' + settings.editorTheme)
+        editormd.loadCSS(
+          settings.path + 'codemirror/theme/' + settings.editorTheme
+        )
       }
 
       var codeMirrorConfig = {
@@ -665,12 +799,12 @@
         dragDrop: false,
         autofocus: settings.autoFocus,
         autoCloseTags: settings.autoCloseTags,
-        readOnly: (settings.readOnly) ? 'nocursor' : false,
+        readOnly: settings.readOnly ? 'nocursor' : false,
         indentUnit: settings.indentUnit,
         lineNumbers: settings.lineNumbers,
         lineWrapping: settings.lineWrapping,
         extraKeys: {
-          'Ctrl-Q': function (cm) {
+          'Ctrl-Q': function(cm) {
             cm.foldCode(cm.getCursor())
           }
         },
@@ -682,10 +816,18 @@
         styleSelectedText: settings.styleSelectedText,
         autoCloseBrackets: settings.autoCloseBrackets,
         showTrailingSpace: settings.showTrailingSpace,
-        highlightSelectionMatches: ((!settings.matchWordHighlight) ? false : { showToken: (settings.matchWordHighlight === 'onselected') ? false : /\w/ })
+        highlightSelectionMatches: !settings.matchWordHighlight
+          ? false
+          : {
+              showToken:
+                settings.matchWordHighlight === 'onselected' ? false : /\w/
+            }
       }
 
-      this.codeEditor = this.cm = editormd.$CodeMirror.fromTextArea(this.markdownTextarea[0], codeMirrorConfig)
+      this.codeEditor = this.cm = editormd.$CodeMirror.fromTextArea(
+        this.markdownTextarea[0],
+        codeMirrorConfig
+      )
       this.codeMirror = this.cmElement = editor.children('.CodeMirror')
 
       if (settings.value !== '') {
@@ -694,7 +836,7 @@
 
       this.codeMirror.css({
         fontSize: settings.fontSize,
-        width: (!settings.watch) ? '100%' : '50%'
+        width: !settings.watch ? '100%' : '50%'
       })
 
       if (settings.autoHeight) {
@@ -716,7 +858,7 @@
      * @returns {Mixed}                  return CodeMirror setting option value
      */
 
-    getCodeMirrorOption: function (key) {
+    getCodeMirrorOption: function(key) {
       return this.cm.getOption(key)
     },
 
@@ -727,7 +869,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    setCodeMirrorOption: function (key, value) {
+    setCodeMirrorOption: function(key, value) {
       this.cm.setOption(key, value)
 
       return this
@@ -740,7 +882,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    addKeyMap: function (map, bottom) {
+    addKeyMap: function(map, bottom) {
       this.cm.addKeyMap(map, bottom)
 
       return this
@@ -753,7 +895,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    removeKeyMap: function (map) {
+    removeKeyMap: function(map) {
       this.cm.removeKeyMap(map)
 
       return this
@@ -767,7 +909,7 @@
      * @returns {editormd}                   返回editormd的实例对象
      */
 
-    gotoLine: function (line) {
+    gotoLine: function(line) {
       var settings = this.settings
 
       if (!settings.gotoLine) {
@@ -814,7 +956,7 @@
         var cmScroll = this.codeMirror.find('.CodeMirror-scroll')[0]
         var height = $(cmScroll).height()
         var scrollTop = cmScroll.scrollTop
-        var percent = (scrollTop / cmScroll.scrollHeight)
+        var percent = scrollTop / cmScroll.scrollHeight
 
         if (scrollTop === 0) {
           preview.scrollTop(0)
@@ -837,7 +979,7 @@
      * @returns {editormd}                  this(editormd instance object.)
      */
 
-    extend: function () {
+    extend: function() {
       if (typeof arguments[1] !== 'undefined') {
         if (typeof arguments[1] === 'function') {
           arguments[1] = $.proxy(arguments[1], this)
@@ -846,7 +988,10 @@
         this[arguments[0]] = arguments[1]
       }
 
-      if (typeof arguments[0] === 'object' && typeof arguments[0].length === 'undefined') {
+      if (
+        typeof arguments[0] === 'object' &&
+        typeof arguments[0].length === 'undefined'
+      ) {
         $.extend(true, this, arguments[0])
       }
 
@@ -862,7 +1007,7 @@
      * @returns {editormd}                  this(editormd instance object.)
      */
 
-    set: function (key, value) {
+    set: function(key, value) {
       if (typeof value !== 'undefined' && typeof value === 'function') {
         value = $.proxy(value, this)
       }
@@ -881,7 +1026,7 @@
      * @returns {editormd}                  this(editormd instance object.)
      */
 
-    config: function (key, value) {
+    config: function(key, value) {
       var settings = this.settings
 
       if (typeof key === 'object') {
@@ -907,7 +1052,7 @@
      * @returns {editormd}                  this(editormd instance object.)
      */
 
-    on: function (eventType, callback) {
+    on: function(eventType, callback) {
       var settings = this.settings
 
       if (typeof settings['on' + eventType] !== 'undefined') {
@@ -925,11 +1070,11 @@
      * @returns {editormd}                    this(editormd instance object.)
      */
 
-    off: function (eventType) {
+    off: function(eventType) {
       var settings = this.settings
 
       if (typeof settings['on' + eventType] !== 'undefined') {
-        settings['on' + eventType] = function () { }
+        settings['on' + eventType] = function() {}
       }
 
       return this
@@ -943,14 +1088,18 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    showToolbar: function (callback) {
+    showToolbar: function(callback) {
       var settings = this.settings
 
       if (settings.readOnly) {
         return this
       }
 
-      if (settings.toolbar && (this.toolbar.length < 1 || this.toolbar.find('.' + this.classPrefix + 'menu').html() === '')) {
+      if (
+        settings.toolbar &&
+        (this.toolbar.length < 1 ||
+          this.toolbar.find('.' + this.classPrefix + 'menu').html() === '')
+      ) {
         this.setToolbar()
       }
 
@@ -959,7 +1108,7 @@
       this.toolbar.show()
       this.resize()
 
-      $.proxy(callback || function () { }, this)()
+      $.proxy(callback || function() {}, this)()
 
       return this
     },
@@ -972,14 +1121,14 @@
      * @returns {editormd}                         this(editormd instance object.)
      */
 
-    hideToolbar: function (callback) {
+    hideToolbar: function(callback) {
       var settings = this.settings
 
       settings.toolbar = false
       this.toolbar.hide()
       this.resize()
 
-      $.proxy(callback || function () { }, this)()
+      $.proxy(callback || function() {}, this)()
 
       return this
     },
@@ -991,7 +1140,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    setToolbarAutoFixed: function (fixed) {
+    setToolbarAutoFixed: function(fixed) {
       var state = this.state
       var editor = this.editor
       var toolbar = this.toolbar
@@ -1001,7 +1150,7 @@
         settings.toolbarAutoFixed = fixed
       }
 
-      var autoFixedHandle = function () {
+      var autoFixedHandle = function() {
         var $window = $(window)
         var top = $window.scrollTop()
 
@@ -1024,7 +1173,12 @@
         }
       }
 
-      if (!state.fullscreen && !state.preview && settings.toolbar && settings.toolbarAutoFixed) {
+      if (
+        !state.fullscreen &&
+        !state.preview &&
+        settings.toolbar &&
+        settings.toolbarAutoFixed
+      ) {
         $(window).bind('scroll', autoFixedHandle)
       }
 
@@ -1038,7 +1192,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    setToolbar: function () {
+    setToolbar: function() {
       var settings = this.settings
 
       if (settings.readOnly) {
@@ -1049,10 +1203,19 @@
       var preview = this.preview
       var classPrefix = this.classPrefix
 
-      var toolbar = this.toolbar = editor.children('.' + classPrefix + 'toolbar')
+      var toolbar = (this.toolbar = editor.children(
+        '.' + classPrefix + 'toolbar'
+      ))
 
       if (settings.toolbar && toolbar.length < 1) {
-        var toolbarHTML = '<div class="' + classPrefix + 'toolbar"><div class="' + classPrefix + 'toolbar-container"><ul class="' + classPrefix + 'menu"></ul></div></div>'
+        var toolbarHTML =
+          '<div class="' +
+          classPrefix +
+          'toolbar"><div class="' +
+          classPrefix +
+          'toolbar-container"><ul class="' +
+          classPrefix +
+          'menu"></ul></div></div>'
 
         editor.append(toolbarHTML)
         toolbar = this.toolbar = editor.children('.' + classPrefix + 'toolbar')
@@ -1066,10 +1229,15 @@
 
       toolbar.show()
 
-      var icons = (typeof settings.toolbarIcons === 'function') ? settings.toolbarIcons()
-        : ((typeof settings.toolbarIcons === 'string') ? editormd.toolbarModes[settings.toolbarIcons] : settings.toolbarIcons)
+      var icons =
+        typeof settings.toolbarIcons === 'function'
+          ? settings.toolbarIcons()
+          : typeof settings.toolbarIcons === 'string'
+          ? editormd.toolbarModes[settings.toolbarIcons]
+          : settings.toolbarIcons
 
-      var toolbarMenu = toolbar.find('.' + this.classPrefix + 'menu'), menu = ''
+      var toolbarMenu = toolbar.find('.' + this.classPrefix + 'menu'),
+        menu = ''
       var pullRight = false
 
       for (var i = 0, len = icons.length; i < len; i++) {
@@ -1080,7 +1248,7 @@
         } else if (name === '|') {
           menu += '<li class="divider" unselectable="on">|</li>'
         } else {
-          var isHeader = (/h(\d)/.test(name))
+          var isHeader = /h(\d)/.test(name)
           var index = name
 
           if (name === 'watch' && !settings.watch) {
@@ -1091,17 +1259,32 @@
           var iconTexts = settings.toolbarIconTexts[index]
           var iconClass = settings.toolbarIconsClass[index]
 
-          title = (typeof title === 'undefined') ? '' : title
-          iconTexts = (typeof iconTexts === 'undefined') ? '' : iconTexts
-          iconClass = (typeof iconClass === 'undefined') ? '' : iconClass
+          title = typeof title === 'undefined' ? '' : title
+          iconTexts = typeof iconTexts === 'undefined' ? '' : iconTexts
+          iconClass = typeof iconClass === 'undefined' ? '' : iconClass
 
           var menuItem = pullRight ? '<li class="pull-right">' : '<li>'
 
-          if (typeof settings.toolbarCustomIcons[name] !== 'undefined' && typeof settings.toolbarCustomIcons[name] !== 'function') {
+          if (
+            typeof settings.toolbarCustomIcons[name] !== 'undefined' &&
+            typeof settings.toolbarCustomIcons[name] !== 'function'
+          ) {
             menuItem += settings.toolbarCustomIcons[name]
           } else {
-            menuItem += '<a href="javascript:;" title="' + title + '" unselectable="on">'
-            menuItem += '<i class="fa ' + iconClass + '" name="' + name + '" unselectable="on">' + ((isHeader) ? name.toUpperCase() : ((iconClass === '') ? iconTexts : '')) + '</i>'
+            menuItem +=
+              '<a href="javascript:;" title="' + title + '" unselectable="on">'
+            menuItem +=
+              '<i class="fa ' +
+              iconClass +
+              '" name="' +
+              name +
+              '" unselectable="on">' +
+              (isHeader
+                ? name.toUpperCase()
+                : iconClass === ''
+                ? iconTexts
+                : '') +
+              '</i>'
             menuItem += '</a>'
           }
 
@@ -1113,8 +1296,12 @@
 
       toolbarMenu.html(menu)
 
-      toolbarMenu.find('[title="Lowercase"]').attr('title', settings.lang.toolbar.lowercase)
-      toolbarMenu.find('[title="ucwords"]').attr('title', settings.lang.toolbar.ucwords)
+      toolbarMenu
+        .find('[title="Lowercase"]')
+        .attr('title', settings.lang.toolbar.lowercase)
+      toolbarMenu
+        .find('[title="ucwords"]')
+        .attr('title', settings.lang.toolbar.ucwords)
 
       this.setToolbarHandler()
       this.setToolbarAutoFixed()
@@ -1131,22 +1318,24 @@
      * @returns {Object}         返回处理对象序列
      */
 
-    dialogLockScreen: function () {
+    dialogLockScreen: function() {
       $.proxy(editormd.dialogLockScreen, this)()
 
       return this
     },
 
-    dialogShowMask: function (dialog) {
+    dialogShowMask: function(dialog) {
       $.proxy(editormd.dialogShowMask, this)(dialog)
 
       return this
     },
 
-    getToolbarHandles: function (name) {
-      var toolbarHandlers = this.toolbarHandlers = editormd.toolbarHandlers
+    getToolbarHandles: function(name) {
+      var toolbarHandlers = (this.toolbarHandlers = editormd.toolbarHandlers)
 
-      return (name && typeof toolbarIconHandlers[name] !== 'undefined') ? toolbarHandlers[name] : toolbarHandlers
+      return name && typeof toolbarIconHandlers[name] !== 'undefined'
+        ? toolbarHandlers[name]
+        : toolbarHandlers
     },
 
     /**
@@ -1156,7 +1345,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    setToolbarHandler: function () {
+    setToolbarHandler: function() {
       var _this = this
       var settings = this.settings
 
@@ -1167,10 +1356,14 @@
       var toolbar = this.toolbar
       var cm = this.cm
       var classPrefix = this.classPrefix
-      var toolbarIcons = this.toolbarIcons = toolbar.find('.' + classPrefix + 'menu > li > a')
+      var toolbarIcons = (this.toolbarIcons = toolbar.find(
+        '.' + classPrefix + 'menu > li > a'
+      ))
       var toolbarIconHandlers = this.getToolbarHandles()
 
-      toolbarIcons.bind(editormd.mouseOrTouch('click', 'touchend'), function (event) {
+      toolbarIcons.bind(editormd.mouseOrTouch('click', 'touchend'), function(
+        event
+      ) {
         var icon = $(this).children('.fa')
         var name = icon.attr('name')
         var cursor = cm.getCursor()
@@ -1186,12 +1379,27 @@
           $.proxy(toolbarIconHandlers[name], _this)(cm)
         } else {
           if (typeof settings.toolbarHandlers[name] !== 'undefined') {
-            $.proxy(settings.toolbarHandlers[name], _this)(cm, icon, cursor, selection)
+            $.proxy(settings.toolbarHandlers[name], _this)(
+              cm,
+              icon,
+              cursor,
+              selection
+            )
           }
         }
 
-        if (name !== 'link' && name !== 'reference-link' && name !== 'image' && name !== 'code-block' &&
-          name !== 'preformatted-text' && name !== 'watch' && name !== 'preview' && name !== 'search' && name !== 'fullscreen' && name !== 'info') {
+        if (
+          name !== 'link' &&
+          name !== 'reference-link' &&
+          name !== 'image' &&
+          name !== 'code-block' &&
+          name !== 'preformatted-text' &&
+          name !== 'watch' &&
+          name !== 'preview' &&
+          name !== 'search' &&
+          name !== 'fullscreen' &&
+          name !== 'info'
+        ) {
           cm.focus()
         }
 
@@ -1209,7 +1417,7 @@
      * @returns {dialog}          返回创建的dialog的jQuery实例对象
      */
 
-    createDialog: function (options) {
+    createDialog: function(options) {
       return $.proxy(editormd.createDialog, this)(options)
     },
 
@@ -1220,32 +1428,53 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    createInfoDialog: function () {
+    createInfoDialog: function() {
       var _this = this
       var editor = this.editor
       var classPrefix = this.classPrefix
 
       var infoDialogHTML = [
-        '<div class="' + classPrefix + 'dialog ' + classPrefix + 'dialog-info" style="">',
+        '<div class="' +
+          classPrefix +
+          'dialog ' +
+          classPrefix +
+          'dialog-info" style="">',
         '<div class="' + classPrefix + 'dialog-container">',
-        '<h1><i class="editormd-logo editormd-logo-lg editormd-logo-color"></i> ' + editormd.title + '<small>v' + editormd.version + '</small></h1>',
+        '<h1><i class="editormd-logo editormd-logo-lg editormd-logo-color"></i> ' +
+          editormd.title +
+          '<small>v' +
+          editormd.version +
+          '</small></h1>',
         '<p>' + this.lang.description + '</p>',
-        '<p style="margin: 10px 0 20px 0;"><a href="' + editormd.homePage + '" target="_blank">' + editormd.homePage + ' <i class="fa fa-external-link"></i></a></p>',
+        '<p style="margin: 10px 0 20px 0;"><a href="' +
+          editormd.homePage +
+          '" target="_blank">' +
+          editormd.homePage +
+          ' <i class="fa fa-external-link"></i></a></p>',
         '<p style="font-size: 0.85em;">Copyright &copy; 2015 <a href="https://github.com/pandao" target="_blank" class="hover-link">Pandao</a>, The <a href="https://github.com/pandao/editor.md/blob/master/LICENSE" target="_blank" class="hover-link">MIT</a> License.</p>',
         '</div>',
-        '<a href="javascript:;" class="fa fa-close ' + classPrefix + 'dialog-close"></a>',
+        '<a href="javascript:;" class="fa fa-close ' +
+          classPrefix +
+          'dialog-close"></a>',
         '</div>'
       ].join('\n')
 
       editor.append(infoDialogHTML)
 
-      var infoDialog = this.infoDialog = editor.children('.' + classPrefix + 'dialog-info')
+      var infoDialog = (this.infoDialog = editor.children(
+        '.' + classPrefix + 'dialog-info'
+      ))
 
-      infoDialog.find('.' + classPrefix + 'dialog-close').bind(editormd.mouseOrTouch('click', 'touchend'), function () {
-        _this.hideInfoDialog()
-      })
+      infoDialog
+        .find('.' + classPrefix + 'dialog-close')
+        .bind(editormd.mouseOrTouch('click', 'touchend'), function() {
+          _this.hideInfoDialog()
+        })
 
-      infoDialog.css('border', (editormd.isIE8) ? '1px solid #ddd' : '').css('z-index', editormd.dialogZindex).show()
+      infoDialog
+        .css('border', editormd.isIE8 ? '1px solid #ddd' : '')
+        .css('z-index', editormd.dialogZindex)
+        .show()
 
       this.infoDialogPosition()
 
@@ -1259,10 +1488,10 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    infoDialogPosition: function () {
+    infoDialogPosition: function() {
       var infoDialog = this.infoDialog
 
-      var _infoDialogPosition = function () {
+      var _infoDialogPosition = function() {
         infoDialog.css({
           top: ($(window).height() - infoDialog.height()) / 2 + 'px',
           left: ($(window).width() - infoDialog.width()) / 2 + 'px'
@@ -1283,13 +1512,15 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    showInfoDialog: function () {
+    showInfoDialog: function() {
       $('html,body').css('overflow-x', 'hidden')
 
       var _this = this
       var editor = this.editor
       var settings = this.settings
-      var infoDialog = this.infoDialog = editor.children('.' + this.classPrefix + 'dialog-info')
+      var infoDialog = (this.infoDialog = editor.children(
+        '.' + this.classPrefix + 'dialog-info'
+      ))
 
       if (infoDialog.length < 1) {
         this.createInfoDialog()
@@ -1297,10 +1528,12 @@
 
       this.lockScreen(true)
 
-      this.mask.css({
-        opacity: settings.dialogMaskOpacity,
-        backgroundColor: settings.dialogMaskBgColor
-      }).show()
+      this.mask
+        .css({
+          opacity: settings.dialogMaskOpacity,
+          backgroundColor: settings.dialogMaskBgColor
+        })
+        .show()
 
       infoDialog.css('z-index', editormd.dialogZindex).show()
 
@@ -1316,7 +1549,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    hideInfoDialog: function () {
+    hideInfoDialog: function() {
       $('html,body').css('overflow-x', '')
       this.infoDialog.hide()
       this.mask.hide()
@@ -1333,7 +1566,7 @@
      * @returns {editormd}           返回editormd的实例对象
      */
 
-    lockScreen: function (lock) {
+    lockScreen: function(lock) {
       editormd.lockScreen(lock)
       this.resize()
 
@@ -1347,7 +1580,7 @@
      * @returns {editormd}  返回editormd的实例对象
      */
 
-    recreate: function () {
+    recreate: function() {
       var _this = this
       var editor = this.editor
       var settings = this.settings
@@ -1379,7 +1612,7 @@
      * @returns {editormd}             返回editormd的实例对象
      */
 
-    previewCodeHighlight: function () {
+    previewCodeHighlight: function() {
       var settings = this.settings
       var previewContainer = this.previewContainer
 
@@ -1401,17 +1634,19 @@
      * @returns {editormd}             返回editormd的实例对象
      */
 
-    katexRender: function () {
+    katexRender: function() {
       if (timer === null) {
         return this
       }
 
-      this.previewContainer.find('.' + editormd.classNames.tex).each(function () {
-        var tex = $(this)
-        editormd.$katex.render(tex.text(), tex[0])
+      this.previewContainer
+        .find('.' + editormd.classNames.tex)
+        .each(function() {
+          var tex = $(this)
+          editormd.$katex.render(tex.text(), tex[0])
 
-        tex.find('.katex').css('font-size', '1.6em')
-      })
+          tex.find('.katex').css('font-size', '1.6em')
+        })
 
       return this
     },
@@ -1420,12 +1655,18 @@
      *
      * @returns {editormd}             返回editormd的实例对象
      */
-    mindmapRender: function () {
-      this.previewContainer.find('.mindmap').each(function () {
-        var data = window.markmap.transform($(this).text().trim())
+    mindmapRender: function() {
+      this.previewContainer.find('.mindmap').each(function() {
+        var data = window.markmap.transform(
+          $(this)
+            .text()
+            .trim()
+        )
         $(this).html('')
         var svgId = this.id + '-svg'
-        $(this).append($('<svg style="width: 100%;height:500px" id="' + svgId + '"></svg>'))
+        $(this).append(
+          $('<svg style="width: 100%;height:500px" id="' + svgId + '"></svg>')
+        )
         window.markmap.markmap('svg#' + svgId, data)
       })
 
@@ -1439,7 +1680,7 @@
      * @returns {editormd}             返回editormd的实例对象
      */
 
-    flowChartAndSequenceDiagramRender: function () {
+    flowChartAndSequenceDiagramRender: function() {
       var $this = this
       var settings = this.settings
       var previewContainer = this.previewContainer
@@ -1459,7 +1700,9 @@
       }
 
       if (settings.sequenceDiagram) {
-        previewContainer.find('.sequence-diagram').sequenceDiagram({ theme: 'simple' })
+        previewContainer
+          .find('.sequence-diagram')
+          .sequenceDiagram({ theme: 'simple' })
       }
 
       var preview = $this.preview
@@ -1468,22 +1711,24 @@
 
       var height = codeView.height()
       var scrollTop = codeView.scrollTop()
-      var percent = (scrollTop / codeView[0].scrollHeight)
+      var percent = scrollTop / codeView[0].scrollHeight
       var tocHeight = 0
 
-      preview.find('.markdown-toc-list').each(function () {
+      preview.find('.markdown-toc-list').each(function() {
         tocHeight += $(this).height()
       })
 
       var tocMenuHeight = preview.find('.editormd-toc-menu').height()
-      tocMenuHeight = (!tocMenuHeight) ? 0 : tocMenuHeight
+      tocMenuHeight = !tocMenuHeight ? 0 : tocMenuHeight
 
       if (scrollTop === 0) {
         preview.scrollTop(0)
       } else if (scrollTop + height >= codeView[0].scrollHeight - 16) {
         preview.scrollTop(preview[0].scrollHeight)
       } else {
-        preview.scrollTop((preview[0].scrollHeight + tocHeight + tocMenuHeight) * percent)
+        preview.scrollTop(
+          (preview[0].scrollHeight + tocHeight + tocMenuHeight) * percent
+        )
       }
 
       return this
@@ -1497,7 +1742,7 @@
      * @returns {editormd}              return this
      */
 
-    registerKeyMaps: function (keyMap) {
+    registerKeyMaps: function(keyMap) {
       var _this = this
       var cm = this.cm
       var settings = this.settings
@@ -1518,9 +1763,15 @@
       } else {
         for (var k in editormd.keyMaps) {
           var _keyMap = editormd.keyMaps[k]
-          var handle = (typeof _keyMap === 'string') ? $.proxy(toolbarHandlers[_keyMap], _this) : $.proxy(_keyMap, _this)
+          var handle =
+            typeof _keyMap === 'string'
+              ? $.proxy(toolbarHandlers[_keyMap], _this)
+              : $.proxy(_keyMap, _this)
 
-          if ($.inArray(k, ['F9', 'F10', 'F11']) < 0 && $.inArray(k, disabledKeyMaps) < 0) {
+          if (
+            $.inArray(k, ['F9', 'F10', 'F11']) < 0 &&
+            $.inArray(k, disabledKeyMaps) < 0
+          ) {
             var _map = {}
             _map[k] = handle
 
@@ -1528,7 +1779,7 @@
           }
         }
 
-        $(window).keydown(function (event) {
+        $(window).keydown(function(event) {
           var keymaps = {
             '120': 'F9',
             '121': 'F10',
@@ -1568,7 +1819,7 @@
      * @returns {editormd} return this
      */
 
-    bindScrollEvent: function () {
+    bindScrollEvent: function() {
       var _this = this
       var preview = this.preview
       var settings = this.settings
@@ -1579,42 +1830,48 @@
         return this
       }
 
-      var cmBindScroll = function () {
-        codeMirror.find('.CodeMirror-scroll').bind(mouseOrTouch('scroll', 'touchmove'), function (event) {
-          var height = $(this).height()
-          var scrollTop = $(this).scrollTop()
-          var percent = (scrollTop / $(this)[0].scrollHeight)
+      var cmBindScroll = function() {
+        codeMirror
+          .find('.CodeMirror-scroll')
+          .bind(mouseOrTouch('scroll', 'touchmove'), function(event) {
+            var height = $(this).height()
+            var scrollTop = $(this).scrollTop()
+            var percent = scrollTop / $(this)[0].scrollHeight
 
-          var tocHeight = 0
+            var tocHeight = 0
 
-          preview.find('.markdown-toc-list').each(function () {
-            tocHeight += $(this).height()
+            preview.find('.markdown-toc-list').each(function() {
+              tocHeight += $(this).height()
+            })
+
+            var tocMenuHeight = preview.find('.editormd-toc-menu').height()
+            tocMenuHeight = !tocMenuHeight ? 0 : tocMenuHeight
+
+            if (scrollTop === 0) {
+              preview.scrollTop(0)
+            } else if (scrollTop + height >= $(this)[0].scrollHeight - 16) {
+              preview.scrollTop(preview[0].scrollHeight)
+            } else {
+              preview.scrollTop(
+                (preview[0].scrollHeight + tocHeight + tocMenuHeight) * percent
+              )
+            }
+
+            $.proxy(settings.onscroll, _this)(event)
           })
-
-          var tocMenuHeight = preview.find('.editormd-toc-menu').height()
-          tocMenuHeight = (!tocMenuHeight) ? 0 : tocMenuHeight
-
-          if (scrollTop === 0) {
-            preview.scrollTop(0)
-          } else if (scrollTop + height >= $(this)[0].scrollHeight - 16) {
-            preview.scrollTop(preview[0].scrollHeight)
-          } else {
-            preview.scrollTop((preview[0].scrollHeight + tocHeight + tocMenuHeight) * percent)
-          }
-
-          $.proxy(settings.onscroll, _this)(event)
-        })
       }
 
-      var cmUnbindScroll = function () {
-        codeMirror.find('.CodeMirror-scroll').unbind(mouseOrTouch('scroll', 'touchmove'))
+      var cmUnbindScroll = function() {
+        codeMirror
+          .find('.CodeMirror-scroll')
+          .unbind(mouseOrTouch('scroll', 'touchmove'))
       }
 
-      var previewBindScroll = function () {
-        preview.bind(mouseOrTouch('scroll', 'touchmove'), function (event) {
+      var previewBindScroll = function() {
+        preview.bind(mouseOrTouch('scroll', 'touchmove'), function(event) {
           var height = $(this).height()
           var scrollTop = $(this).scrollTop()
-          var percent = (scrollTop / $(this)[0].scrollHeight)
+          var percent = scrollTop / $(this)[0].scrollHeight
           var codeView = codeMirror.find('.CodeMirror-scroll')
 
           if (scrollTop === 0) {
@@ -1629,7 +1886,7 @@
         })
       }
 
-      var previewUnbindScroll = function () {
+      var previewUnbindScroll = function() {
         preview.unbind(mouseOrTouch('scroll', 'touchmove'))
       }
 
@@ -1654,7 +1911,7 @@
       return this
     },
 
-    bindChangeEvent: function () {
+    bindChangeEvent: function() {
       var _this = this
       var cm = this.cm
       var settings = this.settings
@@ -1663,12 +1920,15 @@
         return this
       }
 
-      cm.on('change', function (_cm, changeObj) {
+      cm.on('change', function(_cm, changeObj) {
         if (settings.watch) {
-          _this.previewContainer.css('padding', settings.autoHeight ? '20px 20px 50px 40px' : '20px')
+          _this.previewContainer.css(
+            'padding',
+            settings.autoHeight ? '20px 20px 50px 40px' : '20px'
+          )
         }
 
-        timer = setTimeout(function () {
+        timer = setTimeout(function() {
           clearTimeout(timer)
           _this.save()
           timer = null
@@ -1686,7 +1946,7 @@
      * @returns {editormd}             返回editormd的实例对象
      */
 
-    loadedDisplay: function (recreate) {
+    loadedDisplay: function(recreate) {
       recreate = recreate || false
 
       var _this = this
@@ -1707,7 +1967,7 @@
       this.resize()
       this.registerKeyMaps()
 
-      $(window).resize(function () {
+      $(window).resize(function() {
         _this.resize()
       })
 
@@ -1730,8 +1990,8 @@
      * @returns {editormd}             返回editormd的实例对象
      */
 
-    width: function (width) {
-      this.editor.css('width', (typeof width === 'number') ? width + 'px' : width)
+    width: function(width) {
+      this.editor.css('width', typeof width === 'number' ? width + 'px' : width)
       this.resize()
 
       return this
@@ -1745,8 +2005,11 @@
      * @returns {editormd}              返回editormd的实例对象
      */
 
-    height: function (height) {
-      this.editor.css('height', (typeof height === 'number') ? height + 'px' : height)
+    height: function(height) {
+      this.editor.css(
+        'height',
+        typeof height === 'number' ? height + 'px' : height
+      )
       this.resize()
 
       return this
@@ -1761,7 +2024,7 @@
      * @returns {editormd}                    返回editormd的实例对象
      */
 
-    resize: function (width, height) {
+    resize: function(width, height) {
       width = width || null
       height = height || null
 
@@ -1773,7 +2036,7 @@
       var codeMirror = this.codeMirror
 
       if (width) {
-        editor.css('width', (typeof width === 'number') ? width + 'px' : width)
+        editor.css('width', typeof width === 'number' ? width + 'px' : width)
       }
 
       if (settings.autoHeight && !state.fullscreen && !state.preview) {
@@ -1781,7 +2044,10 @@
         codeMirror.css('height', 'auto')
       } else {
         if (height) {
-          editor.css('height', (typeof height === 'number') ? height + 'px' : height)
+          editor.css(
+            'height',
+            typeof height === 'number' ? height + 'px' : height
+          )
         }
 
         if (state.fullscreen) {
@@ -1789,7 +2055,9 @@
         }
 
         if (settings.toolbar && !settings.readOnly) {
-          codeMirror.css('margin-top', toolbar.height() + 1).height(editor.height() - toolbar.height())
+          codeMirror
+            .css('margin-top', toolbar.height() + 1)
+            .height(editor.height() - toolbar.height())
         } else {
           codeMirror.css('margin-top', 0).height(editor.height())
         }
@@ -1797,9 +2065,12 @@
 
       if (settings.watch) {
         codeMirror.width(editor.width() / 2)
-        preview.width((!state.preview) ? editor.width() / 2 : editor.width())
+        preview.width(!state.preview ? editor.width() / 2 : editor.width())
 
-        this.previewContainer.css('padding', settings.autoHeight ? '20px 20px 50px 40px' : '20px')
+        this.previewContainer.css(
+          'padding',
+          settings.autoHeight ? '20px 20px 50px 40px' : '20px'
+        )
 
         if (settings.toolbar && !settings.readOnly) {
           preview.css('top', toolbar.height() + 1)
@@ -1810,7 +2081,10 @@
         if (settings.autoHeight && !state.fullscreen && !state.preview) {
           preview.height('')
         } else {
-          var previewHeight = (settings.toolbar && !settings.readOnly) ? editor.height() - toolbar.height() : editor.height()
+          var previewHeight =
+            settings.toolbar && !settings.readOnly
+              ? editor.height() - toolbar.height()
+              : editor.height()
 
           preview.height(previewHeight)
         }
@@ -1833,7 +2107,7 @@
      * @returns {editormd}     返回editormd的实例对象
      */
 
-    save: function () {
+    save: function() {
       if (timer === null) {
         return this
       }
@@ -1852,8 +2126,8 @@
       }
 
       var marked = editormd.$marked
-      var markdownToC = this.markdownToC = []
-      var rendererOptions = this.markedRendererOptions = {
+      var markdownToC = (this.markdownToC = [])
+      var rendererOptions = (this.markedRendererOptions = {
         toc: settings.toc,
         tocm: settings.tocm,
         tocStartLevel: settings.tocStartLevel,
@@ -1861,24 +2135,24 @@
         taskList: settings.taskList,
         emoji: settings.emoji,
         tex: settings.tex,
-        atLink: settings.atLink,           // for @link
-        emailLink: settings.emailLink,        // for mail address auto link
+        atLink: settings.atLink, // for @link
+        emailLink: settings.emailLink, // for mail address auto link
         flowChart: settings.flowChart,
         sequenceDiagram: settings.sequenceDiagram,
         previewCodeHighlight: settings.previewCodeHighlight,
         mindMap: settings.mindMap
-      }
+      })
 
-      var markedOptions = this.markedOptions = {
+      var markedOptions = (this.markedOptions = {
         renderer: editormd.markedRenderer(markdownToC, rendererOptions),
         gfm: true,
         tables: true,
         breaks: true,
         pedantic: false,
-        sanitize: !(settings.htmlDecode),  // 关闭忽略HTML标签，即开启识别HTML标签，默认为false
+        sanitize: !settings.htmlDecode, // 关闭忽略HTML标签，即开启识别HTML标签，默认为false
         smartLists: true,
         smartypants: true
-      }
+      })
 
       marked.setOptions(markedOptions)
 
@@ -1886,7 +2160,10 @@
 
       // console.info("cmValue", cmValue, newMarkdownDoc);
 
-      newMarkdownDoc = editormd.filterHTMLTags(newMarkdownDoc, settings.htmlDecode)
+      newMarkdownDoc = editormd.filterHTMLTags(
+        newMarkdownDoc,
+        settings.htmlDecode
+      )
 
       // console.error("cmValue", cmValue, newMarkdownDoc);
 
@@ -1904,19 +2181,36 @@
         this.previewCodeHighlight()
 
         if (settings.toc) {
-          var tocContainer = (settings.tocContainer === '') ? previewContainer : $(settings.tocContainer)
+          var tocContainer =
+            settings.tocContainer === ''
+              ? previewContainer
+              : $(settings.tocContainer)
           var tocMenu = tocContainer.find('.' + this.classPrefix + 'toc-menu')
 
-          tocContainer.attr('previewContainer', (settings.tocContainer === '') ? 'true' : 'false')
+          tocContainer.attr(
+            'previewContainer',
+            settings.tocContainer === '' ? 'true' : 'false'
+          )
 
           if (settings.tocContainer !== '' && tocMenu.length > 0) {
             tocMenu.remove()
           }
 
-          editormd.markdownToCRenderer(markdownToC, tocContainer, settings.tocDropdown, settings.tocStartLevel)
+          editormd.markdownToCRenderer(
+            markdownToC,
+            tocContainer,
+            settings.tocDropdown,
+            settings.tocStartLevel
+          )
 
-          if (settings.tocDropdown || tocContainer.find('.' + this.classPrefix + 'toc-menu').length > 0) {
-            editormd.tocDropdownMenu(tocContainer, (settings.tocTitle !== '') ? settings.tocTitle : this.lang.tocTitle)
+          if (
+            settings.tocDropdown ||
+            tocContainer.find('.' + this.classPrefix + 'toc-menu').length > 0
+          ) {
+            editormd.tocDropdownMenu(
+              tocContainer,
+              settings.tocTitle !== '' ? settings.tocTitle : this.lang.tocTitle
+            )
           }
 
           if (settings.tocContainer !== '') {
@@ -1926,11 +2220,26 @@
 
         if (settings.tex) {
           if (!editormd.kaTeXLoaded && settings.autoLoadModules) {
-            editormd.loadKaTeX(function () {
-              editormd.$katex = katex
-              editormd.kaTeXLoaded = true
-              _this.katexRender()
-            })
+            // 为 loadKaTeX 提供 settings 参数
+            var loadKatexFn = function() {
+              var katexURLCss =
+                settings.katexURL && settings.katexURL.css
+                  ? settings.katexURL.css
+                  : editormd.katexURL.css
+              var katexURLJs =
+                settings.katexURL && settings.katexURL.js
+                  ? settings.katexURL.js
+                  : editormd.katexURL.js
+
+              editormd.loadCSS(katexURLCss, function() {
+                editormd.loadScript(katexURLJs, function() {
+                  editormd.$katex = katex
+                  editormd.kaTeXLoaded = true
+                  _this.katexRender()
+                })
+              })
+            }
+            loadKatexFn()
           } else {
             editormd.$katex = katex
             this.katexRender()
@@ -1938,7 +2247,7 @@
         }
 
         if (settings.flowChart || settings.sequenceDiagram) {
-          flowchartTimer = setTimeout(function () {
+          flowchartTimer = setTimeout(function() {
             clearTimeout(flowchartTimer)
             _this.flowChartAndSequenceDiagramRender()
             flowchartTimer = null
@@ -1964,7 +2273,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    focus: function () {
+    focus: function() {
       this.cm.focus()
 
       return this
@@ -1978,7 +2287,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    setCursor: function (cursor) {
+    setCursor: function(cursor) {
       this.cm.setCursor(cursor)
 
       return this
@@ -1991,7 +2300,7 @@
      * @returns {Cursor}         返回一个光标Cursor对象
      */
 
-    getCursor: function () {
+    getCursor: function() {
       return this.cm.getCursor()
     },
 
@@ -2004,7 +2313,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    setSelection: function (from, to) {
+    setSelection: function(from, to) {
       this.cm.setSelection(from, to)
 
       return this
@@ -2017,7 +2326,7 @@
      * @returns {String}         返回选中文本的字符串形式
      */
 
-    getSelection: function () {
+    getSelection: function() {
       return this.cm.getSelection()
     },
 
@@ -2029,7 +2338,7 @@
      * @returns {Array}            return this
      */
 
-    setSelections: function (ranges) {
+    setSelections: function(ranges) {
       this.cm.setSelections(ranges)
 
       return this
@@ -2042,7 +2351,7 @@
      * @returns {Array}         return selection ranges array
      */
 
-    getSelections: function () {
+    getSelections: function() {
       return this.cm.getSelections()
     },
 
@@ -2054,7 +2363,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    replaceSelection: function (value) {
+    replaceSelection: function(value) {
       this.cm.replaceSelection(value)
 
       return this
@@ -2071,7 +2380,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    insertValue: function (value) {
+    insertValue: function(value) {
       this.replaceSelection(value)
 
       return this
@@ -2085,7 +2394,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    appendMarkdown: function (md) {
+    appendMarkdown: function(md) {
       var settings = this.settings
       var cm = this.cm
 
@@ -2102,7 +2411,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    setMarkdown: function (md) {
+    setMarkdown: function(md) {
       this.cm.setValue(md || this.settings.markdown)
 
       return this
@@ -2115,7 +2424,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    getMarkdown: function () {
+    getMarkdown: function() {
       return this.cm.getValue()
     },
 
@@ -2126,7 +2435,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    getValue: function () {
+    getValue: function() {
       return this.cm.getValue()
     },
 
@@ -2138,7 +2447,7 @@
      * @returns {editormd}           返回editormd的实例对象
      */
 
-    setValue: function (value) {
+    setValue: function(value) {
       this.cm.setValue(value)
 
       return this
@@ -2151,7 +2460,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    clear: function () {
+    clear: function() {
       this.cm.setValue('')
 
       return this
@@ -2164,7 +2473,7 @@
      * @returns {String}               返回HTML源码
      */
 
-    getHTML: function () {
+    getHTML: function() {
       if (!this.settings.saveHTMLToTextarea) {
         alert('Error: settings.saveHTMLToTextarea == false')
 
@@ -2181,7 +2490,7 @@
      * @returns {String}           Return html code 返回HTML源码
      */
 
-    getTextareaSavedHTML: function () {
+    getTextareaSavedHTML: function() {
       return this.getHTML()
     },
 
@@ -2192,7 +2501,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    getPreviewedHTML: function () {
+    getPreviewedHTML: function() {
       if (!this.settings.watch) {
         alert('Error: settings.watch == false')
 
@@ -2209,7 +2518,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    watch: function (callback) {
+    watch: function(callback) {
       var settings = this.settings
 
       if ($.inArray(settings.mode, ['gfm', 'markdown']) < 0) {
@@ -2228,14 +2537,16 @@
         icon.removeClass(unWatchIcon).addClass(watchIcon)
       }
 
-      this.codeMirror.css('border-right', '1px solid #ddd').width(this.editor.width() / 2)
+      this.codeMirror
+        .css('border-right', '1px solid #ddd')
+        .width(this.editor.width() / 2)
 
       timer = 0
 
       this.save().resize()
 
       if (!settings.onwatch) {
-        settings.onwatch = callback || function () { }
+        settings.onwatch = callback || function() {}
       }
 
       $.proxy(settings.onwatch, this)()
@@ -2250,7 +2561,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    unwatch: function (callback) {
+    unwatch: function(callback) {
       var settings = this.settings
       this.state.watching = settings.watch = false
       this.preview.hide()
@@ -2269,7 +2580,7 @@
       this.resize()
 
       if (!settings.onunwatch) {
-        settings.onunwatch = callback || function () { }
+        settings.onunwatch = callback || function() {}
       }
 
       $.proxy(settings.onunwatch, this)()
@@ -2285,11 +2596,11 @@
      * @returns {editormd}                       返回editormd的实例对象
      */
 
-    show: function (callback) {
-      callback = callback || function () { }
+    show: function(callback) {
+      callback = callback || function() {}
 
       var _this = this
-      this.editor.show(0, function () {
+      this.editor.show(0, function() {
         $.proxy(callback, _this)()
       })
 
@@ -2304,11 +2615,11 @@
      * @returns {editormd}                       返回editormd的实例对象
      */
 
-    hide: function (callback) {
-      callback = callback || function () { }
+    hide: function(callback) {
+      callback = callback || function() {}
 
       var _this = this
-      this.editor.hide(0, function () {
+      this.editor.hide(0, function() {
         $.proxy(callback, _this)()
       })
 
@@ -2322,7 +2633,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    previewing: function () {
+    previewing: function() {
       var _this = this
       var editor = this.editor
       var preview = this.preview
@@ -2342,23 +2653,26 @@
 
       codeMirror.toggle()
 
-      var escHandle = function (event) {
+      var escHandle = function(event) {
         if (event.shiftKey && event.keyCode === 27) {
           _this.previewed()
         }
       }
 
-      if (codeMirror.css('display') === 'none') // 为了兼容Zepto，而不使用codeMirror.is(":hidden")
-      {
+      if (codeMirror.css('display') === 'none') {
+        // 为了兼容Zepto，而不使用codeMirror.is(":hidden")
         this.state.preview = true
 
         if (this.state.fullscreen) {
           preview.css('background', '#fff')
         }
 
-        editor.find('.' + this.classPrefix + 'preview-close-btn').show().bind(editormd.mouseOrTouch('click', 'touchend'), function () {
-          _this.previewed()
-        })
+        editor
+          .find('.' + this.classPrefix + 'preview-close-btn')
+          .show()
+          .bind(editormd.mouseOrTouch('click', 'touchend'), function() {
+            _this.previewed()
+          })
 
         if (!settings.watch) {
           this.save()
@@ -2372,7 +2686,10 @@
           position: '',
           top: 0,
           width: editor.width(),
-          height: (settings.autoHeight && !this.state.fullscreen) ? 'auto' : editor.height()
+          height:
+            settings.autoHeight && !this.state.fullscreen
+              ? 'auto'
+              : editor.height()
         })
 
         if (this.state.loaded) {
@@ -2393,13 +2710,15 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    previewed: function () {
+    previewed: function() {
       var editor = this.editor
       var preview = this.preview
       var toolbar = this.toolbar
       var settings = this.settings
       var previewContainer = this.previewContainer
-      var previewCloseBtn = editor.find('.' + this.classPrefix + 'preview-close-btn')
+      var previewCloseBtn = editor.find(
+        '.' + this.classPrefix + 'preview-close-btn'
+      )
 
       this.state.preview = false
 
@@ -2409,7 +2728,7 @@
         toolbar.show()
       }
 
-      preview[(settings.watch) ? 'show' : 'hide']()
+      preview[settings.watch ? 'show' : 'hide']()
 
       previewCloseBtn.hide().unbind(editormd.mouseOrTouch('click', 'touchend'))
 
@@ -2423,8 +2742,11 @@
         background: null,
         position: 'absolute',
         width: editor.width() / 2,
-        height: (settings.autoHeight && !this.state.fullscreen) ? 'auto' : editor.height() - toolbar.height(),
-        top: (settings.toolbar) ? toolbar.height() : 0
+        height:
+          settings.autoHeight && !this.state.fullscreen
+            ? 'auto'
+            : editor.height() - toolbar.height(),
+        top: settings.toolbar ? toolbar.height() : 0
       })
 
       if (this.state.loaded) {
@@ -2441,7 +2763,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    fullscreen: function () {
+    fullscreen: function() {
       var _this = this
       var state = this.state
       var editor = this.editor
@@ -2451,10 +2773,13 @@
       var fullscreenClass = this.classPrefix + 'fullscreen'
 
       if (toolbar) {
-        toolbar.find('.fa[name=fullscreen]').parent().toggleClass('active')
+        toolbar
+          .find('.fa[name=fullscreen]')
+          .parent()
+          .toggleClass('active')
       }
 
-      var escHandle = function (event) {
+      var escHandle = function(event) {
         if (!event.shiftKey && event.keyCode === 27) {
           if (state.fullscreen) {
             _this.fullscreenExit()
@@ -2467,10 +2792,12 @@
 
         $('html,body').css('overflow', 'hidden')
 
-        editor.css({
-          width: $(window).width(),
-          height: $(window).height()
-        }).addClass(fullscreenClass)
+        editor
+          .css({
+            width: $(window).width(),
+            height: $(window).height()
+          })
+          .addClass(fullscreenClass)
 
         this.resize()
 
@@ -2492,7 +2819,7 @@
      * @returns {editormd}         返回editormd的实例对象
      */
 
-    fullscreenExit: function () {
+    fullscreenExit: function() {
       var editor = this.editor
       var settings = this.settings
       var toolbar = this.toolbar
@@ -2501,15 +2828,20 @@
       this.state.fullscreen = false
 
       if (toolbar) {
-        toolbar.find('.fa[name=fullscreen]').parent().removeClass('active')
+        toolbar
+          .find('.fa[name=fullscreen]')
+          .parent()
+          .removeClass('active')
       }
 
       $('html,body').css('overflow', '')
 
-      editor.css({
-        width: editor.data('oldWidth'),
-        height: editor.data('oldHeight')
-      }).removeClass(fullscreenClass)
+      editor
+        .css({
+          width: editor.data('oldWidth'),
+          height: editor.data('oldHeight')
+        })
+        .removeClass(fullscreenClass)
 
       this.resize()
 
@@ -2527,7 +2859,7 @@
      * @returns {editormd}           返回editormd的实例对象
      */
 
-    executePlugin: function (name, path) {
+    executePlugin: function(name, path) {
       var _this = this
       var cm = this.cm
       var settings = this.settings
@@ -2536,7 +2868,11 @@
 
       if (typeof define === 'function') {
         if (typeof this[name] === 'undefined') {
-          alert('Error: ' + name + ' plugin is not found, you are not load this plugin.')
+          alert(
+            'Error: ' +
+              name +
+              ' plugin is not found, you are not load this plugin.'
+          )
 
           return this
         }
@@ -2547,7 +2883,7 @@
       }
 
       if ($.inArray(path, editormd.loadFiles.plugin) < 0) {
-        editormd.loadPlugin(path, function () {
+        editormd.loadPlugin(path, function() {
           editormd.loadPlugins[name] = _this[name]
           _this[name](cm)
         })
@@ -2566,7 +2902,7 @@
      * @returns {editormd}              return this
      */
 
-    search: function (command) {
+    search: function(command) {
       var settings = this.settings
 
       if (!settings.searchReplace) {
@@ -2581,13 +2917,13 @@
       return this
     },
 
-    searchReplace: function () {
+    searchReplace: function() {
       this.search('replace')
 
       return this
     },
 
-    searchReplaceAll: function () {
+    searchReplaceAll: function() {
       this.search('replaceAll')
 
       return this
@@ -2603,7 +2939,7 @@
    * @returns {void}
    */
 
-  editormd.dialogLockScreen = function () {
+  editormd.dialogLockScreen = function() {
     var settings = this.settings || { dialogLockScreen: true }
 
     if (settings.dialogLockScreen) {
@@ -2620,7 +2956,7 @@
    * @returns {void}
    */
 
-  editormd.dialogShowMask = function (dialog) {
+  editormd.dialogShowMask = function(dialog) {
     var editor = this.editor
     var settings = this.settings || { dialogShowMask: true }
 
@@ -2630,20 +2966,23 @@
     })
 
     if (settings.dialogShowMask) {
-      editor.children('.' + this.classPrefix + 'mask').css('z-index', parseInt(dialog.css('z-index')) - 1).show()
+      editor
+        .children('.' + this.classPrefix + 'mask')
+        .css('z-index', parseInt(dialog.css('z-index')) - 1)
+        .show()
     }
   }
 
   editormd.toolbarHandlers = {
-    undo: function () {
+    undo: function() {
       this.cm.undo()
     },
 
-    redo: function () {
+    redo: function() {
       this.cm.redo()
     },
 
-    bold: function () {
+    bold: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2655,7 +2994,7 @@
       }
     },
 
-    del: function () {
+    del: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2667,7 +3006,7 @@
       }
     },
 
-    italic: function () {
+    italic: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2679,7 +3018,7 @@
       }
     },
 
-    quote: function () {
+    quote: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2696,7 +3035,7 @@
       // cm.setCursor(cursor.line, (selection === "") ? cursor.ch + 2 : cursor.ch + selection.length + 2);
     },
 
-    ucfirst: function () {
+    ucfirst: function() {
       var cm = this.cm
       var selection = cm.getSelection()
       var selections = cm.listSelections()
@@ -2705,7 +3044,7 @@
       cm.setSelections(selections)
     },
 
-    ucwords: function () {
+    ucwords: function() {
       var cm = this.cm
       var selection = cm.getSelection()
       var selections = cm.listSelections()
@@ -2714,7 +3053,7 @@
       cm.setSelections(selections)
     },
 
-    uppercase: function () {
+    uppercase: function() {
       var cm = this.cm
       var selection = cm.getSelection()
       var selections = cm.listSelections()
@@ -2723,7 +3062,7 @@
       cm.setSelections(selections)
     },
 
-    lowercase: function () {
+    lowercase: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2733,7 +3072,7 @@
       cm.setSelections(selections)
     },
 
-    h1: function () {
+    h1: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2747,7 +3086,7 @@
       }
     },
 
-    h2: function () {
+    h2: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2761,7 +3100,7 @@
       }
     },
 
-    h3: function () {
+    h3: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2775,7 +3114,7 @@
       }
     },
 
-    h4: function () {
+    h4: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2789,7 +3128,7 @@
       }
     },
 
-    h5: function () {
+    h5: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2803,7 +3142,7 @@
       }
     },
 
-    h6: function () {
+    h6: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2817,7 +3156,7 @@
       }
     },
 
-    'list-ul': function () {
+    'list-ul': function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2828,14 +3167,15 @@
         var selectionText = selection.split('\n')
 
         for (var i = 0, len = selectionText.length; i < len; i++) {
-          selectionText[i] = (selectionText[i] === '') ? '' : '- ' + selectionText[i]
+          selectionText[i] =
+            selectionText[i] === '' ? '' : '- ' + selectionText[i]
         }
 
         cm.replaceSelection(selectionText.join('\n'))
       }
     },
 
-    'list-ol': function () {
+    'list-ol': function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2846,22 +3186,25 @@
         var selectionText = selection.split('\n')
 
         for (var i = 0, len = selectionText.length; i < len; i++) {
-          selectionText[i] = (selectionText[i] === '') ? '' : (i + 1) + '. ' + selectionText[i]
+          selectionText[i] =
+            selectionText[i] === '' ? '' : i + 1 + '. ' + selectionText[i]
         }
 
         cm.replaceSelection(selectionText.join('\n'))
       }
     },
 
-    hr: function () {
+    hr: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
 
-      cm.replaceSelection(((cursor.ch !== 0) ? '\n\n' : '\n') + '------------\n\n')
+      cm.replaceSelection(
+        (cursor.ch !== 0 ? '\n\n' : '\n') + '------------\n\n'
+      )
     },
 
-    tex: function () {
+    tex: function() {
       if (!this.settings.tex) {
         alert('settings.tex === false')
         return this
@@ -2878,15 +3221,18 @@
       }
     },
 
-    link: function () {
+    link: function() {
       this.executePlugin('linkDialog', 'link-dialog/link-dialog')
     },
 
-    'reference-link': function () {
-      this.executePlugin('referenceLinkDialog', 'reference-link-dialog/reference-link-dialog')
+    'reference-link': function() {
+      this.executePlugin(
+        'referenceLinkDialog',
+        'reference-link-dialog/reference-link-dialog'
+      )
     },
 
-    pagebreak: function () {
+    pagebreak: function() {
       if (!this.settings.pageBreak) {
         alert('settings.pageBreak === false')
         return this
@@ -2898,11 +3244,11 @@
       cm.replaceSelection('\r\n[========]\r\n')
     },
 
-    image: function () {
+    image: function() {
       this.executePlugin('imageDialog', 'image-dialog/image-dialog')
     },
 
-    code: function () {
+    code: function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -2914,65 +3260,81 @@
       }
     },
 
-    'code-block': function () {
-      this.executePlugin('codeBlockDialog', 'code-block-dialog/code-block-dialog')
+    'code-block': function() {
+      this.executePlugin(
+        'codeBlockDialog',
+        'code-block-dialog/code-block-dialog'
+      )
     },
 
-    'preformatted-text': function () {
-      this.executePlugin('preformattedTextDialog', 'preformatted-text-dialog/preformatted-text-dialog')
+    'preformatted-text': function() {
+      this.executePlugin(
+        'preformattedTextDialog',
+        'preformatted-text-dialog/preformatted-text-dialog'
+      )
     },
 
-    table: function () {
+    table: function() {
       this.executePlugin('tableDialog', 'table-dialog/table-dialog')
     },
 
-    datetime: function () {
+    datetime: function() {
       var cm = this.cm
       var selection = cm.getSelection()
       var date = new Date()
       var langName = this.settings.lang.name
-      var datefmt = editormd.dateFormat() + ' ' + editormd.dateFormat((langName === 'zh-cn' || langName === 'zh-tw') ? 'cn-week-day' : 'week-day')
+      var datefmt =
+        editormd.dateFormat() +
+        ' ' +
+        editormd.dateFormat(
+          langName === 'zh-cn' || langName === 'zh-tw'
+            ? 'cn-week-day'
+            : 'week-day'
+        )
 
       cm.replaceSelection(datefmt)
     },
 
-    emoji: function () {
+    emoji: function() {
       this.executePlugin('emojiDialog', 'emoji-dialog/emoji-dialog')
     },
 
-    'html-entities': function () {
-      this.executePlugin('htmlEntitiesDialog', 'html-entities-dialog/html-entities-dialog')
+    'html-entities': function() {
+      this.executePlugin(
+        'htmlEntitiesDialog',
+        'html-entities-dialog/html-entities-dialog'
+      )
     },
 
-    'goto-line': function () {
+    'goto-line': function() {
       this.executePlugin('gotoLineDialog', 'goto-line-dialog/goto-line-dialog')
     },
 
-    watch: function () {
+    watch: function() {
       this[this.settings.watch ? 'unwatch' : 'watch']()
     },
 
-    preview: function () {
+    preview: function() {
       this.previewing()
     },
 
-    fullscreen: function () {
+    fullscreen: function() {
       this.fullscreen()
     },
 
-    clear: function () {
+    clear: function() {
       this.clear()
     },
 
-    search: function () {
+    search: function() {
       this.search()
     },
 
-    help: function () {
+    help: function() {
       this.executePlugin('helpDialog', 'help-dialog/help-dialog')
     },
 
-    info: function () {
+    info: function() {
       this.showInfoDialog()
     }
   }
@@ -2984,10 +3346,11 @@
     'Ctrl-4': 'h4',
     'Ctrl-5': 'h5',
     'Ctrl-6': 'h6',
-    'Ctrl-B': 'bold',  // if this is string ==  editormd.toolbarHandlers.xxxx
+    'Ctrl-B': 'bold', // if this is string ==  editormd.toolbarHandlers.xxxx
     'Ctrl-D': 'datetime',
 
-    'Ctrl-E': function () { // emoji
+    'Ctrl-E': function() {
+      // emoji
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -3008,12 +3371,12 @@
     'Ctrl-I': 'italic',
     'Ctrl-K': 'code',
 
-    'Ctrl-L': function () {
+    'Ctrl-L': function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
 
-      var title = (selection === '') ? '' : ' "' + selection + '"'
+      var title = selection === '' ? '' : ' "' + selection + '"'
 
       cm.replaceSelection('[' + selection + '](' + title + ')')
 
@@ -3023,7 +3386,7 @@
     },
     'Ctrl-U': 'list-ul',
 
-    'Shift-Ctrl-A': function () {
+    'Shift-Ctrl-A': function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -3043,9 +3406,9 @@
     'Shift-Ctrl-C': 'code',
     'Shift-Ctrl-Q': 'quote',
     'Shift-Ctrl-S': 'del',
-    'Shift-Ctrl-K': 'tex',  // KaTeX
+    'Shift-Ctrl-K': 'tex', // KaTeX
 
-    'Shift-Alt-C': function () {
+    'Shift-Alt-C': function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
@@ -3066,12 +3429,12 @@
     'Shift-Ctrl-Alt-U': 'ucfirst',
     'Shift-Alt-L': 'lowercase',
 
-    'Shift-Ctrl-I': function () {
+    'Shift-Ctrl-I': function() {
       var cm = this.cm
       var cursor = cm.getCursor()
       var selection = cm.getSelection()
 
-      var title = (selection === '') ? '' : ' "' + selection + '"'
+      var title = selection === '' ? '' : ' "' + selection + '"'
 
       cm.replaceSelection('![' + selection + '](' + title + ')')
 
@@ -3086,9 +3449,9 @@
     'Shift-Ctrl-P': 'preformatted-text',
     'Shift-Ctrl-T': 'table',
     'Shift-Alt-P': 'pagebreak',
-    'F9': 'watch',
-    'F10': 'preview',
-    'F11': 'fullscreen'
+    F9: 'watch',
+    F10: 'preview',
+    F11: 'fullscreen'
   }
 
   /**
@@ -3099,8 +3462,10 @@
    * @returns {String}                   trimed string
    */
 
-  var trim = function (str) {
-    return (!String.prototype.trim) ? str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '') : str.trim()
+  var trim = function(str) {
+    return !String.prototype.trim
+      ? str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '')
+      : str.trim()
   }
 
   editormd.trim = trim
@@ -3113,8 +3478,8 @@
    * @returns {String}                   string
    */
 
-  var ucwords = function (str) {
-    return str.toLowerCase().replace(/\b(\w)|\s(\w)/g, function ($1) {
+  var ucwords = function(str) {
+    return str.toLowerCase().replace(/\b(\w)|\s(\w)/g, function($1) {
       return $1.toUpperCase()
     })
   }
@@ -3129,8 +3494,8 @@
    * @returns {String}                   string
    */
 
-  var firstUpperCase = function (str) {
-    return str.toLowerCase().replace(/\b(\w)/, function ($1) {
+  var firstUpperCase = function(str) {
+    return str.toLowerCase().replace(/\b(\w)/, function($1) {
       return $1.toUpperCase()
     })
   }
@@ -3175,19 +3540,19 @@
    * @returns {Renderer} markedRenderer  返回marked的Renderer自定义对象
    */
 
-  editormd.markedRenderer = function (markdownToC, options) {
+  editormd.markedRenderer = function(markdownToC, options) {
     var defaults = {
-      toc: true,           // Table of contents
+      toc: true, // Table of contents
       tocm: false,
-      tocStartLevel: 1,              // Said from H1 to create ToC
+      tocStartLevel: 1, // Said from H1 to create ToC
       pageBreak: true,
-      atLink: true,           // for @link
-      emailLink: true,           // for mail address auto link
-      taskList: false,          // Enable Github Flavored Markdown task lists
-      emoji: false,          // :emoji: , Support Twemoji, fontAwesome, Editor.md logo emojis.
-      tex: false,          // TeX(LaTeX), based on KaTeX
-      flowChart: false,          // flowChart.js only support IE9+
-      sequenceDiagram: false          // sequenceDiagram.js only support IE9+
+      atLink: true, // for @link
+      emailLink: true, // for mail address auto link
+      taskList: false, // Enable Github Flavored Markdown task lists
+      emoji: false, // :emoji: , Support Twemoji, fontAwesome, Editor.md logo emojis.
+      tex: false, // TeX(LaTeX), based on KaTeX
+      flowChart: false, // flowChart.js only support IE9+
+      sequenceDiagram: false // sequenceDiagram.js only support IE9+
     }
 
     var settings = $.extend(defaults, options || {})
@@ -3205,8 +3570,8 @@
     var editormdLogoReg = regexs.editormdLogo
     var pageBreakReg = regexs.pageBreak
 
-    markedRenderer.emoji = function (text) {
-      text = text.replace(editormd.regexs.emojiDatetime, function ($1) {
+    markedRenderer.emoji = function(text) {
+      text = text.replace(editormd.regexs.emojiDatetime, function($1) {
         return $1.replace(/:/g, '&#58;')
       })
 
@@ -3221,7 +3586,7 @@
           matchs[i] = ':\\+1:'
         }
 
-        text = text.replace(new RegExp(matchs[i]), function ($1, $2) {
+        text = text.replace(new RegExp(matchs[i]), function($1, $2) {
           var faMatchs = $1.match(faIconReg)
           var name = $1.replace(/:/g, '')
 
@@ -3229,7 +3594,13 @@
             for (var fa = 0, len1 = faMatchs.length; fa < len1; fa++) {
               var faName = faMatchs[fa].replace(/:/g, '')
 
-              return '<i class="fa ' + faName + ' fa-emoji" title="' + faName.replace('fa-', '') + '"></i>'
+              return (
+                '<i class="fa ' +
+                faName +
+                ' fa-emoji" title="' +
+                faName.replace('fa-', '') +
+                '"></i>'
+              )
             }
           } else {
             var emdlogoMathcs = $1.match(editormdLogoReg)
@@ -3238,19 +3609,45 @@
             if (emdlogoMathcs) {
               for (var x = 0, len2 = emdlogoMathcs.length; x < len2; x++) {
                 var logoName = emdlogoMathcs[x].replace(/:/g, '')
-                return '<i class="' + logoName + '" title="Editor.md logo (' + logoName + ')"></i>'
+                return (
+                  '<i class="' +
+                  logoName +
+                  '" title="Editor.md logo (' +
+                  logoName +
+                  ')"></i>'
+                )
               }
             } else if (twemojiMatchs) {
               for (var t = 0, len3 = twemojiMatchs.length; t < len3; t++) {
                 var twe = twemojiMatchs[t].replace(/:/g, '').replace('tw-', '')
-                return '<img src="' + editormd.twemoji.path + twe + editormd.twemoji.ext + '" title="twemoji-' + twe + '" alt="twemoji-' + twe + '" class="emoji twemoji" />'
+                return (
+                  '<img src="' +
+                  editormd.twemoji.path +
+                  twe +
+                  editormd.twemoji.ext +
+                  '" title="twemoji-' +
+                  twe +
+                  '" alt="twemoji-' +
+                  twe +
+                  '" class="emoji twemoji" />'
+                )
               }
             } else {
-              var src = (name === '+1') ? 'plus1' : name
-              src = (src === 'black_large_square') ? 'black_square' : src
-              src = (src === 'moon') ? 'waxing_gibbous_moon' : src
+              var src = name === '+1' ? 'plus1' : name
+              src = src === 'black_large_square' ? 'black_square' : src
+              src = src === 'moon' ? 'waxing_gibbous_moon' : src
 
-              return '<img src="' + editormd.emoji.path + src + editormd.emoji.ext + '" class="emoji" title="&#58;' + name + '&#58;" alt="&#58;' + name + '&#58;" />'
+              return (
+                '<img src="' +
+                editormd.emoji.path +
+                src +
+                editormd.emoji.ext +
+                '" class="emoji" title="&#58;' +
+                name +
+                '&#58;" alt="&#58;' +
+                name +
+                '&#58;" />'
+              )
             }
           }
         })
@@ -3259,21 +3656,36 @@
       return text
     }
 
-    markedRenderer.atLink = function (text) {
+    markedRenderer.atLink = function(text) {
       if (atLinkReg.test(text)) {
         if (settings.atLink) {
-          text = text.replace(emailReg, function ($1, $2, $3, $4) {
+          text = text.replace(emailReg, function($1, $2, $3, $4) {
             return $1.replace(/@/g, '_#_&#64;_#_')
           })
 
-          text = text.replace(atLinkReg, function ($1, $2) {
-            return '<a href="' + editormd.urls.atLinkBase + '' + $2 + '" title="&#64;' + $2 + '" class="at-link">' + $1 + '</a>'
-          }).replace(/_#_&#64;_#_/g, '@')
+          text = text
+            .replace(atLinkReg, function($1, $2) {
+              return (
+                '<a href="' +
+                editormd.urls.atLinkBase +
+                '' +
+                $2 +
+                '" title="&#64;' +
+                $2 +
+                '" class="at-link">' +
+                $1 +
+                '</a>'
+              )
+            })
+            .replace(/_#_&#64;_#_/g, '@')
         }
 
         if (settings.emailLink) {
-          text = text.replace(emailLinkReg, function ($1, $2, $3, $4, $5) {
-            return (!$2 && $.inArray($5, 'jpg|jpeg|png|gif|webp|ico|icon|pdf'.split('|')) < 0) ? '<a href="mailto:' + $1 + '">' + $1 + '</a>' : $1
+          text = text.replace(emailLinkReg, function($1, $2, $3, $4, $5) {
+            return !$2 &&
+              $.inArray($5, 'jpg|jpeg|png|gif|webp|ico|icon|pdf'.split('|')) < 0
+              ? '<a href="mailto:' + $1 + '">' + $1 + '</a>'
+              : $1
           })
         }
 
@@ -3283,10 +3695,12 @@
       return text
     }
 
-    markedRenderer.link = function (href, title, text) {
+    markedRenderer.link = function(href, title, text) {
       if (this.options.sanitize) {
         try {
-          var prot = decodeURIComponent(unescape(href)).replace(/[^\w:]/g, '').toLowerCase()
+          var prot = decodeURIComponent(unescape(href))
+            .replace(/[^\w:]/g, '')
+            .toLowerCase()
         } catch (e) {
           return ''
         }
@@ -3315,7 +3729,7 @@
       return out
     }
 
-    markedRenderer.heading = function (text, level, raw) {
+    markedRenderer.heading = function(text, level, raw) {
       var linkText = text
       var hasLinkReg = /\s*\<a\s*href\=\"(.*)\"\s*([^\>]*)\>(.*)\<\/a\>\s*/
       var getLinkTextReg = /\s*\<a\s*([^\>]+)\>([^\>]*)\<\/a\>\s*/g
@@ -3341,50 +3755,79 @@
       }
 
       var isChinese = /^[\u4e00-\u9fa5]+$/.test(text)
-      var id = (isChinese) ? escape(text).replace(/\%/g, '') : text.toLowerCase().replace(/[^\w]+/g, '-')
+      var id = isChinese
+        ? escape(text).replace(/\%/g, '')
+        : text.toLowerCase().replace(/[^\w]+/g, '-')
 
       markdownToC.push(toc)
 
-      var headingHTML = '<h' + level + ' id="h' + level + '-' + this.options.headerPrefix + id + '">'
+      var headingHTML =
+        '<h' +
+        level +
+        ' id="h' +
+        level +
+        '-' +
+        this.options.headerPrefix +
+        id +
+        '">'
 
       headingHTML += '<a name="' + text + '" class="reference-link"></a>'
       headingHTML += '<span class="header-link octicon octicon-link"></span>'
-      headingHTML += (hasLinkReg) ? this.atLink(this.emoji(linkText)) : this.atLink(this.emoji(text))
+      headingHTML += hasLinkReg
+        ? this.atLink(this.emoji(linkText))
+        : this.atLink(this.emoji(text))
       headingHTML += '</h' + level + '>'
 
       return headingHTML
     }
 
-    markedRenderer.pageBreak = function (text) {
+    markedRenderer.pageBreak = function(text) {
       if (pageBreakReg.test(text) && settings.pageBreak) {
-        text = '<hr style="page-break-after:always;" class="page-break editormd-page-break" />'
+        text =
+          '<hr style="page-break-after:always;" class="page-break editormd-page-break" />'
       }
 
       return text
     }
 
-    markedRenderer.paragraph = function (text) {
+    markedRenderer.paragraph = function(text) {
       var isTeXInline = /\$\$(.*)\$\$/g.test(text)
       var isTeXLine = /^\$\$(.*)\$\$$/.test(text)
-      var isTeXAddClass = (isTeXLine) ? ' class="' + editormd.classNames.tex + '"' : ''
-      var isToC = (settings.tocm) ? /^(\[TOC\]|\[TOCM\])$/i.test(text) : /^\[TOC\]$/i.test(text)
+      var isTeXAddClass = isTeXLine
+        ? ' class="' + editormd.classNames.tex + '"'
+        : ''
+      var isToC = settings.tocm
+        ? /^(\[TOC\]|\[TOCM\])$/i.test(text)
+        : /^\[TOC\]$/i.test(text)
       var isToCMenu = /^\[TOCM\]$/.test(text)
 
       if (!isTeXLine && isTeXInline) {
-        text = text.replace(/(\$\$([^\$]*)\$\$)+/g, function ($1, $2) {
-          return '<span class="' + editormd.classNames.tex + '">' + $2.replace(/\$/g, '') + '</span>'
+        text = text.replace(/(\$\$([^\$]*)\$\$)+/g, function($1, $2) {
+          return (
+            '<span class="' +
+            editormd.classNames.tex +
+            '">' +
+            $2.replace(/\$/g, '') +
+            '</span>'
+          )
         })
       } else {
-        text = (isTeXLine) ? text.replace(/\$/g, '') : text
+        text = isTeXLine ? text.replace(/\$/g, '') : text
       }
 
-      var tocHTML = '<div class="markdown-toc editormd-markdown-toc">' + text + '</div>'
+      var tocHTML =
+        '<div class="markdown-toc editormd-markdown-toc">' + text + '</div>'
 
-      return (isToC) ? ((isToCMenu) ? '<div class="editormd-toc-menu">' + tocHTML + '</div><br/>' : tocHTML)
-        : ((pageBreakReg.test(text)) ? this.pageBreak(text) : '<p' + isTeXAddClass + '>' + this.atLink(this.emoji(text)) + '</p>\n')
+      return isToC
+        ? isToCMenu
+          ? '<div class="editormd-toc-menu">' + tocHTML + '</div><br/>'
+          : tocHTML
+        : pageBreakReg.test(text)
+        ? this.pageBreak(text)
+        : '<p' + isTeXAddClass + '>' + this.atLink(this.emoji(text)) + '</p>\n'
     }
 
-    markedRenderer.code = function (code, lang, escaped) {
+    markedRenderer.code = function(code, lang, escaped) {
       if (lang === 'seq' || lang === 'sequence') {
         return '<div class="sequence-diagram">' + code + '</div>'
       } else if (lang === 'flow') {
@@ -3393,25 +3836,40 @@
         return '<p class="' + editormd.classNames.tex + '">' + code + '</p>'
       } else if (/^mindmap/i.test(lang)) {
         var mapId = Math.ceil(Math.random() * 1000000)
-        return "<div class='mindmap' id='mindmap-" + mapId + "'>" + code + '</div>'
+        return (
+          "<div class='mindmap' id='mindmap-" + mapId + "'>" + code + '</div>'
+        )
       } else {
         return marked.Renderer.prototype.code.apply(this, arguments)
       }
     }
 
-    markedRenderer.tablecell = function (content, flags) {
-      var type = (flags.header) ? 'th' : 'td'
-      var tag = (flags.align) ? '<' + type + ' style="text-align:' + flags.align + '">' : '<' + type + '>'
+    markedRenderer.tablecell = function(content, flags) {
+      var type = flags.header ? 'th' : 'td'
+      var tag = flags.align
+        ? '<' + type + ' style="text-align:' + flags.align + '">'
+        : '<' + type + '>'
 
       return tag + this.atLink(this.emoji(content)) + '</' + type + '>\n'
     }
 
-    markedRenderer.listitem = function (text) {
+    markedRenderer.listitem = function(text) {
       if (settings.taskList && /^\s*\[[x\s]\]\s*/.test(text)) {
-        text = text.replace(/^\s*\[\s\]\s*/, '<input type="checkbox" class="task-list-item-checkbox" /> ')
-          .replace(/^\s*\[x\]\s*/, '<input type="checkbox" class="task-list-item-checkbox" checked disabled /> ')
+        text = text
+          .replace(
+            /^\s*\[\s\]\s*/,
+            '<input type="checkbox" class="task-list-item-checkbox" /> '
+          )
+          .replace(
+            /^\s*\[x\]\s*/,
+            '<input type="checkbox" class="task-list-item-checkbox" checked disabled /> '
+          )
 
-        return '<li style="list-style: none;">' + this.atLink(this.emoji(text)) + '</li>'
+        return (
+          '<li style="list-style: none;">' +
+          this.atLink(this.emoji(text)) +
+          '</li>'
+        )
       } else {
         return '<li>' + this.atLink(this.emoji(text)) + '</li>'
       }
@@ -3431,7 +3889,12 @@
    * @returns {Object}   tocContainer    返回ToC列表容器层的jQuery对象元素
    */
 
-  editormd.markdownToCRenderer = function (toc, container, tocDropdown, startLevel) {
+  editormd.markdownToCRenderer = function(
+    toc,
+    container,
+    tocDropdown,
+    startLevel
+  ) {
     var html = ''
     var lastLevel = 0
     var classPrefix = this.classPrefix
@@ -3449,21 +3912,36 @@
       if (level > lastLevel) {
         html += ''
       } else if (level < lastLevel) {
-        html += (new Array(lastLevel - level + 2)).join('</ul></li>')
+        html += new Array(lastLevel - level + 2).join('</ul></li>')
       } else {
         html += '</ul></li>'
       }
 
-      html += '<li><a class="toc-level-' + level + '" href="#' + text + '" level="' + level + '">' + text + '</a><ul>'
+      html +=
+        '<li><a class="toc-level-' +
+        level +
+        '" href="#' +
+        text +
+        '" level="' +
+        level +
+        '">' +
+        text +
+        '</a><ul>'
       lastLevel = level
     }
 
     var tocContainer = container.find('.markdown-toc')
 
-    if ((tocContainer.length < 1 && container.attr('previewContainer') === 'false')) {
-      var tocHTML = '<div class="markdown-toc ' + classPrefix + 'markdown-toc"></div>'
+    if (
+      tocContainer.length < 1 &&
+      container.attr('previewContainer') === 'false'
+    ) {
+      var tocHTML =
+        '<div class="markdown-toc ' + classPrefix + 'markdown-toc"></div>'
 
-      tocHTML = (tocDropdown) ? '<div class="' + classPrefix + 'toc-menu">' + tocHTML + '</div>' : tocHTML
+      tocHTML = tocDropdown
+        ? '<div class="' + classPrefix + 'toc-menu">' + tocHTML + '</div>'
+        : tocHTML
 
       container.html(tocHTML)
 
@@ -3474,7 +3952,10 @@
       tocContainer.wrap('<div class="' + classPrefix + 'toc-menu"></div><br/>')
     }
 
-    tocContainer.html('<ul class="markdown-toc-list"></ul>').children('.markdown-toc-list').html(html.replace(/\r?\n?\<ul\>\<\/ul\>/g, ''))
+    tocContainer
+      .html('<ul class="markdown-toc-list"></ul>')
+      .children('.markdown-toc-list')
+      .html(html.replace(/\r?\n?\<ul\>\<\/ul\>/g, ''))
 
     return tocContainer
   }
@@ -3489,17 +3970,21 @@
    * @returns {Object}                   return toc-menu object
    */
 
-  editormd.tocDropdownMenu = function (container, tocTitle) {
+  editormd.tocDropdownMenu = function(container, tocTitle) {
     tocTitle = tocTitle || 'Table of Contents'
 
     var zindex = 400
     var tocMenus = container.find('.' + this.classPrefix + 'toc-menu')
 
-    tocMenus.each(function () {
+    tocMenus.each(function() {
       var $this = $(this)
       var toc = $this.children('.markdown-toc')
       var icon = '<i class="fa fa-angle-down"></i>'
-      var btn = '<a href="javascript:;" class="toc-menu-btn">' + icon + tocTitle + '</a>'
+      var btn =
+        '<a href="javascript:;" class="toc-menu-btn">' +
+        icon +
+        tocTitle +
+        '</a>'
       var menu = toc.children('ul')
       var list = menu.find('li')
 
@@ -3507,35 +3992,39 @@
 
       list.first().before('<li><h1>' + tocTitle + ' ' + icon + '</h1></li>')
 
-      $this.mouseover(function () {
-        menu.show()
+      $this
+        .mouseover(function() {
+          menu.show()
 
-        list.each(function () {
-          var li = $(this)
-          var ul = li.children('ul')
+          list.each(function() {
+            var li = $(this)
+            var ul = li.children('ul')
 
-          if (ul.html() === '') {
-            ul.remove()
-          }
-
-          if (ul.length > 0 && ul.html() !== '') {
-            var firstA = li.children('a').first()
-
-            if (firstA.children('.fa').length < 1) {
-              firstA.append($(icon).css({ float: 'right', paddingTop: '4px' }))
+            if (ul.html() === '') {
+              ul.remove()
             }
-          }
 
-          li.mouseover(function () {
-            ul.css('z-index', zindex).show()
-            zindex += 1
-          }).mouseleave(function () {
-            ul.hide()
+            if (ul.length > 0 && ul.html() !== '') {
+              var firstA = li.children('a').first()
+
+              if (firstA.children('.fa').length < 1) {
+                firstA.append(
+                  $(icon).css({ float: 'right', paddingTop: '4px' })
+                )
+              }
+            }
+
+            li.mouseover(function() {
+              ul.css('z-index', zindex).show()
+              zindex += 1
+            }).mouseleave(function() {
+              ul.hide()
+            })
           })
         })
-      }).mouseleave(function () {
-        menu.hide()
-      })
+        .mouseleave(function() {
+          menu.hide()
+        })
     })
 
     return tocMenus
@@ -3550,7 +4039,7 @@
    * @returns {String}   html          返回过滤的HTML
    */
 
-  editormd.filterHTMLTags = function (html, filters) {
+  editormd.filterHTMLTags = function(html, filters) {
     if (typeof html !== 'string') {
       html = new String(html)
     }
@@ -3566,29 +4055,32 @@
     for (var i = 0, len = filterTags.length; i < len; i++) {
       var tag = filterTags[i]
 
-      html = html.replace(new RegExp('\<\s*' + tag + '\s*([^\>]*)\>([^\>]*)\<\s*\/' + tag + '\s*\>', 'igm'), '')
+      html = html.replace(
+        new RegExp('<s*' + tag + 's*([^>]*)>([^>]*)<s*/' + tag + 's*>', 'igm'),
+        ''
+      )
     }
 
     // return html;
 
     if (typeof attrs !== 'undefined') {
-      var htmlTagRegex = /\<(\w+)\s*([^\>]*)\>([^\>]*)\<\/(\w+)\>/ig
+      var htmlTagRegex = /\<(\w+)\s*([^\>]*)\>([^\>]*)\<\/(\w+)\>/gi
 
       if (attrs === '*') {
-        html = html.replace(htmlTagRegex, function ($1, $2, $3, $4, $5) {
+        html = html.replace(htmlTagRegex, function($1, $2, $3, $4, $5) {
           return '<' + $2 + '>' + $4 + '</' + $5 + '>'
         })
       } else if (attrs === 'on*') {
-        html = html.replace(htmlTagRegex, function ($1, $2, $3, $4, $5) {
+        html = html.replace(htmlTagRegex, function($1, $2, $3, $4, $5) {
           var el = $('<' + $2 + '>' + $4 + '</' + $5 + '>')
           var _attrs = $($1)[0].attributes
           var $attrs = {}
 
-          $.each(_attrs, function (i, e) {
+          $.each(_attrs, function(i, e) {
             if (e.nodeName !== '"') $attrs[e.nodeName] = e.nodeValue
           })
 
-          $.each($attrs, function (i) {
+          $.each($attrs, function(i) {
             if (i.indexOf('on') === 0) {
               delete $attrs[i]
             }
@@ -3596,31 +4088,129 @@
 
           el.attr($attrs)
 
-          var text = (typeof el[1] !== 'undefined') ? $(el[1]).text() : ''
+          var text = typeof el[1] !== 'undefined' ? $(el[1]).text() : ''
 
           return el[0].outerHTML + text
         })
       } else if (attrs === 'filterXSS') {
-        var tags = ['a', 'abbr', 'address',
-          'area', 'article', 'aside', 'audio', 'b', 'bdi', 'bdo', 'big', 'blockquote', 'br', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'dd', 'del', 'details', 'div', 'dl', 'dt', 'em', 'font', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'i', 'img', 'ins', 'li', 'mark', 'nav', 'ol', 'p', 'pre', 's', 'section', 'small', 'span', 'sub', 'sup', 'strong', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'tt', 'u', 'ul', 'video', 'input'],
-          tagAttrs = ['target', 'title', 'shape', 'coords', 'href', 'alt', 'autoplay', 'controls', 'loop', 'preload', 'src', 'dir', 'cite', 'align', 'valign', 'span', 'width', 'height', 'datetime', 'open', 'color', 'size', 'face', 'border', 'rowspan', 'colspan', 'style', 'class', 'id', 'name', 'type', 'checked', 'disabled'],
-          whiteList = (function () {
+        var tags = [
+            'a',
+            'abbr',
+            'address',
+            'area',
+            'article',
+            'aside',
+            'audio',
+            'b',
+            'bdi',
+            'bdo',
+            'big',
+            'blockquote',
+            'br',
+            'caption',
+            'center',
+            'cite',
+            'code',
+            'col',
+            'colgroup',
+            'dd',
+            'del',
+            'details',
+            'div',
+            'dl',
+            'dt',
+            'em',
+            'font',
+            'footer',
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'h5',
+            'h6',
+            'header',
+            'hr',
+            'i',
+            'img',
+            'ins',
+            'li',
+            'mark',
+            'nav',
+            'ol',
+            'p',
+            'pre',
+            's',
+            'section',
+            'small',
+            'span',
+            'sub',
+            'sup',
+            'strong',
+            'table',
+            'tbody',
+            'td',
+            'tfoot',
+            'th',
+            'thead',
+            'tr',
+            'tt',
+            'u',
+            'ul',
+            'video',
+            'input'
+          ],
+          tagAttrs = [
+            'target',
+            'title',
+            'shape',
+            'coords',
+            'href',
+            'alt',
+            'autoplay',
+            'controls',
+            'loop',
+            'preload',
+            'src',
+            'dir',
+            'cite',
+            'align',
+            'valign',
+            'span',
+            'width',
+            'height',
+            'datetime',
+            'open',
+            'color',
+            'size',
+            'face',
+            'border',
+            'rowspan',
+            'colspan',
+            'style',
+            'class',
+            'id',
+            'name',
+            'type',
+            'checked',
+            'disabled'
+          ],
+          whiteList = (function() {
             var result = {}
             for (var i = 0, len = tags.length; i < len; i++) {
               result[tags[i]] = tagAttrs
-            };
+            }
             return result
           })()
         html = filterXSS(html, {
           whiteList: whiteList
         })
       } else {
-        html = html.replace(htmlTagRegex, function ($1, $2, $3, $4) {
+        html = html.replace(htmlTagRegex, function($1, $2, $3, $4) {
           var filterAttrs = attrs.split(',')
           var el = $($1)
           el.html($4)
 
-          $.each(filterAttrs, function (i) {
+          $.each(filterAttrs, function(i) {
             el.attr(filterAttrs[i], null)
           })
 
@@ -3641,7 +4231,7 @@
    * @returns {Object}   div           返回jQuery对象元素
    */
 
-  editormd.markdownToHTML = function (id, options) {
+  editormd.markdownToHTML = function(id, options) {
     var defaults = {
       gfm: true,
       toc: true,
@@ -3655,10 +4245,10 @@
       htmlDecode: false,
       autoLoadKaTeX: true,
       pageBreak: true,
-      atLink: true,    // for @link
-      emailLink: true,    // for mail address auto link
+      atLink: true, // for @link
+      emailLink: true, // for mail address auto link
       tex: false,
-      taskList: false,   // Github Flavored Markdown task lists
+      taskList: false, // Github Flavored Markdown task lists
       emoji: false,
       flowChart: false,
       sequenceDiagram: false,
@@ -3669,7 +4259,7 @@
     editormd.$marked = marked
 
     var div = $('#' + id)
-    var settings = div.settings = $.extend(true, defaults, options || {})
+    var settings = (div.settings = $.extend(true, defaults, options || {}))
     var saveTo = div.find('textarea')
 
     if (saveTo.length < 1) {
@@ -3677,7 +4267,8 @@
       saveTo = div.find('textarea')
     }
 
-    var markdownDoc = (settings.markdown === '') ? saveTo.val() : settings.markdown
+    var markdownDoc =
+      settings.markdown === '' ? saveTo.val() : settings.markdown
     var markdownToC = []
 
     var rendererOptions = {
@@ -3688,8 +4279,8 @@
       emoji: settings.emoji,
       tex: settings.tex,
       pageBreak: settings.pageBreak,
-      atLink: settings.atLink,           // for @link
-      emailLink: settings.emailLink,        // for mail address auto link
+      atLink: settings.atLink, // for @link
+      emailLink: settings.emailLink, // for mail address auto link
       flowChart: settings.flowChart,
       sequenceDiagram: settings.sequenceDiagram,
       previewCodeHighlight: settings.previewCodeHighlight
@@ -3701,7 +4292,7 @@
       tables: true,
       breaks: true,
       pedantic: false,
-      sanitize: !(settings.htmlDecode), // 是否忽略HTML标签，即是否开启HTML标签解析，为了安全性，默认不开启
+      sanitize: !settings.htmlDecode, // 是否忽略HTML标签，即是否开启HTML标签解析，为了安全性，默认不开启
       smartLists: true,
       smartypants: true
     }
@@ -3710,7 +4301,10 @@
 
     var markdownParsed = marked(markdownDoc, markedOptions)
 
-    markdownParsed = editormd.filterHTMLTags(markdownParsed, settings.htmlDecode)
+    markdownParsed = editormd.filterHTMLTags(
+      markdownParsed,
+      settings.htmlDecode
+    )
 
     if (settings.markdownSourceCode) {
       saveTo.text(markdownDoc)
@@ -3718,18 +4312,29 @@
       saveTo.remove()
     }
 
-    div.addClass('markdown-body ' + this.classPrefix + 'html-preview').append(markdownParsed)
+    div
+      .addClass('markdown-body ' + this.classPrefix + 'html-preview')
+      .append(markdownParsed)
 
-    var tocContainer = (settings.tocContainer !== '') ? $(settings.tocContainer) : div
+    var tocContainer =
+      settings.tocContainer !== '' ? $(settings.tocContainer) : div
 
     if (settings.tocContainer !== '') {
       tocContainer.attr('previewContainer', false)
     }
 
     if (settings.toc) {
-      div.tocContainer = this.markdownToCRenderer(markdownToC, tocContainer, settings.tocDropdown, settings.tocStartLevel)
+      div.tocContainer = this.markdownToCRenderer(
+        markdownToC,
+        tocContainer,
+        settings.tocDropdown,
+        settings.tocStartLevel
+      )
 
-      if (settings.tocDropdown || div.find('.' + this.classPrefix + 'toc-menu').length > 0) {
+      if (
+        settings.tocDropdown ||
+        div.find('.' + this.classPrefix + 'toc-menu').length > 0
+      ) {
         this.tocDropdownMenu(div, settings.tocTitle)
       }
 
@@ -3760,20 +4365,41 @@
     }
 
     if (settings.tex) {
-      var katexHandle = function () {
-        div.find('.' + editormd.classNames.tex).each(function () {
+      var katexHandle = function() {
+        div.find('.' + editormd.classNames.tex).each(function() {
           var tex = $(this)
-          katex.render(tex.html().replace(/&lt;/g, '<').replace(/&gt;/g, '>'), tex[0])
+          katex.render(
+            tex
+              .html()
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>'),
+            tex[0]
+          )
           tex.find('.katex').css('font-size', '1.6em')
         })
       }
 
       if (settings.autoLoadKaTeX && !editormd.$katex && !editormd.kaTeXLoaded) {
-        this.loadKaTeX(function () {
-          editormd.$katex = katex
-          editormd.kaTeXLoaded = true
-          katexHandle()
-        })
+        // 直接使用 settings 配置的 katexURL
+        var loadKatexFn = function() {
+          var katexURLCss =
+            settings.katexURL && settings.katexURL.css
+              ? settings.katexURL.css
+              : editormd.katexURL.css
+          var katexURLJs =
+            settings.katexURL && settings.katexURL.js
+              ? settings.katexURL.js
+              : editormd.katexURL.js
+
+          editormd.loadCSS(katexURLCss, function() {
+            editormd.loadScript(katexURLJs, function() {
+              editormd.$katex = katex
+              editormd.kaTeXLoaded = true
+              katexHandle()
+            })
+          })
+        }
+        loadKatexFn()
       } else {
         katexHandle()
       }
@@ -3781,18 +4407,24 @@
 
     if (settings.mindMap) {
       // 用立即执行函数来处理脑图
-      (function () {
-        div.find('.mindmap').each(function () {
-          var data = window.markmap.transform($(this).text().trim())
+      ;(function() {
+        div.find('.mindmap').each(function() {
+          var data = window.markmap.transform(
+            $(this)
+              .text()
+              .trim()
+          )
           $(this).html('')
           var svgId = this.id + '-svg'
-          $(this).append($('<svg style="width: 100%;height:500px" id="' + svgId + '"></svg>'))
+          $(this).append(
+            $('<svg style="width: 100%;height:500px" id="' + svgId + '"></svg>')
+          )
           window.markmap.markmap('svg#' + svgId, data)
         })
       })()
     }
 
-    div.getMarkdown = function () {
+    div.getMarkdown = function() {
       return saveTo.val()
     }
 
@@ -3810,20 +4442,37 @@
   // CodeMirror / editor area themes
   // @1.5.0 rename -> editorThemes, old version -> themes
   editormd.editorThemes = [
-    'default', '3024-day', '3024-night',
-    'ambiance', 'ambiance-mobile',
-    'base16-dark', 'base16-light', 'blackboard',
+    'default',
+    '3024-day',
+    '3024-night',
+    'ambiance',
+    'ambiance-mobile',
+    'base16-dark',
+    'base16-light',
+    'blackboard',
     'cobalt',
-    'eclipse', 'elegant', 'erlang-dark',
+    'eclipse',
+    'elegant',
+    'erlang-dark',
     'lesser-dark',
-    'mbo', 'mdn-like', 'midnight', 'monokai',
-    'neat', 'neo', 'night',
-    'paraiso-dark', 'paraiso-light', 'pastel-on-dark',
+    'mbo',
+    'mdn-like',
+    'midnight',
+    'monokai',
+    'neat',
+    'neo',
+    'night',
+    'paraiso-dark',
+    'paraiso-light',
+    'pastel-on-dark',
     'rubyblue',
     'solarized',
-    'the-matrix', 'tomorrow-night-eighties', 'twilight',
+    'the-matrix',
+    'tomorrow-night-eighties',
+    'twilight',
     'vibrant-ink',
-    'xq-dark', 'xq-light'
+    'xq-dark',
+    'xq-light'
   ]
 
   editormd.loadPlugins = {}
@@ -3843,13 +4492,17 @@
    * @param {String}   [into="head"]         嵌入页面的位置
    */
 
-  editormd.loadPlugin = function (fileName, callback, into) {
-    callback = callback || function () { }
+  editormd.loadPlugin = function(fileName, callback, into) {
+    callback = callback || function() {}
 
-    this.loadScript(fileName, function () {
-      editormd.loadFiles.plugin.push(fileName)
-      callback()
-    }, into)
+    this.loadScript(
+      fileName,
+      function() {
+        editormd.loadFiles.plugin.push(fileName)
+        callback()
+      },
+      into
+    )
   }
 
   /**
@@ -3861,14 +4514,14 @@
    * @param {String}   [into="head"]         嵌入页面的位置
    */
 
-  editormd.loadCSS = function (fileName, callback, into) {
+  editormd.loadCSS = function(fileName, callback, into) {
     into = into || 'head'
-    callback = callback || function () { }
+    callback = callback || function() {}
 
     var css = document.createElement('link')
     css.type = 'text/css'
     css.rel = 'stylesheet'
-    css.onload = css.onreadystatechange = function () {
+    css.onload = css.onreadystatechange = function() {
       editormd.loadFiles.css.push(fileName)
       callback()
     }
@@ -3882,8 +4535,8 @@
     }
   }
 
-  editormd.isIE = (navigator.appName == 'Microsoft Internet Explorer')
-  editormd.isIE8 = (editormd.isIE && navigator.appVersion.match(/8./i) == '8.')
+  editormd.isIE = navigator.appName == 'Microsoft Internet Explorer'
+  editormd.isIE8 = editormd.isIE && navigator.appVersion.match(/8./i) == '8.'
 
   /**
    * 动态加载JS文件的方法
@@ -3894,9 +4547,9 @@
    * @param {String}   [into="head"]         嵌入页面的位置
    */
 
-  editormd.loadScript = function (fileName, callback, into) {
+  editormd.loadScript = function(fileName, callback, into) {
     into = into || 'head'
-    callback = callback || function () { }
+    callback = callback || function() {}
 
     var script = null
     script = document.createElement('script')
@@ -3905,9 +4558,12 @@
     script.src = fileName + '.js'
 
     if (editormd.isIE8) {
-      script.onreadystatechange = function () {
+      script.onreadystatechange = function() {
         if (script.readyState) {
-          if (script.readyState === 'loaded' || script.readyState === 'complete') {
+          if (
+            script.readyState === 'loaded' ||
+            script.readyState === 'complete'
+          ) {
             script.onreadystatechange = null
             editormd.loadFiles.js.push(fileName)
             callback()
@@ -3915,7 +4571,7 @@
         }
       }
     } else {
-      script.onload = function () {
+      script.onload = function() {
         editormd.loadFiles.js.push(fileName)
         callback()
       }
@@ -3944,9 +4600,19 @@
    * @param {Function} [callback=function()]  加载成功后执行的回调函数
    */
 
-  editormd.loadKaTeX = function (callback) {
-    editormd.loadCSS(editormd.katexURL.css, function () {
-      editormd.loadScript(editormd.katexURL.js, callback || function () { })
+  editormd.loadKaTeX = function(callback) {
+    var settings = this.settings || {}
+    var katexURLCss =
+      settings.katexURL && settings.katexURL.css
+        ? settings.katexURL.css
+        : editormd.katexURL.css
+    var katexURLJs =
+      settings.katexURL && settings.katexURL.js
+        ? settings.katexURL.js
+        : editormd.katexURL.js
+
+    editormd.loadCSS(katexURLCss, function() {
+      editormd.loadScript(katexURLJs, callback || function() {})
     })
   }
 
@@ -3958,8 +4624,8 @@
    * @returns {void}
    */
 
-  editormd.lockScreen = function (lock) {
-    $('html,body').css('overflow', (lock) ? 'hidden' : '')
+  editormd.lockScreen = function(lock) {
+    $('html,body').css('overflow', lock ? 'hidden' : '')
   }
 
   /**
@@ -3970,7 +4636,7 @@
    * @returns {dialog} 返回创建的dialog的jQuery实例对象
    */
 
-  editormd.createDialog = function (options) {
+  editormd.createDialog = function(options) {
     var defaults = {
       name: '',
       width: 420,
@@ -3994,55 +4660,89 @@
     var $this = this
     var editor = this.editor
     var classPrefix = editormd.classPrefix
-    var guid = (new Date()).getTime()
-    var dialogName = ((options.name === '') ? classPrefix + 'dialog-' + guid : options.name)
+    var guid = new Date().getTime()
+    var dialogName =
+      options.name === '' ? classPrefix + 'dialog-' + guid : options.name
     var mouseOrTouch = editormd.mouseOrTouch
 
     var html = '<div class="' + classPrefix + 'dialog ' + dialogName + '">'
 
     if (options.title !== '') {
-      html += '<div class="' + classPrefix + 'dialog-header"' + ((options.drag) ? ' style="cursor: move;"' : '') + '>'
-      html += '<strong class="' + classPrefix + 'dialog-title">' + options.title + '</strong>'
+      html +=
+        '<div class="' +
+        classPrefix +
+        'dialog-header"' +
+        (options.drag ? ' style="cursor: move;"' : '') +
+        '>'
+      html +=
+        '<strong class="' +
+        classPrefix +
+        'dialog-title">' +
+        options.title +
+        '</strong>'
       html += '</div>'
     }
 
     if (options.closed) {
-      html += '<a href="javascript:;" class="fa fa-close ' + classPrefix + 'dialog-close"></a>'
+      html +=
+        '<a href="javascript:;" class="fa fa-close ' +
+        classPrefix +
+        'dialog-close"></a>'
     }
 
-    html += '<div class="' + classPrefix + 'dialog-container">' + options.content
+    html +=
+      '<div class="' + classPrefix + 'dialog-container">' + options.content
 
     if (options.footer || typeof options.footer === 'string') {
-      html += '<div class="' + classPrefix + 'dialog-footer">' + ((typeof options.footer === 'boolean') ? '' : options.footer) + '</div>'
+      html +=
+        '<div class="' +
+        classPrefix +
+        'dialog-footer">' +
+        (typeof options.footer === 'boolean' ? '' : options.footer) +
+        '</div>'
     }
 
     html += '</div>'
 
-    html += '<div class="' + classPrefix + 'dialog-mask ' + classPrefix + 'dialog-mask-bg"></div>'
-    html += '<div class="' + classPrefix + 'dialog-mask ' + classPrefix + 'dialog-mask-con"></div>'
+    html +=
+      '<div class="' +
+      classPrefix +
+      'dialog-mask ' +
+      classPrefix +
+      'dialog-mask-bg"></div>'
+    html +=
+      '<div class="' +
+      classPrefix +
+      'dialog-mask ' +
+      classPrefix +
+      'dialog-mask-con"></div>'
     html += '</div>'
 
     editor.append(html)
 
     var dialog = editor.find('.' + dialogName)
 
-    dialog.lockScreen = function (lock) {
+    dialog.lockScreen = function(lock) {
       if (options.lockScreen) {
-        $('html,body').css('overflow', (lock) ? 'hidden' : '')
+        $('html,body').css('overflow', lock ? 'hidden' : '')
         $this.resize()
       }
 
       return dialog
     }
 
-    dialog.showMask = function () {
+    dialog.showMask = function() {
       if (options.mask) {
-        editor.find('.' + classPrefix + 'mask').css(options.maskStyle).css('z-index', editormd.dialogZindex - 1).show()
+        editor
+          .find('.' + classPrefix + 'mask')
+          .css(options.maskStyle)
+          .css('z-index', editormd.dialogZindex - 1)
+          .show()
       }
       return dialog
     }
 
-    dialog.hideMask = function () {
+    dialog.hideMask = function() {
       if (options.mask) {
         editor.find('.' + classPrefix + 'mask').hide()
       }
@@ -4050,9 +4750,9 @@
       return dialog
     }
 
-    dialog.loading = function (show) {
+    dialog.loading = function(show) {
       var loading = dialog.find('.' + classPrefix + 'dialog-mask')
-      loading[(show) ? 'show' : 'hide']()
+      loading[show ? 'show' : 'hide']()
 
       return dialog
     }
@@ -4061,12 +4761,18 @@
 
     dialog.show().css({
       zIndex: editormd.dialogZindex,
-      border: (editormd.isIE8) ? '1px solid #ddd' : '',
-      width: (typeof options.width === 'number') ? options.width + 'px' : options.width,
-      height: (typeof options.height === 'number') ? options.height + 'px' : options.height
+      border: editormd.isIE8 ? '1px solid #ddd' : '',
+      width:
+        typeof options.width === 'number'
+          ? options.width + 'px'
+          : options.width,
+      height:
+        typeof options.height === 'number'
+          ? options.height + 'px'
+          : options.height
     })
 
-    var dialogPosition = function () {
+    var dialogPosition = function() {
       dialog.css({
         top: ($(window).height() - dialog.height()) / 2 + 'px',
         left: ($(window).width() - dialog.width()) / 2 + 'px'
@@ -4077,20 +4783,37 @@
 
     $(window).resize(dialogPosition)
 
-    dialog.children('.' + classPrefix + 'dialog-close').bind(mouseOrTouch('click', 'touchend'), function () {
-      dialog.hide().lockScreen(false).hideMask()
-    })
+    dialog
+      .children('.' + classPrefix + 'dialog-close')
+      .bind(mouseOrTouch('click', 'touchend'), function() {
+        dialog
+          .hide()
+          .lockScreen(false)
+          .hideMask()
+      })
 
     if (typeof options.buttons === 'object') {
-      var footer = dialog.footer = dialog.find('.' + classPrefix + 'dialog-footer')
+      var footer = (dialog.footer = dialog.find(
+        '.' + classPrefix + 'dialog-footer'
+      ))
 
       for (var key in options.buttons) {
         var btn = options.buttons[key]
         var btnClassName = classPrefix + key + '-btn'
 
-        footer.append('<button class="' + classPrefix + 'btn ' + btnClassName + '">' + btn[0] + '</button>')
+        footer.append(
+          '<button class="' +
+            classPrefix +
+            'btn ' +
+            btnClassName +
+            '">' +
+            btn[0] +
+            '</button>'
+        )
         btn[1] = $.proxy(btn[1], dialog)
-        footer.children('.' + btnClassName).bind(mouseOrTouch('click', 'touchend'), btn[1])
+        footer
+          .children('.' + btnClassName)
+          .bind(mouseOrTouch('click', 'touchend'), btn[1])
       }
     }
 
@@ -4099,34 +4822,40 @@
       var dialogHeader = dialog.children('.' + classPrefix + 'dialog-header')
 
       if (!options.mask) {
-        dialogHeader.bind(mouseOrTouch('click', 'touchend'), function () {
+        dialogHeader.bind(mouseOrTouch('click', 'touchend'), function() {
           editormd.dialogZindex += 2
           dialog.css('z-index', editormd.dialogZindex)
         })
       }
 
-      dialogHeader.mousedown(function (e) {
-        e = e || window.event  // IE
+      dialogHeader.mousedown(function(e) {
+        e = e || window.event // IE
         posX = e.clientX - parseInt(dialog[0].style.left)
         posY = e.clientY - parseInt(dialog[0].style.top)
 
         document.onmousemove = moveAction
       })
 
-      var userCanSelect = function (obj) {
+      var userCanSelect = function(obj) {
         obj.removeClass(classPrefix + 'user-unselect').off('selectstart')
       }
 
-      var userUnselect = function (obj) {
-        obj.addClass(classPrefix + 'user-unselect').on('selectstart', function (event) { // selectstart for IE
-          return false
-        })
+      var userUnselect = function(obj) {
+        obj
+          .addClass(classPrefix + 'user-unselect')
+          .on('selectstart', function(event) {
+            // selectstart for IE
+            return false
+          })
       }
 
-      var moveAction = function (e) {
-        e = e || window.event  // IE
+      var moveAction = function(e) {
+        e = e || window.event // IE
 
-        var left, top, nowLeft = parseInt(dialog[0].style.left), nowTop = parseInt(dialog[0].style.top)
+        var left,
+          top,
+          nowLeft = parseInt(dialog[0].style.left),
+          nowTop = parseInt(dialog[0].style.top)
 
         if (nowLeft >= 0) {
           if (nowLeft + dialog.width() <= $(window).width()) {
@@ -4147,7 +4876,7 @@
           document.onmousemove = null
         }
 
-        document.onselectstart = function () {
+        document.onselectstart = function() {
           return false
         }
 
@@ -4157,7 +4886,7 @@
         dialog[0].style.top = top + 'px'
       }
 
-      document.onmouseup = function () {
+      document.onmouseup = function() {
         userCanSelect($('body'))
         userCanSelect(dialog)
 
@@ -4165,11 +4894,13 @@
         document.onmousemove = null
       }
 
-      dialogHeader.touchDraggable = function () {
+      dialogHeader.touchDraggable = function() {
         var offset = null
-        var start = function (e) {
+        var start = function(e) {
           var orig = e.originalEvent
-          var pos = $(this).parent().position()
+          var pos = $(this)
+            .parent()
+            .position()
 
           offset = {
             x: orig.changedTouches[0].pageX - pos.left,
@@ -4177,14 +4908,16 @@
           }
         }
 
-        var move = function (e) {
+        var move = function(e) {
           e.preventDefault()
           var orig = e.originalEvent
 
-          $(this).parent().css({
-            top: orig.changedTouches[0].pageY - offset.y,
-            left: orig.changedTouches[0].pageX - offset.x
-          })
+          $(this)
+            .parent()
+            .css({
+              top: orig.changedTouches[0].pageY - offset.y,
+              left: orig.changedTouches[0].pageX - offset.x
+            })
         }
 
         this.bind('touchstart', start).bind('touchmove', move)
@@ -4207,14 +4940,21 @@
    * @returns {String} EventType                   返回事件类型名称
    */
 
-  editormd.mouseOrTouch = function (mouseEventType, touchEventType) {
+  editormd.mouseOrTouch = function(mouseEventType, touchEventType) {
     mouseEventType = mouseEventType || 'click'
     touchEventType = touchEventType || 'touchend'
 
     var eventType = mouseEventType
 
     var userAgentInfo = navigator.userAgent
-    var Agents = new Array('Android', 'iPhone', 'SymbianOS', 'Windows Phone', 'iPad', 'iPod')
+    var Agents = new Array(
+      'Android',
+      'iPhone',
+      'SymbianOS',
+      'Windows Phone',
+      'iPad',
+      'iPod'
+    )
     var flag = true
     for (var v = 0; v < Agents.length; v++) {
       if (userAgentInfo.indexOf(Agents[v]) > 0) {
@@ -4237,11 +4977,11 @@
    * @returns {String}   datefmt      返回格式化后的日期时间字符串
    */
 
-  editormd.dateFormat = function (format) {
+  editormd.dateFormat = function(format) {
     format = format || ''
 
-    var addZero = function (d) {
-      return (d < 10) ? '0' + d : d
+    var addZero = function(d) {
+      return d < 10 ? '0' + d : d
     }
 
     var date = new Date()
@@ -4291,7 +5031,15 @@
 
       case 'week-day':
       case 'wd':
-        var weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        var weekDays = [
+          'Sunday',
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday'
+        ]
         datefmt = weekDays[weekDay]
         break
 
@@ -4343,4 +5091,4 @@
   }
 
   return editormd
-}))
+})
