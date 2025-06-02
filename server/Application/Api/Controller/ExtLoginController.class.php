@@ -71,7 +71,10 @@ class ExtLoginController extends BaseController
 
         foreach ($array as $key => $value) {
             if (!is_array($value) && in_array($key, $keysToCheck, true)) {
-                return $value; // 找到匹配的键，直接返回值
+                // 找到匹配的键，且有值 ，直接返回值
+                if($value){
+                    return $value;
+                }
             }
         }
 
