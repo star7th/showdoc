@@ -10,6 +10,8 @@ class ImportPostmanController extends BaseController
 
     public function import()
     {
+        set_time_limit(100);
+        ini_set('memory_limit', '6000M');
         $login_user = $this->checkLogin();
         $item_id = I("item_id") ? I("item_id") : '0';
         if ($item_id) {

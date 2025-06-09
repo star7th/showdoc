@@ -12,7 +12,7 @@ class ImportController extends BaseController
     public function auto()
     {
         set_time_limit(100);
-        ini_set('memory_limit', '600M');
+        ini_set('memory_limit', '6000M');
         $login_user = $this->checkLogin();
         $filename = $_FILES["file"]["name"];
         $file = $_FILES["file"]["tmp_name"];
