@@ -141,8 +141,18 @@ class UserModel extends BaseModel
                 
                 $rs2 = ldap_bind($ldap_conn, $dn, $password);
                 if ($rs2) {
+                    // LDAP认证成功，更新本地密码
                     D("User")->updatePwd($userInfo['uid'], $password);
-                    return $this->checkLogin($username, $password);
+                    
+                    // 直接返回用户信息，避免再次调用checkLogin造成的验证问题
+                    // 因为LDAP已经验证了密码的正确性，无需再次验证
+                    $userInfo = D("User")->where("uid = '%d'", array($userInfo['uid']))->find();
+                    
+                    // 清除敏感信息
+                    unset($userInfo['password']);
+                    unset($userInfo['salt']);
+                    
+                    return $userInfo;
                 }
             }
         }
