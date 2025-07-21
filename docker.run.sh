@@ -1,6 +1,31 @@
 #!/usr/bin/env bash
 
-_docker_build() {
+set -o pipefail
+pids=()
+
+cleanup() {
+    echo "receive SIGTERM, kill ${pids[*]}"
+    for pid in "${pids[@]}"; do
+        kill "$pid"
+        wait "$pid"
+    done
+}
+
+set_mirror() {
+    [ "$IN_CHINA" = true ] || return 0
+
+    if [ -f /etc/apk/repositories ]; then
+        sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
+    fi
+    if command -v npm >/dev/null 2>&1; then
+        npm config set registry https://registry.npmmirror.com/
+    fi
+    # if command -v composer >/dev/null 2>&1; then
+    #     composer config -g repo.packagist composer https://mirrors.aliyun.com/composer
+    # fi
+}
+
+docker_build() {
     set -xe
     rm -rf /app
     ln -sf $web_dir /app
@@ -26,74 +51,59 @@ _docker_build() {
     mv /opt/docker/etc/supervisor.d/ssh.conf{,.bak}
     mv /opt/docker/etc/supervisor.d/syslog.conf{,.bak}
 
-    ## mirror in china
-    if [ "$IN_CHINA" = true ] && [ -f /etc/apk/repositories ]; then
-        sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
-    fi
+    set_mirror
+
     apk update
     apk add --update --no-cache nodejs npm sqlite sqlite-dev
 
     mv $showdoc_dir_html/mock $showdoc_dir/
     cd $showdoc_dir/mock || exit 1
-    if [ "$IN_CHINA" = true ]; then
-        npm config set registry https://registry.npmmirror.com/
-    fi
     ## fix old warn
     # rm -f package-lock.json
 
     npm install
 }
 
-_kill() {
-    echo "receive SIGTERM, kill ${pids[*]}"
-    for pid in "${pids[@]}"; do
-        kill "$pid"
-        wait "$pid"
-    done
-}
-
-_backup_dbfile() {
+backup_dbfile() {
     if [[ "${IN_CHINA}" == true ]]; then
         backup_time="$(TZ='Asia/Shanghai' date +%F-%H-%M-%S)"
     else
         backup_time="$(date +%F-%H-%M-%S)"
     fi
-    \cp $db_file ${db_file}.backup.full."$backup_time".php
+    rsync -a $db_file ${db_file}.backup.full."$backup_time".php
     ## remove old files (15 days ago)
     find ${db_file}.* -type f -ctime +15 -print0 |
         xargs -t -0 rm -f >/dev/null
 }
 
-_docker_run() {
-    pids=()
-    ## 首次启动需要 copy to /var/www/html
+docker_run() {
+    ## 首次启动需要拷贝程序文件到 $web_dir/ (/var/www/html)
     if [ -f "$web_dir/index.php" ]; then
         echo "Found $web_dir/index.php, skip copy."
     else
-        echo "Not found $web_dir/index.php, copy..."
-        ## 兼容历史版本 宿主机 /showdoc_data
-        if [[ -f $showdoc_dir_old/html/index.php && ! -f $showdoc_dir_old_skip ]]; then
+        echo "Not found $web_dir/index.php, copy from $showdoc_dir_html to $web_dir..."
+        ## 兼容历史版本 宿主机/showdoc_data/挂载到容器内/showdoc_data_old/
+        if [[ -f $showdoc_dir_old/html/index.php && ! -f $showdoc_dir_old/.skip_old ]]; then
             echo "Found old version of \"showdoc_data\", copy..."
             rsync -a $showdoc_dir_old/html/ $web_dir/ &&
-                touch $showdoc_dir_old_skip
+                touch $showdoc_dir_old/.skip_old
         else
             rsync -a $showdoc_dir_html/ $web_dir/
         fi
     fi
-    ## upgrade (通过 Dockerfile 的环境变量 变更版本)
+    echo "Checking upgrade..."
+    ## upgrade (通过 Dockerfile 的环境变量 SHOWDOC_DOCKER_VERSION 变更版本)
     ## upgrade (通过 composer.json "version" 变更版本)
     ver_file=$web_dir/.ver
-    # ver_file_json=$web_dir/.json.ver
-    json_file=$showdoc_dir_html/composer.json
-    version_json=$(grep -o '"version":.*"' $json_file | awk '{split($2,a,"\""); print a[2]}')
-    # version_json=$(grep -o '"version":.*"' $json_file | awk '{print substr($2,2,6)}')
+    version_json=$(grep -o '"version":.*"' $showdoc_dir_html/composer.json | awk '{split($2,a,"\""); print a[2]}')
+    # version_json=$(grep -o '"version":.*"' $showdoc_dir_html/composer.json | awk '{print substr($2,2,6)}')
     if [ -f $ver_file ]; then
         # if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $ver_file)" ]]; then
         if [[ "${version_json}" == "$(cat $ver_file)" ]]; then
             echo "Same version, skip upgrade."
         else
             echo "Backup db file before upgrade..."
-            _backup_dbfile
+            backup_dbfile
             echo "Upgrade application files..."
             ## 此处不同步 db 文件和 upload 文件，自动排除
             rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' $showdoc_dir_html/ $web_dir/
@@ -106,6 +116,8 @@ _docker_run() {
         # echo "$SHOWDOC_DOCKER_VERSION" >$ver_file
         echo "$version_json" >$ver_file
     fi
+
+    echo "Checking file permission..."
     ## fix file permission
     # find $web_dir -type f -exec chmod 644 {} \;
     # find $web_dir -type d -exec chmod 755 {} \;
@@ -117,28 +129,30 @@ _docker_run() {
         $web_dir/Public/Uploads \
         $web_dir/install \
         $runtime_dir
-    
     # 确保 install/ajax.php 中提到的文件有写入权限
     chmod 666 "$web_dir/server/Application/Home/Conf/config.php"
     chmod 666 "$web_dir/web/index.html"
     chmod 666 "$web_dir/web_src/index.html"
 
-    ## backup sqlite file every day
+    ## backup sqlite file every day / 后台进程每日自动备份数据库
     while [ -f $db_file ]; do
         # backup on (20:01 UTC) (04:01 Asia/Shanghai) every day
-        if [[ $(date +%H%M) == 2001 ]]; then
-            _backup_dbfile
+        if [[ $(date -u +%H%M) == 2001 ]]; then
+            backup_dbfile
             sleep 5
         fi
         sleep 55
     done &
     pids+=("$!")
 
+    ## 启动 showdoc 服务
+    echo "Starting showdoc server..."
     (
         sleep 3
         cd $showdoc_dir_html/server || exit 1
         php index.php /api/update/dockerUpdateCode
     )
+    ## 延迟启动 mock 服务
     (
         echo "delay 30s start mock..."
         sleep 30
@@ -147,31 +161,34 @@ _docker_run() {
     ) &
     pids+=("$!")
 
+    ## 启动 supervisor 服务
+    echo "Starting nginx and php-fpm..."
     supervisord -c /opt/docker/etc/supervisor.conf &
     pids+=("$!")
-
-    ## 识别中断信号，停止进程
-    trap _kill HUP INT QUIT TERM
 
     wait
 }
 
 main() {
     showdoc_dir='/showdoc_data'
+    ## 兼容历史版本的目录
     showdoc_dir_old='/showdoc_data_old'
-    showdoc_dir_old_skip='/showdoc_data_old/.skip_old'
+    ## 包含程序文件
     showdoc_dir_html="$showdoc_dir/html"
-    ## web site dir
+    ## web site dir / 网站目录
     web_dir='/var/www/html'
-
+    ## 数据库文件
     db_file=$web_dir/Sqlite/showdoc.db.php
 
     case $1 in
     -b | --build)
-        _docker_build
+        docker_build
         ;;
     *)
-        _docker_run
+        ## 识别中断信号，停止进程
+        trap cleanup HUP INT QUIT TERM
+
+        docker_run
         ;;
     esac
 }
