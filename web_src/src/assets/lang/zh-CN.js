@@ -619,5 +619,17 @@ exports.default = {
   project_update_time: '更新时间',
   no_public_items: '暂无项目',
   enable_public_square: '启用公开广场',
-  enable_public_square_tips: '启用后，网站将显示公开广场入口，用户可以浏览网站中的公开项目'
+  enable_public_square_tips: '启用后，网站将显示公开广场入口，用户可以浏览网站中的公开项目',
+  // 批量上传相关
+  batch_upload_support: '支持批量选择多个文件同时上传',
+  upload_queue_files: '上传队列 ({count} 个文件)',
+  file_waiting: '等待上传',
+  file_uploading: '上传中...',
+  file_upload_success: '成功',
+  file_upload_failed: '失败',
+  upload_progress: '上传进度',
+  clear_queue: '清空队列',
+  batch_upload_complete_success: '批量上传完成！成功上传 {count} 个文件',
+  batch_upload_complete_partial: '批量上传完成！成功 {success} 个，失败 {error} 个',
+  upload_failed_error: '上传失败'
 }

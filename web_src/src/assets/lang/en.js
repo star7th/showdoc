@@ -646,5 +646,17 @@ exports.default = {
   project_update_time: 'Update time',
   no_public_items: 'No public projects',
   enable_public_square: 'Enable Public Square',
-  enable_public_square_tips: 'When enabled, the website will display a Public Square entry, allowing users to browse public projects'
+  enable_public_square_tips: 'When enabled, the website will display a Public Square entry, allowing users to browse public projects',
+  // Batch upload related
+  batch_upload_support: 'Support batch selection of multiple files for simultaneous upload',
+  upload_queue_files: 'Upload Queue ({count} files)',
+  file_waiting: 'Waiting',
+  file_uploading: 'Uploading...',
+  file_upload_success: 'Success',
+  file_upload_failed: 'Failed',
+  upload_progress: 'Upload Progress',
+  clear_queue: 'Clear Queue',
+  batch_upload_complete_success: 'Batch upload completed! Successfully uploaded {count} files',
+  batch_upload_complete_partial: 'Batch upload completed! Success: {success}, Failed: {error}',
+  upload_failed_error: 'Upload failed'
 }

@@ -37,6 +37,10 @@ const request = (
   if (contentType == 'json') {
     axiosConfig.data = data // 这里使用原始data，不经过URLSearchParams
     axiosConfig.headers['Content-Type'] = 'application/json'
+  } else if (data instanceof FormData) {
+    // 如果是FormData，直接使用，不转换
+    axiosConfig.data = data
+    axiosConfig.headers['Content-Type'] = 'multipart/form-data'
   }
 
   return new Promise((resolve, reject) => {
