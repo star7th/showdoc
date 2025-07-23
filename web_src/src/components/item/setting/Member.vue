@@ -233,6 +233,7 @@
           prop="member_username"
           :label="$t('username')"
         ></el-table-column>
+        <el-table-column prop="name" :label="$t('name')"></el-table-column>
         <el-table-column
           prop="member_group_id"
           :label="$t('authority')"
