@@ -135,6 +135,44 @@
   margin-bottom: 1.5em;
 }
 
+/* 仅在编辑器预览区域增强代码块横向滚动条的可见性，不影响全局滚动条 */
+.markdown-body pre,
+.markdown-body .highlight pre,
+.editormd-preview-container pre,
+.editormd-html-preview pre {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) #2f3a3d; /* 适配深色代码块背景 */
+}
+
+.markdown-body pre::-webkit-scrollbar,
+.markdown-body .highlight pre::-webkit-scrollbar,
+.editormd-preview-container pre::-webkit-scrollbar,
+.editormd-html-preview pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+.markdown-body pre::-webkit-scrollbar-track,
+.markdown-body .highlight pre::-webkit-scrollbar-track,
+.editormd-preview-container pre::-webkit-scrollbar-track,
+.editormd-html-preview pre::-webkit-scrollbar-track {
+  background-color: #2f3a3d;
+}
+
+.markdown-body pre::-webkit-scrollbar-thumb,
+.markdown-body .highlight pre::-webkit-scrollbar-thumb,
+.editormd-preview-container pre::-webkit-scrollbar-thumb,
+.editormd-html-preview pre::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+}
+
+.markdown-body pre::-webkit-scrollbar-thumb:hover,
+.markdown-body .highlight pre::-webkit-scrollbar-thumb:hover,
+.editormd-preview-container pre::-webkit-scrollbar-thumb:hover,
+.editormd-html-preview pre::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.65);
+}
+
 </style>
 <script>
 import { getUserInfoFromStorage } from '@/models/user.js'
