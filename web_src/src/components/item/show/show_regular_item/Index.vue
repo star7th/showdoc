@@ -72,6 +72,8 @@
                 v-bind:content="content"
                 v-if="page_id"
                 type="html"
+                :taskToggle="item_info && item_info.item_edit"
+                @task-toggle="onTaskToggle"
                 :keyword="keyword"
               ></Editormd>
             </div>
@@ -144,6 +146,7 @@ import Toc from '@/components/common/Toc'
 import LeftMenu from '@/components/item/show/show_regular_item/LeftMenu'
 import AttachmentList from '@/components/page/edit/AttachmentList'
 import { rederPageContent } from '@/models/page'
+import { toggleNthTaskCheckbox } from '@/models/markdown'
 import HeaderRight from './HeaderRight'
 import Header from '../Header'
 import MobileHeader from '../MobileHeader'
@@ -173,7 +176,8 @@ export default {
       showAttachmentListDialog: false,
       showMobileHeader: false,
       showPCHeader: true,
-      device: 'pc'
+      device: 'pc',
+      _taskSaveTimer: null
     }
   },
   components: {
@@ -246,6 +250,8 @@ export default {
         }
 
         this.page_info = data.data
+        this.cat_id = data.data.cat_id
+        this.item_id = data.data.item_id
         this.attachment_count =
           data.data.attachment_count > 0 ? data.data.attachment_count : ''
         // 切换变量让它重新加载、渲染子组件
@@ -258,6 +264,32 @@ export default {
           document.title = this.page_title + '--ShowDoc'
         })
       })
+    },
+    // 第 n 个任务项切换（跳过代码块）
+    toggleNthTaskCheckbox,
+    scheduleSave() {
+      if (this._taskSaveTimer) clearTimeout(this._taskSaveTimer)
+      this._taskSaveTimer = setTimeout(() => {
+        if (!this.page_id) return
+        this.request(
+          '/api/page/save',
+          {
+            page_id: this.page_id,
+            item_id: this.item_info.item_id,
+            cat_id: this.cat_id,
+            page_title: this.page_title,
+            is_urlencode: 1,
+            page_content: encodeURIComponent(this.content)
+          },
+          'post',
+          false
+        )
+      }, 800)
+    },
+    onTaskToggle({ index, checked }) {
+      if (!(this.item_info && this.item_info.item_edit)) return
+      this.content = this.toggleNthTaskCheckbox(this.content, index, checked)
+      this.scheduleSave()
     },
     // 展开所有目录
     expandAllCatalogs() {

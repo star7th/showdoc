@@ -14,6 +14,8 @@
             v-bind:content="content"
             v-if="content"
             type="html"
+            :taskToggle="item_info && item_info.item_edit"
+            @task-toggle="onTaskToggle"
           ></Editormd>
         </div>
       </div>
@@ -151,6 +153,7 @@ import Toc from '@/components/common/Toc'
 import Header from '../Header'
 import HeaderRight from './HeaderRight'
 import { rederPageContent } from '@/models/page'
+import { toggleNthTaskCheckbox } from '@/models/markdown'
 
 export default {
   props: {
@@ -165,7 +168,8 @@ export default {
       dialogVisible: false,
       share_item_link: '',
       qr_item_link: '',
-      copyText: ''
+      copyText: '',
+      _taskSaveTimer: null
     }
   },
   components: {
@@ -185,7 +189,34 @@ export default {
         const json = data.data
         this.content = rederPageContent(json.page_content)
         this.page_title = json.page_title
+        this.cat_id = json.cat_id
       })
+    },
+    // 第 n 个任务项切换（跳过代码块）
+    toggleNthTaskCheckbox,
+    scheduleSave() {
+      if (this._taskSaveTimer) clearTimeout(this._taskSaveTimer)
+      this._taskSaveTimer = setTimeout(() => {
+        if (!this.page_id) return
+        this.request(
+          '/api/page/save',
+          {
+            page_id: this.page_id,
+            item_id: this.item_info.item_id,
+            cat_id: this.cat_id,
+            page_title: this.page_title,
+            is_urlencode: 1,
+            page_content: encodeURIComponent(this.content)
+          },
+          'post',
+          false
+        )
+      }, 800)
+    },
+    onTaskToggle({ index, checked }) {
+      if (!(this.item_info && this.item_info.item_edit)) return
+      this.content = this.toggleNthTaskCheckbox(this.content, index, checked)
+      this.scheduleSave()
     },
 
     editPage() {

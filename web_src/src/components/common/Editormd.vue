@@ -194,6 +194,11 @@ export default {
       type: String,
       default: 'editor'
     },
+    // 是否允许在阅读模式下切换任务列表复选框
+    taskToggle: {
+      type: Boolean,
+      default: true
+    },
     keyword: {
       type: String,
       default: ''
@@ -254,6 +259,7 @@ export default {
               'toc',
               'mindmap',
               'plantuml',
+              'tasklist',
               'h1',
               'h2',
               'h3',
@@ -290,7 +296,8 @@ export default {
             mindmap: 'fa-sitemap ', // 指定一个FontAawsome的图标类
             plantuml: 'fa-random ', // 修改为确实存在的图标类
             video: 'fa-file-video-o',
-            center: 'fa-align-center'
+            center: 'fa-align-center',
+            tasklist: 'fa-check-square-o'
           },
           // 自定义工具栏按钮的事件处理
           toolbarHandlers: {
@@ -305,6 +312,28 @@ export default {
               )
 
               // 如果当前没有选中的文本，将光标移到要输入的位置
+              if (selection === '') {
+                cm.setCursor(cursor.line, cursor.ch + 1)
+              }
+            },
+            tasklist: function(cm, icon, cursor, selection) {
+              const text = `
+## 任务清单
+
+### 今日
+- [ ] 整理站内消息与通知
+- [ ] 跟进两条用户反馈
+- [x] 合并并审核一个 PR
+
+### 本周
+- [ ] 完成文档目录整理与迁移
+- [ ] 优化图片加载与懒加载策略
+
+### 待办
+- [ ] 编写部署与备份说明
+- [ ] 补充接口错误码表
+`
+              cm.replaceSelection(text)
               if (selection === '') {
                 cm.setCursor(cursor.line, cursor.ch + 1)
               }
@@ -363,7 +392,8 @@ actor 用户
               mindmap: '插入思维导图',
               plantuml: '插入UML图',
               video: '插入视频',
-              center: '居中'
+              center: '居中',
+              tasklist: '插入任务列表'
             }
           },
           onchange: () => {
@@ -645,6 +675,49 @@ actor 用户
       $('#' + this.id).on('click', '.btn-pre-copy', function() {
         that.doCopy(this)
       })
+
+      // 阅读模式下的任务列表交互
+      if (this.type === 'html') {
+        const $container = $('#' + this.id)
+        // 查找不在代码块中的 checkbox
+        const $checkboxes = $container
+          .find('input[type="checkbox"]')
+          .filter(function() {
+            return (
+              $(this).closest('pre, code, .editormd-code-block, .hljs').length ===
+              0
+            )
+          })
+
+        // 先解绑旧事件
+        $container.off('change.tasklist')
+
+        if (!this.taskToggle) {
+          // 无交互权限，禁用
+          $checkboxes.prop('disabled', true)
+          return
+        }
+
+        // 允许交互，则启用并编号
+        $checkboxes.each(function(i, el) {
+          $(el).prop('disabled', false)
+          $(el).attr('data-task-index', i)
+        })
+
+        // 事件代理，回传索引与状态
+        $container.on('change.tasklist', 'input[type="checkbox"]', e => {
+          const $target = $(e.target)
+          if (
+            $target.closest('pre, code, .editormd-code-block, .hljs').length > 0
+          ) {
+            return
+          }
+          const index = parseInt($target.attr('data-task-index'))
+          if (isNaN(index)) return
+          const checked = $target.is(':checked')
+          this.$emit('task-toggle', { index, checked })
+        })
+      }
     },
     // 处理代码块复制
     doCopy(jqThis) {

@@ -20,6 +20,8 @@
             v-bind:content="content"
             v-if="page_id && content"
             type="html"
+            :taskToggle="!isRunapi && canEdit"
+            @task-toggle="onTaskToggle"
           ></Editormd>
         </div>
       </div>
@@ -115,7 +117,8 @@ pre ol {
 <script>
 import Editormd from '@/components/common/Editormd'
 import Toc from '@/components/common/Toc'
-import { rederPageContent } from '@/models/page'
+import { rederPageContent, unescapeHTML } from '@/models/page'
+import { toggleNthTaskCheckbox } from '@/models/markdown'
 
 export default {
   data() {
@@ -128,7 +131,12 @@ export default {
       fullPage: false,
       showComp: true,
       showfullPageBtn: true,
-      showToc: true
+      showToc: true,
+      isRunapi: false,
+      canEdit: false,
+      item_id: 0,
+      cat_id: 0,
+      _taskSaveTimer: null
     }
   },
   components: {
@@ -155,9 +163,22 @@ export default {
         false
       ).then(data => {
         if (data.error_code === 0) {
-          this.content = rederPageContent(data.data.page_content)
+          // runapi 判定与权限
+          const raw = data.data.page_content || ''
+          this.isRunapi = false
+          try {
+            const obj = JSON.parse(unescapeHTML(raw))
+            this.isRunapi = !!(obj && obj.info && obj.info.url)
+          } catch (e) {}
+          this.canEdit = !!(
+            this.$store.state.item_info && this.$store.state.item_info.item_edit
+          )
+
+          this.content = rederPageContent(raw)
           this.page_title = data.data.page_title
           this.page_id = data.data.page_id
+          this.item_id = data.data.item_id || 0
+          this.cat_id = data.data.cat_id || 0
           document.title = data.data.page_title
         } else if (data.error_code === 10307 || data.error_code === 10303) {
           // 需要输入密码
@@ -172,6 +193,32 @@ export default {
           alert(data.error_message)
         }
       })
+    },
+    // 第 n 个任务项切换（跳过代码块）
+    toggleNthTaskCheckbox,
+    scheduleSave() {
+      if (this._taskSaveTimer) clearTimeout(this._taskSaveTimer)
+      this._taskSaveTimer = setTimeout(() => {
+        if (!this.page_id) return
+        this.request(
+          '/api/page/save',
+          {
+            page_id: this.page_id,
+            item_id: this.item_id,
+            cat_id: this.cat_id,
+            page_title: this.page_title,
+            is_urlencode: 1,
+            page_content: encodeURIComponent(this.content)
+          },
+          'post',
+          false
+        )
+      }, 800)
+    },
+    onTaskToggle({ index, checked }) {
+      if (this.isRunapi || !this.canEdit) return
+      this.content = this.toggleNthTaskCheckbox(this.content, index, checked)
+      this.scheduleSave()
     },
     adaptToMobile() {
       var doc_container = document.getElementById('doc-container')
