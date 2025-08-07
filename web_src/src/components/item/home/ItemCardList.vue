@@ -23,6 +23,10 @@
             @click="toOneItem(item)"
             :class="{ 'is-starred': item.is_star > 0 }"
           >
+            <!-- 星标徽记 -->
+            <div v-if="item.is_star > 0" class="star-badge" @click.stop>
+              <i class="fas fa-star"></i>
+            </div>
             <div class="item-card-content">
               <div class="item-card-title">{{ item.item_name }}</div>
             </div>
@@ -485,6 +489,23 @@ export default {
 /* 简化收藏标记 */
 .is-starred::before {
   content: none;
+}
+
+/* 星标徽记 */
+.star-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  color: #f4c150;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 2px 4px;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.star-badge i {
+  font-size: 14px;
 }
 
 /* 拖拽时的样式 */

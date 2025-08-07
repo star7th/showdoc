@@ -22,6 +22,7 @@
               class="item-icon fas fa-table"
             ></i>
             <i v-else class="item-icon fas fa-notes"></i>
+            <i v-if="item.is_star > 0" class="star-flag fas fa-star"></i>
             {{ item.item_name }}
           </div>
           <div class="right show-more  float-right" @click.stop="() => {}">
@@ -489,5 +490,11 @@ a {
 .item-list-one .item-icon-more {
   color: #343a40;
   font-size: 16px;
+}
+
+/* 列表模式星标小图标 */
+.star-flag {
+  margin-right: 8px;
+  color: #f4c150;
 }
 </style>
