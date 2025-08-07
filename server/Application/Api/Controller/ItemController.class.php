@@ -136,6 +136,10 @@ class ItemController extends BaseController
         if ($is_login) { //少了个$ if(is_login)
             $show_watermark = D("Options")->get("show_watermark");
             $show_watermark = $show_watermark ? '1' : '0';
+            // 兼容主版：未登录情况下 unread_count 置 0
+            $unread_count = D("Notice")->where("to_uid = '%d' and is_delete = 0 and  is_read = 0 ", array($uid))->count();
+        } else {
+            $unread_count = 0;
         }
 
 
@@ -338,7 +342,21 @@ class ItemController extends BaseController
             $this->sendError(10303);
             return;
         }
-        $items  = D("Item")->where("item_id = '$item_id' ")->find();
+        $items  = D("Item")->where("item_id = '%d' ", array($item_id))->find();
+        // 返回项目所属分组（多选）
+        $group_ids = array();
+        $groups = D("ItemGroup")->where(" uid = '%d' ", array($uid))->select();
+        if ($groups) {
+            foreach ($groups as $g) {
+                if (!empty($g['item_ids'])) {
+                    $ids = explode(',', $g['item_ids']);
+                    if (in_array((string)$item_id, $ids) || in_array((int)$item_id, array_map('intval', $ids))) {
+                        $group_ids[] = intval($g['id']);
+                    }
+                }
+            }
+        }
+        $items['group_ids'] = $group_ids;
         $items = $items ? $items : array();
         $this->sendResult($items);
     }
@@ -352,6 +370,9 @@ class ItemController extends BaseController
         $item_description = I("item_description");
         $item_domain = I("item_domain");
         $password = I("password");
+        // 多分组支持
+        $item_group_id = I("item_group_id/d") ? I("item_group_id/d") : 0;
+        $item_group_ids_raw = I("item_group_ids");
         $uid = $login_user['uid'];
         if (!$this->checkItemManage($uid, $item_id)) {
             $this->sendError(10303);
@@ -379,7 +400,49 @@ class ItemController extends BaseController
             "item_domain" => $item_domain,
             "password" => $password,
         );
-        $items  = D("Item")->where("item_id = '$item_id' ")->save($save_data);
+        $items  = D("Item")->where("item_id = '%d' ", array($item_id))->save($save_data);
+        // 同步分组
+        $selected_group_ids = array();
+        if (!empty($item_group_ids_raw)) {
+            if (is_array($item_group_ids_raw)) {
+                $selected_group_ids = $item_group_ids_raw;
+            } else {
+                $tmp = json_decode(htmlspecialchars_decode($item_group_ids_raw), true);
+                if (is_array($tmp)) {
+                    $selected_group_ids = $tmp;
+                } else {
+                    $selected_group_ids = explode(',', strval($item_group_ids_raw));
+                }
+            }
+        } elseif ($item_group_id > 0) {
+            $selected_group_ids = array($item_group_id);
+        }
+        $selected_group_ids = array_values(array_unique(array_filter(array_map('intval', $selected_group_ids))));
+        if (!empty($selected_group_ids) || $item_group_id === 0) {
+            $groups = D("ItemGroup")->where(" uid = '%d' ", array($uid))->select();
+            if ($groups) {
+                foreach ($groups as $g) {
+                    $g_id = intval($g['id']);
+                    $ids = array();
+                    if (!empty($g['item_ids'])) {
+                        $ids = array_values(array_unique(array_filter(array_map('intval', explode(',', $g['item_ids'])))));
+                    }
+                    if (in_array($g_id, $selected_group_ids)) {
+                        if (!in_array($item_id, $ids)) {
+                            $ids[] = $item_id;
+                            $new_item_ids = implode(',', $ids);
+                            D("ItemGroup")->where(" id = '%d' and uid = '%d' ", array($g_id, $uid))->save(['item_ids' => $new_item_ids]);
+                        }
+                    } else {
+                        if (!empty($ids) && in_array($item_id, $ids)) {
+                            $ids = array_values(array_diff($ids, array($item_id)));
+                            $new_item_ids = implode(',', $ids);
+                            D("ItemGroup")->where(" id = '%d' and uid = '%d' ", array($g_id, $uid))->save(['item_ids' => $new_item_ids]);
+                        }
+                    }
+                }
+            }
+        }
         $items = $items ? $items : array();
         $this->sendResult($items);
     }
@@ -617,6 +680,7 @@ class ItemController extends BaseController
         $item_description = I("item_description");
         $item_type = I("item_type") ? I("item_type") : 1;
         $item_group_id = I("item_group_id/d") ? I("item_group_id/d") : 0;
+        $item_group_ids_raw = I("item_group_ids");
         if (!$item_name) {
             $this->sendError(10100, '项目名不能为空');
             return false;
@@ -694,21 +758,36 @@ class ItemController extends BaseController
                 $page_id = D("Page")->add($insert);
             }
 
-            // 如果传递了分组id，则把该项目也加入该分组下
-            if ($item_group_id > 0) {
-                $res = D("ItemGroup")->where(" id = '$item_group_id' ")->find();
-                if ($res && $res['item_ids']) {
-                    $item_ids = explode(',', $res['item_ids']);
-                    if (!in_array($item_id, $item_ids)) {
-                        $item_ids[] = $item_id;
-                    }
-                    $new_item_ids = implode(',', $item_ids);
-
-                    // 更新项目分组
-                    $result = D("ItemGroup")->where("id = '$item_group_id'")->save(['item_ids' => $new_item_ids]);
+            // 多分组（创建）
+            $selected_group_ids = array();
+            if (!empty($item_group_ids_raw)) {
+                if (is_array($item_group_ids_raw)) {
+                    $selected_group_ids = $item_group_ids_raw;
                 } else {
-                    // 如果不存在则初始化
-                    $result = D("ItemGroup")->where("id = '$item_group_id'")->save(['item_ids' => $item_id]);
+                    $tmp = json_decode(htmlspecialchars_decode($item_group_ids_raw), true);
+                    if (is_array($tmp)) {
+                        $selected_group_ids = $tmp;
+                    } else {
+                        $selected_group_ids = explode(',', strval($item_group_ids_raw));
+                    }
+                }
+            } elseif ($item_group_id > 0) {
+                $selected_group_ids = array($item_group_id);
+            }
+            $selected_group_ids = array_values(array_unique(array_filter(array_map('intval', $selected_group_ids))));
+            if (!empty($selected_group_ids)) {
+                foreach ($selected_group_ids as $gid) {
+                    $res = D("ItemGroup")->where(" id = '%d' and uid = '%d' ", array($gid, $login_user['uid']))->find();
+                    if ($res && $res['item_ids']) {
+                        $item_ids = array_values(array_unique(array_filter(array_map('intval', explode(',', $res['item_ids'])))));
+                        if (!in_array($item_id, $item_ids)) {
+                            $item_ids[] = $item_id;
+                        }
+                        $new_item_ids = implode(',', $item_ids);
+                        D("ItemGroup")->where("id = '%d' and uid = '%d'", array($gid, $login_user['uid']))->save(['item_ids' => $new_item_ids]);
+                    } else {
+                        D("ItemGroup")->where("id = '%d' and uid = '%d'", array($gid, $login_user['uid']))->save(['item_ids' => $item_id]);
+                    }
                 }
             }
 

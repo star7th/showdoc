@@ -33,6 +33,31 @@
             ></el-input
           ></el-col>
         </el-row>
+        <el-row
+          class="leading-10 mb-4"
+          v-if="itemGroupList && itemGroupList.length > 0"
+        >
+          <el-col :span="6">{{ $t('group') }} : </el-col>
+          <el-col :span="18">
+            <el-select
+              class="w-full"
+              v-model="itemGroupIdsLocal"
+              multiple
+              collapse-tags
+              @change="onGroupChange"
+              :placeholder="$t('item_group_desc')"
+            >
+              <el-option :value="0" :label="$t('all_items')"> </el-option>
+              <el-option
+                v-for="g in itemGroupList"
+                :key="g.id"
+                :value="Number(g.id)"
+                :label="g.group_name"
+              >
+              </el-option>
+            </el-select>
+          </el-col>
+        </el-row>
         <el-row class="leading-10 mb-4">
           <el-col :span="6">{{ $t('item_description') }} : </el-col>
           <el-col :span="18">
@@ -100,7 +125,9 @@ export default {
         password: '',
         item_type: '1'
       },
-      isOpenItem: true
+      isOpenItem: true,
+      itemGroupList: [],
+      itemGroupIdsLocal: []
     }
   },
   methods: {
@@ -119,7 +146,10 @@ export default {
           item_name: this.infoForm.item_name,
           item_description: this.infoForm.item_description,
           item_domain: this.infoForm.item_domain,
-          password: this.infoForm.password
+          password: this.infoForm.password,
+          item_group_ids: (this.itemGroupIdsLocal || [])
+            .map(v => Number(v))
+            .filter(v => !isNaN(v))
         }).then(data => {
           this.$message.success(this.$t('modify_success'))
           this.callback()
@@ -133,7 +163,9 @@ export default {
             item_description: this.infoForm.item_description,
             item_domain: this.infoForm.item_domain,
             password: this.infoForm.password,
-            item_group_id: this.itemGroupId
+            item_group_ids: (this.itemGroupIdsLocal || [])
+              .map(v => Number(v))
+              .filter(v => !isNaN(v))
           },
           'post',
           false
@@ -161,14 +193,41 @@ export default {
         this.infoForm.item_domain = json.item_domain
         this.infoForm.password = json.password
         this.infoForm.item_type = json.item_type
+        // 多分组：后端返回 group_ids
+        this.itemGroupIdsLocal = Array.isArray(json.group_ids)
+          ? json.group_ids.map(v => Number(v)).filter(v => !isNaN(v))
+          : []
+        // 兜底：父组件传入的单个分组
+        if (
+          (!this.itemGroupIdsLocal || this.itemGroupIdsLocal.length === 0) &&
+          this.itemGroupId > 0
+        ) {
+          this.itemGroupIdsLocal = [Number(this.itemGroupId)]
+        }
       })
     }
   },
 
   mounted() {
     this.infoForm.item_type = this.defaultItemType
+    // 初始化分组选择：父组件传入的单个分组
+    if (this.itemGroupId > 0) {
+      this.itemGroupIdsLocal = [Number(this.itemGroupId)]
+    }
+    // 读取分组列表
+    this.request('/api/itemGroup/getList', {}).then(data => {
+      this.itemGroupList = data.data || []
+    })
     if (this.item_id) {
       this.getItemDetail(this.item_id)
+    }
+  },
+  onGroupChange(val) {
+    const arr = (val || []).map(v => Number(v)).filter(v => !isNaN(v))
+    if (arr.includes(0)) {
+      this.itemGroupIdsLocal = [0]
+    } else {
+      this.itemGroupIdsLocal = arr
     }
   }
 }

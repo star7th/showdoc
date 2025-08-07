@@ -61,6 +61,28 @@
         ></el-input>
       </el-form-item>
 
+      <el-form-item v-if="itemGroupList && itemGroupList.length > 0">
+        <el-tooltip :content="$t('item_group_desc')" placement="top">
+          <el-select
+            class="w-full"
+            v-model="itemGroupIdsLocal"
+            multiple
+            collapse-tags
+            @change="onGroupChange"
+            :placeholder="$t('item_group_desc')"
+          >
+            <el-option :value="0" :label="$t('all_items')"> </el-option>
+            <el-option
+              v-for="g in itemGroupList"
+              :key="g.id"
+              :value="Number(g.id)"
+              :label="g.group_name"
+            >
+            </el-option>
+          </el-select>
+        </el-tooltip>
+      </el-form-item>
+
       <el-form-item label>
         <el-button type="primary" style="width:100%;" @click="formSubmit">{{
           $t('submit')
@@ -77,7 +99,9 @@ export default {
   data() {
     return {
       infoForm: {},
-      isOpenItem: true
+      isOpenItem: true,
+      itemGroupList: [],
+      itemGroupIdsLocal: []
     }
   },
   methods: {
@@ -90,7 +114,45 @@ export default {
           this.isOpenItem = false
         }
         this.infoForm = json
+        // 默认分组：后端 group_ids
+        if (Array.isArray(json.group_ids)) {
+          this.itemGroupIdsLocal = json.group_ids
+            .map(v => Number(v))
+            .filter(v => !isNaN(v))
+        }
       })
+    },
+    getItemGroupList() {
+      this.request('/api/itemGroup/getList', {}).then(data => {
+        this.itemGroupList = data.data || []
+        this.setDefaultGroup()
+      })
+    },
+    setDefaultGroup() {
+      if (!this.infoForm || !this.infoForm.item_id || !this.itemGroupList.length) {
+        return
+      }
+      if (this.itemGroupIdsLocal && this.itemGroupIdsLocal.length > 0) return
+      const itemId = String(this.infoForm.item_id)
+      const selected = []
+      for (const g of this.itemGroupList) {
+        if (!g || !g.item_ids) continue
+        const ids = String(g.item_ids).split(',').filter(Boolean)
+        if (ids.includes(itemId)) {
+          selected.push(Number(g.id))
+        }
+      }
+      if (selected.length > 0) {
+        this.itemGroupIdsLocal = selected
+      }
+    },
+    onGroupChange(val) {
+      const arr = (val || []).map(v => Number(v)).filter(v => !isNaN(v))
+      if (arr.includes(0)) {
+        this.itemGroupIdsLocal = [0]
+      } else {
+        this.itemGroupIdsLocal = arr
+      }
     },
     formSubmit() {
       if (!this.isOpenItem && !this.infoForm.password) {
@@ -105,7 +167,10 @@ export default {
         item_name: this.infoForm.item_name,
         item_description: this.infoForm.item_description,
         item_domain: this.infoForm.item_domain,
-        password: this.infoForm.password
+        password: this.infoForm.password,
+        item_group_ids: (this.itemGroupIdsLocal || [])
+          .map(v => Number(v))
+          .filter(v => !isNaN(v))
       }).then(data => {
         this.$message.success(this.$t('modify_success'))
       })
@@ -114,6 +179,7 @@ export default {
 
   mounted() {
     this.getItemInfo()
+    this.getItemGroupList()
   }
 }
 </script>
