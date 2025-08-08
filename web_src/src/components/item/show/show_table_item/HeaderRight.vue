@@ -12,7 +12,7 @@
           <i class="el-icon-s-shop"></i>
         </el-tooltip>
       </div>
-      <div v-if="item_info.item_manage" class="icon-item" @click="exportFile">
+      <div v-if="item_info.item_edit" class="icon-item" @click="exportFile">
         <el-tooltip effect="dark" :content="$t('export')" placement="top">
           <i class="far fa-arrow-down-to-bracket"></i>
         </el-tooltip>

@@ -96,6 +96,17 @@
         </div>
       </el-tooltip>
 
+      <el-tooltip
+        v-if="item_info.item_edit && !item_info.item_manage"
+        effect="dark"
+        :content="$t('export')"
+        placement="top"
+      >
+        <div class="icon-item" @click="showItemExport = true">
+          <i class="far fa-arrow-down-to-bracket"></i>
+        </div>
+      </el-tooltip>
+
       <div class="inline" v-if="item_info.item_manage">
         <el-dropdown :show-timeout="0" trigger="hover">
           <div class="icon-item">

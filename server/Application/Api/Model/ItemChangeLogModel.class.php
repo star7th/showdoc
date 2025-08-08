@@ -75,6 +75,9 @@ class ItemChangeLogModel extends BaseModel
             case 'delete':
                 $one['op_action_type_desc'] = '删除';
                 break;
+            case 'export':
+                $one['op_action_type_desc'] = '导出';
+                break;
             case 'binding':
                 $one['op_action_type_desc'] = '绑定';
                 break;
@@ -95,6 +98,9 @@ class ItemChangeLogModel extends BaseModel
                 break;
             case 'catalog':
                 $one['op_object_type_desc'] = '目录';
+                break;
+            case 'item':
+                $one['op_object_type_desc'] = '项目';
                 break;
             case 'team':
                 $one['op_object_type_desc'] = '团队';

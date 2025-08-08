@@ -17,6 +17,15 @@
         </el-tooltip>
       </div>
       <div
+        v-if="item_info.item_edit && !item_info.item_manage"
+        class="icon-item"
+        @click="showItemExport = true"
+      >
+        <el-tooltip effect="dark" :content="$t('export')" placement="top">
+          <i class="far fa-arrow-down-to-bracket"></i>
+        </el-tooltip>
+      </div>
+      <div
         v-if="item_info.item_manage"
         class="icon-item"
         @click="showMember = true"
@@ -66,6 +75,10 @@
           </div>
 
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="showItemExport = true">
+              <i class="mr-2 far fa-arrow-down-to-bracket"></i>
+              {{ $t('export') }}
+            </el-dropdown-item>
             <el-dropdown-item divided @click.native="showItemUpdate = true">
               <i class="mr-2 far fa-edit"></i>
               {{ $t('update_item_base_info') }}
@@ -185,6 +198,7 @@ import Delete from '@/components/item/setting/Delete'
 import ItemUpdate from '@/components/item/add/Basic'
 import Share from '@/components/item/home/Share'
 import PageEdit from '@/components/page/edit/Index'
+import ItemExport from '@/components/item/export/Index'
 export default {
   components: {
     Member,
@@ -193,7 +207,8 @@ export default {
     Delete,
     ItemUpdate,
     Share,
-    PageEdit
+    PageEdit,
+    ItemExport
   },
   props: {
     item_info: {},
@@ -210,6 +225,7 @@ export default {
       showAttorn: false,
       showItemUpdate: false,
       showShare: false,
+      showItemExport: false,
       showDelete: false,
       showPageEdit: false
     }

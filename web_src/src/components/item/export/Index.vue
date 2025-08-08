@@ -191,7 +191,7 @@ export default {
   mounted() {
     this.getCatalog(this.item_id)
     // 获取项目类型。如果是runapi项目，则无法导出markdown压缩包
-    this.request('/api/item/detail', {
+    this.request('/api/item/info', {
       item_id: this.item_id
     }).then(data => {
       if (data.data.item_type == '3') {

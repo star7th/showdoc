@@ -136,8 +136,6 @@ class ItemController extends BaseController
         if ($is_login) { //少了个$ if(is_login)
             $show_watermark = D("Options")->get("show_watermark");
             $show_watermark = $show_watermark ? '1' : '0';
-            // 兼容主版：未登录情况下 unread_count 置 0
-            $unread_count = D("Notice")->where("to_uid = '%d' and is_delete = 0 and  is_read = 0 ", array($uid))->count();
         } else {
             $unread_count = 0;
         }

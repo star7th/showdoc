@@ -212,6 +212,8 @@ class ExportController extends BaseController
                 $parent++;
             }
         }
+        // 记录项目变更日志：导出
+        D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'export', 'item', $item_id, $item['item_name']);
 
         output_word($data, $item['item_name']);
     }
@@ -251,6 +253,8 @@ class ExportController extends BaseController
         header("Content-Type: application/zip"); // zip格式的
         header("Content-Transfer-Encoding: binary"); // 告诉浏览器，这是二进制文件
         header('Content-Length: ' . filesize($temp_file)); // 告诉浏览器，文件大小
+        // 记录项目变更日志：导出
+        D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'export', 'item', $item_id, $item['item_name']);
         @readfile($temp_file); //输出文件;
         unlink($temp_file);
     }
