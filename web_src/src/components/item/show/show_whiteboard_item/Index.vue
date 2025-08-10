@@ -14,267 +14,35 @@
     </Header>
 
     <div id="whiteboard-item">
-      <div class="toolbar">
-        <div class="tool-left">
-          <el-tooltip
-            effect="dark"
-            :content="$t('color') || '颜色'"
-            placement="top"
-          >
-            <el-color-picker
-              size="mini"
-              v-model="brushColor"
-              :disabled="isReadOnly"
-              @change="applyBrush"
-            />
-          </el-tooltip>
-          <div class="width-wrap">
-            <span class="label">{{ $t('width') || '粗细' }}</span>
-            <el-slider
-              class="width-slider"
-              :min="1"
-              :max="50"
-              :step="1"
-              v-model="brushWidth"
-              @input="applyBrush"
-              :show-input="true"
-              input-size="mini"
-              :disabled="isReadOnly"
-            />
-          </div>
-        </div>
-        <div class="tool-right">
-          <!-- 撤销 / 重做 -->
-          <el-tooltip
-            effect="dark"
-            :content="$t('undo') || '撤销'"
-            placement="top"
-          >
-            <el-button size="mini" plain @click="undo" :disabled="isReadOnly">
-              <i class="far fa-rotate-left" />
-              <span class="btn-text">{{ $t('undo') || '撤销' }}</span>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip
-            effect="dark"
-            :content="$t('redo') || '重做'"
-            placement="top"
-          >
-            <el-button size="mini" plain @click="redo" :disabled="isReadOnly">
-              <i class="far fa-rotate-right" />
-              <span class="btn-text">{{ $t('redo') || '重做' }}</span>
-            </el-button>
-          </el-tooltip>
-
-          <span class="divider"></span>
-
-          <!-- 绘制/选择 切换 与 橡皮擦 -->
-          <el-tooltip
-            effect="dark"
-            :content="
-              isDrawing
-                ? $t('drawing_on') || '绘制中'
-                : $t('drawing_off') || '停止绘制'
-            "
-            placement="top"
-          >
-            <el-button
-              size="mini"
-              :type="isDrawing ? 'primary' : 'default'"
-              plain
-              @click="toggleDrawing"
-              :disabled="isReadOnly"
-            >
-              <i :class="isDrawing ? 'far fa-pen' : 'far fa-hand'" />
-              <span class="btn-text">
-                {{ isDrawing ? $t('draw') || '绘制' : $t('select') || '选择' }}
-              </span>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip
-            effect="dark"
-            :content="$t('eraser') || '橡皮擦'"
-            placement="top"
-          >
-            <el-button
-              size="mini"
-              :type="isErasing ? 'warning' : 'default'"
-              plain
-              @click="toggleEraser"
-              :disabled="isReadOnly"
-            >
-              <i class="far fa-eraser" />
-              <span class="btn-text">{{ $t('eraser') || '橡皮擦' }}</span>
-            </el-button>
-          </el-tooltip>
-
-          <el-tooltip
-            effect="dark"
-            :content="$t('clear') || '清空画布'"
-            placement="top"
-          >
-            <el-button
-              size="mini"
-              type="danger"
-              plain
-              @click="clearCanvas"
-              :disabled="isReadOnly"
-            >
-              <i class="far fa-trash-can" />
-              <span class="btn-text">{{ $t('clear') || '清空画布' }}</span>
-            </el-button>
-          </el-tooltip>
-
-          <span class="divider"></span>
-
-          <!-- 缩放 -->
-          <el-tooltip
-            effect="dark"
-            :content="$t('zoom_out') || '缩小'"
-            placement="top"
-          >
-            <el-button size="mini" plain @click="zoomOut">
-              <i class="far fa-magnifying-glass-minus" />
-              <span class="btn-text">{{ $t('zoom_out') || '缩小' }}</span>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip
-            effect="dark"
-            :content="$t('zoom_in') || '放大'"
-            placement="top"
-          >
-            <el-button size="mini" plain @click="zoomIn">
-              <i class="far fa-magnifying-glass-plus" />
-              <span class="btn-text">{{ $t('zoom_in') || '放大' }}</span>
-            </el-button>
-          </el-tooltip>
-
-          <!-- 适屏 / 1:1 -->
-          <el-tooltip
-            effect="dark"
-            :content="$t('fit') || '适屏'"
-            placement="top"
-          >
-            <el-button size="mini" plain @click="fitToViewport">
-              <i class="far fa-maximize" />
-              <span class="btn-text">{{ $t('fit') || '适屏' }}</span>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip
-            effect="dark"
-            :content="$t('actual_size') || '1:1'"
-            placement="top"
-          >
-            <el-button size="mini" plain @click="zoomReset">
-              <i class="far fa-minimize" />
-              <span class="btn-text">{{ $t('actual_size') || '1:1' }}</span>
-            </el-button>
-          </el-tooltip>
-
-          <span class="divider"></span>
-
-          <!-- 插入图片 -->
-          <el-tooltip
-            effect="dark"
-            :content="$t('insert_image') || '插入图片'"
-            placement="top"
-          >
-            <el-button
-              size="mini"
-              plain
-              :disabled="!item_info.item_edit"
-              @click="triggerImageUpload"
-            >
-              <i class="far fa-file-image" />
-              <span class="btn-text">{{
-                $t('insert_image') || '插入图片'
-              }}</span>
-            </el-button>
-          </el-tooltip>
-          <input
-            ref="imgFile"
-            type="file"
-            accept="image/*"
-            style="display:none"
-            @change="onImportImage"
-          />
-
-          <span class="divider"></span>
-
-          <!-- 导出/导入 -->
-          <el-tooltip
-            effect="dark"
-            :content="$t('export') || '导出 PNG'"
-            placement="top"
-          >
-            <el-button
-              size="mini"
-              plain
-              @click="exportImage"
-              :disabled="isVisitor"
-            >
-              <i class="far fa-image" />
-              <span class="btn-text">{{ $t('export_png') || '导出PNG' }}</span>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip
-            effect="dark"
-            :content="$t('export_svg') || '导出 SVG'"
-            placement="top"
-          >
-            <el-button
-              size="mini"
-              plain
-              @click="exportSVG"
-              :disabled="isVisitor"
-            >
-              <i class="far fa-file-code" />
-              <span class="btn-text">{{ $t('export_svg') || '导出SVG' }}</span>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip
-            effect="dark"
-            :content="$t('export_json') || '导出 JSON'"
-            placement="top"
-          >
-            <el-button
-              size="mini"
-              plain
-              @click="exportJSON"
-              :disabled="isVisitor"
-            >
-              <i class="far fa-code" />
-              <span class="btn-text">{{
-                $t('export_json') || '导出JSON'
-              }}</span>
-            </el-button>
-          </el-tooltip>
-          <el-tooltip
-            effect="dark"
-            :content="$t('import') || '导入 JSON'"
-            placement="top"
-          >
-            <el-button
-              size="mini"
-              plain
-              :disabled="!item_info.item_edit"
-              @click="triggerImport"
-            >
-              <i class="far fa-file-arrow-up" />
-              <span class="btn-text">{{
-                $t('import_json') || '导入JSON'
-              }}</span>
-            </el-button>
-          </el-tooltip>
-          <input
-            ref="jsonFile"
-            type="file"
-            accept="application/json"
-            style="display:none"
-            @change="onImportJSON"
-          />
-        </div>
-      </div>
+      <Toolbar
+        :isReadOnly="isReadOnly"
+        :isVisitor="isVisitor"
+        :brushColor.sync="brushColor"
+        :brushWidth.sync="brushWidth"
+        :isDrawing="isDrawing"
+        :isErasing="isErasing"
+        :isInsertingText="isInsertingText"
+        :textFontSize.sync="textFontSize"
+        :textColor.sync="textColor"
+        :fontSizeOptions="fontSizeOptions"
+        @undo="undo"
+        @redo="redo"
+        @toggle-drawing="toggleDrawing"
+        @toggle-eraser="toggleEraser"
+        @clear-canvas="clearCanvas"
+        @apply-brush="applyBrush"
+        @apply-text-font-size="applyTextFontSize"
+        @apply-text-color="applyTextColor"
+        @zoom-out="zoomOut"
+        @zoom-in="zoomIn"
+        @fit-to-viewport="fitToViewport"
+        @zoom-reset="zoomReset"
+        @export-image="exportImage"
+        @export-svg="exportSVG"
+        @export-json="exportJSON"
+        @import-image="onImportImage"
+        @import-json="onImportJSON"
+      />
       <div class="canvas-wrap">
         <div class="canvas-inner">
           <canvas id="whiteboard-canvas"></canvas>
@@ -299,19 +67,6 @@
 #whiteboard-item {
   margin-top: 90px;
 }
-.toolbar {
-  position: sticky;
-  top: 90px;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px 12px;
-  background: #fff;
-  border-bottom: 1px solid #f0f0f0;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-}
 .canvas-wrap {
   position: relative;
   width: 100%;
@@ -325,43 +80,6 @@
   /* 保证大尺寸时可以横向滚动 */
   display: inline-block;
   min-width: 100%;
-}
-.tool-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.tool-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.divider {
-  display: inline-block;
-  width: 1px;
-  height: 18px;
-  background: #eee;
-  margin: 0 4px;
-}
-.width-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.width-wrap .label {
-  font-size: 12px;
-  color: #666;
-}
-.width-slider {
-  width: 200px;
-}
-.width-slider >>> .el-slider__button {
-  width: 10px;
-  height: 10px;
-}
-.width-slider >>> .el-input__inner {
-  height: 24px;
-  line-height: 24px;
 }
 .canvas-wrap {
   height: calc(100vh - 150px);
@@ -415,15 +133,12 @@
 .ml-3 {
   margin-left: 12px;
 }
-.btn-text {
-  margin-left: 4px;
-  display: none;
-}
 </style>
 
 <script>
 import Header from '../Header'
 import HeaderRight from './HeaderRight'
+import Toolbar from './Toolbar.vue'
 import { unescapeHTML } from '@/models/page'
 
 if (typeof window !== 'undefined') {
@@ -432,7 +147,7 @@ if (typeof window !== 'undefined') {
 
 export default {
   props: { item_info: '' },
-  components: { Header, HeaderRight },
+  components: { Header, HeaderRight, Toolbar },
   data() {
     return {
       page_id: '',
@@ -444,6 +159,27 @@ export default {
       undoStack: [],
       redoStack: [],
       resizeObserver: null,
+      // 文本插入模式
+      isInsertingText: false,
+      // 文本样式（默认用于新建；选中对象时用于修改）
+      textFontSize: 24,
+      textColor: '#2c3e50',
+      fontSizeOptions: [
+        12,
+        14,
+        16,
+        18,
+        20,
+        24,
+        28,
+        32,
+        36,
+        48,
+        64,
+        80,
+        96,
+        120
+      ],
       // 用户自定义画布尺寸
       customCanvasSize: null, // { width, height }
       // 拖拽尺寸
@@ -468,6 +204,43 @@ export default {
     }
   },
   methods: {
+    onSelectionChanged() {
+      if (!this.canvas) return
+      const active =
+        this.canvas.getActiveObject && this.canvas.getActiveObject()
+      if (active && (active.type === 'textbox' || active.type === 'text')) {
+        const size = Number(active.fontSize) || 24
+        this.textFontSize = Math.max(1, Math.min(size, 300))
+        if (active.fill) this.textColor = active.fill
+      }
+    },
+    onSelectionCleared() {
+      // 保留当前字号与颜色，作为后续新建文本的默认值
+    },
+    applyTextFontSize() {
+      if (!this.canvas) return
+      const active =
+        this.canvas.getActiveObject && this.canvas.getActiveObject()
+      if (active && (active.type === 'textbox' || active.type === 'text')) {
+        try {
+          active.set('fontSize', this.textFontSize)
+          this.canvas.requestRenderAll()
+          this.onContentChanged()
+        } catch (e) {}
+      }
+    },
+    applyTextColor() {
+      if (!this.canvas) return
+      const active =
+        this.canvas.getActiveObject && this.canvas.getActiveObject()
+      if (active && (active.type === 'textbox' || active.type === 'text')) {
+        try {
+          active.set('fill', this.textColor)
+          this.canvas.requestRenderAll()
+          this.onContentChanged()
+        } catch (e) {}
+      }
+    },
     loadDeps(cb) {
       // 仅从本地 staticPath 加载（不回退 CDN）
       const url = `${this.getStaticPath()}whiteboard/fabric.min.js`
@@ -545,11 +318,17 @@ export default {
         backgroundColor: '#ffffff'
       })
       this.applyBrush()
+      // 文本插入点击处理
+      this.canvas.on('mouse:down', this.onCanvasMouseDown)
       this.canvas.on('path:created', () => {
         this.onContentChanged()
       })
       this.canvas.on('object:modified', () => this.onContentChanged())
       this.canvas.on('object:removed', () => this.onContentChanged())
+      // 选择变化，联动字号
+      this.canvas.on('selection:created', this.onSelectionChanged)
+      this.canvas.on('selection:updated', this.onSelectionChanged)
+      this.canvas.on('selection:cleared', this.onSelectionCleared)
 
       // 自适应窗口尺寸
       this.bindResize()
@@ -782,6 +561,65 @@ export default {
       if (this.isErasing) this.isDrawing = true
       this.applyBrush()
     },
+    toggleTextInsert() {
+      if (this.isReadOnly) return
+      this.isInsertingText = !this.isInsertingText
+      // 插入文字时关闭手绘与橡皮擦
+      if (this.isInsertingText) {
+        this.isDrawing = false
+        this.isErasing = false
+      }
+      this.applyBrush()
+      // 提示光标
+      try {
+        this.canvas &&
+          this.canvas.setCursor(this.isInsertingText ? 'text' : 'default')
+        this.canvas.requestRenderAll()
+      } catch (e) {}
+    },
+    onCanvasMouseDown(opt) {
+      if (this.isReadOnly) return
+      if (!this.isInsertingText) return
+      if (!this.canvas) return
+      if (this.spacePressed) return
+      const evt = opt && opt.e
+      const pointer = this.canvas.getPointer(evt)
+      const textbox = new window.fabric.Textbox('', {
+        left: pointer.x,
+        top: pointer.y,
+        width: 300,
+        fontSize: this.textFontSize,
+        fill: this.textColor,
+        editable: true,
+        splitByGrapheme: true,
+        cornerStyle: 'circle',
+        transparentCorners: false
+      })
+      this.canvas.add(textbox)
+      this.canvas.setActiveObject(textbox)
+      this.canvas.requestRenderAll()
+      // 进入编辑
+      try {
+        textbox.enterEditing()
+        textbox.selectionStart = 0
+        textbox.selectionEnd = 0
+      } catch (e) {}
+      // 编辑结束后再记录一次变更
+      textbox.on('editing:exited', () => {
+        // 自动退出插入文字并切换到选择模式
+        this.isInsertingText = false
+        this.isDrawing = false
+        this.isErasing = false
+        this.applyBrush()
+        try {
+          this.canvas && this.canvas.setCursor('default')
+          this.canvas.requestRenderAll()
+        } catch (e) {}
+        this.onContentChanged()
+      })
+      // 新增即记录一次变更
+      this.onContentChanged()
+    },
     clearCanvas() {
       if (this.isReadOnly) return
       if (!this.canvas) return
@@ -999,6 +837,7 @@ export default {
       if (!this.canvas) return
       this.isDrawing = false
       this.isErasing = false
+      this.isInsertingText = false
       this.canvas.isDrawingMode = false
       this.canvas.selection = false
       this.canvas.skipTargetFind = true
@@ -1046,6 +885,11 @@ export default {
       this.resizeObserver &&
         this.resizeObserver.disconnect &&
         this.resizeObserver.disconnect()
+    } catch (e) {}
+    try {
+      this.canvas &&
+        this.canvas.off &&
+        this.canvas.off('mouse:down', this.onCanvasMouseDown)
     } catch (e) {}
     this.canvas && this.canvas.dispose && this.canvas.dispose()
     // 清理事件

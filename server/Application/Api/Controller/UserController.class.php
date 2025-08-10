@@ -88,6 +88,7 @@ class UserController extends BaseController
         $this->_importZip("../Public/SampleZip/databasedoc.zip", $uid);
         $this->_importZip("../Public/SampleZip/teamdoc.zip", $uid);
         $this->_importZip("../Public/SampleZip/spreadsheet.zip", $uid);
+        $this->_importZip("../Public/SampleZip/whiteboard.zip", $uid);
     }
 
     private function _importZip($file, $uid)
