@@ -31,6 +31,13 @@
       v-if="item_info && item_info.item_type == 4"
     ></ShowTableItem>
 
+    <!-- 展示白板项目 -->
+    <ShowWhiteboardItem
+      :key="item_key"
+      :item_info="item_info"
+      v-if="item_info && item_info.item_type == 5"
+    ></ShowWhiteboardItem>
+
     <!-- 如果是处于登录态的话，则引入通知组件  -->
     <Notify v-if="item_info.is_login"></Notify>
 
@@ -42,6 +49,7 @@
 import ShowRegularItem from '@/components/item/show/show_regular_item/Index'
 import ShowSinglePageItem from '@/components/item/show/show_single_page_item/Index'
 import ShowTableItem from '@/components/item/show/show_table_item/Index'
+import ShowWhiteboardItem from '@/components/item/show/show_whiteboard_item/Index'
 import watermark from 'watermark-dom'
 import moment from 'moment'
 import Notify from '@/components/common/Notify'
@@ -60,6 +68,7 @@ export default {
     ShowRegularItem,
     ShowSinglePageItem,
     ShowTableItem,
+    ShowWhiteboardItem,
     Notify
   },
   methods: {

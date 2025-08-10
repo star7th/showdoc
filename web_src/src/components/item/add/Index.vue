@@ -101,6 +101,10 @@ export default {
       this.defaultItemType = '4'
       this.showBasic = true
     },
+    whiteboardItem() {
+      this.defaultItemType = '5'
+      this.showBasic = true
+    },
     importFile() {
       this.showImportFile = true
     },
@@ -131,6 +135,12 @@ export default {
             icon: 'fas fa-table',
             desc: this.$t('table_item_desc'),
             method: this.tableItem
+          },
+          {
+            title: this.$t('whiteboard_item') || '白板',
+            icon: 'fas fa-pen',
+            desc: this.$t('whiteboard_item_desc') || '自由涂鸦白板',
+            method: this.whiteboardItem
           }
         ]
       },

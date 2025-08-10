@@ -568,6 +568,8 @@ exports.default = {
   single_item_desc: 'One-page online document',
   table_item: 'Spreadsheet',
   table_item_desc: 'Online spreadsheets',
+  whiteboard_item: 'Whiteboard',
+  whiteboard_item_desc: 'Freehand canvas',
   import_file_desc: 'Import supported files',
   auto_create: 'Auto Create',
   auto_create_desc: 'Automatic Create',
@@ -658,5 +660,26 @@ exports.default = {
   clear_queue: 'Clear Queue',
   batch_upload_complete_success: 'Batch upload completed! Successfully uploaded {count} files',
   batch_upload_complete_partial: 'Batch upload completed! Success: {success}, Failed: {error}',
-  upload_failed_error: 'Upload failed'
+  upload_failed_error: 'Upload failed',
+
+  // whiteboard toolbar
+  color: 'Color',
+  width: 'Width',
+  drawing_on: 'Drawing',
+  drawing_off: 'Stop drawing',
+  draw: 'Draw',
+  eraser: 'Eraser',
+  undo: 'Undo',
+  redo: 'Redo',
+  zoom_in: 'Zoom in',
+  zoom_out: 'Zoom out',
+  zoom_reset: 'Reset zoom',
+  fit: 'Fit',
+  actual_size: '1:1',
+  drag_resize: 'Drag to resize',
+  insert_image: 'Insert image',
+  export_png: 'Export PNG',
+  export_svg: 'Export SVG',
+  export_json: 'Export JSON',
+  import_json: 'Import JSON'
 }

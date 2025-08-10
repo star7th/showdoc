@@ -756,6 +756,20 @@ class ItemController extends BaseController
                 $page_id = D("Page")->add($insert);
             }
 
+            // 如果是白板项目，则新建一个默认页（内容留空，前端初始化为白板JSON）
+            if ($item_type == 5) {
+                $insert = array(
+                    'author_uid' => $login_user['uid'],
+                    'author_username' => $login_user['username'],
+                    "page_title" => $item_name,
+                    "item_id" => $item_id,
+                    "cat_id" => 0,
+                    "page_content" => '',
+                    "addtime" => time()
+                );
+                $page_id = D("Page")->add($insert);
+            }
+
             // 多分组（创建）
             $selected_group_ids = array();
             if (!empty($item_group_ids_raw)) {

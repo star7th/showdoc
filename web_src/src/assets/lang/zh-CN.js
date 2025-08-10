@@ -544,6 +544,8 @@ exports.default = {
   single_item_desc: '无目录结构的单页文档',
   table_item: '电子表格',
   table_item_desc: '可用于分享的在线电子表格',
+  whiteboard_item: '白板',
+  whiteboard_item_desc: '自由涂鸦白板',
   import_file_desc: '导入支持的项目文件',
   auto_create: '自动生成',
   auto_create_desc: '利用API自动化生成',
@@ -631,5 +633,26 @@ exports.default = {
   clear_queue: '清空队列',
   batch_upload_complete_success: '批量上传完成！成功上传 {count} 个文件',
   batch_upload_complete_partial: '批量上传完成！成功 {success} 个，失败 {error} 个',
-  upload_failed_error: '上传失败'
+  upload_failed_error: '上传失败',
+
+  // whiteboard toolbar
+  color: '颜色',
+  width: '粗细',
+  drawing_on: '绘制中',
+  drawing_off: '停止绘制',
+  draw: '绘制',
+  eraser: '橡皮擦',
+  undo: '撤销',
+  redo: '重做',
+  zoom_in: '放大',
+  zoom_out: '缩小',
+  zoom_reset: '重置缩放',
+  fit: '适屏',
+  actual_size: '1:1',
+  drag_resize: '拖动调整尺寸',
+  insert_image: '插入图片',
+  export_png: '导出PNG',
+  export_svg: '导出SVG',
+  export_json: '导出JSON',
+  import_json: '导入JSON'
 }
