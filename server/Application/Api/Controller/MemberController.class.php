@@ -14,6 +14,7 @@ class MemberController extends BaseController
         $member_group_id =  I("member_group_id/d");
         $item_id = I("post.item_id/d");
         $cat_id = I("cat_id/d") ?  I("cat_id/d") : 0;
+        $cat_ids = I("cat_ids"); // 逗号分隔的多目录，二级目录限定
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'];
         if (!$this->checkItemManage($uid, $item_id)) {
@@ -38,6 +39,30 @@ class MemberController extends BaseController
             $data['item_id'] = $item_id;
             $data['member_group_id'] = $member_group_id;
             $data['cat_id'] = $cat_id;
+            // 保存多目录（仅二级目录），统一逗号分隔
+            if (isset($_POST['cat_ids'])) {
+                $ids = array();
+                if (is_array($cat_ids)) {
+                    $ids = $cat_ids;
+                } else if (is_string($cat_ids)) {
+                    if (strpos($cat_ids, ',') !== false) {
+                        $ids = preg_split('/\s*,\s*/', trim($cat_ids));
+                    } else if (ctype_digit($cat_ids)) {
+                        $ids = array(intval($cat_ids));
+                    }
+                }
+                $ids2 = array();
+                if (!empty($ids)) {
+                    foreach ($ids as $v) {
+                        $v = intval($v);
+                        if ($v <= 0) continue;
+                        $cat = D("Catalog")->where("cat_id = '%d' and item_id = '%d' and level = 2", array($v, $item_id))->find();
+                        if ($cat) $ids2[] = $v;
+                    }
+                    $ids2 = array_values(array_unique($ids2));
+                }
+                $data['cat_ids'] = !empty($ids2) ? implode(',', $ids2) : '';
+            }
             $data['addtime'] = time();
             $id = D("ItemMember")->add($data);
         }
@@ -68,7 +93,10 @@ class MemberController extends BaseController
                 $value['addtime'] = date("Y-m-d H:i:s", $value['addtime']);
                 $value['member_group'] = $value['member_group_id'] == 1 ? "编辑" : "只读";
                 $value['cat_name'] = '所有目录';
-                if ($value['cat_id'] > 0) {
+                // 当存在多目录时，简单展示为“多个目录”
+                if (!empty($value['cat_ids'])) {
+                    $value['cat_name'] = '多个目录';
+                } else if ($value['cat_id'] > 0) {
                     $row = D("Catalog")->where(" cat_id = '$value[cat_id]' ")->find();
                     if ($row &&  $row['cat_name']) {
                         $value['cat_name'] =  $row['cat_name'];

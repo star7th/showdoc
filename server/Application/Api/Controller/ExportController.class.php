@@ -37,21 +37,28 @@ class ExportController extends BaseController
             }
         }
 
-        // 如果改用户是项目成员，且只分配了单个目录权限
-        $tmpRes = D("ItemMember")->where(" item_id = '$item_id' and uid = '$login_user[uid]' and cat_id > 0 ")->find();
-        if ($tmpRes) {
-            $cat_id = $tmpRes['cat_id'];
-        }
-        // 如果改用户是团队成员，且只分配了该项目的单个目录权限
-        $tmpRes = D("TeamItemMember")->where(" item_id = '$item_id' and member_uid = '$login_user[uid]' and cat_id > 0 ")->find();
-        if ($tmpRes) {
-            $cat_id = $tmpRes['cat_id'];
-        }
+        // 成员目录权限：获取该用户在此项目下允许的目录集合（根下一层）。若非空，则导出仅限这些目录
+        $allowedCatIds = D("Member")->getCatIds($item_id, $login_user['uid']);
 
         $menu = D("Item")->getContent($item_id, "*", "*", 1);
         if ($page_id > 0) {
-            $pages[] = D("Page")->where(" page_id = '$page_id' ")->find();
+            $page = D("Page")->where(" page_id = '$page_id' ")->find();
+            // 如果有限定目录，则校验页面所属目录是否在允许集合内
+            if (!empty($allowedCatIds)) {
+                $pageCatId = intval($page['cat_id']);
+                $allowed = array_flip(array_map('intval', $allowedCatIds));
+                if (!isset($allowed[$pageCatId])) {
+                    $this->message(L('no_permissions'));
+                    return;
+                }
+            }
+            $pages[] = $page;
         } else if ($cat_id) {
+            // 如果有限定目录，则cat_id必须在允许集合内
+            if (!empty($allowedCatIds) && !in_array(intval($cat_id), array_map('intval', $allowedCatIds))) {
+                $this->message(L('no_permissions'));
+                return;
+            }
             foreach ($menu['catalogs'] as $key => $value) {
                 if ($cat_id == $value['cat_id']) {
                     $pages = $value['pages'];
@@ -86,8 +93,22 @@ class ExportController extends BaseController
                 }
             }
         } else {
-            $pages = $menu['pages'];
-            $catalogs = $menu['catalogs'];
+            // 当存在目录限制时，仅导出被允许的二级目录合集
+            if (!empty($allowedCatIds)) {
+                $pages = array();
+                $catalogs = array();
+                $allowed = array_flip(array_map('intval', $allowedCatIds));
+                if (!empty($menu['catalogs'])) {
+                    foreach ($menu['catalogs'] as $one) {
+                        if (isset($allowed[intval($one['cat_id'])])) {
+                            $catalogs[] = $one;
+                        }
+                    }
+                }
+            } else {
+                $pages = $menu['pages'];
+                $catalogs = $menu['catalogs'];
+            }
         }
 
         $data = '';
@@ -215,7 +236,7 @@ class ExportController extends BaseController
         // 记录项目变更日志：导出
         D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'export', 'item', $item_id, $item['item_name']);
 
-        output_word($data, $item['item_name']);
+        output_word($data,'showdoc_export_'.date('YmdHis'));
     }
 
     //导出整个项目为markdown压缩包
@@ -232,8 +253,25 @@ class ExportController extends BaseController
 
         $item = D("Item")->where("item_id = '$item_id' ")->find();
 
+        // 成员目录权限：获取该用户在此项目下允许的目录集合
+        $allowedCatIds = D("Member")->getCatIds($item_id, $login_user['uid']);
+
         $exportJson = D("Item")->export($item_id, true);
         $exportData = json_decode($exportJson, 1);
+        if (!empty($allowedCatIds) && isset($exportData['pages']) && is_array($exportData['pages'])) {
+            $allowed = array_flip(array_map('intval', $allowedCatIds));
+            // 目录受限：去掉根目录下的页面，仅保留被允许的二级目录
+            $exportData['pages']['pages'] = array();
+            $filteredCatalogs = array();
+            if (!empty($exportData['pages']['catalogs']) && is_array($exportData['pages']['catalogs'])) {
+                foreach ($exportData['pages']['catalogs'] as $one) {
+                    if (isset($allowed[intval($one['cat_id'])])) {
+                        $filteredCatalogs[] = $one;
+                    }
+                }
+            }
+            $exportData['pages']['catalogs'] = $filteredCatalogs;
+        }
         $zipArc = new \ZipArchive();
         $temp_file = tempnam(sys_get_temp_dir(), 'Tux') . "_showdoc_.zip";
         $temp_dir = sys_get_temp_dir() . "/showdoc_" . time() . rand();

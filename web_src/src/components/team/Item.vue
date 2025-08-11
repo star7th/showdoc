@@ -143,20 +143,21 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="cat_id" :label="$t('catalog')" width="130">
+        <el-table-column prop="cat_ids" :label="$t('catalog')" width="200">
           <template slot-scope="scope">
             <el-select
               size="mini"
               v-if="scope.row.member_group_id <= 1"
-              v-model="scope.row.cat_id"
-              @change="changeTeamItemMemberCat($event, scope.row.id)"
+              multiple
+              v-model="scope.row.cat_ids"
+              @change="changeTeamItemMemberCats(scope.row.cat_ids, scope.row.id)"
               :placeholder="$t('please_choose')"
             >
               <el-option
                 v-for="item in catalogs"
                 :key="item.cat_id"
                 :label="item.cat_name"
-                :value="item.cat_id"
+                :value="Number(item.cat_id)"
               ></el-option>
             </el-select>
           </template>
@@ -270,7 +271,12 @@ export default {
         item_id: item_id,
         team_id: this.team_id
       }).then(data => {
-        this.teamItemMembers = data.data
+        const arr = data.data || []
+        // cat_ids 统一转为数字数组，确保多选回显
+        this.teamItemMembers = arr.map(m => ({
+          ...m,
+          cat_ids: Array.isArray(m.cat_ids) ? m.cat_ids.map(v => Number(v)) : []
+        }))
       })
     },
     changeTeamItemMemberGroup(member_group_id, id, showMsg = true) {
@@ -289,16 +295,28 @@ export default {
         this.$message(this.$t('cat_success'))
       })
     },
+    changeTeamItemMemberCats(cat_ids, id) {
+      this.request('/api/teamItemMember/save', {
+        id: id,
+        cat_ids: (cat_ids || []).map(v => Number(v)).join(',')
+      }).then(data => {
+        this.$message(this.$t('cat_success'))
+      })
+    },
     getCatalog(item_id) {
       this.request('/api/catalog/catListGroup', {
         item_id: item_id
       }).then(data => {
-        var Info = data.data
+        var Info = data.data || []
         Info.unshift({
           cat_id: '0',
           cat_name: this.$t('all_cat')
         })
-        this.catalogs = Info
+        // 统一转为数字，避免等值判断失败
+        this.catalogs = Info.map(c => ({
+          ...c,
+          cat_id: Number(c.cat_id)
+        }))
       })
     },
     // 一键全部设置为只读

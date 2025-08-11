@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 21;
+        $version_num = 22;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -277,6 +277,16 @@ class UpdateModel
         //team_item_member表增加cat_id字段
         if (!$this->_is_column_exist("team_item_member", "cat_id")) {
             $sql = "ALTER TABLE " . C('DB_PREFIX') . "team_item_member ADD cat_id INT( 10 ) NOT NULL DEFAULT '0'  ;";
+            D("User")->execute($sql);
+        }
+
+        // 为多目录权限支持新增字段：item_member.cat_ids、team_item_member.cat_ids（逗号分隔字符串）
+        if (!$this->_is_column_exist("item_member", "cat_ids")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item_member ADD cat_ids text NOT NULL DEFAULT ''  ;";
+            D("User")->execute($sql);
+        }
+        if (!$this->_is_column_exist("team_item_member", "cat_ids")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "team_item_member ADD cat_ids text NOT NULL DEFAULT ''  ;";
             D("User")->execute($sql);
         }
 

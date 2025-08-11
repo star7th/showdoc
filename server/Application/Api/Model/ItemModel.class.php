@@ -235,21 +235,12 @@ class ItemModel extends BaseModel
         }
         $uid = intval($uid);
         $item_id = intval($item_id);
-        $cat_id = 0;
-        //首先看是否被添加为项目成员
-        $itemMember = D("ItemMember")->where("uid = '$uid' and item_id = '$item_id' ")->find();
-        if ($itemMember && $itemMember['cat_id'] > 0) {
-            $cat_id = $itemMember['cat_id'];
-        }
-        //再看是否添加为团队-项目成员
-        $teamItemMember = D("TeamItemMember")->where("member_uid = '$uid' and item_id = '$item_id' ")->find();
-        if ($teamItemMember && $teamItemMember['cat_id'] > 0) {
-            $cat_id = $teamItemMember['cat_id'];
-        }
-        //开始根据cat_id过滤
-        if ($cat_id > 0) {
+        // 支持多目录：优先个人成员，其次团队成员
+        $cat_ids = D('Member')->getCatIds($item_id, $uid);
+        if (!empty($cat_ids)) {
+            $allowed = array_flip(array_map('intval', $cat_ids));
             foreach ($menuData['catalogs'] as $key => $value) {
-                if ($value['cat_id'] != $cat_id) {
+                if (!isset($allowed[intval($value['cat_id'])])) {
                     unset($menuData['catalogs'][$key]);
                 }
             }

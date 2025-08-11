@@ -65,7 +65,7 @@ function server_url($path = '', $params = array())
     return $url;
 }
 
-//导出称word
+//导出word
 function output_word($data, $fileName = '')
 {
 

@@ -74,9 +74,9 @@ class ItemController extends BaseController
             $keyword = strtolower($keyword);
             $keyword = \SQLite3::escapeString($keyword);
             $where = "item_id = '$item_id' and is_del = 0  and ( lower(page_title) like '%{$keyword}%' or lower(page_content) like '%{$keyword}%' ) " ;
-            // 如果用户被分配了 目录权限 ，则获取他在该项目下拥有权限的目录id
-            $cat_id = D("Member")->getCatId($item_id, $uid);
-            $menu['pages'] = $pages = D("Page")->search($item_id, $cat_id, $keyword);
+            // 如果用户被分配了 目录权限 ，则获取他在该项目下拥有权限的目录id集合
+            $cat_ids = D("Member")->getCatIds($item_id, $uid);
+            $menu['pages'] = $pages = D("Page")->search($item_id, $cat_ids, $keyword);
             $menu['pages'] = $pages ? $pages : array();
             $menu['catalogs'] = array();
         } else {

@@ -148,8 +148,9 @@
         <el-form-item label v-show="MyForm.member_group_id < 2">
           <el-select
             filterable
+            multiple
             style="width:100%"
-            v-model="MyForm.cat_id"
+            v-model="MyForm.cat_ids"
             :placeholder="$t('all_cat2')"
           >
             <el-option
@@ -255,13 +256,14 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="cat_id" :label="$t('catalog')" width="130">
+        <el-table-column prop="cat_ids" :label="$t('catalog')" width="200">
           <template slot-scope="scope">
             <el-select
               v-if="scope.row.member_group_id <= 1"
               size="mini"
-              v-model="scope.row.cat_id"
-              @change="changeTeamItemMemberCat($event, scope.row.id)"
+              multiple
+              v-model="scope.row.cat_ids"
+              @change="changeTeamItemMemberCats(scope.row.cat_ids, scope.row.id)"
               :placeholder="$t('please_choose')"
             >
               <el-option
@@ -310,7 +312,8 @@ export default {
     return {
       MyForm: {
         username: '',
-        cat_id: '',
+        cat_id: '', // 兼容旧字段
+        cat_ids: [], // 新增：多目录
         member_group_id: '1'
       },
       MyForm2: {
@@ -372,8 +375,12 @@ export default {
         item_id: this.item_id,
         team_id: team_id
       }).then(data => {
-        const json = data.data
-        this.teamItemMembers = json
+        const json = data.data || []
+        // 确保 cat_ids 为数字数组，避免类型不一致导致回显错误
+        this.teamItemMembers = json.map(m => ({
+          ...m,
+          cat_ids: Array.isArray(m.cat_ids) ? m.cat_ids.map(v => Number(v)) : []
+        }))
       })
     },
     myFormSubmit() {
@@ -383,6 +390,7 @@ export default {
           item_id: this.item_id,
           username: this.MyForm.username,
           cat_id: this.MyForm.cat_id,
+          cat_ids: this.MyForm.cat_ids,
           member_group_id: this.MyForm.member_group_id
         },
         'post',
@@ -392,6 +400,7 @@ export default {
           this.dialogFormVisible = false
           this.getMembers()
           this.MyForm.username = ''
+          this.MyForm.cat_ids = []
         } else if (data.error_code === 10310) {
           this.$alert(
             '你添加的协作成员数量超出限制(所有团队成员以及所有项目的单独成员加起来后去重，就是协作成员数)。你可以开通高级版以获取更多配额。<a href="/prices" target="_blank" >点此查看不同账户类型的额度限制差异</a>，也可以<a href="/user/setting" target="_blank" >点此去升级账户类型</a>。<br>如果你现在不方便处理，你可以等会再自行回到项目列表页，点击右上角的用户中心去升级。',
@@ -453,17 +462,29 @@ export default {
       this.request('/api/catalog/catListGroup', {
         item_id: this.item_id
       }).then(data => {
-        var json = data.data
+        var json = data.data || []
         json.unshift({
           cat_id: '0',
           cat_name: this.$t('all_cat')
         })
-        this.catalogs = json
+        // 统一将选项的 cat_id 转为数字，避免严格等于失败
+        this.catalogs = json.map(c => ({
+          ...c,
+          cat_id: Number(c.cat_id)
+        }))
       })
     },
     changeTeamItemMemberCat(cat_id, id) {
       this.request('/api/teamItemMember/save', {
         cat_id: cat_id,
+        id: id
+      }).then(data => {
+        this.$message(this.$t('cat_success'))
+      })
+    },
+    changeTeamItemMemberCats(cat_ids, id) {
+      this.request('/api/teamItemMember/save', {
+        cat_ids: (cat_ids || []).map(v => Number(v)).join(','),
         id: id
       }).then(data => {
         this.$message(this.$t('cat_success'))

@@ -150,18 +150,18 @@ class CatalogModel extends BaseModel
 			return $catData;
 		}
 		$item_id = $catData[0]['item_id'];
-		$cat_id = 0;
-		// 如果用户被分配了 目录权限 ，则获取他在该项目下拥有权限的目录id
-		$cat_id = D("Member")->getCatId($item_id, $uid);
-		//开始根据cat_id过滤
-		if ($cat_id > 0) {
-			foreach ($catData as $key => $value) {
-				if ($value['cat_id'] != $cat_id) {
-					unset($catData[$key]);
-				}
-			}
-			$catData = array_values($catData);
-		}
+        // 如果用户被分配了 目录权限 ，则获取他在该项目下拥有权限的目录id集合
+        $cat_ids = D("Member")->getCatIds($item_id, $uid);
+        //开始根据cat_id集合过滤（仅过滤二级目录）
+        if (!empty($cat_ids)) {
+            $allowed = array_flip(array_map('intval', $cat_ids));
+            foreach ($catData as $key => $value) {
+                if (!isset($allowed[intval($value['cat_id'])])) {
+                    unset($catData[$key]);
+                }
+            }
+            $catData = array_values($catData);
+        }
 
 		return $catData;
 	}
