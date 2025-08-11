@@ -253,9 +253,9 @@ export default {
       try {
         return window.DocConfig && window.DocConfig.staticPath
           ? window.DocConfig.staticPath
-          : '/static/'
+          : './static/'
       } catch (e) {
-        return '/static/'
+        return './static/'
       }
     },
     getViewportCanvasHeight() {
