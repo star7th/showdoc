@@ -41,8 +41,13 @@ class MessageController extends BaseController
         }
 
         $reg_time = date("Y-m-d H:i:s", $login_user['reg_time']);
-        // 特别说明一下时间的判断。只有在用户注册时间之后发的公告才会读取。尚未注册的时间点前的公告都不需要展示给他
-        $where = "  message_type='announce' and addtime > '$reg_time'  and  id not in ( " . implode(',', $message_content_id_array) . " )  ";
+        // 管理员无视注册时间限制；普通用户仅读取注册时间之后的公告
+        $isAdmin = $this->checkAdmin(false);
+        $where = "  message_type='announce'  ";
+        if (!$isAdmin) {
+            $where .= " and addtime > '$reg_time' ";
+        }
+        $where .= "  and  id not in ( " . implode(',', $message_content_id_array) . " )  ";
         $announce_array = D("MessageContent")->where($where)->find();
         if ($announce_array) {
             $announce_array['message_content_id'] = $announce_array['id'];
@@ -59,9 +64,13 @@ class MessageController extends BaseController
         $uid =  $login_user['uid'];
 
         $reg_time = date("Y-m-d H:i:s", $login_user['reg_time']);
-        // 获取所有公告
-        // 特别说明一下时间的判断。只有在用户注册时间之后发的公告才会读取。尚未注册的时间点前的公告都不需要展示给他
-        $message_announce = D("MessageContent")->where(" message_type = 'announce' and addtime > '$reg_time' ")->order(" id desc ")->select();
+        // 管理员无视注册时间限制；普通用户仅读取注册时间之后的公告
+        $isAdmin = $this->checkAdmin(false);
+        $where = " message_type = 'announce' ";
+        if (!$isAdmin) {
+            $where .= " and addtime > '$reg_time' ";
+        }
+        $message_announce = D("MessageContent")->where($where)->order(" id desc ")->select();
 
         if ($message_announce) {
             // 获取已读未读状态

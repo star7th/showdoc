@@ -13,6 +13,11 @@
         <el-tabs v-model="dtab" type="card" @tab-click="tabClick">
           <el-tab-pane :label="$t('system_reminder')" name="remindList">
             <el-table :data="remindList">
+              <el-table-column width="70">
+                <template slot-scope="props">
+                  <el-badge class="mark" value="new" v-if="props.row.status == 0" />
+                </template>
+              </el-table-column>
               <el-table-column
                 prop="addtime"
                 :label="$t('send_time')"
@@ -39,11 +44,7 @@
                           type="text"
                           >{{ props.row.page_data.page_title }}</el-button
                         >
-                        <el-badge
-                          class="mark"
-                          value="new"
-                          v-if="props.row.status == 0"
-                        />
+                        
                       </div>
                       <div v-if="props.row.message_content">
                         {{ $t('update_remark') }}:
@@ -56,11 +57,7 @@
                         target="_blank"
                         >点此进入用户中心</a
                       >进行续费 (如已续费请忽略该通知)
-                      <el-badge
-                        class="mark"
-                        value="new"
-                        v-if="props.row.status == 0"
-                      />
+                      
                     </div>
                   </div>
                 </template>
@@ -81,6 +78,11 @@
             name="announcementList"
           >
             <el-table :data="announcementList" style="width: 100%">
+              <el-table-column width="70">
+                <template slot-scope="props">
+                  <el-badge class="mark" value="new" v-if="props.row.status == 0" />
+                </template>
+              </el-table-column>
               <el-table-column
                 prop="addtime"
                 :label="$t('send_time')"
@@ -88,11 +90,6 @@
               <el-table-column prop="message_content" :label="$t('content')">
                 <template slot-scope="props">
                   <span v-html="props.row.message_content"></span>
-                  <el-badge
-                    class="mark"
-                    value="new"
-                    v-if="props.row.status == 0"
-                  />
                 </template>
               </el-table-column>
             </el-table>
