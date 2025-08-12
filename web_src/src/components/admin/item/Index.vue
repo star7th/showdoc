@@ -1,5 +1,9 @@
 <template>
   <div class="hello">
+    <el-tabs v-model="activeItemTab" @tab-click="onItemTabChange" style="margin-bottom: 10px;">
+      <el-tab-pane :label="$t('admin_item_tab_list')" name="normal"></el-tab-pane>
+      <el-tab-pane :label="$t('admin_item_tab_deleted')" name="deleted"></el-tab-pane>
+    </el-tabs>
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item label>
         <el-input v-model="item_name" :placeholder="$t('item_name')"></el-input>
@@ -38,9 +42,8 @@
 
       <el-table-column prop="item_id" :label="$t('link')" width="100">
         <template slot-scope="scope">
-          <el-button @click="jumpToItem(scope.row)" type="text" size="small">{{
-            $t('link')
-          }}</el-button>
+          <el-button v-if="is_del === '0'" @click="jumpToItem(scope.row)" type="text" size="small">{{ $t('link') }}</el-button>
+          <span v-else>已删除</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -56,21 +59,15 @@
       ></el-table-column>
       <el-table-column prop="item_domain" :label="$t('operation')">
         <template slot-scope="scope">
-          <el-button
-            @click="manageMember(scope.row)"
-            type="text"
-            size="small"
-            >{{ $t('member_manage') }}</el-button
-          >
-          <el-button
-            @click="clickAttornItem(scope.row)"
-            type="text"
-            size="small"
-            >{{ $t('attorn') }}</el-button
-          >
-          <el-button @click="deleteItem(scope.row)" type="text" size="small">{{
-            $t('delete')
-          }}</el-button>
+          <template v-if="is_del === '0'">
+            <el-button @click="manageMember(scope.row)" type="text" size="small">{{ $t('member_manage') }}</el-button>
+            <el-button @click="clickAttornItem(scope.row)" type="text" size="small">{{ $t('attorn') }}</el-button>
+            <el-button @click="deleteItem(scope.row)" type="text" size="small">{{ $t('delete') }}</el-button>
+          </template>
+          <template v-else>
+            <el-button @click="recoverItem(scope.row)" type="text" size="small">恢复</el-button>
+            <el-button @click="hardDeleteItem(scope.row)" type="text" size="small" style="color:#F56C6C;">永久删除</el-button>
+          </template>
         </template>
       </el-table-column>
     </el-table>
@@ -326,6 +323,7 @@ export default {
     return {
       page: 1,
       count: 7,
+      activeItemTab: 'normal',
       item_name: '',
       username: '',
       itemList: [],
@@ -354,20 +352,55 @@ export default {
       teamForm: {
         team_id: ''
       },
-      teamList: []
+      teamList: [],
+      is_del: '0'
     }
   },
   methods: {
+    onItemTabChange() {
+      this.is_del = this.activeItemTab === 'deleted' ? '1' : '0'
+      this.page = 1
+      this.getItemList()
+    },
     getItemList() {
       this.request('/api/adminItem/getList', {
         item_name: this.item_name,
         username: this.username,
         page: this.page,
-        count: this.count
+        count: this.count,
+        is_del: this.is_del
       }).then(data => {
         var json = data.data
         this.itemList = json.items
         this.total = json.total
+      })
+    },
+    recoverItem(row) {
+      this.$confirm('确认恢复该项目？', ' ', {
+        confirmButtonText: this.$t('confirm'),
+        cancelButtonText: this.$t('cancel'),
+        type: 'warning'
+      }).then(() => {
+        this.request('/api/adminItem/recoverItem', {
+          item_id: row.item_id
+        }).then(() => {
+          this.$message.success('恢复成功')
+          this.getItemList()
+        })
+      })
+    },
+    hardDeleteItem(row) {
+      this.$confirm('该操作不可恢复，确定永久删除该项目及其所有数据？', '危险操作', {
+        confirmButtonText: '确定',
+        cancelButtonText: this.$t('cancel'),
+        type: 'error'
+      }).then(() => {
+        this.request('/api/adminItem/hardDeleteItem', {
+          item_id: row.item_id
+        }).then(() => {
+          this.$message.success('已永久删除')
+          this.getItemList()
+        })
       })
     },
     formatPrivacy(row, column) {

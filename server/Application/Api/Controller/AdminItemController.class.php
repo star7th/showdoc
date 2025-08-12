@@ -17,7 +17,8 @@ class AdminItemController extends BaseController
         $page = I("page/d");
         $count = I("count/d");
         $username = I("username");
-        $where = " is_del = 0 ";
+        $is_del = I("is_del/d") ? I("is_del/d") : 0; // 0: 正常；1: 已删除
+        $where = $is_del == 1 ? " is_del = 1 " : " is_del = 0 ";
         if ($item_name) {
             $item_name = \SQLite3::escapeString($item_name);
             $where .= " and item_name like '%{$item_name}%' ";
@@ -55,6 +56,54 @@ class AdminItemController extends BaseController
         } else {
             $this->sendResult($return);
         }
+    }
+
+    // 恢复已删除项目
+    public function recoverItem()
+    {
+        $login_user = $this->checkLogin();
+        $this->checkAdmin();
+        $item_id = I("post.item_id/d");
+        if ($item_id <= 0) {
+            $this->sendError(10101, '参数错误');
+            return;
+        }
+        $item = D("Item")->where(" item_id = '%d' ", array($item_id))->find();
+        if (!$item || intval($item['is_del']) !== 1) {
+            $this->sendError(10101, '项目不存在或未被删除');
+            return;
+        }
+        // 恢复项目与页面
+        D("Page")->where(" item_id = '$item_id' ")->save(array("is_del" => 0));
+        $ret = D("Item")->where(" item_id = '$item_id' ")->save(array("is_del" => 0, "last_update_time" => time()));
+        if (!$ret) {
+            $this->sendError(10101, '恢复失败');
+            return;
+        }
+        $this->sendResult(array());
+    }
+
+    // 永久删除项目（硬删除，不可恢复）
+    public function hardDeleteItem()
+    {
+        $login_user = $this->checkLogin();
+        $this->checkAdmin();
+        $item_id = I("post.item_id/d");
+        if ($item_id <= 0) {
+            $this->sendError(10101, '参数错误');
+            return;
+        }
+        $item = D("Item")->where(" item_id = '%d' ", array($item_id))->find();
+        if (!$item || intval($item['is_del']) !== 1) {
+            $this->sendError(10101, '仅允许对已删除项目执行永久删除');
+            return;
+        }
+        $ret = D("Item")->delete_item($item_id);
+        if (!$ret) {
+            $this->sendError(10101, '删除失败');
+            return;
+        }
+        $this->sendResult(array());
     }
 
     //转让项目

@@ -498,6 +498,12 @@ exports.default = {
   send_time: 'Sending time',
   content: 'content',
   system_announcement: 'Announcement',
+  visit_manage: 'Visit Management',
+  order_manage: 'Orders',
+  invoice_manage: 'Invoices',
+  homepage_recommend: 'Homepage Recommend',
+  admin_item_tab_list: 'Projects',
+  admin_item_tab_deleted: 'Deleted Projects',
 
   save_and_notify: 'Save and notify',
   refresh_member_list: 'Refresh member list',

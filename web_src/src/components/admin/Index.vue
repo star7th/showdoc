@@ -31,7 +31,7 @@
             </el-menu-item>
             <el-menu-item index="8">
               <i class="el-icon-message"></i>
-              <span slot="title">系统公告</span>
+              <span slot="title">{{ $t('system_announcement') }}</span>
             </el-menu-item>
             <el-menu-item index="7">
               <i class="el-icon-tickets"></i>
