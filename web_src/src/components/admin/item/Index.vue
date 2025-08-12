@@ -57,6 +57,12 @@
         :label="$t('add_time')"
         width="160"
       ></el-table-column>
+      <el-table-column
+        v-if="is_del === '1'"
+        prop="del_time"
+        :label="$t('del_time')"
+        width="160"
+      ></el-table-column>
       <el-table-column prop="item_domain" :label="$t('operation')">
         <template slot-scope="scope">
           <template v-if="is_del === '0'">

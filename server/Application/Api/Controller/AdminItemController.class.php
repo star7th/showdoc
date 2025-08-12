@@ -27,13 +27,18 @@ class AdminItemController extends BaseController
             $username = \SQLite3::escapeString($username);
             $where .= " and username like '%{$username}%' ";
         }
-        $items = D("Item")->where($where)->order(" addtime desc  ")->page($page, $count)->select();
+        // 已删除项目按删除时间倒序（使用 last_update_time 作为删除时间），正常项目按创建时间倒序
+        $order = ($is_del == 1) ? " last_update_time desc " : " addtime desc ";
+        $items = D("Item")->where($where)->order($order)->page($page, $count)->select();
         $total = D("Item")->where($where)->count();
         $return = array();
         $return['total'] = (int)$total;
         if ($items) {
             foreach ($items as $key => &$value) {
                 $value['addtime'] = date("Y-m-d H:i:s", $value['addtime']);
+                if ($is_del == 1) {
+                    $value['del_time'] = date("Y-m-d H:i:s", intval($value['last_update_time']));
+                }
                 $value['member_num'] = D("ItemMember")->where(" item_id = '$value[item_id]' ")->count()  + D("TeamItemMember")->where(" item_id = '$value[item_id]' ")->count();
             }
             $return['items'] = $items;
