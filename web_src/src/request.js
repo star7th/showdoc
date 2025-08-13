@@ -41,6 +41,8 @@ const request = (
     // 如果是FormData，直接使用，不转换
     axiosConfig.data = data
     axiosConfig.headers['Content-Type'] = 'multipart/form-data'
+    // 为文件上传设置5分钟超时时间
+    axiosConfig.timeout = 300000
   }
 
   return new Promise((resolve, reject) => {
