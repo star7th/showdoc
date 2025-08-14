@@ -327,15 +327,20 @@ export default {
       this.$router.push({ path: to })
     },
     clickStar(item) {
-      this.request('/api/item/star', {
-        item_id: item.item_id
-      }).then(data => {
-        if (item.is_star > 0) {
+      // 如果is_star > 0 ,即已经标星了，那么本次点击就是 取消星标 的意思
+      if (item.is_star > 0) {
+        this.request('/api/item/unstar', {
+          item_id: item.item_id
+        }).then(data => {
           item.is_star = 0
-        } else {
+        })
+      } else {
+        this.request('/api/item/star', {
+          item_id: item.item_id
+        }).then(data => {
           item.is_star = 1
-        }
-      })
+        })
+      }
     },
     exitItem(item_id) {
       this.$confirm(this.$t('confirm_exit'), ' ', {
