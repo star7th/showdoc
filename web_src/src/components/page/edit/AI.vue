@@ -117,7 +117,12 @@ export default {
                       try {
                         // Parse the chunk as a JSON object
                         const data = JSON.parse(text)
-                        if (data.choices[0].delta.content) {
+                        if (
+                          data.choices &&
+                          data.choices[0] &&
+                          data.choices[0].delta &&
+                          data.choices[0].delta.content
+                        ) {
                           result += data.choices[0].delta.content
                           if (render++ > 5) {
                             this.outputContent += data.choices[0].delta.content
@@ -128,9 +133,17 @@ export default {
                           // 收到第一个内容响应就关闭loading状态
                           this.loading = false
                         }
-                        if (data.choices[0].finish_reason === 'length') {
+                        if (
+                          data.choices &&
+                          data.choices[0] &&
+                          data.choices[0].finish_reason === 'length'
+                        ) {
                           await answer(true)
-                        } else if (data.choices[0].finish_reason === 'stop') {
+                        } else if (
+                          data.choices &&
+                          data.choices[0] &&
+                          data.choices[0].finish_reason === 'stop'
+                        ) {
                           this.outputContent = result
                           return
                         }

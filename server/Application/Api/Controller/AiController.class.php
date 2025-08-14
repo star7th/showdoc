@@ -29,6 +29,12 @@ class AiController extends BaseController
     {
         header("Content-Type: text/event-stream");
         header("X-Accel-Buffering: no");
+
+        // 检查连接是否已断开
+        if (connection_aborted()) {
+            return false;
+        }
+
         $ai_model_name = D("Options")->get("ai_model_name");
         $ai_model_name = $ai_model_name ? $ai_model_name : 'gpt-4o';
         $postData = json_encode(array(
@@ -58,6 +64,11 @@ class AiController extends BaseController
 
         // 参考 https://github.com/dirk1983/chatgpt/blob/main/stream.php
         $callback = function ($ch, $data) {
+            // 检查连接是否已断开
+            if (connection_aborted()) {
+                return -1; // 返回-1会中断curl执行
+            }
+
             $complete = json_decode($data);
             if (isset($complete->error)) {
                 setcookie("errcode", $complete->error->code);
@@ -88,7 +99,16 @@ class AiController extends BaseController
         curl_setopt($curl, CURLOPT_ENCODING, '');
         curl_setopt($curl, CURLOPT_URL, $open_api_host . '/v1/chat/completions');  //设置url
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);  //设置http验证方法
-        curl_setopt($curl, CURLOPT_TIMEOUT, 600);
+
+        // 设置合理的超时时间
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);  // 连接超时30秒
+        curl_setopt($curl, CURLOPT_TIMEOUT, 480);        // 总超时8分钟
+
+        // 关键：防止连接复用，确保每次请求都是独立的
+        curl_setopt($curl, CURLOPT_FRESH_CONNECT, true);  // 强制使用新的连接
+        curl_setopt($curl, CURLOPT_FORBID_REUSE, true);   // 禁止复用连接
+
+
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  //设置curl_exec获取的信息的返回方式
         curl_setopt($curl, CURLOPT_POST, 1);  //设置发送方式为post请求
         curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);  //设置post的数据
@@ -107,6 +127,18 @@ class AiController extends BaseController
         curl_setopt($curl, CURLOPT_AUTOREFERER, true); // 自动设置Referer
 
         $result = curl_exec($curl);
+        // 检查curl执行结果
+        if ($result === false) {
+            $error = curl_error($curl);
+            $errno = curl_errno($curl);
+            curl_close($curl);
+
+            // 返回错误信息
+            echo "data: " . json_encode(array("error" => "网络请求失败: " . $error)) . "\n\n";
+            flush();
+            return false;
+        }
+
         curl_close($curl);
         return $result;
     }
