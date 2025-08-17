@@ -691,5 +691,13 @@ exports.default = {
   export_png: 'Export PNG',
   export_svg: 'Export SVG',
   export_json: 'Export JSON',
-  import_json: 'Import JSON'
+  import_json: 'Import JSON',
+  fullscreen: 'Fullscreen',
+  exit_fullscreen: 'Exit Fullscreen',
+  // whiteboard shapes
+  insert_shape: 'Insert shape',
+  shape_rect: 'Rectangle',
+  shape_circle: 'Circle',
+  shape_triangle: 'Triangle',
+  shape_arrow: 'Arrow'
 }

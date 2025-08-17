@@ -664,5 +664,13 @@ exports.default = {
   export_png: '导出PNG',
   export_svg: '导出SVG',
   export_json: '导出JSON',
-  import_json: '导入JSON'
+  import_json: '导入JSON',
+  fullscreen: '全屏',
+  exit_fullscreen: '退出全屏',
+  // whiteboard shapes
+  insert_shape: '插入形状',
+  shape_rect: '方形',
+  shape_circle: '圆形',
+  shape_triangle: '三角形',
+  shape_arrow: '箭头'
 }
