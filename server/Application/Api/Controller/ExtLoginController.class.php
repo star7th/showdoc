@@ -211,7 +211,7 @@ class ExtLoginController extends BaseController
                         header("location:../web/#/item/index");
                     }
                 } else {
-                    echo "登录成功但无法获取用户信息";
+                    echo "登录成功但无法获取用户信息。返回内容如下：" . $res;
                 }
             } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
 
