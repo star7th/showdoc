@@ -20,6 +20,8 @@ export default {
             $('#toc-pos').append(elementA)
             // elementA.remove()
             $('#toc-pos').css('width', '160px')
+            // 为目录项添加title以便悬浮显示完整标题
+            that.setTocTitles()
           } else {
             $('#toc-pos').css('width', '0px')
           }
@@ -28,6 +30,17 @@ export default {
     }, 500)
   },
   methods: {
+    // 给目录项的a标签添加title属性，鼠标悬浮显示完整标题
+    setTocTitles() {
+      try {
+        $('.markdown-toc li a').each(function() {
+          var text = $(this).text()
+          if (text) {
+            $(this).attr('title', $.trim(text))
+          }
+        })
+      } catch (e) {}
+    },
     tocMainScript() {
       // 监听点击事件并滑动到相应位置
       $(document).on('click', '.markdown-toc-list a[href]', function(event) {
@@ -76,6 +89,8 @@ export default {
           }, 200)
         })
       }
+      // 初始化时也补充一次title
+      this.setTocTitles()
     }
   },
   destroyed() {
