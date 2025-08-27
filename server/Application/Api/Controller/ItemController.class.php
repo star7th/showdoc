@@ -51,6 +51,8 @@ class ItemController extends BaseController
         $default_page_id = I("default_page_id/d");
         $current_page_id = I("page_id/d");
         $keyword = I("keyword");
+        $filter_status = I("filter_status"); // 新增：状态筛选参数，格式：开发中,测试中,已完成
+        $showMD = I("show_md/d", 1); // 新增：是否显示markdown文档，1显示，0不显示
         $default_cat_id2 = $default_cat_id3 = 0;
 
         $login_user = session("login_user");
@@ -84,6 +86,11 @@ class ItemController extends BaseController
             if ($uid > 0) {
                 $menu = D("Item")->filteMemberItem($uid, $item_id, $menu);
             }
+        }
+
+        // 应用筛选条件
+        if ($filter_status || !$showMD) {
+            $menu = $this->applyFilters($menu, $filter_status, $showMD, $item_id);
         }
 
         $domain = $item['item_domain'] ? $item['item_domain'] : $item['item_id'];
@@ -935,5 +942,94 @@ class ItemController extends BaseController
         $login_user = $this->checkLogin();
         D("ItemStar")->where(" uid = '$login_user[uid]' and item_id = '$item_id' ")->delete();
         $this->sendResult(array());
+    }
+
+    // 新增：应用筛选条件的方法
+    private function applyFilters($menuData, $statusFilter, $showMD, $item_id)
+    {
+        if (!$menuData) return $menuData;
+
+        // 处理根目录的页面
+        if (isset($menuData['pages']) && is_array($menuData['pages'])) {
+            $filteredPages = array();
+            foreach ($menuData['pages'] as $page) {
+                if ($this->shouldShowPage($page, $statusFilter, $showMD, $item_id)) {
+                    $filteredPages[] = $page;
+                }
+            }
+            $menuData['pages'] = $filteredPages;
+        }
+
+        // 递归处理目录
+        if (isset($menuData['catalogs']) && is_array($menuData['catalogs'])) {
+            $this->filterCatalogsRecursive($menuData['catalogs'], $statusFilter, $showMD, $item_id);
+        }
+
+        return $menuData;
+    }
+
+    private function filterCatalogsRecursive(&$catalogs, $statusFilter, $showMD, $item_id)
+    {
+        if (!$catalogs) return;
+
+        foreach ($catalogs as $key => &$catalog) {
+            // 处理目录下的页面
+            if (isset($catalog['pages']) && is_array($catalog['pages'])) {
+                $filteredPages = array();
+                foreach ($catalog['pages'] as $page) {
+                    if ($this->shouldShowPage($page, $statusFilter, $showMD, $item_id)) {
+                        $filteredPages[] = $page;
+                    }
+                }
+                $catalog['pages'] = $filteredPages;
+            }
+
+            // 递归处理子目录
+            if (isset($catalog['catalogs']) && is_array($catalog['catalogs'])) {
+                $this->filterCatalogsRecursive($catalog['catalogs'], $statusFilter, $showMD, $item_id);
+            }
+        }
+    }
+
+    private function shouldShowPage($page, $statusFilter, $showMD, $item_id)
+    {
+        // 从数据库获取页面内容
+        $pageContent = D("Page")->where("page_id = '%d'", array($page['page_id']))->getField('page_content');
+        if (!$pageContent) {
+            return $showMD;
+        }
+
+        // 先进行HTML转义，然后尝试解析页面内容为JSON
+        $decodedContent = htmlspecialchars_decode($pageContent);
+        $obj = json_decode($decodedContent, true);
+
+        // 如果解析失败或者没有info.url字段，说明是markdown文档
+        if (!$obj || !isset($obj['info']) || !isset($obj['info']['url'])) {
+            return $showMD;
+        }
+
+        // 到这里说明是接口，检查状态筛选
+        if ($statusFilter) {
+            $statusArray = explode(',', $statusFilter);
+            $pageStatus = $this->getStatusText($obj['info']['apiStatus']);
+            if (!in_array($pageStatus, $statusArray)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function getStatusText($status)
+    {
+        $statusMap = array(
+            '0' => '未操作',
+            '1' => '开发中',
+            '2' => '测试中',
+            '3' => '已完成',
+            '4' => '需修改',
+            '5' => '已废弃'
+        );
+        return isset($statusMap[$status]) ? $statusMap[$status] : '未操作';
     }
 }

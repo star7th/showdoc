@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 22;
+        $version_num = 23;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -567,6 +567,53 @@ class UpdateModel
             $sql = "ALTER TABLE " . C('DB_PREFIX') . "single_page ADD expire_time INT(11) NOT NULL DEFAULT '0';";
             D("page")->execute($sql);
         }
+
+        // 创建参数描述库表 parameter_description_entry（SQLite 版本）
+        $sql = "CREATE TABLE IF NOT EXISTS `parameter_description_entry` (
+        `id` TEXT PRIMARY KEY,
+        `item_id` TEXT NOT NULL,
+        `name` TEXT NOT NULL,
+        `type` TEXT NOT NULL,
+        `description` TEXT NOT NULL,
+        `example` TEXT,
+        `default_value` TEXT,
+        `aliases` TEXT,
+        `tags` TEXT,
+        `path` TEXT,
+        `source` TEXT NOT NULL DEFAULT 'manual' CHECK (source IN ('manual','auto-extracted','builtin')),
+        `status` TEXT NOT NULL DEFAULT 'permanent' CHECK (status IN ('temp','permanent')),
+        `usage_count` INTEGER NOT NULL DEFAULT 0,
+        `quality_score` NUMERIC NOT NULL DEFAULT 0.00,
+        `created_by` TEXT NOT NULL,
+        `created_at` TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+        `updated_at` TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+        )";
+        D("User")->execute($sql);
+
+        // 唯一约束与索引
+        $sql = "CREATE UNIQUE INDEX IF NOT EXISTS uk_item_name_type ON parameter_description_entry (item_id, name, type)";
+        D("User")->execute($sql);
+        $sql = "CREATE INDEX IF NOT EXISTS idx_item_id ON parameter_description_entry (item_id)";
+        D("User")->execute($sql);
+        $sql = "CREATE INDEX IF NOT EXISTS idx_name ON parameter_description_entry (name)";
+        D("User")->execute($sql);
+        $sql = "CREATE INDEX IF NOT EXISTS idx_type ON parameter_description_entry (type)";
+        D("User")->execute($sql);
+        $sql = "CREATE INDEX IF NOT EXISTS idx_status ON parameter_description_entry (status)";
+        D("User")->execute($sql);
+        $sql = "CREATE INDEX IF NOT EXISTS idx_created_at ON parameter_description_entry (created_at)";
+        D("User")->execute($sql);
+        $sql = "CREATE INDEX IF NOT EXISTS idx_updated_at ON parameter_description_entry (updated_at)";
+        D("User")->execute($sql);
+
+        // 自动更新时间触发器
+        $sql = "DROP TRIGGER IF EXISTS trg_parameter_description_entry_updated_at";
+        D("User")->execute($sql);
+        $sql = "CREATE TRIGGER trg_parameter_description_entry_updated_at AFTER UPDATE ON parameter_description_entry
+        BEGIN
+          UPDATE parameter_description_entry SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+        END;";
+        D("User")->execute($sql);
 
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
