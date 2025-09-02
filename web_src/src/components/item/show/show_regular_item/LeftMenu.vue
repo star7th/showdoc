@@ -46,7 +46,7 @@
               class="mr-2 far fa-folder-open"
             ></i>
             <i v-else class="mr-2 far fa-folder-closed"></i>
-            <span class="node-label">{{ node.label }}</span>
+            <span class="node-label" :title="node.label">{{ node.label }}</span>
           </span>
           <span
             v-else
@@ -54,7 +54,7 @@
             :id="'node-' + node.data.id"
           >
             <i class="mr-2 fas fa-file-alt"></i>
-            <span class="node-label">{{ node.label }}</span>
+            <span class="node-label" :title="node.label">{{ node.label }}</span>
           </span>
 
           <span v-if="item_info.item_edit" class="node-tool">
@@ -586,6 +586,22 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
+  position: relative;
+}
+
+#left-side-menu >>> .node-label {
+  display: inline-block;
+  max-width: calc(100% - 60px); /* 为图标和工具按钮留出空间 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+#left-side-menu >>> .node-label:hover {
+  color: #409eff;
 }
 
 #left-side-menu >>> .node-tool {
