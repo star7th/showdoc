@@ -198,6 +198,7 @@ class CatalogController extends BaseController
         }
         //$this->sendResult($return);
         // 这里返回了 cat_id ，是为了兼容历史。实际上应该返回整个文件夹对象
+        // 等runapi版本都更新了后，可以改为返回对象。新runapi会兼容两种情况
         $this->sendResult($cat_id);
     }
 
