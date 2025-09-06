@@ -196,7 +196,9 @@ class CatalogController extends BaseController
             $return['error_code'] = 10103;
             $return['error_message'] = 'request  fail';
         }
-        $this->sendResult($return);
+        //$this->sendResult($return);
+        // 这里返回了 cat_id ，是为了兼容历史。实际上应该返回整个文件夹对象
+        $this->sendResult($cat_id);
     }
 
     //删除目录
