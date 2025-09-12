@@ -18,7 +18,7 @@ class AttachmentModel extends BaseModel
 	public function getUserFlow($uid)
 	{
 		$month = Date("Y-m");
-		$file_flow = D("FileFlow")->where(" uid = '%s'  and date_month = '$month' ", array($uid))->find();
+		$file_flow = D("FileFlow")->where("uid = %s and date_month = %s", array($uid, $month))->find();
 		if ($file_flow) {
 			return intval($file_flow['used']);
 		} else {
@@ -37,7 +37,7 @@ class AttachmentModel extends BaseModel
 	{
 		$month = Date("Y-m");
 		$used = $this->getUserFlow($uid);
-		return D("FileFlow")->where(" uid = '%s'  and date_month = '$month' ", array($uid))->save(array(
+		return D("FileFlow")->where("uid = %s and date_month = %s", array($uid, $month))->save(array(
 			"used" => $used + intval($file_size)
 		));
 	}
@@ -45,7 +45,7 @@ class AttachmentModel extends BaseModel
 	public function deleteFile($file_id)
 	{
 		$file_id = intval($file_id);
-		$file = D("UploadFile")->where("file_id = '$file_id' ")->find();
+		$file = D("UploadFile")->where(array('file_id' => $file_id))->find();
 		$real_url = $file['real_url'];
 		$array = explode("/Public/Uploads/", $real_url);
 		$file_path = "../Public/Uploads/" . $array[1];
@@ -55,8 +55,8 @@ class AttachmentModel extends BaseModel
 			$this->deleteOss($real_url);
 		}
 		
-		D("UploadFile")->where(" file_id = '$file_id' ")->delete();
-		D("FilePage")->where(" file_id = '$file_id' ")->delete();
+		D("UploadFile")->where(array('file_id' => $file_id))->delete();
+		D("FilePage")->where(array('file_id' => $file_id))->delete();
 		return true;
 	}
 

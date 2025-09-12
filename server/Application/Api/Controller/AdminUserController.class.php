@@ -18,11 +18,12 @@ class AdminUserController extends BaseController
         $username = I("username");
         $where = " 1 = 1 ";
         if ($username) {
-            $username = \SQLite3::escapeString($username);
-            $where .= " and username like '%{$username}%' ";
+            $like = safe_like($username);
+            $where .= " and username like '%s' ";
+            $like_param = array($like);
         }
-        $Users = D("User")->where($where)->page($page, $count)->order(" uid desc  ")->select();
-        $total = D("User")->where($where)->count();
+        $Users = $like_param ? D("User")->where($where, $like_param)->page($page, $count)->order(" uid desc  ")->select() : D("User")->where($where)->page($page, $count)->order(" uid desc  ")->select();
+        $total = $like_param ? D("User")->where($where, $like_param)->count() : D("User")->where($where)->count();
         $return = array();
         $return['total'] = (int)$total;
         if ($Users) {
@@ -48,7 +49,7 @@ class AdminUserController extends BaseController
         $this->checkAdmin();
         $uid = I("post.uid/d");
 
-        if (D("Item")->where("uid = '$uid' and is_del = 0 ")->find()) {
+        if (D("Item")->where("uid = '%d' and is_del = 0 ", array($uid))->find()) {
             $this->sendError(10101, "该用户名下还有项目，不允许删除。请先将其项目删除或者重新分配/转让");
             return;
         }
@@ -95,7 +96,7 @@ class AdminUserController extends BaseController
                 D("User")->updatePwd($uid, $password);
             }
             if ($name) {
-                D("User")->where(" uid = '$uid' ")->save(array("name" => $name));
+                D("User")->where(" uid = '%d' ", array($uid))->save(array("name" => $name));
             }
             $this->sendResult(array());
         } else {
@@ -108,9 +109,9 @@ class AdminUserController extends BaseController
                 $this->sendError(10101);
             } else {
                 if ($name) {
-                    D("User")->where(" uid = '$new_uid' ")->save(array("name" => $name));
+                    D("User")->where(" uid = '%d' ", array($new_uid))->save(array("name" => $name));
                 }
-                $this->sendResult($return);
+                $this->sendResult(array());
             }
         }
     }

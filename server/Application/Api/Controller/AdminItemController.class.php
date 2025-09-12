@@ -19,18 +19,21 @@ class AdminItemController extends BaseController
         $username = I("username");
         $is_del = I("is_del/d") ? I("is_del/d") : 0; // 0: 正常；1: 已删除
         $where = $is_del == 1 ? " is_del = 1 " : " is_del = 0 ";
+        $params = array();
         if ($item_name) {
-            $item_name = \SQLite3::escapeString($item_name);
-            $where .= " and item_name like '%{$item_name}%' ";
+            $like_item = safe_like($item_name);
+            $where .= " and item_name like '%s' ";
+            $params[] = $like_item;
         }
         if ($username) {
-            $username = \SQLite3::escapeString($username);
-            $where .= " and username like '%{$username}%' ";
+            $like_user = safe_like($username);
+            $where .= " and username like '%s' ";
+            $params[] = $like_user;
         }
         // 已删除项目按删除时间倒序（使用 last_update_time 作为删除时间），正常项目按创建时间倒序
         $order = ($is_del == 1) ? " last_update_time desc " : " addtime desc ";
-        $items = D("Item")->where($where)->order($order)->page($page, $count)->select();
-        $total = D("Item")->where($where)->count();
+        $items = $params ? D("Item")->where($where, $params)->order($order)->page($page, $count)->select() : D("Item")->where($where)->order($order)->page($page, $count)->select();
+        $total = $params ? D("Item")->where($where, $params)->count() : D("Item")->where($where)->count();
         $return = array();
         $return['total'] = (int)$total;
         if ($items) {
@@ -39,7 +42,7 @@ class AdminItemController extends BaseController
                 if ($is_del == 1) {
                     $value['del_time'] = date("Y-m-d H:i:s", intval($value['last_update_time']));
                 }
-                $value['member_num'] = D("ItemMember")->where(" item_id = '$value[item_id]' ")->count()  + D("TeamItemMember")->where(" item_id = '$value[item_id]' ")->count();
+                $value['member_num'] = D("ItemMember")->where(" item_id = '%d' ", array($value['item_id']))->count()  + D("TeamItemMember")->where(" item_id = '%d' ", array($value['item_id']))->count();
             }
             $return['items'] = $items;
             $this->sendResult($return);
@@ -79,8 +82,8 @@ class AdminItemController extends BaseController
             return;
         }
         // 恢复项目与页面
-        D("Page")->where(" item_id = '$item_id' ")->save(array("is_del" => 0));
-        $ret = D("Item")->where(" item_id = '$item_id' ")->save(array("is_del" => 0, "last_update_time" => time()));
+        D("Page")->where(" item_id = '%d' ", array($item_id))->save(array("is_del" => 0));
+        $ret = D("Item")->where(" item_id = '%d' ", array($item_id))->save(array("is_del" => 0, "last_update_time" => time()));
         if (!$ret) {
             $this->sendError(10101, '恢复失败');
             return;
@@ -119,7 +122,7 @@ class AdminItemController extends BaseController
         $username = I("post.username");
         $item_id = I("post.item_id/d");
 
-        $item  = D("Item")->where("item_id = '$item_id' ")->find();
+        $item  = D("Item")->where(array('item_id' => $item_id))->find();
 
 
         $member = D("User")->where(" username = '%s' ", array($username))->find();
@@ -133,9 +136,9 @@ class AdminItemController extends BaseController
         $data['uid'] = $member['uid'];
 
 
-        $id = D("Item")->where(" item_id = '$item_id' ")->save($data);
+        $id = D("Item")->where(array('item_id' => $item_id))->save($data);
 
-        $return = D("Item")->where("item_id = '$item_id' ")->find();
+        $return = D("Item")->where(array('item_id' => $item_id))->find();
 
         if (!$return) {
             $this->sendError(10101);

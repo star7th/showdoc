@@ -13,7 +13,7 @@ class PageController extends BaseController
     {
         $page_id = I("page_id/d");
         $with_path = I("with_path/d"); // 是否需要返回完整的路径信息
-        $page = D("Page")->where(" page_id = '$page_id' ")->find();
+        $page = D("Page")->where(array('page_id' => $page_id))->find();
         if (!$page  || $page['is_del'] == 1) {
             sleep(1);
             $this->sendError(10101);
@@ -34,14 +34,14 @@ class PageController extends BaseController
                 $page['page_addtime'] = $page['addtime'];
             }
             //判断是否包含附件信息
-            $page['attachment_count'] = D("FilePage")->where("page_id = '$page_id' ")->count();
+            $page['attachment_count'] = D("FilePage")->where(array('page_id' => $page_id))->count();
 
             $singlePage = M("SinglePage")->where(" page_id = '%d' ", array($page_id))->limit(1)->find();
             if ($singlePage) {
                 // 检查单页链接是否已过期
                 if ($singlePage['expire_time'] > 0 && $singlePage['expire_time'] < time()) {
                     // 链接已过期，从数据库中删除记录
-                    M("SinglePage")->where(" page_id = '%d' ", array($page_id))->delete();
+                    M("SinglePage")->where(array('page_id' => $page_id))->delete();
                     $page['unique_key'] = '';
                 } else {
                     $page['unique_key'] = $singlePage['unique_key'];
@@ -123,7 +123,7 @@ class PageController extends BaseController
     public function delete()
     {
         $page_id = I("post.page_id/d") ? I("post.page_id/d") : 0;
-        $page = D("Page")->where(" page_id = '$page_id' ")->find();
+        $page = D("Page")->where(array('page_id' => $page_id))->find();
 
         $login_user = $this->checkLogin();
         if (!$this->checkItemManage($login_user['uid'], $page['item_id']) && $login_user['uid'] != $page['author_uid']) {
@@ -135,7 +135,7 @@ class PageController extends BaseController
 
             $ret = D("Page")->softDeletePage($page_id);
             //更新项目时间
-            D("Item")->where(" item_id = '$page[item_id]' ")->save(array("last_update_time" => time()));
+            D("Item")->where(array('item_id' => $page['item_id']))->save(array("last_update_time" => time()));
         }
         if ($ret) {
             D("ItemChangeLog")->addLog($login_user['uid'],  $page['item_id'], 'delete', 'page', $page['page_id'], $page['page_title']);
@@ -192,7 +192,7 @@ class PageController extends BaseController
         $data['author_username'] = $login_user['username'];
         $data['ext_info'] = $ext_info;
 
-        $item_array = D("Item")->where(" item_id = '$item_id' ")->find();
+        $item_array = D("Item")->where(array('item_id' => $item_id))->find();
         
         // 这里插入一段逻辑，对于runapi项目类型，填充ext_info字段
         if(!$data['ext_info'] && $item_array['item_type'] == 3){
@@ -219,7 +219,7 @@ class PageController extends BaseController
             }
 
             //在保存前先把当前页面的版本存档
-            $page = D("Page")->where(" page_id = '$page_id' ")->find();
+            $page = D("Page")->where(array('page_id' => $page_id))->find();
             if (!$this->checkItemEdit($login_user['uid'], $page['item_id'])) {
                 $this->sendError(10103);
                 return;
@@ -242,24 +242,24 @@ class PageController extends BaseController
             if ($page['page_addtime'] > 0) {
                 $data['page_addtime'] = $page['page_addtime'];
             }
-            $ret = D("Page")->where(" page_id = '$page_id' ")->save($data);
+            $ret = D("Page")->where(array('page_id' => $page_id))->save($data);
 
             D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'update', 'page', $page_id, $page_title);
 
             //统计该page_id有多少历史版本了
-            $Count = D("PageHistory")->where(" page_id = '$page_id' ")->Count();
+            $Count = D("PageHistory")->where(array('page_id' => $page_id))->Count();
             if ($Count > $history_version_count) {
                 //每个单页面只保留最多$history_version_count个历史版本
-                $ret = D("PageHistory")->where(" page_id = '$page_id' ")->limit($history_version_count)->order("page_history_id desc")->select();
-                D("PageHistory")->where(" page_id = '$page_id' and page_history_id < " . $ret[$history_version_count - 1]['page_history_id'])->delete();
+                $ret = D("PageHistory")->where(array('page_id' => $page_id))->limit($history_version_count)->order("page_history_id desc")->select();
+                D("PageHistory")->where(" page_id = '%d' and page_history_id < %d ", array($page_id, $ret[$history_version_count - 1]['page_history_id']))->delete();
             }
 
             //如果是单页项目，则将页面标题设置为项目名
-            $item_array = D("Item")->where(" item_id = '$item_id' ")->find();
+            $item_array = D("Item")->where(array('item_id' => $item_id))->find();
             if ($item_array['item_type'] == 2) {
-                D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time" => time(), "item_name" => $page_title));
+                D("Item")->where(array('item_id' => $item_id))->save(array("last_update_time" => time(), "item_name" => $page_title));
             } else {
-                D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time" => time()));
+                D("Item")->where(array('item_id' => $item_id))->save(array("last_update_time" => time()));
             }
 
             if ($is_notify) {
@@ -272,7 +272,7 @@ class PageController extends BaseController
                 }
             }
 
-            $return = D("Page")->where(" page_id = '$page_id' ")->find();
+            $return = D("Page")->where(array('page_id' => $page_id))->find();
         } else {
 
             $page_id = D("Page")->add($data);
@@ -280,12 +280,12 @@ class PageController extends BaseController
             D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'create', 'page', $page_id, $page_title);
 
             //更新项目时间
-            D("Item")->where(" item_id = '$item_id' ")->save(array("last_update_time" => time()));
+            D("Item")->where(array('item_id' => $item_id))->save(array("last_update_time" => time()));
 
             // 添加页面的时候把最初的创建者加入消息订阅
             D("Subscription")->addSub($login_user['uid'], $page_id, 'page', 'update');
 
-            $return = D("Page")->where(" page_id = '$page_id' ")->find();
+            $return = D("Page")->where(array('page_id' => $page_id))->find();
         }
         if (!$return) {
             $return['error_code'] = 10103;
@@ -300,13 +300,13 @@ class PageController extends BaseController
     {
         $login_user = $this->checkLogin(false);
         $page_id = I("page_id/d") ? I("page_id/d") : 0;
-        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page = M("Page")->where(array('page_id' => $page_id))->find();
         if (!$this->checkItemVisit($login_user['uid'], $page['item_id'])) {
             $this->sendError(10103);
             return;
         }
 
-        $PageHistory = D("PageHistory")->where("page_id = '$page_id' ")->order(" addtime desc")->limit(20)->select();
+        $PageHistory = D("PageHistory")->where(array('page_id' => $page_id))->order(" addtime desc")->limit(20)->select();
 
         if ($PageHistory) {
             foreach ($PageHistory as $key => &$value) {
@@ -332,12 +332,12 @@ class PageController extends BaseController
         $page_id = I("page_id/d") ? I("page_id/d") : 0;
         $page_comments = I("page_comments");
         $page_history_id = I("page_history_id/d") ? I("page_history_id/d") : 0;
-        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page = M("Page")->where(array('page_id' => $page_id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $page['item_id'])) {
             $this->sendError(10103);
             return;
         }
-        $res = D("PageHistory")->where(" page_history_id = '$page_history_id' ")->save(array(
+        $res = D("PageHistory")->where(array('page_history_id' => $page_history_id))->save(array(
             "page_comments" => $page_comments
         ));
         $this->sendResult($res);
@@ -352,7 +352,7 @@ class PageController extends BaseController
         if (!$page_id) {
             return false;
         }
-        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page = M("Page")->where(array('page_id' => $page_id))->find();
         if (!$page) {
             sleep(1);
             $this->sendError(10101);
@@ -364,7 +364,7 @@ class PageController extends BaseController
             return;
         }
 
-        $history_page = D("PageHistory")->where(" page_history_id = '$page_history_id' ")->find();
+        $history_page = D("PageHistory")->where(array('page_history_id' => $page_history_id))->find();
         $page_content = uncompress_string($history_page['page_content']);
         $history_page['page_content'] = $page_content ? $page_content : $history_page['page_content'];
 
@@ -406,7 +406,7 @@ class PageController extends BaseController
         $page_id = I("page_id/d");
         $isCreateSiglePage = I("isCreateSiglePage");
         $expire_days = I("expire_days/d", 0); // 获取有效期天数，默认为0表示永久有效
-        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page = M("Page")->where(array('page_id' => $page_id))->find();
         if (!$page || $page['is_del'] == 1) {
             sleep(1);
             $this->sendError(10101);
@@ -417,7 +417,7 @@ class PageController extends BaseController
             $this->sendError(10103);
             return;
         }
-        D("SinglePage")->where(" page_id = '$page_id' ")->delete();
+        D("SinglePage")->where(array('page_id' => $page_id))->delete();
         $unique_key = md5(time() . rand() . "gbgdhbdgtfgfK3@bv45342regdhbdgtfgftghsdg");
 
         // 计算过期时间
@@ -446,18 +446,18 @@ class PageController extends BaseController
         if (!$unique_key) {
             return false;
         }
-        $singlePage = M("SinglePage")->where(" unique_key = '%s' ", array($unique_key))->find();
+        $singlePage = M("SinglePage")->where(array('unique_key' => $unique_key))->find();
         $page_id = $singlePage['page_id'];
 
         // 检查链接是否已过期
         if ($singlePage && $singlePage['expire_time'] > 0 && $singlePage['expire_time'] < time()) {
             // 链接已过期，从数据库中删除记录
-            M("SinglePage")->where(" unique_key = '%s' ", array($unique_key))->delete();
+            M("SinglePage")->where(array('unique_key' => $unique_key))->delete();
             $this->sendError(10101, "该分享链接已过期");
             return false;
         }
 
-        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page = M("Page")->where(array('page_id' => $page_id))->find();
         if (!$page || $page['is_del'] == 1) {
             sleep(1);
             $this->sendError(10101);
@@ -470,7 +470,7 @@ class PageController extends BaseController
             unset($page['cat_id']);
             $page['addtime'] = date("Y-m-d H:i:s", $page['addtime']);
             //判断是否包含附件信息
-            $page['attachment_count'] = D("FilePage")->where("page_id = '$page_id' ")->count();
+            $page['attachment_count'] = D("FilePage")->where(array('page_id' => $page_id))->count();
             // 添加单页链接过期时间字段
             if ($singlePage) {
                 $page['expire_time'] = $singlePage['expire_time'];
@@ -510,7 +510,7 @@ class PageController extends BaseController
         $lock = 0;
         $now = time();
         $login_user = $this->checkLogin(false);
-        $res = D("PageLock")->where(" page_id = '$page_id' and page_id > 0 and lock_to > '{$now}' ")->find();
+        $res = D("PageLock")->where(" page_id = '%d' and page_id > 0 and lock_to > '%d' ", array($page_id, $now))->find();
         if ($res) {
             $lock = 1;
         }
@@ -533,7 +533,7 @@ class PageController extends BaseController
             $this->sendError(10103);
             return;
         }
-        D("PageLock")->where("page_id = '{$page_id}' ")->delete();
+        D("PageLock")->where(array('page_id' => $page_id))->delete();
         $id = D("PageLock")->add(array(
             "page_id" => $page_id,
             "lock_uid" => $login_user['uid'],
@@ -542,7 +542,7 @@ class PageController extends BaseController
             "addtime" => time(),
         ));
         $now = time();
-        D("PageLock")->where("lock_to < '{$now}' ")->delete();
+        D("PageLock")->where(array('lock_to' => array('lt', $now)))->delete();
         $this->sendResult(array("id" => $id));
     }
 

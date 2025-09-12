@@ -24,7 +24,7 @@ class FlowController extends BaseController
 
         $date_time = date("Y-m-d H:i:s");
         if ($id) {
-            $res = D("RunapiFlow")->where(" id = '{$id}' ")->find();
+            $res = D("RunapiFlow")->where(array('id' => $id))->find();
             if (!$this->checkItemEdit($login_user['uid'], $res['item_id'])) {
                 $this->sendError(10303);
                 return;
@@ -49,7 +49,7 @@ class FlowController extends BaseController
             if (isset($_REQUEST['save_change'])) {
                 $data['save_change'] = $save_change;
             }
-            D("RunapiFlow")->where(" id = '{$id}' ")->save($data);
+            D("RunapiFlow")->where(array('id' => $id))->save($data);
         } else {
             if (!$this->checkItemEdit($login_user['uid'], $item_id)) {
                 $this->sendError(10303);
@@ -69,7 +69,7 @@ class FlowController extends BaseController
             $data['last_update_time'] = $date_time;
             // 如果环境小于等于0，尝试获取项目的第一个环境变量赋值
             if ($env_id <= 0) {
-                $res = D("RunapiEnv")->where(" item_id = '{$item_id}' ")->find();
+                $res = D("RunapiEnv")->where(array('item_id' => $item_id))->find();
                 if ($res && $res['id']) {
                     $data['env_id'] =  $res['id'];
                 }
@@ -77,7 +77,7 @@ class FlowController extends BaseController
             $id = D("RunapiFlow")->add($data);
         }
         usleep(300000);
-        $res = D("RunapiFlow")->where(" id = '{$id}' ")->find();
+        $res = D("RunapiFlow")->where(array('id' => $id))->find();
         $this->sendResult($res);
     }
 
@@ -91,7 +91,7 @@ class FlowController extends BaseController
             return;
         }
 
-        $ret = D("RunapiFlow")->where(" item_id = '{$item_id}' ")->order(" id desc  ")->select();
+        $ret = D("RunapiFlow")->where(array('item_id' => $item_id))->order(" id desc  ")->select();
         if ($ret) {
             $this->sendResult($ret);
         } else {
@@ -104,13 +104,13 @@ class FlowController extends BaseController
     {
         $id = I("id/d") ? I("id/d") : 0;
         $login_user = $this->checkLogin();
-        $res = D("RunapiFlow")->where(" id = '{$id}' ")->find();
+        $res = D("RunapiFlow")->where(array('id' => $id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $res['item_id'])) {
             $this->sendError(10303);
             return;
         }
 
-        $ret = D("RunapiFlow")->where(" id = '$id'")->delete();
+        $ret = D("RunapiFlow")->where(array('id' => $id))->delete();
 
         if ($ret) {
             $this->sendResult($ret);
@@ -127,19 +127,19 @@ class FlowController extends BaseController
         $login_user = $this->checkLogin();
         $flow_id = I("flow_id/d");
         $page_id = I("page_id/d");
-        $flow_res = D("RunapiFlow")->where(" id = '{$flow_id}' ")->find();
+        $flow_res = D("RunapiFlow")->where(array('id' => $flow_id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $flow_res['item_id'])) {
             $this->sendError(10303);
             return;
         }
-        $page_res = $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page_res = $page = M("Page")->where(array('page_id' => $page_id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $page_res['item_id'])) {
             $this->sendError(10303);
             return;
         }
 
         // 获取该flow的最后一个页面的顺序号
-        $s_number1 = D("RunapiFlowPage")->where("flow_id = '{$flow_id}'")->order("s_number desc")->getField("s_number");
+        $s_number1 = D("RunapiFlowPage")->where(array('flow_id' => $flow_id))->order("s_number desc")->getField("s_number");
         $s_number = $s_number1 + 1;
         $id = D("RunapiFlowPage")->add(array(
             "flow_id" => $flow_id,
@@ -159,14 +159,14 @@ class FlowController extends BaseController
     {
         $login_user = $this->checkLogin();
         $id = I("id/d");
-        $flow_page_res = D("RunapiFlowPage")->where(" id = '{$id}' ")->find();
+        $flow_page_res = D("RunapiFlowPage")->where(array('id' => $id))->find();
         $page_id = $flow_page_res['page_id'];
-        $page_res = $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page_res = $page = M("Page")->where(array('page_id' => $page_id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $page_res['item_id'])) {
             $this->sendError(10303);
             return;
         }
-        $res = D("RunapiFlowPage")->where(" id = '{$id}' ")->delete();
+        $res = D("RunapiFlowPage")->where(array('id' => $id))->delete();
         if ($res) {
             $this->sendResult($res);
         } else {
@@ -178,7 +178,7 @@ class FlowController extends BaseController
     {
         $login_user = $this->checkLogin();
         $flow_id = I("flow_id/d");
-        $flow_res = D("RunapiFlow")->where(" id = '{$flow_id}' ")->find();
+        $flow_res = D("RunapiFlow")->where(array('id' => $flow_id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $flow_res['item_id'])) {
             $this->sendError(10303);
             return;
@@ -222,7 +222,7 @@ class FlowController extends BaseController
         $login_user = $this->checkLogin();
         $flow_id = I("flow_id/d");
         $orders = I("orders");
-        $res = D("RunapiFlow")->where(" id = '{$flow_id}' ")->find();
+        $res = D("RunapiFlow")->where(array('id' => $flow_id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $res['item_id'])) {
             $this->sendError(10303);
             return;
@@ -246,14 +246,14 @@ class FlowController extends BaseController
         $login_user = $this->checkLogin();
         $flow_id = I("flow_id/d");
         $ids = I("ids");
-        $res = D("RunapiFlow")->where(" id = '{$flow_id}' ")->find();
+        $res = D("RunapiFlow")->where(array('id' => $flow_id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $res['item_id'])) {
             $this->sendError(10303);
             return;
         }
         $data_array = json_decode(htmlspecialchars_decode($ids), true);
         if ($data_array) {
-            D("RunapiFlowPage")->where(" flow_id = '%d'", array($flow_id))->save(array(
+            D("RunapiFlowPage")->where(array('flow_id' => $flow_id))->save(array(
                 "enabled" => 0
             ));
             foreach ($data_array as $key => $value) {

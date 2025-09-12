@@ -76,7 +76,7 @@ class CommonController extends BaseController
   public function showCaptcha()
   {
     $captcha_id = I("captcha_id/d");
-    $captcha = D("Captcha")->where("captcha_id = '$captcha_id' ")->find();
+    $captcha = D("Captcha")->where("captcha_id = '%s' ", array($captcha_id))->find();
 
     if (version_compare(PHP_VERSION, COMPOSER_PHP_VERSION, '>')) {
       $builder = new CaptchaBuilder($captcha['captcha']);

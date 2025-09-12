@@ -24,7 +24,7 @@ class TeamController extends BaseController
                 $this->sendError(10103);
                 return;
             }
-            D("Team")->where(" id = '$id' ")->save(array("team_name" => $team_name));
+            D("Team")->where(array('id' => $id))->save(array("team_name" => $team_name));
         } else {
             $data['username'] = $login_user['username'];
             $data['uid'] = $login_user['uid'];
@@ -33,7 +33,7 @@ class TeamController extends BaseController
             $id = D("Team")->add($data);
         }
 
-        $return = D("Team")->where(" id = '$id' ")->find();
+        $return = D("Team")->where(array('id' => $id))->find();
 
         if (!$return) {
             $return['error_code'] = 10103;
@@ -49,7 +49,7 @@ class TeamController extends BaseController
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'];
         if ($uid > 0) {
-            $ret = D("Team")->where(" uid = '$uid' or id in ( select team_id from team_member where member_uid = '$uid'   )  ")->order(" addtime desc  ")->select();
+            $ret = D("Team")->where(" uid = '%d' or id in ( select team_id from team_member where member_uid = '%d'   )  ", array($uid, $uid))->order(" addtime desc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {
@@ -60,10 +60,10 @@ class TeamController extends BaseController
                     $value['team_manage'] = 0;
                 }
                 //获取该团队成员数
-                $value['memberCount'] = D("TeamMember")->where(" team_id = '$value[id]' ")->count();
+                $value['memberCount'] = D("TeamMember")->where(array('team_id' => $value['id']))->count();
 
                 //获取该团队涉及项目数
-                $value['itemCount'] = D("TeamItem")->where(" team_id = '$value[id]' and item.is_del = 0 ")->join("left join item on item.item_id = team_item.item_id")->count();
+                $value['itemCount'] = D("TeamItem")->where(" team_id = '%d' and item.is_del = 0 ", array($value['id']))->join("left join item on item.item_id = team_item.item_id")->count();
 
                 $value['addtime'] = date("Y-m-d H:i:s", $value['addtime']);
             }
@@ -79,12 +79,12 @@ class TeamController extends BaseController
         $id = I("post.id/d") ? I("post.id/d") : 0;
         $login_user = $this->checkLogin();
         if ($id && $login_user['uid']) {
-            $ret = D("Team")->where(" id = '$id' and uid = '$login_user[uid]'")->delete();
+            $ret = D("Team")->where(" id = '%d' and uid = '%d'", array($id, $login_user['uid']))->delete();
         }
         if ($ret) {
-            D("TeamItem")->where(" team_id = '$id' ")->delete();
-            D("TeamItemMember")->where(" team_id = '$id' ")->delete();
-            D("TeamMember")->where(" team_id = '$id' ")->delete();
+            D("TeamItem")->where(array('team_id' => $id))->delete();
+            D("TeamItemMember")->where(array('team_id' => $id))->delete();
+            D("TeamMember")->where(array('team_id' => $id))->delete();
             $this->sendResult($ret);
         } else {
             $return['error_code'] = 10103;
@@ -102,7 +102,7 @@ class TeamController extends BaseController
         $team_id = I("post.team_id/d");
         $password = I("post.password");
 
-        $team  = D("Team")->where("id = '$team_id' and uid = '$login_user[uid]' ")->find();
+        $team  = D("Team")->where("id = '%d' and uid = '%d' ", array($team_id, $login_user['uid']))->find();
 
         if (!$team) {
             $this->sendError(10101);
@@ -114,7 +114,7 @@ class TeamController extends BaseController
             return;
         }
 
-        $member = D("User")->where(" username = '%s' ", array($username))->find();
+        $member = D("User")->where(array('username' => $username))->find();
 
         if (!$member) {
             $this->sendError(10209);
@@ -123,12 +123,12 @@ class TeamController extends BaseController
         $data = array();
         $data['username'] = $member['username'];
         $data['uid'] = $member['uid'];
-        D("Team")->where(" id = '$team_id' ")->save($data);
+        D("Team")->where(array('id' => $team_id))->save($data);
 
         //读取出该团队下的所有项目，准备转让
-        $items = D("TeamItem")->where(" team_id = '$team_id' ")->select();
+        $items = D("TeamItem")->where(array('team_id' => $team_id))->select();
         foreach ($items as $key => $value) {
-            D("Item")->where(" item_id = '$value[item_id]' ")->save($data);
+            D("Item")->where(array('item_id' => $value['item_id']))->save($data);
         }
 
         $this->sendResult(array());
@@ -141,9 +141,9 @@ class TeamController extends BaseController
         $id = I("post.id/d") ? I("post.id/d") : 0;
         $login_user = $this->checkLogin();
 
-        $teamInfo = D("Team")->where(" id = '$id' ")->find();
-        $ret = D("TeamItemMember")->where(" member_uid = '$login_user[uid]' and  team_id = '$id' ")->delete();
-        $ret = D("TeamMember")->where("  member_uid = '$login_user[uid]' and  team_id = '$id' ")->delete();
+        $teamInfo = D("Team")->where(array('id' => $id))->find();
+        $ret = D("TeamItemMember")->where(" member_uid = '%d' and  team_id = '%d' ", array($login_user['uid'], $id))->delete();
+        $ret = D("TeamMember")->where("  member_uid = '%d' and  team_id = '%d' ", array($login_user['uid'], $id))->delete();
         $this->sendResult(array());
     }
 }

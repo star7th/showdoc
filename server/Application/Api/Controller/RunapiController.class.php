@@ -22,7 +22,7 @@ class RunapiController extends BaseController
     }
     $res = false;
     if ($env_id) {
-      $res = D("RunapiEnv")->where("id = {$env_id} and item_id = {$item_id} ")->save(array(
+      $res = D("RunapiEnv")->where("id = '%d' and item_id = '%d' ", array($env_id, $item_id))->save(array(
         "env_name" => $env_name,
         "uid" => $uid,
         "last_update_time" => date("Y-m-d H:i:s"),
@@ -56,7 +56,7 @@ class RunapiController extends BaseController
       $this->sendError(10303);
       return;
     }
-    $res = D("RunapiEnv")->where("item_id = {$item_id} ")->select();
+    $res = D("RunapiEnv")->where("item_id = '%d' ", array($item_id))->select();
     if ($res) {
       $this->sendResult($res);
     } else {
@@ -69,7 +69,7 @@ class RunapiController extends BaseController
         "last_update_time" => date("Y-m-d H:i:s"),
       ));
       //并且把项目变量都绑定到该默认环境中
-      D("ItemVariable")->where(" item_id = '$item_id'")->save(array(
+      D("ItemVariable")->where(array('item_id' => $item_id))->save(array(
         "env_id" => $env_id
       ));
       sleep(1);
@@ -82,15 +82,15 @@ class RunapiController extends BaseController
     $env_id = I("env_id/d");
     $login_user = $this->checkLogin();
     $uid = $login_user['uid'];
-    $res = D("RunapiEnv")->where("id = {$env_id}")->find();
+    $res = D("RunapiEnv")->where(array('id' => $env_id))->find();
     $item_id = $res['item_id'];
     if (!$this->checkItemEdit($uid, $item_id)) {
       $this->sendError(10303);
       return;
     }
-    $res = D("RunapiEnvSelectd")->where("id = {$env_id} ")->delete();
-    $res = D("RunapiEnv")->where("id = {$env_id} ")->delete();
-    $res = D("ItemVariable")->where("env_id = {$env_id}")->delete();
+    $res = D("RunapiEnvSelectd")->where(array('id' => $env_id))->delete();
+    $res = D("RunapiEnv")->where(array('id' => $env_id))->delete();
+    $res = D("ItemVariable")->where(array('env_id' => $env_id))->delete();
     if ($res) {
       $this->sendResult($res);
     } else {
@@ -104,13 +104,13 @@ class RunapiController extends BaseController
     $env_id = I("env_id/d");
     $login_user = $this->checkLogin();
     $uid = $login_user['uid'];
-    $res = D("RunapiEnv")->where("id = {$env_id}")->find();
+    $res = D("RunapiEnv")->where(array('id' => $env_id))->find();
     $item_id = $res['item_id'];
     if (!$this->checkItemEdit($uid, $item_id)) {
       $this->sendError(10303);
       return;
     }
-    D("RunapiEnvSelectd")->where("item_id = {$item_id} and uid = '$uid' ")->delete();
+    D("RunapiEnvSelectd")->where("item_id = '%d' and uid = '%d' ", array($item_id, $uid))->delete();
     $res = D("RunapiEnvSelectd")->add(array(
       "item_id" => $item_id,
       "uid" => $uid,
@@ -133,7 +133,7 @@ class RunapiController extends BaseController
       $this->sendError(10303);
       return;
     }
-    $res = D("RunapiEnvSelectd")->where("item_id = {$item_id} and uid = '$uid' ")->find();
+    $res = D("RunapiEnvSelectd")->where("item_id = '%d' and uid = '%d' ", array($item_id, $uid))->find();
     if ($res) {
       $this->sendResult($res);
     } else {
@@ -169,7 +169,7 @@ class RunapiController extends BaseController
       $this->sendError(10303);
       return;
     }
-    $res = D("RunapiGlobalParam")->where("param_type = '%s' and item_id = {$item_id} ", array($param_type))->save(array(
+    $res = D("RunapiGlobalParam")->where("param_type = '%s' and item_id = '%d' ", array($param_type, $item_id))->save(array(
       "content_json_str" => $content_json_str,
       "last_update_time" => date("Y-m-d H:i:s"),
     ));

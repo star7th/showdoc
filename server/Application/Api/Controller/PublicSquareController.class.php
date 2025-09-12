@@ -35,19 +35,22 @@ class PublicSquareController extends BaseController
     $count = I("count/d") ? I("count/d") : 20;
     $keyword = I("keyword");
     
-    // 使用 SQLite3::escapeString 过滤关键词，避免SQL注入
-    $keyword = \SQLite3::escapeString($keyword);
+    // 参数化 + safe_like 处理关键词
+    $keyword = $keyword ? safe_like($keyword) : '';
     
     $search_type = I("search_type"); // title 或 content
 
-    $where = "password = '' AND is_del = 0"; // 只获取公开项目
+    // 基础查询条件
+    $where_conditions = array(
+      'password' => '',
+      'is_del' => 0
+    );
 
     if ($keyword) {
       if ($search_type == 'content') {
         // 搜索项目内容，开源版中page表没有分表
-        $like_keyword = '%' . $keyword . '%';
         $page_items = M("Page")->field("item_id")
-          ->where("page_content LIKE '{$like_keyword}'")
+          ->where("page_content LIKE '%s'", array($keyword))
           ->group("item_id")
           ->select();
         if ($page_items) {
@@ -55,8 +58,8 @@ class PublicSquareController extends BaseController
           foreach ($page_items as $value) {
             $item_ids[] = $value['item_id'];
           }
-          $item_ids_str = implode(",", $item_ids);
-          $where .= " AND item_id IN ({$item_ids_str})";
+          // 使用数组条件而不是字符串拼接
+          $where_conditions['item_id'] = array('in', $item_ids);
         } else {
           // 如果没有找到匹配的内容，返回空结果
           $this->sendResult(array(
@@ -67,15 +70,12 @@ class PublicSquareController extends BaseController
         }
       } else {
         // 默认搜索项目标题和描述
-        $like_keyword = '%' . $keyword . '%';
-        $where .= " AND (item_name LIKE '{$like_keyword}' OR item_description LIKE '{$like_keyword}')";
         $items = D("Item")->field("item_id, item_name, item_description, item_type, addtime, last_update_time, item_domain")
-          ->where($where)
+          ->where("password = '' AND is_del = 0 AND (item_name LIKE '%s' OR item_description LIKE '%s')", array($keyword, $keyword))
           ->order("last_update_time DESC")
           ->page($page, $count)
           ->select();
-
-        $total = D("Item")->where($where)->count();
+        $total = D("Item")->where("password = '' AND is_del = 0 AND (item_name LIKE '%s' OR item_description LIKE '%s')", array($keyword, $keyword))->count();
 
         if ($items) {
           foreach ($items as $key => &$value) {
@@ -96,12 +96,11 @@ class PublicSquareController extends BaseController
     }
 
     $items = D("Item")->field("item_id, item_name, item_description, item_type, addtime, last_update_time, item_domain")
-      ->where($where)
+      ->where($where_conditions)
       ->order("last_update_time DESC")
       ->page($page, $count)
       ->select();
-
-    $total = D("Item")->where($where)->count();
+    $total = D("Item")->where($where_conditions)->count();
 
     if ($items) {
       foreach ($items as $key => &$value) {

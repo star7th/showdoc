@@ -25,11 +25,11 @@ class MemberController extends BaseController
         $username = I("username");
         $username_array = explode(",", $username);
         foreach ($username_array as $key => $value) {
-            $member = D("User")->where(" username = '%s' ", array($value))->find();
+            $member = D("User")->where(array('username' => $value))->find();
             if (!$member) {
                 continue;
             }
-            $if_exit = D("ItemMember")->where(" uid = '$member[uid]' and item_id = '$item_id' ")->find();
+            $if_exit = D("ItemMember")->where(" uid = '%d' and item_id = '%d' ", array($member['uid'], $item_id))->find();
             if ($if_exit) {
                 continue;
             }
@@ -66,7 +66,7 @@ class MemberController extends BaseController
             $data['addtime'] = time();
             $id = D("ItemMember")->add($data);
         }
-        $return = D("ItemMember")->where(" item_member_id = '$id' ")->find();
+        $return = D("ItemMember")->where(array('item_member_id' => $id))->find();
         if (!$return) {
             $this->sendError(10101);
         } else {
@@ -86,7 +86,7 @@ class MemberController extends BaseController
             return;
         }
         if ($item_id > 0) {
-            $ret = D("ItemMember")->where(" item_id = '$item_id' ")->join(" left join user on user.uid = item_member.uid")->field("item_member.* , user.name as name")->order(" addtime asc  ")->select();
+            $ret = D("ItemMember")->where(" item_id = '%d' ", array($item_id))->join(" left join user on user.uid = item_member.uid")->field("item_member.* , user.name as name")->order(" addtime asc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {
@@ -97,7 +97,7 @@ class MemberController extends BaseController
                 if (!empty($value['cat_ids'])) {
                     $value['cat_name'] = '多个目录';
                 } else if ($value['cat_id'] > 0) {
-                    $row = D("Catalog")->where(" cat_id = '$value[cat_id]' ")->find();
+                    $row = D("Catalog")->where(array('cat_id' => $value['cat_id']))->find();
                     if ($row &&  $row['cat_name']) {
                         $value['cat_name'] =  $row['cat_name'];
                     }
@@ -144,10 +144,10 @@ class MemberController extends BaseController
         }
 
         // 先获取项目的单独成员
-        $members_array = D("ItemMember")->where(" item_id = '$item_id' ")->join(" left join user on user.uid = item_member.uid")->field("item_member.uid,item_member.username ,item_member.member_group_id ,item_member.item_id , user.name as name")->order(" addtime asc  ")->select();
+        $members_array = D("ItemMember")->where(" item_id = '%d' ", array($item_id))->join(" left join user on user.uid = item_member.uid")->field("item_member.uid,item_member.username ,item_member.member_group_id ,item_member.item_id , user.name as name")->order(" addtime asc  ")->select();
 
         // 获取项目绑定的团队的成员
-        $team_members_array = D("TeamItemMember")->where("item_id = '$item_id' ")->join(" left join user on user.uid = team_item_member.member_uid")->field("team_item_member.member_uid as uid ,team_item_member.member_username as username ,team_item_member.member_group_id,team_item_member.item_id , user.name as name")->order(" addtime asc  ")->select();
+        $team_members_array = D("TeamItemMember")->where("item_id = '%d' ", array($item_id))->join(" left join user on user.uid = team_item_member.member_uid")->field("team_item_member.member_uid as uid ,team_item_member.member_username as username ,team_item_member.member_group_id,team_item_member.item_id , user.name as name")->order(" addtime asc  ")->select();
 
         $return_array = array();
         $uid_array = array();  // 利用这个uid数组来去重
@@ -203,13 +203,13 @@ class MemberController extends BaseController
         // 然后UNION ALL 成一个临时表table1，然后username去重，addtime排序
         $sql = "
             select uid,username,addtime from (
-                select item_member.uid ,item_member.username,item_member.addtime from item_member left join item on item_member.item_id = item.item_id where item.uid = '$uid' 
+                select item_member.uid ,item_member.username,item_member.addtime from item_member left join item on item_member.item_id = item.item_id where item.uid = '%d' 
             UNION ALL
-                select  team_member.member_uid as uid  ,team_member.member_username as username ,team_member.addtime from team_member left join team on team_member.team_id = team.id where team.uid = '$uid' 
+                select  team_member.member_uid as uid  ,team_member.member_username as username ,team_member.addtime from team_member left join team on team_member.team_id = team.id where team.uid = '%d' 
             ) as table1
             group by uid,username,addtime order by addtime desc  
         ";
-        $res = D("Item")->query($sql);
+        $res = D("Item")->query(sprintf($sql, $uid, $uid));
         $this->sendResult($res);
     }
 }

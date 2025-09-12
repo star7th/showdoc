@@ -29,10 +29,10 @@ class ItemTokenModel extends BaseModel
 	public function getTokenByItemId($item_id)
 	{
 		$item_id = intval($item_id);
-		$item_token = $this->where("item_id='$item_id'")->find();
+		$item_token = $this->where(array('item_id' => $item_id))->find();
 		if (!$item_token) {
 			$this->createToken($item_id);
-			$item_token = $this->where("item_id='$item_id'")->find();
+			$item_token = $this->where(array('item_id' => $item_id))->find();
 		}
 		return $item_token;
 	}
@@ -46,7 +46,7 @@ class ItemTokenModel extends BaseModel
 	public function setLastTime($item_id)
 	{
 		$item_id = intval($item_id);
-		return $this->where("item_id='$item_id'")->save(array("last_check_time" => time()));
+		return $this->where(array('item_id' => $item_id))->save(array("last_check_time" => time()));
 	}
 
 	//检查token。如果检测通过则返回item_id
@@ -65,14 +65,14 @@ class ItemTokenModel extends BaseModel
 	public function resetToken($item_id)
 	{
 		$item_id = intval($item_id);
-		$item_token = $this->where("item_id='$item_id'")->find();
+		$item_token = $this->where(array('item_id' => $item_id))->find();
 		if (!$item_token) {
 			$this->createToken($item_id);
 			sleep(1);
-			$item_token = $this->where("item_id='$item_id'")->find();
+			$item_token = $this->where(array('item_id' => $item_id))->find();
 		}
 		$item_token['api_token'] = get_rand_str() . rand();
-		$this->where("item_id='$item_id'")->save(array(
+		$this->where(array('item_id' => $item_id))->save(array(
 			"api_token" => $item_token['api_token']
 		));
 		return $item_token;

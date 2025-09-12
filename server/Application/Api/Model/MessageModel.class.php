@@ -13,12 +13,15 @@ class MessageModel extends BaseModel
 
 	public function getRemindList($to_uid, $page = 1, $count = 15, $status = -2)
 	{
-		$where = " to_uid = '{$to_uid}'  and message_type='remind' ";
+		$to_uid = intval($to_uid);
+		$page = intval($page);
+		$count = intval($count);
+		$map = array('to_uid' => $to_uid, 'message_type' => 'remind');
 		if ($status > -2) {
-			$where .= " and status = '$status' ";
+			$map['status'] = intval($status);
 		}
-		$list = $this->where(" {$where}")->order(" id desc ")->page(" $page , $count ")->select();
-		$total = $this->where(" {$where}")->count();
+		$list = $this->where($map)->order(" id desc ")->page(" $page , $count ")->select();
+		$total = $this->where($map)->count();
 		if ($list) {
 			foreach ($list as $key => $value) {
 				$list[$key] = $this->renderOne($value);
@@ -36,16 +39,16 @@ class MessageModel extends BaseModel
 	// 一行一行来
 	public function renderOne($one)
 	{
-		$message_content_id = $one['message_content_id'];
-		$message_content_array = D("MessageContent")->where(" id = '$message_content_id'  ")->find();
+		$message_content_id = intval($one['message_content_id']);
+		$message_content_array = D("MessageContent")->where(array('id' => $message_content_id))->find();
 		$one['object_type'] = $message_content_array['object_type'];
 		$one['object_id'] = $message_content_array['object_id'];
 		$one['action_type'] = $message_content_array['action_type'];
 		$one['message_content'] = $message_content_array['message_content'];
 		$one['from_name'] = $message_content_array['from_name'];
 		if ($one['object_type'] == 'page') {
-			$page_id = $one['object_id'];
-			$array1 = M("Page")->where(" page_id = '$page_id' ")->find();
+			$page_id = intval($one['object_id']);
+			$array1 = M("Page")->where(array('page_id' => $page_id))->find();
 			unset($array1['page_content']);
 			$one['page_data'] = $array1;
 		}
@@ -82,8 +85,8 @@ class MessageModel extends BaseModel
 			$title = $from_name . "给您发送了一条消息";
 			$content = $message_content;
 			if ($object_type == 'page') {
-				$page_id = $object_id;
-				$page = M("Page")->where("page_id = '$page_id'")->find();
+				$page_id = intval($object_id);
+				$page = M("Page")->where(array('page_id' => $page_id))->find();
 				if ($page) {
 					$title = "页面更新提醒";
 					$content = $from_name . "修改了页面 《" . $page['page_title'] . "》, 修改备注：" . $message_content . "。详情请登录showdoc查看";

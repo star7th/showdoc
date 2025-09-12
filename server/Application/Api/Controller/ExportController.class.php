@@ -25,7 +25,7 @@ class ExportController extends BaseController
         }
 
         // 获取项目信息
-        $item = D("Item")->where("item_id = '$item_id' ")->find();
+        $item = D("Item")->where(array('item_id' => $item_id))->find();
         
         // 检查是否为runapi项目并获取全局header
         $global_headers = array();
@@ -42,7 +42,7 @@ class ExportController extends BaseController
 
         $menu = D("Item")->getContent($item_id, "*", "*", 1);
         if ($page_id > 0) {
-            $page = D("Page")->where(" page_id = '$page_id' ")->find();
+            $page = D("Page")->where(array('page_id' => $page_id))->find();
             // 如果有限定目录，则校验页面所属目录是否在允许集合内
             if (!empty($allowedCatIds)) {
                 $pageCatId = intval($page['cat_id']);
@@ -251,7 +251,7 @@ class ExportController extends BaseController
             return;
         }
 
-        $item = D("Item")->where("item_id = '$item_id' ")->find();
+        $item = D("Item")->where(array('item_id' => $item_id))->find();
 
         // 成员目录权限：获取该用户在此项目下允许的目录集合
         $allowedCatIds = D("Member")->getCatIds($item_id, $login_user['uid']);

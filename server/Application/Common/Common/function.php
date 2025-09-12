@@ -275,3 +275,108 @@ function get_lang($path="../web/index.html")
         return 'en';
     }
 }
+
+/**
+ * 构造安全的 LIKE 模式串（跨库通用）
+ * - 转义 LIKE 特殊字符：% 和 _ 以及反斜杠本身
+ * - 防护 SQL 注入：转义单引号、双引号，过滤危险关键字
+ * - 返回形如 %keyword% 的匹配模式
+ * - 兼容参数化查询和直接字符串拼接两种使用方式
+ * 
+ * @param string $keyword 搜索关键字
+ * @param bool $strict 是否启用严格模式（过滤 SQL 关键字），默认 true
+ * @return string 安全的 LIKE 模式串
+ * 
+ * 用法：
+ *   $like = safe_like($keyword);
+ *   D("Item")->where("name LIKE '%s'", array($like))->select();
+ * 或：
+ *   D("Item")->where(array('name' => array('like', $like)))->select();
+ * 或（现在也安全）：
+ *   $sql = "SELECT * FROM items WHERE name LIKE '{$like}'";
+ */
+function safe_like($keyword, $strict = true)
+{
+    $s = (string)$keyword;
+    
+    // 0. 输入长度限制（防止过长的攻击载荷）
+    if (strlen($s) > 200) {
+        $s = substr($s, 0, 200);
+    }
+
+    // 1. 优先使用SQLite3原生转义函数
+    if (class_exists('SQLite3')) {
+        $s = SQLite3::escapeString($s);
+    } else {
+        // 备用方案：使用原来的手动转义逻辑
+        // 先转义反斜杠，避免后续再次转义造成歧义
+        $s = str_replace('\\', '\\\\', $s);
+        // 转义单引号和双引号（防止 SQL 注入）
+        $s = str_replace("'", "\\'", $s);
+        $s = str_replace('"', '\\"', $s);
+    }
+
+    // 2. 转义 LIKE 特殊字符 % 和 _（数据库转义函数不处理这些）
+    $s = addcslashes($s, "%_");
+
+    // 4. 严格模式：过滤危险的 SQL 关键字和符号
+    if ($strict) {
+        // 移除或替换危险的 SQL 注释符号
+        $s = str_replace('--', '', $s);
+        $s = str_replace('#', '', $s);
+        $s = str_replace('/*', '', $s);
+        $s = str_replace('*/', '', $s);
+
+        // 移除分号（防止多语句执行）
+        $s = str_replace(';', '', $s);
+
+        // 过滤危险的 SQL 关键字（不区分大小写）
+        $dangerous_keywords = [
+            'SELECT',
+            'FROM',
+            'WHERE',
+            'DROP',
+            'DELETE',
+            'UPDATE',
+            'INSERT',
+            'CREATE',
+            'ALTER',
+            'TRUNCATE',
+            'EXEC',
+            'EXECUTE',
+            'UNION',
+            'SCRIPT',
+            'DECLARE',
+            'CAST',
+            'CONVERT',
+            'AND',
+            'OR',
+            'HAVING',
+            'GROUP',
+            'ORDER',
+            'LIMIT',
+            'OFFSET',
+            'INTO',
+            'SET',
+            'VALUES',
+            'TABLE',
+            'DATABASE',
+            'SCHEMA',
+            'INDEX',
+            'VIEW',
+            'PROCEDURE',
+            'FUNCTION',
+            'TRIGGER'
+        ];
+
+        foreach ($dangerous_keywords as $keyword_to_remove) {
+            $s = preg_replace('/\b' . preg_quote($keyword_to_remove, '/') . '\b/i', '', $s);
+        }
+
+        // 清理多余的空格
+        $s = preg_replace('/\s+/', ' ', $s);
+        $s = trim($s);
+    }
+
+    return "%{$s}%";
+}

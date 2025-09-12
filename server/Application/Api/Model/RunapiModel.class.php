@@ -26,7 +26,7 @@ class RunapiModel
       'postScript' => '',
     );
 
-    $res = D("RunapiGlobalParam")->where(" param_type = 'query' and item_id = {$item_id} ")->find();
+    $res = D("RunapiGlobalParam")->where(array('param_type' => 'query', 'item_id' => $item_id))->find();
     if ($res) {
       $return['query'] = json_decode(htmlspecialchars_decode($res['content_json_str']), true);
       $return['query'] = $return['query'] ? $return['query'] : array();
@@ -39,7 +39,7 @@ class RunapiModel
         "last_update_time" => date("Y-m-d H:i:s"),
       ));
     }
-    $res = D("RunapiGlobalParam")->where(" param_type = 'body' and item_id = {$item_id} ")->find();
+    $res = D("RunapiGlobalParam")->where(array('param_type' => 'body', 'item_id' => $item_id))->find();
     if ($res) {
       $return['body'] = json_decode(htmlspecialchars_decode($res['content_json_str']), true);
       $return['body'] = $return['body'] ? $return['body'] : array();
@@ -52,7 +52,7 @@ class RunapiModel
         "last_update_time" => date("Y-m-d H:i:s"),
       ));
     }
-    $res = D("RunapiGlobalParam")->where(" param_type = 'header' and item_id = {$item_id} ")->find();
+    $res = D("RunapiGlobalParam")->where(array('param_type' => 'header', 'item_id' => $item_id))->find();
     if ($res) {
       $return['header'] = json_decode(htmlspecialchars_decode($res['content_json_str']), true);
       $return['header'] = $return['header'] ? $return['header'] : array();
@@ -65,7 +65,7 @@ class RunapiModel
         "last_update_time" => date("Y-m-d H:i:s"),
       ));
     }
-    $res = D("RunapiGlobalParam")->where(" param_type = 'cookies' and item_id = {$item_id} ")->find();
+    $res = D("RunapiGlobalParam")->where(array('param_type' => 'cookies', 'item_id' => $item_id))->find();
     if ($res) {
       $return['cookies'] = json_decode(htmlspecialchars_decode($res['content_json_str']), true);
       $return['cookies'] = $return['cookies'] ? $return['cookies'] : array();
@@ -78,7 +78,7 @@ class RunapiModel
         "last_update_time" => date("Y-m-d H:i:s"),
       ));
     }
-    $res = D("RunapiGlobalParam")->where(" param_type = 'preScript' and item_id = {$item_id} ")->find();
+    $res = D("RunapiGlobalParam")->where(array('param_type' => 'preScript', 'item_id' => $item_id))->find();
     if ($res) {
       $return['preScript'] =  htmlspecialchars_decode($res['content_json_str']);
       $return['preScript'] = $return['preScript'] ? $return['preScript'] : '';
@@ -91,7 +91,7 @@ class RunapiModel
         "last_update_time" => date("Y-m-d H:i:s"),
       ));
     }
-    $res = D("RunapiGlobalParam")->where(" param_type = 'postScript' and item_id = {$item_id} ")->find();
+    $res = D("RunapiGlobalParam")->where(array('param_type' => 'postScript', 'item_id' => $item_id))->find();
     if ($res) {
       $return['postScript'] =  htmlspecialchars_decode($res['content_json_str']);
       $return['postScript'] = $return['postScript'] ? $return['postScript'] : '';

@@ -33,7 +33,7 @@ class OpenController extends BaseController
         $page_id = D("Page")->update_by_title($item_id, $page_title, $page_content, $cat_name, $s_number);
 
         if ($page_id) {
-            $ret = D("Page")->where(" page_id = '$page_id' ")->find();
+            $ret = D("Page")->where(array('page_id' => $page_id))->find();
             $this->sendResult($ret);
         } else {
             $this->sendError(10101);

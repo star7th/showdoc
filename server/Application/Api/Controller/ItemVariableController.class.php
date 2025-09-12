@@ -23,10 +23,10 @@ class ItemVariableController extends BaseController
         }
 
         $id = 0;
-        $res = D("ItemVariable")->where(" item_id = '{$item_id}' and env_id = '{$env_id}' and var_name = '%s'   ", array($var_name))->find();
+        $res = D("ItemVariable")->where(" item_id = '%d' and env_id = '%d' and var_name = '%s'   ", array($item_id, $env_id, $var_name))->find();
         if ($res) {
             $id = $res['id'];
-            D("ItemVariable")->where(" id = '{$id}' ")->save(array("var_value" => $var_value));
+            D("ItemVariable")->where(array('id' => $id))->save(array("var_value" => $var_value));
         } else {
             $data = array();
             $data['var_name'] = $var_name;
@@ -58,11 +58,11 @@ class ItemVariableController extends BaseController
             return;
         }
         if ($item_id > 0) {
-            $where = "item_id = '$item_id'";
             if ($env_id) {
-                $where .= " and env_id = '$env_id'";
+                $ret = D("ItemVariable")->where(" item_id = '%d' and env_id = '%d' ", array($item_id, $env_id))->order(" addtime asc  ")->select();
+            } else {
+                $ret = D("ItemVariable")->where(array('item_id' => $item_id))->order(" addtime asc  ")->select();
             }
-            $ret = D("ItemVariable")->where($where)->order(" addtime asc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {

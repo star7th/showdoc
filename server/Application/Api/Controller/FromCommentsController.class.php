@@ -56,7 +56,7 @@ class FromCommentsController extends BaseController
         $s_number = $array['s_number'] ? $array['s_number'] : 99;
         $page_id = D("Page")->update_by_title($item_id, $page_title, $page_content, $cat_name, $s_number);
         if ($page_id) {
-            $ret = D("Page")->where(" page_id = '$page_id' ")->find();
+            $ret = D("Page")->where(" page_id = '%d' ", array($page_id))->find();
             return $ret;
         } else {
             return false;
@@ -172,7 +172,7 @@ class FromCommentsController extends BaseController
         );
 
         $responseExample = $this->_indent_json($content_array['response']['responseExample']);
-        $content_array['response']['responseExample'] = $responseExample ? $responseExample : $content['response']['responseExample'];
+        $content_array['response']['responseExample'] = $responseExample ? $responseExample : $content_array['response']['responseExample'];
 
         if ($array['header']) {
             foreach ($array['header'] as $key => $value) {

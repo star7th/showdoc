@@ -50,7 +50,7 @@ class BaseController extends Controller
 				$ret = D("UserToken")->getToken($user_token);
 				if ($ret && $ret['token_expire'] > time()) {
 					D("UserToken")->setLastTime($user_token);
-					$login_user = D("User")->where("uid = $ret[uid]")->find();
+					$login_user = D("User")->where(array('uid' => $ret['uid']))->find();
 					unset($ret['password']);
 					session("login_user", $login_user);
 					return $login_user;
@@ -173,10 +173,10 @@ class BaseController extends Controller
 			return true;
 		}
 
-		if (D("ItemMember")->where("item_id = '%d'  and member_group_id = 2 and uid = '$uid' ", array($item_id))->find()) {
+		if (D("ItemMember")->where("item_id = '%d'  and member_group_id = 2 and uid = '%d' ", array($item_id, $uid))->find()) {
 			return true;
 		}
-		if (D("TeamItemMember")->where("item_id = '%d'  and member_group_id = 2 and member_uid = '$uid' ", array($item_id))->find()) {
+		if (D("TeamItemMember")->where("item_id = '%d'  and member_group_id = 2 and member_uid = '%d' ", array($item_id, $uid))->find()) {
 			return true;
 		}
 
@@ -270,7 +270,7 @@ class BaseController extends Controller
 			return true;
 		}
 
-		$team_member = D("TeamMember")->where("team_id = '%d' and member_uid = '$uid' and team_member_group_id = 2  ", array($team_id))->find();
+		$team_member = D("TeamMember")->where("team_id = '%d' and member_uid = '%d' and team_member_group_id = 2  ", array($team_id, $uid))->find();
 		if ($team_member) {
 			return true;
 		}

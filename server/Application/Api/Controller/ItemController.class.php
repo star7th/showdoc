@@ -74,8 +74,6 @@ class ItemController extends BaseController
         //是否有搜索词
         if ($keyword) {
             $keyword = strtolower($keyword);
-            $keyword = \SQLite3::escapeString($keyword);
-            $where = "item_id = '$item_id' and is_del = 0  and ( lower(page_title) like '%{$keyword}%' or lower(page_content) like '%{$keyword}%' ) " ;
             // 如果用户被分配了 目录权限 ，则获取他在该项目下拥有权限的目录id集合
             $cat_ids = D("Member")->getCatIds($item_id, $uid);
             $menu['pages'] = $pages = D("Page")->search($item_id, $cat_ids, $keyword);
@@ -101,10 +99,10 @@ class ItemController extends BaseController
 
         //如果带了默认展开的页面id，则获取该页面所在的二级目录/三级目录/四级目录
         if ($default_page_id) {
-            $page = D("Page")->where(" page_id = '$default_page_id' ")->find();
+            $page = D("Page")->where(array('page_id' => $default_page_id))->find();
             if ($page) {
                 $default_cat_id4 = $page['cat_id'];
-                $cat1 = D("Catalog")->where(" cat_id = '$default_cat_id4' and parent_cat_id > 0  ")->find();
+                $cat1 = D("Catalog")->where(" cat_id = '%d' and parent_cat_id > 0  ", array($default_cat_id4))->find();
                 if ($cat1) {
                     $default_cat_id3 = $cat1['parent_cat_id'];
                 } else {
@@ -112,7 +110,7 @@ class ItemController extends BaseController
                     $default_cat_id4 = 0;
                 }
 
-                $cat2 = D("Catalog")->where(" cat_id = '$default_cat_id3' and parent_cat_id > 0  ")->find();
+                $cat2 = D("Catalog")->where(" cat_id = '%d' and parent_cat_id > 0  ", array($default_cat_id3))->find();
                 if ($cat2) {
                     $default_cat_id2 = $cat2['parent_cat_id'];
                 } else {
@@ -184,26 +182,26 @@ class ItemController extends BaseController
         $member_item_ids = array(-1); // 所有 只读和编辑成员 的项目
         $manage_member_item_ids = array(-1); // 所有拥有项目管理权限的成员的项目
 
-        $item_members = D("ItemMember")->where("uid = '$login_user[uid]' and  member_group_id != '2' ")->select();
+        $item_members = D("ItemMember")->where("uid = '%d' and  member_group_id != '2' ", array($login_user['uid']))->select();
         if ($item_members) {
             foreach ($item_members as $key => $value) {
                 $member_item_ids[] = $value['item_id'];
             }
         }
-        $team_item_members = D("TeamItemMember")->where("member_uid = '$login_user[uid]' and  member_group_id != '2' ")->select();
+        $team_item_members = D("TeamItemMember")->where("member_uid = '%d' and  member_group_id != '2' ", array($login_user['uid']))->select();
         if ($team_item_members) {
             foreach ($team_item_members as $key => $value) {
                 $member_item_ids[] = $value['item_id'];
             }
         }
 
-        $item_members = D("ItemMember")->where("uid = '$login_user[uid]' and  member_group_id = '2' ")->select();
+        $item_members = D("ItemMember")->where("uid = '%d' and  member_group_id = '2' ", array($login_user['uid']))->select();
         if ($item_members) {
             foreach ($item_members as $key => $value) {
                 $manage_member_item_ids[] = $value['item_id'];
             }
         }
-        $team_item_members = D("TeamItemMember")->where("member_uid = '$login_user[uid]' and  member_group_id = '2' ")->select();
+        $team_item_members = D("TeamItemMember")->where("member_uid = '%d' and  member_group_id = '2' ", array($login_user['uid']))->select();
         if ($team_item_members) {
             foreach ($team_item_members as $key => $value) {
                 $manage_member_item_ids[] = $value['item_id'];
@@ -214,7 +212,7 @@ class ItemController extends BaseController
         $where .= " or item_id in ( " . implode(",", $member_item_ids) . " ) ";
         $where .= " or item_id in ( " . implode(",", $manage_member_item_ids) . " ) ";
         if ($item_group_id > 0) {
-            $res = D("ItemGroup")->where(" id = '$item_group_id' ")->find();
+            $res = D("ItemGroup")->where(array('id' => $item_group_id))->find();
             if ($res && $res['item_ids']) {
                 $where = " ({$where}) and item_id in ({$res['item_ids']}) ";
             } else {
@@ -224,7 +222,7 @@ class ItemController extends BaseController
 
         $star_item_id_array = array();
         // 将star的项目都先读取出来，因为后面有两处需要用到：返回项目是否已经被标星字段，根据标星返回所有标星项目
-        $res = D("ItemStar")->where(" uid = '$login_user[uid]' ")->select();
+        $res = D("ItemStar")->where(array('uid' => $login_user['uid']))->select();
 
         if ($res) {
             foreach ($res as $key => $value) {
@@ -285,7 +283,7 @@ class ItemController extends BaseController
         }
         $items = array_values($items);
         //读取需要置顶的项目
-        $top_items = D("ItemTop")->where("uid = '$login_user[uid]'")->select();
+        $top_items = D("ItemTop")->where(array('uid' => $login_user['uid']))->select();
         if ($top_items) {
             $top_item_ids = array();
             foreach ($top_items as $key => $value) {
@@ -303,7 +301,7 @@ class ItemController extends BaseController
         }
 
         //读取项目顺序
-        $item_sort = D("ItemSort")->where("uid = '$login_user[uid]'  and item_group_id = '$item_group_id' ")->find();
+        $item_sort = D("ItemSort")->where("uid = '%d'  and item_group_id = '%d' ", array($login_user['uid'], $item_group_id))->find();
         if ($item_sort) {
             $item_sort_data = json_decode(htmlspecialchars_decode($item_sort['item_sort_data']), true);
             //var_dump($item_sort_data);
@@ -461,7 +459,7 @@ class ItemController extends BaseController
         $item_id = I("post.item_id/d");
         $password = I("post.password");
 
-        $item  = D("Item")->where("item_id = '$item_id' ")->find();
+        $item  = D("Item")->where(array('item_id' => $item_id))->find();
 
         if (!$this->checkItemManage($login_user['uid'], $item['item_id'])) {
             $this->sendError(10303);
@@ -473,7 +471,7 @@ class ItemController extends BaseController
             return;
         }
 
-        $member = D("User")->where(" username = '%s' ", array($username))->find();
+        $member = D("User")->where(array('username' => $username))->find();
 
         if (!$member) {
             $this->sendError(10209);
@@ -484,9 +482,9 @@ class ItemController extends BaseController
         $data['uid'] = $member['uid'];
 
 
-        $id = D("Item")->where(" item_id = '$item_id' ")->save($data);
+        $id = D("Item")->where(array('item_id' => $item_id))->save($data);
 
-        $return = D("Item")->where("item_id = '$item_id' ")->find();
+        $return = D("Item")->where(array('item_id' => $item_id))->find();
 
         if (!$return) {
             $this->sendError(10101);
@@ -503,7 +501,7 @@ class ItemController extends BaseController
         $item_id = I("item_id/d");
         $password = I("password");
 
-        $item  = D("Item")->where("item_id = '$item_id' ")->find();
+        $item  = D("Item")->where(array('item_id' => $item_id))->find();
 
         if (!$this->checkItemManage($login_user['uid'], $item['item_id'])) {
             $this->sendError(10303);
@@ -533,7 +531,7 @@ class ItemController extends BaseController
         $item_id = I("post.item_id/d");
         $password = I("password");
 
-        $item  = D("Item")->where("item_id = '$item_id' ")->find();
+        $item  = D("Item")->where(array('item_id' => $item_id))->find();
 
         if (!$this->checkItemManage($login_user['uid'], $item['item_id'])) {
             $this->sendError(10303);
@@ -545,7 +543,7 @@ class ItemController extends BaseController
             return;
         }
 
-        $return = D("Item")->where("item_id = '$item_id' ")->save(array("is_archived" => 1));
+        $return = D("Item")->where(array('item_id' => $item_id))->save(array("is_archived" => 1));
 
         if (!$return) {
             $this->sendError(10101);
@@ -559,7 +557,7 @@ class ItemController extends BaseController
 
         $item_id = I("item_id/d");
 
-        $item  = D("Item")->where("item_id = '$item_id' ")->find();
+        $item  = D("Item")->where(array('item_id' => $item_id))->find();
 
         if (!$this->checkItemManage($login_user['uid'], $item['item_id'])) {
             $this->sendError(10303);
@@ -580,7 +578,7 @@ class ItemController extends BaseController
 
         $item_id = I("post.item_id/d");
 
-        $item  = D("Item")->where("item_id = '$item_id' ")->find();
+        $item  = D("Item")->where(array('item_id' => $item_id))->find();
 
         if (!$this->checkItemManage($login_user['uid'], $item['item_id'])) {
             $this->sendError(10303);
@@ -613,7 +611,7 @@ class ItemController extends BaseController
         if ($action == 'top') {
             $ret = D("ItemTop")->add(array("item_id" => $item_id, "uid" => $login_user['uid'], "addtime" => time()));
         } elseif ($action == 'cancel') {
-            $ret = D("ItemTop")->where(" uid = '$login_user[uid]' and item_id = '$item_id' ")->delete();
+            $ret = D("ItemTop")->where(" uid = '%d' and item_id = '%d' ", array($login_user['uid'], $item_id))->delete();
         }
         if ($ret) {
             $this->sendResult(array());
@@ -648,10 +646,10 @@ class ItemController extends BaseController
             }
         }
 
-        $item_id =  \SQLite3::escapeString($item_id);
+        // $item_id 已在上方通过 is_numeric 与后续查询使用 %d 占位符保障
 
         if ($page_id > 0) {
-            $page = M("Page")->where(" page_id = '$page_id' ")->find();
+            $page = M("Page")->where(array('page_id' => $page_id))->find();
             if ($page) {
                 $item_id = $page['item_id'];
             }
@@ -669,7 +667,7 @@ class ItemController extends BaseController
     public function itemList()
     {
         $login_user = $this->checkLogin();
-        $items  = D("Item")->where("uid = '$login_user[uid]' ")->select();
+        $items  = D("Item")->where(array('uid' => $login_user['uid']))->select();
         $items = $items ? $items : array();
         $this->sendResult($items);
     }
@@ -698,7 +696,7 @@ class ItemController extends BaseController
                 return false;
             }
 
-            $item = D("Item")->where("item_domain = '%s'  ", array($item_domain))->find();
+            $item = D("Item")->where(array('item_domain' => $item_domain))->find();
             if ($item) {
                 //个性域名已经存在
                 $this->sendError(10304);
@@ -824,9 +822,9 @@ class ItemController extends BaseController
         $data = I("data");
         $item_group_id = I("item_group_id/d");
 
-        $res = D("ItemSort")->where("  uid ='$login_user[uid]' and item_group_id = $item_group_id ")->find();
+        $res = D("ItemSort")->where(array('uid' => $login_user['uid'], 'item_group_id' => $item_group_id))->find();
         if ($res) {
-            $ret = D("ItemSort")->where("  uid ='$login_user[uid]' and item_group_id = $item_group_id ")->save(array("item_sort_data" => $data, "addtime" => time()));
+            $ret = D("ItemSort")->where(array('uid' => $login_user['uid'], 'item_group_id' => $item_group_id))->save(array("item_sort_data" => $data, "addtime" => time()));
         } else {
             $ret = D("ItemSort")->add(array("item_sort_data" => $data, "item_group_id" => $item_group_id, "uid" => $login_user['uid'], "addtime" => time()));
         }
@@ -845,12 +843,12 @@ class ItemController extends BaseController
         $login_user = $this->checkLogin();
 
         $item_id = I("item_id/d");
-        $ret = D("ItemMember")->where("item_id = '$item_id' and uid ='$login_user[uid]' ")->delete();
+        $ret = D("ItemMember")->where("item_id = '%d' and uid ='%d' ", array($item_id, $login_user['uid']))->delete();
 
-        $row = D("TeamItemMember")->join(" left join team on team.id = team_item_member.team_id ")->where("item_id = '$item_id' and member_uid ='$login_user[uid]' ")->find();
+        $row = D("TeamItemMember")->join(" left join team on team.id = team_item_member.team_id ")->where("item_id = '%d' and member_uid ='%d' ", array($item_id, $login_user['uid']))->find();
         if ($row) {
-            $ret = D("TeamItemMember")->where(" member_uid = '$login_user[uid]' and  team_id = '$row[team_id]' ")->delete();
-            $ret = D("TeamMember")->where(" member_uid = '$login_user[uid]' and  team_id = '$row[team_id]' ")->delete();
+            $ret = D("TeamItemMember")->where(" member_uid = '%d' and  team_id = '%d' ", array($login_user['uid'], $row['team_id']))->delete();
+            $ret = D("TeamMember")->where(" member_uid = '%d' and  team_id = '%d' ", array($login_user['uid'], $row['team_id']))->delete();
         }
 
 
@@ -873,7 +871,6 @@ class ItemController extends BaseController
             return;
         }
         $item = D("Item")->where("item_id = '%d' and is_del = 0 ", array($item_id))->find();
-        $keyword =  \SQLite3::escapeString($keyword);
         // 如果用户被分配了 目录权限 ，则获取他在该项目下拥有权限的目录id
         $cat_id = D("Member")->getCatId($item_id, $uid);
         $pages = D("Page")->search($item_id, $cat_id, $keyword);
@@ -940,7 +937,7 @@ class ItemController extends BaseController
     {
         $item_id = I("post.item_id/d");
         $login_user = $this->checkLogin();
-        D("ItemStar")->where(" uid = '$login_user[uid]' and item_id = '$item_id' ")->delete();
+        D("ItemStar")->where(" uid = '%d' and item_id = '%d' ", array($login_user['uid'], $item_id))->delete();
         $this->sendResult(array());
     }
 

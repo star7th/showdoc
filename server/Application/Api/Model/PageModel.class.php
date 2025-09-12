@@ -17,7 +17,7 @@ class PageModel extends BaseModel
   {
     $return_pages = array();
     $item = D("Item")->where("item_id = '%d' and is_del = 0 ", array($item_id))->find();
-    $where = "item_id = '$item_id' and is_del = 0";
+    $map = array('item_id' => intval($item_id), 'is_del' => 0);
     if (is_array($cat_id_or_ids)) {
       $ids = array();
       foreach ($cat_id_or_ids as $id) {
@@ -25,15 +25,15 @@ class PageModel extends BaseModel
         if ($id > 0) $ids[] = $id;
       }
       if (!empty($ids)) {
-        $where .= " and cat_id in (" . implode(',', $ids) . ") ";
+        $map['cat_id'] = array('in', $ids);
       }
     } else {
       $cat_id = intval($cat_id_or_ids);
       if ($cat_id > 0) {
-        $where .= " and cat_id = '$cat_id' ";
+        $map['cat_id'] = $cat_id;
       }
     }
-    $pages = $this->where($where)->order(" s_number asc  ")->select();
+    $pages = $this->where($map)->order(" s_number asc  ")->select();
     if (!empty($pages)) {
       foreach ($pages as $key => &$value) {
         $page_content = $value['page_content'];
@@ -66,7 +66,7 @@ class PageModel extends BaseModel
     $this->cat_name_id[$cat_name] = $cat_id;
 
     if ($page_content) {
-      $page_array = D("Page")->field("page_id")->where(" item_id = '$item_id' and is_del = 0  and cat_id = '$cat_id'  and page_title ='%s' ", array($page_title))->find();
+      $page_array = D("Page")->field("page_id")->where(" item_id = '%d' and is_del = 0  and cat_id = '%d'  and page_title ='%s' ", array($item_id, $cat_id, $page_title))->find();
       //如果不存在则新建
       if (!$page_array) {
         $add_data = array(
@@ -91,7 +91,7 @@ class PageModel extends BaseModel
           "page_content" => $this->_htmlspecialchars($page_content),
           "s_number" => $s_number,
         );
-        D("Page")->where(" page_id = '$page_id' ")->save($update_data);
+        D("Page")->where(array('page_id' => $page_id))->save($update_data);
       }
     }
 
@@ -104,7 +104,7 @@ class PageModel extends BaseModel
     $page_id = intval($page_id);
     //放入回收站
     $login_user = session('login_user');
-    $page = D("Page")->field("item_id,page_title")->where(" page_id = '$page_id' ")->find();
+    $page = D("Page")->field("item_id,page_title")->where(array('page_id' => $page_id))->find();
     D("Recycle")->add(array(
       "item_id" => $page['item_id'],
       "page_id" => $page_id,
@@ -113,7 +113,7 @@ class PageModel extends BaseModel
       "del_by_username" => $login_user['username'],
       "del_time" => time()
     ));
-    $ret = M("Page")->where(" page_id = '$page_id' ")->save(array("is_del" => 1, "addtime" => time()));
+    $ret = M("Page")->where(array('page_id' => $page_id))->save(array("is_del" => 1, "addtime" => time()));
     return $ret;
   }
 
@@ -121,7 +121,7 @@ class PageModel extends BaseModel
   public function deletePage($page_id)
   {
     $page_id = intval($page_id);
-    $ret = M("Page")->where(" page_id = '$page_id' ")->delete();
+    $ret = M("Page")->where(array('page_id' => $page_id))->delete();
     return $ret;
   }
 

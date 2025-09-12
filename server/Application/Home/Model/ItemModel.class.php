@@ -10,24 +10,24 @@ class ItemModel extends BaseModel
     public function export($item_id)
     {
         $item_id = intval($item_id);
-        $item = D("Item")->where("item_id = '$item_id' ")->field(" item_type, item_name ,item_description,password ")->find();
+        $item = D("Item")->where(array('item_id' => $item_id))->field(" item_type, item_name ,item_description,password ")->find();
         //获取所有父目录id为0的页面
-        $pages = D("Page")->where("cat_id = '0' and item_id = '$item_id' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" s_number asc  ")->select();
+        $pages = D("Page")->where(array('cat_id' => 0, 'item_id' => $item_id))->field(" page_title ,page_content,s_number,page_comments ")->order(" s_number asc  ")->select();
         //获取所有二级目录
-        $catalogs = D("Catalog")->where("item_id = '$item_id' and level = 2  ")->field("cat_id, cat_name ,level,s_number ")->order(" s_number asc  ")->select();
+        $catalogs = D("Catalog")->where(array('item_id' => $item_id, 'level' => 2))->field("cat_id, cat_name ,level,s_number ")->order(" s_number asc  ")->select();
         if ($catalogs) {
             foreach ($catalogs as $key => &$catalog) {
                 //该二级目录下的所有子页面
-                $temp = D("Page")->where("cat_id = '$catalog[cat_id]' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" s_number asc  ")->select();
+                $temp = D("Page")->where(array('cat_id' => $catalog['cat_id']))->field(" page_title ,page_content,s_number,page_comments ")->order(" s_number asc  ")->select();
                 $catalog['pages'] = $temp ? $temp : array();
                 //该二级目录下的所有子目录
-                $temp = D("catalog")->where("parent_cat_id = '$catalog[cat_id]' ")->field(" cat_id,cat_name ,level,s_number ")->order(" s_number asc  ")->select();
+                $temp = D("catalog")->where(array('parent_cat_id' => $catalog['cat_id']))->field(" cat_id,cat_name ,level,s_number ")->order(" s_number asc  ")->select();
                 $catalog['catalogs'] = $temp ? $temp : array();
                 if ($catalog['catalogs']) {
                     //获取所有三级目录的子页面
                     foreach ($catalog['catalogs'] as $key3 => &$catalog3) {
                         //该二级目录下的所有子页面
-                        $temp = D("Page")->where("cat_id = '$catalog3[cat_id]' ")->field(" page_title ,page_content,s_number,page_comments ")->order(" s_number asc  ")->select();
+                        $temp = D("Page")->where(array('cat_id' => $catalog3['cat_id']))->field(" page_title ,page_content,s_number,page_comments ")->order(" s_number asc  ")->select();
                         $catalog3['pages'] = $temp ? $temp : array();
                         unset($catalog3['cat_id']);
                     }
@@ -41,7 +41,7 @@ class ItemModel extends BaseModel
         );
         unset($pages);
         unset($catalogs);
-        $item['members'] = D("ItemMember")->where("item_id = '$item_id' ")->field(" member_group_id ,uid,username ")->select();
+        $item['members'] = D("ItemMember")->where(array('item_id' => $item_id))->field(" member_group_id ,uid,username ")->select();
         return  json_encode($item);
     }
     public function import($json, $uid, $item_name = '', $item_description = '', $item_password = '', $item_domain = '')
@@ -51,7 +51,7 @@ class ItemModel extends BaseModel
         unset($json);
         if ($item) {
             if ($item['item_domain']) {
-                $item2 = D("Item")->where("item_domain = '%s'  " . array($item['item_domain']))->find();
+                $item2 = D("Item")->where("item_domain = '%s'  ", array($item['item_domain']))->find();
                 if ($item2) {
                     //个性域名已经存在
                     return false;

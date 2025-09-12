@@ -24,7 +24,7 @@ class TemplateController extends BaseController
 
 
         $id = D("Template")->add($data);
-        $return = D("Template")->where(" id = '$id' ")->find();
+        $return = D("Template")->where(array('id' => $id))->find();
 
         if (!$return) {
             $return['error_code'] = 10103;
@@ -45,14 +45,14 @@ class TemplateController extends BaseController
     {
         $login_user = $this->checkLogin();
         if ($login_user['uid'] > 0) {
-            $ret = D("Template")->where(" uid = '$login_user[uid]' ")->order(" addtime desc  ")->select();
+            $ret = D("Template")->where(array('uid' => $login_user['uid']))->order(" addtime desc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {
                 $value['addtime'] = date("Y-m-d H:i:s", $value['addtime']);
                 $value['template_content'] = htmlspecialchars_decode($value['template_content']);
                 // 获取当前模板被共享到哪些项目中
-                $res = D("TemplateItem")->where("  template_id = '$value[id]' ")->select();
+                $res = D("TemplateItem")->where(array('template_id' => $value['id']))->select();
                 $value['share_item'] = $res ? $res : array();
                 $value['share_item_count'] = count($value['share_item']);
             }
@@ -72,7 +72,7 @@ class TemplateController extends BaseController
             return;
         }
 
-        $res = D("TemplateItem")->where("  item_id = '$item_id' ")->join(" left join template on template.id = template_item.template_id ")->select();
+        $res = D("TemplateItem")->where("  item_id = '%d' ", array($item_id))->join(" left join template on template.id = template_item.template_id ")->select();
         if ($res) {
             foreach ($res as $key => &$value) {
                 $value['addtime'] = date("Y-m-d H:i:s", $value['addtime']);
@@ -91,14 +91,14 @@ class TemplateController extends BaseController
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'];
         // 这里验证一下。传进来的模板id需要是他自己本人的
-        if (!D("Template")->where("  id = '$id' and uid = '$uid' ")->find()) {
+        if (!D("Template")->where("  id = '%d' and uid = '%d' ", array($id, $uid))->find()) {
             $this->sendError(10103);
             return;
         }
 
         if ($id) {
-            $ret = D("Template")->where(" id = '$id'  ")->delete();
-            D("TemplateItem")->where(" template_id = '$id'")->delete();
+            $ret = D("Template")->where(array('id' => $id))->delete();
+            D("TemplateItem")->where(array('template_id' => $id))->delete();
             $this->sendResult(array());
             return;
         }
@@ -112,16 +112,15 @@ class TemplateController extends BaseController
         $uid = $login_user['uid'];
         $item_id = I("item_id"); // 这里的item_id可能是逗号分隔的字符串
         $template_id = I("template_id/d");
-        $item_id =  \SQLite3::escapeString($item_id);
         $item_id_array = explode(",", $item_id);
 
         // 这里验证一下。传进来的模板id需要是他自己本人的
-        if (!D("Template")->where("  id = '$template_id' and uid = '$uid' ")->find()) {
+        if (!D("Template")->where("  id = '%d' and uid = '%d' ", array($template_id, $uid))->find()) {
             $this->sendError(10103);
             return;
         }
         $res = '';
-        D("TemplateItem")->where("  template_id = '$template_id'  ")->delete();
+        D("TemplateItem")->where(array('template_id' => $template_id))->delete();
         foreach ($item_id_array as $key => $value) {
             $item_id = intval($value);
             if (!$item_id) continue;
@@ -130,7 +129,7 @@ class TemplateController extends BaseController
                 return;
             }
 
-            if (D("TemplateItem")->where("  template_id = '$template_id' and item_id = '$item_id' ")->find()) {
+            if (D("TemplateItem")->where("  template_id = '%d' and item_id = '%d' ", array($template_id, $item_id))->find()) {
                 continue; //如果该模板已经分享到该项目中了，则结束当前一次循环。
             }
 
@@ -152,12 +151,12 @@ class TemplateController extends BaseController
         $uid = $login_user['uid'];
         $template_id = I("template_id/d");
         // 这里验证一下。传进来的模板id需要是他自己本人的
-        if (!D("Template")->where("  id = '$template_id' and uid = '$uid' ")->find()) {
+        if (!D("Template")->where("  id = '%d' and uid = '%d' ", array($template_id, $uid))->find()) {
             $this->sendError(10103);
             return;
         }
 
-        $res = D("TemplateItem")->where("  template_id = '$template_id' ")->select();
+        $res = D("TemplateItem")->where(array('template_id' => $template_id))->select();
         if ($res) {
             $this->sendResult($res);
         } else {

@@ -26,7 +26,7 @@ class BaseController extends Controller
 			if ($cookie_token) {
 				$ret = D("UserToken")->getToken($cookie_token);
 				if ($ret && $ret['token_expire'] > time()) {
-					$login_user = D("User")->where("uid = $ret[uid]")->find();
+					$login_user = D("User")->where(array('uid' => $ret['uid']))->find();
 					unset($ret['password']);
 					session("login_user", $login_user);
 					return $login_user;

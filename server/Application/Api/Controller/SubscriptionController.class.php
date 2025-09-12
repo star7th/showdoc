@@ -13,7 +13,7 @@ class SubscriptionController extends BaseController
     {
         $login_user = $this->checkLogin();
         $page_id = I("post.page_id/d");
-        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page = M("Page")->where(array('page_id' => $page_id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $page['item_id'])) {
             $this->sendError(10103);
             return;
@@ -22,7 +22,7 @@ class SubscriptionController extends BaseController
         $subscription_array = D("Subscription")->getListByObjectId($page_id, 'page', 'update');
         $subscription_array = $subscription_array ? $subscription_array : array();
         foreach ($subscription_array as $key => $value) {
-            $user_array = D("User")->where(" uid = '$value[uid]'  ")->find();
+            $user_array = D("User")->where(array('uid' => $value['uid']))->find();
             $subscription_array[$key]['username'] = $user_array['username'];
             $subscription_array[$key]['name'] = $user_array['name'];
         }
@@ -36,7 +36,7 @@ class SubscriptionController extends BaseController
         $login_user = $this->checkLogin();
         $uids = I("uids");
         $page_id = I("post.page_id/d");
-        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page = M("Page")->where(array('page_id' => $page_id))->find();
 
         if (!$this->checkItemEdit($login_user['uid'], $page['item_id'])) {
             $this->sendError(10103);
@@ -62,7 +62,7 @@ class SubscriptionController extends BaseController
 
         $uids = I("uids");
         $page_id = I("post.page_id/d");
-        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page = M("Page")->where(array('page_id' => $page_id))->find();
 
         if (!$this->checkItemEdit($login_user['uid'], $page['item_id'])) {
             $this->sendError(10103);

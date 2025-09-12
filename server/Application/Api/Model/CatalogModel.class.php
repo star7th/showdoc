@@ -114,16 +114,16 @@ class CatalogModel extends BaseModel
 		}
 		$cat_id = intval($cat_id);
 		//如果有子目录的话，递归把子目录清了
-		$cats = $this->where(" parent_cat_id = '$cat_id' ")->select();
+		$cats = $this->where(array('parent_cat_id' => $cat_id))->select();
 		if ($cats) {
 			foreach ($cats as $key => $value) {
 				$this->deleteCat($value['cat_id']);
 			}
 		}
 		//获取当前目录信息
-		$cat = $this->where(" cat_id = '$cat_id' ")->find();
+		$cat = $this->where(array('cat_id' => $cat_id))->find();
 		$item_id = $cat['item_id'];
-		$all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->field("page_id,cat_id")->select();
+		$all_pages = D("Page")->where(array('item_id' => $item_id, 'is_del' => 0))->field("page_id,cat_id")->select();
 		$pages = array();
 		if ($all_pages) {
 			foreach ($all_pages as $key => $value) {
@@ -138,7 +138,7 @@ class CatalogModel extends BaseModel
 				D("Page")->softDeletePage($value['page_id']);
 			}
 		}
-		$this->where(" cat_id = '$cat_id' ")->delete();
+		$this->where(array('cat_id' => $cat_id))->delete();
 
 		return true;
 	}
@@ -174,7 +174,7 @@ class CatalogModel extends BaseModel
 	{
 		$userInfo = D("User")->userInfo($uid);
 		$old_cat_ary = $this->where("cat_id = '%d' ", array($old_cat_id))->find();
-		$to_item_id = $to_item_id ? $to_item_id : $cat_ary['item_id'];
+		$to_item_id = $to_item_id ? $to_item_id : $old_cat_ary['item_id'];
 
 		//这里需要读取目录下的页面以及子目录信息
 		$old_cat_data = $this->getCat($old_cat_id);
@@ -194,10 +194,10 @@ class CatalogModel extends BaseModel
 	public function getCat($cat_id)
 	{
 		$cat_id = intval($cat_id);
-		$cat_ary = $this->where("cat_id = '$cat_id' ")->find();
+		$cat_ary = $this->where(array('cat_id' => $cat_id))->find();
 		$item_id = $cat_ary['item_id'];
 		//获取项目下所有页面信息
-		$all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" s_number asc , page_id asc ")->field($page_field)->select();
+		$all_pages = D("Page")->where(array('item_id' => $item_id, 'is_del' => 0))->order(" s_number asc , page_id asc ")->field("*")->select();
 		//获取项目下所有目录信息
 		$all_catalogs = $this->where(" item_id = '%d' ", array($item_id))->order(" s_number, cat_id asc  ")->select();
 
@@ -281,7 +281,7 @@ class CatalogModel extends BaseModel
 			if ($i > 0) {  //$i > 0则表明非顶级目录。应该有parent_cat_id
 				$parent_cat_id = $cat_ids_array[$i - 1];
 			}
-			$one_array = D("Catalog")->where(" item_id = '$item_id' and level = '$level' and cat_name = '%s' and parent_cat_id = '$parent_cat_id' ", array($cat_name))->find();
+			$one_array = D("Catalog")->where(" item_id = '%d' and level = '%d' and cat_name = '%s' and parent_cat_id = '%d' ", array($item_id, $level, $cat_name, $parent_cat_id))->find();
 			if ($one_array) {
 				$cat_ids_array[$i] = $one_array['cat_id'];
 			} else {

@@ -224,41 +224,44 @@ class ParamDescLibController extends BaseController
       return;
     }
 
-    $where = "item_id = {$item_id}";
+    $where = "item_id = %d";
+    $params = array($item_id);
 
     // 添加搜索条件
     if ($keyword) {
-      $keyword = \SQLite3::escapeString($keyword);
-      $where .= " AND (name LIKE '%{$keyword}%' OR description LIKE '%{$keyword}%')";
+      $like = safe_like($keyword);
+      $where .= " AND (name LIKE '%s' OR description LIKE '%s')";
+      array_push($params, $like, $like);
     }
 
     if ($status) {
-      $status = \SQLite3::escapeString($status);
-      $where .= " AND status = '{$status}'";
+      $where .= " AND status = '%s'";
+      $params[] = $status;
     }
 
     if ($name) {
-      $name = \SQLite3::escapeString($name);
-      $where .= " AND name = '{$name}'";
+      $where .= " AND name = '%s'";
+      $params[] = $name;
     }
 
     if ($type) {
-      $type = \SQLite3::escapeString($type);
-      $where .= " AND type = '{$type}'";
+      $where .= " AND type = '%s'";
+      $params[] = $type;
     }
 
     if ($tag) {
-      $tag = \SQLite3::escapeString($tag);
-      $where .= " AND tags LIKE '%\"{$tag}\"%'";
+      $like_tag = '%"' . safe_like($tag) . '"%';
+      $where .= " AND tags LIKE '%s'";
+      $params[] = $like_tag;
     }
 
     // 计算总数
-    $total = D("ParameterDescriptionEntry")->where($where)->count();
+    $total = D("ParameterDescriptionEntry")->where($where, $params)->count();
 
     // 获取分页数据
     $offset = ($page - 1) * $pageSize;
     $entries = D("ParameterDescriptionEntry")
-      ->where($where)
+      ->where($where, $params)
       ->order("quality_score DESC, usage_count DESC, updated_at DESC")
       ->limit($offset, $pageSize)
       ->select();

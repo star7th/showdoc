@@ -47,7 +47,7 @@ class UserController extends BaseController
                         }
 
                         //设置自动登录
-                        $ret = D("User")->where("uid = '$new_uid' ")->find();
+                        $ret = D("User")->where(array('uid' => $new_uid))->find();
                         unset($ret['password']);
                         session("login_user", $ret);
                         $token = D("UserToken")->createToken($ret['uid']);
@@ -149,7 +149,7 @@ class UserController extends BaseController
             if (!$ret['salt']) {
                 $salt = get_rand_str();
                 $password = encry_password($password, $salt);
-                D("User")->where("uid ='%d' ", array($ret['uid']))->save(array('salt' => $salt, 'password' => $password));
+                D("User")->where("uid = '%d' ", array($ret['uid']))->save(array('salt' => $salt, 'password' => $password));
             }
 
             unset($ret['password']);
@@ -281,7 +281,7 @@ class UserController extends BaseController
                     }
 
                     //设置自动登录
-                    $ret = D("User")->where("uid = '$new_uid' ")->find();
+                    $ret = D("User")->where(array('uid' => $new_uid))->find();
                     unset($ret['password']);
                     session("login_user", $ret);
                     $token = D("UserToken")->createToken($ret['uid']);
@@ -317,7 +317,7 @@ class UserController extends BaseController
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'];
         $field = "uid,username,email,name,avatar,avatar_small,groupid";
-        $info = D("User")->where(" uid = '$uid' ")->field($field)->find();
+        $info = D("User")->where(array('uid' => $uid))->field($field)->find();
         $this->sendResult($info);
     }
 
@@ -329,12 +329,13 @@ class UserController extends BaseController
         $username = I("username");
         $field = "username , uid , name";
         if ($username) {
-            $username = \SQLite3::escapeString($username);
-            $where = " username like '%{$username}%'";
+            $like = safe_like($username);
+            $where = " username like '%s'";
+            $params = array($like);
         } else {
             $where = ' 1 = 1 ';
         }
-        $info = D("User")->where($where)->field($field)->select();
+        $info = isset($params) ? D("User")->where($where, $params)->field($field)->select() : D("User")->where($where)->field($field)->select();
         $this->sendResult($info);
     }
 
@@ -369,7 +370,7 @@ class UserController extends BaseController
         $login_user = $this->checkLogin();
         $confirm = I('post.confirm');
         if ($confirm || strstr($_SERVER['HTTP_USER_AGENT'], "Html5Plus")) {
-            D("UserToken")->where(" uid = '$login_user[uid]' ")->save(array("token_expire" => 0));
+            D("UserToken")->where(" uid = '%d' ", array($login_user['uid']))->save(array("token_expire" => 0));
             session("login_user", NULL);
             cookie('cookie_token', NULL);
             session(null);
@@ -392,7 +393,7 @@ class UserController extends BaseController
         $uid = $user['uid'];
         $name = I("post.name");
 
-        D("User")->where(" uid = '$uid' ")->save(array("name" => $name));
+        D("User")->where(array('uid' => $uid))->save(array("name" => $name));
         $this->sendResult(array());
     }
 

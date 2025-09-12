@@ -18,14 +18,13 @@ class TeamItemController extends BaseController
 
         $item_id = I("post.item_id");
         $team_id = I("post.team_id/d");
-        $item_id =  \SQLite3::escapeString($item_id);
 
         if (!$this->checkTeamManage($uid, $team_id)) {
             $this->sendError(10103);
             return;
         }
 
-        $teamInfo = D("Team")->where(" id = '$team_id'  ")->find();
+        $teamInfo = D("Team")->where(array('id' => $team_id))->find();
 
         $item_id_array = explode(",", $item_id);
         foreach ($item_id_array as $key => $value) {
@@ -35,7 +34,7 @@ class TeamItemController extends BaseController
                 return;
             }
 
-            if (D("TeamItem")->where("  team_id = '$team_id' and item_id = '$item_id' ")->find()) {
+            if (D("TeamItem")->where("  team_id = '%d' and item_id = '%d' ", array($team_id, $item_id))->find()) {
                 continue; //如果该项目已经加入团队了，则结束当前一次循环。
             }
 
@@ -49,7 +48,7 @@ class TeamItemController extends BaseController
             D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'binding', 'team', $team_id, $teamInfo['team_name']);
 
             //获取该团队的所有成员并加入项目
-            $teamMembers = D("TeamMember")->where("  team_id = '$team_id' ")->select();
+            $teamMembers = D("TeamMember")->where("  team_id = '%d' ", array($team_id))->select();
             if ($teamMembers) {
                 foreach ($teamMembers as $key => $value) {
                     $data = array(
@@ -66,7 +65,7 @@ class TeamItemController extends BaseController
         }
 
 
-        $return = D("TeamItem")->where(" id = '$id' ")->find();
+        $return = D("TeamItem")->where(array('id' => $id))->find();
 
         if (!$return) {
             $return['error_code'] = 10103;
@@ -89,8 +88,8 @@ class TeamItemController extends BaseController
             return;
         }
 
-        $sql  = "select team.*,team_item.team_id , team_item.id as id from team left join team_item on team.id = team_item.team_id where team_item.item_id = '$item_id' ";
-        $ret = D("TeamItem")->query($sql);
+        $sql  = "select team.*,team_item.team_id , team_item.id as id from team left join team_item on team.id = team_item.team_id where team_item.item_id = '%d' ";
+        $ret = D("TeamItem")->query(sprintf($sql, $item_id));
 
         if ($ret) {
             foreach ($ret as $key => &$value) {
@@ -111,16 +110,16 @@ class TeamItemController extends BaseController
         $team_id = I("team_id/d");
 
         // 权限判断。团队管理者和团队成员可以看到该列表
-        if (!$this->checkTeamManage($uid, $team_id) && !D("TeamMember")->where(" member_uid = '$uid' and team_id = '$team_id' ")->find()) {
+        if (!$this->checkTeamManage($uid, $team_id) && !D("TeamMember")->where(" member_uid = '%d' and team_id = '%d' ", array($uid, $team_id))->find()) {
             $this->sendError(10103);
             return;
         }
 
-        $teamInfo = D("Team")->where(" id = '$team_id'  ")->find();
+        $teamInfo = D("Team")->where(array('id' => $team_id))->find();
 
 
-        $sql  = "select item.*,team_item.team_id , team_item.id as id from item left join team_item on item.item_id = team_item.item_id where team_item.team_id = '$team_id' and item.is_del = 0 ";
-        $ret = D("Item")->query($sql);
+        $sql  = "select item.*,team_item.team_id , team_item.id as id from item left join team_item on item.item_id = team_item.item_id where team_item.team_id = '%d' and item.is_del = 0 ";
+        $ret = D("Item")->query(sprintf($sql, $team_id));
 
         if ($ret) {
             foreach ($ret as $key => &$value) {
@@ -140,7 +139,7 @@ class TeamItemController extends BaseController
         $uid = $login_user['uid'];
 
         $id = I("post.id/d") ? I("post.id/d") : 0;
-        $teamItemInfo = D("TeamItem")->where(" id = '$id'  ")->find();
+        $teamItemInfo = D("TeamItem")->where(array('id' => $id))->find();
         $item_id = $teamItemInfo['item_id'];
         $team_id = $teamItemInfo['team_id'];
 
@@ -149,11 +148,11 @@ class TeamItemController extends BaseController
             return;
         }
 
-        $ret = D("TeamItemMember")->where(" item_id = '$item_id' and team_id = '$team_id' ")->delete();
-        $ret = D("TeamItem")->where(" id = '$id' ")->delete();
+        $ret = D("TeamItemMember")->where(" item_id = '%d' and team_id = '%d' ", array($item_id, $team_id))->delete();
+        $ret = D("TeamItem")->where(array('id' => $id))->delete();
 
         if ($ret) {
-            $teamInfo = D("Team")->where(" id = '$team_id' ")->find();
+            $teamInfo = D("Team")->where(array('id' => $team_id))->find();
             D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'unbound', 'team', $team_id, $teamInfo['team_name']);
             $this->sendResult($ret);
         } else {

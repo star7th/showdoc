@@ -72,13 +72,13 @@ class UserModel extends BaseModel
     public function delete_user($uid)
     {
         $uid = intval($uid);
-        D("TeamMember")->where("member_uid = '$uid' ")->delete();
-        D("TeamItemMember")->where("member_uid = '$uid' ")->delete();
-        D("ItemMember")->where("uid = '$uid' ")->delete();
-        D("UserToken")->where("uid = '$uid' ")->delete();
-        D("Template")->where("uid = '$uid' ")->delete();
-        D("ItemTop")->where("uid = '$uid' ")->delete();
-        $return = D("User")->where("uid = '$uid' ")->delete();
+        D("TeamMember")->where(array('member_uid' => $uid))->delete();
+        D("TeamItemMember")->where(array('member_uid' => $uid))->delete();
+        D("ItemMember")->where(array('uid' => $uid))->delete();
+        D("UserToken")->where(array('uid' => $uid))->delete();
+        D("Template")->where(array('uid' => $uid))->delete();
+        D("ItemTop")->where(array('uid' => $uid))->delete();
+        $return = D("User")->where(array('uid' => $uid))->delete();
         return $return;
     }
     //检测ldap登录

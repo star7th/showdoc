@@ -20,7 +20,7 @@ class RecycleController extends BaseController
             return;
         }
         if ($item_id > 0) {
-            $ret = D("Recycle")->where(" item_id = '$item_id' ")->order(" del_time desc  ")->select();
+            $ret = D("Recycle")->where(" item_id = '%d' ", array($item_id))->order(" del_time desc  ")->select();
         }
         if ($ret) {
             foreach ($ret as $key => &$value) {
@@ -43,9 +43,9 @@ class RecycleController extends BaseController
             return;
         }
         if ($item_id > 0) {
-            M("Page")->where(" page_id = '$page_id' ")->save(array("is_del" => 0));
-            D("Page")->where(" page_id = '$page_id' ")->save(array("is_del" => 0, "cat_id" => 0));
-            $ret = D("Recycle")->where(" item_id = '$item_id' and page_id = '$page_id' ")->delete();
+            M("Page")->where(" page_id = '%d' ", array($page_id))->save(array("is_del" => 0));
+            D("Page")->where(" page_id = '%d' ", array($page_id))->save(array("is_del" => 0, "cat_id" => 0));
+            $ret = D("Recycle")->where(" item_id = '%d' and page_id = '%d' ", array($item_id, $page_id))->delete();
         }
         $this->sendResult(array());
     }

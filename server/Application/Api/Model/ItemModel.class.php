@@ -10,11 +10,11 @@ class ItemModel extends BaseModel
     public function export($item_id, $uncompress = 0)
     {
         $item_id = intval($item_id);
-        $item = D("Item")->where("item_id = '$item_id' ")->field(" item_type, item_name ,item_description,password ")->find();
+        $item = D("Item")->where(array('item_id' => $item_id))->field(" item_type, item_name ,item_description,password ")->find();
         $page_field = "page_title ,cat_id,page_content,s_number,page_comments";
         $catalog_field = "cat_id,cat_name ,parent_cat_id,level,s_number";
         $item['pages'] = $this->getContent($item_id, $page_field, $catalog_field, $uncompress);
-        $item['members'] = D("ItemMember")->where("item_id = '$item_id' ")->field(" member_group_id ,uid,username ")->select();
+        $item['members'] = D("ItemMember")->where(array('item_id' => $item_id))->field(" member_group_id ,uid,username ")->select();
         return  json_encode($item);
     }
     public function import($json, $uid, $item_id = 0, $item_name = '', $item_description = '', $item_password = '', $item_domain = '')
@@ -30,7 +30,7 @@ class ItemModel extends BaseModel
 
             } else {
                 if ($item['item_domain']) {
-                    $item2 = D("Item")->where("item_domain = '%s'  " . array($item['item_domain']))->find();
+                    $item2 = D("Item")->where("item_domain = '%s'", array($item['item_domain']))->find();
                     if ($item2) {
                         //个性域名已经存在
                         return false;
@@ -105,7 +105,7 @@ class ItemModel extends BaseModel
     {
         $item_id = intval($item_id);
         //获取该项目下的所有页面
-        $all_pages = D("Page")->where("item_id = '$item_id' and is_del = 0 ")->order(" s_number asc , page_id asc  ")->field($page_field)->select();
+        $all_pages = D("Page")->where(array('item_id' => $item_id, 'is_del' => 0))->order(" s_number asc , page_id asc  ")->field($page_field)->select();
         $pages = array();
         if ($all_pages) {
             foreach ($all_pages as $key => $value) {
@@ -118,7 +118,7 @@ class ItemModel extends BaseModel
         }
 
         //获取该项目下的所有目录
-        $all_catalogs = D("Catalog")->field($catalog_field)->where("item_id = '$item_id' ")->order(" s_number asc , cat_id asc ")->select();
+        $all_catalogs = D("Catalog")->field($catalog_field)->where(array('item_id' => $item_id))->order(" s_number asc , cat_id asc ")->select();
 
         //获取所有二级目录
         $catalogs = array();
@@ -200,21 +200,21 @@ class ItemModel extends BaseModel
     public function delete_item($item_id)
     {
         $item_id = intval($item_id);
-        D("Page")->where("item_id = '$item_id' ")->delete();
-        D("Page")->where("item_id = '$item_id' ")->delete();
-        D("Catalog")->where("item_id = '$item_id' ")->delete();
-        D("PageHistory")->where("item_id = '$item_id' ")->delete();
-        D("ItemMember")->where("item_id = '$item_id' ")->delete();
-        D("TeamItem")->where("item_id = '$item_id' ")->delete();
-        D("TeamItemMember")->where("item_id = '$item_id' ")->delete();
-        return D("Item")->where("item_id = '$item_id' ")->delete();
+        D("Page")->where(array('item_id' => $item_id))->delete();
+        D("Page")->where(array('item_id' => $item_id))->delete();
+        D("Catalog")->where(array('item_id' => $item_id))->delete();
+        D("PageHistory")->where(array('item_id' => $item_id))->delete();
+        D("ItemMember")->where(array('item_id' => $item_id))->delete();
+        D("TeamItem")->where(array('item_id' => $item_id))->delete();
+        D("TeamItemMember")->where(array('item_id' => $item_id))->delete();
+        return D("Item")->where(array('item_id' => $item_id))->delete();
     }
 
     //软删除项目
     public function soft_delete_item($item_id)
     {
         $item_id = intval($item_id);
-        return $this->where("item_id = '$item_id' ")->save(array("is_del" => 1, "last_update_time" => time()));
+        return $this->where(array('item_id' => $item_id))->save(array("is_del" => 1, "last_update_time" => time()));
     }
 
     private function _htmlspecialchars($str)

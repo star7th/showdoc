@@ -15,7 +15,7 @@ class MockController extends BaseController
         $path = I("path") ? I("path") : '/';
         $login_user = $this->checkLogin();
         $uid = $login_user['uid'];
-        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $page = M("Page")->where(array('page_id' => $page_id))->find();
         if (!$this->checkItemEdit($uid, $page['item_id'])) {
             $this->sendError(10103);
             return;
@@ -31,10 +31,10 @@ class MockController extends BaseController
         }
         $unique_key = md5(time() . rand() . "gbgdhbdgtfgfK3@bv45342asfsdfjhyfgkj54fofgfbv45342asfsdg");
         //假如已经该页面存在mock
-        $mock_page = D("Mock")->where(" page_id = '$page_id' ")->find();
+        $mock_page = D("Mock")->where(array('page_id' => $page_id))->find();
         if ($mock_page) {
             $unique_key = $mock_page['unique_key'];
-            D("Mock")->where("page_id = '$page_id' ")->save(array(
+            D("Mock")->where("page_id = '%d' ", array($page_id))->save(array(
                 "uid" => $uid,
                 "template" => $template,
                 "path" => $path,
@@ -67,7 +67,7 @@ class MockController extends BaseController
         $login_user = $this->checkLogin(false);
         $page_id = I("page_id/d");
         $uid = $login_user['uid'];
-        $page = D("Mock")->where(" page_id = '$page_id' ")->find();
+        $page = D("Mock")->where(array('page_id' => $page_id))->find();
         if (!$this->checkItemVisit($login_user['uid'], $page['item_id'])) {
             $this->sendError(10103);
             return;
@@ -79,7 +79,7 @@ class MockController extends BaseController
     public function infoByKey()
     {
         $unique_key = I("unique_key");
-        $page = D("Mock")->where(" unique_key = '%s' ", array($unique_key))->find();
+        $page = D("Mock")->where(array('unique_key' => $unique_key))->find();
         $template = $page['template'];
         $res = http_post("http://127.0.0.1:7123/mock", array(
             "template" => htmlspecialchars_decode($page['template'])
@@ -114,8 +114,7 @@ class MockController extends BaseController
             "template" => htmlspecialchars_decode($page['template'])
         ));
         if ($res) {
-            $sql = " update mock set view_times = view_times + 1 where id = {$page['id']} ";
-            D("Mock")->execute($sql);
+            D("Mock")->where(" id = '%d' ", array($page['id']))->setInc("view_times");
             $json = json_decode($res);
             if (!$json) {
                 $this->sendError(10101, '为了服务器安全，只允许写符合json语法的字符串');

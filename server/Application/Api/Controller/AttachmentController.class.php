@@ -19,7 +19,7 @@ class AttachmentController extends BaseController
         $sign = I("sign");
         $imageView2 = I("imageView2");
         $d = D("UploadFile");
-        $ret = $d->where(" sign = '%s' ", array($sign))->find();
+        $ret = $d->where(array('sign' => $sign))->find();
         if ($ret) {
             $beyond_the_quota = 0;
             $days = ceil((time() - $ret['addtime']) / 86400); //自添加图片以来的天数
@@ -35,7 +35,7 @@ class AttachmentController extends BaseController
                 return;
             }
 
-            $d->where(" sign = '%s' ", array($sign))->save(array("visit_times" => $ret['visit_times'] + 1, "last_visit_time" => time()));
+            $d->where(array('sign' => $sign))->save(array("visit_times" => $ret['visit_times'] + 1, "last_visit_time" => time()));
             //记录用户流量
             D("Attachment")->recordUserFlow($ret['uid'], $ret['file_size']);
 
@@ -139,7 +139,7 @@ class AttachmentController extends BaseController
             return;
         }
         $return = array();
-        $files = D("UploadFile")->join(" file_page on file_page.file_id = upload_file.file_id")->field("upload_file.* , file_page.item_id as item_id ,file_page.page_id as page_id  ")->where("file_page.page_id = '$page_id' ")->order("file_page.addtime desc")->select();
+        $files = D("UploadFile")->join(" file_page on file_page.file_id = upload_file.file_id")->field("upload_file.* , file_page.item_id as item_id ,file_page.page_id as page_id  ")->where("file_page.page_id = '%d' ", array($page_id))->order("file_page.addtime desc")->select();
         if ($files) {
             $item_id = $files[0]['item_id'];
             if (!$this->checkItemVisit($login_user['uid'], $item_id)) {
@@ -170,16 +170,16 @@ class AttachmentController extends BaseController
         $login_user = $this->checkLogin();
         $file_id = I("file_id/d") ? I("file_id/d") : 0;
         $page_id = I("page_id/d") ? I("page_id/d") : 0;
-        $count = D("FilePage")->where(" file_id = '$file_id' and page_id > 0   ")->count();
+        $count = D("FilePage")->where(" file_id = '%d' and page_id > 0   ", array($file_id))->count();
         if ($count <= 1) {
             $this->deleteMyAttachment();
         } else {
-            $page = M("Page")->where(" page_id = '$page_id' ")->find();
+            $page = M("Page")->where(array('page_id' => $page_id))->find();
             if (!$this->checkItemEdit($login_user['uid'], $page['item_id'])) {
                 $this->sendError(10103);
                 return;
             }
-            $res = D("FilePage")->where(" file_id = '$file_id' and page_id = '$page_id'   ")->delete();
+            $res = D("FilePage")->where(" file_id = '%d' and page_id = '%d'   ", array($file_id, $page_id))->delete();
             if ($res) {
                 $this->sendResult(array());
             } else {
@@ -207,21 +207,22 @@ class AttachmentController extends BaseController
             $where .= " and file_type not like '%image%' ";
         }
         if ($display_name) {
-            $display_name =  \SQLite3::escapeString($display_name);
-            $where .= " and display_name  like '%{$display_name}%' ";
+            $like = safe_like($display_name);
+            $where .= " and display_name  like '%s' ";
+            $params[] = $like;
         }
         if ($username) {
-            $username =  \SQLite3::escapeString($username);
-            $uid = D("User")->where(" username = '{$username}' ")->getField('uid');
+            $uid = D("User")->where(array('username' => $username))->getField('uid');
             $uid = $uid ? $uid  : -99;
-            $where .= " and uid  = '{$uid}' ";
+            $where .= " and uid  = '%d' ";
+            $params[] = $uid;
         }
-        $files = D("UploadFile")->where($where)->order("addtime desc")->page($page, $count)->select();
+        $files = isset($params) ? D("UploadFile")->where($where, $params)->order("addtime desc")->page($page, $count)->select() : D("UploadFile")->where($where)->order("addtime desc")->page($page, $count)->select();
         if ($files) {
             foreach ($files as $key => $value) {
                 $username = '';
                 if ($value['uid']) {
-                    $username = D("User")->where(" uid = {$value['uid']} ")->getField('username');
+                    $username = D("User")->where(" uid = '%d' ", array($value['uid']))->getField('username');
                 }
                 $url = '';
                 if ($value['sign']) {
@@ -246,7 +247,7 @@ class AttachmentController extends BaseController
                 );
             }
         }
-        $return['total'] = D("UploadFile")->where($where)->count();
+        $return['total'] = isset($params) ? D("UploadFile")->where($where, $params)->count() : D("UploadFile")->where($where)->count();
         $used = D("UploadFile")->where($where)->getField('sum(file_size)');
         $return['used'] = $used;
         $return['used_m'] = round($used / (1024 * 1024), 3);
@@ -260,7 +261,7 @@ class AttachmentController extends BaseController
         $this->checkAdmin(); //重要，校验管理员身份
         $file_id = I("file_id/d") ? I("file_id/d") : 0;
 
-        $file = D("UploadFile")->where("file_id = '$file_id' ")->find();
+        $file = D("UploadFile")->where(array('file_id' => $file_id))->find();
 
         $ret = D("Attachment")->deleteFile($file_id);
         if ($ret) {
@@ -288,10 +289,11 @@ class AttachmentController extends BaseController
             $where .= " and file_type not like '%image%' ";
         }
         if ($display_name) {
-            $display_name =  \SQLite3::escapeString($display_name);
-            $where .= " and display_name  like '%{$display_name}%' ";
+            $like = safe_like($display_name);
+            $where .= " and display_name  like '%s' ";
+            $params[] = $like;
         }
-        $files = D("UploadFile")->where($where)->order("addtime desc")->page($page, $count)->select();
+        $files = isset($params) ? D("UploadFile")->where($where, $params)->order("addtime desc")->page($page, $count)->select() : D("UploadFile")->where($where)->order("addtime desc")->page($page, $count)->select();
         if ($files) {
             foreach ($files as $key => $value) {
                 $username = '';
@@ -311,7 +313,7 @@ class AttachmentController extends BaseController
                 );
             }
         }
-        $return['total'] = D("UploadFile")->where($where)->count();
+        $return['total'] = isset($params) ? D("UploadFile")->where($where, $params)->count() : D("UploadFile")->where($where)->count();
         $used = D("UploadFile")->where($where)->getField('sum(file_size)');
         $return['used'] = $used;
         $return['used_m'] = round($used / (1024 * 1024), 3);
@@ -327,7 +329,7 @@ class AttachmentController extends BaseController
         $login_user = $this->checkLogin();
         $file_id = I("file_id/d") ? I("file_id/d") : 0;
 
-        $file = D("UploadFile")->where("file_id = '$file_id' and uid ='$login_user[uid]' ")->find();
+        $file = D("UploadFile")->where("file_id = '%d' and uid ='%d' ", array($file_id, $login_user['uid']))->find();
 
         if ($file) {
             $ret = D("Page")->deleteFile($file_id);
@@ -345,8 +347,8 @@ class AttachmentController extends BaseController
         $login_user = $this->checkLogin();
         $file_id = I("file_id/d") ? I("file_id/d") : 0;
         $page_id = I("page_id/d");
-        $file = D("UploadFile")->where("file_id = '$file_id' and uid ='$login_user[uid]' ")->find();
-        $page = M("Page")->where(" page_id = '$page_id' ")->find();
+        $file = D("UploadFile")->where("file_id = '%d' and uid ='%d' ", array($file_id, $login_user['uid']))->find();
+        $page = M("Page")->where(array('page_id' => $page_id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $page['item_id'])) {
             $this->sendError(10103);
             return;

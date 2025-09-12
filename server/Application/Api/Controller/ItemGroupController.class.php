@@ -21,7 +21,7 @@ class ItemGroupController extends BaseController
         if (!$group_name) return false;
         if ($id) {
 
-            D("ItemGroup")->where(" id = '$id' ")->save(array("group_name" => $group_name, "item_ids" => $item_ids));
+            D("ItemGroup")->where(array('id' => $id))->save(array("group_name" => $group_name, "item_ids" => $item_ids));
         } else {
             $data = array();
             $data['uid'] = $login_user['uid'];
@@ -33,7 +33,7 @@ class ItemGroupController extends BaseController
         }
 
         usleep(200000);
-        $return = D("ItemGroup")->where(" id = '$id' ")->find();
+        $return = D("ItemGroup")->where(array('id' => $id))->find();
 
         if (!$return && !$id) {
             $return = array();
@@ -49,7 +49,7 @@ class ItemGroupController extends BaseController
     {
         $login_user = $this->checkLogin();
         if ($login_user['uid'] > 0) {
-            $ret = D("ItemGroup")->where(" uid = '$login_user[uid]' ")->order(" s_number asc,id asc  ")->select();
+            $ret = D("ItemGroup")->where(" uid = '%d' ", array($login_user['uid']))->order(" s_number asc,id asc  ")->select();
         }
         if ($ret) {
             $this->sendResult($ret);
@@ -64,11 +64,11 @@ class ItemGroupController extends BaseController
         $id = I("id/d") ? I("id/d") : 0;
         $login_user = $this->checkLogin();
         if ($id && $login_user['uid']) {
-            $ret = D("ItemGroup")->where(" id = '$id' and uid = '$login_user[uid]'")->delete();
+            $ret = D("ItemGroup")->where(" id = '%d' and uid = '%d'", array($id, $login_user['uid']))->delete();
         }
         if ($ret) {
-            D("ItemGroup")->where(" id = '$id' ")->delete();
-            D("ItemSort")->where(" item_group_id = '$id' ")->delete();
+            D("ItemGroup")->where(array('id' => $id))->delete();
+            D("ItemSort")->where(array('item_group_id' => $id))->delete();
             $this->sendResult($ret);
         } else {
             $this->sendError(10101);
@@ -85,7 +85,7 @@ class ItemGroupController extends BaseController
         if ($data_array) {
             foreach ($data_array as $key => $value) {
                 $id = intval($value['id']);
-                $ret = D("ItemGroup")->where(" id = '$id' and uid = '{$uid}'")->save(array('s_number' => $value['s_number']));
+                $ret = D("ItemGroup")->where(" id = '%d' and uid = '%d'", array($id, $uid))->save(array('s_number' => $value['s_number']));
             }
         }
         $this->sendResult(array());

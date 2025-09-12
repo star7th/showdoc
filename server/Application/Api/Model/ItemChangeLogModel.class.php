@@ -22,20 +22,20 @@ class ItemChangeLogModel extends BaseModel
         $this->add($data);
 
         //统计有多少条日志记录了
-        $count = $this->where(" item_id = '$item_id' ")->count();
+        $count = $this->where(array('item_id' => $item_id))->count();
         //每个项目只保留最多$keepNum个变更记录
         $keepCount = 300;
         if ($count > $keepCount) {
-            $ret = $this->where(" item_id = '$item_id' ")->limit($keepCount)->order("id desc")->select();
-            $this->where(" item_id = '$item_id' and id < " . $ret[$keepCount - 1]['id'])->delete();
+            $ret = $this->where(array('item_id' => $item_id))->limit($keepCount)->order("id desc")->select();
+            $this->where(" item_id = '%d' and id < %d", array($item_id, $ret[$keepCount - 1]['id']))->delete();
         }
     }
 
     public function getLog($item_id, $page = 1, $count = 15)
     {
         $item_id = intval($item_id);
-        $list = $this->where(" item_id = '{$item_id}' ")->order(" optime desc ")->page(" $page , $count ")->select();
-        $total = $this->where(" item_id = '{$item_id}' ")->count();
+        $list = $this->where(" item_id = '%d' ", array($item_id))->order(" optime desc ")->page(" $page , $count ")->select();
+        $total = $this->where(" item_id = '%d' ", array($item_id))->count();
         if ($list) {
             foreach ($list as $key => $value) {
                 $list[$key] = $this->renderOneLog($value);
@@ -56,7 +56,7 @@ class ItemChangeLogModel extends BaseModel
         $op_action_type = $one['op_action_type'];
         $uid = intval($one['uid']);
         $one['op_object_id'] = intval($one['op_object_id']);
-        $user_array = D("User")->where(" uid = {$uid} ")->Field('username,name')->find();
+        $user_array = D("User")->where(array('uid' => $uid))->Field('username,name')->find();
         $one['username'] = $user_array['username'];
         $one['name'] = $user_array['name'];
         $oper = $user_array['username'];

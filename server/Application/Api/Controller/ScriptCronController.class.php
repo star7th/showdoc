@@ -26,7 +26,7 @@ class ScriptCronController extends BaseController
     public function clean_deleted_data()
     {
         //30天前的已删除项目
-        $items = D("Item")->where(" is_del = 1 and last_update_time < " . (time() - 30 * 24 * 60 * 60))->select();
+        $items = D("Item")->where(" is_del = 1 and last_update_time < %d ", array(time() - 30 * 24 * 60 * 60))->select();
         if ($items) {
             foreach ($items as $key => $value) {
                 $ret = D("Item")->delete_item($value['item_id']);
@@ -34,18 +34,18 @@ class ScriptCronController extends BaseController
         }
 
 
-        $pages = D("Page")->where(" is_del = 1 and addtime < " . (time() - 30 * 24 * 60 * 60))->select();
+        $pages = D("Page")->where(" is_del = 1 and addtime < %d ", array(time() - 30 * 24 * 60 * 60))->select();
         if ($pages) {
             foreach ($pages as $key => $value) {
                 $ret = D("Page")->deletePage($value['page_id']);
             }
         }
 
-        $pages = D("Recycle")->where(" del_time < " . (time() - 30 * 24 * 60 * 60))->select();
+        $pages = D("Recycle")->where(" del_time < %d ", array(time() - 30 * 24 * 60 * 60))->select();
         if ($pages) {
             foreach ($pages as $key => $value) {
                 $ret = D("Page")->deletePage($value['page_id']);
-                D("Recycle")->where(" id = '$value[id]' ")->delete();
+                D("Recycle")->where(array('id' => $value['id']))->delete();
             }
         }
     }

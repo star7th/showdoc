@@ -22,7 +22,7 @@ class TeamItemMemberController extends BaseController
         $cat_id = I("post.cat_id/d");
         $cat_ids = I("post.cat_ids"); // 逗号分隔的多目录
 
-        $teamItemMemberInfo = D("TeamItemMember")->where(" id = '$id'  ")->find();
+        $teamItemMemberInfo = D("TeamItemMember")->where(array('id' => $id))->find();
         $item_id = $teamItemMemberInfo['item_id'];
         $team_id = $teamItemMemberInfo['team_id'];
 
@@ -31,13 +31,13 @@ class TeamItemMemberController extends BaseController
             return;
         }
 
-        $teamInfo = D("Team")->where(" id = '$team_id'  ")->find();
+        $teamInfo = D("Team")->where(array('id' => $team_id))->find();
 
         if (isset($_POST['member_group_id'])) {
-            $return = D("TeamItemMember")->where(" id = '$id' ")->save(array("member_group_id" => $member_group_id));
+            $return = D("TeamItemMember")->where(array('id' => $id))->save(array("member_group_id" => $member_group_id));
         }
         if (isset($_POST['cat_id'])) {
-            $return = D("TeamItemMember")->where(" id = '$id' ")->save(array("cat_id" => $cat_id));
+            $return = D("TeamItemMember")->where(array('id' => $id))->save(array("cat_id" => $cat_id));
         }
         if (isset($_POST['cat_ids'])) {
             $ids = array();
@@ -60,7 +60,7 @@ class TeamItemMemberController extends BaseController
                 }
                 $ids2 = array_values(array_unique($ids2));
             }
-            $return = D("TeamItemMember")->where(" id = '$id' ")->save(array("cat_ids" => !empty($ids2) ? implode(',', $ids2) : ''));
+            $return = D("TeamItemMember")->where(array('id' => $id))->save(array("cat_ids" => !empty($ids2) ? implode(',', $ids2) : ''));
         }
         $this->sendResult($return);
     }
@@ -80,7 +80,7 @@ class TeamItemMemberController extends BaseController
             return;
         }
 
-        $ret = D("TeamItemMember")->where(" item_id = '$item_id'  and team_id = '$team_id' ")->select();
+        $ret = D("TeamItemMember")->where(" item_id = '%d'  and team_id = '%d' ", array($item_id, $team_id))->select();
 
         if ($ret) {
             foreach ($ret as $key => &$value) {
@@ -98,7 +98,7 @@ class TeamItemMemberController extends BaseController
                     }
                     $value['cat_ids'] = array_values(array_unique(array_map('intval', $ids)));
                 } else if ($value['cat_id'] > 0) {
-                    $row = D("Catalog")->where(" cat_id = '$value[cat_id]' ")->find();
+                    $row = D("Catalog")->where(array('cat_id' => $value['cat_id']))->find();
                     if ($row &&  $row['cat_name']) {
                         $value['cat_name'] =  $row['cat_name'];
                     }
@@ -107,7 +107,7 @@ class TeamItemMemberController extends BaseController
                     $value['cat_ids'] = array();
                 }
                 $uid = $value['member_uid'];
-                $row = D("User")->where(" uid = '$uid' ")->find();
+                $row = D("User")->where(array('uid' => $uid))->find();
                 $value['name'] = $row['name'];
             }
             $this->sendResult($ret);

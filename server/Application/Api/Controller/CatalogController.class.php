@@ -120,7 +120,7 @@ class CatalogController extends BaseController
         $login_user = $this->checkLogin();
         $cat_id = I("cat_id/d");
         if ($cat_id > 0) {
-            $row = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+            $row = D("Catalog")->where(array('cat_id' => $cat_id))->find();
             $item_id = $row['item_id'];
             if (!$this->checkItemVisit($login_user['uid'], $item_id)) {
                 $this->sendError(10103);
@@ -164,32 +164,32 @@ class CatalogController extends BaseController
         $data['item_id'] = $item_id;
         $data['parent_cat_id'] = $parent_cat_id;
         if ($parent_cat_id > 0) {
-            $row = D("Catalog")->where(" cat_id = '$parent_cat_id' ")->find();
+            $row = D("Catalog")->where(array('cat_id' => $parent_cat_id))->find();
             $data['level'] = $row['level'] + 1;
         } else {
             $data['level'] = 2;
         }
 
         if ($cat_id > 0) {
-            $cat = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+            $cat = D("Catalog")->where(array('cat_id' => $cat_id))->find();
             $item_id = $cat['item_id'];
             if (!$this->checkItemEdit($login_user['uid'], $item_id)) {
                 $this->sendError(10103);
                 return;
             }
             //如果一个目录已经是别的目录的父目录，那么它将无法再转为level4目录
-            //if (D("Catalog")->where(" parent_cat_id = '$cat_id' ")->find() && $data['level'] == 4 ) {
+            //if (D("Catalog")->where(array('parent_cat_id' => $cat_id))->find() && $data['level'] == 4 ) {
             //$this->sendError(10101,"该目录含有子目录，不允许转为底层目录。");
             //return;
             //}
 
-            $ret = D("Catalog")->where(" cat_id = '$cat_id' ")->save($data);
-            $return = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+            $ret = D("Catalog")->where(array('cat_id' => $cat_id))->save($data);
+            $return = D("Catalog")->where(array('cat_id' => $cat_id))->find();
             D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'update', 'catalog', $cat_id, $cat_name);
         } else {
             $data['addtime'] = time();
             $cat_id = D("Catalog")->add($data);
-            $return = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+            $return = D("Catalog")->where(array('cat_id' => $cat_id))->find();
             D("ItemChangeLog")->addLog($login_user['uid'], $item_id, 'create', 'catalog', $cat_id, $cat_name);
         }
         if (!$return) {
@@ -206,7 +206,7 @@ class CatalogController extends BaseController
     public function delete()
     {
         $cat_id = I("post.cat_id/d") ? I("post.cat_id/d") : 0;
-        $cat = D("Catalog")->where(" cat_id = '$cat_id' ")->find();
+        $cat = D("Catalog")->where(array('cat_id' => $cat_id))->find();
         $item_id = $cat['item_id'];
 
         $login_user = $this->checkLogin();
@@ -245,20 +245,20 @@ class CatalogController extends BaseController
 
         if ($page_id > 0) {
             if ($page_history_id) {
-                $page = D("PageHistory")->where(" page_history_id = '$page_history_id' ")->find();
+                $page = D("PageHistory")->where(array('page_history_id' => $page_history_id))->find();
             } else {
-                $page = M("Page")->where(" page_id = '$page_id' ")->find();
+                $page = M("Page")->where(array('page_id' => $page_id))->find();
             }
             $default_cat_id = $page['cat_id'];
         }
         //如果是复制接口
         elseif ($copy_page_id) {
-            $copy_page = M("Page")->where(" page_id = '$copy_page_id' ")->find();
+            $copy_page = M("Page")->where(array('page_id' => $copy_page_id))->find();
             $page['item_id'] = $copy_page['item_id'];
             $default_cat_id = $copy_page['cat_id'];
         } else {
             //查找用户上一次设置的目录
-            $last_page = D("Page")->where(" author_uid ='$login_user[uid]' and item_id = '$item_id' ")->order(" addtime desc ")->limit(1)->find();
+            $last_page = D("Page")->where("author_uid = %d and item_id = %d", array($login_user['uid'], $item_id))->order(" addtime desc ")->limit(1)->find();
             $default_cat_id = $last_page['cat_id'];
         }
 
@@ -335,7 +335,7 @@ class CatalogController extends BaseController
             $this->sendError(10103);
             return;
         }
-        $return = D("Page")->where("cat_id = '$cat_id' and  item_id = '$item_id' and is_del = 0  ")->field("page_id , page_title,s_number")->order("s_number asc , page_id asc")->select();
+        $return = D("Page")->where("cat_id = '%d' and  item_id = '%d' and is_del = 0", array($cat_id, $item_id))->field("page_id , page_title,s_number")->order("s_number asc , page_id asc")->select();
         $this->sendResult($return);
     }
 
@@ -353,7 +353,7 @@ class CatalogController extends BaseController
             $this->sendError(10103);
             return;
         }
-        $old_cat_ary = D("Catalog")->where("cat_id = '$cat_id' ")->find();
+        $old_cat_ary = D("Catalog")->where(array('cat_id' => $cat_id))->find();
         if (!$this->checkItemEdit($login_user['uid'], $old_cat_ary['item_id'])) {
             $this->sendError(10103);
             return;
