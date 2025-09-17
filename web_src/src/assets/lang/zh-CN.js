@@ -424,6 +424,13 @@ exports.default = {
   addtime: '添加时间',
   system_update: '系统更新',
 
+  // 清理未使用附件
+  cleanup_unused_attachments: '清理未使用附件',
+  cleanup_dialog_title: '未使用附件清理',
+  delete_selected: '删除所选',
+  please_select_to_delete: '请先选择要删除的附件',
+  confirm_delete_selected: '确认删除所选附件吗？此操作不可恢复',
+
   group_name: '组名',
   add_group: '新建分组',
   all_items: '所有项目',

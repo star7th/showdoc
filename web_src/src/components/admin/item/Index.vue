@@ -81,9 +81,12 @@
     <div class="block">
       <span class="demonstration"></span>
       <el-pagination
+        :current-page="page"
         @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
         :page-size="count"
-        layout="total, prev, pager, next"
+        :page-sizes="pageSizes"
+        layout="sizes, total, prev, pager, next"
         :total="total"
       ></el-pagination>
     </div>
@@ -329,6 +332,7 @@ export default {
     return {
       page: 1,
       count: 7,
+      pageSizes: [7, 10, 20, 50, 100],
       activeItemTab: 'normal',
       item_name: '',
       username: '',
@@ -425,6 +429,11 @@ export default {
     },
     handleCurrentChange(currentPage) {
       this.page = currentPage
+      this.getItemList()
+    },
+    handleSizeChange(newSize) {
+      this.count = newSize
+      this.page = 1
       this.getItemList()
     },
     onSubmit() {

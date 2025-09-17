@@ -45,9 +45,12 @@
       </el-table>
       <div class="block">
         <el-pagination
+          :current-page="page"
           @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
           :page-size="count"
-          layout="total, prev, pager, next"
+          :page-sizes="pageSizes"
+          layout="sizes, total, prev, pager, next"
           :total="total"
         />
       </div>
@@ -66,6 +69,7 @@ export default {
       list: [],
       page: 1,
       count: 10,
+      pageSizes: [10, 20, 50, 100],
       total: 0
     }
   },
@@ -103,6 +107,11 @@ export default {
     },
     handleCurrentChange(currentPage) {
       this.page = currentPage
+      this.loadList()
+    },
+    handleSizeChange(newSize) {
+      this.count = newSize
+      this.page = 1
       this.loadList()
     }
   },

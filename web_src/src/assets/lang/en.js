@@ -441,6 +441,13 @@ exports.default = {
   addtime: 'addtime',
   system_update: 'System update',
 
+  // cleanup unused attachments
+  cleanup_unused_attachments: 'Clean up unused attachments',
+  cleanup_dialog_title: 'Unused attachments cleanup',
+  delete_selected: 'Delete selected',
+  please_select_to_delete: 'Please select attachments to delete',
+  confirm_delete_selected: 'Confirm to delete selected attachments? This action cannot be undone',
+
   group_name: 'group name',
   add_group: 'New group',
   all_items: 'All items',

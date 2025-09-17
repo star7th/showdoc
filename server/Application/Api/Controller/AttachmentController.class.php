@@ -13,6 +13,150 @@ class AttachmentController extends BaseController
         echo 'Attachment';
     }
 
+    // 管理员：获取未被使用的附件列表（分页）
+    public function getUnusedList()
+    {
+        $login_user = $this->checkLogin();
+        $this->checkAdmin(); // 仅管理员可用
+
+        $page = I("page/d") ? I("page/d") : 1;
+        $count = I("count/d") ? I("count/d") : 10;
+        $display_name = I("display_name"); // 可选过滤
+        $username = I("username"); // 可选过滤：上传者
+
+        $where = ' 1 = 1 ';
+        $params = array();
+        if ($display_name) {
+            $like = safe_like($display_name);
+            $where .= " and display_name  like '%s' ";
+            $params[] = $like;
+        }
+        if ($username) {
+            $uid = D("User")->where(array('username' => $username))->getField('uid');
+            $uid = $uid ? $uid  : -99;
+            $where .= " and uid  = '%d' ";
+            $params[] = $uid;
+        }
+
+        // 先拿候选集合：未绑定到任何页面（file_page无记录）
+        // 开源版无分表，直接检查page.page_content
+        $candidates = isset($params)
+            ? D("UploadFile")->where($where, $params)->order("addtime desc")->select()
+            : D("UploadFile")->where($where)->order("addtime desc")->select();
+
+        $unused = array();
+        if ($candidates) {
+            foreach ($candidates as $value) {
+                $fileId = intval($value['file_id']);
+                // 如果在file_page里存在绑定记录，则视为已使用
+                $boundCount = D("FilePage")->where(" file_id = '%d' and page_id > 0 ", array($fileId))->count();
+                if ($boundCount > 0) {
+                    continue;
+                }
+
+                // 在页面内容中进行like匹配：优先匹配sign=，否则匹配real_url
+                $referenced = false;
+                if (!empty($value['sign'])) {
+                    $sign = $value['sign'];
+                    $likeSign = safe_like($sign);
+                    $cnt = M("Page")->where(" page_content like '%s' ", array('%sign=' . $likeSign . '%'))->count();
+                    if ($cnt > 0) {
+                        $referenced = true;
+                    }
+                }
+                if (!$referenced && !empty($value['real_url'])) {
+                    $realUrl = $value['real_url'];
+                    $likeUrl = safe_like($realUrl);
+                    $cnt2 = M("Page")->where(" page_content like '%s' ", array('%' . $likeUrl . '%'))->count();
+                    if ($cnt2 > 0) {
+                        $referenced = true;
+                    }
+                }
+
+                if ($referenced) {
+                    continue; // 被内容引用，跳过
+                }
+
+                // 视为未使用
+                $username_text = '';
+                if ($value['uid']) {
+                    $username_text = D("User")->where(" uid = '%d' ", array($value['uid']))->getField('username');
+                }
+                $url = '';
+                if ($value['sign']) {
+                    $url =  server_url("api/attachment/visitFile", array("sign" => $value['sign']));
+                } else {
+                    $url =  $value['real_url'];
+                }
+                $unused[] = array(
+                    "file_id" => $value['file_id'],
+                    "username" => $username_text,
+                    "uid" => $value['uid'],
+                    "file_type" => $value['file_type'],
+                    "visit_times" => $value['visit_times'],
+                    "file_size" => $value['file_size'],
+                    "file_size_m" => round($value['file_size'] / (1024 * 1024), 3),
+                    "display_name" => $value['display_name'] ? $value['display_name'] : '',
+                    "url" => $url,
+                    "addtime" => date("Y-m-d H:i:s", $value['addtime']),
+                    "last_visit_time" => date("Y-m-d H:i:s", $value['last_visit_time']),
+                );
+            }
+        }
+
+        $total = count($unused);
+        // 简单分页（内存切片）
+        $offset = max(0, ($page - 1) * $count);
+        $list = array_slice($unused, $offset, $count);
+
+        $return = array();
+        $return['list'] = $list;
+        $return['total'] = $total;
+        $used = 0;
+        foreach ($unused as $f) {
+            $used += intval($f['file_size']);
+        }
+        $return['used'] = $used;
+        $return['used_m'] = round($used / (1024 * 1024), 3);
+        $this->sendResult($return);
+    }
+
+    // 管理员：批量删除附件（用于清理未使用）
+    public function batchDeleteAttachments()
+    {
+        $login_user = $this->checkLogin();
+        $this->checkAdmin();
+
+        // 支持 file_ids 数组或逗号分隔字符串
+        $file_ids = I("post.file_ids");
+        if (!$file_ids) {
+            $this->sendError(10101, '缺少参数');
+            return;
+        }
+
+        if (is_string($file_ids)) {
+            $file_ids = explode(',', $file_ids);
+        }
+        if (!is_array($file_ids)) {
+            $file_ids = array();
+        }
+
+        $success = 0;
+        $failed = 0;
+        foreach ($file_ids as $fid) {
+            $fid = intval($fid);
+            if ($fid <= 0) continue;
+            $ret = D("Attachment")->deleteFile($fid);
+            if ($ret) {
+                $success++;
+            } else {
+                $failed++;
+            }
+        }
+
+        $this->sendResult(array('success' => $success, 'failed' => $failed));
+    }
+
     //浏览附件
     public function visitFile()
     {
