@@ -17,6 +17,7 @@ class ItemChangeLogModel extends BaseModel
             "op_object_type" => $op_object_type,
             "op_object_id" => $op_object_id,
             "op_object_name" => $op_object_name,
+            "remark" => $remark,
             "optime" => date("Y-m-d H:i:s"),
         );
         $this->add($data);

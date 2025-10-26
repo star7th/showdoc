@@ -55,6 +55,8 @@
             <span v-else>{{ scope.row.op_object_name }}</span>
           </template>
         </el-table-column>
+        <el-table-column property="remark" :label="$t('remark')" width="200">
+        </el-table-column>
       </el-table>
 
       <div class="block">
