@@ -437,7 +437,15 @@ class ImportSwaggerController extends BaseController
 
                 // 为JSON类型生成jsonDesc描述
                 if (!empty($json_obj)) {
-                    $json_desc = $this->_definitionToJsonArray($schema);
+                    // 如果schema是引用类型，先解析引用
+                    $schema_for_desc = $schema;
+                    if (isset($schema['$ref'])) {
+                        $refData = $this->_getDefinition($schema['$ref']);
+                        if ($refData) {
+                            $schema_for_desc = $refData;
+                        }
+                    }
+                    $json_desc = $this->_definitionToJsonArray($schema_for_desc);
                     $content_array['request']['params']['jsonDesc'] = $json_desc;
                 }
             }
@@ -549,7 +557,15 @@ class ImportSwaggerController extends BaseController
 
                     // 为JSON类型生成jsonDesc描述
                     if (!empty($json_obj)) {
-                        $json_desc = $this->_definitionToJsonArray($bodySchema);
+                        // 如果schema是引用类型，先解析引用
+                        $schema_for_desc = $bodySchema;
+                        if (isset($bodySchema['$ref'])) {
+                            $refData = $this->_getDefinition($bodySchema['$ref']);
+                            if ($refData) {
+                                $schema_for_desc = $refData;
+                            }
+                        }
+                        $json_desc = $this->_definitionToJsonArray($schema_for_desc);
                         $content_array['request']['params']['jsonDesc'] = $json_desc;
                     }
                 }
