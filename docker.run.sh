@@ -29,6 +29,8 @@ docker_build() {
     set -xe
     rm -rf /app
     ln -sf $web_dir /app
+    ## sed 在第二行插入 user=root 解决 supervisor 告警
+    sed -i '2i user=root' /opt/docker/etc/supervisor.conf
     ## php setting
     (
         echo "upload_max_filesize=5120M;"
@@ -71,6 +73,7 @@ backup_dbfile() {
         backup_time="$(date +%F-%H-%M-%S)"
     fi
     rsync -a $db_file ${db_file}.backup.full."$backup_time".php
+    echo "Completed backup to ${db_file}.backup.full.$backup_time.php"
     ## remove old files (15 days ago)
     find ${db_file}.* -type f -ctime +15 -print0 |
         xargs -t -0 rm -f >/dev/null
@@ -95,24 +98,27 @@ docker_run() {
     ## upgrade (通过 Dockerfile 的环境变量 SHOWDOC_DOCKER_VERSION 变更版本)
     ## upgrade (通过 composer.json "version" 变更版本)
     ver_file=$web_dir/.ver
+    version_local="$(cat $ver_file 2>/dev/null || echo "none")"
     version_json=$(grep -o '"version":.*"' $showdoc_dir_html/composer.json | awk '{split($2,a,"\""); print a[2]}')
     # version_json=$(grep -o '"version":.*"' $showdoc_dir_html/composer.json | awk '{print substr($2,2,6)}')
-    if [ -f $ver_file ]; then
-        # if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $ver_file)" ]]; then
-        if [[ "${version_json}" == "$(cat $ver_file)" ]]; then
-            echo "Same version, skip upgrade."
-        else
-            echo "Backup db file before upgrade..."
-            backup_dbfile
-            echo "Upgrade application files..."
-            ## 此处不同步 db 文件和 upload 文件，自动排除
-            rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' $showdoc_dir_html/ $web_dir/
-            ## revert lang if lang=en
-            if grep -q 'lang:.*en' $web_dir/web/index.html; then
-                sed -i -e "/lang:.*zh-cn.*/s//lang: 'zh-cn'/" $web_dir/web/index.html $web_dir/web_src/index.html
-            fi
-        fi
+
+    echo "Local version: $version_local"
+    echo "composer.json version: $version_json"
+    # if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $ver_file)" ]]; then
+    if [[ "${version_local}" == "${version_json}" ]]; then
+        echo "Same version, skip upgrade."
     else
+        echo "Found new version: $version_json, upgrade..."
+        ## 备份数据库文件
+        echo "Backup db file before upgrade..."
+        backup_dbfile
+        echo "Upgrade application files..."
+        ## 此处排除 Sqlite/ 和 Public/Uploads/ 目录，保留用户数据
+        rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' $showdoc_dir_html/ $web_dir/
+        ## revert lang if lang=en
+        if grep -q 'lang:.*en' $web_dir/web/index.html; then
+            sed -i -e "/lang:.*zh-cn.*/s//lang: 'zh-cn'/" $web_dir/web/index.html $web_dir/web_src/index.html
+        fi
         # echo "$SHOWDOC_DOCKER_VERSION" >$ver_file
         echo "$version_json" >$ver_file
     fi
@@ -156,6 +162,7 @@ docker_run() {
     (
         echo "delay 30s start mock..."
         sleep 30
+        echo "Starting mock server..."
         cd $showdoc_dir/mock/ || exit 1
         npm run start
     ) &
