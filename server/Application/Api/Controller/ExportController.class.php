@@ -278,9 +278,8 @@ class ExportController extends BaseController
         mkdir($temp_dir);
         unset($exportData['members']);
         file_put_contents($temp_dir . '/' . 'info.json', json_encode($exportData));
-        file_put_contents($temp_dir . '/' . 'readme.md', "由于页面标题可能含有特殊字符导致异常，所以markdown文件的命名均为英文（md5串），以下是页面标题和文件的对应关系：" . PHP_EOL . PHP_EOL);
 
-        $exportData['pages'] = $this->_markdownTofile($exportData['pages'], $temp_dir);
+        $this->_markdownTofile($exportData['pages'], $temp_dir);
         $ret = $this->_zip($temp_dir, $temp_file);
 
         clear_runtime($temp_dir);
@@ -304,45 +303,159 @@ class ExportController extends BaseController
         $this->sendResult(array());
     }
 
-    private function _markdownTofile($catalogData,  $temp_dir)
+    /**
+     * 将目录数据转换为markdown文件，保持目录结构
+     * @param array $catalogData 目录数据
+     * @param string $temp_dir 临时目录
+     * @param string $base_path 基础路径（用于递归创建子目录）
+     * @return array
+     */
+    private function _markdownTofile($catalogData, $temp_dir, $base_path = '')
     {
-        if ($catalogData['pages']) {
+        // 处理当前目录下的页面
+        if (isset($catalogData['pages']) && !empty($catalogData['pages'])) {
             foreach ($catalogData['pages'] as $key => $value) {
-                $t = rand(1000, 100000);
-                //把页面内容保存为md文件
-                $filename = md5($value['page_title'] . '_' . $t) . ".md";
-                file_put_contents($temp_dir . '/' . $filename, htmlspecialchars_decode($value['page_content']));
-
-                file_put_contents($temp_dir . '/' . 'readme.md', $value['page_title'] . " —— prefix_" .  $filename  . PHP_EOL, FILE_APPEND);
+                // 清理文件名中的非法字符
+                $filename = $this->_sanitizeFilename($value['page_title']) . '.md';
+                $file_path = $base_path ? $base_path . '/' . $filename : $filename;
+                $full_path = $temp_dir . '/' . $file_path;
+                
+                // 如果文件已存在，添加序号避免冲突
+                $counter = 1;
+                while (file_exists($full_path)) {
+                    $name_without_ext = $this->_sanitizeFilename($value['page_title']);
+                    $filename = $name_without_ext . '_' . $counter . '.md';
+                    $file_path = $base_path ? $base_path . '/' . $filename : $filename;
+                    $full_path = $temp_dir . '/' . $file_path;
+                    $counter++;
+                }
+                
+                // 确保目录存在
+                $dir = dirname($full_path);
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0755, true);
+                }
+                
+                // 保存文件内容
+                file_put_contents($full_path, htmlspecialchars_decode($value['page_content']));
             }
         }
 
-        if ($catalogData['catalogs']) {
+        // 递归处理子目录
+        if (isset($catalogData['catalogs']) && !empty($catalogData['catalogs'])) {
             foreach ($catalogData['catalogs'] as $key => $value) {
-                $catalogData['catalogs'][$key] = $this->_markdownTofile($value,  $temp_dir);
+                // 清理目录名中的非法字符
+                $cat_name = isset($value['cat_name']) ? $value['cat_name'] : '目录';
+                $dir_name = $this->_sanitizeFilename($cat_name);
+                $new_base_path = $base_path ? $base_path . '/' . $dir_name : $dir_name;
+                
+                // 如果目录名已存在，添加序号避免冲突
+                $dir_full_path = $temp_dir . '/' . $new_base_path;
+                $counter = 1;
+                while (is_dir($dir_full_path)) {
+                    $dir_name = $this->_sanitizeFilename($cat_name) . '_' . $counter;
+                    $new_base_path = $base_path ? $base_path . '/' . $dir_name : $dir_name;
+                    $dir_full_path = $temp_dir . '/' . $new_base_path;
+                    $counter++;
+                }
+                
+                // 递归处理子目录
+                $this->_markdownTofile($value, $temp_dir, $new_base_path);
             }
         }
+        
         return $catalogData;
     }
 
+    /**
+     * 清理文件名/目录名中的非法字符
+     * @param string $filename 原始文件名
+     * @return string 清理后的文件名
+     */
+    private function _sanitizeFilename($filename)
+    {
+        // Windows/Linux 文件名非法字符: < > : " / \ | ? *
+        // 同时去除前后空格和点号
+        $filename = trim($filename);
+        
+        // 替换非法字符为下划线
+        $filename = preg_replace('/[<>:"\/\\\|\?\*\x00-\x1F]/', '_', $filename);
+        
+        // 去除连续的下划线和点号
+        $filename = preg_replace('/[_\.]+/', '_', $filename);
+        
+        // 去除前后下划线和点号
+        $filename = trim($filename, '_.');
+        
+        // 如果文件名为空，使用默认名称
+        if (empty($filename)) {
+            $filename = '未命名';
+        }
+        
+        // Windows 保留文件名
+        $reserved_names = array('CON', 'PRN', 'AUX', 'NUL', 'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9', 'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9');
+        if (in_array(strtoupper($filename), $reserved_names)) {
+            $filename = $filename . '_';
+        }
+        
+        // 限制文件名长度（Windows 限制为 255 字符）
+        if (mb_strlen($filename) > 200) {
+            $filename = mb_substr($filename, 0, 200);
+        }
+        
+        return $filename;
+    }
+
+    /**
+     * 使用ZIP压缩文件或目录，保持目录结构
+     * @param  [string] $temp_dir 被压缩的目录名
+     * @param  [string] $temp_file   压缩后的文件名
+     * @return [bool]             成功返回TRUE, 失败返回FALSE
+     */
     private function _zip($temp_dir, $temp_file)
     {
+        if (!file_exists($temp_dir) && !is_dir($temp_dir)) {
+            return FALSE;
+        }
         $zipArc = new \ZipArchive();
         if (!$zipArc->open($temp_file, \ZipArchive::CREATE)) {
             return FALSE;
         }
-        $dir = opendir($temp_dir);
-        while (false != ($file = readdir($dir))) {
-            if (($file != ".") and ($file != "..")) {
-                $res = $zipArc->addFromString("prefix_" . $file, file_get_contents($temp_dir . "/" . $file));
+        
+        if (is_dir($temp_dir)) {
+            // 递归添加目录及其内容，保持目录结构
+            $this->_addDirectoryToZip($temp_dir, $zipArc, '');
+        } else {
+            $zipArc->addFile($temp_dir, basename($temp_dir));
+        }
+        
+        return $zipArc->close();
+    }
+
+    /**
+     * 递归添加目录到ZIP文件，保持目录结构
+     * @param string $dir 目录路径
+     * @param \ZipArchive $zipArc ZIP对象
+     * @param string $zipPath ZIP内的路径
+     */
+    private function _addDirectoryToZip($dir, $zipArc, $zipPath)
+    {
+        $files = scandir($dir);
+        foreach ($files as $file) {
+            if ($file == '.' || $file == '..') {
+                continue;
+            }
+            
+            $filePath = $dir . '/' . $file;
+            $zipFilePath = $zipPath ? $zipPath . '/' . $file : $file;
+            
+            if (is_dir($filePath)) {
+                // 递归处理子目录
+                $this->_addDirectoryToZip($filePath, $zipArc, $zipFilePath);
+            } else {
+                // 添加文件
+                $zipArc->addFile($filePath, $zipFilePath);
             }
         }
-        closedir($dir);
-
-        if (!$res) {
-            $zipArc->close();
-            return FALSE;
-        }
-        return $zipArc->close();
     }
 }

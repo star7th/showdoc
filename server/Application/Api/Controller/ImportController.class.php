@@ -29,8 +29,12 @@ class ImportController extends BaseController
         if ($tail == 'zip') {
             $zipArc = new \ZipArchive();
             $ret = $zipArc->open($file, \ZipArchive::CREATE);
-            $info = $zipArc->getFromName("prefix_info.json");
-            // 如有prefix_info.json文件，则导入prefix_info.json文件
+            // 先尝试新的格式 info.json，如果不存在则尝试旧的格式 prefix_info.json
+            $info = $zipArc->getFromName("info.json");
+            if (!$info) {
+                $info = $zipArc->getFromName("prefix_info.json");
+            }
+            // 如有info.json或prefix_info.json文件，则导入
             if ($info) {
                 $info_array = json_decode($info, 1);
                 if ($info_array) {
@@ -80,7 +84,11 @@ class ImportController extends BaseController
         if (!$info_array) {
             $zipArc = new \ZipArchive();
             $ret = $zipArc->open($file, \ZipArchive::CREATE);
-            $info = $zipArc->getFromName("prefix_info.json");
+            // 先尝试新的格式 info.json，如果不存在则尝试旧的格式 prefix_info.json
+            $info = $zipArc->getFromName("info.json");
+            if (!$info) {
+                $info = $zipArc->getFromName("prefix_info.json");
+            }
             $info_array = json_decode($info, 1);
             unset($info);
         }
@@ -140,10 +148,27 @@ class ImportController extends BaseController
                 if ($file !== '..' && $file !== '.') {
                     $f = $dir . '/' . $file;
                     if (is_file($f)) {
+                        // 跳过 info.json 和 prefix_info.json 文件
+                        if ($file === 'info.json' || $file === 'prefix_info.json') {
+                            continue;
+                        }
+                        // 只处理 .md 文件
+                        if (substr($file, -3) !== '.md') {
+                            continue;
+                        }
                         // echo '|--' . $file . '<br>';          //代表文件
                         $page_title = str_replace('.md', '', $file);
                         $page_content = file_get_contents($f);
+                        // 获取目录路径，去掉临时目录前缀，并规范化路径分隔符
                         $cat_name = str_replace($tmp_dir, '', $dir);
+                        // 统一路径分隔符为 /
+                        $cat_name = str_replace('\\', '/', $cat_name);
+                        // 去掉开头的斜杠和空格
+                        $cat_name = trim($cat_name, '/ ');
+                        // 如果目录名为空，说明是根目录
+                        if (empty($cat_name)) {
+                            $cat_name = '';
+                        }
                         // echo $cat_name . '<br>';
                         D("Page")->update_by_title($item_id, $page_title, $page_content, $cat_name);
                     } else {
