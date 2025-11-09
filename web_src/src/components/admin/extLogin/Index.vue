@@ -1,8 +1,9 @@
 <template>
-  <div class="hello">
-    <el-tabs type="border-card">
-      <el-tab-pane label="LDAP">
-        <el-form ref="form" label-width="150px">
+  <div class="setting-container">
+    <el-form ref="form" :model="form" label-width="150px">
+      <el-tabs v-model="activeTab" type="card">
+        <el-tab-pane label="LDAP" name="ldap" key="ldap">
+          <div v-if="activeTab === 'ldap'">
           <el-form-item :label="$t('ldap_open_label')">
             <el-switch v-model="form.ldap_open"></el-switch>
           </el-form-item>
@@ -95,10 +96,10 @@
             }}</el-button>
             <el-button>{{ $t('cancel') }}</el-button>
           </el-form-item>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane label="OAuth2">
-        <el-form ref="form" label-width="150px">
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="OAuth2" name="oauth2" key="oauth2">
+          <div v-if="activeTab === 'oauth2'">
           <el-form-item :label="$t('enable_oauth')">
             <el-switch v-model="form.oauth2_open"></el-switch>
           </el-form-item>
@@ -205,10 +206,10 @@
             }}</el-button>
             <el-button>{{ $t('cancel') }}</el-button>
           </el-form-item>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane label="通用接入" v-if="$lang == 'zh-cn'">
-        <div style="min-height:600px;margin-top:50px;margin-left:30px;">
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="通用接入" name="general" key="general" v-if="$lang == 'zh-cn'">
+          <div v-if="activeTab === 'general'" style="min-height:600px;margin-top:50px;margin-left:30px;">
           <p>
             LoginSecretKey:&nbsp;
             <el-input
@@ -227,15 +228,36 @@
               >点击这里查看文档</a
             >
           </p>
-        </div>
-      </el-tab-pane>
-    </el-tabs>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </el-form>
   </div>
 </template>
 
 <style scoped>
+.setting-container {
+  max-width: 900px;
+  padding: 20px;
+}
+
 .form-el {
   width: 400px;
+}
+
+/* Tab样式优化 */
+.setting-container >>> .el-tabs__header {
+  margin-bottom: 20px;
+}
+
+.setting-container >>> .el-tabs__item {
+  padding: 0 20px;
+  height: 40px;
+  line-height: 40px;
+}
+
+.setting-container >>> .el-tabs__content {
+  padding: 20px 0;
 }
 </style>
 
@@ -243,6 +265,7 @@
 export default {
   data() {
     return {
+      activeTab: 'ldap',
       form: {
         ldap_open: false,
         ldap_form: {

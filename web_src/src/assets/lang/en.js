@@ -671,6 +671,12 @@ exports.default = {
   session_expire_days_tips: 'Set session expiration period, range 1-3650 days, default 180 days',
   session_expire_days_placeholder: 'Default 180 days',
 
+  basic_settings: 'Basic Settings',
+  security_settings: 'Security Settings',
+  ai_assistant_settings: 'AI Assistant Settings',
+  storage_settings: 'Storage Settings',
+  other_settings: 'Other Settings',
+
   // Batch upload related
   batch_upload_support: 'Support batch selection of multiple files for simultaneous upload',
   upload_queue_files: 'Upload Queue ({count} files)',

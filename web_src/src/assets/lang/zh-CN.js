@@ -644,6 +644,12 @@ exports.default = {
   session_expire_days_tips: '设置登录态有效期，范围1-3650天，默认180天',
   session_expire_days_placeholder: '默认180天',
 
+  basic_settings: '基础设置',
+  security_settings: '安全设置',
+  ai_assistant_settings: 'AI助手设置',
+  storage_settings: '存储设置',
+  other_settings: '其他配置',
+
   // 批量上传相关
   batch_upload_support: '支持批量选择多个文件同时上传',
   upload_queue_files: '上传队列 ({count} 个文件)',
