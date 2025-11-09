@@ -26,6 +26,12 @@ class AdminSettingController extends BaseController
         $ai_model_name = I("ai_model_name");
         $force_login = intval(I("force_login"));
         $enable_public_square = intval(I("enable_public_square"));
+        $strong_password_enabled = intval(I("strong_password_enabled"));
+        $session_expire_days = intval(I("session_expire_days"));
+        // 验证登录态有效时长范围，最小1天，最大3650天（10年）
+        if ($session_expire_days < 1 || $session_expire_days > 3650) {
+            $session_expire_days = 180; // 使用默认值180天
+        }
 
         D("Options")->set("history_version_count", $history_version_count);
         D("Options")->set("register_open", $register_open);
@@ -39,6 +45,8 @@ class AdminSettingController extends BaseController
         D("Options")->set("show_watermark", $show_watermark);
         D("Options")->set("force_login", $force_login);
         D("Options")->set("enable_public_square", $enable_public_square);
+        D("Options")->set("strong_password_enabled", $strong_password_enabled);
+        D("Options")->set("session_expire_days", $session_expire_days);
 
         if ($oss_open) {
             $this->checkComposerPHPVersion();
@@ -68,6 +76,8 @@ class AdminSettingController extends BaseController
         $ai_model_name = D("Options")->get("ai_model_name");
         $force_login = D("Options")->get("force_login");
         $enable_public_square = D("Options")->get("enable_public_square");
+        $strong_password_enabled = D("Options")->get("strong_password_enabled");
+        $session_expire_days = D("Options")->get("session_expire_days");
         $oss_setting = json_decode($oss_setting, 1);
 
         //如果强等于false，那就是尚未有数据。关闭注册应该是有数据且数据为字符串0
@@ -89,6 +99,8 @@ class AdminSettingController extends BaseController
                 "ai_model_name" => $ai_model_name,
                 "force_login" => $force_login,
                 "enable_public_square" => $enable_public_square,
+                "strong_password_enabled" => $strong_password_enabled,
+                "session_expire_days" => $session_expire_days,
             );
             $this->sendResult($array);
         }

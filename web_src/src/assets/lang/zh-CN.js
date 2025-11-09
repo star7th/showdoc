@@ -635,6 +635,15 @@ exports.default = {
   no_public_items: '暂无项目',
   enable_public_square: '启用公开广场',
   enable_public_square_tips: '启用后，网站将显示公开广场入口，用户可以浏览网站中的公开项目',
+
+  strong_password_enabled: '启用高强度密码',
+  strong_password_enabled_tips:
+    '启用后，密码需至少8位，包含大小写字母、数字和特殊字符',
+
+  session_expire_days: '登录态有效时长（天）',
+  session_expire_days_tips: '设置登录态有效期，范围1-3650天，默认180天',
+  session_expire_days_placeholder: '默认180天',
+
   // 批量上传相关
   batch_upload_support: '支持批量选择多个文件同时上传',
   upload_queue_files: '上传队列 ({count} 个文件)',

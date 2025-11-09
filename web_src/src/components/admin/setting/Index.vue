@@ -138,6 +138,32 @@
           placeholder="可选"
         ></el-input>
       </el-form-item>
+      <el-form-item :label="$t('strong_password_enabled')">
+        <el-switch v-model="form.strong_password_enabled"></el-switch>
+        <el-tooltip
+          effect="dark"
+          :content="$t('strong_password_enabled_tips')"
+          placement="top"
+        >
+          <i class="el-icon-question"></i>
+        </el-tooltip>
+      </el-form-item>
+      <el-form-item :label="$t('session_expire_days')">
+        <el-input-number
+          v-model="form.session_expire_days"
+          :min="1"
+          :max="3650"
+          class="form-el"
+          :placeholder="$t('session_expire_days_placeholder')"
+        ></el-input-number>
+        <el-tooltip
+          effect="dark"
+          :content="$t('session_expire_days_tips')"
+          placement="top"
+        >
+          <i class="el-icon-question"></i>
+        </el-tooltip>
+      </el-form-item>
       <el-form-item :label="$t('oss_open')">
         <el-switch v-model="form.oss_open"></el-switch>
       </el-form-item>
@@ -278,7 +304,9 @@ export default {
         open_api_host: '',
         ai_model_name: '',
         force_login:false,
-        enable_public_square: false
+        enable_public_square: false,
+        strong_password_enabled: false,
+        session_expire_days: 180
       },
       itemList: []
     }
@@ -341,6 +369,10 @@ export default {
           : ''
         this.form.force_login = data.data.force_login > 0
         this.form.enable_public_square = data.data.enable_public_square > 0
+        this.form.strong_password_enabled = data.data.strong_password_enabled > 0
+        this.form.session_expire_days = data.data.session_expire_days
+          ? parseInt(data.data.session_expire_days)
+          : 180
       })
     },
     getItemList() {

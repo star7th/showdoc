@@ -662,6 +662,15 @@ exports.default = {
   no_public_items: 'No public projects',
   enable_public_square: 'Enable Public Square',
   enable_public_square_tips: 'When enabled, the website will display a Public Square entry, allowing users to browse public projects',
+
+  strong_password_enabled: 'Enable Strong Password',
+  strong_password_enabled_tips:
+    'When enabled, passwords must be at least 8 characters long and contain uppercase letters, lowercase letters, numbers, and special characters',
+
+  session_expire_days: 'Session Expiration (days)',
+  session_expire_days_tips: 'Set session expiration period, range 1-3650 days, default 180 days',
+  session_expire_days_placeholder: 'Default 180 days',
+
   // Batch upload related
   batch_upload_support: 'Support batch selection of multiple files for simultaneous upload',
   upload_queue_files: 'Upload Queue ({count} files)',

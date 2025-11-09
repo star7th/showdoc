@@ -7,6 +7,32 @@ use Think\Controller;
 class UserController extends BaseController
 {
 
+    /**
+     * 获取登录态有效时长（秒数）
+     * 如果未配置或配置无效，返回默认值180天（60 * 60 * 24 * 180）
+     * 最小值为1天，最大值为3650天（10年）
+     * 
+     * @return int 登录态有效时长（秒数）
+     */
+    private function getSessionExpireTime()
+    {
+        $session_expire_days = D("Options")->get("session_expire_days");
+        
+        // 如果未配置或为false，使用默认值180天
+        if ($session_expire_days === false || $session_expire_days === '' || $session_expire_days === null) {
+            return 60 * 60 * 24 * 180; // 默认180天
+        }
+        
+        $session_expire_days = intval($session_expire_days);
+        
+        // 如果配置值无效（小于1或大于3650），使用默认值180天
+        if ($session_expire_days < 1 || $session_expire_days > 3650) {
+            return 60 * 60 * 24 * 180; // 默认180天
+        }
+        
+        // 返回配置的天数对应的秒数
+        return $session_expire_days * 24 * 60 * 60;
+    }
 
     //注册。慢慢废弃，将主用registerByVerify()
     public function register()
@@ -22,6 +48,12 @@ class UserController extends BaseController
         }
         if (strlen($password) > 100) {
             $this->sendError(10101, "密码过长");
+            return;
+        }
+        // 验证密码强度
+        $password_validation = validate_strong_password($password);
+        if (!$password_validation['valid']) {
+            $this->sendError(10101, $password_validation['message']);
             return;
         }
         if (C('CloseVerify') || $v_code && $v_code == session('v_code')) {
@@ -50,9 +82,11 @@ class UserController extends BaseController
                         $ret = D("User")->where(array('uid' => $new_uid))->find();
                         unset($ret['password']);
                         session("login_user", $ret);
-                        $token = D("UserToken")->createToken($ret['uid']);
+                        $token_expire_time = $this->getSessionExpireTime();
+                        $token = D("UserToken")->createToken($ret['uid'], $token_expire_time);
+                        $cookie_expire = time() + $token_expire_time;
                         if (version_compare(PHP_VERSION, '7.3.0', '>')) {
-                            setcookie('cookie_token', $token, array('expires' => time() + 60 * 60 * 24 * 180, 'httponly' => 'httponly', 'samesite' => 'Strict', 'path' => '/'));
+                            setcookie('cookie_token', $token, array('expires' => $cookie_expire, 'httponly' => 'httponly', 'samesite' => 'Strict', 'path' => '/'));
                         } else {
                             cookie('cookie_token', $token, array('expire' => 60 * 60 * 24 * 180, 'httponly' => 'httponly'));
                         }
@@ -156,9 +190,11 @@ class UserController extends BaseController
             unset($ret['salt']);
             session("login_user", $ret);
             D("User")->setLastTime($ret['uid']);
-            $token = D("UserToken")->createToken($ret['uid'], 60 * 60 * 24 * 180);
+            $token_expire_time = $this->getSessionExpireTime();
+            $token = D("UserToken")->createToken($ret['uid'], $token_expire_time);
+            $cookie_expire = time() + $token_expire_time;
             if (version_compare(PHP_VERSION, '7.3.0', '>')) {
-                setcookie('cookie_token', $token, array('expires' => time() + 60 * 60 * 24 * 180, 'httponly' => 'httponly', 'samesite' => 'Strict', 'path' => '/'));
+                setcookie('cookie_token', $token, array('expires' => $cookie_expire, 'httponly' => 'httponly', 'samesite' => 'Strict', 'path' => '/'));
             } else {
                 cookie('cookie_token', $token, array('expire' => 60 * 60 * 24 * 180, 'httponly' => 'httponly'));
             }
@@ -226,7 +262,8 @@ class UserController extends BaseController
             unset($ret['salt']);
             session("login_user", $ret);
             D("User")->setLastTime($ret['uid']);
-            $token = D("UserToken")->createToken($ret['uid'], 60 * 60 * 24 * 180);
+            $token_expire_time = $this->getSessionExpireTime();
+            $token = D("UserToken")->createToken($ret['uid'], $token_expire_time);
             $this->sendResult(array(
                 "uid" => $ret['uid'],
                 "username" => $ret['username'],
@@ -261,6 +298,12 @@ class UserController extends BaseController
             $this->sendError(10101, "密码过长");
             return;
         }
+        // 验证密码强度
+        $password_validation = validate_strong_password($password);
+        if (!$password_validation['valid']) {
+            $this->sendError(10101, $password_validation['message']);
+            return;
+        }
         if (!D("Captcha")->check($captcha_id, $captcha)) {
             $this->sendError(10206, L('verification_code_are_incorrect'));
             return;
@@ -284,9 +327,11 @@ class UserController extends BaseController
                     $ret = D("User")->where(array('uid' => $new_uid))->find();
                     unset($ret['password']);
                     session("login_user", $ret);
-                    $token = D("UserToken")->createToken($ret['uid']);
+                    $token_expire_time = $this->getSessionExpireTime();
+                    $token = D("UserToken")->createToken($ret['uid'], $token_expire_time);
+                    $cookie_expire = time() + $token_expire_time;
                     if (version_compare(PHP_VERSION, '7.3.0', '>')) {
-                        setcookie('cookie_token', $token, array('expires' => time() + 60 * 60 * 24 * 180, 'httponly' => 'httponly', 'samesite' => 'Strict', 'path' => '/'));
+                        setcookie('cookie_token', $token, array('expires' => $cookie_expire, 'httponly' => 'httponly', 'samesite' => 'Strict', 'path' => '/'));
                     } else {
                         cookie('cookie_token', $token, array('expire' => 60 * 60 * 24 * 180, 'httponly' => 'httponly'));
                     }
@@ -348,6 +393,12 @@ class UserController extends BaseController
         $new_password = I("new_password");
         if (strlen($new_password) > 100) {
             $this->sendError(10101, "密码过长");
+            return;
+        }
+        // 验证密码强度
+        $password_validation = validate_strong_password($new_password);
+        if (!$password_validation['valid']) {
+            $this->sendError(10101, $password_validation['message']);
             return;
         }
         $ret = D("User")->checkLogin($username, $password);

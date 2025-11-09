@@ -258,6 +258,57 @@ function get_rand_str($len = 32)
     }
 }
 
+/**
+ * 验证密码强度
+ * 要求：至少8位，包含大小写字母、数字和特殊字符
+ * 
+ * @param string $password 待验证的密码
+ * @return array 返回数组，['valid' => bool, 'message' => string, 'errors' => array]
+ */
+function validate_strong_password($password)
+{
+    $strong_password_enabled = D("Options")->get("strong_password_enabled");
+
+    // 如果未启用高强度密码，直接返回通过
+    if (!$strong_password_enabled || $strong_password_enabled === '0' || $strong_password_enabled === false) {
+        return array('valid' => true, 'message' => '', 'errors' => array());
+    }
+
+    $errors = array();
+
+    // 检查密码长度
+    if (strlen($password) < 8) {
+        $errors[] = '密码长度至少需要8位';
+    }
+
+    // 检查是否包含小写字母
+    if (!preg_match('/[a-z]/', $password)) {
+        $errors[] = '密码必须包含至少一个小写字母';
+    }
+
+    // 检查是否包含大写字母
+    if (!preg_match('/[A-Z]/', $password)) {
+        $errors[] = '密码必须包含至少一个大写字母';
+    }
+
+    // 检查是否包含数字
+    if (!preg_match('/[0-9]/', $password)) {
+        $errors[] = '密码必须包含至少一个数字';
+    }
+
+    // 检查是否包含特殊字符
+    if (!preg_match('/[^a-zA-Z0-9]/', $password)) {
+        $errors[] = '密码必须包含至少一个特殊字符';
+    }
+
+    // 如果有错误，返回所有错误信息
+    if (count($errors) > 0) {
+        return array('valid' => false, 'message' => implode('；', $errors), 'errors' => $errors);
+    }
+
+    return array('valid' => true, 'message' => '', 'errors' => array());
+}
+
 // 获取日期
 function date_time($time = 0)
 {
