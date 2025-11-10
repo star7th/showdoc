@@ -173,6 +173,25 @@
   background-color: rgba(255, 255, 255, 0.65);
 }
 
+/* Mermaid 图表容器样式 */
+.markdown-body .mermaid,
+.editormd-preview-container .mermaid,
+.editormd-html-preview .mermaid {
+  text-align: center;
+  margin: 1.5em 0;
+  overflow: visible;
+  background: transparent;
+}
+
+.markdown-body .mermaid svg,
+.editormd-preview-container .mermaid svg,
+.editormd-html-preview .mermaid svg {
+  max-width: 100%;
+  height: auto !important;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 </style>
 <script>
 import { getUserInfoFromStorage } from '@/models/user.js'
@@ -259,6 +278,7 @@ export default {
               'toc',
               'mindmap',
               'plantuml',
+              'mermaid',
               'tasklist',
               'h1',
               'h2',
@@ -296,6 +316,7 @@ export default {
             mindmap: 'fa-sitemap ', // 指定一个FontAawsome的图标类
             plantuml: 'fa-random ', // 修改为确实存在的图标类
             video: 'fa-file-video-o',
+            mermaid: 'fa-pie-chart ', // Mermaid 图表
             center: 'fa-align-center',
             tasklist: 'fa-check-square-o'
           },
@@ -376,6 +397,24 @@ actor 用户
                 cm.setCursor(cursor.line, cursor.ch + 1)
               }
             },
+            mermaid: function(cm, icon, cursor, selection) {
+              // 替换选中文本，如果没有选中文本，则直接插入
+              var text = `
+\`\`\`mermaid
+graph LR
+    A[开始] --> B{判断}
+    B -->|是| C[执行]
+    B -->|否| D[结束]
+    C --> D
+\`\`\`
+`
+              cm.replaceSelection(text)
+
+              // 如果当前没有选中的文本，将光标移到要输入的位置
+              if (selection === '') {
+                cm.setCursor(cursor.line, cursor.ch + 1)
+              }
+            },
             center: function(cm, icon, cursor, selection) {
               // 替换选中文本，如果没有选中文本，则直接插入
               cm.replaceSelection('<center>' + selection + '</center>')
@@ -391,6 +430,7 @@ actor 用户
               toc: '在最开头插入TOC，自动生成标题目录',
               mindmap: '插入思维导图',
               plantuml: '插入UML图',
+              mermaid: '插入Mermaid图表',
               video: '插入视频',
               center: '居中',
               tasklist: '插入任务列表'
@@ -416,7 +456,8 @@ actor 用户
       instance: null,
       imgSrc: '',
       user_token: '',
-      intervalId: 0
+      intervalId: 0,
+      mermaidLoaded: false // 标记 mermaid 是否已加载
 
     }
   },
@@ -488,14 +529,40 @@ actor 用户
         }
         if (editorMD) {
           if (this.type == 'editor') {
-            this.instance = editorMD(this.id, editorConfig)
-            // 草稿
-            // this.draft(); 鉴于草稿功能未完善。先停掉。
-            // window.addEventListener('beforeunload', e => this.beforeunloadHandler(e));
+            // 编辑模式：默认加载 mermaid.min.js
+            if (!this.mermaidLoaded) {
+              this.mermaidLoaded = true
+              $s(`${this.editorPath}/lib/mermaid.min.js`, () => {
+                this.instance = editorMD(this.id, editorConfig)
+                // 草稿
+                // this.draft(); 鉴于草稿功能未完善。先停掉。
+                // window.addEventListener('beforeunload', e => this.beforeunloadHandler(e));
+                this.dealWithContent()
+              })
+            } else {
+              this.instance = editorMD(this.id, editorConfig)
+              // 草稿
+              // this.draft(); 鉴于草稿功能未完善。先停掉。
+              // window.addEventListener('beforeunload', e => this.beforeunloadHandler(e));
+              this.dealWithContent()
+            }
           } else {
-            this.instance = editorMD.markdownToHTML(this.id, editorConfig)
+            // 预览模式：检测内容是否包含 mermaid，按需加载
+            const needMermaid =
+              (this.content || '').toLowerCase().indexOf('mermaid') > -1
+            if (needMermaid && !this.mermaidLoaded) {
+              this.mermaidLoaded = true
+              $s(`${this.editorPath}/lib/mermaid.min.js`, () => {
+                // mermaid 加载完成后再调用 markdownToHTML
+                this.instance = editorMD.markdownToHTML(this.id, editorConfig)
+                this.dealWithContent()
+              })
+            } else {
+              // 不需要 mermaid 或已加载，直接调用 markdownToHTML
+              this.instance = editorMD.markdownToHTML(this.id, editorConfig)
+              this.dealWithContent()
+            }
           }
-          this.deal_with_content()
         }
       })
     },
