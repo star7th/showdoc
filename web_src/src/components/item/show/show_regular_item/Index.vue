@@ -108,6 +108,24 @@
                 </div>
               </div>
             </div>
+
+            <!-- 内容质量反馈 -->
+            <div id="feedback-area">
+              <PageFeedback
+                v-if="page_id && item_info"
+                :page-id="page_id"
+                :item-info="item_info"
+              ></PageFeedback>
+            </div>
+
+            <!-- 评论区 -->
+            <div id="comment-area">
+              <PageComment
+                v-if="page_id && item_info"
+                :page-id="page_id"
+                :item-info="item_info"
+              ></PageComment>
+            </div>
           </div>
         </div>
       </div>
@@ -152,6 +170,8 @@ import Header from '../Header'
 import MobileHeader from '../MobileHeader'
 import LeftMenuBottomBar from './LeftMenuBottomBar'
 import SearchBreadcrumb from '@/components/common/SearchBreadcrumb'
+import PageFeedback from '@/components/common/PageFeedback'
+import PageComment from '@/components/common/PageComment'
 export default {
   props: {
     item_info: '',
@@ -189,7 +209,9 @@ export default {
     HeaderRight,
     LeftMenuBottomBar,
     MobileHeader,
-    SearchBreadcrumb
+    SearchBreadcrumb,
+    PageFeedback,
+    PageComment
   },
   watch: {
     keyword: {

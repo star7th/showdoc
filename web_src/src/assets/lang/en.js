@@ -721,5 +721,43 @@ exports.default = {
   shape_rect: 'Rectangle',
   shape_circle: 'Circle',
   shape_triangle: 'Triangle',
-  shape_arrow: 'Arrow'
+  shape_arrow: 'Arrow',
+
+  // pageComment
+  pageComment: {
+    title: 'Comments',
+    total: '{count} comments in total',
+    placeholder: 'Write a comment...',
+    replyPlaceholder: 'Reply to @{username}',
+    submit: 'Submit',
+    submitReply: 'Submit Reply',
+    reply: 'Reply',
+    cancel: 'Cancel',
+    delete: 'Delete',
+    deleteConfirm: 'Are you sure to delete this comment?',
+    success: 'Comment posted successfully',
+    replySuccess: 'Reply posted successfully',
+    tooFrequent: 'Too frequent, please try again later',
+    loginTip: 'Please login to comment',
+    loginButton: 'Login',
+    empty: 'No comments yet. Be the first to comment!',
+    replyLimitError: 'Only two-level comments are supported'
+  },
+
+  // pageFeedback
+  pageFeedback: {
+    title: 'Was this page helpful?',
+    helpful: 'Helpful',
+    unhelpful: 'Not Helpful',
+    submitSuccess: 'Thank you for your feedback'
+  },
+
+  // itemSetting
+  itemSetting: {
+    interactionTitle: 'Interaction Features',
+    allowComment: 'Enable Page Comments',
+    allowCommentDesc: 'Allow project members to comment on pages',
+    allowFeedback: 'Enable Content Feedback',
+    allowFeedbackDesc: 'Visitors can give "helpful/not helpful" feedback'
+  }
 }

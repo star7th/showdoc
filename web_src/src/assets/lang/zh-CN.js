@@ -694,5 +694,43 @@ exports.default = {
   shape_rect: '方形',
   shape_circle: '圆形',
   shape_triangle: '三角形',
-  shape_arrow: '箭头'
+  shape_arrow: '箭头',
+
+  // pageComment
+  pageComment: {
+    title: '评论',
+    total: '共 {count} 条评论',
+    placeholder: '发表评论...',
+    replyPlaceholder: '回复 @{username}',
+    submit: '提交评论',
+    submitReply: '提交回复',
+    reply: '回复',
+    cancel: '取消',
+    delete: '删除',
+    deleteConfirm: '确认删除这条评论吗？',
+    success: '评论发表成功',
+    replySuccess: '回复成功',
+    tooFrequent: '评论过于频繁，请稍后再试',
+    loginTip: '登录后可发表评论',
+    loginButton: '立即登录',
+    empty: '暂无评论，来发表第一条评论吧~',
+    replyLimitError: '仅支持两级评论，不能对回复再次回复'
+  },
+
+  // pageFeedback
+  pageFeedback: {
+    title: '这篇文档对您有帮助吗？',
+    helpful: '有帮助',
+    unhelpful: '没有帮助',
+    submitSuccess: '感谢您的反馈'
+  },
+
+  // itemSetting
+  itemSetting: {
+    interactionTitle: '互动功能',
+    allowComment: '开启页面评论',
+    allowCommentDesc: '允许项目成员对页面内容发表评论',
+    allowFeedback: '开启内容质量反馈',
+    allowFeedbackDesc: '访客可对页面内容进行"有帮助/没有帮助"反馈'
+  }
 }

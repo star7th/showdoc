@@ -25,6 +25,7 @@
               <el-table-column prop="message_content" :label="$t('content')">
                 <template slot-scope="props">
                   <div>
+                    <!-- 页面创建/更新通知 -->
                     <div
                       v-if="
                         (props.row.action_type == 'create' ||
@@ -51,13 +52,37 @@
                         <span>{{ props.row.message_content }}</span>
                       </div>
                     </div>
-                    <div v-if="props.row.object_type == 'vip'">
+
+                    <!-- 页面评论提醒 -->
+                    <div
+                      v-else-if="props.row.action_type == 'comment' && props.row.object_type == 'page'"
+                    >
+                      <div>
+                        {{ props.row.from_name }}
+                        <span v-if="props.row.message_content">{{ props.row.message_content }}</span>
+                        <el-button
+                          @click="visitPage(props.row.page_data.item_id, props.row.page_data.page_id)"
+                          type="text"
+                        >
+                          {{ props.row.page_data && props.row.page_data.page_title ? props.row.page_data.page_title : $t('view') }}
+                        </el-button>
+                      </div>
+                    </div>
+
+                    <!-- VIP 到期提醒 -->
+                    <div v-else-if="props.row.object_type == 'vip'">
                       你在showdoc购买的付费版资格很快过期了，你可以<a
                         href="/user/setting"
                         target="_blank"
                         >点此进入用户中心</a
                       >进行续费 (如已续费请忽略该通知)
                       
+                    </div>
+
+                    <!-- 其他类型的通用展示 -->
+                    <div v-else>
+                      <span v-if="props.row.message_content">{{ props.row.message_content }}</span>
+                      <span v-else>{{ $t('no_content') }}</span>
                     </div>
                   </div>
                 </template>
@@ -168,7 +193,8 @@ export default {
     },
     visitPage(item_id, page_id) {
       let routeUrl = this.$router.resolve({
-        path: '/' + item_id + '/' + page_id
+        path: '/' + item_id + '/' + page_id,
+        hash: '#comment-area'
       })
       window.open(routeUrl.href, '_blank')
     },
@@ -198,12 +224,13 @@ export default {
   mounted() {
     this.getRemindList()
     this.getAnnouncementList()
+    this.getUnread()
+
+    //指定tab
     if (this.$route.query.dtab) {
       this.dtab = this.$route.query.dtab
     }
-    this.getUnread()
-  },
-  beforeDestroy() {}
+  }
 }
 </script>
 

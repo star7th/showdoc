@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 23;
+        $version_num = 24;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -614,6 +614,55 @@ class UpdateModel
           UPDATE parameter_description_entry SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
         END;";
         D("User")->execute($sql);
+
+        //创建page_comment表（页面评论表）
+        $sql = "CREATE TABLE IF NOT EXISTS `page_comment` (
+            `comment_id`  INTEGER PRIMARY KEY ,
+            `page_id` int(11) NOT NULL DEFAULT '0',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `parent_id` int(11) NOT NULL DEFAULT '0',
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `username` CHAR(200) NOT NULL DEFAULT '',
+            `content` text NOT NULL DEFAULT '',
+            `is_deleted` int(1) NOT NULL DEFAULT '0',
+            `addtime` int(11) NOT NULL DEFAULT '0'
+            )";
+        D("User")->execute($sql);
+
+        //创建page_feedback表（页面质量反馈表）
+        $sql = "CREATE TABLE IF NOT EXISTS `page_feedback` (
+            `feedback_id`  INTEGER PRIMARY KEY ,
+            `page_id` int(11) NOT NULL DEFAULT '0',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `client_id` CHAR(200) DEFAULT NULL,
+            `feedback_type` int(1) NOT NULL DEFAULT '0',
+            `addtime` int(11) NOT NULL DEFAULT '0'
+            )";
+        D("User")->execute($sql);
+
+        //为page_feedback表创建唯一索引（登录用户）
+        $sql = "CREATE UNIQUE INDEX IF NOT EXISTS unique_user_feedback ON page_feedback (page_id, uid)";
+        D("User")->execute($sql);
+
+        //为page_feedback表创建唯一索引（游客）
+        $sql = "CREATE UNIQUE INDEX IF NOT EXISTS unique_client_feedback ON page_feedback (page_id, client_id)";
+        D("User")->execute($sql);
+
+        //item表增加allow_comment字段
+        if (!$this->_is_column_exist("Item", "allow_comment")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item ADD allow_comment INT( 1 ) NOT NULL DEFAULT '0'  ;";
+            D("ItemMember")->execute($sql);
+        }
+
+        //item表增加allow_feedback字段
+        if (!$this->_is_column_exist("Item", "allow_feedback")) {
+            $sql = "ALTER TABLE " . C('DB_PREFIX') . "item ADD allow_feedback INT( 1 ) NOT NULL DEFAULT '0'  ;";
+            D("ItemMember")->execute($sql);
+        }
+
+        //清理可能存在的冲突数据：将登录用户的空字符串client_id改为NULL
+        D("User")->execute("UPDATE page_feedback SET client_id = NULL WHERE uid > 0 AND (client_id = '' OR client_id IS NULL)");
 
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num

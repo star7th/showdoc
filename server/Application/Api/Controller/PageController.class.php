@@ -136,6 +136,10 @@ class PageController extends BaseController
             $ret = D("Page")->softDeletePage($page_id);
             //更新项目时间
             D("Item")->where(array('item_id' => $page['item_id']))->save(array("last_update_time" => time()));
+            
+            // 删除页面评论和反馈
+            D("PageComment")->where("page_id = %d", array($page_id))->delete();
+            D("PageFeedback")->where("page_id = %d", array($page_id))->delete();
         }
         if ($ret) {
             D("ItemChangeLog")->addLog($login_user['uid'],  $page['item_id'], 'delete', 'page', $page['page_id'], $page['page_title']);

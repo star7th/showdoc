@@ -89,6 +89,32 @@
             ></el-input
           ></el-col>
         </el-row>
+
+        <!-- 互动功能（仅常规项目） -->
+        <template v-if="infoForm.item_type == 1 || infoForm.item_type === 1 || infoForm.item_type === '1'">
+          <el-row class="leading-10 mb-4">
+            <el-col :span="6"
+              >{{ $t('itemSetting.interactionTitle') }} :
+            </el-col>
+            <el-col :span="18">
+              <el-checkbox v-model="infoForm.allow_comment">
+                {{ $t('itemSetting.allowComment') }}
+              </el-checkbox>
+              <div class="form-item-desc">
+                {{ $t('itemSetting.allowCommentDesc') }}
+              </div>
+              <el-checkbox
+                v-model="infoForm.allow_feedback"
+                style="margin-top: 10px;"
+              >
+                {{ $t('itemSetting.allowFeedback') }}
+              </el-checkbox>
+              <div class="form-item-desc">
+                {{ $t('itemSetting.allowFeedbackDesc') }}
+              </div>
+            </el-col>
+          </el-row>
+        </template>
       </div>
     </SDialog>
   </div>
@@ -123,7 +149,9 @@ export default {
         item_description: '',
         item_domain: '',
         password: '',
-        item_type: '1'
+        item_type: '1',
+        allow_comment: false,
+        allow_feedback: false
       },
       isOpenItem: true,
       itemGroupList: [],
@@ -149,7 +177,10 @@ export default {
           password: this.infoForm.password,
           item_group_ids: (this.itemGroupIdsLocal || [])
             .map(v => Number(v))
-            .filter(v => !isNaN(v))
+            .filter(v => !isNaN(v)),
+          // 提交时将布尔值转换为0/1
+          allow_comment: this.infoForm.allow_comment ? 1 : 0,
+          allow_feedback: this.infoForm.allow_feedback ? 1 : 0
         }).then(data => {
           this.$message.success(this.$t('modify_success'))
           this.callback()
@@ -165,7 +196,10 @@ export default {
             password: this.infoForm.password,
             item_group_ids: (this.itemGroupIdsLocal || [])
               .map(v => Number(v))
-              .filter(v => !isNaN(v))
+              .filter(v => !isNaN(v)),
+            // 提交时将布尔值转换为0/1
+            allow_comment: this.infoForm.allow_comment ? 1 : 0,
+            allow_feedback: this.infoForm.allow_feedback ? 1 : 0
           },
           'post',
           false
@@ -193,6 +227,9 @@ export default {
         this.infoForm.item_domain = json.item_domain
         this.infoForm.password = json.password
         this.infoForm.item_type = json.item_type
+        // 确保allow_comment和allow_feedback有默认值，并转换为布尔值（checkbox需要布尔值）
+        this.infoForm.allow_comment = (json.allow_comment === 1 || json.allow_comment === true || json.allow_comment === '1')
+        this.infoForm.allow_feedback = (json.allow_feedback === 1 || json.allow_feedback === true || json.allow_feedback === '1')
         // 多分组：后端返回 group_ids
         this.itemGroupIdsLocal = Array.isArray(json.group_ids)
           ? json.group_ids.map(v => Number(v)).filter(v => !isNaN(v))
@@ -234,4 +271,10 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+.form-item-desc {
+  font-size: 12px;
+  color: #999;
+  margin-top: 5px;
+}
+</style>

@@ -83,6 +83,23 @@
         </el-tooltip>
       </el-form-item>
 
+      <!-- 互动功能（仅常规项目） -->
+      <template v-if="infoForm.item_type == 1 || infoForm.item_type === 1 || infoForm.item_type === '1'">
+        <el-divider content-position="left">{{ $t('itemSetting.interactionTitle') }}</el-divider>
+        <el-form-item>
+          <el-checkbox v-model="infoForm.allow_comment">
+            {{ $t('itemSetting.allowComment') }}
+          </el-checkbox>
+          <div class="form-item-desc">{{ $t('itemSetting.allowCommentDesc') }}</div>
+        </el-form-item>
+        <el-form-item>
+          <el-checkbox v-model="infoForm.allow_feedback">
+            {{ $t('itemSetting.allowFeedback') }}
+          </el-checkbox>
+          <div class="form-item-desc">{{ $t('itemSetting.allowFeedbackDesc') }}</div>
+        </el-form-item>
+      </template>
+
       <el-form-item label>
         <el-button type="primary" style="width:100%;" @click="formSubmit">{{
           $t('submit')
@@ -114,6 +131,13 @@ export default {
           this.isOpenItem = false
         }
         this.infoForm = json
+        // 确保 item_type 是数字（如果后端返回的是字符串）
+        // 如果 item_type 不存在或为0，默认为常规项目（1）
+        this.infoForm.item_type = parseInt(this.infoForm.item_type) || 1
+        // 确保allow_comment和allow_feedback有默认值，并转换为布尔值（checkbox需要布尔值）
+        // 只有明确等于1或true时才为true，其他情况（0、null、undefined、空字符串等）都为false
+        this.infoForm.allow_comment = (this.infoForm.allow_comment === 1 || this.infoForm.allow_comment === true || this.infoForm.allow_comment === '1')
+        this.infoForm.allow_feedback = (this.infoForm.allow_feedback === 1 || this.infoForm.allow_feedback === true || this.infoForm.allow_feedback === '1')
         // 默认分组：后端 group_ids
         if (Array.isArray(json.group_ids)) {
           this.itemGroupIdsLocal = json.group_ids
@@ -170,7 +194,10 @@ export default {
         password: this.infoForm.password,
         item_group_ids: (this.itemGroupIdsLocal || [])
           .map(v => Number(v))
-          .filter(v => !isNaN(v))
+          .filter(v => !isNaN(v)),
+        // 提交时将布尔值转换为0/1
+        allow_comment: this.infoForm.allow_comment ? 1 : 0,
+        allow_feedback: this.infoForm.allow_feedback ? 1 : 0
       }).then(data => {
         this.$message.success(this.$t('modify_success'))
       })
@@ -205,5 +232,11 @@ export default {
 .goback-btn {
   z-index: 999;
   margin-left: 500px;
+}
+
+.form-item-desc {
+  font-size: 12px;
+  color: #999;
+  margin-top: 5px;
 }
 </style>

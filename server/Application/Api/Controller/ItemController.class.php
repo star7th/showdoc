@@ -166,6 +166,8 @@ class ItemController extends BaseController
             "current_page_id" => $current_page_id,
             "global_param" => $global_param,
             "show_watermark" => $show_watermark,
+            "allow_comment" => isset($item['allow_comment']) ? (int)$item['allow_comment'] : 0,
+            "allow_feedback" => isset($item['allow_feedback']) ? (int)$item['allow_feedback'] : 0,
 
         );
         $this->sendResult($return);
@@ -403,6 +405,20 @@ class ItemController extends BaseController
             "item_domain" => $item_domain,
             "password" => $password,
         );
+        // 处理评论和反馈功能开关（仅常规项目）
+        $allow_comment = I("allow_comment/d");
+        $allow_feedback = I("allow_feedback/d");
+        if ($item_info = D("Item")->where("item_id = '%d' ", array($item_id))->find()) {
+            if ($item_info['item_type'] == 1) {
+                // 常规项目才支持评论和反馈功能
+                if ($allow_comment !== null) {
+                    $save_data['allow_comment'] = $allow_comment ? 1 : 0;
+                }
+                if ($allow_feedback !== null) {
+                    $save_data['allow_feedback'] = $allow_feedback ? 1 : 0;
+                }
+            }
+        }
         $items  = D("Item")->where("item_id = '%d' ", array($item_id))->save($save_data);
         // 同步分组
         $selected_group_ids = array();
@@ -513,6 +529,9 @@ class ItemController extends BaseController
             return;
         }
 
+        // 删除项目相关的评论和反馈
+        D("PageComment")->where("item_id = %d", array($item_id))->delete();
+        D("PageFeedback")->where("item_id = %d", array($item_id))->delete();
 
         $return = D("Item")->soft_delete_item($item_id);
 

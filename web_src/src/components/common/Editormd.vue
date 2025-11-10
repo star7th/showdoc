@@ -437,7 +437,7 @@ graph LR
             }
           },
           onchange: () => {
-            this.deal_with_content()
+            this.dealWithContent()
           },
           previewCodeHighlight: false , // 关闭编辑默认的代码高亮模块。用其他插件实现高亮
           katexURL: {
@@ -630,7 +630,7 @@ graph LR
     },
 
     // 对内容做些定制化改造
-    deal_with_content() {
+    dealWithContent() {
       var that = this
 
       // 代码高亮
