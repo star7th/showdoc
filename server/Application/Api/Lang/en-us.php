@@ -212,4 +212,12 @@ return array(
     "no_delete_empty_catalog" => 'In order to secure, do not allow direct delete an empty catalog. Please delete or move all the pages in the catalog',
 
     "default_title" => 'Default',
+
+    //export html
+    'item_not_exists' => 'Item does not exist',
+    'export_html_not_support_item_type' => 'Unsupported item type, only supports regular items, RunAPI items and single page items',
+    'create_temp_dir_failed' => 'Failed to create temporary directory',
+    'no_pages_to_export' => 'No pages to export',
+    'zip_failed' => 'Failed to create ZIP file',
+    'export_failed' => 'Export failed',
 );

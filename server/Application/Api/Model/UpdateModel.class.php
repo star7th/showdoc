@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 24;
+        $version_num = 25;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -537,6 +537,16 @@ class UpdateModel
             $sql = "ALTER TABLE " . C('DB_PREFIX') . "page_history ADD ext_info CHAR(2000) NOT NULL DEFAULT '' ;";
             D("page")->execute($sql);
         }
+
+        // 创建 export_log 表（记录导出行为）
+        $sql = "CREATE TABLE IF NOT EXISTS `export_log` (
+            `id`  INTEGER PRIMARY KEY ,
+            `uid` int(11) NOT NULL DEFAULT '0',
+            `export_type` CHAR(200) NOT NULL DEFAULT '',
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `addtime` CHAR(200) NOT NULL DEFAULT ''
+        )";
+        D("User")->execute($sql);
 
         // 检查 upload_file 表是否有 last_visit_time 字段，如果没有则添加
         if (!$this->_is_column_exist("upload_file", "last_visit_time")) {

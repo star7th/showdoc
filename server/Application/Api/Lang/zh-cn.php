@@ -215,5 +215,13 @@ return array(
 
     "default_title" => '默认页面',
 
+    //export html
+    'item_not_exists' => '项目不存在',
+    'export_html_not_support_item_type' => '不支持的项目类型，仅支持常规项目、RunAPI项目和单页项目',
+    'create_temp_dir_failed' => '创建临时目录失败',
+    'no_pages_to_export' => '没有可导出的页面',
+    'zip_failed' => '打包ZIP文件失败',
+    'export_failed' => '导出失败',
+
 
 );

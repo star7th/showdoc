@@ -3,7 +3,7 @@
     <SDialog
       :onCancel="callback"
       :title="$t('export')"
-      width="400px"
+      width="520px"
       :onOK="onSubmit"
     >
       <div class="text-center">
@@ -16,6 +16,9 @@
               }}</el-radio-button>
               <el-radio-button v-show="showMarkdown" label="markdown">{{
                 $t('export_format_markdown')
+              }}</el-radio-button>
+              <el-radio-button label="html">{{
+                $t('export_format_html')
               }}</el-radio-button>
             </el-radio-group>
           </el-form-item>
@@ -31,6 +34,10 @@
 
           <el-form-item label v-if="export_format == 'markdown'">
             <p class="tips-text">{{ $t('export_markdown_tips') }}</p>
+          </el-form-item>
+
+          <el-form-item label v-if="export_format == 'html'">
+            <p class="tips-text">{{ $t('export_html_tips') }}</p>
           </el-form-item>
 
           <el-form-item
@@ -141,33 +148,37 @@ export default {
       })
     },
     onSubmit() {
-      this.request('/api/export/checkMarkdownLimit', {
-        export_format: this.export_format
-      }).then(data => {
-        if (this.export_type == 1) {
-          this.cat_id = ''
-        }
-        var url =
+      // 开源版无checkMarkdownLimit接口，直接导出
+      if (this.export_type == 1) {
+        this.cat_id = ''
+      }
+      var url =
+        DocConfig.server +
+        '/api/export/word&item_id=' +
+        this.item_id +
+        '&cat_id=' +
+        this.cat_id +
+        '&page_id=' +
+        this.page_id +
+        '&user_token=' +
+        this.user_token
+      if (this.export_format == 'markdown') {
+        url =
           DocConfig.server +
-          '/api/export/word&item_id=' +
+          '/api/export/markdown&item_id=' +
           this.item_id +
-          '&cat_id=' +
-          this.cat_id +
-          '&page_id=' +
-          this.page_id +
           '&user_token=' +
           this.user_token
-        if (this.export_format == 'markdown') {
-          url =
-            DocConfig.server +
-            '/api/export/markdown&item_id=' +
-            this.item_id +
-            '&user_token=' +
-            this.user_token
-        }
-        window.location.href = url
-        this.callback()
-      })
+      } else if (this.export_format == 'html') {
+        url =
+          DocConfig.server +
+          '/api/exportHtml/export&item_id=' +
+          this.item_id +
+          '&user_token=' +
+          this.user_token
+      }
+      window.location.href = url
+      this.callback()
     },
     goback() {
       this.$router.go(-1)
@@ -220,5 +231,14 @@ export default {
   text-align: left;
   margin-left: 25px;
   font-size: 11px;
+}
+</style>
+<style scoped>
+/* 防止导出格式按钮换行，并压缩左右内边距 */
+.el-radio-group {
+  white-space: nowrap;
+}
+.el-radio-button__inner {
+  padding: 6px 10px;
 }
 </style>

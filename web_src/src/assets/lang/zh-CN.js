@@ -348,8 +348,11 @@ exports.default = {
   import_file_tips2: '将文件拖到此处，或<em>点击上传</em>',
   export_format_word: 'word格式',
   export_format_markdown: 'markdown压缩包',
+  export_format_html: '离线HTML包',
   export_markdown_tips:
     '导出的压缩包可以重新导入showdoc，在新建项目的时候选择"文件导入"即可',
+  export_html_tips:
+    '导出为离线HTML包，解压后可在浏览器中离线浏览所有文档，包含目录树、搜索等功能',
 
   private_tips: '这是一个私密项目',
 

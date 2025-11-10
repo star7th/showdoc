@@ -363,8 +363,11 @@ exports.default = {
   import_file_tips2: 'Drag the file here, or click to upload',
   export_format_word: 'Word format',
   export_format_markdown: 'Markdown zip',
+  export_format_html: 'Offline HTML Package',
   export_markdown_tips:
     "The exported compressed package can be re imported into showdoc. Select 'Import File' when creating a new item",
+  export_html_tips:
+    'Export as offline HTML package. After decompression, you can browse all documents offline in the browser, including catalog tree, search and other functions',
 
   private_tips: "It's a private item",
 
