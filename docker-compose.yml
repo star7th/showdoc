@@ -1,7 +1,3 @@
-version: '3'
-
-networks:
-  showdocnet:
 
 services:
   showdoc:
@@ -27,5 +23,3 @@ services:
       - ./showdocdata/html:/var/www/html
     restart: always
     tty: true
-    networks:
-      - showdocnet
