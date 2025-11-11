@@ -491,7 +491,7 @@ graph LR
                 `${this.editorPath}/lib/transform.min.js`
               ],
               () => {
-                $s(`${this.editorPath}/editormd.js?v=34`, () => {
+                $s(`${this.editorPath}/editormd.js?v=35`, () => {
                   this.initEditor()
                 })
               }

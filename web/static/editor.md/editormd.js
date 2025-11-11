@@ -240,6 +240,7 @@
     sequenceDiagram: false, // sequenceDiagram.js only support IE9+
     previewCodeHighlight: true,
     mindMap: true,
+    mermaid: true, // Mermaid diagram support
 
     toolbar: true, // show/hide toolbar
     toolbarAutoFixed: true, // on window scroll auto fixed position
@@ -1674,6 +1675,99 @@
     },
 
     /**
+     * 解析和渲染 Mermaid 图表
+     * Mermaid Renderer
+     *
+     * @returns {editormd}             返回editormd的实例对象
+     */
+    mermaidRender: function() {
+      if (typeof window.mermaid === 'undefined') {
+        return this
+      }
+
+      // 初始化 Mermaid 配置
+      try {
+        window.mermaid.initialize({
+          startOnLoad: false,
+          theme: 'default',
+          securityLevel: 'loose',
+          fontFamily: 'Arial, sans-serif',
+          flowchart: {
+            useMaxWidth: false,
+            htmlLabels: true,
+            padding: 15
+          },
+          sequence: {
+            useMaxWidth: false
+          },
+          gantt: {
+            useMaxWidth: false
+          },
+          class: {
+            useMaxWidth: false
+          },
+          themeVariables: {
+            fontSize: '14px',
+            fontFamily: 'Arial, sans-serif'
+          }
+        })
+      } catch (e) {
+        console.log('Mermaid initialize error:', e)
+      }
+
+      // 渲染所有 mermaid 元素
+      var _this = this
+      this.previewContainer.find('.mermaid').each(function(index) {
+        var $mermaidDiv = $(this)
+        var code = $mermaidDiv.text().trim()
+        var id = $mermaidDiv.attr('id') || 'mermaid-' + Date.now() + '-' + index
+
+        // 清空容器
+        $mermaidDiv.html('')
+        $mermaidDiv.attr('id', id)
+
+        try {
+          // 使用 mermaid.render 方法
+          window.mermaid
+            .render(id + '-svg', code)
+            .then(function(result) {
+              $mermaidDiv.html(result.svg)
+
+              // 简单处理：确保 SVG 完整显示
+              var $svg = $mermaidDiv.find('svg')
+              if ($svg.length > 0) {
+                // 调整 foreignObject 高度，避免英文字符被裁剪
+                $svg.find('foreignObject').each(function() {
+                  var $fo = $(this)
+                  var originHeight = parseFloat($fo.attr('height')) || 0
+                  if (originHeight > 0 && originHeight < 26) {
+                    $fo.attr('height', Math.max(originHeight + 10, 26))
+                  }
+                })
+              }
+            })
+            .catch(function(error) {
+              console.log('Mermaid render error:', error)
+              $mermaidDiv.html(
+                '<pre style="color: red;">Mermaid 渲染错误: ' +
+                  error.message +
+                  '</pre>'
+              )
+            })
+        } catch (error) {
+          console.log('Mermaid render error:', error)
+          $mermaidDiv.html(
+            '<pre style="color: red;">Mermaid 渲染错误: ' +
+              error.message +
+              '</pre>'
+          )
+        }
+      })
+
+      return this
+    },
+
+    /**
      * 解析和渲染流程图及时序图
      * FlowChart and SequenceDiagram Renderer
      *
@@ -2140,7 +2234,8 @@
         flowChart: settings.flowChart,
         sequenceDiagram: settings.sequenceDiagram,
         previewCodeHighlight: settings.previewCodeHighlight,
-        mindMap: settings.mindMap
+        mindMap: settings.mindMap,
+        mermaid: settings.mermaid
       })
 
       var markedOptions = (this.markedOptions = {
@@ -2256,6 +2351,10 @@
 
         if (settings.mindMap) {
           _this.mindmapRender()
+        }
+
+        if (settings.mermaid) {
+          _this.mermaidRender()
         }
 
         if (state.loaded) {
@@ -3839,6 +3938,9 @@
         return (
           "<div class='mindmap' id='mindmap-" + mapId + "'>" + code + '</div>'
         )
+      } else if (/^mermaid/i.test(lang)) {
+        var mermaidId = 'mermaid-' + Math.ceil(Math.random() * 1000000)
+        return "<div class='mermaid' id='" + mermaidId + "'>" + code + '</div>'
       } else {
         return marked.Renderer.prototype.code.apply(this, arguments)
       }
@@ -4253,7 +4355,8 @@
       flowChart: false,
       sequenceDiagram: false,
       previewCodeHighlight: true,
-      mindMap: true
+      mindMap: true,
+      mermaid: true
     }
 
     editormd.$marked = marked
@@ -4420,6 +4523,94 @@
             $('<svg style="width: 100%;height:500px" id="' + svgId + '"></svg>')
           )
           window.markmap.markmap('svg#' + svgId, data)
+        })
+      })()
+    }
+
+    if (settings.mermaid) {
+      // 处理 Mermaid 图表
+      ;(function() {
+        if (typeof window.mermaid === 'undefined') {
+          return
+        }
+
+        // 初始化 Mermaid 配置
+        try {
+          window.mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            securityLevel: 'loose',
+            fontFamily: 'Arial, sans-serif',
+            flowchart: {
+              useMaxWidth: false,
+              htmlLabels: true,
+              padding: 15
+            },
+            sequence: {
+              useMaxWidth: false
+            },
+            gantt: {
+              useMaxWidth: false
+            },
+            class: {
+              useMaxWidth: false
+            },
+            themeVariables: {
+              fontSize: '14px',
+              fontFamily: 'Arial, sans-serif'
+            }
+          })
+        } catch (e) {
+          console.log('Mermaid initialize error:', e)
+        }
+
+        // 渲染所有 mermaid 元素
+        div.find('.mermaid').each(function(index) {
+          var $mermaidDiv = $(this)
+          var code = $mermaidDiv.text().trim()
+          var id =
+            $mermaidDiv.attr('id') || 'mermaid-' + Date.now() + '-' + index
+
+          // 清空容器
+          $mermaidDiv.html('')
+          $mermaidDiv.attr('id', id)
+
+          try {
+            // 使用 mermaid.render 方法
+            window.mermaid
+              .render(id + '-svg', code)
+              .then(function(result) {
+                $mermaidDiv.html(result.svg)
+
+                // 简单处理：确保 SVG 完整显示
+                var $svg = $mermaidDiv.find('svg')
+                if ($svg.length > 0) {
+                  // 调整 foreignObject 高度，避免英文字符被裁剪
+                  $svg.find('foreignObject').each(function() {
+                    var $fo = $(this)
+                    var originHeight = parseFloat($fo.attr('height')) || 0
+                    if (originHeight > 0 && originHeight < 26) {
+                      $fo.attr('height', Math.max(originHeight + 10, 26))
+                    }
+                  })
+                }
+              })
+              .catch(function(error) {
+                console.log('Mermaid render error:', error)
+                $mermaidDiv.html(
+                  '<pre style="color: red;">Mermaid 渲染错误: ' +
+                    error.message +
+                    '</pre>'
+                )
+              })
+          } catch (error) {
+            console.log('Mermaid render error:', error)
+            $mermaidDiv.html(
+              '<pre style="color: red;">Mermaid 渲染错误: ' +
+                error.message +
+                '</pre>'
+            )
+          }
         })
       })()
     }
