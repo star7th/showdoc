@@ -508,7 +508,7 @@
         if (children) {
           // 检查是否是空目录（没有子元素）
           const isEmpty = children.children.length === 0
-          
+
           if (isEmpty) {
             // 空目录点击时不执行展开/折叠，但可以给一个视觉反馈
             // 可以添加一个短暂的样式变化提示这是空目录
@@ -530,6 +530,59 @@
     })
   }
 
+  // 处理表格样式（复刻Editormd.vue的dealWithContent方法）
+  const TableStyle = {
+    init: function () {
+      // 当表格列数过长时将自动出现滚动条
+      const tables = document.querySelectorAll('.markdown-body table')
+      tables.forEach(function (table) {
+        // 如果表格还没有被包装，则包装它
+        if (table.parentElement.tagName !== 'DIV' || !table.parentElement.style.overflowX) {
+          const wrapper = document.createElement('div')
+          wrapper.style.width = '100%'
+          wrapper.style.overflowX = 'auto'
+          table.parentNode.insertBefore(wrapper, table)
+          wrapper.appendChild(table)
+        }
+      })
+
+      // 对表格进行一些改造（复刻Editormd.vue的逻辑）
+      const tableRows = document.querySelectorAll('.markdown-body table tbody tr')
+      tableRows.forEach(function (tr) {
+        const tds = tr.querySelectorAll('td')
+        if (tds.length >= 2) {
+          const td1 = tds[0] ? tds[0].textContent.trim() : ''
+          const td2 = tds[1] ? tds[1].textContent.trim() : ''
+          const td3 = tds[2] ? tds[2].textContent.trim() : ''
+
+          // 检查是否是object或array[object]类型
+          if (
+            td1 === 'object' ||
+            td1 === 'array[object]' ||
+            td2 === 'object' ||
+            td2 === 'array[object]' ||
+            td3 === 'object' ||
+            td3 === 'array[object]'
+          ) {
+            tr.classList.add('object-row')
+          }
+
+          // 设置表格hover
+          tr.addEventListener('mouseenter', function () {
+            tr.style.backgroundColor = '#F8F8F8'
+          })
+          tr.addEventListener('mouseleave', function () {
+            if (tr.classList.contains('object-row')) {
+              tr.style.backgroundColor = '#F8F8F8'
+            } else {
+              tr.style.backgroundColor = ''
+            }
+          })
+        }
+      })
+    }
+  }
+
   // 初始化
   document.addEventListener('DOMContentLoaded', function () {
     CatalogTree.init()
@@ -537,5 +590,6 @@
     PageNav.init()
     Responsive.init()
     bindCatalogEvents()
+    TableStyle.init()
   })
 })()

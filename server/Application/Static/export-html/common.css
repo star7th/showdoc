@@ -7,11 +7,11 @@
 }
 
 body {
-  font-family: "Microsoft YaHei", Helvetica, "Meiryo UI", "Malgun Gothic", "Segoe UI", "Trebuchet MS", "Monaco", monospace, Tahoma, STXihei, "华文细黑", STHeiti, "Helvetica Neue", "Droid Sans", "wenquanyi micro hei", FreeSans, Arimo, Arial, SimSun, "宋体", Heiti, "黑体", sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  color: #333;
-  background-color: #fff;
+  font-family: 'Microsoft Yahei', 微软雅黑, Tahoma, Arial, Helvetica, STHeiti, sans-serif;
+  font-size: 13px;
+  line-height: 1.75;
+  color: #343a40;
+  background-color: #f9f9f9;
 }
 
 /* 头部样式 */
@@ -22,7 +22,7 @@ body {
   right: 0;
   height: 50px;
   background-color: #ffffff;
-  border-bottom: 1px solid #eaecef;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   z-index: 1000;
   box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
@@ -40,7 +40,7 @@ body {
   font-weight: 600;
   margin: 0;
   margin-right: 20px;
-  color: #24292e;
+  color: #343a40;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -56,15 +56,20 @@ body {
 .search-box input {
   width: 100%;
   padding: 6px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 13px;
   outline: none;
+  background-color: #ffffff;
+  transition: border-color 0.2s;
+}
+
+.search-box input::placeholder {
+  color: #9b9b9b;
 }
 
 .search-box input:focus {
-  border-color: #0366d6;
-  box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1);
+  border-color: #007bff;
 }
 
 .search-results {
@@ -73,14 +78,14 @@ body {
   left: 0;
   right: 0;
   background: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-top: none;
   border-radius: 0 0 4px 4px;
   max-height: 400px;
   overflow-y: auto;
   display: none;
   z-index: 1001;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .search-results.show {
@@ -89,13 +94,13 @@ body {
 
 .search-result-item {
   padding: 10px 14px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.15s;
 }
 
 .search-result-item:hover {
-  background-color: #f1f8ff;
+  background-color: #f9f9f9;
 }
 
 .search-result-item:last-child {
@@ -104,14 +109,21 @@ body {
 
 .search-result-title {
   font-weight: 600;
-  color: #0366d6;
+  color: #007bff;
   margin-bottom: 4px;
+  font-size: 13px;
 }
 
 .search-result-preview {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.4;
+  font-size: 12px;
+  color: #9b9b9b;
+  line-height: 1.5;
+}
+
+.search-result-item mark {
+  background-color: #fff4c2;
+  color: #343a40;
+  padding: 2px 0;
 }
 
 .menu-toggle {
@@ -121,7 +133,7 @@ body {
   font-size: 24px;
   cursor: pointer;
   padding: 5px 10px;
-  color: #24292e;
+  color: #343a40;
 }
 
 /* 容器布局 */
@@ -134,8 +146,8 @@ body {
 /* 侧边栏 */
 .sidebar {
   width: 260px;
-  background-color: #f7f8fa;
-  border-right: 1px solid #eaecef;
+  background-color: #f9f9f9;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   position: fixed;
   left: 0;
@@ -156,23 +168,23 @@ body {
   display: flex;
   align-items: center;
   padding: 6px 10px;
-  color: #24292e;
+  color: #343a40;
   text-decoration: none;
   border-radius: 4px;
-  transition: background-color 0.15s, color 0.15s;
-  font-size: 14px;
+  transition: background-color 0.15s;
+  font-size: 13px;
   cursor: pointer;
 }
 
 .catalog-link:hover {
-  background-color: #eaf2fb;
-  color: #0366d6;
+  background-color: #f0f0f0;
+  color: #007bff;
 }
 
 .catalog-link.active {
-  background-color: #eaf2fb;
-  color: #0366d6;
-  border-left: 3px solid #08c;
+  background-color: #f0f0f0;
+  color: #007bff;
+  border-left: 3px solid #007bff;
 }
 
 .catalog-icon {
@@ -183,7 +195,7 @@ body {
   text-align: center;
   cursor: pointer;
   user-select: none;
-  color: #6a737d;
+  color: #9b9b9b;
 }
 
 .catalog-icon.expanded::before {
@@ -212,63 +224,66 @@ body {
 .page-link {
   display: block;
   padding: 6px 10px;
-  color: #586069;
+  color: #343a40;
   text-decoration: none;
   border-radius: 4px;
-  transition: background-color 0.15s, color 0.15s;
-  font-size: 14px;
+  transition: background-color 0.15s;
+  font-size: 13px;
   margin-left: 22px;
 }
 
 .page-link:hover {
-  background-color: #eaf2fb;
-  color: #0366d6;
+  background-color: #f0f0f0;
+  color: #007bff;
 }
 
 .page-link.active {
-  background-color: #eaf2fb;
-  color: #0366d6;
-  border-left: 3px solid #08c;
+  background-color: #f0f0f0;
+  color: #007bff;
+  border-left: 3px solid #007bff;
 }
 
 /* 主内容区 */
 .main-content {
   flex: 1;
   margin-left: 260px;
-  padding: 28px 36px;
+  padding: 20px;
   max-width: 1200px;
 }
 
 .page-content {
-  background: #fff;
+  background: #ffffff;
+  padding: 20px;
 }
 
 .page-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   margin-bottom: 16px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #eaecef;
-  color: #24292e;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  color: #343a40;
 }
 
 .project-description {
-  font-size: 16px;
-  color: #586069;
+  font-size: 13px;
+  color: #9b9b9b;
   margin-bottom: 20px;
+  line-height: 1.75;
 }
 
 .project-overview {
-  margin-top: 30px;
-  padding: 20px;
-  background-color: #f6f8fa;
-  border-radius: 6px;
-  border-left: 4px solid #0366d6;
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border-left: 4px solid #007bff;
 }
 
 .project-overview p {
   margin-bottom: 10px;
-  color: #586069;
+  color: #343a40;
+  line-height: 1.75;
 }
 
 .project-overview p:last-child {
@@ -277,10 +292,10 @@ body {
 
 /* Markdown 样式微调，接近在线版 */
 .markdown-body {
-  color: #24292e;
+  color: #343a40;
   line-height: 1.75;
   word-wrap: break-word;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .markdown-body h1,
@@ -290,21 +305,21 @@ body {
 .markdown-body h5,
 .markdown-body h6 {
   margin-top: 24px;
-  margin-bottom: 16px;
+  margin-bottom: 1.5em;
   font-weight: 600;
-  line-height: 1.25;
-  color: #24292e;
+  line-height: 1.75;
+  color: #343a40;
 }
 
 .markdown-body h1 {
-  font-size: 2em;
-  border-bottom: 1px solid #eaecef;
+  font-size: 1.8em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding-bottom: 0.3em;
 }
 
 .markdown-body h2 {
   font-size: 1.5em;
-  border-bottom: 1px solid #eaecef;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding-bottom: 0.3em;
 }
 
@@ -313,7 +328,7 @@ body {
 }
 
 .markdown-body h4 {
-  font-size: 1em;
+  font-size: 1.1em;
 }
 
 .markdown-body h5 {
@@ -322,7 +337,7 @@ body {
 
 .markdown-body h6 {
   font-size: 0.85em;
-  color: #6a737d;
+  color: #9b9b9b;
 }
 
 .markdown-body p,
@@ -331,7 +346,7 @@ body {
 .markdown-body blockquote,
 .markdown-body table,
 .markdown-body pre {
-  margin: 0 0 16px 0;
+  margin-bottom: 1.5em;
 }
 
 .markdown-body li {
@@ -340,23 +355,31 @@ body {
 
 .markdown-body blockquote {
   padding: 0 1em;
-  color: #6a737d;
-  border-left: 4px solid #dfe2e5;
+  color: #9b9b9b;
+  border-left: 4px solid rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+  font-style: normal;
 }
 
 .markdown-body code {
   padding: 0.2em 0.4em;
-  background-color: #f6f8fa;
+  background-color: #f9f9f9;
   border-radius: 3px;
+  font-size: 0.9em;
+  color: #409eff;
+  font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
 .markdown-body pre {
-  padding: 12px;
+  position: relative;
+  padding: 1em;
   overflow: auto;
-  font-size: 90%;
+  font-size: 12px;
   line-height: 1.6;
-  background-color: #f6f8fa;
-  border-radius: 6px;
+  background-color: #384548;
+  color: #d1d2d2;
+  border-radius: 4px;
+  margin-bottom: 1.5em;
 }
 
 .markdown-body pre code {
@@ -369,6 +392,73 @@ body {
   word-wrap: normal;
   background-color: transparent;
   border: 0;
+  color: #d1d2d2;
+}
+
+/* 代码块复制按钮样式 */
+.markdown-body pre .btn-pre-copy {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.1s;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  z-index: 10;
+  padding: 4px 8px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.markdown-body pre:hover .btn-pre-copy {
+  display: block;
+}
+
+.markdown-body pre .btn-pre-copy:hover {
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* 代码高亮注释颜色调整 */
+.markdown-body .hljs-comment,
+.markdown-body .hljs-quote {
+  color: #aaa;
+}
+
+/* 代码块滚动条样式（适配深色背景） */
+.markdown-body pre {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) #2f3a3d;
+}
+
+.markdown-body pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+.markdown-body pre::-webkit-scrollbar-track {
+  background-color: #2f3a3d;
+}
+
+.markdown-body pre::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+}
+
+.markdown-body pre::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.65);
+}
+
+/* 表格外层包装，用于自动滚动 */
+.markdown-body > div[style*="overflow-x: auto"] {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 1.5em;
 }
 
 .markdown-body table {
@@ -376,21 +466,42 @@ body {
   width: 100%;
   display: block;
   overflow-x: auto;
+  margin-bottom: 1.5em;
+  background-color: #f9f9f9;
 }
 
 .markdown-body table th,
 .markdown-body table td {
-  padding: 6px 13px;
-  border: 1px solid #dfe2e5;
+  padding: 8px 13px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  text-align: left;
+  background-color: #ffffff;
+}
+
+.markdown-body table thead tr {
+  background-color: rgba(64, 158, 255, 0.1);
 }
 
 .markdown-body table th {
   font-weight: 600;
-  background-color: #f6f8fa;
+  background-color: rgba(64, 158, 255, 0.1);
+  color: #343a40;
 }
 
 .markdown-body table tr:nth-child(2n) {
-  background-color: #f6f8fa;
+  background-color: #f9f9f9;
+}
+
+/* object/array[object] 行特殊样式 
+   注意：由于CSS无法直接检测文本内容，此样式需要通过JavaScript动态添加类名实现
+   这里先定义样式，实际应用需要在生成HTML时通过JS处理
+*/
+.markdown-body table tbody tr.object-row {
+  background-color: #F8F8F8;
+}
+
+.markdown-body table tbody tr:hover {
+  background-color: #F8F8F8;
 }
 
 .markdown-body img {
@@ -401,11 +512,12 @@ body {
 }
 
 .markdown-body a {
-  color: #0366d6;
+  color: #007bff;
   text-decoration: none;
 }
 
 .markdown-body a:hover {
+  color: mix(#ffffff, #007bff, 20%);
   text-decoration: underline;
 }
 
@@ -413,15 +525,15 @@ body {
   height: 0.25em;
   padding: 0;
   margin: 24px 0;
-  background-color: #e1e4e8;
+  background-color: rgba(0, 0, 0, 0.1);
   border: 0;
 }
 
 /* 页面导航样式微调 */
 .page-nav {
-  margin-top: 28px;
+  margin-top: 24px;
   padding-top: 16px;
-  border-top: 1px solid #eaecef;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
 }
@@ -429,21 +541,28 @@ body {
 .page-nav-link {
   display: inline-block;
   padding: 8px 14px;
-  background-color: #f6f8fa;
-  color: #0366d6;
+  background-color: #f9f9f9;
+  color: #007bff;
   text-decoration: none;
   border-radius: 4px;
-  transition: background-color 0.15s, color 0.15s;
+  transition: background-color 0.15s;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .page-nav-link:hover {
-  background-color: #eaf2fb;
+  background-color: #f0f0f0;
+  color: mix(#ffffff, #007bff, 20%);
 }
 
 .page-nav-link.disabled {
-  color: #6a737d;
+  color: #9b9b9b;
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+.page-nav-link.disabled:hover {
+  background-color: #f9f9f9;
+  color: #9b9b9b;
 }
 
 /* 响应式设计 */
@@ -500,4 +619,3 @@ body {
     max-width: 100%;
   }
 }
-
