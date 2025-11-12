@@ -194,6 +194,12 @@ body {
   content: '▶';
 }
 
+.catalog-icon.empty::before {
+  content: '─';
+  opacity: 0.3;
+  cursor: default;
+}
+
 .catalog-children {
   margin-left: 20px;
   display: none;

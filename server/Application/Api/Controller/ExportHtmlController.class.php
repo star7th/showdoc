@@ -104,6 +104,9 @@ class ExportHtmlController extends BaseController
       // 生成数据文件
       $this->_generateDataJs($menu, $item, $all_pages, $temp_dir);
 
+      // 验证：确保生成的文件名和data.js中的page_id一致
+      $this->_validatePageIds($all_pages, $temp_dir);
+
       // 生成搜索索引
       $this->_generateSearchIndex($all_pages, $temp_dir);
 
@@ -217,8 +220,17 @@ class ExportHtmlController extends BaseController
     $convert = new \Api\Helper\Convert();
 
     foreach ($pages as $page) {
+      // 确保 page_id 存在且有效
+      if (empty($page['page_id'])) {
+        continue;
+      }
+      // 统一获取page_id，确保后续使用一致
       $page_id = intval($page['page_id']);
-      $html = $this->_generatePageHtml($page, $item, $Parsedown, $convert);
+      if ($page_id <= 0) {
+        continue;
+      }
+      // 将page_id传递给生成方法，避免重复获取导致不一致
+      $html = $this->_generatePageHtml($page, $item, $Parsedown, $convert, $page_id);
       $file_path = $temp_dir . '/pages/page-' . $page_id . '.html';
       file_put_contents($file_path, $html);
     }
@@ -227,9 +239,16 @@ class ExportHtmlController extends BaseController
   /**
    * 生成单个页面HTML
    */
-  private function _generatePageHtml($page, $item, $Parsedown, $convert)
+  private function _generatePageHtml($page, $item, $Parsedown, $convert, $page_id = null)
   {
-    $page_id = intval($page['page_id']);
+    // 如果传入了page_id，使用传入的值；否则从page数组中获取
+    // 这样可以确保文件名和HTML中的CURRENT_PAGE_ID完全一致
+    if ($page_id === null) {
+      $page_id = intval($page['page_id']);
+    }
+    if ($page_id <= 0) {
+      $page_id = 0;
+    }
     $page_title = htmlspecialchars($page['page_title'], ENT_QUOTES, 'UTF-8');
     $item_name = htmlspecialchars($item['item_name'], ENT_QUOTES, 'UTF-8');
 
@@ -297,8 +316,8 @@ class ExportHtmlController extends BaseController
         if (typeof hljs !== "undefined") {
             hljs.highlightAll();
         }
-        // 设置当前页面ID
-        window.CURRENT_PAGE_ID = ' . $page_id . ';
+        // 设置当前页面ID（使用字符串形式，避免大整数精度丢失）
+        window.CURRENT_PAGE_ID = \'' . $page_id . '\';
     </script>
 </body>
 </html>';
@@ -353,7 +372,7 @@ class ExportHtmlController extends BaseController
     <script src="assets/js/search-index.js"></script>
     <script src="assets/js/app.js"></script>
     <script>
-        window.CURRENT_PAGE_ID = 0;
+        window.CURRENT_PAGE_ID = \'0\';
     </script>
 </body>
 </html>';
@@ -372,12 +391,21 @@ class ExportHtmlController extends BaseController
     // 构建页面列表
     $pages_list = array();
     foreach ($all_pages as $page) {
+      // 确保 page_id 存在且有效
+      if (empty($page['page_id'])) {
+        continue;
+      }
+      $page_id = intval($page['page_id']);
+      if ($page_id <= 0) {
+        continue;
+      }
+      // page_id 使用字符串形式，避免JavaScript大整数精度丢失
       $pages_list[] = array(
-        'page_id' => intval($page['page_id']),
+        'page_id' => (string)$page_id,
         'page_title' => $page['page_title'],
         'cat_id' => intval($page['cat_id'] ?? 0),
         's_number' => intval($page['s_number'] ?? 0),
-        'file_path' => 'pages/page-' . intval($page['page_id']) . '.html'
+        'file_path' => 'pages/page-' . $page_id . '.html'
       );
     }
 
@@ -447,13 +475,22 @@ class ExportHtmlController extends BaseController
     $index = array();
 
     foreach ($pages as $page) {
+      // 确保 page_id 存在且有效
+      if (empty($page['page_id'])) {
+        continue;
+      }
+      $page_id = intval($page['page_id']);
+      if ($page_id <= 0) {
+        continue;
+      }
       // 先还原转义再提取文本
       $decoded = htmlspecialchars_decode($page['page_content']);
       $content = strip_tags($decoded);
       $content_preview = mb_substr($content, 0, 200);
 
+      // page_id 使用字符串形式，避免JavaScript大整数精度丢失
       $index[] = array(
-        'page_id' => intval($page['page_id']),
+        'page_id' => (string)$page_id,
         'page_title' => $page['page_title'],
         'content_preview' => $content_preview,
         'cat_id' => intval($page['cat_id'] ?? 0)
@@ -699,6 +736,75 @@ class ExportHtmlController extends BaseController
       }
     }
     rmdir($dir);
+  }
+
+  /**
+   * 验证页面ID一致性
+   * 确保生成的文件名和data.js中的page_id完全一致
+   */
+  private function _validatePageIds($all_pages, $temp_dir)
+  {
+    // 读取生成的data.js文件
+    $data_js_file = $temp_dir . '/assets/js/data.js';
+    if (!file_exists($data_js_file)) {
+      error_log("Export HTML: data.js file not found for validation");
+      return;
+    }
+
+    $data_js_content = file_get_contents($data_js_file);
+    // 提取PROJECT_DATA中的pages数组
+    if (preg_match('/window\.PROJECT_DATA\s*=\s*({.*?});/s', $data_js_content, $matches)) {
+      $data_json = $matches[1];
+      $data = json_decode($data_json, true);
+      
+      if ($data && isset($data['pages'])) {
+        $data_pages = $data['pages'];
+        $data_page_ids = array();
+        foreach ($data_pages as $dp) {
+          $data_page_ids[] = (string)$dp['page_id'];
+        }
+
+        // 检查实际生成的文件
+        $pages_dir = $temp_dir . '/pages';
+        if (is_dir($pages_dir)) {
+          $files = scandir($pages_dir);
+          $file_page_ids = array();
+          foreach ($files as $file) {
+            if (preg_match('/^page-(\d+)\.html$/', $file, $matches)) {
+              $file_page_ids[] = $matches[1];
+            }
+          }
+
+          // 验证：data.js中的page_id应该和实际文件一致
+          $missing_in_data = array_diff($file_page_ids, $data_page_ids);
+          $missing_in_files = array_diff($data_page_ids, $file_page_ids);
+
+          if (!empty($missing_in_data)) {
+            error_log("Export HTML Validation: Files exist but not in data.js: " . implode(', ', $missing_in_data));
+          }
+          if (!empty($missing_in_files)) {
+            error_log("Export HTML Validation: page_id in data.js but file missing: " . implode(', ', $missing_in_files));
+          }
+
+          // 验证原始数据中的page_id
+          $original_page_ids = array();
+          foreach ($all_pages as $page) {
+            if (!empty($page['page_id'])) {
+              $pid = intval($page['page_id']);
+              if ($pid > 0) {
+                $original_page_ids[] = (string)$pid;
+              }
+            }
+          }
+
+          // 检查是否有page_id不一致
+          $missing_in_original = array_diff($data_page_ids, $original_page_ids);
+          if (!empty($missing_in_original)) {
+            error_log("Export HTML Validation: page_id in data.js but not in original data: " . implode(', ', $missing_in_original));
+          }
+        }
+      }
+    }
   }
 }
 

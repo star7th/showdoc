@@ -137,18 +137,23 @@
           html += `<div class="catalog-item">`
           html += `<div class="catalog-link" data-catalog-id="${item.cat_id}">`
 
+          // 即使空目录也显示图标，但使用不同的样式标识
           if (hasChildren) {
             html += `<span class="catalog-icon collapsed" data-target="${catalogId}"></span>`
           } else {
-            html += `<span class="catalog-icon" style="visibility: hidden;"></span>`
+            // 空目录显示一个横线图标，表示没有内容
+            html += `<span class="catalog-icon empty" style="opacity: 0.3; cursor: default;" title="空目录"></span>`
           }
 
           html += `<span>${utils.escapeHtml(item.cat_name)}</span>`
           html += `</div>`
 
-          if (hasChildren) {
-            html += `<div class="catalog-children" id="${catalogId}">`
+          // 即使空目录也创建catalog-children容器，但内容为空，这样点击时至少有个反馈
+          html += `<div class="catalog-children" id="${catalogId}" style="${
+            hasChildren ? '' : 'display: none;'
+          }">`
 
+          if (hasChildren) {
             // 渲染子目录
             if (item.children && item.children.length > 0) {
               item.children.sort(
@@ -170,10 +175,12 @@
                 }">${utils.escapeHtml(page.page_title)}</a>`
               })
             }
-
-            html += `</div>`
+          } else {
+            // 空目录显示提示信息（可选，如果不需要可以删除这行）
+            // html += `<div style="padding: 5px 10px; color: #999; font-size: 12px;">（空目录）</div>`
           }
 
+          html += `</div>`
           html += `</div>`
         }
       })
@@ -182,7 +189,8 @@
     },
 
     highlightCurrentPage: function () {
-      const currentPageId = window.CURRENT_PAGE_ID || 0
+      // 使用字符串，避免大整数精度丢失问题
+      const currentPageId = String(window.CURRENT_PAGE_ID || '0')
 
       // 移除所有active类
       document
@@ -191,8 +199,8 @@
           el.classList.remove('active')
         })
 
-      if (currentPageId > 0) {
-        // 高亮当前页面
+      if (currentPageId !== '0') {
+        // 高亮当前页面（data-page-id 属性是字符串）
         const pageLink = document.querySelector(
           `.page-link[data-page-id="${currentPageId}"]`
         )
@@ -374,8 +382,9 @@
   // 页面导航
   const PageNav = {
     init: function () {
-      const currentPageId = window.CURRENT_PAGE_ID || 0
-      if (currentPageId === 0) return
+      // 使用字符串比较，避免大整数精度丢失问题
+      const currentPageId = String(window.CURRENT_PAGE_ID || '0')
+      if (currentPageId === '0') return
 
       if (!window.PROJECT_DATA) return
 
@@ -390,8 +399,9 @@
         return (a.s_number || 0) - (b.s_number || 0)
       })
 
+      // 使用字符串比较，避免大整数精度丢失
       const currentIndex = sortedPages.findIndex(
-        (p) => p.page_id === currentPageId
+        (p) => String(p.page_id) === currentPageId
       )
       if (currentIndex === -1) return
 
@@ -496,12 +506,25 @@
         const iconInLink = link.querySelector('.catalog-icon')
 
         if (children) {
-          children.classList.toggle('expanded')
-          if (iconInLink) {
-            iconInLink.classList.toggle('collapsed')
-            iconInLink.classList.toggle('expanded')
+          // 检查是否是空目录（没有子元素）
+          const isEmpty = children.children.length === 0
+          
+          if (isEmpty) {
+            // 空目录点击时不执行展开/折叠，但可以给一个视觉反馈
+            // 可以添加一个短暂的样式变化提示这是空目录
+            link.style.opacity = '0.6'
+            setTimeout(() => {
+              link.style.opacity = '1'
+            }, 200)
+          } else {
+            // 有内容的目录正常展开/折叠
+            children.classList.toggle('expanded')
+            if (iconInLink && !iconInLink.classList.contains('empty')) {
+              iconInLink.classList.toggle('collapsed')
+              iconInLink.classList.toggle('expanded')
+            }
+            CatalogTree.saveExpandedState()
           }
-          CatalogTree.saveExpandedState()
         }
       }
     })
