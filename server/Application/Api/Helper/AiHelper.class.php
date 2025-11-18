@@ -19,7 +19,7 @@ class AiHelper
   {
     try {
       // 设置执行时长和内存限制（重建索引可能需要较长时间和较多内存）
-      set_time_limit(600);  // 10分钟超时
+      set_time_limit(3600);  // 60分钟超时（大项目需要更长时间）
       ini_set('memory_limit', '2G');  // 2GB 内存限制
 
       // 使用 ItemModel 的 getContent 方法获取所有页面
@@ -42,17 +42,87 @@ class AiHelper
         return false;
       }
 
-      \Think\Log::record("自动触发重建索引: item_id={$item_id}, 页面总数=" . count($pageData));
+      $totalPages = count($pageData);
+      \Think\Log::record("自动触发重建索引: item_id={$item_id}, 页面总数={$totalPages}");
 
-      // 调用 AI 服务重新索引（使用更长的超时时间）
+      // 重建索引前，先清空整个项目的旧索引，避免分批处理时重复删除操作
+      $deleteUrl = rtrim($ai_service_url, '/') . '/api/index/delete-item';
+      $deleteResult = self::callService($deleteUrl, array('item_id' => $item_id), $ai_service_token, 'DELETE', 30);
+      if ($deleteResult !== false) {
+        \Think\Log::record("已清空项目旧索引: item_id={$item_id}");
+      } else {
+        \Think\Log::record("清空项目旧索引失败（可能不存在）: item_id={$item_id}");
+      }
+
+      // 分批处理，避免一次性发送所有页面数据导致超时或内存问题
+      // 每批处理 200 个页面（可根据实际情况调整）
+      $batchSize = 200;
       $url = rtrim($ai_service_url, '/') . '/api/index/rebuild';
-      $postData = array(
-        'item_id' => $item_id,
-        'pages' => $pageData
-      );
 
-      $result = self::callService($url, $postData, $ai_service_token, 'POST', 600);  // 10分钟超时
-      return $result;
+      // 如果页面数量较少，一次性提交
+      if ($totalPages <= 100) {
+        $postData = array(
+          'item_id' => $item_id,
+          'pages' => $pageData
+        );
+        $result = self::callService($url, $postData, $ai_service_token, 'POST', 30);  // 30秒超时（只是提交任务）
+        if ($result !== false && isset($result['status']) && $result['status'] == 'success') {
+          \Think\Log::record("重建索引任务已提交: item_id={$item_id}, 页面总数={$totalPages}, task_id=" . (isset($result['task_id']) ? $result['task_id'] : ''));
+          return array(
+            'status' => 'success',
+            'message' => '重建索引任务已提交，正在后台处理',
+            'total' => $totalPages,
+            'task_id' => isset($result['task_id']) ? $result['task_id'] : null
+          );
+        }
+      }
+
+      // 如果页面数量太多，分批提交（每批调用一次 rebuild 接口）
+      $totalBatches = ceil($totalPages / $batchSize);
+      $successBatches = 0;
+      $errorBatches = 0;
+      $taskIds = array();
+
+      \Think\Log::record("使用分批方式重建索引: item_id={$item_id}, 总批次数={$totalBatches}, 每批={$batchSize}个页面");
+
+      for ($i = 0; $i < $totalPages; $i += $batchSize) {
+        $batch = array_slice($pageData, $i, $batchSize);
+        $batchNum = floor($i / $batchSize) + 1;
+
+        $postData = array(
+          'item_id' => $item_id,
+          'pages' => $batch
+        );
+
+        $result = self::callService($url, $postData, $ai_service_token, 'POST', 30);
+        if ($result !== false && isset($result['status']) && $result['status'] == 'success') {
+          $successBatches++;
+          if (isset($result['task_id'])) {
+            $taskIds[] = $result['task_id'];
+          }
+          \Think\Log::record("重建索引进度: item_id={$item_id}, 批次 {$batchNum}/{$totalBatches} 已提交, task_id=" . (isset($result['task_id']) ? $result['task_id'] : ''));
+        } else {
+          $errorBatches++;
+          \Think\Log::record("重建索引进度: item_id={$item_id}, 批次 {$batchNum}/{$totalBatches} 提交失败");
+        }
+
+        // 每批之间稍作延迟，避免请求过于频繁
+        if ($i + $batchSize < $totalPages) {
+          usleep(200000);  // 延迟 0.2 秒
+        }
+      }
+
+      \Think\Log::record("重建索引任务提交完成: item_id={$item_id}, 成功批次={$successBatches}, 失败批次={$errorBatches}, 总计={$totalBatches}");
+
+      return array(
+        'status' => $errorBatches == 0 ? 'success' : 'partial_success',
+        'message' => $errorBatches == 0 ? '重建索引任务已全部提交，正在后台处理' : "重建索引任务已提交，但有 {$errorBatches} 个批次失败",
+        'total' => $totalPages,
+        'total_batches' => $totalBatches,
+        'success_batches' => $successBatches,
+        'error_batches' => $errorBatches,
+        'task_ids' => $taskIds
+      );
     } catch (\Exception $e) {
       \Think\Log::record("自动重建索引异常: item_id={$item_id}, 错误: " . $e->getMessage());
       return false;
@@ -86,6 +156,11 @@ class AiHelper
     if ($method == 'POST' && $postData) {
       curl_setopt($curl, CURLOPT_POST, 1);
       curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($postData, JSON_UNESCAPED_UNICODE));
+    } elseif ($method == 'DELETE') {
+      curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
+      if ($postData) {
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($postData, JSON_UNESCAPED_UNICODE));
+      }
     }
 
     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);

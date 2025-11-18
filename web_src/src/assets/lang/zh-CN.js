@@ -718,7 +718,7 @@ exports.default = {
   ai_error_message: '抱歉，发生了错误，请稍后重试。',
   ai_enable_for_project: '为本项目启用 AI 知识库',
   ai_enable_for_project_tips: '开启后，项目成员和公开项目的游客都可以通过 AI 助手按钮与项目文档进行智能问答。',
-  ai_system_not_configured: '系统管理员尚未配置 AI 服务，请联系管理员',
+  ai_system_not_configured: '网站尚未配置 AI 服务，请联系系统管理员。系统管理员可在管理后台配置AI相关信息',
   ai_project_not_enabled: '当前项目未启用 AI 知识库功能，开启后可进行文档索引和智能问答',
   ai_project_enabled_success: '已为本项目启用 AI 知识库功能',
   ai_project_disabled_success: '已为本项目关闭 AI 知识库功能',
