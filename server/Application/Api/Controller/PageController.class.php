@@ -143,7 +143,16 @@ class PageController extends BaseController
         }
         if ($ret) {
             D("ItemChangeLog")->addLog($login_user['uid'],  $page['item_id'], 'delete', 'page', $page['page_id'], $page['page_title']);
+
+            // 先发送响应
             $this->sendResult(array());
+
+            // 响应发送后，触发 AI 索引删除（异步，不阻塞删除流程）
+            if (function_exists('fastcgi_finish_request')) {
+                fastcgi_finish_request();
+            }
+
+            $this->triggerAiIndex($page['item_id'], $page['page_id'], 'delete');
         } else {
             $this->sendError(10101);
         }
@@ -295,7 +304,18 @@ class PageController extends BaseController
             $return['error_code'] = 10103;
             $return['error_message'] = 'request  fail';
         }
+
+        // 先发送响应，确保用户能收到结果
         $this->sendResult($return);
+
+        // 响应发送后，触发 AI 索引更新（异步，不阻塞保存流程）
+        // 使用 fastcgi_finish_request 确保在响应发送后执行（如果支持）
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
+
+        // 触发索引更新（此时响应已发送，不会阻塞用户）
+        $this->triggerAiIndex($item_id, $page_id, $page_id > 0 ? 'update' : 'create');
     }
 
 
@@ -557,5 +577,127 @@ class PageController extends BaseController
         $object = new Convert();
         $res = $object->convertSqlToMarkdownTable($sql);
         $this->sendResult(array("markdown" => $res));
+    }
+
+    /**
+     * 触发 AI 索引更新（异步）
+     */
+    private function triggerAiIndex($item_id, $page_id, $action = 'update')
+    {
+        try {
+            // 检查 AI 服务是否配置（系统级）
+            $ai_service_url = D("Options")->get("ai_service_url");
+            $ai_service_token = D("Options")->get("ai_service_token");
+
+            if (!$ai_service_url || !$ai_service_token) {
+                return; // AI 服务未配置，不触发索引
+            }
+
+            // 检查项目级开关
+            // 检查项目是否存在且启用了 AI 知识库功能（使用新表）
+            $config = D("ItemAiConfig")->getConfig($item_id);
+            if (empty($config['enabled'])) {
+                return; // 项目未启用 AI 知识库功能，不触发索引
+            }
+
+            // 异步触发索引更新（使用简单的 HTTP 请求，不等待响应）
+            $url = rtrim($ai_service_url, '/') . '/api/index/upsert';
+
+            // 获取页面信息（开源版没有分表，直接使用 D("Page")->where 查询）
+            $page = D("Page")->where(array('page_id' => $page_id))->find();
+            if (!$page || $page['is_del'] == 1) {
+                // 如果是删除操作，直接调用删除接口
+                if ($action == 'delete') {
+                    $this->callAiServiceAsync($url, array(
+                        'item_id' => $item_id,
+                        'page_id' => $page_id
+                    ), 'DELETE');
+                }
+                return;
+            }
+
+            $content = $page['page_content'];
+            $pageType = isset($page['page_type']) ? $page['page_type'] : 'regular';
+
+            // HTML 反转义（因为存储的内容是 HTML 转义的）
+            $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+            // 使用 Convert 类转换为 Markdown（如果是 API 文档会自动转换，否则返回 false）
+            $convert = new Convert();
+            $md_content = $convert->runapiToMd($content);
+            if ($md_content !== false) {
+                $content = $md_content;
+            }
+
+            // 获取目录名称
+            $cat_name = '';
+            if ($page['cat_id'] > 0) {
+                $catalog = D("Catalog")->where(array('cat_id' => $page['cat_id'], 'item_id' => $item_id))->find();
+                if ($catalog) {
+                    $cat_name = $catalog['cat_name'];
+                }
+            }
+
+            $postData = array(
+                'item_id' => $item_id,
+                'page_id' => $page_id,
+                'page_title' => $page['page_title'],
+                'page_content' => $content,
+                'page_type' => $pageType,
+                'cat_name' => $cat_name,
+                'update_time' => isset($page['update_time']) ? $page['update_time'] : time()
+            );
+
+            $this->callAiServiceAsync($url, $postData);
+        } catch (\Exception $e) {
+            // 记录错误日志，但不影响主流程
+            \Think\Log::record("AI索引触发失败: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * 异步调用 AI 服务（不等待响应）
+     */
+    private function callAiServiceAsync($url, $postData = null, $method = 'POST')
+    {
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 5); // 短超时，不阻塞
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+            curl_setopt($ch, CURLOPT_NOSIGNAL, 1); // 避免信号量问题
+
+            $ai_service_token = D("Options")->get("ai_service_token");
+            $headers = array(
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $ai_service_token
+            );
+
+            if ($method == 'POST' && $postData) {
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+            } elseif ($method == 'DELETE') {
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                if ($postData) {
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
+                }
+            }
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+            // 不等待响应，立即返回
+            curl_exec($ch);
+            $error = curl_error($ch);
+            curl_close($ch);
+
+            // 如果有错误，记录日志但不抛出异常
+            if ($error) {
+                \Think\Log::record("AI服务异步调用失败: " . $error);
+            }
+        } catch (\Exception $e) {
+            // 记录错误日志，但不影响主流程
+            \Think\Log::record("AI服务异步调用异常: " . $e->getMessage());
+        }
     }
 }

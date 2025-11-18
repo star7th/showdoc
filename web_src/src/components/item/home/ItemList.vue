@@ -97,6 +97,19 @@
                   {{ $t('open_api') }}
                 </el-dropdown-item>
                 <el-dropdown-item
+                  v-if="
+                    item.manage &&
+                      (item.item_type == '1' || item.item_type == 1)
+                  "
+                  @click.native="
+                    opItemRow = item
+                    showAiKnowledgeBase = true
+                  "
+                >
+                  <i class="mr-2 fas fa-brain"></i>
+                  {{ $t('ai_knowledge_base') }}
+                </el-dropdown-item>
+                <el-dropdown-item
                   v-if="item.manage"
                   @click.native="
                     opItemRow = item
@@ -269,6 +282,18 @@
       :item_id="opItemRow.item_id"
     >
     </Delete>
+
+    <!-- AI 知识库设置弹窗 -->
+    <AiKnowledgeBaseDialog
+      v-if="showAiKnowledgeBase"
+      :callback="
+        () => {
+          showAiKnowledgeBase = false
+        }
+      "
+      :item_id="opItemRow.item_id"
+    >
+    </AiKnowledgeBaseDialog>
   </div>
 </template>
 
@@ -283,6 +308,7 @@ import Attorn from '@/components/item/setting/Attorn'
 import Delete from '@/components/item/setting/Delete'
 import Share from '@/components/item/home/Share'
 import Copy from '@/components/item/add/Copy'
+import AiKnowledgeBaseDialog from '@/components/item/setting/AiKnowledgeBaseDialog'
 
 export default {
   name: 'ItemList',
@@ -296,7 +322,8 @@ export default {
     Attorn,
     Delete,
     Share,
-    Copy
+    Copy,
+    AiKnowledgeBaseDialog
   },
   props: {
     callback: {
@@ -332,7 +359,8 @@ export default {
       showArchive: false,
       showAttorn: false,
       showDelete: false,
-      showCopy: false
+      showCopy: false,
+      showAiKnowledgeBase: false
     }
   },
 

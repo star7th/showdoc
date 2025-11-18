@@ -168,8 +168,13 @@ class ItemController extends BaseController
             "show_watermark" => $show_watermark,
             "allow_comment" => isset($item['allow_comment']) ? (int)$item['allow_comment'] : 0,
             "allow_feedback" => isset($item['allow_feedback']) ? (int)$item['allow_feedback'] : 0,
-
         );
+
+        // 获取 AI 知识库配置
+        $ai_config = D("ItemAiConfig")->getConfig($item_id);
+        $return["ai_knowledge_base_enabled"] = $ai_config['enabled']; // 保持向后兼容
+        $return["ai_config"] = $ai_config; // 新增完整配置
+
         $this->sendResult($return);
     }
 
@@ -1047,5 +1052,123 @@ class ItemController extends BaseController
             '5' => '已废弃'
         );
         return isset($statusMap[$status]) ? $statusMap[$status] : '未操作';
+    }
+
+    /**
+     * 获取项目的 AI 知识库配置
+     */
+    public function getAiKnowledgeBaseConfig()
+    {
+        $this->checkLogin(false);
+        $item_id = I("item_id/d");
+
+        if (!$item_id) {
+            $this->sendError(10101, '项目ID不能为空');
+            return;
+        }
+
+        $login_user = session("login_user");
+        $uid = $login_user ? $login_user['uid'] : 0;
+
+        // 检查项目访问权限
+        if (!$this->checkItemVisit($uid, $item_id)) {
+            $this->sendError(10303, '您没有访问该项目的权限');
+            return;
+        }
+
+        // 获取配置
+        $config = D("ItemAiConfig")->getConfig($item_id);
+
+        // 如果项目已启用 AI 知识库，检查索引状态，如果索引不存在则自动重建
+        if (!empty($config['enabled'])) {
+            $ai_service_url = D("Options")->get("ai_service_url");
+            $ai_service_token = D("Options")->get("ai_service_token");
+
+            // 检查系统级配置
+            if ($ai_service_url && $ai_service_token) {
+                // 检查索引状态
+                $index_status = $this->_checkIndexStatus($item_id, $ai_service_url, $ai_service_token);
+
+                // 如果索引不存在（被删除或从未创建），则自动触发重建
+                if ($index_status === false || (isset($index_status['indexed']) && !$index_status['indexed'])) {
+                    // 异步触发重建索引（不阻塞返回）
+                    register_shutdown_function(function () use ($item_id, $ai_service_url, $ai_service_token) {
+                        \Api\Helper\AiHelper::rebuild($item_id, $ai_service_url, $ai_service_token);
+                    });
+                }
+            }
+        }
+
+        $this->sendResult($config);
+    }
+
+    /**
+     * 检查索引状态
+     * @param int $item_id 项目ID
+     * @param string $ai_service_url AI服务地址
+     * @param string $ai_service_token AI服务Token
+     * @return array|false 返回索引状态或false
+     */
+    private function _checkIndexStatus($item_id, $ai_service_url, $ai_service_token)
+    {
+        $url = rtrim($ai_service_url, '/') . '/api/index/status?item_id=' . $item_id;
+        return \Api\Helper\AiHelper::callService($url, null, $ai_service_token, 'GET', 10);
+    }
+
+    /**
+     * 设置项目的 AI 知识库配置
+     */
+    public function setAiKnowledgeBaseConfig()
+    {
+        $login_user = $this->checkLogin();
+        $item_id = I("item_id/d");
+
+        if (!$item_id) {
+            $this->sendError(10101, '项目ID不能为空');
+            return;
+        }
+
+        $uid = $login_user['uid'];
+
+        // 检查项目管理权限
+        if (!$this->checkItemManage($uid, $item_id)) {
+            $this->sendError(10303, '您没有管理该项目的权限');
+            return;
+        }
+
+        // 获取配置数据
+        $config_data = array();
+
+        // 是否启用
+        $enabled = I("enabled/d");
+        if ($enabled !== null) {
+            $config_data['enabled'] = $enabled;
+        }
+
+        // 对话框默认状态
+        $dialog_collapsed = I("dialog_collapsed/d");
+        if ($dialog_collapsed !== null) {
+            $config_data['dialog_collapsed'] = $dialog_collapsed;
+        }
+
+        // 欢迎语
+        $welcome_message = I("welcome_message");
+        if ($welcome_message !== null) {
+            $config_data['welcome_message'] = $welcome_message;
+        }
+
+        if (empty($config_data)) {
+            $this->sendError(10101, '没有需要更新的配置');
+            return;
+        }
+
+        // 保存配置
+        $result = D("ItemAiConfig")->saveConfig($item_id, $config_data);
+
+        if ($result !== false) {
+            $this->sendResult(array('success' => true));
+        } else {
+            $this->sendError(10101, '更新失败');
+        }
     }
 }

@@ -100,48 +100,119 @@
           </div>
         </el-tab-pane>
 
-        <!-- AI助手设置 -->
-        <el-tab-pane :label="$t('ai_assistant_settings')" name="ai" key="ai" v-if="$lang == 'zh-cn'">
+        <!-- AI相关设置 -->
+        <el-tab-pane :label="$t('ai_related_settings')" name="ai" key="ai" v-if="$lang == 'zh-cn'">
           <div v-if="activeTab === 'ai'">
-          <el-form-item label="AI助手认证KEY">
-            <el-input
-              v-model="form.open_api_key"
-              class="form-el"
-              placeholder=""
-            ></el-input>
-            <el-tooltip effect="dark" content="点击查看填写说明" placement="top">
-              <i
-                class="el-icon-question cursor-pointer"
-                @click="
-                  toOutLink(
-                    'https://www.showdoc.com.cn/p/30dd0637811cd5c690ffd547f3c46889'
-                  )
-                "
-              ></i>
-            </el-tooltip>
-          </el-form-item>
+            <!-- AI编辑助手配置 -->
+            <el-divider content-position="left">{{ $t('ai_edit_assistant') }}</el-divider>
+            <el-alert
+              type="info"
+              :closable="false"
+              show-icon
+              :title="$t('ai_edit_assistant_desc')"
+              style="margin-bottom: 20px;"
+            >
+            </el-alert>
 
-          <el-form-item label="AI助手代理HOST">
-            <el-input
-              v-model="form.open_api_host"
-              class="form-el"
-              placeholder="可选"
-            ></el-input>
-            <el-tooltip effect="dark" content="点击查看填写说明" placement="top">
-              <i
-                class="el-icon-question cursor-pointer"
-                @click="toOutLink('https://github.com/star7th/showdoc/issues/1904')"
-              ></i>
-            </el-tooltip>
-          </el-form-item>
+            <el-form-item :label="$t('ai_edit_assistant_key')">
+              <el-input
+                v-model="form.open_api_key"
+                class="form-el"
+                :placeholder="$t('ai_edit_assistant_key_placeholder')"
+              ></el-input>
+              <el-tooltip effect="dark" :content="$t('ai_edit_assistant_key_tips')" placement="top">
+                <i
+                  class="el-icon-question cursor-pointer"
+                  @click="
+                    toOutLink(
+                      'https://www.showdoc.com.cn/p/30dd0637811cd5c690ffd547f3c46889'
+                    )
+                  "
+                ></i>
+              </el-tooltip>
+            </el-form-item>
 
-          <el-form-item label="AI助手使用模型名">
-            <el-input
-              v-model="form.ai_model_name"
-              class="form-el"
-              placeholder="可选"
-            ></el-input>
-          </el-form-item>
+            <el-form-item :label="$t('ai_edit_assistant_host')">
+              <el-input
+                v-model="form.open_api_host"
+                class="form-el"
+                :placeholder="$t('ai_edit_assistant_host_placeholder')"
+              ></el-input>
+              <el-tooltip effect="dark" :content="$t('ai_edit_assistant_host_tips')" placement="top">
+                <i
+                  class="el-icon-question cursor-pointer"
+                  @click="toOutLink('https://github.com/star7th/showdoc/issues/1904')"
+                ></i>
+              </el-tooltip>
+            </el-form-item>
+
+            <el-form-item :label="$t('ai_edit_assistant_model')">
+              <el-input
+                v-model="form.ai_model_name"
+                class="form-el"
+                :placeholder="$t('ai_edit_assistant_model_placeholder')"
+              ></el-input>
+            </el-form-item>
+
+            <!-- AI 知识库服务配置 -->
+            <el-divider content-position="left">{{ $t('ai_knowledge_base_service') }}</el-divider>
+            
+            <el-alert
+              type="warning"
+              :closable="false"
+              show-icon
+              style="margin-bottom: 20px;"
+            >
+              <div slot="title">
+                <div style="margin-bottom: 8px;">{{ $t('ai_knowledge_base_service_desc') }}</div>
+                <div>
+                  <el-button
+                    type="text"
+                    size="small"
+                    icon="el-icon-link"
+                    @click="toOutLink('https://github.com/star7th/showdoc-ai-service')"
+                    style="padding: 0; color: #409eff;"
+                  >
+                    {{ $t('ai_knowledge_base_install_link') }}
+                  </el-button>
+                </div>
+              </div>
+            </el-alert>
+
+            <el-form-item :label="$t('ai_service_url')">
+              <el-input
+                v-model="form.ai_service_url"
+                class="form-el"
+                :placeholder="$t('ai_service_url_placeholder')"
+              ></el-input>
+              <el-tooltip
+                effect="dark"
+                :content="$t('ai_service_url_tips')"
+                placement="top"
+              >
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </el-form-item>
+
+            <el-form-item :label="$t('ai_service_token')">
+              <el-input
+                v-model="form.ai_service_token"
+                class="form-el"
+                type="password"
+                :placeholder="$t('ai_service_token_placeholder')"
+              ></el-input>
+              <el-tooltip
+                effect="dark"
+                :content="$t('ai_service_token_tips')"
+                placement="top"
+              >
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </el-form-item>
+
+            <el-form-item>
+              <el-button type="primary" @click="testAiService">{{ $t('ai_test_connection') }}</el-button>
+            </el-form-item>
           </div>
         </el-tab-pane>
 
@@ -368,6 +439,8 @@ export default {
         open_api_key: '',
         open_api_host: '',
         ai_model_name: '',
+        ai_service_url: '',
+        ai_service_token: '',
         force_login:false,
         enable_public_square: false,
         strong_password_enabled: false,
@@ -432,6 +505,12 @@ export default {
         this.form.ai_model_name = data.data.ai_model_name
           ? data.data.ai_model_name
           : ''
+        this.form.ai_service_url = data.data.ai_service_url
+          ? data.data.ai_service_url
+          : ''
+        this.form.ai_service_token = data.data.ai_service_token
+          ? data.data.ai_service_token
+          : ''
         this.form.force_login = data.data.force_login > 0
         this.form.enable_public_square = data.data.enable_public_square > 0
         this.form.strong_password_enabled = data.data.strong_password_enabled > 0
@@ -450,6 +529,30 @@ export default {
     },
     toOutLink(url) {
       window.open(url, '_blank')
+    },
+    async testAiService() {
+      if (!this.form.ai_service_url) {
+        this.$message.warning(this.$t('ai_service_url_required') || '请先填写AI服务地址')
+        return
+      }
+      if (!this.form.ai_service_token) {
+        this.$message.warning(this.$t('ai_service_token_required') || '请先填写AI服务Token')
+        return
+      }
+      
+      try {
+        const res = await this.request('/api/adminSetting/testAiService', {
+          ai_service_url: this.form.ai_service_url,
+          ai_service_token: this.form.ai_service_token
+        })
+        if (res.error_code === 0) {
+          this.$message.success(this.$t('ai_connection_success') || '连接成功！')
+        } else {
+          this.$message.error(res.error_message || (this.$t('ai_connection_failed') || '连接失败'))
+        }
+      } catch (error) {
+        this.$message.error((this.$t('ai_connection_failed') || '连接失败') + '：' + (error.message || '未知错误'))
+      }
     }
   },
   mounted() {

@@ -9,9 +9,55 @@ class AiController extends BaseController
 {
 
     private $open_api_key = '';
+    private $ai_service_url = '';
+    private $ai_service_token = '';
+
     public function __construct()
     {
+        parent::__construct();
         $this->open_api_key = D("Options")->get("open_api_key");
+        $this->ai_service_url = D("Options")->get("ai_service_url");
+        $this->ai_service_token = D("Options")->get("ai_service_token");
+    }
+
+    /**
+     * 检查 AI 知识库功能是否可用
+     * @param int $item_id 项目ID
+     * @return array 返回 ['enabled' => bool, 'message' => string, 'config' => array]
+     */
+    private function checkAiKnowledgeBaseEnabled($item_id)
+    {
+        // 检查系统级配置：是否配置了 AI 服务地址和 Token
+        if (!$this->ai_service_url || !$this->ai_service_token) {
+            return array(
+                'enabled' => false,
+                'message' => 'AI 服务未配置，请联系管理员'
+            );
+        }
+
+        // 检查项目是否存在
+        $item = D("Item")->where(array('item_id' => $item_id))->find();
+        if (!$item) {
+            return array(
+                'enabled' => false,
+                'message' => '项目不存在'
+            );
+        }
+
+        // 检查项目级配置（使用新表）
+        $config = D("ItemAiConfig")->getConfig($item_id);
+        if (empty($config['enabled'])) {
+            return array(
+                'enabled' => false,
+                'message' => '当前项目未启用 AI 知识库功能'
+            );
+        }
+
+        return array(
+            'enabled' => true,
+            'message' => '',
+            'config' => $config  // 返回完整配置
+        );
     }
 
     public function create()
@@ -141,5 +187,235 @@ class AiController extends BaseController
 
         curl_close($curl);
         return $result;
+    }
+
+    /**
+     * 知识库对话接口
+     */
+    public function chat()
+    {
+        $item_id = I("item_id/d");
+        $question = I("question");
+        $conversation_id = I("conversation_id");
+        $stream = I("stream/d", 1); // 默认流式返回
+
+        // 对于流式输出，需要特殊处理错误，不能使用 sendError
+        if ($stream == 1) {
+            // 清除所有输出缓冲区，确保直接输出
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
+
+            // 提前设置流式输出的 headers
+            // 确保 UTF-8 编码，移除可能存在的其他 Content-Type 设置
+            header_remove('Content-Type');
+            header("Content-Type: text/event-stream; charset=utf-8");
+            header("Cache-Control: no-cache");
+            header("X-Accel-Buffering: no");
+
+            // 确保内部编码和输出编码都是 UTF-8
+            if (function_exists('mb_internal_encoding')) {
+                mb_internal_encoding('UTF-8');
+            }
+            if (function_exists('mb_http_output')) {
+                mb_http_output('UTF-8');
+            }
+
+            // 禁用 ThinkPHP 的模板渲染
+            if (class_exists('Think\\View')) {
+                $this->view = null;
+            }
+
+            if (!$item_id) {
+                echo "data: " . json_encode(array('type' => 'error', 'message' => '项目ID不能为空'), JSON_UNESCAPED_UNICODE) . "\n\n";
+                flush();
+                exit;
+            }
+
+            if (!$question) {
+                echo "data: " . json_encode(array('type' => 'error', 'message' => '问题不能为空'), JSON_UNESCAPED_UNICODE) . "\n\n";
+                flush();
+                exit;
+            }
+
+            // 检查登录状态（允许游客访问公开项目）
+            $login_user = $this->checkLogin(false);
+            $uid = $login_user ? $login_user['uid'] : 0;
+
+            // 检查项目访问权限
+            if (!$this->checkItemVisit($uid, $item_id)) {
+                echo "data: " . json_encode(array('type' => 'error', 'message' => '您没有访问该项目的权限'), JSON_UNESCAPED_UNICODE) . "\n\n";
+                flush();
+                exit;
+            }
+
+            // 检查 AI 知识库功能是否可用
+            $ai_check = $this->checkAiKnowledgeBaseEnabled($item_id);
+            if (!$ai_check['enabled']) {
+                echo "data: " . json_encode(array('type' => 'error', 'message' => $ai_check['message']), JSON_UNESCAPED_UNICODE) . "\n\n";
+                flush();
+                exit;
+            }
+        } else {
+            // 非流式输出使用正常的错误处理
+            if (!$item_id) {
+                $this->sendError(10101, '项目ID不能为空');
+                return;
+            }
+
+            if (!$question) {
+                $this->sendError(10101, '问题不能为空');
+                return;
+            }
+
+            // 检查登录状态（允许游客访问公开项目）
+            $login_user = $this->checkLogin(false);
+            $uid = $login_user ? $login_user['uid'] : 0;
+
+            // 检查项目访问权限
+            if (!$this->checkItemVisit($uid, $item_id)) {
+                $this->sendError(10303, '您没有访问该项目的权限');
+                return;
+            }
+
+            // 检查 AI 知识库功能是否可用
+            $ai_check = $this->checkAiKnowledgeBaseEnabled($item_id);
+            if (!$ai_check['enabled']) {
+                $this->sendError(10101, $ai_check['message']);
+                return;
+            }
+        }
+
+        // 调用 AI 服务
+        if ($stream == 1) {
+            // 流式返回
+            $url = rtrim($this->ai_service_url, '/') . '/api/chat/stream';
+        } else {
+            // 非流式返回
+            $url = rtrim($this->ai_service_url, '/') . '/api/chat';
+        }
+        $postData = array(
+            'item_id' => $item_id,
+            'user_id' => $uid,
+            'question' => $question
+        );
+        if ($conversation_id) {
+            $postData['conversation_id'] = $conversation_id;
+        }
+
+        if ($stream == 1) {
+            // 流式返回（headers 已在前面设置）
+            \Api\Helper\AiHelper::callServiceStream($url, $postData, $this->ai_service_token);
+            // 流式输出完毕后必须退出，防止框架继续渲染模板
+            exit;
+        } else {
+            // 非流式返回
+            $result = \Api\Helper\AiHelper::callService($url, $postData, $this->ai_service_token);
+            if ($result === false) {
+                $this->sendError(10101, 'AI 服务调用失败');
+                return;
+            }
+            $this->sendResult($result);
+        }
+    }
+
+    /**
+     * 获取索引状态
+     */
+    public function getIndexStatus()
+    {
+        $item_id = I("item_id/d");
+        if (!$item_id) {
+            $this->sendError(10101, '项目ID不能为空');
+            return;
+        }
+
+        $login_user = $this->checkLogin(false);
+        $uid = $login_user ? $login_user['uid'] : 0;
+
+        // 检查项目访问权限
+        if (!$this->checkItemVisit($uid, $item_id)) {
+            $this->sendError(10303, '您没有访问该项目的权限');
+            return;
+        }
+
+        // 检查 AI 知识库功能是否可用
+        $ai_check = $this->checkAiKnowledgeBaseEnabled($item_id);
+        if (!$ai_check['enabled']) {
+            $this->sendResult(array(
+                'status' => 'not_configured',
+                'message' => $ai_check['message']
+            ));
+            return;
+        }
+
+        // 调用 AI 服务获取索引状态
+        $url = rtrim($this->ai_service_url, '/') . '/api/index/status?item_id=' . $item_id;
+        $result = \Api\Helper\AiHelper::callService($url, null, $this->ai_service_token, 'GET');
+
+        if ($result === false) {
+            // 返回错误状态，但不使用 sendError，而是返回状态信息
+            $this->sendResult(array(
+                'status' => 'error',
+                'message' => '无法连接到 AI 服务，请检查服务地址和网络连接'
+            ));
+            return;
+        }
+
+        // 如果 AI 服务返回了错误信息，也要正确处理
+        if (isset($result['error_code']) && $result['error_code'] != 0) {
+            $this->sendResult(array(
+                'status' => 'error',
+                'message' => isset($result['error_message']) ? $result['error_message'] : '获取索引状态失败'
+            ));
+            return;
+        }
+
+        // 转换 AI 服务返回的数据格式为前端期望的格式
+        // AI 服务返回: indexed (bool), document_count (int)
+        // 前端期望: status (string: 'indexed'/'indexing'/'not_configured'/'error'), document_count (int)
+        $response = array(
+            'status' => isset($result['indexed']) && $result['indexed'] ? 'indexed' : 'unknown',
+            'document_count' => isset($result['document_count']) ? intval($result['document_count']) : 0,
+            'last_update_time' => isset($result['last_update_time']) ? $result['last_update_time'] : null
+        );
+
+        $this->sendResult($response);
+    }
+
+    /**
+     * 重新索引项目
+     */
+    public function rebuildIndex()
+    {
+        $item_id = I("item_id/d");
+        if (!$item_id) {
+            $this->sendError(10101, '项目ID不能为空');
+            return;
+        }
+
+        $login_user = $this->checkLogin();
+        $uid = $login_user['uid'];
+
+        // 检查项目管理权限
+        if (!$this->checkItemManage($uid, $item_id)) {
+            $this->sendError(10101, '您没有管理该项目的权限');
+            return;
+        }
+
+        // 检查 AI 知识库功能是否可用
+        $ai_check = $this->checkAiKnowledgeBaseEnabled($item_id);
+        if (!$ai_check['enabled']) {
+            $this->sendError(10101, $ai_check['message']);
+            return;
+        }
+
+        $result = \Api\Helper\AiHelper::rebuild($item_id, $this->ai_service_url, $this->ai_service_token);
+        if ($result === false) {
+            $this->sendError(10101, '重新索引失败');
+            return;
+        }
+
+        $this->sendResult($result);
     }
 }

@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 25;
+        $version_num = 26;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -673,6 +673,24 @@ class UpdateModel
 
         //清理可能存在的冲突数据：将登录用户的空字符串client_id改为NULL
         D("User")->execute("UPDATE page_feedback SET client_id = NULL WHERE uid > 0 AND (client_id = '' OR client_id IS NULL)");
+
+        //创建item_ai_config表（项目AI知识库配置表）
+        $sql = "CREATE TABLE IF NOT EXISTS `item_ai_config` (
+            `id`  INTEGER PRIMARY KEY ,
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `enabled` int(1) NOT NULL DEFAULT '0',
+            `dialog_collapsed` int(1) NOT NULL DEFAULT '1',
+            `welcome_message` text NOT NULL DEFAULT '',
+            `addtime` int(11) NOT NULL DEFAULT '0',
+            `updatetime` int(11) NOT NULL DEFAULT '0'
+            )";
+        D("User")->execute($sql);
+
+        //为item_ai_config表创建唯一索引
+        $sql = "CREATE UNIQUE INDEX IF NOT EXISTS uk_item_id ON item_ai_config (item_id)";
+        D("User")->execute($sql);
+        $sql = "CREATE INDEX IF NOT EXISTS idx_enabled ON item_ai_config (enabled)";
+        D("User")->execute($sql);
 
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num

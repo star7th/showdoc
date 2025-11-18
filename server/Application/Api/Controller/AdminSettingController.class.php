@@ -24,6 +24,8 @@ class AdminSettingController extends BaseController
         $open_api_key = I("open_api_key");
         $open_api_host = I("open_api_host");
         $ai_model_name = I("ai_model_name");
+        $ai_service_url = I("ai_service_url");
+        $ai_service_token = I("ai_service_token");
         $force_login = intval(I("force_login"));
         $enable_public_square = intval(I("enable_public_square"));
         $strong_password_enabled = intval(I("strong_password_enabled"));
@@ -42,6 +44,8 @@ class AdminSettingController extends BaseController
         D("Options")->set("open_api_key", $open_api_key);
         D("Options")->set("open_api_host", $open_api_host);
         D("Options")->set("ai_model_name", $ai_model_name);
+        D("Options")->set("ai_service_url", $ai_service_url);
+        D("Options")->set("ai_service_token", $ai_service_token);
         D("Options")->set("show_watermark", $show_watermark);
         D("Options")->set("force_login", $force_login);
         D("Options")->set("enable_public_square", $enable_public_square);
@@ -74,6 +78,8 @@ class AdminSettingController extends BaseController
         $open_api_key = D("Options")->get("open_api_key");
         $open_api_host = D("Options")->get("open_api_host");
         $ai_model_name = D("Options")->get("ai_model_name");
+        $ai_service_url = D("Options")->get("ai_service_url");
+        $ai_service_token = D("Options")->get("ai_service_token");
         $force_login = D("Options")->get("force_login");
         $enable_public_square = D("Options")->get("enable_public_square");
         $strong_password_enabled = D("Options")->get("strong_password_enabled");
@@ -97,6 +103,8 @@ class AdminSettingController extends BaseController
                 "open_api_key" => $open_api_key,
                 "open_api_host" => $open_api_host,
                 "ai_model_name" => $ai_model_name,
+                "ai_service_url" => $ai_service_url,
+                "ai_service_token" => $ai_service_token,
                 "force_login" => $force_login,
                 "enable_public_square" => $enable_public_square,
                 "strong_password_enabled" => $strong_password_enabled,
@@ -330,5 +338,43 @@ class AdminSettingController extends BaseController
             }
         }
         $this->sendError(10011, "用户名或者密码错误");
+    }
+
+    /**
+     * 测试 AI 服务连接
+     */
+    public function testAiService()
+    {
+        $login_user = $this->checkLogin();
+        $this->checkAdmin();
+
+        $ai_service_url = I("ai_service_url");
+        $ai_service_token = I("ai_service_token");
+
+        if (!$ai_service_url || !$ai_service_token) {
+            $this->sendError(10101, 'AI 服务地址和 Token 不能为空');
+            return;
+        }
+
+        // 调用 AI 服务的健康检查接口
+        $url = rtrim($ai_service_url, '/') . '/api/health';
+        $result = \Api\Helper\AiHelper::callService($url, null, $ai_service_token, 'GET', 10);
+
+        if ($result === false) {
+            $this->sendError(10101, '无法连接到 AI 服务，请检查服务地址和网络连接');
+            return;
+        }
+
+        // 如果返回了错误信息
+        if (isset($result['error_code']) && $result['error_code'] != 0) {
+            $this->sendError(10101, isset($result['error_message']) ? $result['error_message'] : 'AI 服务返回错误');
+            return;
+        }
+
+        $this->sendResult(array(
+            'success' => true,
+            'message' => 'AI 服务连接成功',
+            'service_info' => $result
+        ));
     }
 }

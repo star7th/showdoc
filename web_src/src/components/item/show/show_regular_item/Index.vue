@@ -138,6 +138,13 @@
     <el-backtop right="40" bottom="40"></el-backtop>
     <Toc v-if="page_id && showToc"></Toc>
 
+    <!-- AI 助手按钮 -->
+    <AiChatButton
+      v-if="item_info && item_info.item_id"
+      :item_id="item_info.item_id"
+      :item_name="item_info.item_name"
+    ></AiChatButton>
+
     <!-- 附件列表 -->
     <AttachmentList
       :item_id="page_info.item_id"
@@ -172,6 +179,7 @@ import LeftMenuBottomBar from './LeftMenuBottomBar'
 import SearchBreadcrumb from '@/components/common/SearchBreadcrumb'
 import PageFeedback from '@/components/common/PageFeedback'
 import PageComment from '@/components/common/PageComment'
+import AiChatButton from '@/components/common/AiChatButton'
 export default {
   props: {
     item_info: '',
@@ -211,7 +219,8 @@ export default {
     MobileHeader,
     SearchBreadcrumb,
     PageFeedback,
-    PageComment
+    PageComment,
+    AiChatButton
   },
   watch: {
     keyword: {

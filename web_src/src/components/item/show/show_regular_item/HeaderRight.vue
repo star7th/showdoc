@@ -139,6 +139,14 @@
               <i class="mr-2 far fa-edit"></i>
               {{ $t('update_item_base_info') }}
             </el-dropdown-item>
+            <el-dropdown-item @click.native="showAiKnowledgeBase = true">
+              <i class="mr-2 fas fa-brain"></i>
+              {{ $t('ai_knowledge_base') }}
+            </el-dropdown-item>
+            <el-dropdown-item @click.native="showOpenApi = true">
+              <i class="mr-2 fas fa-terminal"></i>
+              {{ $t('open_api') }}
+            </el-dropdown-item>
             <el-dropdown-item @click.native="showChangeLog = true">
               <i class="mr-2 far fa-rectangle-vertical-history"></i>
               {{ $t('item_change_log') }}
@@ -155,10 +163,6 @@
             <el-dropdown-item @click.native="showDelete = true">
               <i class="mr-2 fae fa-trash-can"></i>
               {{ $t('delete_item') }}
-            </el-dropdown-item>
-            <el-dropdown-item @click.native="showOpenApi = true">
-              <i class="mr-2 fas fa-terminal"></i>
-              {{ $t('open_api') }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -308,6 +312,18 @@
     >
     </OpenApi>
 
+    <!-- AI 知识库设置弹窗 -->
+    <AiKnowledgeBaseDialog
+      v-if="showAiKnowledgeBase"
+      :callback="
+        () => {
+          showAiKnowledgeBase = false
+        }
+      "
+      :item_id="item_info.item_id"
+    >
+    </AiKnowledgeBaseDialog>
+
     <!-- 项目导出弹窗 -->
     <ItemExport
       v-if="showItemExport"
@@ -372,6 +388,7 @@ import ItemExport from '@/components/item/export/Index'
 import ItemImport from '@/components/item/import/Index'
 import UserSetting from '@/components/user/setting/Index'
 import Message from '@/components/message/Index'
+import AiKnowledgeBaseDialog from '@/components/item/setting/AiKnowledgeBaseDialog'
 
 export default {
   components: {
@@ -391,7 +408,8 @@ export default {
     ItemImport,
     Share,
     UserSetting,
-    Message
+    Message,
+    AiKnowledgeBaseDialog
   },
   props: {
     searchItem: () => {},
@@ -419,7 +437,8 @@ export default {
       showItemImport: false,
       showShare: false,
       showUserSetting: false,
-      showMessage: false
+      showMessage: false,
+      showAiKnowledgeBase: false
     }
   },
   computed: {},
