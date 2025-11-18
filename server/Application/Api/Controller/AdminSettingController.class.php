@@ -162,8 +162,20 @@ class AdminSettingController extends BaseController
 
             $ldap_form['search_filter'] = $ldap_form['search_filter'] ? $ldap_form['search_filter'] : '(cn=*)';
             $ldap_form['search_filter'] = trim(htmlspecialchars_decode($ldap_form['search_filter']));
-            $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $ldap_form['search_filter']);
-            $data = ldap_get_entries($ldap_conn, $result);
+            
+            // 检测search_filter中是否包含占位符 %(user)s
+            $has_placeholder = strpos($ldap_form['search_filter'], '%(user)s') !== false;
+            
+            if (!$has_placeholder) {
+                // 没有占位符时，执行用户同步操作
+                $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $ldap_form['search_filter']);
+                
+                if (!$result) {
+                    $this->sendError(10011, "LDAP搜索失败，请检查 search filter 配置是否正确");
+                    return;
+                }
+                
+                $data = ldap_get_entries($ldap_conn, $result);
 
             for ($i = 0; $i < $data["count"]; $i++) {
                 $ldap_user = $data[$i][$ldap_form['user_field']][0];
@@ -189,6 +201,10 @@ class AdminSettingController extends BaseController
                     // 如果用户已存在且有姓名字段，则更新用户姓名
                     D("User")->where("uid = '%d'", array($userInfo['uid']))->save(array("name" => $ldap_name));
                 }
+            }
+            } else {
+                // 包含占位符时，只保存配置，不进行用户同步
+                // 占位符将在用户登录时动态替换
             }
 
             D("Options")->set("ldap_form", json_encode($ldap_form));
@@ -302,7 +318,15 @@ class AdminSettingController extends BaseController
             return;
         }
         $ldap_form['search_filter'] = $ldap_form['search_filter'] ? $ldap_form['search_filter'] : '(cn=*)';
-        $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $ldap_form['search_filter']);
+        
+        // 支持占位符 %(user)s，用于精确匹配登录用户
+        $search_filter = str_replace('%(user)s', ldap_escape($username, '', LDAP_ESCAPE_FILTER), $ldap_form['search_filter']);
+        
+        $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $search_filter);
+        if (!$result) {
+            $this->sendError(10011, "LDAP搜索失败，请检查 search filter 配置是否正确");
+            return;
+        }
         $data = ldap_get_entries($ldap_conn, $result);
         for ($i = 0; $i < $data["count"]; $i++) {
             $ldap_user = $data[$i][$ldap_form['user_field']][0];

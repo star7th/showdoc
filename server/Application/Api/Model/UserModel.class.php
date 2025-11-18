@@ -105,7 +105,15 @@ class UserModel extends BaseModel
             return false;
         }
         $ldap_form['search_filter'] = $ldap_form['search_filter'] ? $ldap_form['search_filter'] : '(cn=*)';
-        $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $ldap_form['search_filter']);
+        
+        // 支持占位符 %(user)s，用于精确匹配登录用户
+        // 例如: (sAMAccountName=%(user)s) 会被替换为 (sAMAccountName=admin)
+        $search_filter = str_replace('%(user)s', ldap_escape($username, '', LDAP_ESCAPE_FILTER), $ldap_form['search_filter']);
+        
+        $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $search_filter);
+        if (!$result) {
+            return false;
+        }
         $data = ldap_get_entries($ldap_conn, $result);
         for ($i = 0; $i < $data["count"]; $i++) {
             $ldap_user = $data[$i][$ldap_form['user_field']][0];

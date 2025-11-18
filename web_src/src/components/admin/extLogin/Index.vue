@@ -42,6 +42,7 @@
             <el-form-item label="ldap bind password ">
               <el-input
                 v-model="form.ldap_form.bind_password"
+                type="password"
                 class="form-el"
                 placeholder="例如 123456"
               ></el-input>
@@ -83,6 +84,18 @@
                 class="form-el"
                 placeholder="(cn=*)"
               ></el-input>
+              <el-tooltip
+                effect="dark"
+                placement="top"
+              >
+                <div slot="content">
+                  用于搜索LDAP用户的过滤条件<br/>
+                  通用格式: (cn=*) 或 (objectClass=person)<br/>
+                  精确匹配: (sAMAccountName=%(user)s)<br/>
+                  注: 使用 %(user)s 占位符时，登录时会替换为实际用户名
+                </div>
+                <i class="el-icon-question"></i>
+              </el-tooltip>
             </el-form-item>
           </div>
 
@@ -91,9 +104,14 @@
             <el-button type="primary" @click="saveLdapConfig">{{
               $t('save')
             }}</el-button>
-            <el-button v-show="form.ldap_open"  @click="saveLdapConfig">{{
-              $t('sync')
-            }}</el-button>
+            <el-button 
+              v-show="isLdapConfigured" 
+              type="success" 
+              icon="el-icon-refresh"
+              @click="syncLdapUsers"
+            >
+              {{ $t('sync') }} LDAP 用户
+            </el-button>
             <el-button>{{ $t('cancel') }}</el-button>
           </el-form-item>
           </div>
@@ -298,6 +316,16 @@ export default {
       itemList: []
     }
   },
+  computed: {
+    // 判断 LDAP 是否已配置（需要有关键配置项）
+    isLdapConfigured() {
+      return this.form.ldap_open && 
+             this.form.ldap_form && 
+             this.form.ldap_form.host && 
+             this.form.ldap_form.base_dn && 
+             this.form.ldap_form.bind_dn
+    }
+  },
   methods: {
     saveLdapConfig() {
       let loading = this.$loading()
@@ -316,6 +344,41 @@ export default {
       ).then(data => {
         this.$alert(this.$t('success'))
         loading.close()
+      })
+    },
+    syncLdapUsers() {
+      // 同步 LDAP 用户
+      this.$confirm('确定要同步 LDAP 用户吗？这将从 LDAP 服务器同步所有符合条件的用户到 ShowDoc。', '同步 LDAP 用户', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(() => {
+        let loading = this.$loading({
+          lock: true,
+          text: '正在同步 LDAP 用户，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
+        // 设置一个最长关闭时间
+        setTimeout(() => {
+          loading.close()
+        }, 30000)
+
+        this.request(
+          '/api/adminSetting/saveLdapConfig',
+          this.form,
+          'post',
+          true,
+          'json'
+        ).then(data => {
+          loading.close()
+          this.$message.success('LDAP 用户同步成功！')
+        }).catch(error => {
+          loading.close()
+          this.$message.error('LDAP 用户同步失败：' + (error.message || '未知错误'))
+        })
+      }).catch(() => {
+        // 用户取消
       })
     },
     loadLdapConfig() {
