@@ -1096,6 +1096,22 @@ class ItemController extends BaseController
                         \Api\Helper\AiHelper::rebuild($item_id, $ai_service_url, $ai_service_token);
                     });
                 }
+
+                // 同步预热模型（提前加载模型到内存，提升首次对话速度）
+                // 使用短超时（3秒），避免阻塞配置接口响应
+                // 如果3秒内完成，模型已就绪；如果超时，也不影响配置返回
+                try {
+                    $warmupUrl = rtrim($ai_service_url, '/') . '/api/warmup';
+                    $warmupResult = \Api\Helper\AiHelper::callService($warmupUrl, null, $ai_service_token, 'POST', 3);
+                    if ($warmupResult !== false && isset($warmupResult['status']) && $warmupResult['status'] == 'success') {
+                        \Think\Log::record("模型预热成功: " . (isset($warmupResult['message']) ? $warmupResult['message'] : ''));
+                    } else {
+                        \Think\Log::record("模型预热失败或超时（不影响使用）");
+                    }
+                } catch (\Exception $e) {
+                    // 静默处理，不影响配置返回
+                    \Think\Log::record("模型预热异常: " . $e->getMessage());
+                }
             }
         }
 
