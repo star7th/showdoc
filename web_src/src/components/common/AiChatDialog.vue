@@ -594,12 +594,14 @@ export default {
   /* 移动端对话框全屏 */
   .chat-window {
     width: calc(100vw - 24px);
-    height: calc(100vh - 24px);
     max-width: 100vw;
-    max-height: 100vh;
+    /* 使用 80% 高度，平衡显示空间和顶部按钮可见性 */
+    height: 80vh;
+    max-height: 80vh;
     border-radius: 12px 12px 0 0;
     right: 12px;
     bottom: 12px;
+    top: auto;
     position: fixed;
     /* 防止移动端点击穿透 */
     touch-action: pan-y;
@@ -762,7 +764,9 @@ export default {
 
   .chat-window {
     width: calc(100vw - 16px);
-    height: calc(100vh - 16px);
+    /* 使用 80% 高度，平衡显示空间和顶部按钮可见性 */
+    height: 80vh;
+    max-height: 80vh;
     border-radius: 8px 8px 0 0;
     right: 8px;
     bottom: 8px;

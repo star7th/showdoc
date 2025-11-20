@@ -89,10 +89,14 @@
                 placement="top"
               >
                 <div slot="content">
-                  用于搜索LDAP用户的过滤条件<br/>
-                  通用格式: (cn=*) 或 (objectClass=person)<br/>
-                  精确匹配: (sAMAccountName=%(user)s)<br/>
-                  注: 使用 %(user)s 占位符时，登录时会替换为实际用户名
+                  LDAP 搜索过滤条件<br/><br/>
+                  <strong>推荐表达式：</strong><br/>
+                  • 按组过滤：(&(memberOf=cn=组名,ou=OU名,dc=域名,dc=cn))<br/>
+                  • 精确登录：(sAMAccountName=%(user)s)<br/>
+                  • 通用搜索：(cn=*)<br/><br/>
+                  <strong>说明：</strong><br/>
+                  • %(user)s 占位符在登录时会替换为实际用户名<br/>
+                  • 同步时会自动过滤掉计算机、组等非用户对象
                 </div>
                 <i class="el-icon-question"></i>
               </el-tooltip>

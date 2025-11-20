@@ -177,6 +177,31 @@ class AdminSettingController extends BaseController
                 $sync_filter = $ldap_form['search_filter'];
             }
             
+            // 检查是否已经包含 objectClass 相关的过滤条件
+            // 如果不包含，自动添加用户过滤条件，防止同步计算机、组等非用户对象
+            $has_objectclass = preg_match('/objectclass/i', $sync_filter);
+            if (!$has_objectclass) {
+                // 智能包装：自动添加用户过滤条件
+                // 兼容 AD (objectClass=user) 和 OpenLDAP (objectClass=person/inetOrgPerson)
+                // 同时显式排除计算机、组、OU等非用户对象
+                $user_filter = '(|(objectClass=user)(objectClass=person)(objectClass=inetOrgPerson))';
+                $exclude_filter = '(!(objectClass=computer))(!(objectClass=group))(!(objectClass=organizationalUnit))';
+                
+                if (preg_match('/^\([^&|!]/', $sync_filter)) {
+                    // 简单条件，例如 (sAMAccountName=*) 
+                    // 包装成：(&(用户过滤器)(排除过滤器)(原条件))
+                    $sync_filter = '(&' . $user_filter . $exclude_filter . $sync_filter . ')';
+                } else if (preg_match('/^\(&/', $sync_filter)) {
+                    // 已经是 AND 条件，例如 (&(cn=*)(mail=*))
+                    // 插入到开头：(&(用户过滤器)(排除过滤器)(cn=*)(mail=*))
+                    $sync_filter = preg_replace('/^\(&/', '(&' . $user_filter . $exclude_filter, $sync_filter);
+                } else if (preg_match('/^\(\|/', $sync_filter)) {
+                    // 是 OR 条件，例如 (|(cn=*)(uid=*))
+                    // 包装成 AND：(&(用户过滤器)(排除过滤器)(|(cn=*)(uid=*)))
+                    $sync_filter = '(&' . $user_filter . $exclude_filter . $sync_filter . ')';
+                }
+            }
+            
             // 执行用户同步操作
             $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $sync_filter);
             
