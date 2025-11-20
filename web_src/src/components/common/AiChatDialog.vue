@@ -533,10 +533,21 @@ export default {
   transition: all 0.3s;
 }
 
-.ai-chat-widget.collapsed .chat-button:hover {
-  background: #495057;
-  box-shadow: 0 4px 12px rgba(52, 58, 64, 0.35);
-  transform: scale(1.05);
+/* 桌面端 hover 效果 */
+@media (hover: hover) and (pointer: fine) {
+  .ai-chat-widget.collapsed .chat-button:hover {
+    background: #495057;
+    box-shadow: 0 4px 12px rgba(52, 58, 64, 0.35);
+    transform: scale(1.05);
+  }
+
+  .header-actions i:hover {
+    opacity: 0.8;
+  }
+
+  .source-item:hover {
+    text-decoration: underline;
+  }
 }
 
 .ai-chat-widget.collapsed .chat-button i {
@@ -555,6 +566,226 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .ai-chat-widget {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  /* 移动端按钮稍小一些 */
+  .ai-chat-widget.collapsed .chat-button {
+    width: 50px;
+    height: 50px;
+    /* 移动端移除 hover 效果，使用 active 状态 */
+  }
+
+  .ai-chat-widget.collapsed .chat-button:active {
+    background: #495057;
+    transform: scale(0.95);
+  }
+
+  .ai-chat-widget.collapsed .chat-button i {
+    font-size: 22px;
+  }
+
+  /* 移动端对话框全屏 */
+  .chat-window {
+    width: calc(100vw - 24px);
+    height: calc(100vh - 24px);
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: 12px 12px 0 0;
+    right: 12px;
+    bottom: 12px;
+    position: fixed;
+    /* 防止移动端点击穿透 */
+    touch-action: pan-y;
+  }
+
+  /* 移动端标题栏更高，方便触摸 */
+  .chat-header {
+    height: 48px;
+    padding: 0 16px;
+  }
+
+  .header-title {
+    font-size: 15px;
+  }
+
+  .header-title i {
+    font-size: 20px;
+  }
+
+  .header-actions i {
+    font-size: 20px;
+    padding: 4px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 移动端触摸反馈 */
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+    tap-highlight-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .header-actions i:active {
+    opacity: 0.6;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  /* 移动端消息区域优化 */
+  .messages {
+    padding: 16px 12px;
+    font-size: 14px;
+    /* 移动端优化滚动 */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .message {
+    margin-bottom: 16px;
+  }
+
+  .message-avatar {
+    width: 36px;
+    height: 36px;
+    margin: 0 10px;
+  }
+
+  .message-avatar i {
+    font-size: 18px;
+  }
+
+  .message-content {
+    max-width: 75%;
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  /* 移动端输入区域优化 */
+  .input-area {
+    padding: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    /* 防止移动端键盘弹出时布局问题 */
+    position: relative;
+  }
+
+  .input-area /deep/ .el-textarea__inner {
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 10px 12px;
+    min-height: 60px;
+    resize: none;
+  }
+
+  .input-actions {
+    margin-top: 12px;
+    gap: 10px;
+    display: flex;
+  }
+
+  .input-actions .el-button {
+    flex: 1;
+    padding: 12px 0;
+    font-size: 14px;
+    min-height: 44px;
+    /* 移动端按钮触摸优化 */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* 移动端表格优化 */
+  .message-text /deep/ table {
+    font-size: 12px;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .message-text /deep/ table th,
+  .message-text /deep/ table td {
+    padding: 8px 6px;
+    white-space: nowrap;
+  }
+
+  /* 移动端代码块优化 */
+  .message-text /deep/ pre {
+    font-size: 12px;
+    padding: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 移动端引用来源优化 */
+  .source-item {
+    padding: 8px 0;
+    font-size: 13px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    /* 移动端触摸反馈 */
+    -webkit-tap-highlight-color: rgba(0, 123, 255, 0.1);
+    tap-highlight-color: rgba(0, 123, 255, 0.1);
+    border-radius: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin: 2px 0;
+  }
+
+  .source-item:active {
+    background: rgba(0, 123, 255, 0.1);
+  }
+
+  .source-item span {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .relevance {
+    display: none; /* 移动端隐藏相关度，节省空间 */
+  }
+}
+
+/* 超小屏幕优化（小于 360px） */
+@media (max-width: 360px) {
+  .ai-chat-widget {
+    right: 8px;
+    bottom: 8px;
+  }
+
+  .chat-window {
+    width: calc(100vw - 16px);
+    height: calc(100vh - 16px);
+    border-radius: 8px 8px 0 0;
+    right: 8px;
+    bottom: 8px;
+  }
+
+  .header-title {
+    font-size: 14px;
+  }
+
+  .messages {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .message-content {
+    max-width: 80%;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .input-area {
+    padding: 12px;
+  }
 }
 
 /* 标题栏 */
@@ -593,10 +824,6 @@ export default {
   transition: opacity 0.2s;
 }
 
-.header-actions i:hover {
-  opacity: 0.8;
-}
-
 /* 聊天容器 */
 .chat-container {
   display: flex;
@@ -611,6 +838,8 @@ export default {
   padding: 12px;
   background: #f9f9f9;
   font-size: 13px;
+  -webkit-overflow-scrolling: touch; /* iOS 平滑滚动 */
+  overscroll-behavior: contain; /* 防止滚动穿透 */
 }
 
 .message {
@@ -737,10 +966,6 @@ export default {
 
 .message.user .source-item {
   color: rgba(255, 255, 255, 0.9);
-}
-
-.source-item:hover {
-  text-decoration: underline;
 }
 
 .source-item i {
