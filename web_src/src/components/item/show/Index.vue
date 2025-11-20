@@ -72,6 +72,52 @@ export default {
     Notify
   },
   methods: {
+    // 递归查找第一个可用的页面
+    // 优先查找根目录的页面，如果没有则递归查找子目录的第一个页面
+    findFirstAvailablePage(menu) {
+      if (!menu) {
+        return null
+      }
+
+      // 1. 先检查根目录是否有页面
+      if (menu.pages && menu.pages.length > 0 && menu.pages[0]) {
+        return menu.pages[0].page_id
+      }
+
+      // 2. 如果根目录没有页面，检查是否有子目录
+      if (!menu.catalogs || menu.catalogs.length === 0) {
+        return null
+      }
+
+      // 3. 递归查找第一个子目录的第一个页面
+      const findInCatalogs = catalogs => {
+        if (!catalogs || catalogs.length === 0) {
+          return null
+        }
+
+        // 遍历每个目录
+        for (let i = 0; i < catalogs.length; i++) {
+          const catalog = catalogs[i]
+
+          // 先检查当前目录是否有页面
+          if (catalog.pages && catalog.pages.length > 0 && catalog.pages[0]) {
+            return catalog.pages[0].page_id
+          }
+
+          // 如果当前目录没有页面，递归查找子目录
+          if (catalog.catalogs && catalog.catalogs.length > 0) {
+            const pageId = findInCatalogs(catalog.catalogs)
+            if (pageId) {
+              return pageId
+            }
+          }
+        }
+
+        return null
+      }
+
+      return findInCatalogs(menu.catalogs)
+    },
     // 获取菜单
     getItemMenu(keyword) {
       if (!keyword) {
@@ -96,7 +142,15 @@ export default {
         if (data.error_code === 0) {
           var json = data.data
           if (json.default_page_id <= 0) {
-            if (json.menu.pages[0]) {
+            // 只对常规项目（item_type == 1）执行递归查找第一个可用页面的逻辑
+            if (json.item_type == 1 && json.menu) {
+              // 使用递归函数查找第一个可用的页面
+              const firstPageId = this.findFirstAvailablePage(json.menu)
+              if (firstPageId) {
+                json.default_page_id = firstPageId
+              }
+            } else if (json.menu && json.menu.pages && json.menu.pages[0]) {
+              // 其他项目类型保持原有逻辑
               json.default_page_id = json.menu.pages[0].page_id
             }
           }

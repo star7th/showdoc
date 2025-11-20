@@ -372,10 +372,10 @@ class AiController extends BaseController
         }
 
         // 转换 AI 服务返回的数据格式为前端期望的格式
-        // AI 服务返回: indexed (bool), document_count (int)
+        // AI 服务返回: indexed (bool), status (string), document_count (int)
         // 前端期望: status (string: 'indexed'/'indexing'/'not_configured'/'error'), document_count (int)
         $response = array(
-            'status' => isset($result['indexed']) && $result['indexed'] ? 'indexed' : 'unknown',
+            'status' => isset($result['status']) ? $result['status'] : (isset($result['indexed']) && $result['indexed'] ? 'indexed' : 'unknown'),
             'document_count' => isset($result['document_count']) ? intval($result['document_count']) : 0,
             'last_update_time' => isset($result['last_update_time']) ? $result['last_update_time'] : null
         );

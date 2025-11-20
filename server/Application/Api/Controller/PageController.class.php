@@ -603,16 +603,24 @@ class PageController extends BaseController
             // 异步触发索引更新（使用简单的 HTTP 请求，不等待响应）
             $url = rtrim($ai_service_url, '/') . '/api/index/upsert';
 
+            // 如果是删除操作，直接调用删除接口
+            if ($action == 'delete') {
+                $ai_service_token = D("Options")->get("ai_service_token");
+                \Api\Helper\AiHelper::callAiServiceAsync($url, array(
+                    'item_id' => $item_id,
+                    'page_id' => $page_id
+                ), $ai_service_token, 'DELETE');
+                return;
+            }
+
+            // 确保获取最新数据：先删除缓存，再从数据库读取
+            D("Page")->deleteCache($page_id);
+            // 稍作延迟，确保数据库事务已提交（如果使用事务）
+            usleep(100000); // 延迟 0.1 秒
+
             // 获取页面信息（开源版没有分表，直接使用 D("Page")->where 查询）
             $page = D("Page")->where(array('page_id' => $page_id))->find();
             if (!$page || $page['is_del'] == 1) {
-                // 如果是删除操作，直接调用删除接口
-                if ($action == 'delete') {
-                    $this->callAiServiceAsync($url, array(
-                        'item_id' => $item_id,
-                        'page_id' => $page_id
-                    ), 'DELETE');
-                }
                 return;
             }
 
@@ -627,6 +635,11 @@ class PageController extends BaseController
             $md_content = $convert->runapiToMd($content);
             if ($md_content !== false) {
                 $content = $md_content;
+            }
+
+            // 跳过空内容
+            if (empty($content) || trim($content) === '') {
+                return;
             }
 
             // 获取目录名称
@@ -648,56 +661,12 @@ class PageController extends BaseController
                 'update_time' => isset($page['update_time']) ? $page['update_time'] : time()
             );
 
-            $this->callAiServiceAsync($url, $postData);
-        } catch (\Exception $e) {
-            // 记录错误日志，但不影响主流程
-            \Think\Log::record("AI索引触发失败: " . $e->getMessage());
-        }
-    }
-
-    /**
-     * 异步调用 AI 服务（不等待响应）
-     */
-    private function callAiServiceAsync($url, $postData = null, $method = 'POST')
-    {
-        try {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 5); // 短超时，不阻塞
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-            curl_setopt($ch, CURLOPT_NOSIGNAL, 1); // 避免信号量问题
-
             $ai_service_token = D("Options")->get("ai_service_token");
-            $headers = array(
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $ai_service_token
-            );
-
-            if ($method == 'POST' && $postData) {
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
-            } elseif ($method == 'DELETE') {
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-                if ($postData) {
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
-                }
-            }
-
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-            // 不等待响应，立即返回
-            curl_exec($ch);
-            $error = curl_error($ch);
-            curl_close($ch);
-
-            // 如果有错误，记录日志但不抛出异常
-            if ($error) {
-                \Think\Log::record("AI服务异步调用失败: " . $error);
-            }
+            \Api\Helper\AiHelper::callAiServiceAsync($url, $postData, $ai_service_token);
         } catch (\Exception $e) {
-            // 记录错误日志，但不影响主流程
-            \Think\Log::record("AI服务异步调用异常: " . $e->getMessage());
+            // 只记录错误日志
+            \Think\Log::record("AI索引触发失败: item_id={$item_id}, page_id={$page_id}, " . $e->getMessage());
         }
     }
+
 }

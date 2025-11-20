@@ -95,6 +95,12 @@
                     indexStatus.document_count
                   )
                 }}</span>
+                <span
+                  v-if="countIncreased && indexStatus.document_count > lastDocumentCount"
+                  class="count-increase-badge"
+                >
+                  +{{ indexStatus.document_count - lastDocumentCount }}
+                </span>
               </div>
             </div>
           </el-alert>
@@ -134,9 +140,17 @@
               v-if="indexStatus.document_count !== undefined"
             >
               <span class="status-label">{{ $t('ai_chunk_count') }}：</span>
-              <span class="status-value"
+              <span
+                class="status-value"
+                :class="{ 'count-updated': countIncreased && indexStatus.status === 'indexing' }"
                 >{{ indexStatus.document_count }} {{ $t('ai_chunks') }}</span
               >
+              <span
+                v-if="countIncreased && indexStatus.status === 'indexing' && indexStatus.document_count > lastDocumentCount"
+                class="count-increase-indicator"
+              >
+                (+{{ indexStatus.document_count - lastDocumentCount }})
+              </span>
             </div>
 
             <div class="status-row" v-if="indexStatus.last_update_time">
@@ -232,10 +246,9 @@ export default {
       pollingTimer: null, // 轮询定时器
       pollingCount: 0, // 轮询次数（用于超时检测）
       maxPollingCount: 120, // 最大轮询次数（120次 * 5秒 = 10分钟超时）
-      lastDocumentCount: 0, // 上一次的文档数量
-      stableCount: 0, // 文档数量连续不变的次数
-      stableThreshold: 3, // 连续不变的次数阈值（3次 * 5秒 = 15秒稳定即认为完成）
-      needRefresh: false // 是否需要刷新页面（从未启用变为启用时设置）
+      needRefresh: false, // 是否需要刷新页面（从未启用变为启用时设置）
+      lastDocumentCount: 0, // 上一次的文档数量（用于显示增长）
+      countIncreased: false // 文档数量是否刚增长（用于动画效果）
     }
   },
   computed: {
@@ -439,10 +452,10 @@ export default {
           })
           // 更新状态为索引中
           this.indexStatus.status = 'indexing'
-          // 重置轮询计数和稳定性计数
+          // 重置轮询计数和文档数量
           this.pollingCount = 0
           this.lastDocumentCount = 0
-          this.stableCount = 0
+          this.countIncreased = false
           // 立即开始轮询状态
           this.startPolling()
         } else {
@@ -475,8 +488,7 @@ export default {
         this.pollingTimer = null
       }
       this.pollingCount = 0
-      this.lastDocumentCount = 0
-      this.stableCount = 0
+      this.countIncreased = false
     },
     // 轮询检查索引状态
     async pollIndexStatus() {
@@ -496,7 +508,6 @@ export default {
 
         if (res.error_code === 0 && res.data) {
           const newStatus = res.data
-          const currentCount = newStatus.document_count || 0
 
           // 如果状态是 error，停止轮询
           if (newStatus.status === 'error') {
@@ -507,40 +518,45 @@ export default {
             return
           }
 
-          // 判断索引是否完成：document_count > 0 且连续几次不变
-          if (currentCount > 0) {
-            if (currentCount === this.lastDocumentCount) {
-              // 文档数量没有变化，增加稳定计数
-              this.stableCount++
-              // 如果连续稳定达到阈值，认为索引完成
-              if (this.stableCount >= this.stableThreshold) {
-                // 更新状态为已完成
-                this.indexStatus = {
-                  ...newStatus,
-                  status: 'indexed'
-                }
-                this.stopPolling()
-                this.rebuilding = false
-                this.$message.success(this.$t('ai_index_completed'))
-                return
-              }
-            } else {
-              // 文档数量有变化，重置稳定计数
-              this.stableCount = 0
-              this.lastDocumentCount = currentCount
-            }
-          } else {
-            // 文档数量为0，重置稳定计数
-            this.stableCount = 0
-            this.lastDocumentCount = 0
-          }
+          // 根据服务端返回的 status 字段判断索引状态
+          // status 可能的值：'indexed'（已完成）、'indexing'（进行中）、'not_indexed'（未索引）
+          if (newStatus.status === 'indexed') {
+            // 索引已完成
+            this.indexStatus = newStatus
+            this.lastDocumentCount = newStatus.document_count || 0
+            this.countIncreased = false
+            this.stopPolling()
+            this.rebuilding = false
+            this.$message.success(this.$t('ai_index_completed'))
+            return
+          } else if (newStatus.status === 'indexing') {
+            // 索引进行中，检查文档数量是否增长
+            const currentCount = newStatus.document_count || 0
+            const previousCount = this.indexStatus.document_count || 0
 
-          // 更新状态信息，保持 indexing 状态
-          this.indexStatus = {
-            ...newStatus,
-            status: 'indexing' // 在轮询过程中，保持 indexing 状态
+            // 如果文档数量增加了，显示增长动画
+            if (currentCount > previousCount) {
+              this.countIncreased = true
+              this.lastDocumentCount = previousCount
+              // 1秒后取消增长动画效果
+              setTimeout(() => {
+                this.countIncreased = false
+              }, 1000)
+            } else {
+              this.countIncreased = false
+            }
+
+            // 更新状态信息并继续轮询
+            this.indexStatus = newStatus
+            // 继续轮询
+          } else {
+            // 其他状态（not_indexed 等），更新状态但继续轮询（可能任务刚提交）
+            this.indexStatus = {
+              ...newStatus,
+              status: 'indexing' // 如果服务端返回 not_indexed 但任务已提交，保持 indexing 状态
+            }
+            this.countIncreased = false
           }
-          // 继续轮询
         }
       } catch (error) {
         console.error('轮询索引状态失败:', error)
@@ -745,6 +761,63 @@ export default {
 .indexing-progress-info span {
   color: #303133;
   font-size: 14px;
+}
+
+.count-increase-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  background-color: #67c23a;
+  color: #fff;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  animation: countPulse 0.6s ease-out;
+}
+
+.count-increase-indicator {
+  display: inline-block;
+  margin-left: 8px;
+  color: #67c23a;
+  font-size: 12px;
+  font-weight: bold;
+  animation: countPulse 0.6s ease-out;
+}
+
+.status-value.count-updated {
+  color: #67c23a;
+  font-weight: bold;
+  animation: countHighlight 0.6s ease-out;
+}
+
+@keyframes countPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes countHighlight {
+  0% {
+    color: #303133;
+    transform: scale(1);
+  }
+  50% {
+    color: #67c23a;
+    transform: scale(1.05);
+  }
+  100% {
+    color: #67c23a;
+    transform: scale(1);
+  }
 }
 </style>
 

@@ -196,6 +196,59 @@ class AiHelper
   }
 
   /**
+   * 异步调用 AI 服务（不等待响应）
+   * @param string $url 请求URL
+   * @param array $postData POST数据
+   * @param string $ai_service_token AI服务Token
+   * @param string $method 请求方法
+   */
+  public static function callAiServiceAsync($url, $postData = null, $ai_service_token, $method = 'POST')
+  {
+    try {
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_TIMEOUT, 30); // 增加到30秒超时，给AI服务足够的处理时间
+      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // 连接超时5秒
+      curl_setopt($ch, CURLOPT_NOSIGNAL, 1); // 避免信号量问题
+
+      $headers = array(
+        'Content-Type: application/json; charset=utf-8',
+        'Authorization: Bearer ' . $ai_service_token,
+        'Accept: application/json; charset=utf-8'
+      );
+
+      if ($method == 'POST' && $postData) {
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData, JSON_UNESCAPED_UNICODE));
+      } elseif ($method == 'DELETE') {
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        if ($postData) {
+          curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData, JSON_UNESCAPED_UNICODE));
+        }
+      }
+
+      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+      // 执行请求并获取响应
+      $result = curl_exec($ch);
+      $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      $error = curl_error($ch);
+      curl_close($ch);
+
+      // 只记录错误日志
+      if ($error) {
+        \Think\Log::record("AI服务调用失败: {$error}");
+      } elseif ($httpCode != 200) {
+        $responsePreview = $result ? substr($result, 0, 200) : '无响应';
+        \Think\Log::record("AI服务返回错误: HTTP {$httpCode}, {$responsePreview}");
+      }
+    } catch (\Exception $e) {
+      \Think\Log::record("AI服务调用异常: " . $e->getMessage());
+    }
+  }
+
+  /**
    * 调用 AI 服务（流式）
    * @param string $url 请求URL
    * @param array $postData POST数据
