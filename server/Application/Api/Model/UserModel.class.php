@@ -108,6 +108,7 @@ class UserModel extends BaseModel
         
         // 支持占位符 %(user)s，用于精确匹配登录用户
         // 例如: (sAMAccountName=%(user)s) 会被替换为 (sAMAccountName=admin)
+        $has_placeholder = strpos($ldap_form['search_filter'], '%(user)s') !== false;
         $search_filter = str_replace('%(user)s', ldap_escape($username, '', LDAP_ESCAPE_FILTER), $ldap_form['search_filter']);
         
         $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $search_filter);
@@ -115,10 +116,35 @@ class UserModel extends BaseModel
             return false;
         }
         $data = ldap_get_entries($ldap_conn, $result);
+        
+        // 如果没有搜索结果，直接返回失败
+        if ($data["count"] == 0) {
+            return false;
+        }
+        
         for ($i = 0; $i < $data["count"]; $i++) {
-            $ldap_user = $data[$i][$ldap_form['user_field']][0];
+            // 检查用户字段是否存在
+            $user_field_lower = strtolower($ldap_form['user_field']);
+            $ldap_user = null;
+            
+            // 因为LDAP属性可能大小写不同，遍历所有属性找到匹配的
+            foreach ($data[$i] as $key => $value) {
+                if (strtolower($key) === $user_field_lower && isset($value['count']) && $value['count'] > 0) {
+                    $ldap_user = $value[0];
+                    break;
+                }
+            }
+            
+            // 如果找不到用户字段，跳过
+            if (!$ldap_user) {
+                continue;
+            }
+            
             $dn = $data[$i]["dn"];
-            if ($ldap_user == $username) {
+            
+            // 如果使用了占位符，说明已经精确匹配，直接使用第一个结果
+            // 否则需要检查用户名是否匹配（不区分大小写）
+            if ($has_placeholder || strcasecmp($ldap_user, $username) == 0) {
                 // 获取用户姓名
                 $ldap_name = '';
                 $name_field = strtolower($ldap_form['name_field']);
@@ -133,15 +159,19 @@ class UserModel extends BaseModel
                     }
                 }
                 
+                // 使用 LDAP 返回的实际用户名（$ldap_user）进行数据库操作
+                // 因为 LDAP 中的用户名可能和用户输入的 username 在大小写或格式上不同
+                $db_username = $ldap_user;
+                
                 //如果该用户不在数据库里，则帮助其注册
-                $userInfo = D("User")->isExist($username);
+                $userInfo = D("User")->isExist($db_username);
                 if (!$userInfo) {
-                    $uid = D("User")->register($ldap_user, $ldap_user . get_rand_str());
+                    $uid = D("User")->register($db_username, $db_username . get_rand_str());
                     // 如果有姓名字段，则设置用户姓名
                     if ($ldap_name) {
                         D("User")->where("uid = '%d'", array($uid))->save(array("name" => $ldap_name));
                     }
-                    $userInfo = D("User")->isExist($username);
+                    $userInfo = D("User")->isExist($db_username);
                 } else if ($ldap_name) {
                     // 如果用户已存在且有姓名字段，则更新用户姓名
                     D("User")->where("uid = '%d'", array($userInfo['uid']))->save(array("name" => $ldap_name));

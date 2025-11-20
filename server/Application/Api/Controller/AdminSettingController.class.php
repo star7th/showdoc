@@ -166,27 +166,54 @@ class AdminSettingController extends BaseController
             // 检测search_filter中是否包含占位符 %(user)s
             $has_placeholder = strpos($ldap_form['search_filter'], '%(user)s') !== false;
             
-            if (!$has_placeholder) {
-                // 没有占位符时，执行用户同步操作
-                $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $ldap_form['search_filter']);
-                
-                if (!$result) {
-                    $this->sendError(10011, "LDAP搜索失败，请检查 search filter 配置是否正确");
-                    return;
-                }
-                
-                $data = ldap_get_entries($ldap_conn, $result);
+            // 确定用于同步的搜索条件
+            if ($has_placeholder) {
+                // 如果包含占位符，生成一个通用的搜索条件用于同步
+                // 例如: (sAMAccountName=%(user)s) -> (sAMAccountName=*)
+                // 例如: (&(objectClass=user)(sAMAccountName=%(user)s)) -> (&(objectClass=user)(sAMAccountName=*))
+                $sync_filter = preg_replace('/%\(user\)s/', '*', $ldap_form['search_filter']);
+            } else {
+                // 没有占位符时，直接使用原搜索条件
+                $sync_filter = $ldap_form['search_filter'];
+            }
+            
+            // 执行用户同步操作
+            $result = ldap_search($ldap_conn, $ldap_form['base_dn'], $sync_filter);
+            
+            if (!$result) {
+                $this->sendError(10011, "LDAP搜索失败，请检查 search filter 配置是否正确");
+                return;
+            }
+            
+            $data = ldap_get_entries($ldap_conn, $result);
+            
+            // 改进用户字段获取逻辑，支持大小写不敏感
+            $user_field_lower = strtolower($ldap_form['user_field']);
 
             for ($i = 0; $i < $data["count"]; $i++) {
-                $ldap_user = $data[$i][$ldap_form['user_field']][0];
+                // 因为LDAP属性可能大小写不同，遍历所有属性找到匹配的
+                $ldap_user = null;
+                foreach ($data[$i] as $key => $value) {
+                    if (strtolower($key) === $user_field_lower && isset($value['count']) && $value['count'] > 0) {
+                        $ldap_user = $value[0];
+                        break;
+                    }
+                }
+                
                 if (!$ldap_user) {
                     continue;
                 }
                 
                 // 获取用户姓名
                 $ldap_name = '';
-                if ($ldap_form['name_field'] && isset($data[$i][$ldap_form['name_field']]) && $data[$i][$ldap_form['name_field']]['count'] > 0) {
-                    $ldap_name = $data[$i][$ldap_form['name_field']][0];
+                if ($ldap_form['name_field']) {
+                    $name_field_lower = strtolower($ldap_form['name_field']);
+                    foreach ($data[$i] as $key => $value) {
+                        if (strtolower($key) === $name_field_lower && isset($value['count']) && $value['count'] > 0) {
+                            $ldap_name = $value[0];
+                            break;
+                        }
+                    }
                 }
                 
                 //如果该用户不在数据库里，则帮助其注册
@@ -201,10 +228,6 @@ class AdminSettingController extends BaseController
                     // 如果用户已存在且有姓名字段，则更新用户姓名
                     D("User")->where("uid = '%d'", array($userInfo['uid']))->save(array("name" => $ldap_name));
                 }
-            }
-            } else {
-                // 包含占位符时，只保存配置，不进行用户同步
-                // 占位符将在用户登录时动态替换
             }
 
             D("Options")->set("ldap_form", json_encode($ldap_form));
