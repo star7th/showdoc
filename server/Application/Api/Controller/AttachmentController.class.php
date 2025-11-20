@@ -54,22 +54,42 @@ class AttachmentController extends BaseController
                     continue;
                 }
 
-                // 在页面内容中进行like匹配：优先匹配sign=，否则匹配real_url
+                // 在页面内容中进行like匹配：sign是MD5加密串，重复率很小，直接搜索即可
                 $referenced = false;
                 if (!empty($value['sign'])) {
                     $sign = $value['sign'];
                     $likeSign = safe_like($sign);
-                    $cnt = M("Page")->where(" page_content like '%s' ", array('%sign=' . $likeSign . '%'))->count();
+                    
+                    // 直接搜索sign字符串（MD5加密串重复率很小）
+                    $cnt = M("Page")->where(" page_content like '%s' ", array('%' . $likeSign . '%'))->count();
                     if ($cnt > 0) {
                         $referenced = true;
                     }
+                    
+                    // 也检查页面历史版本（开源版无分表，直接查询）
+                    if (!$referenced) {
+                        $cnt = M("PageHistory")->where(" page_content like '%s' ", array('%' . $likeSign . '%'))->count();
+                        if ($cnt > 0) {
+                            $referenced = true;
+                        }
+                    }
                 }
+                
+                // 如果sign检测未找到，再检测real_url
                 if (!$referenced && !empty($value['real_url'])) {
                     $realUrl = $value['real_url'];
                     $likeUrl = safe_like($realUrl);
                     $cnt2 = M("Page")->where(" page_content like '%s' ", array('%' . $likeUrl . '%'))->count();
                     if ($cnt2 > 0) {
                         $referenced = true;
+                    }
+                    
+                    // 也检查页面历史版本中的real_url（开源版无分表，直接查询）
+                    if (!$referenced) {
+                        $cnt2 = M("PageHistory")->where(" page_content like '%s' ", array('%' . $likeUrl . '%'))->count();
+                        if ($cnt2 > 0) {
+                            $referenced = true;
+                        }
                     }
                 }
 
