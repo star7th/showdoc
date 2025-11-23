@@ -38,7 +38,7 @@ class AttachmentController extends BaseController
             $params[] = $uid;
         }
 
-        // 先拿候选集合：未绑定到任何页面（file_page无记录）
+        // 获取所有附件，通过检查page.page_content来判断是否被使用
         // 开源版无分表，直接检查page.page_content
         $candidates = isset($params)
             ? D("UploadFile")->where($where, $params)->order("addtime desc")->select()
@@ -47,13 +47,6 @@ class AttachmentController extends BaseController
         $unused = array();
         if ($candidates) {
             foreach ($candidates as $value) {
-                $fileId = intval($value['file_id']);
-                // 如果在file_page里存在绑定记录，则视为已使用
-                $boundCount = D("FilePage")->where(" file_id = '%d' and page_id > 0 ", array($fileId))->count();
-                if ($boundCount > 0) {
-                    continue;
-                }
-
                 // 在页面内容中进行like匹配：sign是MD5加密串，重复率很小，直接搜索即可
                 $referenced = false;
                 if (!empty($value['sign'])) {
