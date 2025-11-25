@@ -171,14 +171,43 @@ class ExtLoginController extends BaseController
                 // echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
 
                 $access_token_string = $accessToken->getToken();
-                $user_info_url = $urlUserInfo . "?access_token=" . $access_token_string;
+
+                // 兼容 GitLab：GitLab 不允许同时通过 URL 参数和 Header 传递 token
+                // 参考：https://github.com/star7th/showdoc/issues/2102
+                $is_gitlab = false;
+                if (
+                    (isset($oauth2_form['host']) && stripos($oauth2_form['host'], 'gitlab') !== false)
+                    || stripos($urlUserInfo, 'gitlab') !== false
+                    || stripos($urlAccessToken, 'gitlab') !== false
+                ) {
+                    $is_gitlab = true;
+                }
+
+                if ($is_gitlab) {
+                    // GitLab 场景：只在 Header 中携带 Authorization: Bearer，不再拼接 ?access_token
+                    $user_info_url = $urlUserInfo;
+                    $curl_headers = array(
+                        "Authorization: Bearer {$access_token_string}",
+                        "user-agent: showdoc",
+                        "accept:application/json"
+                    );
+                } else {
+                    // 其他平台：保持兼容性，沿用原有“URL + Header”两种方式
+                    $user_info_url = $urlUserInfo . "?access_token=" . $access_token_string;
+                    $curl_headers = array(
+                        "Authorization: bearer {$access_token_string}",
+                        "user-agent: showdoc",
+                        "accept:application/json"
+                    );
+                }
+
                 $oCurl = curl_init();   //初始化curl，
                 curl_setopt($oCurl, CURLOPT_URL, $user_info_url);   //设置网址
                 curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);  //将curl_exec的结果返回
                 curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
                 curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, FALSE);
                 curl_setopt($oCurl, CURLOPT_HEADER, 0);         //是否输出返回头信息
-                curl_setopt($oCurl, CURLOPT_HTTPHEADER, array("Authorization: bearer {$access_token_string}", "user-agent: showdoc", "accept:application/json"));
+                curl_setopt($oCurl, CURLOPT_HTTPHEADER, $curl_headers);
                 $res = curl_exec($oCurl);   //执行
                 curl_close($oCurl);          //关闭会话
                 $res_array = json_decode($res, true);
