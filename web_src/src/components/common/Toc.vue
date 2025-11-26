@@ -213,7 +213,7 @@ export default {
 }
 
 .page_content_main .markdown-toc li ul,
-#toc-pos .markdown-toc li a.current {
+#toc-pos .markdown-toc li ul {
   padding-left: 15px;
 }
 </style>
