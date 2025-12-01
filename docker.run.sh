@@ -72,11 +72,16 @@ backup_dbfile() {
     else
         backup_time="$(date +%F-%H-%M-%S)"
     fi
-    rsync -a $db_file ${db_file}.backup.full."$backup_time".php
-    echo "Completed backup to ${db_file}.backup.full.$backup_time.php"
+    backup_file="${db_file}.backup.full.${backup_time}.php"
+    echo "Backing up database file to $backup_file ..."
+    ## 直接复制文件的备份方式（不推荐，可能导致备份文件损坏）
+    # rsync -a $db_file ${db_file}.backup.full."$backup_time".php
+    ## 更安全的备份方式
+    sqlite3 "$db_file" ".backup '${backup_file}'"
+    echo "Completed backup to ${backup_file}"
     ## remove old files (15 days ago)
     find ${db_file}.* -type f -ctime +15 -print0 |
-        xargs -t -0 rm -f >/dev/null
+        xargs -t -r -0 -I % rm -f % >/dev/null
 }
 
 docker_run() {
@@ -108,9 +113,8 @@ docker_run() {
     if [[ "${version_local}" == "${version_json}" ]]; then
         echo "Same version, skip upgrade."
     else
-        echo "Found new version: $version_json, upgrade..."
+        echo "Found new version: ${version_local} => ${version_json}, upgrade..."
         ## 备份数据库文件
-        echo "Backup db file before upgrade..."
         backup_dbfile
         echo "Upgrade application files..."
         ## 此处排除 Sqlite/ 和 Public/Uploads/ 目录，保留用户数据
