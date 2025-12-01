@@ -67,17 +67,28 @@ docker_build() {
 }
 
 backup_dbfile() {
+    ## 数据库文件
+    db_file=$web_dir/Sqlite/showdoc.db.php
     if [[ "${IN_CHINA}" == true ]]; then
         backup_time="$(TZ='Asia/Shanghai' date +%F-%H-%M-%S)"
     else
         backup_time="$(date +%F-%H-%M-%S)"
     fi
+    if [[ ! -f "$db_file" ]]; then
+        echo "Database file $db_file not found, skip backup."
+        return
+    fi
     backup_file="${db_file}.backup.full.${backup_time}.php"
     echo "Backing up database file to $backup_file ..."
-    ## 直接复制文件的备份方式（不推荐，可能导致备份文件损坏）
-    # rsync -a $db_file ${db_file}.backup.full."$backup_time".php
-    ## 更安全的备份方式
-    sqlite3 "$db_file" ".backup '${backup_file}'"
+    if command -v sqlite3 >/dev/null 2>&1; then
+        echo "Using sqlite3 for backup."
+        ## 更安全的备份方式
+        sqlite3 "$db_file" ".backup '${backup_file}'"
+    else
+        echo "command sqlite3 not found, backup database with copy."
+        ## 直接复制文件的备份方式（不推荐，可能导致备份文件损坏）
+        rsync -a $db_file "$backup_file"
+    fi
     echo "Completed backup to ${backup_file}"
     ## remove old files (15 days ago)
     find ${db_file}.* -type f -ctime +15 -print0 |
@@ -145,7 +156,7 @@ docker_run() {
     chmod 666 "$web_dir/web_src/index.html"
 
     ## backup sqlite file every day / 后台进程每日自动备份数据库
-    while [ -f $db_file ]; do
+    while true; do
         # backup on (20:01 UTC) (04:01 Asia/Shanghai) every day
         if [[ $(date -u +%H%M) == 2001 ]]; then
             backup_dbfile
@@ -188,8 +199,6 @@ main() {
     showdoc_dir_html="$showdoc_dir/html"
     ## web site dir / 网站目录
     web_dir='/var/www/html'
-    ## 数据库文件
-    db_file=$web_dir/Sqlite/showdoc.db.php
 
     case $1 in
     -b | --build)
