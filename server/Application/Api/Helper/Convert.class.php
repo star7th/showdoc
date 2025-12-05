@@ -110,7 +110,7 @@ class Convert
                 $return['comment'] = $tableComment; // 表注释
 
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return "{$ex->getMessage()} @{$ex->getFile()}:{$ex->getLine()}";
         }
 
@@ -178,6 +178,10 @@ class Convert
         if ($pathVariable && is_array($pathVariable) && $pathVariable[0] && $pathVariable[0]['name']) {
             $new_content .= " \n##### 路径变量\n\n|变量名|必选|类型|说明|\n|:-----  |:-----|-----|\n";
             foreach ($pathVariable as $key => $value) {
+                // 如果名字为空，或者存在禁用的key且禁用状态生效中，则跳过本条参数
+                if (!$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                    continue;
+                }
                 $value['require'] = $value['require'] > 0 ? "是" : "否";
                 $value['remark'] = $value['remark'] ? $value['remark'] : '无';
                 $new_content .= "|{$value['name']}|  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
@@ -187,6 +191,10 @@ class Convert
         if ($content['request']['headers'] && $content['request']['headers'][0] && $content['request']['headers'][0]['name']) {
             $new_content .= " \n##### Header \n\n|字段名|示例值|必选|类型|说明|\n|:-----  |:-----|-----|\n";
             foreach ($content['request']['headers'] as $key => $value) {
+                // 如果名字为空，或者存在禁用的key且禁用状态生效中，则跳过本条参数
+                if (!$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                    continue;
+                }
                 $value['require'] = $value['require'] > 0 ? "是" : "否";
                 $value['remark'] = $value['remark'] ? $value['remark'] : '无';
                 $value['value'] = $value['value'] ? $value['value'] : '';
@@ -198,6 +206,10 @@ class Convert
         if ($query && is_array($query) && $query[0] && $query[0]['name']) {
             $new_content .= " \n##### 请求Query参数\n\n|参数名|示例值|必选|类型|说明|\n|:-----  |:-----|-----|\n";
             foreach ($query as $key => $value) {
+                // 如果名字为空，或者存在禁用的key且禁用状态生效中，则跳过本条参数
+                if (!$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                    continue;
+                }
                 $value['require'] = $value['require'] > 0 ? "是" : "否";
                 $value['remark'] = $value['remark'] ? $value['remark'] : '无';
                 $value['value'] = $value['value'] ? $value['value'] : '';
@@ -209,6 +221,10 @@ class Convert
         if ($params && is_array($params) && $params[0] && $params[0]['name']) {
             $new_content .= " \n##### 请求Body参数\n\n|参数名|示例值|必选|类型|说明|\n|:-----  |:-----|-----|\n";
             foreach ($params as $key => $value) {
+                // 如果名字为空，或者存在禁用的key且禁用状态生效中，则跳过本条参数
+                if (!$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                    continue;
+                }
                 $value['require'] = $value['require'] > 0 ? "是" : "否";
                 $value['remark'] = $value['remark'] ? $value['remark'] : '无';
                 $value['value'] = $value['value'] ? $value['value'] : '';
@@ -225,6 +241,10 @@ class Convert
         if ($content['request']['params']['mode'] == 'json' && $jsonDesc && $jsonDesc[0] && $jsonDesc[0]['name']) {
             $new_content .= " \n##### json字段说明\n\n|字段名|必选|类型|说明|\n|:-----  |:-----|-----|\n";
             foreach ($jsonDesc as $key => $value) {
+                // 如果名字为空，或者存在禁用的key且禁用状态生效中，则跳过本条参数
+                if (!$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                    continue;
+                }
                 $value['require'] = $value['require'] > 0 ? "是" : "否";
                 $value['remark'] = $value['remark'] ? $value['remark'] : '无';
                 $new_content .= "|{$value['name']}|  {$value['require']} |  {$value['type']} |  {$value['remark']} | \n";
