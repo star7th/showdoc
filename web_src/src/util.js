@@ -58,5 +58,18 @@ export default {
     Vue.prototype.toOutLink = function(url) {
       return window.open(url)
     }
+
+    /**
+     * 向URL追加参数，自动判断使用 ? 还是 &
+     * @param {string} url 基础URL
+     * @param {string} param 参数名
+     * @param {string} value 参数值
+     * @returns {string} 拼接后的完整URL
+     */
+    Vue.prototype.appendUrlParam = function(url, param, value) {
+      if (!url || !param) return url
+      const separator = url.indexOf('?') > -1 ? '&' : '?'
+      return url + separator + param + '=' + encodeURIComponent(value)
+    }
   }
 }
