@@ -16,7 +16,7 @@ class UpdateModel
     //检测数据库并更新
     public function checkDb()
     {
-        $version_num = 26;
+        $version_num = 27;
         $db_version_num = D("Options")->get("db_version_num");
         if (!$db_version_num || $db_version_num < $version_num) {
             $r = $this->updateSqlite();
@@ -690,6 +690,30 @@ class UpdateModel
         $sql = "CREATE UNIQUE INDEX IF NOT EXISTS uk_item_id ON item_ai_config (item_id)";
         D("User")->execute($sql);
         $sql = "CREATE INDEX IF NOT EXISTS idx_enabled ON item_ai_config (enabled)";
+        D("User")->execute($sql);
+
+        //创建runapi_db_config表（数据库连接配置表）
+        $sql = "CREATE TABLE IF NOT EXISTS `runapi_db_config` (
+            `id`  INTEGER PRIMARY KEY ,
+            `item_id` int(11) NOT NULL DEFAULT '0',
+            `env_id` int(11) NOT NULL DEFAULT '0',
+            `config_name` CHAR(100) NOT NULL DEFAULT '默认',
+            `db_type` CHAR(20) NOT NULL DEFAULT 'mysql',
+            `host` CHAR(255) NOT NULL DEFAULT '',
+            `port` int(11) NOT NULL DEFAULT '0',
+            `username` CHAR(255) NOT NULL DEFAULT '',
+            `password` CHAR(255) NOT NULL DEFAULT '',
+            `database` CHAR(255) NOT NULL DEFAULT '',
+            `options` text NOT NULL DEFAULT '',
+            `is_default` int(1) NOT NULL DEFAULT '0',
+            `addtime` CHAR(2000) NOT NULL DEFAULT '',
+            `last_update_time` CHAR(2000) NOT NULL DEFAULT '',
+            `uid` int(11) NOT NULL DEFAULT '0'
+            )";
+        D("User")->execute($sql);
+
+        //为runapi_db_config表创建唯一索引（item_id, env_id, config_name）
+        $sql = "CREATE UNIQUE INDEX IF NOT EXISTS uniq_item_env_name ON runapi_db_config (item_id, env_id, config_name)";
         D("User")->execute($sql);
 
         //留个注释提醒自己，如果更新数据库结构，务必更改checkDb()里面的$version_num
