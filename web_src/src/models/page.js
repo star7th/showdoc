@@ -34,6 +34,8 @@ const rederPageContent = (page_content, globalParams = {}) => {
 
   if (type === 'websocket') {
     return renderWebSocketPageContent(obj, globalParams)
+  } else if (type === 'sse') {
+    return renderSSEPageContent(obj, globalParams)
   } else {
     return renderHttpApiPageContent(obj, globalParams)
   }
@@ -568,6 +570,268 @@ ${exampleData}
 
   // 备注
   const remark = (obj.response && obj.response.remark) || (obj.info && obj.info.remark) || ''
+  if (remark) {
+    newContent += `
+##### 备注
+
+  ${remark}
+
+`
+  }
+
+  return newContent
+}
+
+// SSE 转换函数
+const renderSSEPageContent = (obj, globalParams = {}) => {
+  let newContent = `
+[TOC]
+
+##### 简要描述
+  - ${obj.info.description ? obj.info.description : '无'}`
+
+  // 接口状态
+  if (obj.info.apiStatus > 0) {
+    let statusText = ''
+    switch (obj.info.apiStatus) {
+      case '1':
+        statusText = '开发中'
+        break
+      case '2':
+        statusText = '测试中'
+        break
+      case '3':
+        statusText = '已完成'
+        break
+      case '4':
+        statusText = '需修改'
+        break
+      case '5':
+        statusText = '已废弃'
+        break
+      default:
+        break
+    }
+    if (statusText) {
+      newContent += `
+
+##### 接口状态
+ - ${statusText} `
+    }
+  }
+
+  newContent += `
+
+##### 协议类型
+  - SSE (Server-Sent Events)
+
+##### 请求方法
+  - ${(obj.info.method || 'POST').toUpperCase()}
+
+##### 请求URL
+  - \` ${obj.info.url} \`
+`
+
+  // Headers
+  const headers = (obj.request && obj.request.headers) || []
+  if (headers.length > 0 && headers[0] && headers[0].name) {
+    newContent += `
+##### 请求Headers
+
+|字段名|示例值|必选|类型|说明|
+|:-----  |:-----|:-----|:-----|:-----|
+`
+    headers.map(one => {
+      if (!one.name || (one.disable && one.disable >= 1)) return
+      newContent += `|${one.name}|${one.value || ''} |${
+        one.require > 0 ? '是' : '否'
+      } |${one.type || 'string'} |${one.remark ? one.remark : '无'}   |
+`
+    })
+  }
+
+  // Query 参数
+  const query = (obj.request && obj.request.query) || []
+  if (query.length > 0 && query[0] && query[0].name) {
+    newContent += `
+##### 请求Query参数
+
+|参数名|示例值|必选|类型|说明|
+|:-----  |:-----|:-----|:-----|:-----|
+`
+    query.map(one => {
+      if (!one.name || (one.disable && one.disable >= 1)) return
+      newContent += `|${one.name}|${one.value || ''} |${
+        one.require > 0 ? '是' : '否'
+      } |${one.type || 'string'} |${one.remark ? one.remark : '无'}   |
+`
+    })
+  }
+
+  // Body 参数（POST 等方法）
+  if (
+    obj.request &&
+    obj.request.params &&
+    obj.request.params.mode &&
+    obj.request.params.mode !== 'none'
+  ) {
+    const mode = obj.request.params.mode
+    let modeText = ''
+    switch (mode) {
+      case 'json':
+        modeText = 'JSON'
+        break
+      case 'urlencoded':
+        modeText = 'URL Encoded'
+        break
+      case 'formdata':
+        modeText = 'Form Data'
+        break
+      default:
+        modeText = mode
+        break
+    }
+
+    if (mode === 'json' && obj.request.params.json) {
+      let jsonBody = obj.request.params.json
+      try {
+        const parsed = JSON.parse(jsonBody)
+        jsonBody = JSON.stringify(parsed, null, 2)
+      } catch (e) {
+        // 如果不是有效的 JSON，保持原样
+      }
+      newContent += `
+##### 请求Body (${modeText})
+
+\`\`\`
+${jsonBody}
+\`\`\`
+`
+    } else if (
+      mode === 'urlencoded' &&
+      obj.request.params.urlencoded &&
+      Array.isArray(obj.request.params.urlencoded) &&
+      obj.request.params.urlencoded.length > 0
+    ) {
+      newContent += `
+##### 请求Body (${modeText})
+
+|参数名|示例值|必选|类型|说明|
+|:-----  |:-----|:-----|:-----|:-----|
+`
+      obj.request.params.urlencoded.map(one => {
+        if (!one.name || (one.disable && one.disable >= 1)) return
+        newContent += `|${one.name}|${one.value || ''} |${
+          one.require > 0 ? '是' : '否'
+        } |${one.type || 'string'} |${one.remark ? one.remark : '无'}   |
+`
+      })
+    } else if (
+      mode === 'formdata' &&
+      obj.request.params.formdata &&
+      Array.isArray(obj.request.params.formdata) &&
+      obj.request.params.formdata.length > 0
+    ) {
+      newContent += `
+##### 请求Body (${modeText})
+
+|参数名|示例值|必选|类型|说明|
+|:-----  |:-----|:-----|:-----|:-----|
+`
+      obj.request.params.formdata.map(one => {
+        if (!one.name || (one.disable && one.disable >= 1)) return
+        newContent += `|${one.name}|${one.value || ''} |${
+          one.require > 0 ? '是' : '否'
+        } |${one.type || 'string'} |${one.remark ? one.remark : '无'}   |
+`
+      })
+    }
+  }
+
+  // 认证配置
+  if (
+    obj.request &&
+    obj.request.auth &&
+    obj.request.auth.type &&
+    (!obj.request.auth.disabled || obj.request.auth.disabled !== '1')
+  ) {
+    let authTypeText = ''
+    switch (obj.request.auth.type) {
+      case 'bearer':
+        authTypeText = 'Bearer Token'
+        break
+      case 'basic':
+        authTypeText = 'Basic Auth'
+        break
+      default:
+        authTypeText = obj.request.auth.type
+        break
+    }
+    newContent += `
+##### 认证方式
+  - ${authTypeText}
+`
+  }
+
+  // 消息示例（支持多示例）
+  if (
+    obj.response &&
+    obj.response.examples &&
+    Array.isArray(obj.response.examples) &&
+    obj.response.examples.length > 0
+  ) {
+    newContent += `
+##### 返回示例
+
+`
+    obj.response.examples.map(example => {
+      if (!example.data) return
+
+      const exampleName = example.name || '示例'
+      let exampleData = example.data
+
+      // 格式化 JSON
+      try {
+        const parsed = JSON.parse(exampleData)
+        exampleData = JSON.stringify(parsed, null, 2)
+      } catch (e) {
+        // 如果不是有效的 JSON，保持原样
+      }
+
+      newContent += `**${exampleName}**
+\`\`\`
+${exampleData}
+\`\`\`
+
+`
+
+      // 字段说明
+      if (
+        example.param &&
+        Array.isArray(example.param) &&
+        example.param.length > 0 &&
+        example.param[0].name
+      ) {
+        newContent += `|字段名|类型|说明|
+|:-----  |:-----|:-----|
+`
+        example.param.map(param => {
+          if (!param.name) return
+          const paramType = param.type || 'string'
+          const paramRemark = param.remark ? param.remark : '无'
+          newContent += `|${param.name} |${paramType} |${paramRemark}   |
+`
+        })
+        newContent += `
+
+`
+      }
+    })
+  }
+
+  // 备注
+  const remark =
+    (obj.response && obj.response.remark) || (obj.info && obj.info.remark) || ''
   if (remark) {
     newContent += `
 ##### 备注

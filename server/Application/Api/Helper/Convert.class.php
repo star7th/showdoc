@@ -136,6 +136,8 @@ class Convert
 
         if ($type === 'websocket') {
             return $this->runapiWebSocketToMd($content);
+        } elseif ($type === 'sse') {
+            return $this->runapiSSEToMd($content);
         } else {
             return $this->runapiHttpApiToMd($content);
         }
@@ -469,6 +471,214 @@ class Convert
             !empty($content['response']['examples'])
         ) {
             $new_content .= " \n##### 消息示例\n\n";
+
+            foreach ($content['response']['examples'] as $example) {
+                if (!isset($example['data'])) {
+                    continue;
+                }
+
+                $exampleName = isset($example['name']) ? $example['name'] : '示例';
+                $exampleData = $this->_indent_json($example['data']);
+                $exampleData = $exampleData ? $exampleData : $example['data'];
+
+                $new_content .= "**{$exampleName}**\n```\n{$exampleData}\n```\n\n";
+
+                // 字段说明
+                if (
+                    isset($example['param']) &&
+                    is_array($example['param']) &&
+                    !empty($example['param']) &&
+                    isset($example['param'][0]['name'])
+                ) {
+                    $new_content .= "|字段名|类型|说明|\n|:-----  |:-----|:-----|\n";
+                    foreach ($example['param'] as $param) {
+                        if (!isset($param['name']) || !$param['name']) {
+                            continue;
+                        }
+                        $paramType = isset($param['type']) ? $param['type'] : 'string';
+                        $paramRemark = isset($param['remark']) && $param['remark'] ? $param['remark'] : '无';
+                        $new_content .= "|{$param['name']}| {$paramType} |  {$paramRemark} | \n";
+                    }
+                    $new_content .= "\n";
+                }
+            }
+        }
+
+        // 备注
+        if (isset($content['response']['remark']) && $content['response']['remark']) {
+            $new_content .= " \n##### 备注 \n {$content['response']['remark']}\n";
+        } elseif (isset($content['info']['remark']) && $content['info']['remark']) {
+            $new_content .= " \n##### 备注 \n {$content['info']['remark']}\n";
+        }
+
+        return $new_content;
+    }
+
+    // SSE 转换函数
+    private function runapiSSEToMd($content)
+    {
+        $new_content = "\n##### 简要描述\n\n- " . ($content['info']['description'] ? $content['info']['description'] : '无');
+
+        // 接口状态
+        if (isset($content['info']['apiStatus']) && $content['info']['apiStatus']) {
+            $statusText = '';
+            switch ($content['info']['apiStatus']) {
+                case '1':
+                    $statusText = '开发中';
+                    break;
+                case '2':
+                    $statusText = '测试中';
+                    break;
+                case '3':
+                    $statusText = '已完成';
+                    break;
+                case '4':
+                    $statusText = '需修改';
+                    break;
+                case '5':
+                    $statusText = '已废弃';
+                    break;
+                default:
+                    break;
+            }
+            if ($statusText) {
+                $new_content .= "\n\n##### 接口状态\n\n - " . $statusText;
+            }
+        }
+
+        $new_content .= "\n\n##### 协议类型\n\n- SSE (Server-Sent Events)\n";
+
+        // HTTP 方法
+        $method = isset($content['info']['method']) ? strtoupper($content['info']['method']) : 'POST';
+        $new_content .= "\n\n##### 请求方法\n\n- {$method}\n";
+
+        $new_content .= "\n\n##### 请求URL\n\n - `{$content['info']['url']}`\n";
+
+        // Headers
+        if (
+            isset($content['request']['headers']) &&
+            is_array($content['request']['headers']) &&
+            !empty($content['request']['headers']) &&
+            isset($content['request']['headers'][0]['name'])
+        ) {
+            $new_content .= " \n##### 请求Headers \n\n|字段名|示例值|必选|类型|说明|\n|:-----  |:-----|:-----|:-----|:-----|\n";
+            foreach ($content['request']['headers'] as $key => $value) {
+                if (!isset($value['name']) || !$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                    continue;
+                }
+                $require = isset($value['require']) && $value['require'] > 0 ? "是" : "否";
+                $remark = isset($value['remark']) && $value['remark'] ? $value['remark'] : '无';
+                $val = isset($value['value']) && $value['value'] ? $value['value'] : '';
+                $type = isset($value['type']) && $value['type'] ? $value['type'] : 'string';
+                $new_content .= "|{$value['name']}|  {$val} |  {$require} |  {$type} |  {$remark} | \n";
+            }
+        }
+
+        // Query 参数
+        if (
+            isset($content['request']['query']) &&
+            is_array($content['request']['query']) &&
+            !empty($content['request']['query']) &&
+            isset($content['request']['query'][0]['name'])
+        ) {
+            $new_content .= " \n##### 请求Query参数\n\n|参数名|示例值|必选|类型|说明|\n|:-----  |:-----|:-----|:-----|:-----|\n";
+            foreach ($content['request']['query'] as $key => $value) {
+                if (!isset($value['name']) || !$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                    continue;
+                }
+                $require = isset($value['require']) && $value['require'] > 0 ? "是" : "否";
+                $remark = isset($value['remark']) && $value['remark'] ? $value['remark'] : '无';
+                $val = isset($value['value']) && $value['value'] ? $value['value'] : '';
+                $type = isset($value['type']) && $value['type'] ? $value['type'] : 'string';
+                $new_content .= "|{$value['name']}|  {$val}|  {$require} |  {$type} |  {$remark} | \n";
+            }
+        }
+
+        // Body 参数（POST 等方法）
+        if (
+            isset($content['request']['params']) &&
+            isset($content['request']['params']['mode']) &&
+            $content['request']['params']['mode'] !== 'none'
+        ) {
+            $mode = $content['request']['params']['mode'];
+            $modeText = '';
+            switch ($mode) {
+                case 'json':
+                    $modeText = 'JSON';
+                    break;
+                case 'urlencoded':
+                    $modeText = 'URL Encoded';
+                    break;
+                case 'formdata':
+                    $modeText = 'Form Data';
+                    break;
+                default:
+                    $modeText = $mode;
+                    break;
+            }
+
+            if ($mode === 'json' && isset($content['request']['params']['json']) && $content['request']['params']['json']) {
+                $jsonBody = $this->_indent_json($content['request']['params']['json']);
+                $jsonBody = $jsonBody ? $jsonBody : $content['request']['params']['json'];
+                $new_content .= " \n##### 请求Body ({$modeText})\n\n```\n{$jsonBody}\n```\n";
+            } elseif ($mode === 'urlencoded' && isset($content['request']['params']['urlencoded']) && is_array($content['request']['params']['urlencoded']) && !empty($content['request']['params']['urlencoded'])) {
+                $new_content .= " \n##### 请求Body ({$modeText})\n\n|参数名|示例值|必选|类型|说明|\n|:-----  |:-----|:-----|:-----|:-----|\n";
+                foreach ($content['request']['params']['urlencoded'] as $key => $value) {
+                    if (!isset($value['name']) || !$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                        continue;
+                    }
+                    $require = isset($value['require']) && $value['require'] > 0 ? "是" : "否";
+                    $remark = isset($value['remark']) && $value['remark'] ? $value['remark'] : '无';
+                    $val = isset($value['value']) && $value['value'] ? $value['value'] : '';
+                    $type = isset($value['type']) && $value['type'] ? $value['type'] : 'string';
+                    $new_content .= "|{$value['name']}|  {$val}|  {$require} |  {$type} |  {$remark} | \n";
+                }
+            } elseif ($mode === 'formdata' && isset($content['request']['params']['formdata']) && is_array($content['request']['params']['formdata']) && !empty($content['request']['params']['formdata'])) {
+                $new_content .= " \n##### 请求Body ({$modeText})\n\n|参数名|示例值|必选|类型|说明|\n|:-----  |:-----|:-----|:-----|:-----|\n";
+                foreach ($content['request']['params']['formdata'] as $key => $value) {
+                    if (!isset($value['name']) || !$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                        continue;
+                    }
+                    $require = isset($value['require']) && $value['require'] > 0 ? "是" : "否";
+                    $remark = isset($value['remark']) && $value['remark'] ? $value['remark'] : '无';
+                    $val = isset($value['value']) && $value['value'] ? $value['value'] : '';
+                    $type = isset($value['type']) && $value['type'] ? $value['type'] : 'string';
+                    $new_content .= "|{$value['name']}|  {$val}|  {$require} |  {$type} |  {$remark} | \n";
+                }
+            }
+        }
+
+        // 认证配置
+        if (
+            isset($content['request']['auth']) &&
+            is_array($content['request']['auth']) &&
+            isset($content['request']['auth']['type']) &&
+            $content['request']['auth']['type'] &&
+            (!isset($content['request']['auth']['disabled']) || $content['request']['auth']['disabled'] !== '1')
+        ) {
+            $authType = $content['request']['auth']['type'];
+            $authTypeText = '';
+            switch ($authType) {
+                case 'bearer':
+                    $authTypeText = 'Bearer Token';
+                    break;
+                case 'basic':
+                    $authTypeText = 'Basic Auth';
+                    break;
+                default:
+                    $authTypeText = $authType;
+                    break;
+            }
+            $new_content .= " \n##### 认证方式\n\n- {$authTypeText}\n";
+        }
+
+        // 消息示例（支持多示例）
+        if (
+            isset($content['response']['examples']) &&
+            is_array($content['response']['examples']) &&
+            !empty($content['response']['examples'])
+        ) {
+            $new_content .= " \n##### 返回示例\n\n";
 
             foreach ($content['response']['examples'] as $example) {
                 if (!isset($example['data'])) {
