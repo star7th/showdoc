@@ -208,16 +208,31 @@ class PageController extends BaseController
         $item_array = D("Item")->where(array('item_id' => $item_id))->find();
         
         // 这里插入一段逻辑，对于runapi项目类型，填充ext_info字段
-        if(!$data['ext_info'] && $item_array['item_type'] == 3){
+        if (!$data['ext_info'] && $item_array['item_type'] == 3) {
             $content_json = htmlspecialchars_decode($page_content);
             $content = json_decode($content_json, true);
             if ($content && $content['info'] && $content['info']['url']) {
-                $ext_info_array = array(
-                    "page_type"=>"api",
-                    "api_info"=>array(
-                        "method"=>"post",
-                    )
+                // 判断协议类型（兼容旧数据）
+                $type = isset($content['info']['type']) ? $content['info']['type'] : 'api';
+
+                if ($type === 'websocket') {
+                    // WebSocket 接口
+                    $ext_info_array = array(
+                        "page_type" => "websocket",
+                        "api_info" => array(
+                            "type" => "websocket",
+                        )
                     );
+                } else {
+                    // HTTP API 接口（兼容旧数据）
+                    $ext_info_array = array(
+                        "page_type" => "api",
+                        "api_info" => array(
+                            "method" => $content['info']['method'],
+                        )
+                    );
+                }
+
                 $data['ext_info'] = json_encode($ext_info_array);
             }
         }
@@ -367,6 +382,36 @@ class PageController extends BaseController
         $this->sendResult($res);
     }
 
+
+        // 这里插入一段逻辑，对于runapi项目类型，填充ext_info字段
+        if (!$data['ext_info'] && $item_array['item_type'] == 3) {
+            $content_json = htmlspecialchars_decode($page_content);
+            $content = json_decode($content_json, true);
+            if ($content && $content['info'] && $content['info']['url']) {
+                // 判断协议类型（兼容旧数据）
+                $type = isset($content['info']['type']) ? $content['info']['type'] : 'api';
+
+                if ($type === 'websocket') {
+                    // WebSocket 接口
+                    $ext_info_array = array(
+                        "page_type" => "websocket",
+                        "api_info" => array(
+                            "type" => "websocket",
+                        )
+                    );
+                } else {
+                    // HTTP API 接口（兼容旧数据）
+                    $ext_info_array = array(
+                        "page_type" => "api",
+                        "api_info" => array(
+                            "method" => $content['info']['method'],
+                        )
+                    );
+                }
+
+                $data['ext_info'] = json_encode($ext_info_array);
+            }
+        }
 
     //返回当前页面和历史某个版本的页面以供比较
     public function diff()

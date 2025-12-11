@@ -131,6 +131,19 @@ class Convert
             return false;
         }
 
+        // 判断类型（兼容旧数据）
+        $type = isset($content['info']['type']) ? $content['info']['type'] : 'api';
+
+        if ($type === 'websocket') {
+            return $this->runapiWebSocketToMd($content);
+        } else {
+            return $this->runapiHttpApiToMd($content);
+        }
+    }
+
+    // HTTP API 转换函数（原 runapiToMd 逻辑）
+    private function runapiHttpApiToMd($content)
+    {
         // 兼容query
         if ($content['info']['method'] == 'get') {
             if (!$content['request']['query']) {
@@ -290,6 +303,215 @@ class Convert
 
         return $new_content;
     }
+
+    // WebSocket 转换函数
+    private function runapiWebSocketToMd($content)
+    {
+        $new_content = "\n##### 简要描述\n\n- " . ($content['info']['description'] ? $content['info']['description'] : '无');
+
+        // 接口状态
+        if (isset($content['info']['apiStatus']) && $content['info']['apiStatus']) {
+            $statusText = '';
+            switch ($content['info']['apiStatus']) {
+                case '1':
+                    $statusText = '开发中';
+                    break;
+                case '2':
+                    $statusText = '测试中';
+                    break;
+                case '3':
+                    $statusText = '已完成';
+                    break;
+                case '4':
+                    $statusText = '需修改';
+                    break;
+                case '5':
+                    $statusText = '已废弃';
+                    break;
+                default:
+                    break;
+            }
+            if ($statusText) {
+                $new_content .= "\n\n##### 接口状态\n\n - " . $statusText;
+            }
+        }
+
+        $new_content .= "\n\n##### 协议类型\n\n- WebSocket\n";
+        $new_content .= "\n\n##### 连接URL\n\n - `{$content['info']['url']}`\n";
+
+        // 子协议
+        if (
+            isset($content['protocolConfig']['websocket']['subProtocols']) &&
+            is_array($content['protocolConfig']['websocket']['subProtocols']) &&
+            !empty($content['protocolConfig']['websocket']['subProtocols'])
+        ) {
+            $protocols = implode(', ', $content['protocolConfig']['websocket']['subProtocols']);
+            $new_content .= "\n\n##### 子协议\n\n- {$protocols}\n";
+        }
+
+        // Headers（握手阶段）- 使用 request.headers（复用）
+        if (
+            isset($content['request']['headers']) &&
+            is_array($content['request']['headers']) &&
+            !empty($content['request']['headers']) &&
+            isset($content['request']['headers'][0]['name'])
+        ) {
+            $new_content .= " \n##### 连接Headers \n\n|字段名|示例值|必选|类型|说明|\n|:-----  |:-----|:-----|:-----|:-----|\n";
+            foreach ($content['request']['headers'] as $key => $value) {
+                if (!isset($value['name']) || !$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                    continue;
+                }
+                $require = isset($value['require']) && $value['require'] > 0 ? "是" : "否";
+                $remark = isset($value['remark']) && $value['remark'] ? $value['remark'] : '无';
+                $val = isset($value['value']) && $value['value'] ? $value['value'] : '';
+                $type = isset($value['type']) && $value['type'] ? $value['type'] : 'string';
+                $new_content .= "|{$value['name']}|  {$val} |  {$require} |  {$type} |  {$remark} | \n";
+            }
+        }
+
+        // Query 参数 - 使用 request.query（复用）
+        if (
+            isset($content['request']['query']) &&
+            is_array($content['request']['query']) &&
+            !empty($content['request']['query']) &&
+            isset($content['request']['query'][0]['name'])
+        ) {
+            $new_content .= " \n##### 连接Query参数\n\n|参数名|示例值|必选|类型|说明|\n|:-----  |:-----|:-----|:-----|:-----|\n";
+            foreach ($content['request']['query'] as $key => $value) {
+                if (!isset($value['name']) || !$value['name'] || (isset($value['disable']) && $value['disable'] >= 1)) {
+                    continue;
+                }
+                $require = isset($value['require']) && $value['require'] > 0 ? "是" : "否";
+                $remark = isset($value['remark']) && $value['remark'] ? $value['remark'] : '无';
+                $val = isset($value['value']) && $value['value'] ? $value['value'] : '';
+                $type = isset($value['type']) && $value['type'] ? $value['type'] : 'string';
+                $new_content .= "|{$value['name']}|  {$val}|  {$require} |  {$type} |  {$remark} | \n";
+            }
+        }
+
+        // 认证配置
+        if (
+            isset($content['request']['auth']) &&
+            is_array($content['request']['auth']) &&
+            isset($content['request']['auth']['type']) &&
+            $content['request']['auth']['type'] &&
+            (!isset($content['request']['auth']['disabled']) || $content['request']['auth']['disabled'] !== '1')
+        ) {
+            $authType = $content['request']['auth']['type'];
+            $authTypeText = '';
+            switch ($authType) {
+                case 'bearer':
+                    $authTypeText = 'Bearer Token';
+                    break;
+                case 'basic':
+                    $authTypeText = 'Basic Auth';
+                    break;
+                default:
+                    $authTypeText = $authType;
+                    break;
+            }
+            $new_content .= " \n##### 认证方式\n\n- {$authTypeText}\n";
+        }
+
+        // 重连配置
+        if (
+            isset($content['protocolConfig']['websocket']['autoReconnect']) &&
+            $content['protocolConfig']['websocket']['autoReconnect']
+        ) {
+            $interval = isset($content['protocolConfig']['websocket']['reconnectInterval']) ?
+                $content['protocolConfig']['websocket']['reconnectInterval'] : 3000;
+            $maxTimes = isset($content['protocolConfig']['websocket']['reconnectMaxTimes']) ?
+                $content['protocolConfig']['websocket']['reconnectMaxTimes'] : 5;
+            $maxTimesText = $maxTimes > 0 ? "{$maxTimes}次" : "无限";
+            $new_content .= " \n##### 重连配置\n\n- 自动重连：是\n- 重连间隔：{$interval}毫秒\n- 最大重连次数：{$maxTimesText}\n";
+        }
+
+        // 心跳配置
+        if (
+            isset($content['protocolConfig']['websocket']['heartbeat']['enabled']) &&
+            $content['protocolConfig']['websocket']['heartbeat']['enabled']
+        ) {
+            $interval = isset($content['protocolConfig']['websocket']['heartbeat']['interval']) ?
+                $content['protocolConfig']['websocket']['heartbeat']['interval'] : 30000;
+            $pingMsg = isset($content['protocolConfig']['websocket']['heartbeat']['pingMessage']) ?
+                $content['protocolConfig']['websocket']['heartbeat']['pingMessage'] : 'ping';
+            $new_content .= " \n##### 心跳配置\n\n- 心跳间隔：{$interval}毫秒\n- Ping 消息：`{$pingMsg}`\n";
+        }
+
+        // 消息模板
+        if (
+            isset($content['messaging']['templates']) &&
+            is_array($content['messaging']['templates']) &&
+            !empty($content['messaging']['templates'])
+        ) {
+            $new_content .= " \n##### 消息模板\n\n";
+            foreach ($content['messaging']['templates'] as $msg) {
+                if (isset($msg['enabled']) && !$msg['enabled']) {
+                    continue;
+                }
+                $msgType = isset($msg['type']) ? $msg['type'] : 'text';
+                $msgName = isset($msg['name']) ? $msg['name'] : '未命名';
+                $msgContent = isset($msg['payload']) ? $msg['payload'] : '';
+
+                // 格式化 JSON
+                if ($msgType === 'json') {
+                    $msgContent = $this->_indent_json($msgContent);
+                }
+
+                $new_content .= "**{$msgName}** ({$msgType})\n```\n{$msgContent}\n```\n\n";
+            }
+        }
+
+        // 消息示例（支持多示例）
+        if (
+            isset($content['response']['examples']) &&
+            is_array($content['response']['examples']) &&
+            !empty($content['response']['examples'])
+        ) {
+            $new_content .= " \n##### 消息示例\n\n";
+
+            foreach ($content['response']['examples'] as $example) {
+                if (!isset($example['data'])) {
+                    continue;
+                }
+
+                $exampleName = isset($example['name']) ? $example['name'] : '示例';
+                $exampleData = $this->_indent_json($example['data']);
+                $exampleData = $exampleData ? $exampleData : $example['data'];
+
+                $new_content .= "**{$exampleName}**\n```\n{$exampleData}\n```\n\n";
+
+                // 字段说明
+                if (
+                    isset($example['param']) &&
+                    is_array($example['param']) &&
+                    !empty($example['param']) &&
+                    isset($example['param'][0]['name'])
+                ) {
+                    $new_content .= "|字段名|类型|说明|\n|:-----  |:-----|:-----|\n";
+                    foreach ($example['param'] as $param) {
+                        if (!isset($param['name']) || !$param['name']) {
+                            continue;
+                        }
+                        $paramType = isset($param['type']) ? $param['type'] : 'string';
+                        $paramRemark = isset($param['remark']) && $param['remark'] ? $param['remark'] : '无';
+                        $new_content .= "|{$param['name']}| {$paramType} |  {$paramRemark} | \n";
+                    }
+                    $new_content .= "\n";
+                }
+            }
+        }
+
+        // 备注
+        if (isset($content['response']['remark']) && $content['response']['remark']) {
+            $new_content .= " \n##### 备注 \n {$content['response']['remark']}\n";
+        } elseif (isset($content['info']['remark']) && $content['info']['remark']) {
+            $new_content .= " \n##### 备注 \n {$content['info']['remark']}\n";
+        }
+
+        return $new_content;
+    }
+
     // json美化
     private function _indent_json($json)
     {

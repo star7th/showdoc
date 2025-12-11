@@ -28,8 +28,19 @@ const rederPageContent = (page_content, globalParams = {}) => {
   if (!obj || !obj.info || !obj.info.url) {
     return page_content
   }
-  // console.log(obj)
 
+  // 判断类型（兼容旧数据）
+  const type = obj.info.type || 'api'
+
+  if (type === 'websocket') {
+    return renderWebSocketPageContent(obj, globalParams)
+  } else {
+    return renderHttpApiPageContent(obj, globalParams)
+  }
+}
+
+// HTTP API 转换函数（原 rederPageContent 逻辑）
+const renderHttpApiPageContent = (obj, globalParams = {}) => {
   // 判断有没有全局参数，有的话加上。
   if (globalParams) {
     // 全局query
@@ -304,6 +315,267 @@ ${obj.response.responseFailExample}
   ${obj.info.remark}
 
 `
+
+  return newContent
+}
+
+// WebSocket 转换函数
+const renderWebSocketPageContent = (obj, globalParams = {}) => {
+  let newContent = `
+[TOC]
+
+##### 简要描述
+  - ${obj.info.description ? obj.info.description : '无'}`
+
+  // 接口状态
+  if (obj.info.apiStatus > 0) {
+    let statusText = ''
+    switch (obj.info.apiStatus) {
+      case '1':
+        statusText = '开发中'
+        break
+      case '2':
+        statusText = '测试中'
+        break
+      case '3':
+        statusText = '已完成'
+        break
+      case '4':
+        statusText = '需修改'
+        break
+      case '5':
+        statusText = '已废弃'
+        break
+      default:
+        break
+    }
+    if (statusText) {
+      newContent += `
+
+##### 接口状态
+ - ${statusText} `
+    }
+  }
+
+  newContent += `
+
+##### 协议类型
+  - WebSocket
+
+##### 连接URL
+  - \` ${obj.info.url} \`
+`
+
+  // 子协议
+  if (
+    obj.protocolConfig &&
+    obj.protocolConfig.websocket &&
+    obj.protocolConfig.websocket.subProtocols &&
+    Array.isArray(obj.protocolConfig.websocket.subProtocols) &&
+    obj.protocolConfig.websocket.subProtocols.length > 0
+  ) {
+    const protocols = obj.protocolConfig.websocket.subProtocols.join(', ')
+    newContent += `
+##### 子协议
+  - ${protocols}
+`
+  }
+
+  // Headers（握手阶段）
+  const headers = (obj.request && obj.request.headers) || []
+  if (headers.length > 0 && headers[0] && headers[0].name) {
+    newContent += `
+##### 连接Headers
+
+|字段名|示例值|必选|类型|说明|
+|:-----  |:-----|:-----|:-----|:-----|
+`
+    headers.map(one => {
+      if (!one.name || (one.disable && one.disable >= 1)) return
+      newContent += `|${one.name}|${one.value || ''} |${
+        one.require > 0 ? '是' : '否'
+      } |${one.type || 'string'} |${one.remark ? one.remark : '无'}   |
+`
+    })
+  }
+
+  // Query 参数
+  const query = (obj.request && obj.request.query) || []
+  if (query.length > 0 && query[0] && query[0].name) {
+    newContent += `
+##### 连接Query参数
+
+|参数名|示例值|必选|类型|说明|
+|:-----  |:-----|:-----|:-----|:-----|
+`
+    query.map(one => {
+      if (!one.name || (one.disable && one.disable >= 1)) return
+      newContent += `|${one.name}|${one.value || ''} |${
+        one.require > 0 ? '是' : '否'
+      } |${one.type || 'string'} |${one.remark ? one.remark : '无'}   |
+`
+    })
+  }
+
+  // 认证配置
+  if (
+    obj.request &&
+    obj.request.auth &&
+    obj.request.auth.type &&
+    (!obj.request.auth.disabled || obj.request.auth.disabled !== '1')
+  ) {
+    let authTypeText = ''
+    switch (obj.request.auth.type) {
+      case 'bearer':
+        authTypeText = 'Bearer Token'
+        break
+      case 'basic':
+        authTypeText = 'Basic Auth'
+        break
+      default:
+        authTypeText = obj.request.auth.type
+        break
+    }
+    newContent += `
+##### 认证方式
+  - ${authTypeText}
+`
+  }
+
+  // 重连配置
+  if (
+    obj.protocolConfig &&
+    obj.protocolConfig.websocket &&
+    obj.protocolConfig.websocket.autoReconnect
+  ) {
+    const interval = obj.protocolConfig.websocket.reconnectInterval || 3000
+    const maxTimes = obj.protocolConfig.websocket.reconnectMaxTimes || 5
+    const maxTimesText = maxTimes > 0 ? `${maxTimes}次` : '无限'
+    newContent += `
+##### 重连配置
+  - 自动重连：是
+  - 重连间隔：${interval}毫秒
+  - 最大重连次数：${maxTimesText}
+`
+  }
+
+  // 心跳配置
+  if (
+    obj.protocolConfig &&
+    obj.protocolConfig.websocket &&
+    obj.protocolConfig.websocket.heartbeat &&
+    obj.protocolConfig.websocket.heartbeat.enabled
+  ) {
+    const interval = obj.protocolConfig.websocket.heartbeat.interval || 30000
+    const pingMsg = obj.protocolConfig.websocket.heartbeat.pingMessage || 'ping'
+    newContent += `
+##### 心跳配置
+  - 心跳间隔：${interval}毫秒
+  - Ping 消息：\`${pingMsg}\`
+`
+  }
+
+  // 消息模板
+  if (
+    obj.messaging &&
+    obj.messaging.templates &&
+    Array.isArray(obj.messaging.templates) &&
+    obj.messaging.templates.length > 0
+  ) {
+    newContent += `
+##### 消息模板
+
+`
+    obj.messaging.templates.map(msg => {
+      if (msg.enabled === false) return
+      const msgType = msg.type || 'text'
+      const msgName = msg.name || '未命名'
+      let msgContent = msg.payload || ''
+
+      // 格式化 JSON
+      if (msgType === 'json') {
+        try {
+          const parsed = JSON.parse(msgContent)
+          msgContent = JSON.stringify(parsed, null, 2)
+        } catch (e) {
+          // 如果不是有效的 JSON，保持原样
+        }
+      }
+
+      newContent += `**${msgName}** (${msgType})
+\`\`\`
+${msgContent}
+\`\`\`
+
+`
+    })
+  }
+
+  // 消息示例（支持多示例）
+  if (
+    obj.response &&
+    obj.response.examples &&
+    Array.isArray(obj.response.examples) &&
+    obj.response.examples.length > 0
+  ) {
+    newContent += `
+##### 消息示例
+
+`
+    obj.response.examples.map(example => {
+      if (!example.data) return
+
+      const exampleName = example.name || '示例'
+      let exampleData = example.data
+
+      // 格式化 JSON
+      try {
+        const parsed = JSON.parse(exampleData)
+        exampleData = JSON.stringify(parsed, null, 2)
+      } catch (e) {
+        // 如果不是有效的 JSON，保持原样
+      }
+
+      newContent += `**${exampleName}**
+\`\`\`
+${exampleData}
+\`\`\`
+
+`
+
+      // 字段说明
+      if (
+        example.param &&
+        Array.isArray(example.param) &&
+        example.param.length > 0 &&
+        example.param[0].name
+      ) {
+        newContent += `|字段名|类型|说明|
+|:-----  |:-----|:-----|
+`
+        example.param.map(param => {
+          if (!param.name) return
+          const paramType = param.type || 'string'
+          const paramRemark = param.remark ? param.remark : '无'
+          newContent += `|${param.name} |${paramType} |${paramRemark}   |
+`
+        })
+        newContent += `
+`
+      }
+    })
+  }
+
+  // 备注
+  const remark = (obj.response && obj.response.remark) || (obj.info && obj.info.remark) || ''
+  if (remark) {
+    newContent += `
+##### 备注
+
+  ${remark}
+
+`
+  }
 
   return newContent
 }
