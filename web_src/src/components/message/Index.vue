@@ -152,8 +152,12 @@ export default {
     getAnnouncementList() {
       this.request('/api/message/getAnnouncementList', {}).then(data => {
         const json = data.data
-        this.announcementList = json
-        json.map(element => {
+        // 仅展示网页端相关公告：旧版 announce / announce_web / announce_all
+        this.announcementList = json.filter(element => {
+          const t = element.message_type || 'announce'
+          return t === 'announce' || t === 'announce_web' || t === 'announce_all'
+        })
+        this.announcementList.map(element => {
           this.setRead(element.from_uid, element.message_content_id)
         })
       })
@@ -212,9 +216,13 @@ export default {
         }
         // 公告类消息
         if (json['announce'] && json['announce'].id) {
-          // 有未读的公告消息,且没有从参数中指定tab，则默认打开公告
-          if (!this.$route.query.dtab) {
-            this.dtab = 'announcementList'
+          const t = json['announce'].message_type || 'announce'
+          // 仅当为网页端相关公告时才提示切换 Tab
+          if (t === 'announce' || t === 'announce_web' || t === 'announce_all') {
+            // 有未读的公告消息,且没有从参数中指定tab，则默认打开公告
+            if (!this.$route.query.dtab) {
+              this.dtab = 'announcementList'
+            }
           }
         }
       })

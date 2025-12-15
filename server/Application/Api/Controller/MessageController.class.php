@@ -47,12 +47,17 @@ class MessageController extends BaseController
         $reg_time = date("Y-m-d H:i:s", $login_user['reg_time']);
         // 管理员无视注册时间限制；普通用户仅读取注册时间之后的公告
         $isAdmin = $this->checkAdmin(false);
-        $where = array('message_type' => 'announce');
+        // 支持多种公告类型：
+        // announce          旧版公告（兼容保留）
+        // announce_web      ShowDoc 网页端公告
+        // announce_runapi   RunApi 客户端公告
+        // announce_all      两端通用公告
+        $where = " message_type in ('announce','announce_web','announce_runapi','announce_all') ";
         if (!$isAdmin) {
-            $where['addtime'] = array('gt', $reg_time);
+            $where .= " and addtime > '$reg_time' ";
         }
         if (!empty($message_content_id_array)) {
-            $where['id'] = array('not in', $message_content_id_array);
+            $where .= " and id not in (" . implode(',', $message_content_id_array) . ") ";
         }
         $announce_array = D("MessageContent")->where($where)->find();
         if ($announce_array) {
@@ -72,9 +77,9 @@ class MessageController extends BaseController
         $reg_time = date("Y-m-d H:i:s", $login_user['reg_time']);
         // 管理员无视注册时间限制；普通用户仅读取注册时间之后的公告
         $isAdmin = $this->checkAdmin(false);
-        $where = array('message_type' => 'announce');
+        $where = " message_type in ('announce','announce_web','announce_runapi','announce_all') ";
         if (!$isAdmin) {
-            $where['addtime'] = array('gt', $reg_time);
+            $where .= " and addtime > '$reg_time' ";
         }
         $message_announce = D("MessageContent")->where($where)->order(" id desc ")->select();
 

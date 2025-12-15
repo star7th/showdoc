@@ -13,11 +13,23 @@ class AdminMessageController extends BaseController
         $this->checkAdmin();
 
         $message_content = I("post.message_content");
+        // 公告类型：announce_web / announce_runapi / announce_all
+        $message_type = I("post.message_type/s", '', 'trim');
         $send_at = I("post.send_at"); // 可选，格式：Y-m-d H:i:s
 
         if (!$message_content) {
             $this->sendError(10101, '参数错误：message_content 不能为空');
             return;
+        }
+
+        // 公告类型白名单与默认值
+        $allow_types = array('announce_web', 'announce_runapi', 'announce_all');
+        if (!$message_type) {
+            // 兼容旧版：未传类型时默认为网页端公告
+            $message_type = 'announce_web';
+        }
+        if (!in_array($message_type, $allow_types)) {
+            $message_type = 'announce_web';
         }
 
         // 基础安全过滤：去除危险标签与协议
@@ -30,7 +42,11 @@ class AdminMessageController extends BaseController
         $insert = array(
             "from_uid" => 0,
             "from_name" => '系统公告',
-            "message_type" => 'announce',
+            // 提示：这里的 message_type 用于区分公告投放渠道
+            // announce_web：仅 ShowDoc 网页端
+            // announce_runapi：仅 RunApi 客户端
+            // announce_all：ShowDoc + RunApi
+            "message_type" => $message_type,
             "message_content" => $message_content,
             "action_type" => '',
             "object_type" => '',
@@ -57,7 +73,8 @@ class AdminMessageController extends BaseController
         $count = I("count/d") ? I("count/d") : 20;
 
         $list = D("MessageContent")
-            ->where(" message_type = 'announce' ")
+            // 管理后台列表：展示全部系统公告类型，包含旧版 announce
+            ->where(" message_type in ('announce','announce_web','announce_runapi','announce_all') ")
             ->order(" id desc ")
             ->page(" $page , $count ")
             ->select();

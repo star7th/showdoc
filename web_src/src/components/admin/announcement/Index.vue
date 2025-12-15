@@ -5,6 +5,13 @@
         <span>发布系统公告</span>
       </div>
       <el-form :model="form" label-width="100px">
+        <el-form-item label="公告类型">
+          <el-radio-group v-model="form.message_type">
+            <el-radio label="announce_web">仅 ShowDoc 网页端</el-radio>
+            <el-radio label="announce_runapi">仅 RunApi 客户端</el-radio>
+            <el-radio label="announce_all">网页端 + RunApi</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="公告内容">
           <el-input
             type="textarea"
@@ -36,6 +43,13 @@
       </div>
       <el-table :data="list" style="width: 100%">
         <el-table-column prop="id" label="ID" width="80" />
+        <el-table-column prop="message_type" label="类型" width="140">
+          <template slot-scope="scope">
+            <span v-if="scope.row.message_type === 'announce_all'">网页端 + RunApi</span>
+            <span v-else-if="scope.row.message_type === 'announce_runapi'">仅 RunApi</span>
+            <span v-else>仅网页端</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="addtime" label="发送时间" width="180" />
         <el-table-column label="内容">
           <template slot-scope="scope">
@@ -63,6 +77,7 @@ export default {
   data() {
     return {
       form: {
+        message_type: 'announce_web',
         message_content: '',
         send_at: ''
       },
@@ -93,7 +108,7 @@ export default {
       }).catch(() => {})
     },
     resetForm() {
-      this.form = { message_content: '', send_at: '' }
+      this.form = { message_type: 'announce_web', message_content: '', send_at: '' }
     },
     loadList() {
       this.request('/api/adminMessage/listAnnouncements', {
