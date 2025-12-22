@@ -2,6 +2,9 @@
 
 namespace AsyncAws\S3\Enum;
 
+/**
+ * If present, indicates that the requester was successfully charged for the request.
+ */
 final class RequestCharged
 {
     public const REQUESTER = 'requester';

@@ -28,6 +28,9 @@ class ResponseBodyStream implements ResultStream
      */
     private $fallback;
 
+    /**
+     * @var bool
+     */
     private $partialRead = false;
 
     public function __construct(ResponseStreamInterface $responseStream)
@@ -35,7 +38,7 @@ class ResponseBodyStream implements ResultStream
         $this->responseStream = $responseStream;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getContentAsString();
     }
@@ -51,7 +54,7 @@ class ResponseBodyStream implements ResultStream
             return;
         }
         if ($this->partialRead) {
-            throw new LogicException(sprintf('You can not call "%s". Another process doesn\'t reading "getChunks" till the end.', __METHOD__));
+            throw new LogicException(\sprintf('You can not call "%s". Another process doesn\'t reading "getChunks" till the end.', __METHOD__));
         }
 
         $resource = fopen('php://temp', 'rb+');
@@ -75,9 +78,9 @@ class ResponseBodyStream implements ResultStream
             // Use getChunks() to read stream content to $this->fallback
             foreach ($this->getChunks() as $chunk) {
             }
+            \assert(null !== $this->fallback);
         }
 
-        /** @psalm-suppress PossiblyNullReference */
         return $this->fallback->getContentAsString();
     }
 
@@ -90,9 +93,9 @@ class ResponseBodyStream implements ResultStream
             // Use getChunks() to read stream content to $this->fallback
             foreach ($this->getChunks() as $chunk) {
             }
+            \assert(null !== $this->fallback);
         }
 
-        /** @psalm-suppress PossiblyNullReference */
         return $this->fallback->getContentAsResource();
     }
 }

@@ -5,7 +5,9 @@ namespace AsyncAws\S3\Result;
 use AsyncAws\Core\Exception\InvalidArgument;
 use AsyncAws\Core\Response;
 use AsyncAws\Core\Result;
+use AsyncAws\S3\Enum\ChecksumAlgorithm;
 use AsyncAws\S3\Enum\EncodingType;
+use AsyncAws\S3\Enum\RequestCharged;
 use AsyncAws\S3\Input\ListObjectsV2Request;
 use AsyncAws\S3\S3Client;
 use AsyncAws\S3\ValueObject\AwsObject;
@@ -30,6 +32,20 @@ class ListObjectsV2Output extends Result implements \IteratorAggregate
 
     /**
      * The bucket name.
+     *
+     * When using this action with an access point, you must direct requests to the access point hostname. The access point
+     * hostname takes the form *AccessPointName*-*AccountId*.s3-accesspoint.*Region*.amazonaws.com. When using this action
+     * with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket
+     * name. For more information about access point ARNs, see Using access points [^1] in the *Amazon S3 User Guide*.
+     *
+     * When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3
+     * on Outposts hostname takes the form `*AccessPointName*-*AccountId*.*outpostID*.s3-outposts.*Region*.amazonaws.com`.
+     * When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access
+     * point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see What is S3 on Outposts
+     * [^2] in the *Amazon S3 User Guide*.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html
+     * [^2]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html
      */
     private $name;
 
@@ -54,17 +70,33 @@ class ListObjectsV2Output extends Result implements \IteratorAggregate
     /**
      * All of the keys (up to 1,000) rolled up into a common prefix count as a single return when calculating the number of
      * returns.
+     *
+     * A response can contain `CommonPrefixes` only if you specify a delimiter.
+     *
+     * `CommonPrefixes` contains all (if there are any) keys between `Prefix` and the next occurrence of the string
+     * specified by a delimiter.
+     *
+     * `CommonPrefixes` lists keys that act like subdirectories in the directory specified by `Prefix`.
+     *
+     * For example, if the prefix is `notes/` and the delimiter is a slash (`/`) as in `notes/summer/july`, the common
+     * prefix is `notes/summer/`. All of the keys that roll up into a common prefix count as a single return when
+     * calculating the number of returns.
      */
     private $commonPrefixes;
 
     /**
      * Encoding type used by Amazon S3 to encode object key names in the XML response.
+     *
+     * If you specify the encoding-type request parameter, Amazon S3 includes this element in the response, and returns
+     * encoded key name values in the following response elements:
+     *
+     * `Delimiter, Prefix, Key,` and `StartAfter`.
      */
     private $encodingType;
 
     /**
-     * KeyCount is the number of keys returned with this request. KeyCount will always be less than or equals to MaxKeys
-     * field. Say you ask for 50 keys, your result will include less than equals 50 keys.
+     * KeyCount is the number of keys returned with this request. KeyCount will always be less than or equal to the
+     * `MaxKeys` field. Say you ask for 50 keys, your result will include 50 keys or fewer.
      */
     private $keyCount;
 
@@ -84,6 +116,8 @@ class ListObjectsV2Output extends Result implements \IteratorAggregate
      * If StartAfter was sent with the request, it is included in the response.
      */
     private $startAfter;
+
+    private $requestCharged;
 
     /**
      * @param bool $currentPageOnly When true, iterates over items of the current page. Otherwise also fetch items in the next pages.
@@ -277,6 +311,16 @@ class ListObjectsV2Output extends Result implements \IteratorAggregate
         return $this->prefix;
     }
 
+    /**
+     * @return RequestCharged::*|null
+     */
+    public function getRequestCharged(): ?string
+    {
+        $this->initialize();
+
+        return $this->requestCharged;
+    }
+
     public function getStartAfter(): ?string
     {
         $this->initialize();
@@ -286,6 +330,10 @@ class ListObjectsV2Output extends Result implements \IteratorAggregate
 
     protected function populateResult(Response $response): void
     {
+        $headers = $response->getHeaders();
+
+        $this->requestCharged = $headers['x-amz-request-charged'][0] ?? null;
+
         $data = new \SimpleXMLElement($response->getContent());
         $this->isTruncated = ($v = $data->IsTruncated) ? filter_var((string) $v, \FILTER_VALIDATE_BOOLEAN) : null;
         $this->contents = !$data->Contents ? [] : $this->populateResultObjectList($data->Contents);
@@ -299,6 +347,22 @@ class ListObjectsV2Output extends Result implements \IteratorAggregate
         $this->continuationToken = ($v = $data->ContinuationToken) ? (string) $v : null;
         $this->nextContinuationToken = ($v = $data->NextContinuationToken) ? (string) $v : null;
         $this->startAfter = ($v = $data->StartAfter) ? (string) $v : null;
+    }
+
+    /**
+     * @return list<ChecksumAlgorithm::*>
+     */
+    private function populateResultChecksumAlgorithmList(\SimpleXMLElement $xml): array
+    {
+        $items = [];
+        foreach ($xml as $item) {
+            $a = ($v = $item) ? (string) $v : null;
+            if (null !== $a) {
+                $items[] = $a;
+            }
+        }
+
+        return $items;
     }
 
     /**
@@ -327,6 +391,7 @@ class ListObjectsV2Output extends Result implements \IteratorAggregate
                 'Key' => ($v = $item->Key) ? (string) $v : null,
                 'LastModified' => ($v = $item->LastModified) ? new \DateTimeImmutable((string) $v) : null,
                 'ETag' => ($v = $item->ETag) ? (string) $v : null,
+                'ChecksumAlgorithm' => !$item->ChecksumAlgorithm ? null : $this->populateResultChecksumAlgorithmList($item->ChecksumAlgorithm),
                 'Size' => ($v = $item->Size) ? (string) $v : null,
                 'StorageClass' => ($v = $item->StorageClass) ? (string) $v : null,
                 'Owner' => !$item->Owner ? null : new Owner([

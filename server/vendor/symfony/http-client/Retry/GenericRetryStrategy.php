@@ -36,11 +36,11 @@ class GenericRetryStrategy implements RetryStrategyInterface
         510 => self::IDEMPOTENT_METHODS,
     ];
 
-    private $statusCodes;
-    private $delayMs;
-    private $multiplier;
-    private $maxDelayMs;
-    private $jitter;
+    private array $statusCodes;
+    private int $delayMs;
+    private float $multiplier;
+    private int $maxDelayMs;
+    private float $jitter;
 
     /**
      * @param array $statusCodes List of HTTP status codes that trigger a retry
@@ -54,22 +54,22 @@ class GenericRetryStrategy implements RetryStrategyInterface
         $this->statusCodes = $statusCodes;
 
         if ($delayMs < 0) {
-            throw new InvalidArgumentException(sprintf('Delay must be greater than or equal to zero: "%s" given.', $delayMs));
+            throw new InvalidArgumentException(\sprintf('Delay must be greater than or equal to zero: "%s" given.', $delayMs));
         }
         $this->delayMs = $delayMs;
 
         if ($multiplier < 1) {
-            throw new InvalidArgumentException(sprintf('Multiplier must be greater than or equal to one: "%s" given.', $multiplier));
+            throw new InvalidArgumentException(\sprintf('Multiplier must be greater than or equal to one: "%s" given.', $multiplier));
         }
         $this->multiplier = $multiplier;
 
         if ($maxDelayMs < 0) {
-            throw new InvalidArgumentException(sprintf('Max delay must be greater than or equal to zero: "%s" given.', $maxDelayMs));
+            throw new InvalidArgumentException(\sprintf('Max delay must be greater than or equal to zero: "%s" given.', $maxDelayMs));
         }
         $this->maxDelayMs = $maxDelayMs;
 
         if ($jitter < 0 || $jitter > 1) {
-            throw new InvalidArgumentException(sprintf('Jitter must be between 0 and 1: "%s" given.', $jitter));
+            throw new InvalidArgumentException(\sprintf('Jitter must be between 0 and 1: "%s" given.', $jitter));
         }
         $this->jitter = $jitter;
     }
@@ -102,8 +102,8 @@ class GenericRetryStrategy implements RetryStrategyInterface
         $delay = $this->delayMs * $this->multiplier ** $context->getInfo('retry_count');
 
         if ($this->jitter > 0) {
-            $randomness = $delay * $this->jitter;
-            $delay = $delay + random_int(-$randomness, +$randomness);
+            $randomness = (int) ($delay * $this->jitter);
+            $delay += random_int(-$randomness, +$randomness);
         }
 
         if ($delay > $this->maxDelayMs && 0 !== $this->maxDelayMs) {

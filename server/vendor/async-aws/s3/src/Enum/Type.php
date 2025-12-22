@@ -2,9 +2,6 @@
 
 namespace AsyncAws\S3\Enum;
 
-/**
- * Type of grantee.
- */
 final class Type
 {
     public const AMAZON_CUSTOMER_BY_EMAIL = 'AmazonCustomerByEmail';

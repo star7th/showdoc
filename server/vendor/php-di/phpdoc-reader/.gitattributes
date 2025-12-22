@@ -1,0 +1,7 @@
+# .gitattributes
+tests/ export-ignore
+phpunit.xml.dist export-ignore
+.travis.yml export-ignore
+
+# Auto detect text files and perform LF normalization
+* text=auto

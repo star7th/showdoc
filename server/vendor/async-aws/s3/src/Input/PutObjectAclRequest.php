@@ -6,6 +6,7 @@ use AsyncAws\Core\Exception\InvalidArgument;
 use AsyncAws\Core\Input;
 use AsyncAws\Core\Request;
 use AsyncAws\Core\Stream\StreamFactory;
+use AsyncAws\S3\Enum\ChecksumAlgorithm;
 use AsyncAws\S3\Enum\ObjectCannedACL;
 use AsyncAws\S3\Enum\RequestPayer;
 use AsyncAws\S3\ValueObject\AccessControlPolicy;
@@ -15,9 +16,9 @@ use AsyncAws\S3\ValueObject\Owner;
 final class PutObjectAclRequest extends Input
 {
     /**
-     * The canned ACL to apply to the object. For more information, see Canned ACL.
+     * The canned ACL to apply to the object. For more information, see Canned ACL [^1].
      *
-     * @see https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#CannedACL
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#CannedACL
      *
      * @var ObjectCannedACL::*|null
      */
@@ -33,6 +34,13 @@ final class PutObjectAclRequest extends Input
     /**
      * The bucket name that contains the object to which you want to attach the ACL.
      *
+     * When using this action with an access point, you must direct requests to the access point hostname. The access point
+     * hostname takes the form *AccessPointName*-*AccountId*.s3-accesspoint.*Region*.amazonaws.com. When using this action
+     * with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket
+     * name. For more information about access point ARNs, see Using access points [^1] in the *Amazon S3 User Guide*.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html
+     *
      * @required
      *
      * @var string|null
@@ -41,16 +49,35 @@ final class PutObjectAclRequest extends Input
 
     /**
      * The base64-encoded 128-bit MD5 digest of the data. This header must be used as a message integrity check to verify
-     * that the request body was not corrupted in transit. For more information, go to RFC 1864.&gt;.
+     * that the request body was not corrupted in transit. For more information, go to RFC 1864.> [^1].
      *
-     * @see http://www.ietf.org/rfc/rfc1864.txt
+     * For requests made using the Amazon Web Services Command Line Interface (CLI) or Amazon Web Services SDKs, this field
+     * is calculated automatically.
+     *
+     * [^1]: http://www.ietf.org/rfc/rfc1864.txt
      *
      * @var string|null
      */
     private $contentMd5;
 
     /**
+     * Indicates the algorithm used to create the checksum for the object when using the SDK. This header will not provide
+     * any additional functionality if not using the SDK. When sending this header, there must be a corresponding
+     * `x-amz-checksum` or `x-amz-trailer` header sent. Otherwise, Amazon S3 fails the request with the HTTP status code
+     * `400 Bad Request`. For more information, see Checking object integrity [^1] in the *Amazon S3 User Guide*.
+     *
+     * If you provide an individual checksum, Amazon S3 ignores any provided `ChecksumAlgorithm` parameter.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html
+     *
+     * @var ChecksumAlgorithm::*|null
+     */
+    private $checksumAlgorithm;
+
+    /**
      * Allows grantee the read, write, read ACP, and write ACP permissions on the bucket.
+     *
+     * This action is not supported by Amazon S3 on Outposts.
      *
      * @var string|null
      */
@@ -59,12 +86,16 @@ final class PutObjectAclRequest extends Input
     /**
      * Allows grantee to list the objects in the bucket.
      *
+     * This action is not supported by Amazon S3 on Outposts.
+     *
      * @var string|null
      */
     private $grantRead;
 
     /**
      * Allows grantee to read the bucket ACL.
+     *
+     * This action is not supported by Amazon S3 on Outposts.
      *
      * @var string|null
      */
@@ -73,6 +104,8 @@ final class PutObjectAclRequest extends Input
     /**
      * Allows grantee to create new objects in the bucket.
      *
+     * For the bucket and object owners of existing objects, also allows deletions and overwrites of those objects.
+     *
      * @var string|null
      */
     private $grantWrite;
@@ -80,12 +113,28 @@ final class PutObjectAclRequest extends Input
     /**
      * Allows grantee to write the ACL for the applicable bucket.
      *
+     * This action is not supported by Amazon S3 on Outposts.
+     *
      * @var string|null
      */
     private $grantWriteAcp;
 
     /**
      * Key for which the PUT action was initiated.
+     *
+     * When using this action with an access point, you must direct requests to the access point hostname. The access point
+     * hostname takes the form *AccessPointName*-*AccountId*.s3-accesspoint.*Region*.amazonaws.com. When using this action
+     * with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket
+     * name. For more information about access point ARNs, see Using access points [^1] in the *Amazon S3 User Guide*.
+     *
+     * When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3
+     * on Outposts hostname takes the form `*AccessPointName*-*AccountId*.*outpostID*.s3-outposts.*Region*.amazonaws.com`.
+     * When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access
+     * point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see What is S3 on Outposts
+     * [^2] in the *Amazon S3 User Guide*.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html
+     * [^2]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html
      *
      * @required
      *
@@ -106,8 +155,8 @@ final class PutObjectAclRequest extends Input
     private $versionId;
 
     /**
-     * The account ID of the expected bucket owner. If the bucket is owned by a different account, the request will fail
-     * with an HTTP `403 (Access Denied)` error.
+     * The account ID of the expected bucket owner. If the bucket is owned by a different account, the request fails with
+     * the HTTP status code `403 Forbidden` (access denied).
      *
      * @var string|null
      */
@@ -119,6 +168,7 @@ final class PutObjectAclRequest extends Input
      *   AccessControlPolicy?: AccessControlPolicy|array,
      *   Bucket?: string,
      *   ContentMD5?: string,
+     *   ChecksumAlgorithm?: ChecksumAlgorithm::*,
      *   GrantFullControl?: string,
      *   GrantRead?: string,
      *   GrantReadACP?: string,
@@ -128,6 +178,7 @@ final class PutObjectAclRequest extends Input
      *   RequestPayer?: RequestPayer::*,
      *   VersionId?: string,
      *   ExpectedBucketOwner?: string,
+     *
      *   @region?: string,
      * } $input
      */
@@ -137,6 +188,7 @@ final class PutObjectAclRequest extends Input
         $this->accessControlPolicy = isset($input['AccessControlPolicy']) ? AccessControlPolicy::create($input['AccessControlPolicy']) : null;
         $this->bucket = $input['Bucket'] ?? null;
         $this->contentMd5 = $input['ContentMD5'] ?? null;
+        $this->checksumAlgorithm = $input['ChecksumAlgorithm'] ?? null;
         $this->grantFullControl = $input['GrantFullControl'] ?? null;
         $this->grantRead = $input['GrantRead'] ?? null;
         $this->grantReadAcp = $input['GrantReadACP'] ?? null;
@@ -170,6 +222,14 @@ final class PutObjectAclRequest extends Input
     public function getBucket(): ?string
     {
         return $this->bucket;
+    }
+
+    /**
+     * @return ChecksumAlgorithm::*|null
+     */
+    public function getChecksumAlgorithm(): ?string
+    {
+        return $this->checksumAlgorithm;
     }
 
     public function getContentMd5(): ?string
@@ -240,6 +300,12 @@ final class PutObjectAclRequest extends Input
         }
         if (null !== $this->contentMd5) {
             $headers['Content-MD5'] = $this->contentMd5;
+        }
+        if (null !== $this->checksumAlgorithm) {
+            if (!ChecksumAlgorithm::exists($this->checksumAlgorithm)) {
+                throw new InvalidArgument(sprintf('Invalid parameter "ChecksumAlgorithm" for "%s". The value "%s" is not a valid "ChecksumAlgorithm".', __CLASS__, $this->checksumAlgorithm));
+            }
+            $headers['x-amz-sdk-checksum-algorithm'] = $this->checksumAlgorithm;
         }
         if (null !== $this->grantFullControl) {
             $headers['x-amz-grant-full-control'] = $this->grantFullControl;
@@ -315,6 +381,16 @@ final class PutObjectAclRequest extends Input
     public function setBucket(?string $value): self
     {
         $this->bucket = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param ChecksumAlgorithm::*|null $value
+     */
+    public function setChecksumAlgorithm(?string $value): self
+    {
+        $this->checksumAlgorithm = $value;
 
         return $this;
     }

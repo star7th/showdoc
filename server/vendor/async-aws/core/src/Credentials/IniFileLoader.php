@@ -23,7 +23,15 @@ final class IniFileLoader
     public const KEY_ROLE_SESSION_NAME = 'role_session_name';
     public const KEY_SOURCE_PROFILE = 'source_profile';
     public const KEY_WEB_IDENTITY_TOKEN_FILE = 'web_identity_token_file';
+    public const KEY_SSO_SESSION = 'sso_session';
+    public const KEY_SSO_START_URL = 'sso_start_url';
+    public const KEY_SSO_REGION = 'sso_region';
+    public const KEY_SSO_ACCOUNT_ID = 'sso_account_id';
+    public const KEY_SSO_ROLE_NAME = 'sso_role_name';
 
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
     public function __construct(?LoggerInterface $logger = null)
@@ -34,7 +42,7 @@ final class IniFileLoader
     /**
      * @param string[] $filepaths
      *
-     * @return string[][]
+     * @return array<string, array<string, string>>
      */
     public function loadProfiles(array $filepaths): array
     {
@@ -83,6 +91,9 @@ final class IniFileLoader
         return ($homeDrive && $homePath) ? $homeDrive . $homePath : '/';
     }
 
+    /**
+     * @return array<string, string[]>
+     */
     private function parseIniFile(string $filepath): array
     {
         if (false === $data = parse_ini_string(

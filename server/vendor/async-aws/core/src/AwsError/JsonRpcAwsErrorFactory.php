@@ -5,10 +5,7 @@ namespace AsyncAws\Core\AwsError;
 use AsyncAws\Core\Exception\UnexpectedValue;
 use AsyncAws\Core\Exception\UnparsableResponse;
 
-/**
- * @internal
- */
-class JsonRpcAwsErrorFactory implements AwsErrorFactoryInterface
+final class JsonRpcAwsErrorFactory implements AwsErrorFactoryInterface
 {
     use AwsErrorFactoryFromResponseTrait;
 
@@ -23,6 +20,10 @@ class JsonRpcAwsErrorFactory implements AwsErrorFactoryInterface
         }
     }
 
+    /**
+     * @param array<string, mixed>        $body
+     * @param array<string, list<string>> $headers
+     */
     private static function parseJson(array $body, array $headers): AwsError
     {
         $code = null;

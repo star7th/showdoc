@@ -3,7 +3,7 @@
 /**
  * Autoloader Class
  *
- *  PHP Version 5
+ *  PHP Version 7
  *
  * @file      CAS/Autoload.php
  * @category  Authentication
@@ -68,12 +68,12 @@ function CAS_autoload($class)
     );
     $trace = $e->getTrace();
     if (isset($trace[2]) && isset($trace[2]['function'])
-        && in_array($trace[2]['function'], array('class_exists', 'interface_exists'))
+        && in_array($trace[2]['function'], array('class_exists', 'interface_exists', 'trait_exists'))
     ) {
         return false;
     }
     if (isset($trace[1]) && isset($trace[1]['function'])
-        && in_array($trace[1]['function'], array('class_exists', 'interface_exists'))
+        && in_array($trace[1]['function'], array('class_exists', 'interface_exists', 'trait_exists'))
     ) {
         return false;
     }

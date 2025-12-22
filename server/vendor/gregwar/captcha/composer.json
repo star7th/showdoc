@@ -1,6 +1,6 @@
 {
     "name": "gregwar/captcha",
-    "type": "captcha",
+    "type": "library",
     "description": "Captcha generator",
     "keywords": ["captcha", "spam", "bot"],
     "homepage": "https://github.com/Gregwar/Captcha",

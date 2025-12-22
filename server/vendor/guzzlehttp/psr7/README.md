@@ -1,6 +1,6 @@
 # PSR-7 Message Implementation
 
-This repository contains a full [PSR-7](http://www.php-fig.org/psr/psr-7/)
+This repository contains a full [PSR-7](https://www.php-fig.org/psr/psr-7/)
 message implementation, several stream decorators, and some helpful
 functionality like query string parsing.
 
@@ -659,7 +659,7 @@ manually but instead is used indirectly via `Psr\Http\Message\UriInterface::__to
 
 `public static function fromParts(array $parts): UriInterface`
 
-Creates a URI from a hash of [`parse_url`](http://php.net/manual/en/function.parse-url.php) components.
+Creates a URI from a hash of [`parse_url`](https://www.php.net/manual/en/function.parse-url.php) components.
 
 
 ### `GuzzleHttp\Psr7\Uri::withQueryValue`
@@ -683,6 +683,16 @@ associative array of key => value.
 
 Creates a new URI with a specific query string value removed. Any existing query string values that exactly match the
 provided key are removed.
+
+## Cross-Origin Detection
+
+`GuzzleHttp\Psr7\UriComparator` provides methods to determine if a modified URL should be considered cross-origin.
+
+### `GuzzleHttp\Psr7\UriComparator::isCrossOrigin`
+
+`public static function isCrossOrigin(UriInterface $original, UriInterface $modified): bool`
+
+Determines if a modified URL should be considered cross-origin with respect to an original URL.
 
 ## Reference Resolution
 
@@ -809,13 +819,23 @@ This of course assumes they will be resolved against the same base URI. If this 
 equivalence or difference of relative references does not mean anything.
 
 
+## Version Guidance
+
+| Version | Status         | PHP Version      |
+|---------|----------------|------------------|
+| 1.x     | Security fixes | >=5.4,<8.1       |
+| 2.x     | Latest         | ^7.2.5 \|\| ^8.0 |
+
+
 ## Security
 
 If you discover a security vulnerability within this package, please send an email to security@tidelift.com. All security vulnerabilities will be promptly addressed. Please do not disclose security-related issues publicly until a fix has been announced. Please see [Security Policy](https://github.com/guzzle/psr7/security/policy) for more information.
 
+
 ## License
 
 Guzzle is made available under the MIT License (MIT). Please see [License File](LICENSE) for more information.
+
 
 ## For Enterprise
 

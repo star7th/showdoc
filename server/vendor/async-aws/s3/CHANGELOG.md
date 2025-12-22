@@ -2,6 +2,42 @@
 
 ## NOT RELEASED
 
+## 1.14.0
+
+### Added
+
+- AWS api-change: Added `ap-southeast-4` region.
+- AWS enhancement: Documentation updates.
+- AWS api-change: Provides support for "Snow" Storage class.
+- AWS api-change: Integrate double encryption feature to SDKs.
+- AWS api-change: This release adds SDK support for request-payer request header and request-charged response header in the "GetBucketAccelerateConfiguration", "ListMultipartUploads", "ListObjects", "ListObjectsV2" and "ListObjectVersions" S3 APIs.
+
+## 1.13.0
+
+### Added
+
+- Added `me-central-1`, `ap-southeast-3`, `eu-central-2`, `eu-south-2` and `ap-south-2` regions
+
+## 1.12.0
+
+### Fixed
+
+- Format datetime with `RFC7231` to provide a workaround for unsupported `RFC822` format.
+- Broken path to host when operation's URL contains a query string.
+
+### Changed
+
+- Set default value to `false` for the `sendChunkedBody` option.
+
+## 1.11.0
+
+### Added
+
+- AWS api-change: Added `ap-southeast-3` region.
+- AWS enhancement: Documentation updates.
+- AWS feature: Adds support for flexible checksums
+- AWS api-change: This release adds support for new integrity checking capabilities in Amazon S3. You can choose from four supported checksum algorithms for data integrity checking on your upload and download requests. In addition, AWS SDK can automatically calculate a checksum as it streams data into S3
+
 ## 1.10.0
 
 ### Added

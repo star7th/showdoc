@@ -1,0 +1,65 @@
+name: CI
+
+on:
+    push:
+        branches: ['master']
+    pull_request:
+        branches: ['*']
+    schedule:
+        -   cron: '0 0 * * *'
+
+jobs:
+
+    tests:
+        name: Tests - PHP ${{ matrix.php }} ${{ matrix.dependency-version }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        strategy:
+            matrix:
+                php: [ '7.2', '7.3', '7.4', '8.0' ]
+                dependency-version: [ '' ]
+                include:
+                    -   php: '7.2'
+                        dependency-version: '--prefer-lowest'
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    tools: composer:v2
+                    coverage: none
+            -   name: Cache Composer dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ~/.composer/cache
+                    key: php-${{ matrix.php }}-composer-locked-${{ hashFiles('composer.lock') }}
+                    restore-keys: php-${{ matrix.php }}-composer-locked-
+            -   name: Install PHP dependencies
+                run: composer update ${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-progress --no-suggest
+            -   name: PHPUnit
+                run: vendor/bin/phpunit
+
+    cs:
+        name: Coding standards
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 7.4
+                    tools: composer:v2, cs2pr
+                    coverage: none
+            -   name: Cache Composer dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ~/.composer/cache
+                    key: php-74-composer-locked-${{ hashFiles('composer.lock') }}
+                    restore-keys: php-74-composer-locked-
+            -   name: Install PHP dependencies
+                run: composer install --no-interaction --no-progress --no-suggest
+            -   name: PHP CodeSniffer
+                run: vendor/bin/phpcs -q --no-colors --report=checkstyle | cs2pr

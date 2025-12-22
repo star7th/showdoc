@@ -1,0 +1,5 @@
+/vendor/
+.idea/
+
+# ignore lock file since we have no extra dependencies
+composer.lock

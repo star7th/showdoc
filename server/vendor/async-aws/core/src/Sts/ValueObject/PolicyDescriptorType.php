@@ -10,10 +10,12 @@ final class PolicyDescriptorType
 {
     /**
      * The Amazon Resource Name (ARN) of the IAM managed policy to use as a session policy for the role. For more
-     * information about ARNs, see Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces in the *Amazon
-     * Web Services General Reference*.
+     * information about ARNs, see Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces [^1] in the
+     * *Amazon Web Services General Reference*.
      *
-     * @see https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+     * [^1]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+     *
+     * @var string|null
      */
     private $arn;
 
@@ -27,6 +29,11 @@ final class PolicyDescriptorType
         $this->arn = $input['arn'] ?? null;
     }
 
+    /**
+     * @param array{
+     *   arn?: null|string,
+     * }|PolicyDescriptorType $input
+     */
     public static function create($input): self
     {
         return $input instanceof self ? $input : new self($input);

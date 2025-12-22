@@ -24,7 +24,7 @@ trait HttpExceptionTrait
      */
     private $awsError;
 
-    public function __construct(ResponseInterface $response, AwsError $awsError = null)
+    public function __construct(ResponseInterface $response, ?AwsError $awsError = null)
     {
         $this->response = $response;
         /** @var int $code */
@@ -32,7 +32,7 @@ trait HttpExceptionTrait
         /** @var string $url */
         $url = $response->getInfo('url');
 
-        $message = sprintf('HTTP %d returned for "%s".', $code, $url);
+        $message = \sprintf('HTTP %d returned for "%s".', $code, $url);
         if (null !== $this->awsError = $awsError) {
             $message .= <<<TEXT
 

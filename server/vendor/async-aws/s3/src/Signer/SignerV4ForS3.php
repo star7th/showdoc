@@ -49,7 +49,7 @@ class SignerV4ForS3 extends SignerV4
     {
         parent::__construct($scopeName, $region);
 
-        $this->sendChunkedBody = $s3SignerOptions[Configuration::OPTION_SEND_CHUNKED_BODY] ?? true;
+        $this->sendChunkedBody = $s3SignerOptions[Configuration::OPTION_SEND_CHUNKED_BODY] ?? false;
         unset($s3SignerOptions[Configuration::OPTION_SEND_CHUNKED_BODY]);
 
         if (!empty($s3SignerOptions)) {

@@ -1,0 +1,28 @@
+{
+    "name": "fig/http-message-util",
+    "description": "Utility classes and constants for use with PSR-7 (psr/http-message)",
+    "keywords": ["psr", "psr-7", "http", "http-message", "request", "response"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "PHP-FIG",
+            "homepage": "https://www.php-fig.org/"
+        }
+    ],
+    "require": {
+        "php": "^5.3 || ^7.0 || ^8.0"
+    },
+    "suggest": {
+        "psr/http-message": "The package containing the PSR-7 interfaces"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fig\\Http\\Message\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1.x-dev"
+        }
+    }
+}

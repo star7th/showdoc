@@ -21,11 +21,21 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 final class WebIdentityProvider implements CredentialProvider
 {
     use DateFromResult;
+    use TokenFileLoader;
 
+    /**
+     * @var IniFileLoader
+     */
     private $iniFileLoader;
 
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
+    /**
+     * @var HttpClientInterface|null
+     */
     private $httpClient;
 
     public function __construct(?LoggerInterface $logger = null, ?IniFileLoader $iniFileLoader = null, ?HttpClientInterface $httpClient = null)
@@ -119,31 +129,5 @@ final class WebIdentityProvider implements CredentialProvider
             $credentials->getSessionToken(),
             Credentials::adjustExpireDate($credentials->getExpiration(), $this->getDateFromResult($result))
         );
-    }
-
-    /**
-     * @see https://github.com/async-aws/aws/issues/900
-     * @see https://github.com/aws/aws-sdk-php/issues/2014
-     * @see https://github.com/aws/aws-sdk-php/pull/2043
-     */
-    private function getTokenFileContent(string $tokenFile): string
-    {
-        $token = @file_get_contents($tokenFile);
-
-        if (false !== $token) {
-            return $token;
-        }
-
-        $tokenDir = \dirname($tokenFile);
-        $tokenLink = readlink($tokenFile);
-        clearstatcache(true, $tokenDir . \DIRECTORY_SEPARATOR . $tokenLink);
-        clearstatcache(true, $tokenDir . \DIRECTORY_SEPARATOR . \dirname($tokenLink));
-        clearstatcache(true, $tokenFile);
-
-        if (false === $token = file_get_contents($tokenFile)) {
-            throw new RuntimeException('Failed to read data');
-        }
-
-        return $token;
     }
 }

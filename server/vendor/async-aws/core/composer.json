@@ -12,18 +12,19 @@
     ],
     "require": {
         "php": "^7.2.5 || ^8.0",
-        "ext-SimpleXML": "*",
         "ext-hash": "*",
         "ext-json": "*",
+        "ext-simplexml": "*",
         "psr/cache": "^1.0 || ^2.0 || ^3.0",
         "psr/log": "^1.0 || ^2.0 || ^3.0",
         "symfony/deprecation-contracts": "^2.1 || ^3.0",
-        "symfony/http-client": "^4.4.16 || ^5.1.7,!=5.2.0 || ^6.0",
+        "symfony/http-client": "^4.4.16 || ^5.1.7 || ^6.0 || ^7.0 || ^8.0",
         "symfony/http-client-contracts": "^1.1.8 || ^2.0 || ^3.0",
         "symfony/service-contracts": "^1.0 || ^2.0 || ^3.0"
     },
     "conflict": {
-        "async-aws/s3": "<1.1"
+        "async-aws/s3": "<1.1",
+        "symfony/http-client": "5.2.0"
     },
     "autoload": {
         "psr-4": {
@@ -37,7 +38,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.13-dev"
+            "dev-master": "1.27-dev"
         }
     }
 }

@@ -4,6 +4,7 @@ namespace AsyncAws\S3\Result;
 
 use AsyncAws\Core\Response;
 use AsyncAws\Core\Result;
+use AsyncAws\S3\Enum\ChecksumAlgorithm;
 use AsyncAws\S3\Enum\RequestCharged;
 use AsyncAws\S3\Enum\ServerSideEncryption;
 
@@ -13,9 +14,12 @@ class CreateMultipartUploadOutput extends Result
      * If the bucket has a lifecycle rule configured with an action to abort incomplete multipart uploads and the prefix in
      * the lifecycle rule matches the object name in the request, the response includes this header. The header indicates
      * when the initiated multipart upload becomes eligible for an abort operation. For more information, see  Aborting
-     * Incomplete Multipart Uploads Using a Bucket Lifecycle Policy.
+     * Incomplete Multipart Uploads Using a Bucket Lifecycle Configuration [^1].
      *
-     * @see https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config
+     * The response also includes the `x-amz-abort-rule-id` header that provides the ID of the lifecycle configuration rule
+     * that defines this action.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config
      */
     private $abortDate;
 
@@ -28,6 +32,20 @@ class CreateMultipartUploadOutput extends Result
     /**
      * The name of the bucket to which the multipart upload was initiated. Does not return the access point ARN or access
      * point alias if used.
+     *
+     * When using this action with an access point, you must direct requests to the access point hostname. The access point
+     * hostname takes the form *AccessPointName*-*AccountId*.s3-accesspoint.*Region*.amazonaws.com. When using this action
+     * with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket
+     * name. For more information about access point ARNs, see Using access points [^1] in the *Amazon S3 User Guide*.
+     *
+     * When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3
+     * on Outposts hostname takes the form `*AccessPointName*-*AccountId*.*outpostID*.s3-outposts.*Region*.amazonaws.com`.
+     * When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access
+     * point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see What is S3 on Outposts
+     * [^2] in the *Amazon S3 User Guide*.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html
+     * [^2]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html
      */
     private $bucket;
 
@@ -42,7 +60,7 @@ class CreateMultipartUploadOutput extends Result
     private $uploadId;
 
     /**
-     * The server-side encryption algorithm used when storing this object in Amazon S3 (for example, AES256, aws:kms).
+     * The server-side encryption algorithm used when storing this object in Amazon S3 (for example, `AES256`, `aws:kms`).
      */
     private $serverSideEncryption;
 
@@ -59,8 +77,8 @@ class CreateMultipartUploadOutput extends Result
     private $sseCustomerKeyMd5;
 
     /**
-     * If present, specifies the ID of the Amazon Web Services Key Management Service (Amazon Web Services KMS) symmetric
-     * customer managed key that was used for the object.
+     * If present, specifies the ID of the Key Management Service (KMS) symmetric encryption customer managed key that was
+     * used for the object.
      */
     private $sseKmsKeyId;
 
@@ -71,12 +89,17 @@ class CreateMultipartUploadOutput extends Result
     private $sseKmsEncryptionContext;
 
     /**
-     * Indicates whether the multipart upload uses an S3 Bucket Key for server-side encryption with Amazon Web Services KMS
-     * (SSE-KMS).
+     * Indicates whether the multipart upload uses an S3 Bucket Key for server-side encryption with Key Management Service
+     * (KMS) keys (SSE-KMS).
      */
     private $bucketKeyEnabled;
 
     private $requestCharged;
+
+    /**
+     * The algorithm that was used to create a checksum of the object.
+     */
+    private $checksumAlgorithm;
 
     public function getAbortDate(): ?\DateTimeImmutable
     {
@@ -104,6 +127,16 @@ class CreateMultipartUploadOutput extends Result
         $this->initialize();
 
         return $this->bucketKeyEnabled;
+    }
+
+    /**
+     * @return ChecksumAlgorithm::*|null
+     */
+    public function getChecksumAlgorithm(): ?string
+    {
+        $this->initialize();
+
+        return $this->checksumAlgorithm;
     }
 
     public function getKey(): ?string
@@ -181,6 +214,7 @@ class CreateMultipartUploadOutput extends Result
         $this->sseKmsEncryptionContext = $headers['x-amz-server-side-encryption-context'][0] ?? null;
         $this->bucketKeyEnabled = isset($headers['x-amz-server-side-encryption-bucket-key-enabled'][0]) ? filter_var($headers['x-amz-server-side-encryption-bucket-key-enabled'][0], \FILTER_VALIDATE_BOOLEAN) : null;
         $this->requestCharged = $headers['x-amz-request-charged'][0] ?? null;
+        $this->checksumAlgorithm = $headers['x-amz-checksum-algorithm'][0] ?? null;
 
         $data = new \SimpleXMLElement($response->getContent());
         $this->bucket = ($v = $data->Bucket) ? (string) $v : null;

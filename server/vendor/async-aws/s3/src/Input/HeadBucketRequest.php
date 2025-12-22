@@ -12,6 +12,26 @@ final class HeadBucketRequest extends Input
     /**
      * The bucket name.
      *
+     * When using this action with an access point, you must direct requests to the access point hostname. The access point
+     * hostname takes the form *AccessPointName*-*AccountId*.s3-accesspoint.*Region*.amazonaws.com. When using this action
+     * with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket
+     * name. For more information about access point ARNs, see Using access points [^1] in the *Amazon S3 User Guide*.
+     *
+     * When you use this action with an Object Lambda access point, provide the alias of the Object Lambda access point in
+     * place of the bucket name. If the Object Lambda access point alias in a request is not valid, the error code
+     * `InvalidAccessPointAliasError` is returned. For more information about `InvalidAccessPointAliasError`, see List of
+     * Error Codes [^2].
+     *
+     * When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3
+     * on Outposts hostname takes the form `*AccessPointName*-*AccountId*.*outpostID*.s3-outposts.*Region*.amazonaws.com`.
+     * When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access
+     * point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see What is S3 on Outposts
+     * [^3] in the *Amazon S3 User Guide*.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html
+     * [^2]: https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#ErrorCodeList
+     * [^3]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html
+     *
      * @required
      *
      * @var string|null
@@ -19,8 +39,8 @@ final class HeadBucketRequest extends Input
     private $bucket;
 
     /**
-     * The account ID of the expected bucket owner. If the bucket is owned by a different account, the request will fail
-     * with an HTTP `403 (Access Denied)` error.
+     * The account ID of the expected bucket owner. If the bucket is owned by a different account, the request fails with
+     * the HTTP status code `403 Forbidden` (access denied).
      *
      * @var string|null
      */
@@ -30,6 +50,7 @@ final class HeadBucketRequest extends Input
      * @param array{
      *   Bucket?: string,
      *   ExpectedBucketOwner?: string,
+     *
      *   @region?: string,
      * } $input
      */

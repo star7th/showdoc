@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @file     CAS/PGTStorage/AbstractStorage.php
  * @category Authentication

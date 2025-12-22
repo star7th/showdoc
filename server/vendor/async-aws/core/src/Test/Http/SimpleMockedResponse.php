@@ -12,14 +12,23 @@ use Symfony\Component\HttpClient\Response\MockResponse;
  */
 class SimpleMockedResponse extends MockResponse
 {
+    /**
+     * @var array<string, list<string>>
+     */
     private $headers = [];
 
+    /**
+     * @var string
+     */
     private $content = '';
 
+    /**
+     * @var int
+     */
     private $statusCode;
 
     /**
-     * @param array $headers ['name'=>'value'] OR ['name'=>['value']]
+     * @param array<string, string|list<string>> $headers ['name'=>'value'] OR ['name'=>['value']]
      */
     public function __construct(string $content = '', array $headers = [], int $statusCode = 200)
     {
@@ -54,6 +63,9 @@ class SimpleMockedResponse extends MockResponse
         return $this->content;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(bool $throw = true): array
     {
         return json_decode($this->getContent($throw), true);
@@ -64,11 +76,14 @@ class SimpleMockedResponse extends MockResponse
         throw new LogicException('Not implemented');
     }
 
+    /**
+     * @return list<string>
+     */
     private function getFlatHeaders()
     {
         $flat = [];
         foreach ($this->headers as $name => $value) {
-            $flat[] = sprintf('%s: %s', $name, implode(';', $value));
+            $flat[] = \sprintf('%s: %s', $name, implode(';', $value));
         }
 
         return $flat;

@@ -61,13 +61,11 @@
             "GuzzleHttp\\Tests\\Psr7\\": "tests/"
         }
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.7-dev"
-        }
-    },
     "config": {
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
     }
 }

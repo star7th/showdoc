@@ -20,8 +20,14 @@ final class ConfigurationProvider implements CredentialProvider
 {
     use DateFromResult;
 
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
+    /**
+     * @var HttpClientInterface|null
+     */
     private $httpClient;
 
     public function __construct(?HttpClientInterface $httpClient = null, ?LoggerInterface $logger = null)
@@ -57,7 +63,7 @@ final class ConfigurationProvider implements CredentialProvider
         return $credentials;
     }
 
-    private function getCredentialsFromRole(Credentials $credentials, string $region, string $roleArn, string $roleSessionName = null): ?Credentials
+    private function getCredentialsFromRole(Credentials $credentials, string $region, string $roleArn, ?string $roleSessionName = null): ?Credentials
     {
         $roleSessionName = $roleSessionName ?? uniqid('async-aws-', true);
         $stsClient = new StsClient(['region' => $region], $credentials, $this->httpClient);

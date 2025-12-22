@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace AsyncAws\Core;
 
 use AsyncAws\AppSync\AppSyncClient;
+use AsyncAws\Athena\AthenaClient;
+use AsyncAws\BedrockRuntime\BedrockRuntimeClient;
 use AsyncAws\CloudFormation\CloudFormationClient;
 use AsyncAws\CloudFront\CloudFrontClient;
 use AsyncAws\CloudWatch\CloudWatchClient;
 use AsyncAws\CloudWatchLogs\CloudWatchLogsClient;
+use AsyncAws\CodeBuild\CodeBuildClient;
+use AsyncAws\CodeCommit\CodeCommitClient;
 use AsyncAws\CodeDeploy\CodeDeployClient;
 use AsyncAws\CognitoIdentityProvider\CognitoIdentityProviderClient;
+use AsyncAws\Comprehend\ComprehendClient;
 use AsyncAws\Core\Credentials\CacheProvider;
 use AsyncAws\Core\Credentials\ChainProvider;
 use AsyncAws\Core\Credentials\CredentialProvider;
@@ -23,18 +28,29 @@ use AsyncAws\ElastiCache\ElastiCacheClient;
 use AsyncAws\EventBridge\EventBridgeClient;
 use AsyncAws\Firehose\FirehoseClient;
 use AsyncAws\Iam\IamClient;
+use AsyncAws\Iot\IotClient;
+use AsyncAws\IotData\IotDataClient;
 use AsyncAws\Kinesis\KinesisClient;
+use AsyncAws\Kms\KmsClient;
 use AsyncAws\Lambda\LambdaClient;
+use AsyncAws\LocationService\LocationServiceClient;
+use AsyncAws\MediaConvert\MediaConvertClient;
 use AsyncAws\RdsDataService\RdsDataServiceClient;
 use AsyncAws\Rekognition\RekognitionClient;
 use AsyncAws\Route53\Route53Client;
 use AsyncAws\S3\S3Client;
+use AsyncAws\Scheduler\SchedulerClient;
 use AsyncAws\SecretsManager\SecretsManagerClient;
 use AsyncAws\Ses\SesClient;
 use AsyncAws\Sns\SnsClient;
 use AsyncAws\Sqs\SqsClient;
 use AsyncAws\Ssm\SsmClient;
+use AsyncAws\Sso\SsoClient;
+use AsyncAws\SsoOidc\SsoOidcClient;
 use AsyncAws\StepFunctions\StepFunctionsClient;
+use AsyncAws\TimestreamQuery\TimestreamQueryClient;
+use AsyncAws\TimestreamWrite\TimestreamWriteClient;
+use AsyncAws\Translate\TranslateClient;
 use AsyncAws\XRay\XRayClient;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -49,7 +65,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class AwsClientFactory
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $serviceCache;
 
@@ -74,14 +90,14 @@ class AwsClientFactory
     private $logger;
 
     /**
-     * @param Configuration|array $configuration
+     * @param Configuration|array<Configuration::OPTION_*, string|null> $configuration
      */
     public function __construct($configuration = [], ?CredentialProvider $credentialProvider = null, ?HttpClientInterface $httpClient = null, ?LoggerInterface $logger = null)
     {
         if (\is_array($configuration)) {
             $configuration = Configuration::create($configuration);
         } elseif (!$configuration instanceof Configuration) {
-            throw new InvalidArgument(sprintf('Second argument to "%s::__construct()" must be an array or an instance of "%s"', __CLASS__, Configuration::class));
+            throw new InvalidArgument(\sprintf('Second argument to "%s::__construct()" must be an array or an instance of "%s"', __CLASS__, Configuration::class));
         }
 
         $this->httpClient = $httpClient ?? HttpClient::create();
@@ -98,6 +114,19 @@ class AwsClientFactory
 
         if (!isset($this->serviceCache[__METHOD__])) {
             $this->serviceCache[__METHOD__] = new AppSyncClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function bedrockRuntime(): BedrockRuntimeClient
+    {
+        if (!class_exists(BedrockRuntimeClient::class)) {
+            throw MissingDependency::create('async-aws/bedrock-runtime', 'BedrockRuntime');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new BedrockRuntimeClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
         }
 
         return $this->serviceCache[__METHOD__];
@@ -155,6 +184,32 @@ class AwsClientFactory
         return $this->serviceCache[__METHOD__];
     }
 
+    public function codeBuild(): CodeBuildClient
+    {
+        if (!class_exists(CodeBuildClient::class)) {
+            throw MissingDependency::create('async-aws/code-build', 'CodeBuild');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new CodeBuildClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function codeCommit(): CodeCommitClient
+    {
+        if (!class_exists(CodeCommitClient::class)) {
+            throw MissingDependency::create('async-aws/code-commit', 'CodeCommit');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new CodeCommitClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
     public function codeDeploy(): CodeDeployClient
     {
         if (!class_exists(CodeDeployClient::class)) {
@@ -163,6 +218,19 @@ class AwsClientFactory
 
         if (!isset($this->serviceCache[__METHOD__])) {
             $this->serviceCache[__METHOD__] = new CodeDeployClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function comprehend(): ComprehendClient
+    {
+        if (!class_exists(ComprehendClient::class)) {
+            throw MissingDependency::create('async-aws/comprehend', 'ComprehendClient');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new ComprehendClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
         }
 
         return $this->serviceCache[__METHOD__];
@@ -246,6 +314,32 @@ class AwsClientFactory
         return $this->serviceCache[__METHOD__];
     }
 
+    public function iot(): IotClient
+    {
+        if (!class_exists(IotClient::class)) {
+            throw MissingDependency::create('async-aws/iot', 'Iot');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new IotClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function iotData(): IotDataClient
+    {
+        if (!class_exists(IotDataClient::class)) {
+            throw MissingDependency::create('async-aws/iot-data', 'IotData');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new IotDataClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
     public function kinesis(): KinesisClient
     {
         if (!class_exists(KinesisClient::class)) {
@@ -259,6 +353,19 @@ class AwsClientFactory
         return $this->serviceCache[__METHOD__];
     }
 
+    public function kms(): KmsClient
+    {
+        if (!class_exists(KmsClient::class)) {
+            throw MissingDependency::create('aws/kms', 'Kms');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new KmsClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
     public function lambda(): LambdaClient
     {
         if (!class_exists(LambdaClient::class)) {
@@ -267,6 +374,32 @@ class AwsClientFactory
 
         if (!isset($this->serviceCache[__METHOD__])) {
             $this->serviceCache[__METHOD__] = new LambdaClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function locationService(): LocationServiceClient
+    {
+        if (!class_exists(LocationServiceClient::class)) {
+            throw MissingDependency::create('async-aws/location-service', 'LocationService');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new LocationServiceClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function mediaConvert(): MediaConvertClient
+    {
+        if (!class_exists(MediaConvertClient::class)) {
+            throw MissingDependency::create('async-aws/media-convert', 'MediaConvert');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new MediaConvertClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
         }
 
         return $this->serviceCache[__METHOD__];
@@ -319,6 +452,19 @@ class AwsClientFactory
 
         if (!isset($this->serviceCache[__METHOD__])) {
             $this->serviceCache[__METHOD__] = new S3Client($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function scheduler(): SchedulerClient
+    {
+        if (!class_exists(SchedulerClient::class)) {
+            throw MissingDependency::create('async-aws/scheduler', 'Scheduler');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new SchedulerClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
         }
 
         return $this->serviceCache[__METHOD__];
@@ -389,6 +535,32 @@ class AwsClientFactory
         return $this->serviceCache[__METHOD__];
     }
 
+    public function sso(): SsoClient
+    {
+        if (!class_exists(SsoClient::class)) {
+            throw MissingDependency::create('async-aws/sso', 'Sso');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new SsoClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function ssoOidc(): SsoOidcClient
+    {
+        if (!class_exists(SsoOidcClient::class)) {
+            throw MissingDependency::create('async-aws/sso-oidc', 'SsoOidc');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new SsoOidcClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
     public function sts(): StsClient
     {
         if (!isset($this->serviceCache[__METHOD__])) {
@@ -406,6 +578,45 @@ class AwsClientFactory
 
         if (!isset($this->serviceCache[__METHOD__])) {
             $this->serviceCache[__METHOD__] = new StepFunctionsClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function timestreamQuery(): TimestreamQueryClient
+    {
+        if (!class_exists(TimestreamQueryClient::class)) {
+            throw MissingDependency::create('async-aws/timestream-query', 'TimestreamQuery');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new TimestreamQueryClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function timestreamWrite(): TimestreamWriteClient
+    {
+        if (!class_exists(TimestreamWriteClient::class)) {
+            throw MissingDependency::create('async-aws/timestream-write', 'TimestreamWrite');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new TimestreamWriteClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function translate(): TranslateClient
+    {
+        if (!class_exists(TranslateClient::class)) {
+            throw MissingDependency::create('async-aws/translate', 'Translate');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new TranslateClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
         }
 
         return $this->serviceCache[__METHOD__];
@@ -432,6 +643,19 @@ class AwsClientFactory
 
         if (!isset($this->serviceCache[__METHOD__])) {
             $this->serviceCache[__METHOD__] = new CognitoIdentityProviderClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
+        }
+
+        return $this->serviceCache[__METHOD__];
+    }
+
+    public function athena(): AthenaClient
+    {
+        if (!class_exists(AthenaClient::class)) {
+            throw MissingDependency::create('async-aws/athena', 'Athena');
+        }
+
+        if (!isset($this->serviceCache[__METHOD__])) {
+            $this->serviceCache[__METHOD__] = new AthenaClient($this->configuration, $this->credentialProvider, $this->httpClient, $this->logger);
         }
 
         return $this->serviceCache[__METHOD__];

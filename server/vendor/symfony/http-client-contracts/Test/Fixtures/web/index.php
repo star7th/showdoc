@@ -12,30 +12,37 @@ if (!$_POST) {
     $_POST['content-type'] = $_SERVER['HTTP_CONTENT_TYPE'] ?? '?';
 }
 
+$headers = [
+    'SERVER_PROTOCOL',
+    'SERVER_NAME',
+    'REQUEST_URI',
+    'REQUEST_METHOD',
+    'PHP_AUTH_USER',
+    'PHP_AUTH_PW',
+    'REMOTE_ADDR',
+    'REMOTE_PORT',
+];
+
+foreach ($headers as $k) {
+    if (isset($_SERVER[$k])) {
+        $vars[$k] = $_SERVER[$k];
+    }
+}
+
 foreach ($_SERVER as $k => $v) {
-    switch ($k) {
-        default:
-            if (0 !== strpos($k, 'HTTP_')) {
-                continue 2;
-            }
-            // no break
-        case 'SERVER_NAME':
-        case 'SERVER_PROTOCOL':
-        case 'REQUEST_URI':
-        case 'REQUEST_METHOD':
-        case 'PHP_AUTH_USER':
-        case 'PHP_AUTH_PW':
-            $vars[$k] = $v;
+    if (str_starts_with($k, 'HTTP_')) {
+        $vars[$k] = $v;
     }
 }
 
 $json = json_encode($vars, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
 
-switch ($vars['REQUEST_URI']) {
+switch (parse_url($vars['REQUEST_URI'], \PHP_URL_PATH)) {
     default:
         exit;
 
     case '/head':
+        header('X-Request-Vars: '.json_encode($vars, \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE));
         header('Content-Length: '.strlen($json), true);
         break;
 
@@ -86,9 +93,16 @@ switch ($vars['REQUEST_URI']) {
         header('Location: //?foo=bar', true, 301);
         break;
 
+    case '/301/proxy':
+    case 'http://localhost:8057/301/proxy':
+    case 'http://127.0.0.1:8057/301/proxy':
+        header('Location: http://localhost:8057/', true, 301);
+        break;
+
     case '/302':
         if (!isset($vars['HTTP_AUTHORIZATION'])) {
-            header('Location: http://localhost:8057/', true, 302);
+            $location = $_GET['location'] ?? 'http://localhost:8057/';
+            header('Location: '.$location, true, 302);
         }
         break;
 

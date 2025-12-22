@@ -12,6 +12,15 @@ final class GetBucketCorsRequest extends Input
     /**
      * The bucket name for which to get the cors configuration.
      *
+     * To use this API operation against an access point, provide the alias of the access point in place of the bucket name.
+     *
+     * To use this API operation against an Object Lambda access point, provide the alias of the Object Lambda access point
+     * in place of the bucket name. If the Object Lambda access point alias in a request is not valid, the error code
+     * `InvalidAccessPointAliasError` is returned. For more information about `InvalidAccessPointAliasError`, see List of
+     * Error Codes [^1].
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#ErrorCodeList
+     *
      * @required
      *
      * @var string|null
@@ -19,8 +28,8 @@ final class GetBucketCorsRequest extends Input
     private $bucket;
 
     /**
-     * The account ID of the expected bucket owner. If the bucket is owned by a different account, the request will fail
-     * with an HTTP `403 (Access Denied)` error.
+     * The account ID of the expected bucket owner. If the bucket is owned by a different account, the request fails with
+     * the HTTP status code `403 Forbidden` (access denied).
      *
      * @var string|null
      */
@@ -30,6 +39,7 @@ final class GetBucketCorsRequest extends Input
      * @param array{
      *   Bucket?: string,
      *   ExpectedBucketOwner?: string,
+     *
      *   @region?: string,
      * } $input
      */

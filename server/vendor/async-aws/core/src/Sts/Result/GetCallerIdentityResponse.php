@@ -13,20 +13,26 @@ class GetCallerIdentityResponse extends Result
 {
     /**
      * The unique identifier of the calling entity. The exact value depends on the type of entity that is making the call.
-     * The values returned are those listed in the **aws:userid** column in the Principal table found on the **Policy
+     * The values returned are those listed in the **aws:userid** column in the Principal table [^1] found on the **Policy
      * Variables** reference page in the *IAM User Guide*.
      *
-     * @see https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_variables.html#principaltable
+     * [^1]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_variables.html#principaltable
+     *
+     * @var string|null
      */
     private $userId;
 
     /**
      * The Amazon Web Services account ID number of the account that owns or contains the calling entity.
+     *
+     * @var string|null
      */
     private $account;
 
     /**
      * The Amazon Web Services ARN associated with the calling entity.
+     *
+     * @var string|null
      */
     private $arn;
 
@@ -56,8 +62,8 @@ class GetCallerIdentityResponse extends Result
         $data = new \SimpleXMLElement($response->getContent());
         $data = $data->GetCallerIdentityResult;
 
-        $this->userId = ($v = $data->UserId) ? (string) $v : null;
-        $this->account = ($v = $data->Account) ? (string) $v : null;
-        $this->arn = ($v = $data->Arn) ? (string) $v : null;
+        $this->userId = (null !== $v = $data->UserId[0]) ? (string) $v : null;
+        $this->account = (null !== $v = $data->Account[0]) ? (string) $v : null;
+        $this->arn = (null !== $v = $data->Arn[0]) ? (string) $v : null;
     }
 }

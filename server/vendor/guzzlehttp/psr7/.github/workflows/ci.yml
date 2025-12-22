@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       max-parallel: 10
       matrix:
@@ -21,11 +21,7 @@ jobs:
           extensions: mbstring
 
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Mimic PHP 8.0
-        run: composer config platform.php 8.0.999
-        if: matrix.php > 8
+        uses: actions/checkout@v3
 
       - name: Install dependencies
         run: composer update --no-interaction --no-progress

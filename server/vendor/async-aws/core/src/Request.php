@@ -2,6 +2,7 @@
 
 namespace AsyncAws\Core;
 
+use AsyncAws\Core\Exception\InvalidArgument;
 use AsyncAws\Core\Exception\LogicException;
 use AsyncAws\Core\Stream\RequestStream;
 
@@ -9,30 +10,59 @@ use AsyncAws\Core\Stream\RequestStream;
  * Representation of an HTTP Request.
  *
  * @author Jérémy Derussé <jeremy@derusse.com>
- *
- * @internal
  */
-class Request
+final class Request
 {
+    /**
+     * @var string
+     */
     private $method;
 
+    /**
+     * @var string
+     */
     private $uri;
 
+    /**
+     * @var array<string, string>
+     */
     private $headers;
 
+    /**
+     * @var RequestStream
+     */
     private $body;
 
+    /**
+     * @var string|null
+     */
+    private $queryString;
+
+    /**
+     * @var array<string, string>
+     */
     private $query;
 
+    /**
+     * @var string
+     */
     private $endpoint;
 
+    /**
+     * @var string
+     */
+    private $hostPrefix;
+
+    /**
+     * @var array{scheme: string, host: string, port: int|null}|null
+     */
     private $parsed;
 
     /**
-     * @param string[] $query
-     * @param string[] $headers
+     * @param array<string, string> $query
+     * @param array<string, string> $headers
      */
-    public function __construct(string $method, string $uri, array $query, array $headers, RequestStream $body)
+    public function __construct(string $method, string $uri, array $query, array $headers, RequestStream $body, string $hostPrefix = '')
     {
         $this->method = $method;
         $this->uri = $uri;
@@ -42,6 +72,7 @@ class Request
         }
         $this->body = $body;
         $this->query = $query;
+        $this->hostPrefix = $hostPrefix;
         $this->endpoint = '';
     }
 
@@ -60,16 +91,19 @@ class Request
         return $this->uri;
     }
 
-    public function hasHeader($name): bool
+    public function hasHeader(string $name): bool
     {
         return \array_key_exists(strtolower($name), $this->headers);
     }
 
-    public function setHeader($name, ?string $value): void
+    public function setHeader(string $name, string $value): void
     {
         $this->headers[strtolower($name)] = $value;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getHeaders(): array
     {
         return $this->headers;
@@ -90,25 +124,27 @@ class Request
         return $this->body;
     }
 
-    public function setBody(RequestStream $body)
+    public function setBody(RequestStream $body): void
     {
         $this->body = $body;
     }
 
-    public function hasQueryAttribute($name): bool
+    public function hasQueryAttribute(string $name): bool
     {
         return \array_key_exists($name, $this->query);
     }
 
-    public function removeQueryAttribute($name): void
+    public function removeQueryAttribute(string $name): void
     {
         unset($this->query[$name]);
+        $this->queryString = null;
         $this->endpoint = '';
     }
 
-    public function setQueryAttribute($name, $value): void
+    public function setQueryAttribute(string $name, string $value): void
     {
         $this->query[$name] = $value;
+        $this->queryString = null;
         $this->endpoint = '';
     }
 
@@ -117,15 +153,33 @@ class Request
         return $this->query[$name] ?? null;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getQuery(): array
     {
         return $this->query;
     }
 
+    public function getHostPrefix(): string
+    {
+        return $this->hostPrefix;
+    }
+
+    public function setHostPrefix(string $hostPrefix): void
+    {
+        $this->hostPrefix = $hostPrefix;
+        $this->endpoint = '';
+    }
+
     public function getEndpoint(): string
     {
         if (empty($this->endpoint)) {
-            $this->endpoint = $this->parsed['scheme'] . '://' . $this->parsed['host'] . (isset($this->parsed['port']) ? ':' . $this->parsed['port'] : '') . $this->uri . ($this->query ? (false === strpos($this->uri, '?') ? '?' : '&') . http_build_query($this->query) : '');
+            if (null === $this->parsed) {
+                throw new LogicException('Request::$endpoint must be set before using it.');
+            }
+
+            $this->endpoint = $this->parsed['scheme'] . '://' . $this->hostPrefix . $this->parsed['host'] . (isset($this->parsed['port']) ? ':' . $this->parsed['port'] : '') . $this->uri . ($this->query ? (false === strpos($this->uri, '?') ? '?' : '&') . $this->getQueryString() : '');
         }
 
         return $this->endpoint;
@@ -133,13 +187,29 @@ class Request
 
     public function setEndpoint(string $endpoint): void
     {
-        if (!empty($this->endpoint)) {
+        if (null !== $this->parsed) {
             throw new LogicException('Request::$endpoint cannot be changed after it has a value.');
         }
 
-        $this->endpoint = $endpoint;
-        $this->parsed = parse_url($this->endpoint);
-        parse_str($this->parsed['query'] ?? '', $this->query);
-        $this->uri = $this->parsed['path'] ?? '/';
+        $parsed = parse_url($endpoint);
+
+        if (false === $parsed || !isset($parsed['scheme'], $parsed['host'])) {
+            throw new InvalidArgument(\sprintf('The endpoint "%s" is invalid.', $endpoint));
+        }
+
+        $this->parsed = ['scheme' => $parsed['scheme'], 'host' => $parsed['host'], 'port' => $parsed['port'] ?? null];
+
+        $this->queryString = $parsed['query'] ?? '';
+        parse_str($parsed['query'] ?? '', $this->query);
+        $this->uri = $parsed['path'] ?? '/';
+    }
+
+    private function getQueryString(): string
+    {
+        if (null === $this->queryString) {
+            $this->queryString = http_build_query($this->query, '', '&', \PHP_QUERY_RFC3986);
+        }
+
+        return $this->queryString;
     }
 }

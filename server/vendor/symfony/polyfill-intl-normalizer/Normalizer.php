@@ -90,7 +90,7 @@ class Normalizer
             self::$cC = self::getData('combiningClass');
         }
 
-        if (null !== $mbEncoding = (2 /* MB_OVERLOAD_STRING */ & (int) ini_get('mbstring.func_overload')) ? mb_internal_encoding() : null) {
+        if (null !== $mbEncoding = (2 /* MB_OVERLOAD_STRING */ & (int) \ini_get('mbstring.func_overload')) ? mb_internal_encoding() : null) {
             mb_internal_encoding('8bit');
         }
 

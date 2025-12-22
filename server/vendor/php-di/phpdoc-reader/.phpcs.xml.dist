@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ruleset>
+    <arg name="basepath" value="."/>
+    <arg name="extensions" value="php"/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <!-- Show sniff names -->
+    <arg value="s"/>
+
+    <file>src</file>
+    <exclude-pattern>src/PhpDocReader/PhpParser/TokenParser.php</exclude-pattern>
+    <file>tests</file>
+    <exclude-pattern>tests/Fixtures</exclude-pattern>
+
+    <rule ref="HardMode"/>
+
+    <!-- Ignore PhpDocReader\AnnotationException -->
+    <rule ref="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming.SuperfluousSuffix">
+        <severity>0</severity>
+    </rule>
+
+</ruleset>

@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 1.5.3 - 2023-05-21
+
+### Changed
+
+- Removed remaining usage of deprecated functions
+
+## 1.5.2 - 2022-08-07
+
+### Changed
+
+- Officially support PHP 8.2
+
 ## 1.5.1 - 2021-10-22
 
 ### Fixed
@@ -12,10 +24,11 @@
 ### Changed
 
 - Call handler when waiting on fulfilled/rejected Promise
+- Officially support PHP 8.1
 
 ### Fixed
 
-- Fix manually settle promises generated with Utils::task
+- Fix manually settle promises generated with `Utils::task`
 
 ## 1.4.1 - 2021-02-18
 

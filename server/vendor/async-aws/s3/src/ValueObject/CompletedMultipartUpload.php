@@ -3,12 +3,14 @@
 namespace AsyncAws\S3\ValueObject;
 
 /**
- * The container for the multipart upload request information.
+ * The container for the completed multipart upload details.
  */
 final class CompletedMultipartUpload
 {
     /**
      * Array of CompletedPart data types.
+     *
+     * If you do not supply a valid `Part` with your request, the service sends back an HTTP 400 response.
      */
     private $parts;
 

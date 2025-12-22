@@ -190,6 +190,11 @@ class FromProcessor extends AbstractProcessor {
                 if ($token_category === 'LEFT' || $token_category === 'RIGHT' || $token_category === 'NATURAL') {
                     $token_category = '';
                     $parseInfo['next_join_type'] = strtoupper(trim($prevToken)); // it seems to be a join
+                } elseif ($token_category === 'IDX_HINT') {
+                    $parseInfo['expression'] .= $token;
+                    if ($parseInfo['ref_type'] !== false) { // all after ON / USING
+                        $parseInfo['ref_expr'] .= $token;
+                    }
                 }
                 break;
 
@@ -276,6 +281,12 @@ class FromProcessor extends AbstractProcessor {
                 break;
 
             case 'FOR':
+                if ($token_category === 'IDX_HINT') {
+                    $cur_hint = (count($parseInfo['hints']) - 1);
+                    $parseInfo['hints'][$cur_hint]['hint_type'] .= " " . $upper;
+                    continue 2;
+                }
+
                 $parseInfo['token_count']++;
                 $skip_next = true;
                 break;
@@ -295,6 +306,12 @@ class FromProcessor extends AbstractProcessor {
                 $parseInfo['next_join_type'] = 'CROSS';
 
             case 'JOIN':
+                if ($token_category === 'IDX_HINT') {
+                    $cur_hint = (count($parseInfo['hints']) - 1);
+                    $parseInfo['hints'][$cur_hint]['hint_type'] .= " " . $upper;
+                    continue 2;
+                }
+
                 if ($parseInfo['subquery']) {
                     $parseInfo['sub_tree'] = $this->parse($this->removeParenthesisFromStart($parseInfo['subquery']));
                     $parseInfo['expression'] = $parseInfo['subquery'];
@@ -303,6 +320,13 @@ class FromProcessor extends AbstractProcessor {
                 $expr[] = $this->processFromExpression($parseInfo);
                 $parseInfo = $this->initParseInfo($parseInfo);
                 break;
+
+            case 'GROUP BY':
+                if ($token_category === 'IDX_HINT') {
+                    $cur_hint = (count($parseInfo['hints']) - 1);
+                    $parseInfo['hints'][$cur_hint]['hint_type'] .= " " . $upper;
+                    continue 2;
+                }
 
             default:
                 // TODO: enhance it, so we can have base_expr to calculate the position of the keywords

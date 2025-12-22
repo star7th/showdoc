@@ -10,7 +10,7 @@ This component provides functions added to PHP 7.3 core:
 - [`JsonException`](https://php.net/JsonException)
 
 More information can be found in the
-[main Polyfill README](https://github.com/symfony/polyfill/blob/master/README.md).
+[main Polyfill README](https://github.com/symfony/polyfill/blob/main/README.md).
 
 License
 =======

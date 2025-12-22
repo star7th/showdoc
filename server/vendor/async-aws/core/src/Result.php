@@ -25,8 +25,14 @@ class Result
      */
     protected $input;
 
+    /**
+     * @var bool
+     */
     private $initialized = false;
 
+    /**
+     * @var Response
+     */
     private $response;
 
     /**
@@ -34,7 +40,7 @@ class Result
      */
     private $prefetchResults = [];
 
-    public function __construct(Response $response, AbstractApi $awsClient = null, $request = null)
+    public function __construct(Response $response, ?AbstractApi $awsClient = null, ?object $request = null)
     {
         $this->response = $response;
         $this->awsClient = $awsClient;
@@ -43,8 +49,8 @@ class Result
 
     public function __destruct()
     {
-        while (!empty($this->prefetchResponses)) {
-            array_shift($this->prefetchResponses)->cancel();
+        while (!empty($this->prefetchResults)) {
+            array_shift($this->prefetchResults)->cancel();
         }
     }
 
@@ -78,7 +84,7 @@ class Result
      * @throws NetworkException
      * @throws HttpException
      */
-    final public static function wait(iterable $results, float $timeout = null, bool $downloadBody = false): iterable
+    final public static function wait(iterable $results, ?float $timeout = null, bool $downloadBody = false): iterable
     {
         $resultMap = [];
         $responses = [];

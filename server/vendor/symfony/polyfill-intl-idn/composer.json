@@ -20,9 +20,8 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-        "symfony/polyfill-intl-normalizer": "^1.10",
-        "symfony/polyfill-php72": "^1.10"
+        "php": ">=7.2",
+        "symfony/polyfill-intl-normalizer": "^1.10"
     },
     "autoload": {
         "psr-4": { "Symfony\\Polyfill\\Intl\\Idn\\": "" },
@@ -33,9 +32,6 @@
     },
     "minimum-stability": "dev",
     "extra": {
-        "branch-alias": {
-            "dev-main": "1.23-dev"
-        },
         "thanks": {
             "name": "symfony/polyfill",
             "url": "https://github.com/symfony/polyfill"

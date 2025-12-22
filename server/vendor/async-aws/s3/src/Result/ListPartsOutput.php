@@ -5,6 +5,7 @@ namespace AsyncAws\S3\Result;
 use AsyncAws\Core\Exception\InvalidArgument;
 use AsyncAws\Core\Response;
 use AsyncAws\Core\Result;
+use AsyncAws\S3\Enum\ChecksumAlgorithm;
 use AsyncAws\S3\Enum\RequestCharged;
 use AsyncAws\S3\Enum\StorageClass;
 use AsyncAws\S3\Input\ListPartsRequest;
@@ -22,9 +23,12 @@ class ListPartsOutput extends Result implements \IteratorAggregate
      * If the bucket has a lifecycle rule configured with an action to abort incomplete multipart uploads and the prefix in
      * the lifecycle rule matches the object name in the request, then the response includes this header indicating when the
      * initiated multipart upload will become eligible for abort operation. For more information, see Aborting Incomplete
-     * Multipart Uploads Using a Bucket Lifecycle Policy.
+     * Multipart Uploads Using a Bucket Lifecycle Configuration [^1].
      *
-     * @see https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config
+     * The response will also include the `x-amz-abort-rule-id` header that will provide the ID of the lifecycle
+     * configuration rule that defines this action.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config
      */
     private $abortDate;
 
@@ -98,6 +102,11 @@ class ListPartsOutput extends Result implements \IteratorAggregate
 
     private $requestCharged;
 
+    /**
+     * The algorithm that was used to create a checksum of the object.
+     */
+    private $checksumAlgorithm;
+
     public function getAbortDate(): ?\DateTimeImmutable
     {
         $this->initialize();
@@ -117,6 +126,16 @@ class ListPartsOutput extends Result implements \IteratorAggregate
         $this->initialize();
 
         return $this->bucket;
+    }
+
+    /**
+     * @return ChecksumAlgorithm::*|null
+     */
+    public function getChecksumAlgorithm(): ?string
+    {
+        $this->initialize();
+
+        return $this->checksumAlgorithm;
     }
 
     public function getInitiator(): ?Initiator
@@ -275,6 +294,7 @@ class ListPartsOutput extends Result implements \IteratorAggregate
             'ID' => ($v = $data->Owner->ID) ? (string) $v : null,
         ]);
         $this->storageClass = ($v = $data->StorageClass) ? (string) $v : null;
+        $this->checksumAlgorithm = ($v = $data->ChecksumAlgorithm) ? (string) $v : null;
     }
 
     /**
@@ -289,6 +309,10 @@ class ListPartsOutput extends Result implements \IteratorAggregate
                 'LastModified' => ($v = $item->LastModified) ? new \DateTimeImmutable((string) $v) : null,
                 'ETag' => ($v = $item->ETag) ? (string) $v : null,
                 'Size' => ($v = $item->Size) ? (string) $v : null,
+                'ChecksumCRC32' => ($v = $item->ChecksumCRC32) ? (string) $v : null,
+                'ChecksumCRC32C' => ($v = $item->ChecksumCRC32C) ? (string) $v : null,
+                'ChecksumSHA1' => ($v = $item->ChecksumSHA1) ? (string) $v : null,
+                'ChecksumSHA256' => ($v = $item->ChecksumSHA256) ? (string) $v : null,
             ]);
         }
 

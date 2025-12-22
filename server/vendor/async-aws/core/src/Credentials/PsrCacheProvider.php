@@ -18,10 +18,19 @@ use Psr\Log\LoggerInterface;
  */
 final class PsrCacheProvider implements CredentialProvider
 {
+    /**
+     * @var CacheItemPoolInterface
+     */
     private $cache;
 
+    /**
+     * @var CredentialProvider
+     */
     private $decorated;
 
+    /**
+     * @var LoggerInterface|null
+     */
     private $logger;
 
     public function __construct(CredentialProvider $decorated, CacheItemPoolInterface $cache, ?LoggerInterface $logger = null)

@@ -2,6 +2,12 @@
 
 namespace AsyncAws\S3\ValueObject;
 
+/**
+ * Specifies object key name filtering rules. For information about key name filtering, see Configuring event
+ * notifications using object key name filtering [^1] in the *Amazon S3 User Guide*.
+ *
+ * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-how-to-filtering.html
+ */
 final class NotificationConfigurationFilter
 {
     private $key;

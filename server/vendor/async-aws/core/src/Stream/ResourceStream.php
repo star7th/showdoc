@@ -18,14 +18,23 @@ final class ResourceStream implements RequestStream
      */
     private $content;
 
+    /**
+     * @var int
+     */
     private $chunkSize;
 
+    /**
+     * @param resource $content
+     */
     private function __construct($content, int $chunkSize = 64 * 1024)
     {
         $this->content = $content;
         $this->chunkSize = $chunkSize;
     }
 
+    /**
+     * @param self|resource $content
+     */
     public static function create($content, int $chunkSize = 64 * 1024): ResourceStream
     {
         if ($content instanceof self) {
@@ -33,13 +42,13 @@ final class ResourceStream implements RequestStream
         }
         if (\is_resource($content)) {
             if (!stream_get_meta_data($content)['seekable']) {
-                throw new InvalidArgument(sprintf('The give body is not seekable.'));
+                throw new InvalidArgument('The given body is not seekable.');
             }
 
             return new self($content, $chunkSize);
         }
 
-        throw new InvalidArgument(sprintf('Expect content to be a "resource". "%s" given.', \is_object($content) ? \get_class($content) : \gettype($content)));
+        throw new InvalidArgument(\sprintf('Expect content to be a "resource". "%s" given.', \is_object($content) ? \get_class($content) : \gettype($content)));
     }
 
     public function length(): ?int

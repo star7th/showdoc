@@ -18,23 +18,18 @@ use Symfony\Component\Finder\SplFileInfo;
  * Extends the \RecursiveDirectoryIterator to support relative paths.
  *
  * @author Victor Berchet <victor@suumit.com>
+ *
+ * @extends \RecursiveDirectoryIterator<string, SplFileInfo>
  */
 class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
 {
-    /**
-     * @var bool
-     */
-    private $ignoreUnreadableDirs;
-
-    /**
-     * @var bool
-     */
-    private $rewindable;
+    private bool $ignoreUnreadableDirs;
+    private bool $ignoreFirstRewind = true;
 
     // these 3 properties take part of the performance optimization to avoid redoing the same work in all iterations
-    private $rootPath;
-    private $subPath;
-    private $directorySeparator = '/';
+    private string $rootPath;
+    private string $subPath;
+    private string $directorySeparator = '/';
 
     /**
      * @throws \RuntimeException
@@ -55,36 +50,29 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
 
     /**
      * Return an instance of SplFileInfo with support for relative paths.
-     *
-     * @return SplFileInfo
      */
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): SplFileInfo
     {
         // the logic here avoids redoing the same work in all iterations
 
-        if (null === $subPathname = $this->subPath) {
-            $subPathname = $this->subPath = $this->getSubPath();
+        if (!isset($this->subPath)) {
+            $this->subPath = $this->getSubPath();
         }
+        $subPathname = $this->subPath;
         if ('' !== $subPathname) {
             $subPathname .= $this->directorySeparator;
         }
         $subPathname .= $this->getFilename();
+        $basePath = $this->rootPath;
 
-        if ('/' !== $basePath = $this->rootPath) {
+        if ('/' !== $basePath && !str_ends_with($basePath, $this->directorySeparator) && !str_ends_with($basePath, '/')) {
             $basePath .= $this->directorySeparator;
         }
 
         return new SplFileInfo($basePath.$subPathname, $this->subPath, $subPathname);
     }
 
-    /**
-     * @param bool $allowLinks
-     *
-     * @return bool
-     */
-    #[\ReturnTypeWillChange]
-    public function hasChildren($allowLinks = false)
+    public function hasChildren(bool $allowLinks = false): bool
     {
         $hasChildren = parent::hasChildren($allowLinks);
 
@@ -96,19 +84,16 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
             parent::getChildren();
 
             return true;
-        } catch (\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException) {
             // If directory is unreadable and finder is set to ignore it, skip children
             return false;
         }
     }
 
     /**
-     * @return \RecursiveDirectoryIterator
-     *
      * @throws AccessDeniedException
      */
-    #[\ReturnTypeWillChange]
-    public function getChildren()
+    public function getChildren(): \RecursiveDirectoryIterator
     {
         try {
             $children = parent::getChildren();
@@ -118,7 +103,6 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
                 $children->ignoreUnreadableDirs = $this->ignoreUnreadableDirs;
 
                 // performance optimization to avoid redoing the same work in all children
-                $children->rewindable = &$this->rewindable;
                 $children->rootPath = $this->rootPath;
             }
 
@@ -128,41 +112,23 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
         }
     }
 
-    /**
-     * Do nothing for non rewindable stream.
-     *
-     * @return void
-     */
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function next(): void
     {
-        if (false === $this->isRewindable()) {
+        $this->ignoreFirstRewind = false;
+
+        parent::next();
+    }
+
+    public function rewind(): void
+    {
+        // some streams like FTP are not rewindable, ignore the first rewind after creation,
+        // as newly created DirectoryIterator does not need to be rewound
+        if ($this->ignoreFirstRewind) {
+            $this->ignoreFirstRewind = false;
+
             return;
         }
 
         parent::rewind();
-    }
-
-    /**
-     * Checks if the stream is rewindable.
-     *
-     * @return bool
-     */
-    public function isRewindable()
-    {
-        if (null !== $this->rewindable) {
-            return $this->rewindable;
-        }
-
-        if (false !== $stream = @opendir($this->getPath())) {
-            $infos = stream_get_meta_data($stream);
-            closedir($stream);
-
-            if ($infos['seekable']) {
-                return $this->rewindable = true;
-            }
-        }
-
-        return $this->rewindable = false;
     }
 }

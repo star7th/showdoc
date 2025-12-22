@@ -8,13 +8,17 @@ use AsyncAws\Core\Exception\InvalidArgument;
  * A Stream decorator that return Chunk with the same exact size.
  *
  * @author Jérémy Derussé <jeremy@derusse.com>
- *
- * @internal
  */
 final class FixedSizeStream implements RequestStream
 {
+    /**
+     * @var RequestStream
+     */
     private $content;
 
+    /**
+     * @var int
+     */
     private $chunkSize;
 
     private function __construct(RequestStream $content, int $chunkSize = 64 * 1024)
@@ -52,7 +56,7 @@ final class FixedSizeStream implements RequestStream
         $chunk = '';
         foreach ($this->content as $buffer) {
             if (!\is_string($buffer)) {
-                throw new InvalidArgument(sprintf('The return value of content callback must be a string, %s returned.', \is_object($buffer) ? \get_class($buffer) : \gettype($buffer)));
+                throw new InvalidArgument(\sprintf('The return value of content callback must be a string, %s returned.', \is_object($buffer) ? \get_class($buffer) : \gettype($buffer)));
             }
 
             $chunk .= $nextBytes = substr($buffer, 0, $this->chunkSize - \strlen($chunk));

@@ -21,10 +21,19 @@ use Symfony\Contracts\Cache\ItemInterface;
  */
 final class SymfonyCacheProvider implements CredentialProvider
 {
+    /**
+     * @var CacheInterface
+     */
     private $cache;
 
+    /**
+     * @var CredentialProvider
+     */
     private $decorated;
 
+    /**
+     * @var LoggerInterface|null
+     */
     private $logger;
 
     public function __construct(CredentialProvider $decorated, CacheInterface $cache, ?LoggerInterface $logger = null)

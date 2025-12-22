@@ -8,18 +8,25 @@ use AsyncAws\Core\Exception\InvalidArgument;
  * Convert an iterator into a Stream.
  *
  * @author Jérémy Derussé <jeremy@derusse.com>
- *
- * @internal
  */
 final class IterableStream implements ReadOnceResultStream, RequestStream
 {
+    /**
+     * @var iterable<string>
+     */
     private $content;
 
+    /**
+     * @param iterable<string> $content
+     */
     private function __construct(iterable $content)
     {
         $this->content = $content;
     }
 
+    /**
+     * @param self|iterable<string> $content
+     */
     public static function create($content): IterableStream
     {
         if ($content instanceof self) {
@@ -29,7 +36,7 @@ final class IterableStream implements ReadOnceResultStream, RequestStream
             return new self($content);
         }
 
-        throw new InvalidArgument(sprintf('Expect content to be an iterable. "%s" given.', \is_object($content) ? \get_class($content) : \gettype($content)));
+        throw new InvalidArgument(\sprintf('Expect content to be an iterable. "%s" given.', \is_object($content) ? \get_class($content) : \gettype($content)));
     }
 
     public function length(): ?int

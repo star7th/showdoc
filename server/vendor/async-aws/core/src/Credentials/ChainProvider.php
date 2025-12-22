@@ -21,15 +21,18 @@ use Symfony\Contracts\Service\ResetInterface;
  */
 final class ChainProvider implements CredentialProvider, ResetInterface
 {
+    /**
+     * @var iterable<CredentialProvider>
+     */
     private $providers;
 
     /**
-     * @var (CredentialProvider|null)[]
+     * @var array<string, CredentialProvider|null>
      */
     private $lastSuccessfulProvider = [];
 
     /**
-     * @param CredentialProvider[] $providers
+     * @param iterable<CredentialProvider> $providers
      */
     public function __construct(iterable $providers)
     {
@@ -38,7 +41,7 @@ final class ChainProvider implements CredentialProvider, ResetInterface
 
     public function getCredentials(Configuration $configuration): ?Credentials
     {
-        $key = spl_object_hash($configuration);
+        $key = sha1(serialize($configuration));
         if (\array_key_exists($key, $this->lastSuccessfulProvider)) {
             if (null === $provider = $this->lastSuccessfulProvider[$key]) {
                 return null;
@@ -60,7 +63,7 @@ final class ChainProvider implements CredentialProvider, ResetInterface
         return null;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->lastSuccessfulProvider = [];
     }

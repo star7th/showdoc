@@ -11,8 +11,6 @@
 
 namespace Symfony\Polyfill\Intl\Idn;
 
-use Exception;
-use Normalizer;
 use Symfony\Polyfill\Intl\Idn\Resources\unidata\DisallowedRanges;
 use Symfony\Polyfill\Intl\Idn\Resources\unidata\Regex;
 
@@ -147,7 +145,11 @@ final class Idn
      */
     public static function idn_to_ascii($domainName, $options = self::IDNA_DEFAULT, $variant = self::INTL_IDNA_VARIANT_UTS46, &$idna_info = [])
     {
-        if (\PHP_VERSION_ID >= 70200 && self::INTL_IDNA_VARIANT_2003 === $variant) {
+        if (\PHP_VERSION_ID > 80400 && '' === $domainName) {
+            throw new \ValueError('idn_to_ascii(): Argument #1 ($domain) cannot be empty');
+        }
+
+        if (self::INTL_IDNA_VARIANT_2003 === $variant) {
             @trigger_error('idn_to_ascii(): INTL_IDNA_VARIANT_2003 is deprecated', \E_USER_DEPRECATED);
         }
 
@@ -167,7 +169,7 @@ final class Idn
             if (1 === preg_match('/[^\x00-\x7F]/', $label)) {
                 try {
                     $label = 'xn--'.self::punycodeEncode($label);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $info->errors |= self::ERROR_PUNYCODE;
                 }
 
@@ -200,7 +202,11 @@ final class Idn
      */
     public static function idn_to_utf8($domainName, $options = self::IDNA_DEFAULT, $variant = self::INTL_IDNA_VARIANT_UTS46, &$idna_info = [])
     {
-        if (\PHP_VERSION_ID >= 70200 && self::INTL_IDNA_VARIANT_2003 === $variant) {
+        if (\PHP_VERSION_ID > 80400 && '' === $domainName) {
+            throw new \ValueError('idn_to_utf8(): Argument #1 ($domain) cannot be empty');
+        }
+
+        if (self::INTL_IDNA_VARIANT_2003 === $variant) {
             @trigger_error('idn_to_utf8(): INTL_IDNA_VARIANT_2003 is deprecated', \E_USER_DEPRECATED);
         }
 
@@ -282,10 +288,6 @@ final class Idn
 
             switch ($data['status']) {
                 case 'disallowed':
-                    $info->errors |= self::ERROR_DISALLOWED;
-
-                    // no break.
-
                 case 'valid':
                     $str .= mb_chr($codePoint, 'utf-8');
 
@@ -296,7 +298,7 @@ final class Idn
                     break;
 
                 case 'mapped':
-                    $str .= $data['mapping'];
+                    $str .= $transitional && 0x1E9E === $codePoint ? 'ss' : $data['mapping'];
 
                     break;
 
@@ -335,8 +337,8 @@ final class Idn
         $domain = self::mapCodePoints($domain, $options, $info);
 
         // Step 2. Normalize the domain name string to Unicode Normalization Form C.
-        if (!Normalizer::isNormalized($domain, Normalizer::FORM_C)) {
-            $domain = Normalizer::normalize($domain, Normalizer::FORM_C);
+        if (!\Normalizer::isNormalized($domain, \Normalizer::FORM_C)) {
+            $domain = \Normalizer::normalize($domain, \Normalizer::FORM_C);
         }
 
         // Step 3. Break the string into labels at U+002E (.) FULL STOP.
@@ -348,9 +350,21 @@ final class Idn
             $validationOptions = $options;
 
             if ('xn--' === substr($label, 0, 4)) {
+                // Step 4.1. If the label contains any non-ASCII code point (i.e., a code point greater than U+007F),
+                // record that there was an error, and continue with the next label.
+                if (preg_match('/[^\x00-\x7F]/', $label)) {
+                    $info->errors |= self::ERROR_PUNYCODE;
+
+                    continue;
+                }
+
+                // Step 4.2. Attempt to convert the rest of the label to Unicode according to Punycode [RFC3492]. If
+                // that conversion fails, record that there was an error, and continue
+                // with the next label. Otherwise replace the original label in the string by the results of the
+                // conversion.
                 try {
                     $label = self::punycodeDecode(substr($label, 4));
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $info->errors |= self::ERROR_PUNYCODE;
 
                     continue;
@@ -496,7 +510,7 @@ final class Idn
         }
 
         // Step 1. The label must be in Unicode Normalization Form C.
-        if (!Normalizer::isNormalized($label, Normalizer::FORM_C)) {
+        if (!\Normalizer::isNormalized($label, \Normalizer::FORM_C)) {
             $info->errors |= self::ERROR_INVALID_ACE_LABEL;
         }
 
@@ -518,6 +532,8 @@ final class Idn
             if ('-' === substr($label, -1, 1)) {
                 $info->errors |= self::ERROR_TRAILING_HYPHEN;
             }
+        } elseif ('xn--' === substr($label, 0, 4)) {
+            $info->errors |= self::ERROR_PUNYCODE;
         }
 
         // Step 4. The label must not contain a U+002E (.) FULL STOP.
@@ -583,7 +599,7 @@ final class Idn
 
         for ($j = 0; $j < $b; ++$j) {
             if ($bytes[$j] > 0x7F) {
-                throw new Exception('Invalid input');
+                throw new \Exception('Invalid input');
             }
 
             $output[$out++] = $input[$j];
@@ -599,17 +615,17 @@ final class Idn
 
             for ($k = self::BASE; /* no condition */; $k += self::BASE) {
                 if ($in >= $inputLength) {
-                    throw new Exception('Invalid input');
+                    throw new \Exception('Invalid input');
                 }
 
                 $digit = self::$basicToDigit[$bytes[$in++] & 0xFF];
 
                 if ($digit < 0) {
-                    throw new Exception('Invalid input');
+                    throw new \Exception('Invalid input');
                 }
 
                 if ($digit > intdiv(self::MAX_INT - $i, $w)) {
-                    throw new Exception('Integer overflow');
+                    throw new \Exception('Integer overflow');
                 }
 
                 $i += $digit * $w;
@@ -629,7 +645,7 @@ final class Idn
                 $baseMinusT = self::BASE - $t;
 
                 if ($w > intdiv(self::MAX_INT, $baseMinusT)) {
-                    throw new Exception('Integer overflow');
+                    throw new \Exception('Integer overflow');
                 }
 
                 $w *= $baseMinusT;
@@ -639,7 +655,7 @@ final class Idn
             $bias = self::adaptBias($i - $oldi, $outPlusOne, 0 === $oldi);
 
             if (intdiv($i, $outPlusOne) > self::MAX_INT - $n) {
-                throw new Exception('Integer overflow');
+                throw new \Exception('Integer overflow');
             }
 
             $n += intdiv($i, $outPlusOne);
@@ -694,7 +710,7 @@ final class Idn
             }
 
             if ($m - $n > intdiv(self::MAX_INT - $delta, $h + 1)) {
-                throw new Exception('Integer overflow');
+                throw new \Exception('Integer overflow');
             }
 
             $delta += ($m - $n) * ($h + 1);
@@ -702,7 +718,7 @@ final class Idn
 
             foreach ($iter as $codePoint) {
                 if ($codePoint < $n && 0 === ++$delta) {
-                    throw new Exception('Integer overflow');
+                    throw new \Exception('Integer overflow');
                 }
 
                 if ($codePoint === $n) {
@@ -723,7 +739,7 @@ final class Idn
 
                         $qMinusT = $q - $t;
                         $baseMinusT = self::BASE - $t;
-                        $output .= self::encodeDigit($t + ($qMinusT) % ($baseMinusT), false);
+                        $output .= self::encodeDigit($t + $qMinusT % $baseMinusT, false);
                         ++$out;
                         $q = intdiv($qMinusT, $baseMinusT);
                     }

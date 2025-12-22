@@ -6,12 +6,30 @@ use AsyncAws\Core\Exception\InvalidArgument;
 use AsyncAws\Core\Input;
 use AsyncAws\Core\Request;
 use AsyncAws\Core\Stream\StreamFactory;
+use AsyncAws\S3\Enum\ChecksumMode;
 use AsyncAws\S3\Enum\RequestPayer;
 
 final class GetObjectRequest extends Input
 {
     /**
      * The bucket name containing the object.
+     *
+     * When using this action with an access point, you must direct requests to the access point hostname. The access point
+     * hostname takes the form *AccessPointName*-*AccountId*.s3-accesspoint.*Region*.amazonaws.com. When using this action
+     * with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket
+     * name. For more information about access point ARNs, see Using access points [^1] in the *Amazon S3 User Guide*.
+     *
+     * When using an Object Lambda access point the hostname takes the form
+     * *AccessPointName*-*AccountId*.s3-object-lambda.*Region*.amazonaws.com.
+     *
+     * When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3
+     * on Outposts hostname takes the form `*AccessPointName*-*AccountId*.*outpostID*.s3-outposts.*Region*.amazonaws.com`.
+     * When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access
+     * point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see What is S3 on Outposts
+     * [^2] in the *Amazon S3 User Guide*.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html
+     * [^2]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html
      *
      * @required
      *
@@ -20,31 +38,32 @@ final class GetObjectRequest extends Input
     private $bucket;
 
     /**
-     * Return the object only if its entity tag (ETag) is the same as the one specified, otherwise return a 412
-     * (precondition failed).
+     * Return the object only if its entity tag (ETag) is the same as the one specified; otherwise, return a 412
+     * (precondition failed) error.
      *
      * @var string|null
      */
     private $ifMatch;
 
     /**
-     * Return the object only if it has been modified since the specified time, otherwise return a 304 (not modified).
+     * Return the object only if it has been modified since the specified time; otherwise, return a 304 (not modified)
+     * error.
      *
      * @var \DateTimeImmutable|null
      */
     private $ifModifiedSince;
 
     /**
-     * Return the object only if its entity tag (ETag) is different from the one specified, otherwise return a 304 (not
-     * modified).
+     * Return the object only if its entity tag (ETag) is different from the one specified; otherwise, return a 304 (not
+     * modified) error.
      *
      * @var string|null
      */
     private $ifNoneMatch;
 
     /**
-     * Return the object only if it has not been modified since the specified time, otherwise return a 412 (precondition
-     * failed).
+     * Return the object only if it has not been modified since the specified time; otherwise, return a 412 (precondition
+     * failed) error.
      *
      * @var \DateTimeImmutable|null
      */
@@ -61,9 +80,11 @@ final class GetObjectRequest extends Input
 
     /**
      * Downloads the specified range bytes of an object. For more information about the HTTP Range header, see
-     * https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35.
+     * https://www.rfc-editor.org/rfc/rfc9110.html#name-range [^1].
      *
-     * @see https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35
+     * > Amazon S3 doesn't support retrieving multiple ranges of data per `GET` request.
+     *
+     * [^1]: https://www.rfc-editor.org/rfc/rfc9110.html#name-range
      *
      * @var string|null
      */
@@ -156,12 +177,19 @@ final class GetObjectRequest extends Input
     private $partNumber;
 
     /**
-     * The account ID of the expected bucket owner. If the bucket is owned by a different account, the request will fail
-     * with an HTTP `403 (Access Denied)` error.
+     * The account ID of the expected bucket owner. If the bucket is owned by a different account, the request fails with
+     * the HTTP status code `403 Forbidden` (access denied).
      *
      * @var string|null
      */
     private $expectedBucketOwner;
+
+    /**
+     * To retrieve the checksum, this mode must be enabled.
+     *
+     * @var ChecksumMode::*|null
+     */
+    private $checksumMode;
 
     /**
      * @param array{
@@ -185,6 +213,8 @@ final class GetObjectRequest extends Input
      *   RequestPayer?: RequestPayer::*,
      *   PartNumber?: int,
      *   ExpectedBucketOwner?: string,
+     *   ChecksumMode?: ChecksumMode::*,
+     *
      *   @region?: string,
      * } $input
      */
@@ -210,6 +240,7 @@ final class GetObjectRequest extends Input
         $this->requestPayer = $input['RequestPayer'] ?? null;
         $this->partNumber = $input['PartNumber'] ?? null;
         $this->expectedBucketOwner = $input['ExpectedBucketOwner'] ?? null;
+        $this->checksumMode = $input['ChecksumMode'] ?? null;
         parent::__construct($input);
     }
 
@@ -221,6 +252,14 @@ final class GetObjectRequest extends Input
     public function getBucket(): ?string
     {
         return $this->bucket;
+    }
+
+    /**
+     * @return ChecksumMode::*|null
+     */
+    public function getChecksumMode(): ?string
+    {
+        return $this->checksumMode;
     }
 
     public function getExpectedBucketOwner(): ?string
@@ -332,13 +371,13 @@ final class GetObjectRequest extends Input
             $headers['If-Match'] = $this->ifMatch;
         }
         if (null !== $this->ifModifiedSince) {
-            $headers['If-Modified-Since'] = $this->ifModifiedSince->format(\DateTimeInterface::RFC822);
+            $headers['If-Modified-Since'] = $this->ifModifiedSince->setTimezone(new \DateTimeZone('GMT'))->format(\DateTimeInterface::RFC7231);
         }
         if (null !== $this->ifNoneMatch) {
             $headers['If-None-Match'] = $this->ifNoneMatch;
         }
         if (null !== $this->ifUnmodifiedSince) {
-            $headers['If-Unmodified-Since'] = $this->ifUnmodifiedSince->format(\DateTimeInterface::RFC822);
+            $headers['If-Unmodified-Since'] = $this->ifUnmodifiedSince->setTimezone(new \DateTimeZone('GMT'))->format(\DateTimeInterface::RFC7231);
         }
         if (null !== $this->range) {
             $headers['Range'] = $this->range;
@@ -361,6 +400,12 @@ final class GetObjectRequest extends Input
         if (null !== $this->expectedBucketOwner) {
             $headers['x-amz-expected-bucket-owner'] = $this->expectedBucketOwner;
         }
+        if (null !== $this->checksumMode) {
+            if (!ChecksumMode::exists($this->checksumMode)) {
+                throw new InvalidArgument(sprintf('Invalid parameter "ChecksumMode" for "%s". The value "%s" is not a valid "ChecksumMode".', __CLASS__, $this->checksumMode));
+            }
+            $headers['x-amz-checksum-mode'] = $this->checksumMode;
+        }
 
         // Prepare query
         $query = [];
@@ -380,7 +425,7 @@ final class GetObjectRequest extends Input
             $query['response-content-type'] = $this->responseContentType;
         }
         if (null !== $this->responseExpires) {
-            $query['response-expires'] = $this->responseExpires->format(\DateTimeInterface::RFC822);
+            $query['response-expires'] = $this->responseExpires->setTimezone(new \DateTimeZone('GMT'))->format(\DateTimeInterface::RFC7231);
         }
         if (null !== $this->versionId) {
             $query['versionId'] = $this->versionId;
@@ -411,6 +456,16 @@ final class GetObjectRequest extends Input
     public function setBucket(?string $value): self
     {
         $this->bucket = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param ChecksumMode::*|null $value
+     */
+    public function setChecksumMode(?string $value): self
+    {
+        $this->checksumMode = $value;
 
         return $this;
     }

@@ -2,6 +2,9 @@
 
 namespace AsyncAws\S3\ValueObject;
 
+/**
+ * A container for object key name prefix and suffix filtering rules.
+ */
 final class S3KeyFilter
 {
     private $filterRules;

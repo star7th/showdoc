@@ -2,9 +2,6 @@
 
 namespace AsyncAws\S3\Enum;
 
-/**
- * Specifies whether you want to apply a Legal Hold to the copied object.
- */
 final class ObjectLockLegalHoldStatus
 {
     public const OFF = 'OFF';

@@ -3,7 +3,7 @@
 namespace AsyncAws\S3\ValueObject;
 
 /**
- * Enables delivery of events to Amazon EventBridge.
+ * A container for specifying the configuration for Amazon EventBridge.
  */
 final class EventBridgeConfiguration
 {

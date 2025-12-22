@@ -44,8 +44,14 @@ class SignerV4 implements Signer
         'aws-sdk-retry' => true,
     ];
 
+    /**
+     * @var string
+     */
     private $scopeName;
 
+    /**
+     * @var string
+     */
     private $region;
 
     public function __construct(string $scopeName, string $region)
@@ -145,7 +151,7 @@ class SignerV4 implements Signer
         if ($isPresign) {
             $request->setQueryAttribute('X-Amz-Signature', $signature);
         } else {
-            $request->setHeader('authorization', sprintf(
+            $request->setHeader('authorization', \sprintf(
                 '%s Credential=%s/%s, SignedHeaders=%s, Signature=%s',
                 self::ALGORITHM_REQUEST,
                 $credentials->getAccessKeyId(),
@@ -170,7 +176,7 @@ class SignerV4 implements Signer
     private function sanitizeHostForHeader(Request $request): void
     {
         if (false === $parsedUrl = parse_url($request->getEndpoint())) {
-            throw new InvalidArgument(sprintf('The endpoint "%s" is invalid.', $request->getEndpoint()));
+            throw new InvalidArgument(\sprintf('The endpoint "%s" is invalid.', $request->getEndpoint()));
         }
 
         if (!isset($parsedUrl['host'])) {
@@ -213,12 +219,15 @@ class SignerV4 implements Signer
             }
 
             $request->setQueryAttribute('X-Amz-Date', $now->format('Ymd\THis\Z'));
-            $request->setQueryAttribute('X-Amz-Expires', $duration);
+            $request->setQueryAttribute('X-Amz-Expires', (string) $duration);
         } else {
             $request->setHeader('X-Amz-Date', $now->format('Ymd\THis\Z'));
         }
     }
 
+    /**
+     * @return string[]
+     */
     private function buildCredentialString(Request $request, Credentials $credentials, \DateTimeImmutable $now, bool $isPresign): array
     {
         $credentialScope = [$now->format('Ymd'), $this->region, $this->scopeName, 'aws4_request'];
@@ -263,6 +272,9 @@ class SignerV4 implements Signer
         $request->setBody(StringStream::create(''));
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function buildCanonicalHeaders(Request $request, bool $isPresign): array
     {
         // Case-insensitively aggregate all of the headers.
@@ -284,6 +296,9 @@ class SignerV4 implements Signer
         return $canonicalHeaders;
     }
 
+    /**
+     * @param array<string, string> $canonicalHeaders
+     */
     private function buildCanonicalRequest(Request $request, array $canonicalHeaders, string $bodyDigest): string
     {
         return implode("\n", [
@@ -302,11 +317,13 @@ class SignerV4 implements Signer
         $query = $request->getQuery();
 
         unset($query['X-Amz-Signature']);
-        if (!$query) {
+        if (empty($query)) {
             return '';
         }
 
-        ksort($query);
+        uksort($query, static function (string $a, string $b): int {
+            return strcmp(rawurlencode($a), rawurlencode($b));
+        });
         $encodedQuery = [];
         foreach ($query as $key => $values) {
             if (!\is_array($values)) {
@@ -315,6 +332,7 @@ class SignerV4 implements Signer
                 continue;
             }
 
+            // @phpstan-ignore argument.unresolvableType
             sort($values);
             foreach ($values as $value) {
                 $encodedQuery[] = rawurlencode($key) . '=' . rawurlencode($value);
@@ -334,6 +352,9 @@ class SignerV4 implements Signer
         ]);
     }
 
+    /**
+     * @param string[] $credentialScope
+     */
     private function buildSigningKey(Credentials $credentials, array $credentialScope): string
     {
         $signingKey = 'AWS4' . $credentials->getSecretKey();

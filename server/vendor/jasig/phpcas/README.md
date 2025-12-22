@@ -13,7 +13,7 @@ Api documentation can be found here:
 https://apereo.github.io/phpCAS/api/
 
 
-[![Build Status](https://travis-ci.org/apereo/phpCAS.png)](https://travis-ci.org/apereo/phpCAS)
+[![Test](https://github.com/apereo/phpCAS/actions/workflows/test.yml/badge.svg)](https://github.com/apereo/phpCAS/actions/workflows/test.yml)
 
 LICENSE
 -------

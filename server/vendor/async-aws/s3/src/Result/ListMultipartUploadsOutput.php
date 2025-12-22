@@ -6,6 +6,7 @@ use AsyncAws\Core\Exception\InvalidArgument;
 use AsyncAws\Core\Response;
 use AsyncAws\Core\Result;
 use AsyncAws\S3\Enum\EncodingType;
+use AsyncAws\S3\Enum\RequestCharged;
 use AsyncAws\S3\Input\ListMultipartUploadsRequest;
 use AsyncAws\S3\S3Client;
 use AsyncAws\S3\ValueObject\CommonPrefix;
@@ -84,8 +85,15 @@ class ListMultipartUploadsOutput extends Result implements \IteratorAggregate
 
     /**
      * Encoding type used by Amazon S3 to encode object keys in the response.
+     *
+     * If you specify `encoding-type` request parameter, Amazon S3 includes this element in the response, and returns
+     * encoded key name values in the following response elements:
+     *
+     * `Delimiter`, `KeyMarker`, `Prefix`, `NextKeyMarker`, `Key`.
      */
     private $encodingType;
+
+    private $requestCharged;
 
     public function getBucket(): ?string
     {
@@ -239,6 +247,16 @@ class ListMultipartUploadsOutput extends Result implements \IteratorAggregate
         return $this->prefix;
     }
 
+    /**
+     * @return RequestCharged::*|null
+     */
+    public function getRequestCharged(): ?string
+    {
+        $this->initialize();
+
+        return $this->requestCharged;
+    }
+
     public function getUploadIdMarker(): ?string
     {
         $this->initialize();
@@ -294,6 +312,10 @@ class ListMultipartUploadsOutput extends Result implements \IteratorAggregate
 
     protected function populateResult(Response $response): void
     {
+        $headers = $response->getHeaders();
+
+        $this->requestCharged = $headers['x-amz-request-charged'][0] ?? null;
+
         $data = new \SimpleXMLElement($response->getContent());
         $this->bucket = ($v = $data->Bucket) ? (string) $v : null;
         $this->keyMarker = ($v = $data->KeyMarker) ? (string) $v : null;
@@ -344,6 +366,7 @@ class ListMultipartUploadsOutput extends Result implements \IteratorAggregate
                     'ID' => ($v = $item->Initiator->ID) ? (string) $v : null,
                     'DisplayName' => ($v = $item->Initiator->DisplayName) ? (string) $v : null,
                 ]),
+                'ChecksumAlgorithm' => ($v = $item->ChecksumAlgorithm) ? (string) $v : null,
             ]);
         }
 

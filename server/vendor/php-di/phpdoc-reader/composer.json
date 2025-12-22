@@ -1,0 +1,24 @@
+{
+    "name": "php-di/phpdoc-reader",
+    "type": "library",
+    "description": "PhpDocReader parses @var and @param values in PHP docblocks (supports namespaced class names with the same resolution rules as PHP)",
+    "keywords": ["phpdoc", "reflection"],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "PhpDocReader\\": "src/PhpDocReader"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "UnitTest\\PhpDocReader\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5|^9.0",
+        "mnapoli/hard-mode": "~0.3.0"
+    }
+}

@@ -400,7 +400,7 @@ class SQLProcessor extends SQLChunkProcessor {
                 break;
 
             case 'FOR':
-                if ($prev_category === 'SHOW') {
+                if ($prev_category === 'SHOW' || $token_category === 'FROM') {
                     break;
                 }
                 $skip_next = 1;

@@ -6,7 +6,7 @@ use AsyncAws\Core\Exception\InvalidArgument;
 use AsyncAws\S3\Enum\Type;
 
 /**
- * The person being granted permissions.
+ * Container for the person being granted permissions.
  */
 final class Grantee
 {
@@ -17,6 +17,22 @@ final class Grantee
 
     /**
      * Email address of the grantee.
+     *
+     * > Using email addresses to specify a grantee is only supported in the following Amazon Web Services Regions:
+     * >
+     * > - US East (N. Virginia)
+     * > - US West (N. California)
+     * > - US West (Oregon)
+     * > - Asia Pacific (Singapore)
+     * > - Asia Pacific (Sydney)
+     * > - Asia Pacific (Tokyo)
+     * > - Europe (Ireland)
+     * > - South America (São Paulo)
+     * >
+     * > For a list of all the Amazon S3 supported Regions and endpoints, see Regions and Endpoints [^1] in the Amazon Web
+     * > Services General Reference.
+     *
+     * [^1]: https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
      */
     private $emailAddress;
 

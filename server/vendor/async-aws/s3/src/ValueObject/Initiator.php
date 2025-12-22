@@ -3,7 +3,7 @@
 namespace AsyncAws\S3\ValueObject;
 
 /**
- * Identifies who initiated the multipart upload.
+ * Container element that identifies who initiated the multipart upload.
  */
 final class Initiator
 {

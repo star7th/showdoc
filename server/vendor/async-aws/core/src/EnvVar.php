@@ -17,10 +17,10 @@ final class EnvVar
     {
         if (isset($_ENV[$name])) {
             // variable_order = *E*GPCS
-            return $_ENV[$name];
-        } elseif (isset($_SERVER[$name]) && 0 !== strpos($name, 'HTTP_')) {
+            return (string) $_ENV[$name];
+        } elseif (isset($_SERVER[$name]) && !\is_array($_SERVER[$name]) && 0 !== strpos($name, 'HTTP_')) {
             // fastcgi_param, env var, ...
-            return $_SERVER[$name];
+            return (string) $_SERVER[$name];
         } elseif (false === $env = getenv($name)) {
             // getenv not thread safe
             return null;

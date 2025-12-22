@@ -1,0 +1,49 @@
+{
+    "name": "php-di/php-di",
+    "type": "library",
+    "description": "The dependency injection container for humans",
+    "keywords": ["di", "dependency injection", "container", "ioc", "psr-11", "psr11", "container-interop"],
+    "homepage": "https://php-di.org/",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "DI\\": "src/"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DI\\Test\\IntegrationTest\\": "tests/IntegrationTest/",
+            "DI\\Test\\UnitTest\\": "tests/UnitTest/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "format-code": "php-cs-fixer fix --allow-risky=yes",
+        "phpstan": "phpstan analyse -l 5 -c phpstan.neon src"
+    },
+    "require": {
+        "php": ">=7.4.0",
+        "psr/container": "^1.0",
+        "php-di/invoker": "^2.0",
+        "php-di/phpdoc-reader": "^2.0.1",
+        "laravel/serializable-closure": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "mnapoli/phpunit-easymock": "^1.2",
+        "doctrine/annotations": "~1.10",
+        "ocramius/proxy-manager": "^2.11.2",
+        "friendsofphp/php-cs-fixer": "^2.4",
+        "phpstan/phpstan": "^0.12"
+    },
+    "provide": {
+        "psr/container-implementation": "^1.0"
+    },
+    "suggest": {
+        "doctrine/annotations": "Install it if you want to use annotations (version ~1.2)",
+        "ocramius/proxy-manager": "Install it if you want to use lazy injection (version ~2.0)"
+    }
+}

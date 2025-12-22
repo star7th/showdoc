@@ -6,20 +6,13 @@ use AsyncAws\Core\Exception\RuntimeException;
 use AsyncAws\Core\Exception\UnexpectedValue;
 use AsyncAws\Core\Exception\UnparsableResponse;
 
-/**
- * @internal
- */
-class XmlAwsErrorFactory implements AwsErrorFactoryInterface
+final class XmlAwsErrorFactory implements AwsErrorFactoryInterface
 {
     use AwsErrorFactoryFromResponseTrait;
 
     public function createFromContent(string $content, array $headers): AwsError
     {
         try {
-            /**
-             * @phpstan-ignore-next-line
-             * @psalm-suppress InvalidArgument
-             */
             set_error_handler(static function ($errno, $errstr) {
                 throw new RuntimeException($errstr, $errno);
             });

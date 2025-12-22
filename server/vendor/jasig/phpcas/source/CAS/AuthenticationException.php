@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @file     CAS/AuthenticationException.php
  * @category Authentication
@@ -72,11 +72,15 @@ implements CAS_Exception
         phpCAS::traceBegin();
         $lang = $client->getLangObj();
         $client->printHTMLHeader($lang->getAuthenticationFailed());
-        printf(
-            $lang->getYouWereNotAuthenticated(),
-            htmlentities($client->getURL()),
-            isset($_SERVER['SERVER_ADMIN']) ? $_SERVER['SERVER_ADMIN']:''
-        );
+
+        if (phpCAS::getVerbose()) {
+            printf(
+                $lang->getYouWereNotAuthenticated(),
+                htmlentities($client->getURL()),
+                $_SERVER['SERVER_ADMIN'] ?? ''
+            );
+        }
+
         phpCAS::trace($messages[] = 'CAS URL: '.$cas_url);
         phpCAS::trace($messages[] = 'Authentication failure: '.$failure);
         if ( $no_response ) {

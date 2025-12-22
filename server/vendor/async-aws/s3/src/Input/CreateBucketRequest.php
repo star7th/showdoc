@@ -59,6 +59,8 @@ final class CreateBucketRequest extends Input
     /**
      * Allows grantee to create new objects in the bucket.
      *
+     * For the bucket and object owners of existing objects, also allows deletions and overwrites of those objects.
+     *
      * @var string|null
      */
     private $grantWrite;
@@ -94,6 +96,7 @@ final class CreateBucketRequest extends Input
      *   GrantWriteACP?: string,
      *   ObjectLockEnabledForBucket?: bool,
      *   ObjectOwnership?: ObjectOwnership::*,
+     *
      *   @region?: string,
      * } $input
      */

@@ -17,10 +17,13 @@ use Symfony\Contracts\Service\ResetInterface;
 final class CacheProvider implements CredentialProvider, ResetInterface
 {
     /**
-     * @var (null|Credentials)[]
+     * @var array<string, Credentials|null>
      */
     private $cache = [];
 
+    /**
+     * @var CredentialProvider
+     */
     private $decorated;
 
     public function __construct(CredentialProvider $decorated)
@@ -30,7 +33,7 @@ final class CacheProvider implements CredentialProvider, ResetInterface
 
     public function getCredentials(Configuration $configuration): ?Credentials
     {
-        $key = spl_object_hash($configuration);
+        $key = sha1(serialize($configuration));
         if (!\array_key_exists($key, $this->cache) || (null !== $this->cache[$key] && $this->cache[$key]->isExpired())) {
             $this->cache[$key] = $this->decorated->getCredentials($configuration);
         }
@@ -38,7 +41,7 @@ final class CacheProvider implements CredentialProvider, ResetInterface
         return $this->cache[$key];
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->cache = [];
     }

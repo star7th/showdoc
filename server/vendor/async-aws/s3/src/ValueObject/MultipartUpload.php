@@ -2,6 +2,7 @@
 
 namespace AsyncAws\S3\ValueObject;
 
+use AsyncAws\S3\Enum\ChecksumAlgorithm;
 use AsyncAws\S3\Enum\StorageClass;
 
 /**
@@ -40,6 +41,11 @@ final class MultipartUpload
     private $initiator;
 
     /**
+     * The algorithm that was used to create a checksum of the object.
+     */
+    private $checksumAlgorithm;
+
+    /**
      * @param array{
      *   UploadId?: null|string,
      *   Key?: null|string,
@@ -47,6 +53,7 @@ final class MultipartUpload
      *   StorageClass?: null|StorageClass::*,
      *   Owner?: null|Owner|array,
      *   Initiator?: null|Initiator|array,
+     *   ChecksumAlgorithm?: null|ChecksumAlgorithm::*,
      * } $input
      */
     public function __construct(array $input)
@@ -57,11 +64,20 @@ final class MultipartUpload
         $this->storageClass = $input['StorageClass'] ?? null;
         $this->owner = isset($input['Owner']) ? Owner::create($input['Owner']) : null;
         $this->initiator = isset($input['Initiator']) ? Initiator::create($input['Initiator']) : null;
+        $this->checksumAlgorithm = $input['ChecksumAlgorithm'] ?? null;
     }
 
     public static function create($input): self
     {
         return $input instanceof self ? $input : new self($input);
+    }
+
+    /**
+     * @return ChecksumAlgorithm::*|null
+     */
+    public function getChecksumAlgorithm(): ?string
+    {
+        return $this->checksumAlgorithm;
     }
 
     public function getInitiated(): ?\DateTimeImmutable

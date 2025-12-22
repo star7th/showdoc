@@ -13,8 +13,14 @@ use AsyncAws\Core\Exception\InvalidArgument;
  */
 final class StringStream implements RequestStream
 {
+    /**
+     * @var string
+     */
     private $content;
 
+    /**
+     * @var int|null
+     */
     private $lengthCache;
 
     private function __construct(string $content)
@@ -22,6 +28,9 @@ final class StringStream implements RequestStream
         $this->content = $content;
     }
 
+    /**
+     * @param RequestStream|string $content
+     */
     public static function create($content): StringStream
     {
         if ($content instanceof self) {
@@ -34,7 +43,7 @@ final class StringStream implements RequestStream
             return new self($content);
         }
 
-        throw new InvalidArgument(sprintf('Expect content to be a "%s" or as "string". "%s" given.', RequestStream::class, \is_object($content) ? \get_class($content) : \gettype($content)));
+        throw new InvalidArgument(\sprintf('Expect content to be a "%s" or as "string". "%s" given.', RequestStream::class, \is_object($content) ? \get_class($content) : \gettype($content)));
     }
 
     public function length(): int

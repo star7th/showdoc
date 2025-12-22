@@ -54,7 +54,7 @@ class Waiter
      */
     private $resolved = false;
 
-    public function __construct(Response $response, AbstractApi $awsClient, $request)
+    public function __construct(Response $response, AbstractApi $awsClient, ?object $request)
     {
         $this->response = $response;
         $this->awsClient = $awsClient;
@@ -114,7 +114,7 @@ class Waiter
             case self::STATE_PENDING:
                 break;
             default:
-                throw new LogicException(sprintf('Unexpected state "%s" from Waiter "%s".', $state, __CLASS__));
+                throw new LogicException(\sprintf('Unexpected state "%s" from Waiter "%s".', $state, __CLASS__));
         }
 
         return $state;
@@ -171,7 +171,7 @@ class Waiter
      *
      * @return bool true if a final state was reached
      */
-    final public function wait(float $timeout = null, float $delay = null): bool
+    final public function wait(?float $timeout = null, ?float $delay = null): bool
     {
         if (null !== $this->finalState) {
             return true;

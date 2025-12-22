@@ -6,6 +6,7 @@ use AsyncAws\Core\Exception\InvalidArgument;
 use AsyncAws\Core\Input;
 use AsyncAws\Core\Request;
 use AsyncAws\Core\Stream\StreamFactory;
+use AsyncAws\S3\Enum\ChecksumAlgorithm;
 use AsyncAws\S3\Enum\MetadataDirective;
 use AsyncAws\S3\Enum\ObjectCannedACL;
 use AsyncAws\S3\Enum\ObjectLockLegalHoldStatus;
@@ -20,12 +21,28 @@ final class CopyObjectRequest extends Input
     /**
      * The canned ACL to apply to the object.
      *
+     * This action is not supported by Amazon S3 on Outposts.
+     *
      * @var ObjectCannedACL::*|null
      */
     private $acl;
 
     /**
      * The name of the destination bucket.
+     *
+     * When using this action with an access point, you must direct requests to the access point hostname. The access point
+     * hostname takes the form *AccessPointName*-*AccountId*.s3-accesspoint.*Region*.amazonaws.com. When using this action
+     * with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket
+     * name. For more information about access point ARNs, see Using access points [^1] in the *Amazon S3 User Guide*.
+     *
+     * When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3
+     * on Outposts hostname takes the form `*AccessPointName*-*AccountId*.*outpostID*.s3-outposts.*Region*.amazonaws.com`.
+     * When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access
+     * point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see What is S3 on Outposts
+     * [^2] in the *Amazon S3 User Guide*.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html
+     * [^2]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html
      *
      * @required
      *
@@ -39,6 +56,16 @@ final class CopyObjectRequest extends Input
      * @var string|null
      */
     private $cacheControl;
+
+    /**
+     * Indicates the algorithm you want Amazon S3 to use to create the checksum for the object. For more information, see
+     * Checking object integrity [^1] in the *Amazon S3 User Guide*.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html
+     *
+     * @var ChecksumAlgorithm::*|null
+     */
+    private $checksumAlgorithm;
 
     /**
      * Specifies presentational information for the object.
@@ -71,9 +98,35 @@ final class CopyObjectRequest extends Input
 
     /**
      * Specifies the source object for the copy operation. You specify the value in one of two formats, depending on whether
-     * you want to access the source object through an access point:.
+     * you want to access the source object through an access point [^1]:.
      *
-     * @see https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points.html
+     * - For objects not accessed through an access point, specify the name of the source bucket and the key of the source
+     *   object, separated by a slash (/). For example, to copy the object `reports/january.pdf` from the bucket
+     *   `awsexamplebucket`, use `awsexamplebucket/reports/january.pdf`. The value must be URL-encoded.
+     * - For objects accessed through access points, specify the Amazon Resource Name (ARN) of the object as accessed
+     *   through the access point, in the format
+     *   `arn:aws:s3:<Region>:<account-id>:accesspoint/<access-point-name>/object/<key>`. For
+     *   example, to copy the object `reports/january.pdf` through access point `my-access-point` owned by account
+     *   `123456789012` in Region `us-west-2`, use the URL encoding of
+     *   `arn:aws:s3:us-west-2:123456789012:accesspoint/my-access-point/object/reports/january.pdf`. The value must be URL
+     *   encoded.
+     *
+     *   > Amazon S3 supports copy operations using access points only when the source and destination buckets are in the
+     *   > same Amazon Web Services Region.
+     *
+     *   Alternatively, for objects accessed through Amazon S3 on Outposts, specify the ARN of the object as accessed in the
+     *   format `arn:aws:s3-outposts:<Region>:<account-id>:outpost/<outpost-id>/object/<key>`. For
+     *   example, to copy the object `reports/january.pdf` through outpost `my-outpost` owned by account `123456789012` in
+     *   Region `us-west-2`, use the URL encoding of
+     *   `arn:aws:s3-outposts:us-west-2:123456789012:outpost/my-outpost/object/reports/january.pdf`. The value must be
+     *   URL-encoded.
+     *
+     * To copy a specific version of an object, append `?versionId=<version-id>` to the value (for example,
+     * `awsexamplebucket/reports/january.pdf?versionId=QUpfdndhfd8438MNFDN93jdnJFkdmqnh893`). If you don't specify a version
+     * ID, Amazon S3 copies the latest version of the source object.
+     *
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points.html
+     *
      * @required
      *
      * @var string|null
@@ -118,12 +171,16 @@ final class CopyObjectRequest extends Input
     /**
      * Gives the grantee READ, READ_ACP, and WRITE_ACP permissions on the object.
      *
+     * This action is not supported by Amazon S3 on Outposts.
+     *
      * @var string|null
      */
     private $grantFullControl;
 
     /**
      * Allows grantee to read the object data and its metadata.
+     *
+     * This action is not supported by Amazon S3 on Outposts.
      *
      * @var string|null
      */
@@ -132,12 +189,16 @@ final class CopyObjectRequest extends Input
     /**
      * Allows grantee to read the object ACL.
      *
+     * This action is not supported by Amazon S3 on Outposts.
+     *
      * @var string|null
      */
     private $grantReadAcp;
 
     /**
      * Allows grantee to write the ACL for the applicable object.
+     *
+     * This action is not supported by Amazon S3 on Outposts.
      *
      * @var string|null
      */
@@ -175,7 +236,8 @@ final class CopyObjectRequest extends Input
     private $taggingDirective;
 
     /**
-     * The server-side encryption algorithm used when storing this object in Amazon S3 (for example, AES256, aws:kms).
+     * The server-side encryption algorithm used when storing this object in Amazon S3 (for example, `AES256`, `aws:kms`,
+     * `aws:kms:dsse`).
      *
      * @var ServerSideEncryption::*|null
      */
@@ -184,10 +246,10 @@ final class CopyObjectRequest extends Input
     /**
      * By default, Amazon S3 uses the STANDARD Storage Class to store newly created objects. The STANDARD storage class
      * provides high durability and high availability. Depending on performance needs, you can specify a different Storage
-     * Class. Amazon S3 on Outposts only uses the OUTPOSTS Storage Class. For more information, see Storage Classes in the
-     * *Amazon S3 User Guide*.
+     * Class. Amazon S3 on Outposts only uses the OUTPOSTS Storage Class. For more information, see Storage Classes [^1] in
+     * the *Amazon S3 User Guide*.
      *
-     * @see https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html
      *
      * @var StorageClass::*|null
      */
@@ -195,7 +257,9 @@ final class CopyObjectRequest extends Input
 
     /**
      * If the bucket is configured as a website, redirects requests for this object to another object in the same bucket or
-     * to an external URL. Amazon S3 stores the value of this header in the object metadata.
+     * to an external URL. Amazon S3 stores the value of this header in the object metadata. This value is unique to each
+     * object and is not copied when using the `x-amz-metadata-directive` header. Instead, you may opt to provide this
+     * header in combination with the directive.
      *
      * @var string|null
      */
@@ -226,12 +290,12 @@ final class CopyObjectRequest extends Input
     private $sseCustomerKeyMd5;
 
     /**
-     * Specifies the Amazon Web Services KMS key ID to use for object encryption. All GET and PUT requests for an object
-     * protected by Amazon Web Services KMS will fail if not made via SSL or using SigV4. For information about configuring
-     * using any of the officially supported Amazon Web Services SDKs and Amazon Web Services CLI, see Specifying the
-     * Signature Version in Request Authentication in the *Amazon S3 User Guide*.
+     * Specifies the KMS key ID to use for object encryption. All GET and PUT requests for an object protected by KMS will
+     * fail if they're not made via SSL or using SigV4. For information about configuring any of the officially supported
+     * Amazon Web Services SDKs and Amazon Web Services CLI, see Specifying the Signature Version in Request Authentication
+     * [^1] in the *Amazon S3 User Guide*.
      *
-     * @see https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingAWSSDK.html#specify-signature-version
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingAWSSDK.html#specify-signature-version
      *
      * @var string|null
      */
@@ -246,9 +310,11 @@ final class CopyObjectRequest extends Input
     private $sseKmsEncryptionContext;
 
     /**
-     * Specifies whether Amazon S3 should use an S3 Bucket Key for object encryption with server-side encryption using AWS
-     * KMS (SSE-KMS). Setting this header to `true` causes Amazon S3 to use an S3 Bucket Key for object encryption with
-     * SSE-KMS.
+     * Specifies whether Amazon S3 should use an S3 Bucket Key for object encryption with server-side encryption using Key
+     * Management Service (KMS) keys (SSE-KMS). Setting this header to `true` causes Amazon S3 to use an S3 Bucket Key for
+     * object encryption with SSE-KMS.
+     *
+     * Specifying this header with a COPY action doesn’t affect bucket-level settings for S3 Bucket Key.
      *
      * @var bool|null
      */
@@ -305,7 +371,7 @@ final class CopyObjectRequest extends Input
     private $objectLockRetainUntilDate;
 
     /**
-     * Specifies whether you want to apply a Legal Hold to the copied object.
+     * Specifies whether you want to apply a legal hold to the copied object.
      *
      * @var ObjectLockLegalHoldStatus::*|null
      */
@@ -313,7 +379,7 @@ final class CopyObjectRequest extends Input
 
     /**
      * The account ID of the expected destination bucket owner. If the destination bucket is owned by a different account,
-     * the request will fail with an HTTP `403 (Access Denied)` error.
+     * the request fails with the HTTP status code `403 Forbidden` (access denied).
      *
      * @var string|null
      */
@@ -321,7 +387,7 @@ final class CopyObjectRequest extends Input
 
     /**
      * The account ID of the expected source bucket owner. If the source bucket is owned by a different account, the request
-     * will fail with an HTTP `403 (Access Denied)` error.
+     * fails with the HTTP status code `403 Forbidden` (access denied).
      *
      * @var string|null
      */
@@ -332,6 +398,7 @@ final class CopyObjectRequest extends Input
      *   ACL?: ObjectCannedACL::*,
      *   Bucket?: string,
      *   CacheControl?: string,
+     *   ChecksumAlgorithm?: ChecksumAlgorithm::*,
      *   ContentDisposition?: string,
      *   ContentEncoding?: string,
      *   ContentLanguage?: string,
@@ -369,6 +436,7 @@ final class CopyObjectRequest extends Input
      *   ObjectLockLegalHoldStatus?: ObjectLockLegalHoldStatus::*,
      *   ExpectedBucketOwner?: string,
      *   ExpectedSourceBucketOwner?: string,
+     *
      *   @region?: string,
      * } $input
      */
@@ -377,6 +445,7 @@ final class CopyObjectRequest extends Input
         $this->acl = $input['ACL'] ?? null;
         $this->bucket = $input['Bucket'] ?? null;
         $this->cacheControl = $input['CacheControl'] ?? null;
+        $this->checksumAlgorithm = $input['ChecksumAlgorithm'] ?? null;
         $this->contentDisposition = $input['ContentDisposition'] ?? null;
         $this->contentEncoding = $input['ContentEncoding'] ?? null;
         $this->contentLanguage = $input['ContentLanguage'] ?? null;
@@ -443,6 +512,14 @@ final class CopyObjectRequest extends Input
     public function getCacheControl(): ?string
     {
         return $this->cacheControl;
+    }
+
+    /**
+     * @return ChecksumAlgorithm::*|null
+     */
+    public function getChecksumAlgorithm(): ?string
+    {
+        return $this->checksumAlgorithm;
     }
 
     public function getContentDisposition(): ?string
@@ -665,6 +742,12 @@ final class CopyObjectRequest extends Input
         if (null !== $this->cacheControl) {
             $headers['Cache-Control'] = $this->cacheControl;
         }
+        if (null !== $this->checksumAlgorithm) {
+            if (!ChecksumAlgorithm::exists($this->checksumAlgorithm)) {
+                throw new InvalidArgument(sprintf('Invalid parameter "ChecksumAlgorithm" for "%s". The value "%s" is not a valid "ChecksumAlgorithm".', __CLASS__, $this->checksumAlgorithm));
+            }
+            $headers['x-amz-checksum-algorithm'] = $this->checksumAlgorithm;
+        }
         if (null !== $this->contentDisposition) {
             $headers['Content-Disposition'] = $this->contentDisposition;
         }
@@ -685,16 +768,16 @@ final class CopyObjectRequest extends Input
             $headers['x-amz-copy-source-if-match'] = $this->copySourceIfMatch;
         }
         if (null !== $this->copySourceIfModifiedSince) {
-            $headers['x-amz-copy-source-if-modified-since'] = $this->copySourceIfModifiedSince->format(\DateTimeInterface::RFC822);
+            $headers['x-amz-copy-source-if-modified-since'] = $this->copySourceIfModifiedSince->setTimezone(new \DateTimeZone('GMT'))->format(\DateTimeInterface::RFC7231);
         }
         if (null !== $this->copySourceIfNoneMatch) {
             $headers['x-amz-copy-source-if-none-match'] = $this->copySourceIfNoneMatch;
         }
         if (null !== $this->copySourceIfUnmodifiedSince) {
-            $headers['x-amz-copy-source-if-unmodified-since'] = $this->copySourceIfUnmodifiedSince->format(\DateTimeInterface::RFC822);
+            $headers['x-amz-copy-source-if-unmodified-since'] = $this->copySourceIfUnmodifiedSince->setTimezone(new \DateTimeZone('GMT'))->format(\DateTimeInterface::RFC7231);
         }
         if (null !== $this->expires) {
-            $headers['Expires'] = $this->expires->format(\DateTimeInterface::RFC822);
+            $headers['Expires'] = $this->expires->setTimezone(new \DateTimeZone('GMT'))->format(\DateTimeInterface::RFC7231);
         }
         if (null !== $this->grantFullControl) {
             $headers['x-amz-grant-full-control'] = $this->grantFullControl;
@@ -847,6 +930,16 @@ final class CopyObjectRequest extends Input
     public function setCacheControl(?string $value): self
     {
         $this->cacheControl = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param ChecksumAlgorithm::*|null $value
+     */
+    public function setChecksumAlgorithm(?string $value): self
+    {
+        $this->checksumAlgorithm = $value;
 
         return $this;
     }

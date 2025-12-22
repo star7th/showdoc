@@ -1,0 +1,32 @@
+{
+    "name": "php-di/invoker",
+    "description": "Generic and extensible callable invoker",
+    "keywords": ["invoker", "dependency-injection", "dependency", "injection", "callable", "invoke"],
+    "homepage": "https://github.com/PHP-DI/Invoker",
+    "license": "MIT",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Invoker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Invoker\\Test\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.3",
+        "psr/container": "^1.0|^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0",
+        "athletic/athletic": "~0.1.8",
+        "mnapoli/hard-mode": "~0.3.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

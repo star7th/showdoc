@@ -15,12 +15,24 @@ final class Credentials implements CredentialProvider
 {
     private const EXPIRATION_DRIFT = 30;
 
+    /**
+     * @var string
+     */
     private $accessKeyId;
 
+    /**
+     * @var string
+     */
     private $secretKey;
 
+    /**
+     * @var string|null
+     */
     private $sessionToken;
 
+    /**
+     * @var \DateTimeImmutable|null
+     */
     private $expireDate;
 
     public function __construct(
@@ -71,6 +83,6 @@ final class Credentials implements CredentialProvider
             $expireDate = (new \DateTimeImmutable())->add($reference->diff($expireDate));
         }
 
-        return $expireDate->sub(new \DateInterval(sprintf('PT%dS', self::EXPIRATION_DRIFT)));
+        return $expireDate->sub(new \DateInterval(\sprintf('PT%dS', self::EXPIRATION_DRIFT)));
     }
 }

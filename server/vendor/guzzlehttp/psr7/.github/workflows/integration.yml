@@ -4,14 +4,13 @@ on:
   pull_request:
 
 jobs:
-
   build:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       max-parallel: 10
       matrix:
-        php: ['7.2', '7.3', '7.4', '8.0']
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1']
 
     steps:
       - name: Set up PHP
@@ -21,7 +20,7 @@ jobs:
           coverage: none
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download dependencies
         uses: ramsey/composer-install@v1

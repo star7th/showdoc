@@ -6,7 +6,7 @@ This package provides a base for integrating with [OAuth 2.0](http://oauth.net/2
 [![Source Code](https://img.shields.io/badge/source-thephpleague/oauth2--client-blue.svg?style=flat-square)](https://github.com/thephpleague/oauth2-client)
 [![Latest Version](https://img.shields.io/github/release/thephpleague/oauth2-client.svg?style=flat-square)](https://github.com/thephpleague/oauth2-client/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/thephpleague/oauth2-client/blob/master/LICENSE)
-[![Build Status](https://img.shields.io/github/workflow/status/thephpleague/oauth2-client/CI?label=CI&logo=github&style=flat-square)](https://github.com/thephpleague/oauth2-client/actions?query=workflow%3ACI)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/thephpleague/oauth2-client/continuous-integration.yml?label=CI&logo=github&style=flat-square)](https://github.com/thephpleague/oauth2-client/actions?query=workflow%3ACI)
 [![Codecov Code Coverage](https://img.shields.io/codecov/c/gh/thephpleague/oauth2-client?label=codecov&logo=codecov&style=flat-square)](https://codecov.io/gh/thephpleague/oauth2-client)
 [![Total Downloads](https://img.shields.io/packagist/dt/league/oauth2-client.svg?style=flat-square)](https://packagist.org/packages/league/oauth2-client)
 
@@ -24,14 +24,16 @@ This package is compliant with [PSR-1][], [PSR-2][], [PSR-4][], and [PSR-7][]. I
 
 We support the following versions of PHP:
 
+* PHP 8.5
+* PHP 8.4
+* PHP 8.3
+* PHP 8.2
 * PHP 8.1
 * PHP 8.0
 * PHP 7.4
 * PHP 7.3
 * PHP 7.2
 * PHP 7.1
-* PHP 7.0
-* PHP 5.6
 
 ## Provider Clients
 

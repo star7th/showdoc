@@ -20,14 +20,14 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 trait HttpExceptionTrait
 {
-    private $response;
+    private ResponseInterface $response;
 
     public function __construct(ResponseInterface $response)
     {
         $this->response = $response;
         $code = $response->getInfo('http_code');
         $url = $response->getInfo('url');
-        $message = sprintf('HTTP %d returned for "%s".', $code, $url);
+        $message = \sprintf('HTTP %d returned for "%s".', $code, $url);
 
         $httpCodeFound = false;
         $isJson = false;
@@ -37,7 +37,7 @@ trait HttpExceptionTrait
                     break;
                 }
 
-                $message = sprintf('%s returned for "%s".', $h, $url);
+                $message = \sprintf('%s returned for "%s".', $h, $url);
                 $httpCodeFound = true;
             }
 
@@ -61,7 +61,7 @@ trait HttpExceptionTrait
                 $separator = isset($body['hydra:title'], $body['hydra:description']) ? "\n\n" : '';
                 $message = ($body['hydra:title'] ?? '').$separator.($body['hydra:description'] ?? '');
             } elseif ((isset($body['title']) || isset($body['detail']))
-                && (is_scalar($body['title'] ?? '') && is_scalar($body['detail'] ?? ''))) {
+                && (\is_scalar($body['title'] ?? '') && \is_scalar($body['detail'] ?? ''))) {
                 // see RFC 7807 and https://jsonapi.org/format/#error-objects
                 $separator = isset($body['title'], $body['detail']) ? "\n\n" : '';
                 $message = ($body['title'] ?? '').$separator.($body['detail'] ?? '');

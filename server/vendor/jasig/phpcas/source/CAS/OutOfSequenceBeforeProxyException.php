@@ -18,7 +18,7 @@
  * limitations under the License.
  *
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @file     CAS/OutOfSequenceBeforeProxyException.php
  * @category Authentication

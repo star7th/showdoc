@@ -2,6 +2,10 @@
 
 namespace AsyncAws\S3\ValueObject;
 
+/**
+ * A container for specifying the notification configuration of the bucket. If this element is empty, notifications are
+ * turned off for the bucket.
+ */
 final class NotificationConfiguration
 {
     /**

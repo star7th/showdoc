@@ -20,10 +20,10 @@ final class TopicConfiguration
     private $topicArn;
 
     /**
-     * The Amazon S3 bucket event about which to send notifications. For more information, see Supported Event Types in the
-     * *Amazon S3 User Guide*.
+     * The Amazon S3 bucket event about which to send notifications. For more information, see Supported Event Types [^1] in
+     * the *Amazon S3 User Guide*.
      *
-     * @see https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html
+     * [^1]: https://docs.aws.amazon.com/AmazonS3/latest/dev/NotificationHowTo.html
      */
     private $events;
 
