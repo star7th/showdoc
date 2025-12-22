@@ -53,6 +53,15 @@ class UserController extends BaseController
         // 更新最后登录时间
         User::setLastTime($uid);
 
+        // 如果用户没有任何项目（包括协作项目），则导入示例项目
+        if (!$this->hasAnyItem($uid)) {
+            try {
+                $this->importSampleProjects($uid);
+            } catch (\Throwable $e) {
+                error_log("Import sample projects failed for user {$uid}: " . $e->getMessage());
+            }
+        }
+
         // 生成 token（从 Options 读取 TTL，默认 180 天）
         $tokenTtlDays = (int) \App\Model\Options::get('token_ttl_days', 180);
         $tokenTtl = 60 * 60 * 24 * $tokenTtlDays;
@@ -265,6 +274,20 @@ class UserController extends BaseController
     }
 
     /**
+     * 检查用户是否有任何项目（包括自己创建的、作为成员的、作为团队成员的）
+     */
+    private function hasAnyItem(int $uid): bool
+    {
+        if (DB::table('item')->where('uid', $uid)->where('is_del', 0)->count() > 0) {
+            return true;
+        }
+        if (DB::table('item_member')->where('item_member.uid', $uid)->join('item', 'item.item_id', '=', 'item_member.item_id')->where('item.is_del', 0)->count() > 0) {
+            return true;
+        }
+        return DB::table('team_item_member')->where('member_uid', $uid)->join('item', 'item.item_id', '=', 'team_item_member.item_id')->where('item.is_del', 0)->count() > 0;
+    }
+
+    /**
      * 导入示例项目（开源版）
      *
      * 参考旧开源版 UserController::_importSample/_importZip 实现，
@@ -299,12 +322,16 @@ class UserController extends BaseController
         }
 
         $zip = new \ZipArchive();
-        $ret = $zip->open($file);
+        $ret = $zip->open($file, \ZipArchive::CREATE);
         if ($ret !== true) {
             return false;
         }
 
-        $info = $zip->getFromName('prefix_info.json');
+        // 先尝试新的格式 info.json，如果不存在则尝试旧的格式 prefix_info.json
+        $info = $zip->getFromName('info.json');
+        if (!$info) {
+            $info = $zip->getFromName('prefix_info.json');
+        }
         $zip->close();
 
         if (!$info) {
@@ -316,10 +343,10 @@ class UserController extends BaseController
             return false;
         }
 
-        // 旧逻辑是将 prefix_info.json 再编码为 JSON 字符串传入 Item::import
-        Item::import(json_encode($infoArray, JSON_UNESCAPED_UNICODE), $uid);
-
-        return true;
+        $json = json_encode($infoArray, JSON_UNESCAPED_UNICODE);
+        $result = Item::import($json, $uid, 0);
+        
+        return $result > 0;
     }
 
     /**

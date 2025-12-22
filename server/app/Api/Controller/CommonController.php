@@ -143,9 +143,9 @@ class CommonController extends BaseController
         $registerOpen = \App\Model\Options::get('register_open');
 
         // 兼容旧逻辑：
-        // - 如果 register_open === false，表示尚未有数据，此时前端应视为"允许注册"（1）
+        // - 如果 register_open === null，表示尚未有数据，此时前端应视为"允许注册"（1）
         // - 否则将其转换为整数
-        if ($registerOpen === false) {
+        if ($registerOpen === null) {
             $registerOpenValue = 1;
         } else {
             $registerOpenValue = (int) $registerOpen;
