@@ -143,13 +143,18 @@ docker_run() {
     # find $web_dir -type f -exec chmod 644 {} \;
     # find $web_dir -type d -exec chmod 755 {} \;
     # find $web_dir -type f -iname '*.sh' -exec chmod 755 {} \;
+    # 旧版 ThinkPHP 路径（兼容性保留）
     runtime_dir="$web_dir/server/Application/Runtime"
     [[ -d $runtime_dir ]] || mkdir -p $runtime_dir
+    # 新版 Slim 4 路径
+    runtime_dir_new="$web_dir/server/app/Runtime"
+    [[ -d $runtime_dir_new ]] || mkdir -p $runtime_dir_new
     chown -R 1000:1000 \
         $web_dir/Sqlite \
         $web_dir/Public/Uploads \
         $web_dir/install \
-        $runtime_dir
+        $runtime_dir \
+        $runtime_dir_new
     # 确保 install/ajax.php 中提到的文件有写入权限
     chmod 666 "$web_dir/server/Application/Home/Conf/config.php"
     chmod 666 "$web_dir/web/index.html"

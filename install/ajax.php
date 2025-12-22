@@ -24,7 +24,6 @@ if (!$check_result['status']) {
 // 额外检查英文环境下需要的文件权限
 if ($lang == 'en') {
     $en_files = [
-        "../server/Application/Home/Conf/config.php" => L("not_writable_home_config"),
         "../web/index.html" => L("not_writable_web_docconfig"),
         "../web_src/index.html" => L("not_writable_web_src_docconfig")
     ];

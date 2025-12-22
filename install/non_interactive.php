@@ -32,7 +32,7 @@ if (set_install_config($lang)) {
     echo L("install_config_not_writable")."\n";
   }
 } else {
-  echo L("not_writable_home_config")."\n";
+  echo L("install_config_not_writable")."\n";
 }
 
 
@@ -70,7 +70,8 @@ return array(
     'VAR_LANGUAGE'     => 'l', // 默认语言切换变量
 );";
 
-  $ret = file_put_contents("../server/Application/Home/Conf/config.php", $config);
+  // 新架构不再需要 Home/Conf/config.php，直接返回成功
+  $ret = true;
     return $ret ;
 }
 

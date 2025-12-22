@@ -2,7 +2,11 @@
 
 Frontend: Vue + ElementUI
 
-Backend: In order to be compatible with the low-level php runtime environment (compatible with 5.3), the conservative ThinkPHP 3.2.3 framework is used.
+Backend: PHP + Slim 4 + Illuminate/Database
+- Architecture: Slim 4 micro-framework + Illuminate/Database ORM
+- Core features: PSR-7 HTTP messages, PSR-11 dependency injection, PSR-15 middleware
+- PHP requirement: PHP 7.4+ (recommended 8.0+)
+- Compatibility: Fully compatible with existing API interfaces and URL formats (including `/server/index.php?s=...`)
 
 Database: ShowDoc comes with a file database (/Sqlite/showdoc.db.php), no need to manually install the database
 
@@ -41,13 +45,17 @@ Mainly related directories and files
 
 ```
 
-Server/Application/Api/ //Application directory, basically all background apis are placed here
+Server/app/Api/Controller/ //API controllers directory, all background APIs are placed here
 
-Server/Application/Runtime/Logs //If there is an error log, it will print out the browser directly or print it here.
+Server/app/Common/Helper/ //Helper classes directory (Security, HttpHelper, FileHelper, etc.)
 
-Public/Uploads //The uploaded image is placed here
+Server/app/Model/ //Model classes directory (User, Item, Page, etc.)
 
-Server/Application/Api/Lang //Backend language pack
+Server/app/Runtime/Logs/ //Error logs directory, errors will be printed to browser or logged here
+
+Public/Uploads/ //Uploaded images are placed here
+
+Server/app/Api/Lang/ //Backend language pack
 
 ```
 

@@ -19,10 +19,9 @@ return array(
   "lock"=>'ShowDoc has been installed！If you want to reinstall,please delete file /install/install.lock ',
   "not_writable_install"=>' Directory install is not writable !',
   "not_writable_upload"=>'Directory Public/Uploads/  is not writable !',
-  "not_writable_runtime"=>'Directory server/Application/Runtime is not writable !',
-  "not_writable_server_runtime"=>'Directory server/Application/Runtime is not writable !',
-  "not_writable_config"=>'File server/Application/Common/Conf/config.php is not writable !',
-  "not_writable_home_config"=>'File server/Application/Home/Conf/config.php is not writable !',
+  "not_writable_runtime"=>'Directory server/app/Runtime is not writable !',
+  "not_writable_server_runtime"=>'Directory server/app/Runtime is not writable !',
+  "not_writable_config"=>'File server/app/Common/Conf/config.php is not writable !',
   "not_writable_sqlite"=>'Directory Sqlite is not writable !',
   "not_writable_sqlite_db"=>'File Sqlite/showdoc.db.php is not writable !',
   "not_writable_web_docconfig"=>'File web/index.html is not writable !',
@@ -34,5 +33,5 @@ return array(
   "create_table_fail"=>'Fail to create table',
   "install_config_not_writable"=>'Fail to write config file',
 
-  "require_php_version" => "require PHP > 5.3.0 ",
+  "require_php_version" => "require PHP >= 7.4.0",
   );

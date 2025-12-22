@@ -19,10 +19,9 @@ return array(
   "lock"=>'本程序已经安装过！如果要解除安装锁定，则可删除install目录下的install.lock文件后再重新访问本页面',
   "not_writable_install"=>'请赋予 install 目录以可写权限！',
   "not_writable_upload"=>'请赋予 Public/Uploads/ 目录以可写权限！',
-  "not_writable_runtime"=>'请赋予 server/Application/Runtime 目录以可写权限！',
-  "not_writable_server_runtime"=>'请赋予 server/Application/Runtime 目录以可写权限！',
-  "not_writable_config"=>'请赋予 server/Application/Common/Conf/config.php 文件以可写权限！',
-  "not_writable_home_config"=>'请赋予 server/Application/Home/Conf/config.php 文件以可写权限！<br>(如果你确定赋予了文件权限但却一直看到此信息，则可考虑关闭selinux试试)',
+  "not_writable_runtime"=>'请赋予 server/app/Runtime 目录以可写权限！',
+  "not_writable_server_runtime"=>'请赋予 server/app/Runtime 目录以可写权限！',
+  "not_writable_config"=>'请赋予 server/app/Common/Conf/config.php 文件以可写权限！',
   "not_writable_sqlite"=>'请赋予 Sqlite 目录以可写权限！',
   "not_writable_sqlite_db"=>'请赋予 Sqlite/showdoc.db.php 以可写权限！',
   "not_writable_web_docconfig"=>'请赋予 web/index.html 以可写权限！',
@@ -34,5 +33,5 @@ return array(
   "create_table_fail"=>'创建数据库表失败！',
   "install_config_not_writable"=>'安装失败，配置文件写入错误！',
 
-  "require_php_version" => "需要PHP5.3.0以上版本",
+  "require_php_version" => "需要PHP7.4.0以上版本",
   );

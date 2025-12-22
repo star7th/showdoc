@@ -69,7 +69,7 @@ function check_writable($path, $errorMessage) {
  * @param string $path 目录路径
  * @return boolean 是否成功
  */
-function clear_runtime($path = "../server/Application/Runtime"){  
+function clear_runtime($path = "../server/app/Runtime"){  
   if (!is_dir($path)) {  
     return false;  
   }  
@@ -131,8 +131,8 @@ function check_environment() {
     'messages' => []
   ];
 
-  // 检测PHP版本
-  if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+  // 检测PHP版本（开源版要求 PHP >= 7.4）
+  if (version_compare(PHP_VERSION, '7.4.0', '<')) {
     $result['status'] = false;
     $result['messages'][] = L('require_php_version');
   }
@@ -141,7 +141,7 @@ function check_environment() {
   $directories = [
     './' => L("not_writable_install"),
     '../Public/Uploads' => L("not_writable_upload"),
-    '../server/Application/Runtime' => L("not_writable_server_runtime"),
+    '../server/app/Runtime' => L("not_writable_server_runtime"),
     '../Sqlite' => L("not_writable_sqlite"),
     '../Sqlite/showdoc.db.php' => L("not_writable_sqlite_db")
   ];

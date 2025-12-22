@@ -25,6 +25,18 @@ const request = (
     }
   }
 
+  // 兼容受访问密码保护的项目：
+  // 后端的 checkItemVisit 通过 _item_pwd 参数判断是否已输入正确的项目密码，
+  // 旧版通过 PHP session 记住，现在在前端用 sessionStorage 记住并在每次请求时自动携带。
+  try {
+    const itemPwd = sessionStorage.getItem('_item_pwd')
+    if (itemPwd) {
+      data._item_pwd = itemPwd
+    }
+  } catch (e) {
+    // sessionStorage 不可用时静默忽略
+  }
+
   let axiosConfig = {
     url: url,
     method: method,
