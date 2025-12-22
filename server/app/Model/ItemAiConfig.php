@@ -15,7 +15,7 @@ class ItemAiConfig
     public static function getConfig(int $itemId): ?array
     {
         if ($itemId <= 0) {
-            return null;
+            return ['enabled' => 0, 'dialog_collapsed' => 1];
         }
 
         $row = DB::table('item_ai_config')
@@ -23,10 +23,15 @@ class ItemAiConfig
             ->first();
 
         if (!$row) {
-            return null;
+            return ['enabled' => 0, 'dialog_collapsed' => 1];
         }
 
         $config = (array) $row;
+        
+        // 确保 dialog_collapsed 字段存在（如果数据库中没有则使用默认值）
+        if (!isset($config['dialog_collapsed'])) {
+            $config['dialog_collapsed'] = 1;
+        }
         
         // 解析 JSON 配置
         if (!empty($config['config'])) {
