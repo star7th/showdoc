@@ -739,27 +739,11 @@ class ItemController extends BaseController
             return $this->error($response, 10303, '您没有管理权限');
         }
 
-        // 检查个性域名
-        if (!empty($itemDomain)) {
-            if (!ctype_alnum($itemDomain) || is_numeric($itemDomain)) {
-                return $this->error($response, 10305, '个性域名只能是字母或数字的组合');
-            }
-
-            $existing = DB::table('item')
-                ->where('item_domain', $itemDomain)
-                ->where('item_id', '!=', $itemId)
-                ->first();
-
-            if ($existing) {
-                return $this->error($response, 10304, '个性域名已经存在');
-            }
-        }
 
         // 准备更新数据
         $saveData = [
             'item_name'        => $itemName,
             'item_description' => $itemDescription,
-            'item_domain'      => $itemDomain,
             'password'         => $password,
         ];
 

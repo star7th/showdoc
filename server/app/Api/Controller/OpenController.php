@@ -91,6 +91,7 @@ class OpenController extends BaseController
         $apiToken = $this->getParam($request, 'api_token', '');
         $tableInfo = $this->getParam($request, 'table_info', '');
         $tableDetail = $this->getParam($request, 'table_detail', '');
+        $tableIndex = $this->getParam($request, 'table_index', '');
         $sNumber = $this->getParam($request, 's_number', 99);
         $catName = $this->getParam($request, 'cat_name', '');
 
@@ -110,7 +111,8 @@ class OpenController extends BaseController
         $catName = str_replace(PHP_EOL, '', $catName);
         $tableInfo = str_replace("_this_and_change_", "&", $tableInfo);
         $tableDetail = str_replace("_this_and_change_", "&", $tableDetail);
-        $tables = $this->analyzeDbStructureToArray($tableInfo, $tableDetail);
+        $tableIndex = str_replace("_this_and_change_", "&", $tableIndex);
+        $tables = $this->analyzeDbStructureToArray($tableInfo, $tableDetail, $tableIndex);
 
         $result = false;
         if (!empty($tables)) {
@@ -136,7 +138,7 @@ class OpenController extends BaseController
     /**
      * 解析数据库结构为数组
      */
-    private function analyzeDbStructureToArray(string $tableInfo, string $tableDetail): array
+    private function analyzeDbStructureToArray(string $tableInfo, string $tableDetail, string $tableIndex = ''): array
     {
         $tables = [];
 
@@ -186,11 +188,58 @@ class OpenController extends BaseController
             }
         }
 
+        // 解析 table_index
+        if (!empty($tableIndex)) {
+            $array = explode("\n", $tableIndex);
+            if (!empty($array)) {
+                foreach ($array as $key => $value) {
+                    if ($key == 0) {
+                        continue; // 跳过表头
+                    }
+                    $array2 = explode("\t", $value);
+                    if (empty($array2[0]) || empty($array2[1])) {
+                        continue;
+                    }
+                    $tableName = str_replace(PHP_EOL, '', $array2[0]);
+                    $indexName = str_replace(PHP_EOL, '', $array2[1]);
+                    $columnName = str_replace(PHP_EOL, '', $array2[2] ?? '');
+                    $seqInIndex = (int)($array2[3] ?? 0);
+                    $nonUnique = (int)($array2[4] ?? 1);
+                    $indexType = str_replace(PHP_EOL, '', $array2[5] ?? '');
+                    $indexComment = str_replace(PHP_EOL, '', $array2[6] ?? '');
+
+                    if (!isset($tables[$tableName])) {
+                        $tables[$tableName] = [
+                            'table_name'    => $tableName,
+                            'table_comment' => '',
+                        ];
+                    }
+                    if (!isset($tables[$tableName]['indexes'])) {
+                        $tables[$tableName]['indexes'] = [];
+                    }
+                    if (!isset($tables[$tableName]['indexes'][$indexName])) {
+                        $tables[$tableName]['indexes'][$indexName] = [
+                            'index_name'    => $indexName,
+                            'non_unique'    => $nonUnique,
+                            'index_type'    => $indexType,
+                            'index_comment' => $indexComment,
+                            'columns'       => [],
+                        ];
+                    }
+                    // 按序号添加列
+                    $tables[$tableName]['indexes'][$indexName]['columns'][$seqInIndex] = $columnName;
+                }
+            }
+        }
+
         // 生成 markdown 内容
         if (!empty($tables)) {
             foreach ($tables as $key => $value) {
                 $markdown = '';
                 $markdown .= "- {$value['table_comment']} \n \n";
+                
+                // 字段表格
+                $markdown .= "## 字段说明 \n \n";
                 $markdown .= "|字段|类型|允许空|默认|注释| \n ";
                 $markdown .= "|:----    |:-------    |:--- |----|------      | \n ";
                 if (!empty($value['columns'])) {
@@ -198,6 +247,22 @@ class OpenController extends BaseController
                         $markdown .= "|{$value2['column_name']} |{$value2['column_type']} |{$value2['is_nullable']} | {$value2['default']} | {$value2['column_comment']}  | \n ";
                     }
                 }
+                
+                // 索引表格
+                if (!empty($value['indexes'])) {
+                    $markdown .= " \n \n## 索引说明 \n \n";
+                    $markdown .= "|索引名|类型|唯一|字段|注释| \n ";
+                    $markdown .= "|:----    |:-------    |:--- |----|------      | \n ";
+                    foreach ($value['indexes'] as $index) {
+                        // 按序号排序列
+                        ksort($index['columns']);
+                        $columnsStr = implode(', ', $index['columns']);
+                        $uniqueStr = $index['non_unique'] == 0 ? '是' : '否';
+                        $indexComment = !empty($index['index_comment']) ? $index['index_comment'] : '无';
+                        $markdown .= "|{$index['index_name']} |{$index['index_type']} |{$uniqueStr} | {$columnsStr} | {$indexComment}  | \n ";
+                    }
+                }
+                
                 $tables[$key]['markdown'] = $markdown;
             }
         }
