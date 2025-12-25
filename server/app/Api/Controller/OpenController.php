@@ -155,8 +155,10 @@ class OpenController extends BaseController
                 }
                 $tableName = str_replace(PHP_EOL, '', $array2[0]);
                 $tables[$array2[0]] = [
-                    'table_name'    => $tableName,
-                    'table_comment' => $array2[1] ?? '',
+                    'table_name'     => $tableName,
+                    'table_comment'  => $array2[1] ?? '',
+                    'engine'         => $array2[2] ?? '',
+                    'table_collation' => $array2[3] ?? '',
                 ];
             }
         }
@@ -174,8 +176,10 @@ class OpenController extends BaseController
                 }
                 if (!isset($tables[$array2[0]])) {
                     $tables[$array2[0]] = [
-                        'table_name'    => $array2[0],
-                        'table_comment' => '',
+                        'table_name'     => $array2[0],
+                        'table_comment'  => '',
+                        'engine'         => '',
+                        'table_collation' => '',
                     ];
                 }
                 $tables[$array2[0]]['columns'][$array2[1]] = [
@@ -210,8 +214,10 @@ class OpenController extends BaseController
 
                     if (!isset($tables[$tableName])) {
                         $tables[$tableName] = [
-                            'table_name'    => $tableName,
-                            'table_comment' => '',
+                            'table_name'     => $tableName,
+                            'table_comment'  => '',
+                            'engine'         => '',
+                            'table_collation' => '',
                         ];
                     }
                     if (!isset($tables[$tableName]['indexes'])) {
@@ -262,7 +268,20 @@ class OpenController extends BaseController
                         $markdown .= "|{$index['index_name']} |{$index['index_type']} |{$uniqueStr} | {$columnsStr} | {$indexComment}  | \n ";
                     }
                 }
-                
+
+                // 表基本信息
+                if (!empty($value['engine']) || !empty($value['table_collation'])) {
+                    $markdown .= " \n \n## 表基本信息 \n \n";
+                    $markdown .= "|属性|值| \n ";
+                    $markdown .= "|:----|----| \n ";
+                    if (!empty($value['engine'])) {
+                        $markdown .= "|引擎|{$value['engine']}| \n ";
+                    }
+                    if (!empty($value['table_collation'])) {
+                        $markdown .= "|字符集排序规则|{$value['table_collation']}| \n ";
+                    }
+                }
+
                 $tables[$key]['markdown'] = $markdown;
             }
         }

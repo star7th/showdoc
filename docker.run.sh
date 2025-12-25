@@ -167,6 +167,14 @@ docker_run() {
             backup_dbfile
             sleep 5
         fi
+        ## 每小时修正一次上传目录权限（兜底方案，确保 nginx 可读）
+        if [[ $(date -u +%H%M) =~ 00$ ]]; then
+            upload_dir="$web_dir/Public/Uploads"
+            if [[ -d "$upload_dir" ]]; then
+                chmod -R 755 "$upload_dir"
+                find "$upload_dir" -type f -exec chmod 644 {} \;
+            fi
+        fi
         sleep 55
     done &
     pids+=("$!")
@@ -190,6 +198,8 @@ docker_run() {
 
     ## 启动 supervisor 服务
     echo "Starting nginx and php-fpm..."
+    ## 在启动 supervisord 之前设置 umask，确保 nginx 和 php-fpm 都使用 0022
+    umask 0022
     supervisord -c /opt/docker/etc/supervisor.conf &
     pids+=("$!")
 
