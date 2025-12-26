@@ -1,11 +1,11 @@
-// Import Font Awesome 5 Pro
-$fa-font-path: '~@fortawesome/fontawesome-pro/webfonts';
+// Import Font Awesome 6 Pro (本地资源)
+$fa-font-path: './fontawesome/webfonts';
 // $fa-css-prefix: 'el-icon-fa';
-@import '~@fortawesome/fontawesome-pro/scss/fontawesome.scss';
-@import '~@fortawesome/fontawesome-pro/scss/light.scss';
-@import '~@fortawesome/fontawesome-pro/scss/regular.scss';
-@import '~@fortawesome/fontawesome-pro/scss/solid.scss';
-// @import '~@fortawesome/fontawesome-pro/scss/brands.scss';
+@import './fontawesome/scss/fontawesome.scss';
+@import './fontawesome/scss/light.scss';
+@import './fontawesome/scss/regular.scss';
+@import './fontawesome/scss/solid.scss';
+// @import './fontawesome/scss/brands.scss';
 
 // Override Element UI's icon font
 // .fal,
@@ -16,4 +16,4 @@ $fa-font-path: '~@fortawesome/fontawesome-pro/webfonts';
 
 // .fab {
 //   font-family: 'Font Awesome 5 Brands' !important;
-// } 
+// }

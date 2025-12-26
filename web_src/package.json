@@ -14,7 +14,6 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-pro": "^6.4.0",
     "axios": "^0.21.3",
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",

@@ -1,0 +1,65 @@
+/*!
+ * Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License)
+ * Copyright 2023 Fonticons, Inc.
+ */
+@import 'functions';
+@import 'variables';
+
+:root, :host {
+  --#{$fa-css-prefix}-style-family-duotone: 'Font Awesome 6 Duotone';
+  --#{$fa-css-prefix}-font-duotone: normal 900 1em/1 'Font Awesome 6 Duotone';
+}
+
+@font-face {
+  font-family: 'Font Awesome 6 Duotone';
+  font-style: normal;
+  font-weight: 900;
+  font-display: $fa-font-display;
+  src: url('#{$fa-font-path}/fa-duotone-900.woff2') format('woff2'),
+    url('#{$fa-font-path}/fa-duotone-900.ttf') format('truetype');
+}
+
+.fad,
+.#{$fa-css-prefix}-duotone {
+  position: relative;
+  font-weight: 900;
+  letter-spacing: normal;
+}
+
+.fad::before,
+.#{$fa-css-prefix}-duotone::before {
+  position: absolute;
+  color: var(--#{$fa-css-prefix}-primary-color, inherit);
+  opacity: var(--#{$fa-css-prefix}-primary-opacity, #{$fa-primary-opacity});
+}
+
+.fad::after,
+.#{$fa-css-prefix}-duotone::after {
+  color: var(--#{$fa-css-prefix}-secondary-color, inherit);
+  opacity: var(--#{$fa-css-prefix}-secondary-opacity, #{$fa-secondary-opacity});
+}
+
+.#{$fa-css-prefix}-swap-opacity .fad::before,
+.#{$fa-css-prefix}-swap-opacity .fa-duotone::before,
+.fad.#{$fa-css-prefix}-swap-opacity::before,
+.fa-duotone.#{$fa-css-prefix}-swap-opacity::before {
+  opacity: var(--#{$fa-css-prefix}-secondary-opacity, #{$fa-secondary-opacity});
+}
+
+.#{$fa-css-prefix}-swap-opacity .fad::after,
+.#{$fa-css-prefix}-swap-opacity .fa-duotone::after,
+.fad.#{$fa-css-prefix}-swap-opacity::after,
+.fa-duotone.#{$fa-css-prefix}-swap-opacity::after {
+  opacity: var(--#{$fa-css-prefix}-primary-opacity, #{$fa-primary-opacity});
+}
+
+.fad.#{$fa-css-prefix}-inverse,
+.#{$fa-css-prefix}-duotone.#{$fa-css-prefix}-inverse {
+  color: var(--#{$fa-css-prefix}-inverse, $fa-inverse);
+}
+
+.fad.#{$fa-css-prefix}-stack-1x, .fad.#{$fa-css-prefix}-stack-2x,
+.#{$fa-css-prefix}-duotone.#{$fa-css-prefix}-stack-1x, .#{$fa-css-prefix}-duotone.#{$fa-css-prefix}-stack-2x {
+  position: absolute;
+}
