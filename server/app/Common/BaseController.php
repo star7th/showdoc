@@ -272,8 +272,13 @@ abstract class BaseController
     /**
      * 业务成功统一返回结构：
      * { "error_code": 0, "data": {...} }
+     * 
+     * @param Response $response 响应对象
+     * @param mixed $data 返回数据，可以是数组、字符串或其他可序列化的类型
+     * @param int $status HTTP 状态码
+     * @return Response
      */
-    protected function success(Response $response, array $data = [], int $status = 200): Response
+    protected function success(Response $response, mixed $data = [], int $status = 200): Response
     {
         return $this->json($response, [
             'error_code' => 0,
