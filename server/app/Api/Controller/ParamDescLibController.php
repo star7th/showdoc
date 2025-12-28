@@ -271,7 +271,7 @@ class ParamDescLibController extends BaseController
 
         $uid = (int) ($user['uid'] ?? 0);
         $itemId = $this->getParam($request, 'itemId', 0);
-        $entries = $this->getParam($request, 'entries', []);
+        $entries = $this->getParam($request, 'entries');
 
         // 兼容前端以 JSON 字符串提交 entries 的情况
         if (is_string($entries)) {
