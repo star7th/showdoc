@@ -197,17 +197,28 @@ class CommonController extends BaseController
     /**
      * 公共文件访问兼容入口，对应旧版 Api/Common/visitFile。
      *
-     * 现在统一通过 AttachmentController::visitFile 处理，这里仅做 302 重定向，
-     * 保持原有 URL 兼容。
+     * 现在统一通过 AttachmentController::visitFile 处理。
+     *
+     * 兼容旧版路由：home/common/visitfile/sign/:sign -> api/attachment/visitFile?sign=:1
+     * 支持路径参数：/api/common/visitfile/sign/0653ae51cee82aa3a539a0cc95c8957f
+     * 也支持查询参数：/api/common/visitfile?sign=0653ae51cee82aa3a539a0cc95c8957f
+     *
+     * 注意：直接调用 AttachmentController::visitFile，避免 302 重定向造成的循环
      */
     public function visitFile(Request $request, Response $response): Response
     {
-        $params = $request->getQueryParams();
-        $url    = UrlHelper::serverUrl('api/attachment/visitFile', $params);
+        // 同时支持路径参数（兼容旧版路由：sign/:sign）
+        $sign = $this->getParam($request, 'sign', '');
+        if ($sign !== '') {
+            // 将路径参数合并到查询参数中
+            $queryParams = $request->getQueryParams();
+            $queryParams['sign'] = $sign;
+            $request = $request->withQueryParams($queryParams);
+        }
 
-        return $response
-            ->withHeader('Location', $url)
-            ->withStatus(302);
+        // 直接创建 AttachmentController 实例并调用 visitFile，避免重定向循环
+        $controller = new \App\Api\Controller\AttachmentController();
+        return $controller->visitFile($request, $response);
     }
 
 }
