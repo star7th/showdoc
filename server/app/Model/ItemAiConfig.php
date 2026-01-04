@@ -10,9 +10,9 @@ class ItemAiConfig
      * 获取项目的 AI 配置
      *
      * @param int $itemId 项目 ID
-     * @return array|null AI 配置信息
+     * @return array AI 配置信息
      */
-    public static function getConfig(int $itemId): ?array
+    public static function getConfig(int $itemId): array
     {
         if ($itemId <= 0) {
             return ['enabled' => 0, 'dialog_collapsed' => 1];
@@ -26,22 +26,11 @@ class ItemAiConfig
             return ['enabled' => 0, 'dialog_collapsed' => 1];
         }
 
-        $config = (array) $row;
-        
-        // 确保 dialog_collapsed 字段存在（如果数据库中没有则使用默认值）
-        if (!isset($config['dialog_collapsed'])) {
-            $config['dialog_collapsed'] = 1;
-        }
-        
-        // 解析 JSON 配置
-        if (!empty($config['config'])) {
-            $decoded = json_decode($config['config'], true);
-            if (is_array($decoded)) {
-                $config = array_merge($config, $decoded);
-            }
-        }
-
-        return $config;
+        return [
+            'enabled'           => (int) ($row->enabled ?? 0),
+            'dialog_collapsed'  => (int) ($row->dialog_collapsed ?? 1),
+            'welcome_message'   => (string) ($row->welcome_message ?? ''),
+        ];
     }
 
     /**
@@ -58,32 +47,47 @@ class ItemAiConfig
         }
 
         try {
-            $configJson = json_encode($config, JSON_UNESCAPED_UNICODE);
-            
             $exists = DB::table('item_ai_config')
                 ->where('item_id', $itemId)
                 ->exists();
 
+            // 准备更新数据
+            $saveData = [
+                'updatetime' => time(),
+            ];
+
+            // 只更新提供的字段
+            if (isset($config['enabled'])) {
+                $saveData['enabled'] = (int) $config['enabled'];
+            }
+            if (isset($config['dialog_collapsed'])) {
+                $saveData['dialog_collapsed'] = (int) $config['dialog_collapsed'];
+            }
+            if (isset($config['welcome_message'])) {
+                $saveData['welcome_message'] = (string) $config['welcome_message'];
+            }
+
+            // 如果没有任何字段需要更新（除了 updatetime），返回 false
+            if (count($saveData) <= 1) {
+                return false;
+            }
+
             if ($exists) {
                 DB::table('item_ai_config')
                     ->where('item_id', $itemId)
-                    ->update([
-                        'config' => $configJson,
-                        'update_time' => time(),
-                    ]);
+                    ->update($saveData);
             } else {
-                DB::table('item_ai_config')->insert([
-                    'item_id' => $itemId,
-                    'config' => $configJson,
-                    'addtime' => time(),
-                    'update_time' => time(),
-                ]);
+                $saveData['item_id'] = $itemId;
+                $saveData['addtime'] = time();
+                DB::table('item_ai_config')->insert($saveData);
             }
 
             return true;
         } catch (\Throwable $e) {
+            // 记录异常信息，便于调试
+            error_log('ItemAiConfig::saveConfig failed: ' . $e->getMessage());
+            error_log($e->getTraceAsString());
             return false;
         }
     }
 }
-

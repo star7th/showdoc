@@ -1273,7 +1273,7 @@ class ItemController extends BaseController
         }
 
         $welcomeMessage = $this->getParam($request, 'welcome_message', null);
-        if ($welcomeMessage !== null) {
+        if ($welcomeMessage !== null && $welcomeMessage !== '') {
             $data['welcome_message'] = (string) $welcomeMessage;
         }
 

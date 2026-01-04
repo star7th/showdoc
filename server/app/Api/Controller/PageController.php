@@ -422,13 +422,19 @@ class PageController extends BaseController
             try {
                 // 检查 AI 知识库功能是否启用
                 $itemAiConfig = \App\Model\ItemAiConfig::getConfig($itemId);
-                if (!$itemAiConfig || empty($itemAiConfig['ai_service_url']) || empty($itemAiConfig['ai_service_token'])) {
+                if (empty($itemAiConfig['enabled'])) {
                     // AI 功能未启用，不触发索引更新
                     return;
                 }
 
-                $aiServiceUrl = $itemAiConfig['ai_service_url'];
-                $aiServiceToken = $itemAiConfig['ai_service_token'];
+                // 从全局配置获取 AI 服务地址和 Token
+                $aiServiceUrl = \App\Model\Options::get('ai_service_url', '');
+                $aiServiceToken = \App\Model\Options::get('ai_service_token', '');
+
+                if (empty($aiServiceUrl) || empty($aiServiceToken)) {
+                    // AI 服务未配置，不触发索引更新
+                    return;
+                }
 
                 // 触发整个项目的索引重建（异步）
                 \App\Common\Helper\AiHelper::rebuild($itemId, $aiServiceUrl, $aiServiceToken);
@@ -454,13 +460,19 @@ class PageController extends BaseController
         try {
             // 检查 AI 知识库功能是否启用
             $itemAiConfig = \App\Model\ItemAiConfig::getConfig($itemId);
-            if (!$itemAiConfig || empty($itemAiConfig['ai_service_url']) || empty($itemAiConfig['ai_service_token'])) {
+            if (empty($itemAiConfig['enabled'])) {
                 // AI 功能未启用，不触发索引更新
                 return;
             }
 
-            $aiServiceUrl = $itemAiConfig['ai_service_url'];
-            $aiServiceToken = $itemAiConfig['ai_service_token'];
+            // 从全局配置获取 AI 服务地址和 Token
+            $aiServiceUrl = \App\Model\Options::get('ai_service_url', '');
+            $aiServiceToken = \App\Model\Options::get('ai_service_token', '');
+
+            if (empty($aiServiceUrl) || empty($aiServiceToken)) {
+                // AI 服务未配置，不触发索引更新
+                return;
+            }
 
             // 如果是单个页面更新，可以只更新该页面；如果是创建或需要全量重建，则重建整个项目索引
             // 这里简化处理：页面保存后触发整个项目的索引重建（异步）
@@ -714,13 +726,19 @@ class PageController extends BaseController
                 try {
                     // 检查 AI 知识库功能是否启用
                     $itemAiConfig = \App\Model\ItemAiConfig::getConfig($itemId);
-                    if (!$itemAiConfig || empty($itemAiConfig['ai_service_url']) || empty($itemAiConfig['ai_service_token'])) {
+                    if (empty($itemAiConfig['enabled'])) {
                         // AI 功能未启用，不触发索引更新
                         return;
                     }
 
-                    $aiServiceUrl = $itemAiConfig['ai_service_url'];
-                    $aiServiceToken = $itemAiConfig['ai_service_token'];
+                    // 从全局配置获取 AI 服务地址和 Token
+                    $aiServiceUrl = \App\Model\Options::get('ai_service_url', '');
+                    $aiServiceToken = \App\Model\Options::get('ai_service_token', '');
+
+                    if (empty($aiServiceUrl) || empty($aiServiceToken)) {
+                        // AI 服务未配置，不触发索引更新
+                        return;
+                    }
 
                     // 删除操作：触发整个项目的索引重建（异步）
                     \App\Common\Helper\AiHelper::rebuild($itemId, $aiServiceUrl, $aiServiceToken);
