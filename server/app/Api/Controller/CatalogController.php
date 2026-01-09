@@ -606,6 +606,8 @@ class CatalogController extends BaseController
      * @param int   $fromItemId 源项目 ID
      * @param int   $toItemId   目标项目 ID
      * @param array $idMap      源目录 ID => 新目录 ID 映射
+     * @param array $visited    已访问的源目录 ID 列表（用于检测循环引用）
+     * @param int   $depth      当前递归深度
      * @return array            返回新创建的根目录信息
      */
     private function copyCatalogTree(
@@ -614,8 +616,31 @@ class CatalogController extends BaseController
         int $destParentId,
         int $fromItemId,
         int $toItemId,
-        array &$idMap
+        array &$idMap,
+        array $visited = [],
+        int $depth = 0
     ): array {
+        // 安全检查：防止无限递归
+        $maxDepth = 100; // 最大层级深度
+        if ($depth >= $maxDepth) {
+            // 超过最大深度，记录日志并停止递归
+            \App\Common\Helper\LogHelper::warning(
+                "Catalog copy exceeded max depth {$maxDepth} at cat_id {$srcCatId}, item_id: {$fromItemId} -> {$toItemId}",
+                'Catalog'
+            );
+            return [];
+        }
+
+        // 循环引用检测：防止复制循环引用的目录结构
+        if (in_array($srcCatId, $visited)) {
+            // 检测到循环引用，记录日志并跳过
+            \App\Common\Helper\LogHelper::warning(
+                "Circular reference detected in catalog copy: cat_id {$srcCatId}, item_id: {$fromItemId} -> {$toItemId}, path: " . implode(' -> ', $visited),
+                'Catalog'
+            );
+            return [];
+        }
+        $visited[] = $srcCatId;
         $srcCat = \App\Model\Catalog::findById($srcCatId);
         if (!$srcCat) {
             return [];
