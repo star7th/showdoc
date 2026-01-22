@@ -116,6 +116,8 @@
           @upload-error="handleUploadError"
         />
       </div>
+      <!-- 隐藏的pastebin元素，用于提取HTML的纯文本 -->
+      <div id="pastebin" contenteditable="true"></div>
     </div>
   </EditorModal>
 </template>
@@ -751,23 +753,49 @@ const handlePaste = async (e: ClipboardEvent) => {
         item.getAsString(resolve)
       })
 
-      const text = htmlData.replace(/<[^>]+>/g, '')
-      if (text.length < 200) {
-        insertAtCursor(text)
-      } else {
-        // 使用公共弹窗组件询问用户是否转Markdown
-        const convertToMarkdown = await ConfirmModal({
-          msg: t('page.paste_html_tips'),
-          confirmText: t('page.past_html_markdown'),
-          cancelText: t('page.past_html_text'),
-        })
+      // 使用DOM方式提取纯文本（更准确，能正确处理换行、空白等）
+      const pastebin = document.querySelector('#pastebin') as HTMLElement
+      if (pastebin) {
+        pastebin.innerHTML = htmlData
+        const text = pastebin.innerText || pastebin.textContent || ''
+        pastebin.innerHTML = '' // 清空，避免影响下次使用
 
-        if (convertToMarkdown) {
-          // 简单的HTML转Markdown（这里使用基础转换）
-          const markdown = htmlToMarkdown(htmlData)
-          insertAtCursor(markdown)
-        } else {
+        if (text.length < 200) {
           insertAtCursor(text)
+        } else {
+          // 使用公共弹窗组件询问用户是否转Markdown
+          const convertToMarkdown = await ConfirmModal({
+            msg: t('page.paste_html_tips'),
+            confirmText: t('page.past_html_markdown'),
+            cancelText: t('page.past_html_text'),
+          })
+
+          if (convertToMarkdown) {
+            // 简单的HTML转Markdown（这里使用基础转换）
+            const markdown = htmlToMarkdown(htmlData)
+            insertAtCursor(markdown)
+          } else {
+            insertAtCursor(text)
+          }
+        }
+      } else {
+        // 如果pastebin不存在，降级使用正则方式
+        const text = htmlData.replace(/<[^>]+>/g, '')
+        if (text.length < 200) {
+          insertAtCursor(text)
+        } else {
+          const convertToMarkdown = await ConfirmModal({
+            msg: t('page.paste_html_tips'),
+            confirmText: t('page.past_html_markdown'),
+            cancelText: t('page.past_html_text'),
+          })
+
+          if (convertToMarkdown) {
+            const markdown = htmlToMarkdown(htmlData)
+            insertAtCursor(markdown)
+          } else {
+            insertAtCursor(text)
+          }
         }
       }
       return
@@ -1294,6 +1322,16 @@ onBeforeUnmount(() => {
   padding: 20px 24px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+// 隐藏的pastebin元素，用于提取HTML的纯文本
+#pastebin {
+  opacity: 0.01;
+  width: 100%;
+  height: 1px;
+  position: absolute;
+  left: -9999px;
+  overflow: hidden;
 }
 
 // 响应式
