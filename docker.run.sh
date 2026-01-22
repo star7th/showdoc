@@ -160,6 +160,15 @@ docker_run() {
     chmod 666 "$web_dir/web/index.html"
     chmod 666 "$web_dir/web_src/index.html"
 
+    ## 检查 web/ 目录是否有 index.php，如果没有则创建
+    if [ ! -f "$web_dir/index.php" ]; then
+        echo "Creating $web_dir/index.php..."
+        cat > "$web_dir/index.php" << 'EOF'
+<?php
+echo file_get_contents('index.html');
+EOF
+    fi
+
     ## backup sqlite file every day / 后台进程每日自动备份数据库
     while true; do
         # backup on (20:01 UTC) (04:01 Asia/Shanghai) every day
