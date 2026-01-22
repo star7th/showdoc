@@ -1,13 +1,59 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="renderer" content="webkit"><meta http-equiv="X-UA-Compatible" content="edge"><meta http-equiv="Expires" content="0"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Cache" content="no-cache"><title>ShowDoc</title><meta name="keywords" content=""><meta name="description" content="一个非常适合IT团队的API文档、技术文档工具"><script type="text/javascript">// 挂在window下的全局配置
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,viewport-fit=cover, initial-scale=1.0"
+    />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="edge" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta
+      http-equiv="Cache-control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Cache" content="no-cache" />
+    <title>ShowDoc</title>
+    <meta name="keywords" content="在线API文档 技术文档 数据字典 在线手册" />
+    <meta
+      name="description"
+      content="一个非常适合IT团队的在线API文档、技术文档工具。你可以使用Showdoc来编写在线API文档、技术文档、数据字典、在线手册"
+    />
+    <script type="text/javascript">
+      // ========================================
+      // ShowDoc 开源版 - 全局配置
+      // ========================================
+      // 使用相对路径，支持二级目录部署，无需 Nginx 重写配置
       window.DocConfig = {
-        // "server":'http://127.0.0.1/showdoc/server/index.php?s=',
-        staticPath: './static/',
-        server:
-          window.location.protocol +
-          '//' +
-          window.location.host +
-          window.location.pathname +
-          '../server/index.php?s=',
-        // "lang" :'en'
-        lang: 'zh-cn'
-      }</script><link href="./static/css/app.e37517f230dbd236bf415c5867a08e62.css" rel="stylesheet"></head><body class="grey-bg"><div id="app"></div><script type="text/javascript" src="./static/js/manifest.3ad1d5771e9b13dbdad2.js"></script><script type="text/javascript" src="./static/js/vendor.d00ccad56a5f8101516e.js"></script><script type="text/javascript" src="./static/js/app.b32bb1c6bdfb9f17e181.js"></script></body></html>
+        server: '../server/index.php?s=', // 向上访问 server 目录
+        originalServer: '../server/index.php?s=', // 向上访问 server 目录
+        lang: 'zh-cn',
+        staticPath: './' // 相对路径（指向 web/ 下资源根）
+      }
+    </script>
+    <script type="module" crossorigin src="./assets/index-11376a0b.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/vendor-8fa27e24.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-vue-f1f9849c.js">
+    <link rel="modulepreload" crossorigin href="./assets/components-56538ea1.js">
+    <link rel="modulepreload" crossorigin href="./assets/core-2a040d16.js">
+    <link rel="modulepreload" crossorigin href="./assets/assets-123e6eb8.js">
+    <link rel="stylesheet" href="./assets/vendor-49dc2278.css">
+    <link rel="stylesheet" href="./assets/vendor-vue-e0182f4b.css">
+    <link rel="stylesheet" href="./assets/components-fcaf87da.css">
+    <link rel="stylesheet" href="./assets/assets-2a688d02.css">
+    <link rel="stylesheet" href="./assets/index-726c1082.css">
+  </head>
+
+  <body class="grey-bg">
+    <div class="index-item-block">
+      <div>INDEX_HTML</div>
+      <div>ITEM_HTML</div>
+    </div>
+    <div id="app"></div>
+
+    <!-- 主应用入口 -->
+    
+  </body>
+</html>
