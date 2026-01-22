@@ -161,9 +161,9 @@ docker_run() {
     chmod 666 "$web_dir/web_src/index.html"
 
     ## 检查 web/ 目录是否有 index.php，如果没有则创建
-    if [ ! -f "$web_dir/index.php" ]; then
-        echo "Creating $web_dir/index.php..."
-        cat > "$web_dir/index.php" << 'EOF'
+    if [ ! -f "$web_dir/web/index.php" ]; then
+        echo "Creating $web_dir/web/index.php..."
+        cat > "$web_dir/web/index.php" << 'EOF'
 <?php
 echo file_get_contents('index.html');
 EOF
