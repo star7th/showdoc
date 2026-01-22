@@ -400,6 +400,11 @@ class ItemController extends BaseController
             return $this->error($response, 10312, '需要登录');
         }
 
+        // 获取水印配置
+        $watermarkConfig = \App\Model\Options::get('show_watermark', 0);
+        // 转换，如果是布尔值或者字符串true 或者 1 则返回1，否则返回0
+        $watermarkConfig = $watermarkConfig == true || $watermarkConfig == 'true' || $watermarkConfig == 1 ? 1 : 0;
+
         // 构建返回数据
         // 直接使用数据库返回的原始 item_id，保持数据库配置的类型（字符串），不进行类型转换
         $domain = !empty($item->item_domain) ? $item->item_domain : (string) $item->item_id;
@@ -423,7 +428,7 @@ class ItemController extends BaseController
             'ItemCreator'                => $itemManage, // 兼容字段
             'current_page_id'            => $currentPageId,
             'global_param'               => $globalParam,
-            'show_watermark'             => '0',
+            'show_watermark'             => $watermarkConfig,
             'allow_comment'              => $item->allow_comment ?? 0, // 直接使用数据库返回的原始值
             'allow_feedback'             => $item->allow_feedback ?? 0, // 直接使用数据库返回的原始值
             'ai_knowledge_base_enabled'  => $aiConfig['enabled'] ?? 0, // 直接使用配置返回的原始值

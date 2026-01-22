@@ -33,8 +33,11 @@ class AdminItemController extends BaseController
         }
 
         $itemName = $this->getParam($request, 'item_name', '');
-        $page = $this->getParam($request, 'page', 1);
+        $page = $this->getParam($request, 'page', 1); 
         $count = $this->getParam($request, 'count', 20);
+        $positiveType = $this->getParam($request, 'positive_type', 0);
+        $itemType = $this->getParam($request, 'item_type', 0);
+        $privacyType = $this->getParam($request, 'privacy_type', 0);
         $username = $this->getParam($request, 'username', '');
         $isDel = $this->getParam($request, 'is_del', 0); // 0: 正常；1: 已删除
 
@@ -55,6 +58,20 @@ class AdminItemController extends BaseController
         if (!empty($username)) {
             $likeUser = $this->safeLike($username);
             $query->where('username', 'like', "%{$likeUser}%");
+        }
+
+        // 根据项目类型过滤
+        if ($itemType > 0) {
+            $query->where('item.item_type', $itemType);
+        }
+
+        // 公开项目/私密项目
+        if ($privacyType > 1) {
+            if ($privacyType == 2) {
+                $query->where('item.password', '');
+            } elseif ($privacyType == 3) {
+                $query->where('item.password', '!=', '');
+            }
         }
 
         // 已删除项目按删除时间倒序（使用 last_update_time 作为删除时间），正常项目按创建时间倒序

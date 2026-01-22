@@ -40,8 +40,14 @@ class AdminUpdateController extends BaseController
         $sContent = curl_exec($ch);
         curl_close($ch);
 
-        // 直接输出响应内容（保持与旧版兼容）
-        $response->getBody()->write($sContent);
+        // 转换字段名：将 file_url 改为 url（兼容前端）
+        $resArray = json_decode($sContent, true);
+        if ($resArray && isset($resArray['data']) && isset($resArray['data']['file_url'])) {
+            $resArray['data']['url'] = $resArray['data']['file_url'];
+        }
+
+        // 输出转换后的响应
+        $response->getBody()->write(json_encode($resArray));
         return $response->withHeader('Content-Type', 'application/json');
     }
 
@@ -66,6 +72,14 @@ class AdminUpdateController extends BaseController
 
         $rootPath = dirname(__DIR__, 4);
         $showdocPath = $rootPath . '/';
+
+        // 从配置中获取数据库路径（与 Database.php 保持一致）
+        $dbPath = \App\Common\Helper\Env::get('DB_NAME', $showdocPath . 'Sqlite/showdoc.db.php');
+        
+        // 检查数据库文件是否存在，不存在则使用默认路径
+        if (!file_exists($dbPath)) {
+            $dbPath = $showdocPath . 'Sqlite/showdoc.db.php';
+        }
 
         // 获取当前版本
         $composerPath = $showdocPath . 'composer.json';
@@ -109,9 +123,11 @@ class AdminUpdateController extends BaseController
 
         $tempDir = sys_get_temp_dir() . "/showdoc_update/";
         $zipFile = $tempDir . 'showdoc-' . $versionNum . '.zip';
-        
+
         if (!is_dir($tempDir)) {
-            mkdir($tempDir, 0755, true);
+            if (!mkdir($tempDir, 0755, true)) {
+                return $this->error($response, 10101, '创建临时目录失败，请检查目录权限');
+            }
         }
         
         if (file_exists($zipFile)) {
@@ -167,6 +183,14 @@ class AdminUpdateController extends BaseController
         $rootPath = dirname(__DIR__, 4);
         $showdocPath = $rootPath . '/';
 
+        // 从配置中获取数据库路径（与 Database.php 保持一致）
+        $dbPath = \App\Common\Helper\Env::get('DB_NAME', $showdocPath . 'Sqlite/showdoc.db.php');
+        
+        // 检查数据库文件是否存在，不存在则使用默认路径
+        if (!file_exists($dbPath)) {
+            $dbPath = $showdocPath . 'Sqlite/showdoc.db.php';
+        }
+
         // 进行文件读写权限检查
         if (
             !$this->newIsWriteable($showdocPath)
@@ -194,28 +218,17 @@ class AdminUpdateController extends BaseController
 
             if (version_compare($updateVersion, $curVersion) > 0) {
                 // 复制数据库文件备份
-                $bakName = $showdocPath . 'Sqlite/showdoc.db.bak.' . date("Y-m-d-H-i-s") . '.php';
-                if (file_exists($showdocPath . 'Sqlite/showdoc.db.php')) {
-                    copy($showdocPath . 'Sqlite/showdoc.db.php', $bakName);
+                $bakName = $dbPath . '.bak.' . date("Y-m-d-H-i-s") . '.php';
+                if (file_exists($dbPath)) {
+                    copy($dbPath, $bakName);
                 }
 
-                // 获取原来的语言设置
-                $lang = $this->getLang($showdocPath . "web/index.html");
-
-                // 目录覆盖
+                // 目录覆盖（完整覆盖所有文件）
                 $this->copyDir($showdocPath . 'Public/Uploads/update/', $showdocPath);
-                
-                // 用备份的数据库还原
-                if (file_exists($bakName) && file_exists($showdocPath . 'Sqlite/showdoc.db.php')) {
-                    copy($bakName, $showdocPath . 'Sqlite/showdoc.db.php');
-                }
 
-                // 恢复语言设置
-                if ($lang == 'en') {
-                    $this->replaceFileContent($showdocPath . "web/index.html", "zh-cn", "en");
-                    if (file_exists($showdocPath . "web_src/index.html")) {
-                        $this->replaceFileContent($showdocPath . "web_src/index.html", "zh-cn", "en");
-                    }
+                // 用备份的数据库还原
+                if (file_exists($bakName) && file_exists($dbPath)) {
+                    copy($bakName, $dbPath);
                 }
 
                 $this->delDir($showdocPath . 'Public/Uploads/update/');
@@ -329,45 +342,5 @@ class AdminUpdateController extends BaseController
         }
     }
 
-    /**
-     * 替换文件内容
-     *
-     * @param string $file 文件路径
-     * @param string $from 要替换的内容
-     * @param string $to 替换为的内容
-     */
-    private function replaceFileContent($file, $from, $to)
-    {
-        if (!file_exists($file)) {
-            return;
-        }
-
-        $content = file_get_contents($file);
-        $content2 = str_replace($from, $to, $content);
-        if ($content2) {
-            file_put_contents($file, $content2);
-        }
-    }
-
-    /**
-     * 获取语言设置（从 web/index.html 中读取）
-     *
-     * @param string $file 文件路径
-     * @return string 语言代码（'zh-cn' 或 'en'）
-     */
-    private function getLang($file)
-    {
-        if (!file_exists($file)) {
-            return 'zh-cn';
-        }
-
-        $content = file_get_contents($file);
-        // 检查是否包含 'en' 语言标识
-        if (stripos($content, 'lang="en"') !== false || stripos($content, "lang='en'") !== false) {
-            return 'en';
-        }
-
-        return 'zh-cn';
-    }
 }
 

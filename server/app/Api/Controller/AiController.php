@@ -85,14 +85,6 @@ class AiController extends BaseController
             return $response;
         }
 
-        // 开源版无会员限制，AI 功能对所有用户开放
-
-        // 写日志记录
-        AiContentLog::add([
-            'uid' => $uid,
-            'content' => $content,
-            'reply_content' => '',
-        ]);
 
         // 流式输出：清除所有输出缓冲区，设置 headers，然后直接输出
         $this->sendStream($content);

@@ -5,6 +5,13 @@ if (version_compare(PHP_VERSION, '7.4.0', '<')) {
     die('ShowDoc requires PHP >= 7.4.0. Current version: ' . PHP_VERSION);
 }
 
+// ===== 禁止爬虫和搜索引擎访问 =====
+if (PHP_SAPI !== 'cli') {
+    require __DIR__ . '/app/Common/BotDetector.php';
+    \App\Common\BotDetector::blockBot();
+}
+// ===== 爬虫拦截结束 =====
+
 
 require __DIR__ . '/vendor/autoload.php';
 

@@ -76,6 +76,10 @@ abstract class BaseController
             case 'string':
                 return (string) $value;
             case 'integer':
+                // 如果是布尔值或者字符串 true ，则应该转为1 
+                if (is_bool($value)) {
+                    return $value ? 1 : 0;
+                }
                 return is_numeric($value) ? (int) $value : (int) $default;
             case 'double':
                 return is_numeric($value) ? (float) $value : (float) $default;
