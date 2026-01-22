@@ -1,0 +1,457 @@
+// tabs
+.ant-tabs {
+  .ant-tabs-nav {
+    border-bottom: 1px solid var(--color-interval);
+    margin: 0;
+    &::before {
+      display: none;
+    }
+    .ant-tabs-nav-wrap {
+      margin: 0;
+      &::before {
+        display: none;
+      }
+      .ant-tabs-tab {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: var(--font-size-m);
+        color: var(--color-grey);
+        padding: 0;
+        & + .ant-tabs-tab {
+          margin: 0;
+          &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 1px;
+            height: 20px;
+            background-color: var(--color-interval);
+          }
+        }
+        .ant-tabs-tab-btn {
+          color: var(--color-primary);
+          opacity: 0.7;
+          &:hover {
+            opacity: 1;
+          }
+        }
+        &.ant-tabs-tab-active {
+          .ant-tabs-tab-btn {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    .ant-tabs-ink-bar {
+      height: 3px;
+      color: var(--color-obvious);
+      background-color: var(--color-primary);
+    }
+
+    .ant-tabs-bar {
+      text-align: center;
+      margin: 0;
+    }
+  }
+}
+
+// popover
+.ant-popover {
+  .ant-popover-content {
+    .ant-popover-arrow .ant-popover-arrow-content {
+      background-color: var(--color-default);
+    }
+    .ant-popover-inner {
+      background-color: var(--color-default);
+      border-radius: 16px;
+      .ant-popover-inner-content {
+        font-size: 13px;
+        padding: 0;
+      }
+    } 
+  }
+}
+
+.ant-tree {
+  font-size: var(--font-size-m);
+}
+
+.ant-tooltip {
+  font-size: var(--font-size-s);
+}
+ 
+.ant-spin-dot-item{
+  background-color: var(--color-primary);
+}
+
+// 暗黑主题适配
+[data-theme="dark"] {
+  // Popover 暗黑主题
+  .ant-popover {
+    .ant-popover-content {
+      .ant-popover-arrow .ant-popover-arrow-content {
+        background-color: var(--color-obvious);
+      }
+      .ant-popover-inner {
+        background-color: var(--color-obvious);
+        .ant-popover-inner-content {
+          color: var(--color-primary);
+        }
+      }
+    }
+  }
+
+  // Tooltip 暗黑主题
+  .ant-tooltip {
+    .ant-tooltip-inner {
+      background-color: var(--color-obvious);
+      color: var(--color-primary);
+    }
+    .ant-tooltip-arrow::before {
+      background-color: var(--color-obvious);
+    }
+  }
+
+  // Select 下拉框暗黑主题
+  .ant-select-dropdown {
+    background-color: var(--color-obvious) !important;
+    .ant-select-item {
+      color: var(--color-primary) !important;
+
+      &:hover {
+        background-color: var(--hover-overlay) !important;
+        color: var(--color-primary) !important;
+      }
+
+      &.ant-select-item-option-selected {
+        background-color: var(--hover-overlay) !important;
+        color: var(--color-primary) !important;
+      }
+
+      &.ant-select-item-option-active {
+        background-color: var(--hover-overlay) !important;
+        color: var(--color-primary) !important;
+      }
+    }
+  }
+
+  // Dropdown 暗黑主题
+  .ant-dropdown {
+    background-color: var(--color-obvious);
+    .ant-dropdown-menu {
+      background-color: var(--color-obvious);
+      .ant-dropdown-menu-item {
+        color: var(--color-primary);
+        &:hover {
+          background-color: var(--hover-overlay);
+        }
+      }
+    }
+  }
+
+  // Message 暗黑主题
+  .ant-message {
+    .ant-message-notice-content {
+      background-color: var(--color-obvious);
+      color: var(--color-primary);
+    }
+  }
+
+  // Notification 暗黑主题
+  .ant-notification {
+    .ant-notification-notice {
+      background-color: var(--color-obvious);
+      box-shadow: var(--shadow-default);
+      
+      .ant-notification-notice-message {
+        color: var(--color-primary);
+      }
+      
+      .ant-notification-notice-description {
+        color: var(--color-primary);
+      }
+      
+      .ant-notification-notice-close {
+        color: var(--color-primary);
+        &:hover {
+          color: var(--color-active);
+        }
+      }
+      
+      .ant-notification-notice-icon {
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  // Modal 通用主题适配（自动适配亮色和暗黑主题）
+  .runapi-modal {
+    .ant-modal {
+      .ant-modal-content {
+        background-color: var(--color-obvious) !important;
+        .ant-modal-close {
+          color: var(--color-primary) !important;
+          &:hover {
+            color: var(--color-active) !important;
+          }
+        }
+        .ant-modal-header {
+          background-color: var(--color-obvious) !important;
+          border-bottom-color: var(--color-interval) !important;
+          .ant-modal-title {
+            color: var(--color-primary) !important;
+          }
+        }
+        .ant-modal-body {
+          background-color: var(--color-obvious) !important;
+          color: var(--color-primary) !important;
+          * {
+            color: var(--color-primary) !important;
+          }
+        }
+        .ant-modal-footer {
+          background-color: var(--color-obvious) !important;
+          border-top-color: var(--color-interval) !important;
+        }
+      }
+    }
+    
+    // 按钮样式
+    .ant-btn {
+      color: var(--color-primary) !important;
+      border-color: var(--color-interval) !important;
+      background-color: transparent !important;
+      span, .anticon, > * {
+        color: var(--color-primary) !important;
+      }
+      &:hover {
+        border-color: var(--color-active) !important;
+        color: var(--color-active) !important;
+        span, .anticon, > * {
+          color: var(--color-active) !important;
+        }
+      }
+      &.ant-btn-primary {
+        background-color: var(--color-active) !important;
+        border-color: var(--color-active) !important;
+        color: #fff !important;
+        span, .anticon, > * {
+          color: #fff !important;
+        }
+        &:hover, &:focus, &:active {
+          background-color: var(--color-active) !important;
+          opacity: 0.8;
+          color: #fff !important;
+          span, .anticon, > * {
+            color: #fff !important;
+          }
+        }
+      }
+    }
+  }
+
+  // Tabs 暗黑主题
+  .ant-tabs {
+    .ant-tabs-nav {
+      .ant-tabs-tab {
+        .ant-tabs-tab-btn {
+          color: var(--color-primary);
+        }
+      }
+    }
+  }
+
+  // Select 选择器暗黑主题（选中项和占位符）
+  .ant-select {
+    .ant-select-selector {
+      background-color: transparent !important;
+
+      .ant-select-selection-item {
+        color: var(--color-primary) !important;
+      }
+
+      .ant-select-selection-placeholder {
+        color: var(--color-inactive) !important;
+      }
+    }
+
+    // 下拉箭头 - 全局覆盖 SVG 颜色
+    .ant-select-arrow {
+      .anticon {
+        color: var(--color-primary) !important;
+      }
+    }
+
+    .ant-select-arrow svg {
+      fill: var(--color-primary) !important;
+      color: var(--color-primary) !important;
+    }
+
+    &.ant-select-disabled {
+      .ant-select-selector {
+        .ant-select-selection-item {
+          color: var(--color-grey) !important;
+        }
+      }
+
+      .ant-select-arrow {
+        .anticon {
+          color: var(--color-grey) !important;
+        }
+      }
+
+      .ant-select-arrow svg {
+        fill: var(--color-grey) !important;
+        color: var(--color-grey) !important;
+      }
+    }
+  }
+
+  // 全局覆盖：所有 Select 的箭头 SVG 颜色
+  .ant-select-arrow svg path {
+    fill: var(--color-primary) !important;
+  }
+
+  .ant-select-disabled .ant-select-arrow svg path {
+    fill: var(--color-grey) !important;
+  }
+
+  // Input 输入框暗黑主题
+  .ant-input {
+    background-color: transparent !important; // 默认透明，继承弹窗背景
+    color: var(--color-primary) !important;
+    border-color: var(--color-interval) !important;
+    
+    &::placeholder {
+      color: var(--color-inactive) !important;
+    }
+    
+    &:hover {
+      border-color: var(--color-interval) !important;
+      background-color: var(--color-obvious) !important; // hover 时变亮（深灰），形成对比
+    }
+    
+    &:focus {
+      border-color: var(--color-active) !important;
+      background-color: var(--color-obvious) !important; // focus 时变亮（深灰），形成对比
+    }
+  }
+
+  // Textarea 暗黑主题
+  .ant-input[type="textarea"],
+  textarea.ant-input {
+    background-color: transparent !important; // 默认透明，继承弹窗背景
+    color: var(--color-primary) !important;
+    border-color: var(--color-interval) !important;
+    
+    &::placeholder {
+      color: var(--color-inactive) !important;
+    }
+    
+    &:hover {
+      background-color: var(--color-obvious) !important; // hover 时变亮
+    }
+    
+    &:focus {
+      background-color: var(--color-obvious) !important; // focus 时变亮
+    }
+  }
+
+  // Button 按钮暗黑主题（通用样式，适用于所有对话框和组件）
+  .ant-btn:not(.ant-btn-primary) {
+    background-color: var(--color-secondary) !important;
+    border-color: var(--color-interval) !important;
+    color: var(--color-text-primary, var(--color-primary)) !important;
+    
+    &:hover {
+      background-color: var(--color-obvious) !important;
+      border-color: var(--color-primary) !important;
+      color: var(--color-text-primary, var(--color-primary)) !important;
+    }
+    
+    &:focus {
+      background-color: var(--color-obvious) !important;
+      border-color: var(--color-primary) !important;
+      color: var(--color-text-primary, var(--color-primary)) !important;
+    }
+  }
+
+  // 危险按钮暗黑主题
+  .ant-btn-dangerous {
+    background-color: var(--color-secondary) !important;
+    border-color: var(--color-interval) !important;
+    color: var(--color-red) !important;
+    
+    &:hover {
+      background-color: var(--color-red) !important;
+      border-color: var(--color-red) !important;
+      color: #fff !important;
+    }
+    
+    &:focus {
+      background-color: var(--color-red) !important;
+      border-color: var(--color-red) !important;
+      color: #fff !important;
+    }
+  }
+}
+
+// 标签（Tag/Badge）通用样式（适用于所有主题）
+.db-type-tag {
+  padding: 2px 8px;
+  background-color: var(--color-primary);
+  color: var(--color-text-primary, var(--color-primary));
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--color-primary);
+}
+
+// 暗黑主题下的标签样式
+[data-theme="dark"] {
+  .db-type-tag {
+    background-color: var(--color-active);
+    color: var(--color-text-primary, var(--color-primary));
+    border-color: var(--color-active);
+  }
+}
+
+// // select
+// .ant-select {
+//   .ant-select-selection {
+//     background: transparent;
+//     .ant-select-selection-selected-value {
+//       color: var(--color-primary);
+//     }
+//   }
+// }
+
+// Upload 组件暗黑主题适配（专门针对 .upload-modal 包裹的 Upload 组件，避免影响其他地方）
+[data-theme='dark'] {
+  .upload-modal {
+    :deep(.ant-upload-drag) {
+      background-color: var(--color-bg-secondary) !important;
+      border-color: var(--color-border) !important;
+
+      &:hover {
+        border-color: var(--color-primary) !important;
+        background-color: var(--color-obvious) !important;
+      }
+
+      .ant-upload-drag-icon {
+        color: var(--color-text-secondary) !important;
+      }
+
+      .ant-upload-text {
+        color: var(--color-text-primary) !important;
+      }
+
+      .ant-upload-hint {
+        color: var(--color-text-secondary) !important;
+      }
+    }
+  }
+}

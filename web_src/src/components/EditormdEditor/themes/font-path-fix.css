@@ -1,0 +1,17 @@
+/**
+ * 修复 Editormd 的 FontAwesome 字体文件路径
+ * 原来的相对路径 ../fonts/ 在 Vite 打包后无法正确解析
+ * 改为绝对路径
+ */
+
+@font-face {
+  font-family: FontAwesome;
+  src: url('/editor.md/fonts/fontawesome-webfont.eot?v=4.3.0');
+  src: url('/editor.md/fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'),
+    url('/editor.md/fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'),
+    url('/editor.md/fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'),
+    url('/editor.md/fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'),
+    url('/editor.md/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
+  font-weight: 400;
+  font-style: normal;
+}

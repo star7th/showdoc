@@ -1,0 +1,27 @@
+.vjs-tree.json-theme {
+  color: var(--color-grey);
+  font-size: var(--font-size-m);
+  font-family: Consolas, Menlo, Courier, monospace;
+  border: 1px solid var(--color-interval);
+  padding: 13px 15px;
+  .vjs-key {
+    color: var(--color-green);
+    .vjs-colon {
+      color: var(--color-grey);
+    }
+  }
+  .vjs-value {
+    color: var(--color-primary);
+    opacity: 0.8;
+    // .vjs-value-string {}
+    input {
+      font-size: var(--font-size-s);
+      padding: 0 10px !important;
+      border: none;
+      outline: none;
+    }
+  }
+  .vjs-tree-node:hover {
+    background-color: transparent;
+  }
+}

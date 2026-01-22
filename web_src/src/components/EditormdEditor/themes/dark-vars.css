@@ -1,0 +1,92 @@
+/**
+ * ShowDoc Editormd 内容主题 - 暗色主题变量
+ * 参考 Vditor 设计，深邃、专业、护眼
+ */
+
+[data-theme="dark"] {
+  /* 全局文本颜色 */
+  --editormd-text-color: #e0e0e0;
+  --editormd-text-secondary: #8b949e;
+
+  /* ========== 边框颜色 ========== */
+  --editormd-border-color: rgba(255, 255, 255, 0.1);
+
+  /* ========== 背景颜色 ========== */
+  --editormd-bg-primary: #2d2d2d;
+  --editormd-bg-secondary: #1e1e1e;
+  --editormd-bg-tertiary: #252525;
+  --editormd-table-alt-bg: #252525;
+
+  /* ========== 代码块样式 ========== */
+  --editormd-code-bg: #1e1e1e;
+  --editormd-code-content-bg: #1e1e1e;
+  --editormd-code-text: #e0e0e0;
+  --editormd-code-border: rgba(255, 255, 255, 0.1);
+  --editormd-code-border-hover: rgba(255, 255, 255, 0.2);
+  --editormd-code-header-bg: #1e1e1e;
+  --editormd-code-header-border: rgba(255, 255, 255, 0.04);
+  --editormd-dot-red: #ff5f56;
+  --editormd-dot-yellow: #ffbd2e;
+  --editormd-dot-green: #27c93f;
+
+  /* ========== 行内代码样式 ========== */
+  --editormd-inline-code-bg: rgba(74, 158, 255, 0.15);
+  --editormd-inline-code-text: #6bb0ff;
+  --editormd-inline-code-border: rgba(74, 158, 255, 0.3);
+
+  /* ========== 语法高亮配色 ========== */
+  --editormd-hljs-comment: #aaa;
+  --editormd-hljs-keyword: #c678dd;
+  --editormd-hljs-section: #98c379;
+  --editormd-hljs-literal: #56b6c2;
+  --editormd-hljs-number: #d19a66;
+  --editormd-hljs-string: #b8c68a;
+  --editormd-hljs-builtin: #d4b675;
+  --editormd-hljs-attr: #98c379;
+  --editormd-hljs-symbol: #61aeee;
+  --editormd-hljs-punctuation: #e0e0e0;
+
+  /* ========== 表格样式 ========== */
+  --editormd-table-border: rgba(255, 255, 255, 0.05);
+  --editormd-table-header-bg: #1a1f28;
+  --editormd-table-header-text: #d4d4d4;
+  --editormd-table-row-bg: #2d2d2d;
+  --editormd-table-row-even-bg: #252525;
+  --editormd-table-row-text: #e0e0e0;
+  --editormd-table-row-hover-bg: rgba(255, 255, 255, 0.06);
+
+  /* ========== 引用块样式 ========== */
+  --editormd-blockquote-border: rgba(255, 255, 255, 0.1);
+  --editormd-blockquote-bg: #1e1e1e;
+  --editormd-blockquote-text: #8b949e;
+
+  /* ========== 分割线样式 ========== */
+  --editormd-hr-bg: rgba(255, 255, 255, 0.05);
+
+  /* ========== 标题样式 ========== */
+  --editormd-heading-text: #d4d4d4;
+
+  /* ========== 链接样式 ========== */
+  --editormd-link-color: #4a9eff;
+  --editormd-link-hover-color: #6bb0ff;
+
+  /* ========== 滚动条样式 ========== */
+  --editormd-scroll-track: rgba(255, 255, 255, 0.04);
+  --editormd-scroll-thumb: rgba(255, 255, 255, 0.16);
+  --editormd-scroll-thumb-hover: rgba(255, 255, 255, 0.26);
+
+  /* ========== 高亮标记样式 ========== */
+  --editormd-mark-bg: rgba(255, 193, 7, 0.3);
+  --editormd-kbd-bg: #2d2d2d;
+
+  /* ========== 思维导图样式 ========== */
+  --editormd-markmap-text: #f5f5f5;
+
+  /* ========== 提色强调色 ========== */
+  --editormd-accent-blue: #60a5fa;
+  --editormd-accent-blue-hover: #93c5fd;
+  --editormd-accent-blue-bg: rgba(96, 165, 250, 0.1);
+  --editormd-accent-blue-bg-hover: rgba(96, 165, 250, 0.15);
+  --editormd-accent-blue-border: rgba(96, 165, 250, 0.3);
+  --editormd-accent-green: #34d399;
+}

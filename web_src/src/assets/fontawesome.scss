@@ -1,19 +1,9 @@
 // Import Font Awesome 6 Pro (本地资源)
-$fa-font-path: './fontawesome/webfonts';
-// $fa-css-prefix: 'el-icon-fa';
+// 使用 Vite 的资源路径语法,确保字体文件能正确加载
+$fa-font-path: '/fontawesome';
 @import './fontawesome/scss/fontawesome.scss';
 @import './fontawesome/scss/light.scss';
 @import './fontawesome/scss/regular.scss';
 @import './fontawesome/scss/solid.scss';
 // @import './fontawesome/scss/brands.scss';
 
-// Override Element UI's icon font
-// .fal,
-// .far,
-// .fas {
-//   font-family: 'Font Awesome 5 Pro' !important;
-// }
-
-// .fab {
-//   font-family: 'Font Awesome 5 Brands' !important;
-// }

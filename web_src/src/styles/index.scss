@@ -1,0 +1,733 @@
+/**
+ * 全局样式
+ * 从 RunApi 迁移并适配 ShowDoc
+ */
+
+@use "./variables.scss";
+@use "./utilities.scss";
+@use "../assets/fontawesome.scss";
+
+/**
+ * 全局滚动条样式（克制设计，使用 CSS 变量）
+ * 
+ * 设计原则：
+ * - 使用项目统一的 CSS 变量
+ * - 克制的视觉效果，不抢主内容
+ * - 自动适配亮色/暗黑主题
+ * 
+ * 复用说明：
+ * - 可直接复制到 RunApi 等其他项目
+ * - 依赖 variables.scss 中定义的 --scrollbar-thumb 变量
+ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox 滚动条 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+// 主题切换过渡动画
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  font-size: var(--font-size-m);
+  line-height: 1;
+  color: var(--color-primary);
+  background-color: var(--color-default);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// 统一文本元素样式（全局生效，确保所有文本元素使用主题颜色）
+// 注意：这里只设置常见的文本元素，避免影响特殊用途的元素（如按钮、链接等）
+// 使用 var(--color-primary) 而不是 inherit，确保即使被其他样式覆盖也能正确显示
+div,
+span,
+p,
+section,
+article,
+aside,
+header,
+footer,
+main,
+nav {
+  color: var(--color-primary);
+}
+
+// 统一表单元素样式（不设置 border 和 background，让组件自己控制）
+// 排除有特定类的输入框（如 .common-input），让组件自己控制样式
+input[type="text"]:not(.common-input),
+input[type="password"]:not(.common-input),
+input[type="email"]:not(.common-input),
+input[type="number"]:not(.common-input),
+input[type="search"]:not(.common-input),
+input[type="tel"]:not(.common-input),
+textarea,
+select {
+  font-size: var(--font-size-m);
+  color: var(--color-primary);
+  border: none;
+  outline: none;
+  background-color: transparent;
+
+  &::-webkit-input-placeholder,
+  &::placeholder {
+    color: var(--color-inactive);
+    user-select: none;
+  }
+
+  &::-ms-input-placeholder {
+    color: var(--color-inactive);
+  }
+}
+
+// Ant Design Vue 组件适配
+// Ant Design 的输入框默认透明（继承弹窗背景），hover/focus 时变白形成对比
+.ant-input {
+  background-color: transparent !important; // 默认透明，继承弹窗背景（浅灰）
+  color: var(--color-primary);
+  border-color: var(--color-interval);
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: var(--color-obvious) !important; // hover 时变白，形成对比
+  }
+  
+  &:focus {
+    background-color: var(--color-obvious) !important; // focus 时变白，形成对比
+  }
+}
+
+.ant-input-affix-wrapper {
+  background-color: transparent !important; // 默认透明，继承弹窗背景
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: var(--color-obvious) !important; // hover 时变白
+  }
+  
+  &:focus-within {
+    background-color: var(--color-obvious) !important; // focus 时变白
+  }
+}
+
+.ant-input-affix-wrapper input {
+  background-color: transparent !important; // 内部 input 透明，使用外层背景
+}
+
+// 表单项标签颜色
+.ant-form-item-label > label {
+  color: var(--color-text-primary);
+}
+
+// 选择器样式
+.ant-select {
+  .ant-select-selector {
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+  }
+}
+
+// 复选框样式
+.ant-checkbox-wrapper {
+  color: var(--color-text-primary);
+}
+
+.ant-checkbox-inner {
+  background-color: var(--color-bg-primary);
+  border-color: var(--color-border);
+}
+
+// 下拉选项样式
+.ant-select-dropdown {
+  background-color: var(--color-bg-primary);
+  border-color: var(--color-border);
+
+  .ant-select-item {
+    color: var(--color-text-primary);
+
+    &:hover,
+    &.ant-select-item-option-selected {
+      background-color: var(--color-bg-secondary);
+    }
+  }
+}
+
+// 暗黑主题下的 Ant Design 组件
+// 输入框样式已在 antdv.scss 中统一处理
+[data-theme='dark'] {
+  .ant-form-item-label > label {
+    color: var(--color-text-primary);
+  }
+
+  .ant-select {
+    .ant-select-selector {
+      background-color: var(--color-bg-primary);
+      border-color: var(--color-border);
+      color: var(--color-text-primary);
+    }
+  }
+
+  .ant-checkbox-wrapper {
+    color: var(--color-text-primary);
+  }
+
+  .ant-checkbox-inner {
+    background-color: var(--color-bg-primary);
+    border-color: var(--color-border);
+  }
+
+  .ant-checkbox-checked {
+    .ant-checkbox-inner {
+      background-color: var(--color-active);
+      border-color: var(--color-active);
+    }
+  }
+
+  .ant-select {
+    .ant-select-selector {
+      background-color: var(--color-bg-primary);
+      border-color: var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    .ant-select-selection-item {
+      color: var(--color-text-primary);
+    }
+
+    .ant-select-selection-placeholder {
+      color: var(--color-inactive);
+    }
+  }
+
+  .ant-select-dropdown {
+    background-color: var(--color-bg-primary);
+    border-color: var(--color-border);
+
+    .ant-select-item {
+      color: var(--color-text-primary);
+
+      &:hover,
+      &.ant-select-item-option-selected {
+        background-color: var(--color-bg-secondary);
+      }
+    }
+  }
+}
+
+[data-theme='dark'] {
+  .ant-select-selection-item {
+    color: var(--color-text-primary);
+  }
+
+  .ant-select-selection-placeholder {
+    color: var(--color-inactive);
+  }
+}
+
+[data-theme='dark'] {
+  .ant-select-selection-item {
+    color: var(--color-text-primary);
+  }
+
+  .ant-select-selection-item-content {
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-primary);
+  }
+
+  .ant-select-selection-placeholder {
+    color: var(--color-inactive);
+  }
+}
+
+// 按钮样式
+.primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  font-size: var(--font-size-m);
+  color: var(--color-obvious);
+  white-space: nowrap;
+  background-color: var(--color-primary);
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.secondary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  font-size: var(--font-size-m);
+  color: var(--color-primary);
+  white-space: nowrap;
+  background-color: var(--color-obvious);
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--color-secondary);
+  }
+}
+
+.text-button {
+  color: var(--color-primary);
+  font-weight: bold;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+// 危险按钮样式（用于删除等危险操作）
+.primary-button.danger-button,
+.danger-button {
+  background-color: var(--color-red);
+  border-color: var(--color-red);
+  color: #fff;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+    background-color: var(--color-red);
+    border-color: var(--color-red);
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+// 危险标签样式（用于警告提示）
+.danger-tag {
+  font-size: 12px;
+  padding: 8px 12px;
+  line-height: 1.5;
+  border-radius: 4px;
+  background-color: var(--color-red);
+  color: #fff;
+  border: 1px solid var(--color-red);
+}
+
+// 暗黑主题下的按钮样式
+[data-theme='dark'] {
+  .primary-button {
+    background-color: var(--color-primary);
+    color: var(--color-obvious);
+  }
+
+  .secondary-button {
+    background-color: var(--color-obvious);
+    color: var(--color-primary);
+
+    &:hover {
+      background-color: var(--color-secondary);
+    }
+  }
+
+  .primary-button.danger-button,
+  .danger-button {
+    background-color: var(--color-red);
+    border-color: var(--color-red);
+
+    &:hover {
+      opacity: 0.9;
+      background-color: var(--color-red);
+      border-color: var(--color-red);
+    }
+  }
+
+  .danger-tag {
+    background-color: var(--color-red);
+    border-color: var(--color-red);
+    color: #fff;
+  }
+}
+
+// 布局工具类
+.clickable {
+  cursor: pointer;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+}
+
+.row-h-c {
+  display: flex;
+  justify-content: center;
+}
+
+.row-v-c {
+  display: flex;
+  align-items: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.column-h-c {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.column-v-c {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+// 文本工具类
+.text-default {
+  color: var(--color-primary);
+}
+
+.text-secondary {
+  color: var(--color-grey);
+}
+
+.text-active {
+  color: var(--color-active);
+}
+
+// 背景工具类
+.background-default {
+  background-color: var(--color-obvious);
+}
+
+.background-secondary {
+  background-color: var(--color-secondary);
+}
+
+// 表格操作按钮样式（遵循新版 UI 规范）
+.table-action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .table-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+    user-select: none;
+
+    i {
+      font-size: 12px;
+      // 不设置 transition，图标颜色保持不变
+    }
+
+    &:hover {
+      background: var(--hover-overlay);
+      border-color: var(--color-active);
+      // 图标颜色不变，只改变背景和边框
+    }
+
+    // 危险操作（删除/封禁）特殊样式
+    &.delete,
+    &.ban {
+      color: var(--color-red);
+
+      &:hover {
+        background: rgba(220, 53, 69, 0.08);
+        border-color: var(--color-red);
+      }
+    }
+
+    &.whitelist {
+      &:hover {
+        background: rgba(40, 167, 69, 0.08);
+        border-color: var(--color-green);
+      }
+    }
+
+    &.recommend {
+      &:hover {
+        background: rgba(253, 126, 20, 0.08);
+        border-color: var(--color-orange);
+      }
+    }
+  }
+}
+
+// 间距工具类
+.margin-left-default {
+  margin-left: var(--margin-default);
+}
+
+// 动画
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 2s linear infinite;
+}
+
+// hover 效果
+.bgColor-select {
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  
+  &:hover::after {
+    background-color: var(--hover-overlay);
+  }
+  
+  &:active::after {
+    background-color: var(--hover-overlay);
+  }
+  
+  &.active::after {
+    background-color: var(--hover-overlay);
+  }
+}
+
+// 表单容器
+.form-container {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  border-radius: 4px;
+  border: 1px solid var(--color-inapparent);
+  background-color: var(--color-secondary);
+  overflow: hidden;
+  
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    height: 100%;
+    padding: 0 10px;
+    
+    &:focus {
+      background-color: var(--color-obvious);
+    }
+  }
+}
+
+// 滚动条样式
+.win-scrollbar {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    border-radius: 1em;
+    background-color: var(--scrollbar-thumb);
+  }
+  
+  ::-webkit-scrollbar-track {
+    border-radius: 1em;
+    background-color: transparent;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+// 辅助文本
+.tips-text {
+  color: var(--color-grey);
+  font-size: var(--font-size-m);
+  line-height: 1.5rem;
+}
+
+// 弹窗系统优化
+.common-modal {
+  backdrop-filter: blur(3px); // 背景轻微模糊，增强层次感
+
+  .modal-content {
+    border: 1px solid var(--color-interval);
+    // 使用更自然的阴影
+    box-shadow:
+      0 10px 40px rgba(0, 0, 0, 0.15),
+      0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  // 修复内容区域布局
+  .modal-body {
+    padding: 0 24px 24px; // 统一内边距，增加呼吸感
+
+    // 防止内容区域出现双重卡片效果（即"突出来"的感觉）
+    > div,
+    > .card,
+    > .container {
+      box-shadow: none !important;
+      border: none !important;
+    }
+  }
+}
+
+// 暗黑模式下弹窗阴影加深
+[data-theme="dark"] {
+  .common-modal {
+    .modal-content {
+      box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.4),
+        0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  // 表格操作按钮暗黑主题
+  .table-action-buttons {
+    .table-action-btn {
+      background: var(--color-bg-secondary);
+      color: var(--color-text-primary);
+      border-color: var(--color-border);
+
+      &:hover {
+        background: rgba(0, 123, 255, 0.1);
+        border-color: var(--color-active);
+      }
+
+      // 危险操作悬停样式
+      &.delete:hover,
+      &.ban:hover {
+        background: rgba(220, 53, 69, 0.15);
+        border-color: var(--color-red);
+      }
+
+      &.whitelist:hover {
+        background: rgba(40, 167, 69, 0.15);
+        border-color: var(--color-green);
+      }
+
+      &.recommend:hover {
+        background: rgba(253, 126, 20, 0.15);
+        border-color: var(--color-orange);
+      }
+    }
+  }
+}
+
+// 弹窗标题图标语义化颜色
+.modal-header {
+  .icon {
+    &.success-icon {
+      color: var(--color-green);
+    }
+
+    &.error-icon {
+      color: var(--color-red);
+    }
+
+    &.warning-icon {
+      color: var(--color-orange);
+    }
+
+    &.info-icon {
+      color: var(--color-active);
+    }
+  }
+}
+
+// 空状态设计
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px;
+  color: var(--color-grey);
+  text-align: center;
+  user-select: none;
+
+  .empty-icon {
+    font-size: 64px;
+    opacity: 0.2;
+    margin-bottom: 20px;
+    color: var(--color-grey);
+  }
+
+  .empty-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--color-primary);
+    opacity: 0.6;
+  }
+
+  .empty-description {
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 400px;
+    opacity: 0.5;
+  }
+}
+
+.index-item-block{
+  display: none;
+}

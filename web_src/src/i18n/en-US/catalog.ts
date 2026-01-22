@@ -1,0 +1,41 @@
+/**
+ * Catalog
+ */
+export default {
+  new_catalog: 'New Catalog',
+  add_cat: 'Add Catalog',
+  cat_name: 'Catalog Name',
+  cat_name_placeholder: 'Please input catalog name',
+  cat_name_required: 'Please input catalog name',
+  input_cat_name: 'Please input catalog name',
+  parent_cat_name: 'Parent Catalog',
+  parent_catalog: 'Parent Catalog',
+  select_parent_catalog: 'Select Parent Catalog',
+  none: 'None',
+  cat_tips: 'Drag to sort',
+  confirm_cat_delete: 'Confirm to delete catalog? This operation will delete all pages under this catalog. Please operate with caution.',
+  expand_all: 'Expand All',
+  collapse_all: 'Collapse All',
+  add_sub_page: 'Add Page',
+  add_sub_cat: 'Add Sub Folder',
+  add_sibling_cat: 'Add Sibling Folder',
+  edit_cat: 'Edit Folder',
+  clone_move: 'Clone/Move',
+  copy_to: 'Copy to',
+  move_to: 'Move to',
+  target_project: 'Target Item',
+  target_catalog: 'Target Catalog',
+  refresh_cat: 'Refresh Catalog List',
+  // Additional catalog keys
+  root_catalog: 'Root Catalog',
+  untitled_catalog: 'Untitled Catalog',
+  cat_limite_tips: 'ShowDoc only supports up to 3 levels of catalogs, please optimize catalog structure',
+  edit_group: 'Create/Edit Group',
+  draggable_tips: 'Press and drag to sort',
+  item_group_empty_tips: 'Your items haven\'t been grouped yet, you can click the top right button to create groups',
+  select_item: 'Select Item',
+  go_add_cat: 'Go to Add Catalog',
+  all_member_read: 'Set all as readonly',
+  subcat: 'Subcatalog',
+}
+

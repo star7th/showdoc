@@ -1,0 +1,172 @@
+/**
+ * Tailwind CSS 工具类
+ * 
+ * 说明：
+ * - 旧版前端使用了 Tailwind CSS v1.9.6 的部分工具类
+ * - 经过评估，新版不安装完整 Tailwind，而是手动定义这些工具类
+ * - 只定义用到的类，避免全局样式污染
+ * - 与旧版保持一致，方便迁移
+ * 
+ * 来源统计（旧版 web_src）：
+ * - float-left/right: 20 处使用
+ * - margin 类 (mt/mb/ml/mr): 146 处使用
+ * - inline-block: 15 处使用
+ * - cursor-pointer: 8 处使用
+ */
+
+/* ============================================
+   Float 工具类
+   ============================================ */
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+/* ============================================
+   Margin 工具类
+   ============================================ */
+
+/* margin-top */
+.mt-6 {
+  margin-top: 24px;
+}
+
+/* margin-right */
+.mr-1 {
+  margin-right: 4px;
+}
+
+.mr-2 {
+  margin-right: 8px;
+}
+
+.mr-10 {
+  margin-right: 40px;
+}
+
+/* margin-left */
+.ml-2 {
+  margin-left: 8px;
+}
+
+.ml-10 {
+  margin-left: 40px;
+}
+
+/* margin-bottom */
+.mb-2 {
+  margin-bottom: 8px;
+}
+
+.mb-3 {
+  margin-bottom: 12px;
+}
+
+.mb-6 {
+  margin-bottom: 24px;
+}
+
+/* margin */
+.m-1 {
+  margin: 4px;
+}
+
+/* ============================================
+   Padding 工具类
+   ============================================ */
+
+/* padding */
+.p-2 {
+  padding: 8px;
+}
+
+.p-6 {
+  padding: 24px;
+}
+
+/* ============================================
+   Display 工具类
+   ============================================ */
+
+.inline-block {
+  display: inline-block;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+/* ============================================
+   Flex 布局工具类
+   ============================================ */
+
+.align-top {
+  align-items: flex-start;
+}
+
+/* ============================================
+   Text 工具类
+   ============================================ */
+
+.text-center {
+  text-align: center;
+}
+
+.leading-10 {
+  line-height: 2.5rem;
+}
+
+/* ============================================
+   Cursor 工具类
+   ============================================ */
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* ============================================
+   Font Size 工具类
+   ============================================ */
+
+.v3-font-size-sm {
+  font-size: 0.75rem;
+}
+
+/* ============================================
+   Font Weight 工具类
+   ============================================ */
+
+.font-bold {
+  font-weight: bold;
+}
+
+/* ============================================
+   Color 工具类
+   ============================================ */
+
+.v3-color-yellow {
+  color: #ffc107;
+}
+
+.v3-color-aux {
+  color: rgba(0, 0, 0, 0.3);
+
+  [data-theme='dark'] & {
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+.v3-text-link {
+  color: var(--color-active);
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+

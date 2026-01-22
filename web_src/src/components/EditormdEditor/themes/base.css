@@ -1,0 +1,1621 @@
+/**
+ * ShowDoc Editormd 内容主题 - 基础样式
+ * 参考 Vditor 样式设计，现代、专业、高可读性
+ * 使用 .markdown-body 前缀以确保覆盖 editormd.min.css 的默认样式
+ */
+
+/* ========== 全局基础样式 ========== */
+.editormd-preview-container,
+.editormd-preview,
+.markdown-body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--editormd-text-color);
+  background-color: var(--editormd-bg-primary) !important;
+  word-wrap: break-word;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+}
+
+/* 确保 Editormd 生成的预览容器背景色正确 */
+.main-editor .editormd-preview-container,
+.main-editor .editormd-html-preview,
+.main-editor .editormd-preview {
+  background-color: var(--editormd-bg-primary) !important;
+}
+
+/* ========== 段落样式 ========== */
+.editormd-preview-container p,
+.editormd-preview p,
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+/* 段落前有标题时，减小间距 */
+.editormd-preview-container h1+p,
+.editormd-preview-container h2+p,
+.editormd-preview-container h3+p,
+.editormd-preview-container h4+p,
+.editormd-preview-container h5+p,
+.editormd-preview-container h6+p,
+.editormd-preview h1+p,
+.editormd-preview h2+p,
+.editormd-preview h3+p,
+.editormd-preview h4+p,
+.editormd-preview h5+p,
+.editormd-preview h6+p,
+.markdown-body h1+p,
+.markdown-body h2+p,
+.markdown-body h3+p,
+.markdown-body h4+p,
+.markdown-body h5+p,
+.markdown-body h6+p {
+  margin-top: 0;
+}
+
+/* ========== 文本样式 ========== */
+.editormd-preview-container strong,
+.editormd-preview-container b,
+.editormd-preview strong,
+.editormd-preview b,
+.markdown-body strong,
+.markdown-body b {
+  font-weight: 600;
+  color: var(--editormd-heading-text);
+}
+
+.editormd-preview-container em,
+.editormd-preview-container i,
+.editormd-preview em,
+.editormd-preview i,
+.markdown-body em,
+.markdown-body i {
+  font-style: italic;
+  color: var(--editormd-text-color);
+}
+
+.editormd-preview-container del,
+.editormd-preview del,
+.markdown-body del {
+  opacity: 0.7;
+}
+
+/* ========== 链接样式 ========== */
+.editormd-preview-container a,
+.editormd-preview a,
+.markdown-body a {
+  color: var(--editormd-accent-blue);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid transparent;
+  font-weight: 500;
+}
+
+.editormd-preview-container a:hover,
+.editormd-preview a:hover,
+.markdown-body a:hover {
+  color: var(--editormd-accent-blue-hover);
+  border-bottom-color: var(--editormd-accent-blue-hover);
+  text-decoration: underline;
+}
+
+/* 标题中的链接 */
+.editormd-preview-container h1 a,
+.editormd-preview-container h2 a,
+.editormd-preview-container h3 a,
+.editormd-preview-container h4 a,
+.editormd-preview-container h5 a,
+.editormd-preview-container h6 a,
+.editormd-preview h1 a,
+.editormd-preview h2 a,
+.editormd-preview h3 a,
+.editormd-preview h4 a,
+.editormd-preview h5 a,
+.editormd-preview h6 a,
+.markdown-body h1 a,
+.markdown-body h2 a,
+.markdown-body h3 a,
+.markdown-body h4 a,
+.markdown-body h5 a,
+.markdown-body h6 a {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.editormd-preview-container h1 a:hover,
+.editormd-preview-container h2 a:hover,
+.editormd-preview-container h3 a:hover,
+.editormd-preview-container h4 a:hover,
+.editormd-preview-container h5 a:hover,
+.editormd-preview-container h6 a:hover,
+.editormd-preview h1 a:hover,
+.editormd-preview h2 a:hover,
+.editormd-preview h3 a:hover,
+.editormd-preview h4 a:hover,
+.editormd-preview h5 a:hover,
+.editormd-preview h6 a:hover,
+.markdown-body h1 a:hover,
+.markdown-body h2 a:hover,
+.markdown-body h3 a:hover,
+.markdown-body h4 a:hover,
+.markdown-body h5 a:hover,
+.markdown-body h6 a:hover {
+  color: var(--editormd-accent-blue-hover);
+}
+
+/* 标题锚点样式优化 */
+.editormd-preview-container h1 .header-anchor,
+.editormd-preview-container h2 .header-anchor,
+.editormd-preview-container h3 .header-anchor,
+.editormd-preview-container h4 .header-anchor,
+.editormd-preview-container h5 .header-anchor,
+.editormd-preview-container h6 .header-anchor,
+.editormd-preview h1 .header-anchor,
+.editormd-preview h2 .header-anchor,
+.editormd-preview h3 .header-anchor,
+.editormd-preview h4 .header-anchor,
+.editormd-preview h5 .header-anchor,
+.editormd-preview h6 .header-anchor,
+.markdown-body h1 .header-anchor,
+.markdown-body h2 .header-anchor,
+.markdown-body h3 .header-anchor,
+.markdown-body h4 .header-anchor,
+.markdown-body h5 .header-anchor,
+.markdown-body h6 .header-anchor {
+  opacity: 0;
+  transition: opacity 0.2s;
+  color: var(--editormd-accent-blue);
+}
+
+.editormd-preview-container h1:hover .header-anchor,
+.editormd-preview-container h2:hover .header-anchor,
+.editormd-preview-container h3:hover .header-anchor,
+.editormd-preview-container h4:hover .header-anchor,
+.editormd-preview-container h5:hover .header-anchor,
+.editormd-preview-container h6:hover .header-anchor,
+.editormd-preview h1:hover .header-anchor,
+.editormd-preview h2:hover .header-anchor,
+.editormd-preview h3:hover .header-anchor,
+.editormd-preview h4:hover .header-anchor,
+.editormd-preview h5:hover .header-anchor,
+.editormd-preview h6:hover .header-anchor,
+.markdown-body h1:hover .header-anchor,
+.markdown-body h2:hover .header-anchor,
+.markdown-body h3:hover .header-anchor,
+.markdown-body h4:hover .header-anchor,
+.markdown-body h5:hover .header-anchor,
+.markdown-body h6:hover .header-anchor {
+  opacity: 1;
+}
+
+/* ========== 标题样式 ========== */
+.editormd-preview-container h1,
+.editormd-preview-container h2,
+.editormd-preview-container h3,
+.editormd-preview-container h4,
+.editormd-preview-container h5,
+.editormd-preview-container h6,
+.editormd-preview h1,
+.editormd-preview h2,
+.editormd-preview h3,
+.editormd-preview h4,
+.editormd-preview h5,
+.editormd-preview h6,
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--editormd-heading-text);
+  border-bottom: none;
+  scroll-margin-top: 80px;
+}
+
+.editormd-preview-container h1,
+.editormd-preview h1,
+.markdown-body h1 {
+  font-size: 1.857em;
+  padding-bottom: 0.3em;
+  border-bottom: 2px solid var(--editormd-hr-bg);
+  margin-top: 28px;
+  margin-bottom: 18px;
+}
+
+.editormd-preview-container h2,
+.editormd-preview h2,
+.markdown-body h2 {
+  font-size: 1.571em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--editormd-hr-bg);
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+.editormd-preview-container h3,
+.editormd-preview h3,
+.markdown-body h3 {
+  font-size: 1.286em;
+  margin-top: 20px;
+  margin-bottom: 14px;
+}
+
+.editormd-preview-container h4,
+.editormd-preview h4,
+.markdown-body h4 {
+  font-size: 1.143em;
+  margin-top: 18px;
+  margin-bottom: 12px;
+}
+
+.editormd-preview-container h5,
+.editormd-preview h5,
+.markdown-body h5 {
+  font-size: 1em;
+  margin-top: 16px;
+  margin-bottom: 10px;
+}
+
+.editormd-preview-container h6,
+.editormd-preview h6,
+.markdown-body h6 {
+  font-size: 0.929em;
+  color: var(--editormd-text-secondary);
+  margin-top: 14px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 第一个标题不需要顶部间距 */
+.editormd-preview-container > h1:first-child,
+.editormd-preview-container > h2:first-child,
+.editormd-preview-container > h3:first-child,
+.editormd-preview-container > h4:first-child,
+.editormd-preview-container > h5:first-child,
+.editormd-preview-container > h6:first-child,
+.editormd-preview > h1:first-child,
+.editormd-preview > h2:first-child,
+.editormd-preview > h3:first-child,
+.editormd-preview > h4:first-child,
+.editormd-preview > h5:first-child,
+.editormd-preview > h6:first-child,
+.markdown-body > h1:first-child,
+.markdown-body > h2:first-child,
+.markdown-body > h3:first-child,
+.markdown-body > h4:first-child,
+.markdown-body > h5:first-child,
+.markdown-body > h6:first-child {
+  margin-top: 0;
+}
+
+/* ========== 列表样式 ========== */
+.editormd-preview-container ul,
+.editormd-preview-container ol,
+.editormd-preview ul,
+.editormd-preview ol,
+.markdown-body ul,
+.markdown-body ol {
+  margin-top: 0;
+  margin-bottom: 14px;
+  padding-left: 2em;
+}
+
+.editormd-preview-container ul ul,
+.editormd-preview-container ul ol,
+.editormd-preview-container ol ul,
+.editormd-preview-container ol ol,
+.editormd-preview ul ul,
+.editormd-preview ul ol,
+.editormd-preview ol ul,
+.editormd-preview ol ol,
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ul,
+.markdown-body ol ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.editormd-preview-container li,
+.editormd-preview li,
+.markdown-body li {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+  line-height: 1.75;
+}
+
+.editormd-preview-container li>p,
+.editormd-preview li>p,
+.markdown-body li>p {
+  margin-top: 14px;
+  margin-bottom: 0;
+}
+
+.editormd-preview-container li+li,
+.editormd-preview li+li,
+.markdown-body li+li {
+  margin-top: 0.25em;
+}
+
+/* 任务列表特殊样式 */
+.editormd-preview-container .vditor-task,
+.editormd-preview .vditor-task,
+.markdown-body .vditor-task {
+  list-style: none;
+}
+
+.editormd-preview-container .vditor-task input,
+.editormd-preview .vditor-task input,
+.markdown-body .vditor-task input {
+  margin-right: 0.5em;
+}
+
+/* 任务列表复选框着色 - 绿色强调 */
+.editormd-preview-container .vditor-task input[type="checkbox"],
+.editormd-preview .vditor-task input[type="checkbox"],
+.markdown-body .vditor-task input[type="checkbox"],
+.editormd-preview-container .task-list-item input[type="checkbox"],
+.editormd-preview .task-list-item input[type="checkbox"],
+.markdown-body .task-list-item input[type="checkbox"] {
+  accent-color: var(--editormd-accent-green);
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+/* ========== 引用样式 ========== */
+.editormd-preview-container blockquote,
+.editormd-preview blockquote,
+.markdown-body blockquote {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-left: 4px solid var(--editormd-accent-blue);
+  background-color: var(--editormd-accent-blue-bg);
+  border-radius: 0 4px 4px 0;
+  color: var(--editormd-text-color);
+  font-style: italic;
+}
+
+.editormd-preview-container blockquote p,
+.editormd-preview blockquote p,
+.markdown-body blockquote p {
+  margin-top: 0;
+  margin-bottom: 8px;
+  line-height: 1.7;
+}
+
+.editormd-preview-container blockquote p:last-child,
+.editormd-preview blockquote p:last-child,
+.markdown-body blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* 嵌套引用 */
+.editormd-preview-container blockquote blockquote,
+.editormd-preview blockquote blockquote,
+.markdown-body blockquote blockquote {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-left-width: 3px;
+}
+
+/* ========== 代码块样式 ========== */
+.editormd-preview-container code:not(pre code),
+.editormd-preview code:not(pre code),
+.markdown-body code:not(pre code) {
+  padding: 0.2em 0.4em;
+  margin: 0 0.2em;
+  font-size: 85%;
+  font-family: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Monaco, 'Courier New', monospace;
+  background-color: var(--editormd-inline-code-bg);
+  border-radius: 4px;
+  font-weight: 500;
+  border: 1px solid var(--editormd-accent-blue-border);
+}
+
+.editormd-preview-container pre,
+.editormd-preview pre,
+.markdown-body pre {
+  position: relative;
+  padding: 0 !important;
+  background-color: var(--editormd-code-header-bg);
+  border-radius: 6px;
+  overflow: visible;
+  margin: 16px 0;
+  border: 1px solid var(--editormd-code-border);
+  box-shadow: none;
+  transition: border-color 0.15s ease;
+}
+
+/* 悬停时边框稍明显 */
+.editormd-preview-container pre:hover,
+.editormd-preview pre:hover,
+.markdown-body pre:hover {
+  border-color: var(--editormd-code-border-hover);
+}
+
+/* macOS 风格标题栏 - padding-top 为标题栏高度 */
+.editormd-preview-container pre,
+.editormd-preview pre,
+.markdown-body pre {
+  padding-top: 36px !important;
+}
+
+/* 标题栏区域 - 使用 ::before 伪元素 */
+.editormd-preview-container pre::before,
+.editormd-preview pre::before,
+.markdown-body pre::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: transparent;
+  border-bottom: 1px solid var(--editormd-code-header-border);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+/* macOS 三个彩色圆点 - 使用 ::after 伪元素和 box-shadow */
+.editormd-preview-container pre::after,
+.editormd-preview pre::after,
+.markdown-body pre::after {
+  content: '';
+  position: absolute;
+  top: 13px;
+  left: 14px;
+  width: 10px;
+  height: 10px;
+  background-color: var(--editormd-dot-red);
+  border-radius: 50%;
+  box-shadow:
+    16px 0 0 var(--editormd-dot-yellow),
+    32px 0 0 var(--editormd-dot-green);
+  opacity: 0.65;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+/* 悬停时圆点稍明显 */
+.editormd-preview-container pre:hover::after,
+.editormd-preview pre:hover::after,
+.markdown-body pre:hover::after {
+  opacity: 0.85;
+}
+
+/* 代码内容区域 */
+.editormd-preview-container pre code,
+.editormd-preview pre code,
+.markdown-body pre code {
+  display: block;
+  padding: 12px 16px 14px 16px !important;
+  background-color: transparent !important;
+  overflow-x: auto;
+  line-height: 1.65;
+  font-family: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Monaco, 'Courier New', monospace;
+  font-size: 13px;
+  tab-size: 4;
+}
+
+/* 只在没有高亮类时设置默认颜色 */
+.editormd-preview-container pre code:not([class*="pl-"]),
+.editormd-preview pre code:not([class*="pl-"]),
+.markdown-body pre code:not([class*="pl-"]) {
+  color: var(--editormd-code-text);
+}
+
+/* ========== 代码高亮样式覆盖（适配暗色背景） ========== */
+/* 这些类在 atom-one-dark 主题中使用 #e06c75（暗红色），在暗色背景下对比度不够 */
+
+/* 标签、选择器标签等使用更亮的颜色 */
+.editormd-preview-container pre .hljs-tag,
+.editormd-preview pre .hljs-tag,
+.markdown-body pre .hljs-tag,
+.editormd-preview-container pre .hljs-selector-tag,
+.editormd-preview pre .hljs-selector-tag,
+.markdown-body pre .hljs-selector-tag {
+  color: var(--editormd-hljs-section) !important;
+}
+
+/* 名称、section 等使用更亮的颜色 */
+.editormd-preview-container pre .hljs-name,
+.editormd-preview pre .hljs-name,
+.markdown-body pre .hljs-name,
+.editormd-preview-container pre .hljs-section,
+.editormd-preview pre .hljs-section,
+.markdown-body pre .hljs-section {
+  color: var(--editormd-hljs-section) !important;
+}
+
+/* 删除标记使用红色但更亮 */
+.editormd-preview-container pre .hljs-deletion,
+.editormd-preview pre .hljs-deletion,
+.markdown-body pre .hljs-deletion {
+  color: #ff6b6b !important;
+}
+
+/* ========== 代码块复制按钮 ========== */
+.editormd-preview-container pre .code-copy-btn,
+.editormd-preview pre .code-copy-btn,
+.markdown-body pre .code-copy-btn {
+  display: none;
+  padding: 0;
+  color: var(--editormd-text-secondary, #8b949e);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 0 8px;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  transition: all 0.2s ease;
+  user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  font-weight: 500;
+  z-index: 10;
+}
+
+/* 鼠标悬浮在 pre 上时显示复制按钮 */
+.editormd-preview-container pre:hover .code-copy-btn,
+.editormd-preview pre:hover .code-copy-btn,
+.markdown-body pre:hover .code-copy-btn {
+  display: inline-block;
+}
+
+/* 按钮悬停效果 */
+.editormd-preview-container pre .code-copy-btn:hover,
+.editormd-preview pre .code-copy-btn:hover,
+.markdown-body pre .code-copy-btn:hover {
+  color: var(--editormd-accent-blue);
+  background-color: rgba(56, 139, 253, 0.1);
+  border-color: rgba(56, 139, 253, 0.2);
+}
+
+/* 按钮激活效果 */
+.editormd-preview-container pre .code-copy-btn:active,
+.editormd-preview pre .code-copy-btn:active,
+.markdown-body pre .code-copy-btn:active {
+  background-color: rgba(56, 139, 253, 0.15);
+  transform: scale(0.98);
+}
+
+/* 已复制状态 */
+.editormd-preview-container pre .code-copy-btn.copied,
+.editormd-preview pre .code-copy-btn.copied,
+.markdown-body pre .code-copy-btn.copied {
+  color: var(--editormd-accent-green, #2ea44f);
+  background-color: rgba(46, 164, 79, 0.1);
+  border-color: rgba(46, 164, 79, 0.2);
+}
+
+/* ========== 表格样式 ========== */
+.editormd-preview-container table,
+.editormd-preview table,
+.markdown-body table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  margin: 16px 0;
+  overflow-x: auto;
+  display: block;
+  border-radius: 4px;
+  border: 1px solid var(--editormd-border-color);
+  font-size: 0.929em;
+}
+
+.editormd-preview-container table th,
+.editormd-preview table th,
+.markdown-body table th {
+  background-color: var(--editormd-table-header-bg);
+  border: 1px solid var(--editormd-border-color);
+  padding: 10px 14px;
+  line-height: 1.6;
+  text-align: left;
+  font-weight: 600;
+  color: var(--editormd-table-header-text);
+}
+
+.editormd-preview-container table td,
+.editormd-preview table td,
+.markdown-body table td {
+  border: 1px solid var(--editormd-border-color);
+  padding: 10px 14px;
+  line-height: 1.6;
+  color: var(--editormd-text-color);
+  vertical-align: top;
+}
+
+.editormd-preview-container table tbody tr:nth-child(odd),
+.editormd-preview table tbody tr:nth-child(odd),
+.markdown-body table tbody tr:nth-child(odd) {
+  background-color: var(--editormd-table-row-bg);
+}
+
+.editormd-preview-container table tbody tr:nth-child(even),
+.editormd-preview table tbody tr:nth-child(even),
+.markdown-body table tbody tr:nth-child(even) {
+  background-color: var(--editormd-table-row-even-bg);
+}
+
+/* 表格数据行 - 悬停状态 */
+.editormd-preview-container table tbody tr:hover,
+.editormd-preview table tbody tr:hover,
+.markdown-body table tbody tr:hover {
+  background-color: var(--editormd-accent-blue-bg);
+  transition: background-color 0.2s ease;
+}
+
+/* 确保td单元格也应用文字颜色，不覆盖行的背景 */
+.editormd-preview-container table tbody td,
+.editormd-preview table tbody td,
+.markdown-body table tbody td {
+  color: var(--editormd-text-color);
+  background-color: transparent;
+}
+
+/* ========== 图片样式 ========== */
+.editormd-preview-container img,
+.editormd-preview img,
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 14px 0;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .editormd-preview-container img,
+[data-theme="dark"] .editormd-preview img,
+[data-theme="dark"] .markdown-body img {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* ========== 水平线样式 ========== */
+.editormd-preview-container hr,
+.editormd-preview hr,
+.markdown-body hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--editormd-accent-blue), transparent);
+  margin: 24px 0;
+}
+
+/* ========== 键盘样式 ========== */
+.editormd-preview-container kbd,
+.editormd-preview kbd,
+.markdown-body kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 0.9em;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  color: var(--editormd-text-color);
+  background-color: var(--editormd-inline-code-bg);
+  border: 1px solid var(--editormd-border-color);
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .editormd-preview-container kbd,
+[data-theme="dark"] .editormd-preview kbd,
+[data-theme="dark"] .markdown-body kbd {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* ========== 上标下标 ========== */
+.editormd-preview-container sup,
+.editormd-preview sup,
+.markdown-body sup {
+  top: -0.5em;
+  font-size: 0.75em;
+}
+
+.editormd-preview-container sub,
+.editormd-preview sub,
+.markdown-body sub {
+  bottom: -0.25em;
+  font-size: 0.75em;
+}
+
+/* ========== 标记样式 ========== */
+.editormd-preview-container mark,
+.editormd-preview mark,
+.markdown-body mark {
+  background-color: var(--editormd-mark-bg);
+  color: var(--editormd-text-color);
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+}
+
+/* ========== 缩写样式 ========== */
+.editormd-preview-container abbr[title],
+.editormd-preview abbr[title],
+.markdown-body abbr[title] {
+  border-bottom: 1px dotted var(--editormd-text-secondary);
+  cursor: help;
+}
+
+/* ========== 详情/摘要 ========== */
+.editormd-preview-container details,
+.editormd-preview details,
+.markdown-body details {
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px solid var(--editormd-border-color);
+  border-radius: 4px;
+  background-color: var(--editormd-blockquote-bg);
+}
+
+.editormd-preview-container summary,
+.editormd-preview summary,
+.markdown-body summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--editormd-heading-text);
+  margin: -14px -14px 10px;
+  padding: 14px;
+  background-color: var(--editormd-table-header-bg);
+  border-radius: 4px 4px 0 0;
+  user-select: none;
+}
+
+.editormd-preview-container details[open] summary,
+.editormd-preview details[open] summary,
+.markdown-body details[open] summary {
+  border-bottom: 1px solid var(--editormd-border-color);
+  border-radius: 4px 4px 0 0;
+}
+
+/* ========== 定义列表 ========== */
+.editormd-preview-container dl,
+.editormd-preview dl,
+.markdown-body dl {
+  margin: 0 0 14px;
+}
+
+.editormd-preview-container dt,
+.editormd-preview dt,
+.markdown-body dt {
+  font-weight: 600;
+  margin-top: 14px;
+}
+
+.editormd-preview-container dd,
+.editormd-preview dd,
+.markdown-body dd {
+  margin: 0 0 0 2em;
+  padding: 0 0 14px;
+}
+
+/* ========== 脚注样式 ========== */
+.editormd-preview-container .footnote-ref,
+.editormd-preview .footnote-ref,
+.markdown-body .footnote-ref {
+  font-size: 0.75em;
+  vertical-align: super;
+  color: var(--editormd-accent-blue);
+  text-decoration: none;
+}
+
+.editormd-preview-container .footnotes,
+.editormd-preview .footnotes,
+.markdown-body .footnotes {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--editormd-border-color);
+  font-size: 0.929em;
+  color: var(--editormd-text-secondary);
+}
+
+.editormd-preview-container .footnotes ol,
+.editormd-preview .footnotes ol,
+.markdown-body .footnotes ol {
+  padding-left: 1.5em;
+}
+
+/* ========== PlantUML 主题样式 ========== */
+.editormd-preview-container .language-plantuml img,
+.editormd-preview .language-plantuml img,
+.markdown-body .language-plantuml img {
+  display: block;
+  max-width: 100%;
+  border-radius: 4px;
+  margin: 16px auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .editormd-preview-container .language-plantuml img,
+[data-theme="dark"] .editormd-preview .language-plantuml img,
+[data-theme="dark"] .markdown-body .language-plantuml img {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* ========== Mindmap/Markmap 主题样式 ========== */
+/* 思维导图容器 */
+.editormd-preview-container .language-markmap,
+.editormd-preview .language-markmap,
+.markdown-body .language-markmap,
+.editormd-preview-container .language-markmap > div,
+.editormd-preview .language-markmap > div,
+.markdown-body .language-markmap > div {
+  display: block;
+  margin: 16px 0;
+}
+
+/* 思维导图 SVG 容器 - 与代码块背景保持一致 */
+.editormd-preview-container .language-markmap svg,
+.editormd-preview .language-markmap svg,
+.markdown-body .language-markmap svg {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+  background-color: var(--editormd-code-content-bg);
+  border-radius: 4px;
+}
+
+/* 思维导图 SVG 文字 - 使用最强的选择器，支持主题切换 */
+.editormd-preview-container .language-markmap svg text,
+.editormd-preview-container .language-markmap svg text *,
+.editormd-preview-container .language-markmap svg tspan,
+.editormd-preview-container .language-markmap svg g text,
+.editormd-preview-container .language-markmap svg g tspan,
+.editormd-preview-container .language-markmap svg foreignObject,
+.editormd-preview-container .language-markmap svg foreignObject *,
+.editormd-preview-container .language-markmap svg .markmap-circle-text,
+.editormd-preview-container .language-markmap svg .markmap-span-text,
+.editormd-preview-container div.language-markmap svg text,
+.editormd-preview-container div.language-markmap svg text *,
+.editormd-preview-container div.language-markmap svg tspan,
+.editormd-preview .language-markmap svg text,
+.editormd-preview .language-markmap svg text *,
+.editormd-preview .language-markmap svg tspan,
+.editormd-preview .language-markmap svg g text,
+.editormd-preview .language-markmap svg g tspan,
+.editormd-preview .language-markmap svg foreignObject,
+.editormd-preview .language-markmap svg foreignObject *,
+.editormd-preview .language-markmap svg .markmap-circle-text,
+.editormd-preview .language-markmap svg .markmap-span-text,
+.editormd-preview div.language-markmap svg text,
+.editormd-preview div.language-markmap svg text *,
+.editormd-preview div.language-markmap svg tspan,
+.markdown-body .language-markmap svg text,
+.markdown-body .language-markmap svg text *,
+.markdown-body .language-markmap svg tspan,
+.markdown-body .language-markmap svg g text,
+.markdown-body .language-markmap svg g tspan,
+.markdown-body .language-markmap svg foreignObject,
+.markdown-body .language-markmap svg foreignObject *,
+.markdown-body .language-markmap svg .markmap-circle-text,
+.markdown-body .language-markmap svg .markmap-span-text,
+.markdown-body div.language-markmap svg text,
+.markdown-body div.language-markmap svg text *,
+.markdown-body div.language-markmap svg tspan {
+  fill: var(--editormd-markmap-text) !important;
+  color: var(--editormd-markmap-text) !important;
+}
+
+/* 额外：针对 foreignObject 内的 div/span */
+.editormd-preview-container .language-markmap svg foreignObject div,
+.editormd-preview-container .language-markmap svg foreignObject span,
+.editormd-preview-container .language-markmap svg foreignObject p,
+.editormd-preview .language-markmap svg foreignObject div,
+.editormd-preview .language-markmap svg foreignObject span,
+.editormd-preview .language-markmap svg foreignObject p,
+.markdown-body .language-markmap svg foreignObject div,
+.markdown-body .language-markmap svg foreignObject span,
+.markdown-body .language-markmap svg foreignObject p {
+  color: var(--editormd-markmap-text) !important;
+}
+
+/* ========== 代码复制按钮 ========== */
+.code-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  background-color: var(--editormd-code-bg);
+  color: var(--editormd-text-color);
+  border: 1px solid var(--editormd-border-color);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.code-copy-btn:hover {
+  background-color: var(--editormd-accent-blue);
+  color: white;
+  border-color: var(--editormd-accent-blue);
+}
+
+/* ========== 隐藏编辑器自带的 TOC ========== */
+.editormd-toc-menu,
+.editormd-toc-menu-btn,
+.editormd-toc {
+  display: none !important;
+}
+
+/* ========== 代码块滚动条样式 ========== */
+.editormd-preview-container pre::-webkit-scrollbar,
+.editormd-preview pre::-webkit-scrollbar,
+.markdown-body pre::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.editormd-preview-container pre::-webkit-scrollbar-track,
+.editormd-preview pre::-webkit-scrollbar-track,
+.markdown-body pre::-webkit-scrollbar-track {
+  background: var(--editormd-scroll-track);
+  border-radius: 4px;
+}
+
+.editormd-preview-container pre::-webkit-scrollbar-thumb,
+.editormd-preview pre::-webkit-scrollbar-thumb,
+.markdown-body pre::-webkit-scrollbar-thumb {
+  background: var(--editormd-scroll-thumb);
+  border-radius: 4px;
+}
+
+.editormd-preview-container pre::-webkit-scrollbar-thumb:hover,
+.editormd-preview pre::-webkit-scrollbar-thumb:hover,
+.markdown-body pre::-webkit-scrollbar-thumb:hover {
+  background: var(--editormd-scroll-thumb-hover);
+}
+
+/* ========== 响应式优化 ========== */
+@media (max-width: 768px) {
+
+  .editormd-preview-container,
+  .editormd-preview,
+  .markdown-body {
+    font-size: 13px;
+  }
+
+  .editormd-preview-container h1,
+  .editormd-preview h1,
+  .markdown-body h1 {
+    font-size: 1.769em;
+  }
+
+  .editormd-preview-container h2,
+  .editormd-preview h2,
+  .markdown-body h2 {
+    font-size: 1.538em;
+  }
+
+  .editormd-preview-container table,
+  .editormd-preview table,
+  .markdown-body table {
+    font-size: 1em;
+  }
+
+  .editormd-preview-container pre code,
+  .editormd-preview pre code,
+  .markdown-body pre code {
+    font-size: 12px;
+    padding: 12px 14px !important;
+  }
+}
+
+/* ========== 打印样式 ========== */
+@media print {
+
+  .editormd-preview-container,
+  .editormd-preview,
+  .markdown-body {
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #000;
+  }
+
+  .editormd-preview-container a,
+  .editormd-preview a,
+  .markdown-body a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  .editormd-preview-container pre,
+  .editormd-preview pre,
+  .markdown-body pre {
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+
+  .editormd-preview-container h1,
+  .editormd-preview h1,
+  .markdown-body h1,
+  .editormd-preview-container h2,
+  .editormd-preview h2,
+  .markdown-body h2,
+  .editormd-preview-container h3,
+  .editormd-preview h3,
+  .markdown-body h3 {
+    page-break-after: avoid;
+  }
+
+  .code-copy-btn {
+    display: none;
+  }
+}
+
+/* ========== 编辑器容器基础样式 ========== */
+.editormd-editor {
+  width: 100%;
+  min-height: 400px;
+  position: relative;
+}
+
+.editormd-wrapper {
+  min-height: 400px;
+  width: 100%;
+  display: block;
+}
+
+/* 编辑器主体样式 - 不强制覆盖高度，让 Editormd 自己管理 */
+.editormd {
+  border: 1px solid var(--editormd-border-color);
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+}
+
+/* 编辑器整体暗黑主题 */
+[data-theme="dark"] .editormd {
+  background-color: var(--editormd-bg-secondary) !important;
+  border: 1px solid var(--editormd-border-color) !important;
+}
+
+/* 编辑器工具栏 */
+.editormd>.editormd-toolbar {
+  border-bottom: 1px solid var(--editormd-border-color);
+  background-color: var(--editormd-bg-secondary);
+  padding: 8px 12px;
+  display: block;
+}
+
+/* CodeMirror 编辑器区域 - 需要调整 margin-top 以适配工具栏高度 */
+/* 工具栏是 absolute 定位，需要设置 top 或 padding 来避开工具栏 */
+.editormd .CodeMirror {
+  margin-top: 50px !important;
+  border-right: 1px solid var(--editormd-border-color);
+  display: block;
+}
+
+/* CodeMirror 编辑器区域 - 暗黑主题 */
+[data-theme="dark"] .editormd .CodeMirror {
+  margin-top: 50px !important;
+  background-color: var(--editormd-code-bg) !important;
+  color: var(--editormd-code-text) !important;
+}
+
+/* 预览区域 - 设置左边距，避免与编辑器太近 */
+.editormd-preview,
+.editormd-preview-container {
+  overflow-y: auto;
+  display: block;
+  background-color: var(--editormd-bg-primary);
+  padding: 20px;
+}
+
+/* 编辑模式下的预览区域 - 设置 top 和左边距 */
+.editormd .editormd-preview {
+  position: absolute;
+  top: 37px;
+  right: 0;
+  width: 50%;
+  overflow: auto;
+  padding-left: 20px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+/* 确保编辑模式的预览区也有主题支持 */
+[data-theme="dark"] .editormd .editormd-preview {
+  background-color: var(--editormd-bg-primary) !important;
+  border-left: 1px solid var(--editormd-border-color);
+  color: var(--editormd-text-color) !important;
+}
+
+/* 编辑模式预览区内的容器也需要主题支持 */
+[data-theme="dark"] .editormd .editormd-preview-container {
+  background-color: var(--editormd-bg-primary) !important;
+  color: var(--editormd-text-color) !important;
+}
+
+/* ========== 编辑器工具栏暗黑主题 ========== */
+[data-theme="dark"] .editormd>.editormd-toolbar {
+  background-color: var(--editormd-bg-secondary) !important;
+  border-bottom: 1px solid var(--editormd-border-color) !important;
+}
+
+/* 工具栏按钮 */
+[data-theme="dark"] .editormd-toolbar i {
+  color: var(--editormd-text-color) !important;
+}
+
+[data-theme="dark"] .editormd-toolbar i:hover {
+  color: var(--editormd-accent-blue) !important;
+}
+
+/* 工具栏分隔符 */
+[data-theme="dark"] .editormd-toolbar .divider {
+  border-left: 1px solid var(--editormd-border-color) !important;
+}
+
+/* ========== CodeMirror 编辑器暗黑主题 ========== */
+
+/* CodeMirror 编辑器背景和文本颜色 */
+[data-theme="dark"] .editormd>.CodeMirror,
+[data-theme="dark"] .editormd .CodeMirror {
+  background-color: var(--editormd-code-bg) !important;
+  color: var(--editormd-code-text) !important;
+  border-right: 1px solid var(--editormd-border-color);
+}
+
+/* CodeMirror 编辑器内部容器 */
+[data-theme="dark"] .editormd .CodeMirror-gutters {
+  background-color: var(--editormd-code-bg) !important;
+  border-right: 1px solid var(--editormd-code-border);
+}
+
+/* 行号 */
+[data-theme="dark"] .editormd .CodeMirror-linenumbers {
+  color: rgba(255, 255, 255, 0.4) !important;
+  padding: 0 5px;
+}
+
+/* 代码行 */
+[data-theme="dark"] .editormd .CodeMirror-lines,
+[data-theme="dark"] .editormd .CodeMirror pre {
+  background-color: transparent !important;
+  color: var(--editormd-code-text) !important;
+}
+
+/* 选中文本 */
+[data-theme="dark"] .editormd .CodeMirror-selected {
+  background-color: rgba(96, 165, 250, 0.3) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror-focused .CodeMirror-selected {
+  background-color: rgba(96, 165, 250, 0.4) !important;
+}
+
+/* 光标 */
+[data-theme="dark"] .editormd .CodeMirror-cursor {
+  border-left-color: var(--editormd-accent-blue, #3b82f6) !important;
+}
+
+/* 支持原始 Editor.md 暗黑主题类 */
+.editormd-theme-dark .CodeMirror-cursor {
+  border-left-color: var(--editormd-accent-blue, #3b82f6) !important;
+}
+
+/* 匹配高亮 */
+[data-theme="dark"] .editormd .cm-matchhighlight {
+  background-color: rgba(96, 165, 250, 0.2) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror-focused .cm-matchhighlight {
+  background-color: rgba(96, 165, 250, 0.3) !important;
+}
+
+/* 当前行背景 */
+[data-theme="dark"] .editormd .CodeMirror-activeline-background {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror-focused .CodeMirror-activeline-background {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 占位符文本 */
+[data-theme="dark"] .editormd .CodeMirror pre.CodeMirror-placeholder {
+  color: var(--editormd-text-secondary, #999) !important;
+}
+
+/* 滚动条区域 */
+[data-theme="dark"] .editormd .CodeMirror-scroll,
+[data-theme="dark"] .editormd .CodeMirror-vscrollbar,
+[data-theme="dark"] .editormd .CodeMirror-hscrollbar {
+  background-color: var(--editormd-code-bg) !important;
+}
+
+/* ========== CodeMirror 语法高亮暗黑主题 ========== */
+[data-theme="dark"] .editormd .CodeMirror .cm-keyword {
+  color: var(--editormd-hljs-keyword, #c678dd) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-variable {
+  color: var(--editormd-code-text) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-variable-2 {
+  color: var(--editormd-hljs-string, #b8c68a) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-variable-3 {
+  color: var(--editormd-hljs-builtin, #d4b675) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-string {
+  color: var(--editormd-hljs-string, #b8c68a) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-string-2 {
+  color: var(--editormd-hljs-section, #98c379) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-number {
+  color: var(--editormd-hljs-number, #d19a66) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-atom {
+  color: var(--editormd-hljs-literal, #56b6c2) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-property {
+  color: var(--editormd-hljs-attr, #98c379) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-operator {
+  color: var(--editormd-hljs-punctuation, #e0e0e0) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-comment {
+  color: var(--editormd-hljs-comment, #aaa) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-def {
+  color: var(--editormd-hljs-builtin, #d4b675) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-meta {
+  color: var(--editormd-hljs-symbol, #61aeee) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-tag {
+  color: var(--editormd-hljs-section, #98c379) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-attribute {
+  color: var(--editormd-hljs-attr, #98c379) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-qualifier {
+  color: var(--editormd-hljs-literal, #56b6c2) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-bracket {
+  color: var(--editormd-code-text) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-builtin {
+  color: var(--editormd-hljs-builtin, #d4b675) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-link {
+  color: var(--editormd-link-color) !important;
+  text-decoration: underline;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-error {
+  color: #ff5f56 !important;
+  background-color: rgba(255, 95, 86, 0.1) !important;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-header {
+  color: var(--editormd-hljs-keyword, #c678dd) !important;
+  font-weight: bold;
+}
+
+[data-theme="dark"] .editormd .CodeMirror .cm-quote {
+  color: var(--editormd-blockquote-text) !important;
+  font-style: italic;
+}
+
+/* ========== 编辑器菜单暗黑主题 ========== */
+
+/* 工具栏菜单项 */
+[data-theme="dark"] .editormd-menu > li > a {
+  color: var(--editormd-text-color) !important;
+  border: 1px solid transparent !important;
+}
+
+[data-theme="dark"] .editormd-menu > li > a:hover,
+[data-theme="dark"] .editormd-menu > li > a.active {
+  background-color: var(--editormd-bg-tertiary) !important;
+  border: 1px solid var(--editormd-border-color) !important;
+}
+
+/* 工具栏分隔符 */
+[data-theme="dark"] .editormd-menu > li.divider {
+  border-right: 1px solid var(--editormd-border-color) !important;
+}
+
+/* 下拉菜单 */
+[data-theme="dark"] .editormd-dropdown-menu {
+  background-color: var(--editormd-bg-secondary) !important;
+  border: 1px solid var(--editormd-border-color) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .editormd-dropdown-menu:before {
+  border-bottom-color: var(--editormd-border-color) !important;
+}
+
+[data-theme="dark"] .editormd-dropdown-menu:after {
+  border-bottom-color: var(--editormd-bg-secondary) !important;
+}
+
+[data-theme="dark"] .editormd-dropdown-menu > li > a {
+  color: var(--editormd-text-color) !important;
+}
+
+[data-theme="dark"] .editormd-dropdown-menu > li > a:hover {
+  background-color: var(--editormd-bg-tertiary) !important;
+}
+
+[data-theme="dark"] .editormd-dropdown-menu > li + li {
+  border-top: 1px solid var(--editormd-border-color) !important;
+}
+
+/* ========== 原始 Editor.md 暗黑主题类支持 ========== */
+
+/* 编辑器整体 - 原始主题类 */
+.editormd-theme-dark {
+  background-color: var(--editormd-bg-secondary) !important;
+  border: 1px solid var(--editormd-border-color) !important;
+}
+
+/* CodeMirror 编辑器背景和文本颜色 - 原始主题类 */
+.editormd-theme-dark>.CodeMirror,
+.editormd-theme-dark .CodeMirror {
+  background-color: var(--editormd-code-bg) !important;
+  color: var(--editormd-code-text) !important;
+  border-right: 1px solid var(--editormd-border-color);
+}
+
+/* CodeMirror 编辑器内部容器 - 原始主题类 */
+.editormd-theme-dark .CodeMirror-gutters {
+  background-color: var(--editormd-code-bg) !important;
+  border-right: 1px solid var(--editormd-code-border);
+}
+
+/* 行号 - 原始主题类 */
+.editormd-theme-dark .CodeMirror-linenumbers {
+  color: rgba(255, 255, 255, 0.4) !important;
+  padding: 0 5px;
+}
+
+/* 代码行 - 原始主题类 */
+.editormd-theme-dark .CodeMirror-lines,
+.editormd-theme-dark .CodeMirror pre {
+  background-color: transparent !important;
+  color: var(--editormd-code-text) !important;
+}
+
+/* 选中文本 - 原始主题类 */
+.editormd-theme-dark .CodeMirror-selected {
+  background-color: rgba(96, 165, 250, 0.3) !important;
+}
+
+.editormd-theme-dark .CodeMirror-focused .CodeMirror-selected {
+  background-color: rgba(96, 165, 250, 0.4) !important;
+}
+
+/* 匹配高亮 - 原始主题类 */
+.editormd-theme-dark .cm-matchhighlight {
+  background-color: rgba(96, 165, 250, 0.2) !important;
+}
+
+.editormd-theme-dark .CodeMirror-focused .cm-matchhighlight {
+  background-color: rgba(96, 165, 250, 0.3) !important;
+}
+
+/* 当前行背景 - 原始主题类 */
+.editormd-theme-dark .CodeMirror-activeline-background {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.editormd-theme-dark .CodeMirror-focused .CodeMirror-activeline-background {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 占位符文本 - 原始主题类 */
+.editormd-theme-dark .CodeMirror pre.CodeMirror-placeholder {
+  color: var(--editormd-text-secondary, #999) !important;
+}
+
+/* 滚动条区域 - 原始主题类 */
+.editormd-theme-dark .CodeMirror-scroll,
+.editormd-theme-dark .CodeMirror-vscrollbar,
+.editormd-theme-dark .CodeMirror-hscrollbar {
+  background-color: var(--editormd-code-bg) !important;
+}
+
+/* CodeMirror 语法高亮 - 原始主题类 */
+.editormd-theme-dark .CodeMirror .cm-keyword {
+  color: var(--editormd-hljs-keyword, #c678dd) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-variable {
+  color: var(--editormd-code-text) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-variable-2 {
+  color: var(--editormd-hljs-string, #b8c68a) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-variable-3 {
+  color: var(--editormd-hljs-builtin, #d4b675) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-string {
+  color: var(--editormd-hljs-string, #b8c68a) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-string-2 {
+  color: var(--editormd-hljs-section, #98c379) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-number {
+  color: var(--editormd-hljs-number, #d19a66) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-atom {
+  color: var(--editormd-hljs-literal, #56b6c2) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-property {
+  color: var(--editormd-hljs-attr, #98c379) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-operator {
+  color: var(--editormd-hljs-punctuation, #e0e0e0) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-comment {
+  color: var(--editormd-hljs-comment, #aaa) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-def {
+  color: var(--editormd-hljs-builtin, #d4b675) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-meta {
+  color: var(--editormd-hljs-symbol, #61aeee) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-tag {
+  color: var(--editormd-hljs-section, #98c379) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-attribute {
+  color: var(--editormd-hljs-attr, #98c379) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-qualifier {
+  color: var(--editormd-hljs-literal, #56b6c2) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-bracket {
+  color: var(--editormd-code-text) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-builtin {
+  color: var(--editormd-hljs-builtin, #d4b675) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-link {
+  color: var(--editormd-link-color) !important;
+  text-decoration: underline;
+}
+
+.editormd-theme-dark .CodeMirror .cm-error {
+  color: #ff5f56 !important;
+  background-color: rgba(255, 95, 86, 0.1) !important;
+}
+
+.editormd-theme-dark .CodeMirror .cm-header {
+  color: var(--editormd-hljs-keyword, #c678dd) !important;
+  font-weight: bold;
+}
+
+.editormd-theme-dark .CodeMirror .cm-quote {
+  color: var(--editormd-blockquote-text) !important;
+  font-style: italic;
+}
+
+/* 工具栏 - 原始主题类 */
+.editormd-theme-dark>.editormd-toolbar {
+  background-color: var(--editormd-bg-secondary) !important;
+  border-bottom: 1px solid var(--editormd-border-color) !important;
+}
+
+/* 工具栏按钮 - 原始主题类 */
+.editormd-theme-dark .editormd-toolbar i {
+  color: var(--editormd-text-color) !important;
+}
+
+.editormd-theme-dark .editormd-toolbar i:hover {
+  color: var(--editormd-accent-blue) !important;
+}
+
+/* 工具栏分隔符 - 原始主题类 */
+.editormd-theme-dark .editormd-toolbar .divider {
+  border-left: 1px solid var(--editormd-border-color) !important;
+}
+
+/* 菜单项 - 原始主题类 */
+.editormd-theme-dark .editormd-menu > li > a {
+  color: var(--editormd-text-color) !important;
+  border: 1px solid transparent !important;
+}
+
+.editormd-theme-dark .editormd-menu > li > a:hover,
+.editormd-theme-dark .editormd-menu > li > a.active {
+  background-color: var(--editormd-bg-tertiary) !important;
+  border: 1px solid var(--editormd-border-color) !important;
+}
+
+.editormd-theme-dark .editormd-menu > li.divider {
+  border-right: 1px solid var(--editormd-border-color) !important;
+}
+
+/* 下拉菜单 - 原始主题类 */
+.editormd-theme-dark .editormd-dropdown-menu {
+  background-color: var(--editormd-bg-secondary) !important;
+  border: 1px solid var(--editormd-border-color) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.editormd-theme-dark .editormd-dropdown-menu:before {
+  border-bottom-color: var(--editormd-border-color) !important;
+}
+
+.editormd-theme-dark .editormd-dropdown-menu:after {
+  border-bottom-color: var(--editormd-bg-secondary) !important;
+}
+
+.editormd-theme-dark .editormd-dropdown-menu > li > a {
+  color: var(--editormd-text-color) !important;
+}
+
+.editormd-theme-dark .editormd-dropdown-menu > li > a:hover {
+  background-color: var(--editormd-bg-tertiary) !important;
+}
+
+.editormd-theme-dark .editormd-dropdown-menu > li + li {
+  border-top: 1px solid var(--editormd-border-color) !important;
+}
+
+/* 预览区域 - 原始主题类 */
+.editormd-preview-theme-dark .editormd-preview,
+.editormd-preview-theme-dark .editormd-preview-container,
+.editormd-preview-theme-dark .markdown-body {
+  background-color: var(--editormd-bg-primary) !important;
+  color: var(--editormd-text-color) !important;
+}
+
+/* 编辑模式下的预览区域 - 原始主题类 */
+.editormd-preview-theme-dark .editormd .editormd-preview {
+  background-color: var(--editormd-bg-primary) !important;
+  color: var(--editormd-text-color) !important;
+  border-left: 1px solid var(--editormd-border-color);
+}
