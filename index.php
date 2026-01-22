@@ -5,6 +5,13 @@ if (version_compare(PHP_VERSION, '7.4.0', '<')) {
     die('ShowDoc requires PHP >= 7.4.0. Current version: ' . PHP_VERSION);
 }
 
+// ===== 禁止爬虫和搜索引擎访问 =====
+if (PHP_SAPI !== 'cli') {
+    require __DIR__ . '/server/app/Common/BotDetector.php';
+    \App\Common\BotDetector::blockBot();
+}
+// ===== 爬虫拦截结束 =====
+
 // ===== 安装状态检测（参考旧版逻辑）=====
 if (PHP_SAPI !== 'cli') {
     // 不存在安装文件夹的，表示已经安装过
