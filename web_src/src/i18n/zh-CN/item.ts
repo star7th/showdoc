@@ -354,5 +354,6 @@ export default {
   no_public_items: '暂无项目',
   project_update_time: '更新时间',
   runapi_edit_hint: 'runapi项目请在runapi客户端编辑',
+  item_exit: '退出项目',
 }
 

@@ -896,7 +896,7 @@ const saveDraftToLocal = () => {
   }
 }
 
-const loadDraftFromLocal = () => {
+const loadDraftFromLocal = async () => {
   if (currentPageId.value) {
     const draftKey = `showdoc_draft_${currentPageId.value}`
     const draftStr = localStorage.getItem(draftKey)
@@ -904,12 +904,19 @@ const loadDraftFromLocal = () => {
       try {
         const draft = JSON.parse(draftStr)
         const time = new Date(draft.timestamp).toLocaleString()
-        if (confirm(t('page.recover_draft_confirm', { time }))) {
+        // 使用项目的公共弹窗组件代替浏览器原生 confirm
+        const shouldRecover = await ConfirmModal({
+          msg: t('page.recover_draft_confirm', { time }),
+          confirmText: t('common.confirm'),
+          cancelText: t('common.cancel'),
+        })
+        // 无论用户选择什么操作（确定、取消或关闭），都删除草稿
+        if (shouldRecover) {
           form.value.title = draft.title
           form.value.content = draft.content
           form.value.catId = draft.catId
-          localStorage.removeItem(draftKey)
         }
+        localStorage.removeItem(draftKey)
       } catch (error) {
         console.error('读取草稿失败:', error)
         localStorage.removeItem(draftKey)
@@ -1107,8 +1114,8 @@ onMounted(async () => {
     // 编辑模式: 获取现有内容
     await loadPageContent(props.editPageId)
     await checkPageLock()
-    // 检查是否有本地草稿
-    loadDraftFromLocal()
+    // 检查是否有本地草稿（使用 await，因为 loadDraftFromLocal 现在是异步的）
+    await loadDraftFromLocal()
     // 检查远程锁定状态并自动锁定
     await checkRemoteLock()
     // 启动心跳保持锁定

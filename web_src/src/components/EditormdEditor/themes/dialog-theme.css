@@ -1,0 +1,532 @@
+/**
+ * Editormd 弹窗主题优化
+ * 参考设计：Ant Design Vue Modal 组件风格
+ * 目标：使 Editormd 内置弹窗与 ShowDoc 系统风格保持一致
+ */
+
+/* ========== 弹窗遮罩层 ========== */
+.editormd-mask {
+  background: rgba(0, 0, 0, 0.45) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  backdrop-filter: blur(2px);
+}
+
+/* ========== 弹窗整体容器 ========== */
+.editormd-dialog {
+  /* 美化样式 */
+  background: var(--editormd-bg-primary, #fff) !important;
+  border: 1px solid var(--editormd-border-color, #e8e8e8) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08),
+              0 3px 6px rgba(0, 0, 0, 0.1),
+              0 9px 28px rgba(0, 0, 0, 0.08) !important;
+  color: var(--editormd-text-color, rgba(0, 0, 0, 0.88)) !important;
+  font-size: 14px;
+  line-height: 1.5715;
+  
+  /* 关键：覆盖内联的固定高度 */
+  min-height: auto !important;
+  max-height: 90vh !important;
+  height: auto !important;
+  
+  /* 不覆盖 width，让内联样式控制宽度 */
+  /* 确保内容不会溢出 */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== 弹窗头部 ========== */
+.editormd-dialog-header {
+  padding: 16px 24px !important;
+  border-bottom: 1px solid var(--editormd-border-color, #f0f0f0) !important;
+  background: var(--editormd-bg-primary, #fff) !important;
+  transition: none !important;
+  margin: 0 !important;
+  /* 不收缩，保持固定高度 */
+  flex-shrink: 0;
+}
+
+.editormd-dialog-header:hover {
+  background: var(--editormd-bg-primary, #fff) !important;
+}
+
+/* ========== 弹窗标题 ========== */
+.editormd-dialog-title {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--editormd-heading-text, rgba(0, 0, 0, 0.88)) !important;
+  line-height: 22px;
+  margin: 0 !important;
+}
+
+/* ========== 弹窗内容容器 ========== */
+.editormd-dialog-container {
+  padding: 24px !important;
+  line-height: 1.5715 !important;
+  /* 内容区域可滚动 */
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* 不设置固定高度，让内容自然撑开，但不超过弹窗高度 */
+  flex: 1;
+  min-height: 0;
+}
+
+.editormd-dialog-container h1 {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--editormd-heading-text, rgba(0, 0, 0, 0.88)) !important;
+  margin: 0 0 16px 0 !important;
+  line-height: 1.5;
+}
+
+.editormd-dialog-container h1 .fa {
+  color: var(--editormd-accent-blue, #1677ff) !important;
+  padding-right: 8px;
+}
+
+.editormd-dialog-container h1 small {
+  padding-left: 8px;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--editormd-text-secondary, rgba(0, 0, 0, 0.45)) !important;
+}
+
+/* ========== 弹窗表单元素 ========== */
+.editormd-dialog-container input[type="text"],
+.editormd-dialog-container textarea {
+  padding: 8px 11px !important;
+  font-size: 14px !important;
+  line-height: 1.5715 !important;
+  background-color: var(--editormd-bg-primary, #fff) !important;
+  border: 1px solid var(--editormd-border-color, #d9d9d9) !important;
+  border-radius: 6px !important;
+  transition: all 0.2s !important;
+  color: var(--editormd-text-color, rgba(0, 0, 0, 0.88)) !important;
+}
+
+.editormd-dialog-container input[type="text"]:hover,
+.editormd-dialog-container textarea:hover {
+  border-color: var(--editormd-accent-blue, #4096ff) !important;
+}
+
+.editormd-dialog-container input[type="text"]:focus,
+.editormd-dialog-container textarea:focus {
+  outline: none;
+  border-color: var(--editormd-accent-blue, #1677ff) !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1) !important;
+}
+
+/* ========== 弹窗底部 ========== */
+.editormd-dialog-footer {
+  padding: 10px 16px 16px !important;
+  text-align: right !important;
+  border-top: 1px solid var(--editormd-border-color, #f0f0f0) !important;
+  margin: 0 !important;
+  /* 不收缩，保持固定高度 */
+  flex-shrink: 0;
+}
+
+/* ========== 弹窗按钮 - 仿 Ant Design 样式 ========== */
+.editormd-dialog-container input[type="submit"],
+.editormd-dialog-container .editormd-btn,
+.editormd-dialog-container button,
+.editormd-dialog-footer input[type="submit"],
+.editormd-dialog-footer .editormd-btn,
+.editormd-dialog-footer button {
+  font-size: 14px !important;
+  height: 32px !important;
+  padding: 4px 15px !important;
+  font-weight: 400 !important;
+  border-radius: 6px !important;
+  border: 1px solid var(--editormd-border-color, #d9d9d9) !important;
+  background: var(--editormd-bg-primary, #fff) !important;
+  color: var(--editormd-text-color, rgba(0, 0, 0, 0.88)) !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1) !important;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015) !important;
+  outline: none !important;
+  user-select: none !important;
+}
+
+/* 按钮悬停状态 */
+.editormd-dialog-container input[type="submit"]:hover,
+.editormd-dialog-container .editormd-btn:hover,
+.editormd-dialog-container button:hover,
+.editormd-dialog-footer input[type="submit"]:hover,
+.editormd-dialog-footer .editormd-btn:hover,
+.editormd-dialog-footer button:hover {
+  color: var(--editormd-accent-blue, #1677ff) !important;
+  border-color: var(--editormd-accent-blue, #4096ff) !important;
+  background: var(--editormd-bg-primary, #fff) !important;
+}
+
+/* 按钮激活状态 */
+.editormd-dialog-container input[type="submit"]:active,
+.editormd-dialog-container .editormd-btn:active,
+.editormd-dialog-container button:active,
+.editormd-dialog-footer input[type="submit"]:active,
+.editormd-dialog-footer .editormd-btn:active,
+.editormd-dialog-footer button:active {
+  color: var(--editormd-accent-blue, #0958d9) !important;
+  border-color: var(--editormd-accent-blue, #0958d9) !important;
+  box-shadow: none !important;
+}
+
+/* ========== 主按钮样式 (第一个按钮，如"确定"按钮) ========== */
+.editormd-dialog-footer input[type="submit"]:first-child,
+.editormd-dialog-footer button:first-child,
+.editormd-dialog-footer .editormd-btn:first-child {
+  background: var(--editormd-accent-blue, #1677ff) !important;
+  border-color: var(--editormd-accent-blue, #1677ff) !important;
+  color: #fff !important;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1) !important;
+}
+
+.editormd-dialog-footer input[type="submit"]:first-child:hover,
+.editormd-dialog-footer button:first-child:hover,
+.editormd-dialog-footer .editormd-btn:first-child:hover {
+  background: var(--editormd-accent-blue, #4096ff) !important;
+  border-color: var(--editormd-accent-blue, #4096ff) !important;
+}
+
+.editormd-dialog-footer input[type="submit"]:first-child:active,
+.editormd-dialog-footer button:first-child:active,
+.editormd-dialog-footer .editormd-btn:first-child:active {
+  background: var(--editormd-accent-blue, #0958d9) !important;
+  border-color: var(--editormd-accent-blue, #0958d9) !important;
+}
+
+/* ========== 关闭按钮 ========== */
+.editormd-dialog-close {
+  position: absolute !important;
+  top: 16px !important;
+  right: 16px !important;
+  font-size: 16px !important;
+  color: var(--editormd-text-secondary, rgba(0, 0, 0, 0.45)) !important;
+  transition: color 0.2s !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+}
+
+.editormd-dialog-close:hover {
+  color: var(--editormd-text-color, rgba(0, 0, 0, 0.88)) !important;
+}
+
+/* ========== select 下拉框 ========== */
+.editormd-dialog-container select {
+  color: var(--editormd-text-color, rgba(0, 0, 0, 0.88)) !important;
+  padding: 5px 11px !important;
+  font-size: 14px !important;
+  line-height: 1.5715 !important;
+  background-color: var(--editormd-bg-primary, #fff) !important;
+  border: 1px solid var(--editormd-border-color, #d9d9d9) !important;
+  border-radius: 6px !important;
+  transition: all 0.2s !important;
+  cursor: pointer !important;
+}
+
+.editormd-dialog-container select:hover {
+  border-color: var(--editormd-accent-blue, #4096ff) !important;
+}
+
+.editormd-dialog-container select:focus {
+  outline: none;
+  border-color: var(--editormd-accent-blue, #1677ff) !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1) !important;
+}
+
+/* ========== 弹窗信息对话框 ========== */
+/* 不覆盖宽度，让内联样式控制 */
+
+/* ========== 图片上传对话框 ========== */
+/* 不覆盖宽度，让内联样式控制 */
+
+/* ========== 链接对话框 ========== */
+/* 不覆盖宽度，让内联样式控制 */
+
+.editormd-link-dialog input[type="text"] {
+  width: 100% !important;
+  margin-bottom: 12px !important;
+  box-sizing: border-box !important;
+}
+
+.editormd-link-dialog input[type="text"]:last-of-type {
+  margin-bottom: 0 !important;
+}
+
+/* ========== 特定类型弹窗 ========== */
+/* 不覆盖宽度，让内联样式控制 */
+
+/* ========== 表单标签 ========== */
+.editormd-form label {
+  display: block !important;
+  margin-bottom: 8px !important;
+  color: var(--editormd-text-color, rgba(0, 0, 0, 0.88)) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+.editormd-form br {
+  clear: both !important;
+  height: 12px !important;
+}
+
+/* ========== 文件上传输入框 ========== */
+.editormd-file-input {
+  width: 100px !important;
+  height: 36px !important;
+  margin-left: 12px !important;
+  position: relative !important;
+  display: inline-block !important;
+}
+
+.editormd-file-input input[type="file"] {
+  width: 100px !important;
+  height: 36px !important;
+  opacity: 0 !important;
+  cursor: pointer !important;
+  background: #000 !important;
+  display: inline-block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/* ========== 暗黑主题 ========== */
+[data-theme="dark"] .editormd-dialog {
+  background: var(--editormd-bg-secondary, #1f1f1f) !important;
+  border-color: var(--editormd-border-color, #303030) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.48),
+              0 3px 6px rgba(0, 0, 0, 0.3),
+              0 9px 28px rgba(0, 0, 0, 0.48) !important;
+  color: var(--editormd-text-color, rgba(255, 255, 255, 0.88)) !important;
+  /* 暗黑主题也覆盖固定高度 */
+  min-height: auto !important;
+  max-height: 90vh !important;
+  height: auto !important;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+[data-theme="dark"] .editormd-dialog-header {
+  border-bottom-color: var(--editormd-border-color, #303030) !important;
+  background: var(--editormd-bg-secondary, #1f1f1f) !important;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .editormd-dialog-header:hover {
+  background: var(--editormd-bg-secondary, #1f1f1f) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-title {
+  color: var(--editormd-heading-text, rgba(255, 255, 255, 0.88)) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-container h1 {
+  color: var(--editormd-heading-text, rgba(255, 255, 255, 0.88)) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-container h1 small {
+  color: var(--editormd-text-secondary, rgba(255, 255, 255, 0.45)) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-close {
+  color: var(--editormd-text-secondary, rgba(255, 255, 255, 0.45)) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-close:hover {
+  color: var(--editormd-text-color, rgba(255, 255, 255, 0.88)) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-footer {
+  border-top-color: var(--editormd-border-color, #303030) !important;
+  /* 不收缩，保持固定高度 */
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .editormd-dialog-container input[type="text"],
+[data-theme="dark"] .editormd-dialog-container textarea,
+[data-theme="dark"] .editormd-dialog-container select {
+  background-color: var(--editormd-bg-tertiary, #141414) !important;
+  border-color: var(--editormd-border-color, #424242) !important;
+  color: var(--editormd-text-color, rgba(255, 255, 255, 0.88)) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-container input[type="text"]:hover,
+[data-theme="dark"] .editormd-dialog-container textarea:hover,
+[data-theme="dark"] .editormd-dialog-container select:hover {
+  border-color: var(--editormd-accent-blue, #59b7ff) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-container input[type="text"]:focus,
+[data-theme="dark"] .editormd-dialog-container textarea:focus,
+[data-theme="dark"] .editormd-dialog-container select:focus {
+  border-color: var(--editormd-accent-blue, #1677ff) !important;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-container .editormd-btn,
+[data-theme="dark"] .editormd-dialog-footer .editormd-btn,
+[data-theme="dark"] .editormd-dialog-container input[type="submit"],
+[data-theme="dark"] .editormd-dialog-footer input[type="submit"],
+[data-theme="dark"] .editormd-dialog-container button,
+[data-theme="dark"] .editormd-dialog-footer button {
+  background: var(--editormd-bg-tertiary, rgba(255, 255, 255, 0.04)) !important;
+  border-color: var(--editormd-border-color, #424242) !important;
+  color: var(--editormd-text-color, rgba(255, 255, 255, 0.88)) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-container .editormd-btn:hover,
+[data-theme="dark"] .editormd-dialog-footer .editormd-btn:hover,
+[data-theme="dark"] .editormd-dialog-container input[type="submit"]:hover,
+[data-theme="dark"] .editormd-dialog-footer input[type="submit"]:hover,
+[data-theme="dark"] .editormd-dialog-container button:hover,
+[data-theme="dark"] .editormd-dialog-footer button:hover {
+  color: var(--editormd-accent-blue, #59b7ff) !important;
+  border-color: var(--editormd-accent-blue, #59b7ff) !important;
+  background: var(--editormd-bg-tertiary, rgba(255, 255, 255, 0.08)) !important;
+}
+
+[data-theme="dark"] .editormd-dialog-footer input[type="submit"]:first-child,
+[data-theme="dark"] .editormd-dialog-footer button:first-child,
+[data-theme="dark"] .editormd-dialog-footer .editormd-btn:first-child {
+  background: var(--editormd-accent-blue, #1677ff) !important;
+  border-color: var(--editormd-accent-blue, #1677ff) !important;
+  color: #fff !important;
+}
+
+[data-theme="dark"] .editormd-dialog-footer input[type="submit"]:first-child:hover,
+[data-theme="dark"] .editormd-dialog-footer button:first-child:hover,
+[data-theme="dark"] .editormd-dialog-footer .editormd-btn:first-child:hover {
+  background: var(--editormd-accent-blue, #4096ff) !important;
+  border-color: var(--editormd-accent-blue, #4096ff) !important;
+}
+
+[data-theme="dark"] .editormd-code-block-dialog textarea,
+[data-theme="dark"] .editormd-preformatted-text-dialog textarea {
+  background: var(--editormd-code-bg, #0d0d0d) !important;
+  border-color: var(--editormd-border-color, #424242) !important;
+  color: var(--editormd-code-text, rgba(255, 255, 255, 0.88)) !important;
+  /* 确保暗黑模式下也能调整大小 */
+  resize: vertical !important;
+}
+
+[data-theme="dark"] .editormd-info p > a,
+[data-theme="dark"] .editormd-info .hover-link:hover,
+[data-theme="dark"] .editormd-info a:hover {
+  color: var(--editormd-accent-blue, #1677ff) !important;
+}
+
+[data-theme="dark"] .editormd-info .hover-link {
+  color: var(--editormd-text-color, rgba(255, 255, 255, 0.88)) !important;
+}
+
+[data-theme="dark"] .editormd-form label {
+  color: var(--editormd-text-color, rgba(255, 255, 255, 0.88)) !important;
+}
+
+/* ========== 响应式优化 ========== */
+@media (max-width: 768px) {
+  /* 移动端不强制覆盖宽度，让内联样式控制 */
+  .editormd-dialog-container {
+    padding: 16px !important;
+  }
+
+  .editormd-dialog-header {
+    padding: 12px 16px !important;
+  }
+
+  .editormd-dialog-footer {
+    padding: 8px 12px 12px !important;
+  }
+
+  .editormd-dialog-container input[type="submit"],
+  .editormd-dialog-container .editormd-btn,
+  .editormd-dialog-container button,
+  .editormd-dialog-footer input[type="submit"],
+  .editormd-dialog-footer .editormd-btn,
+  .editormd-dialog-footer button {
+    padding: 4px 12px !important;
+  }
+}
+
+/* ========== 动画效果 ========== */
+.editormd-dialog {
+  /* 保留动画，但确保不会导致布局问题 */
+  animation: editormdDialogFadeIn 0.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  /* 确保动画期间内容可见 */
+  will-change: opacity, transform;
+}
+
+@keyframes editormdDialogFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.editormd-mask {
+  animation: editormdMaskFadeIn 0.2s ease-out forwards;
+}
+
+@keyframes editormdMaskFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ========== 额外的弹窗尺寸保护 ========== */
+/* 已在前面设置 .editormd-dialog 的 flex 布局和高度控制 */
+
+/* 确保所有弹窗内容可见 */
+.editormd-dialog-info,
+.editormd-link-dialog,
+.editormd-reference-link-dialog,
+.editormd-image-dialog,
+.editormd-table-dialog,
+.editormd-emoticons-dialog,
+.editormd-goto-line-dialog,
+.editormd-preformatted-text-dialog,
+.editormd-code-block-dialog,
+.editormd-help-dialog {
+  overflow: visible;
+}
+
+/* ========== 代码块对话框特殊处理 ========== */
+.editormd-code-block-dialog textarea,
+.editormd-preformatted-text-dialog textarea {
+  width: 100% !important;
+  /* 不强制固定高度，使用范围 */
+  min-height: 200px;
+  max-height: 60vh;
+  margin-bottom: 16px !important;
+  overflow: auto !important;
+  border: 1px solid var(--editormd-border-color, #d9d9d9) !important;
+  background: var(--editormd-code-bg, #f5f5f5) !important;
+  padding: 12px 16px !important;
+  resize: vertical !important;
+  border-radius: 6px !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Monaco, 'Courier New', monospace !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+/* ========== 表格对话框特殊处理 ========== */
+.editormd-grid-table {
+  width: 100% !important;
+  display: table !important;
+  border: 1px solid var(--editormd-border-color, #d9d9d9) !important;
+  border-radius: 6px !important;
+  overflow: hidden;
+}

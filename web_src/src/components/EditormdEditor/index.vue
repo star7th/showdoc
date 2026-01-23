@@ -4,10 +4,16 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { getUserInfo } from '@/models/user'
 import { getServerHost, getStaticPath } from '@/utils/system'
 import Viewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
+
+// ============================================
+// i18n
+// ============================================
+const { t } = useI18n()
 
 // ============================================
 // Props 定义
@@ -377,7 +383,7 @@ const dealWithContent = async () => {
       codeBlocks.each(function(this: HTMLElement) {
         const $pre = $(this)
         if ($pre.find('.code-copy-btn').length === 0) {
-          const $btn = $('<span class="code-copy-btn">复制</span>')
+          const $btn = $(`<span class="code-copy-btn">${t('common.copy')}</span>`)
           $btn.prependTo($pre)
         }
       })
@@ -385,12 +391,12 @@ const dealWithContent = async () => {
       $(`#${editorId.value}`).off('click', '.code-copy-btn').on('click', '.code-copy-btn', function(this: HTMLElement) {
         const $btn = $(this)
         const $pre = $btn.parent()
-        const codeText = $pre.text().trim()
+        const codeText = $pre.find('> code').text().trim()
 
         navigator.clipboard.writeText(codeText).then(() => {
-          $btn.text('复制成功')
+          $btn.text(t('common.copy_success'))
           setTimeout(() => {
-            $btn.text('复制')
+            $btn.text(t('common.copy'))
           }, 1500)
         }).catch(() => {
           // Copy failed ignored
@@ -803,4 +809,7 @@ defineExpose({
 
 /* 引入代码高亮主题 */
 @import '@/components/EditormdEditor/assets/highlight/atom-one-dark.min.css';
+
+/* 引入弹窗主题优化（必须在最后加载，覆盖默认弹窗样式） */
+@import '@/components/EditormdEditor/themes/dialog-theme.css';
 </style>

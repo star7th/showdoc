@@ -317,4 +317,5 @@ export default {
   whiteboard_save_success: 'Saved',
   whiteboard_op_success: 'Operation successful',
   whiteboard_upload_failed: 'Import failed',
+  item_exit: 'Exit Item',
 }

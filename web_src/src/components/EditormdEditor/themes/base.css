@@ -923,8 +923,8 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  padding: 4px 8px;
-  font-size: 12px;
+  padding: 3px 6px;
+  font-size: 10px;
   background-color: var(--editormd-code-bg);
   color: var(--editormd-text-color);
   border: 1px solid var(--editormd-border-color);
@@ -1088,6 +1088,20 @@
   display: block;
 }
 
+/* 编辑器工具栏按钮 - 确保样式不被外部干扰 */
+.editormd-toolbar .fa,
+.editormd-toolbar i {
+  font-size: 14px !important;
+  font-weight: normal !important;
+  color: var(--editormd-text-secondary) !important;
+  transition: color 0.2s ease !important;
+}
+
+.editormd-toolbar .fa:hover,
+.editormd-toolbar i:hover {
+  color: var(--editormd-text-color) !important;
+}
+
 /* CodeMirror 编辑器区域 - 需要调整 margin-top 以适配工具栏高度 */
 /* 工具栏是 absolute 定位，需要设置 top 或 padding 来避开工具栏 */
 .editormd .CodeMirror {
@@ -1119,7 +1133,10 @@
   right: 0;
   width: 50%;
   overflow: auto;
-  padding-left: 20px;
+  padding-top: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  padding-left: 40px;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -1145,10 +1162,15 @@
 }
 
 /* 工具栏按钮 */
+[data-theme="dark"] .editormd-toolbar .fa,
 [data-theme="dark"] .editormd-toolbar i {
+  font-size: 14px !important;
+  font-weight: normal !important;
   color: var(--editormd-text-color) !important;
+  transition: color 0.2s ease !important;
 }
 
+[data-theme="dark"] .editormd-toolbar .fa:hover,
 [data-theme="dark"] .editormd-toolbar i:hover {
   color: var(--editormd-accent-blue) !important;
 }
@@ -1618,4 +1640,9 @@
   background-color: var(--editormd-bg-primary) !important;
   color: var(--editormd-text-color) !important;
   border-left: 1px solid var(--editormd-border-color);
+}
+
+/* ========== 隐藏预览区域关闭按钮 ========== */
+.editormd-preview-close-btn {
+  display: none !important;
 }

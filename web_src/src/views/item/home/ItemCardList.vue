@@ -19,7 +19,9 @@
               @click="toOneItem(item)"
             >
               <!-- 星标切角 -->
-              <div v-if="item.is_star > 0" class="star-corner" @click.stop></div>
+              <div v-if="item.is_star > 0" class="star-corner" @click.stop>
+                <i class="fas fa-star"></i>
+              </div>
               
               <!-- 卡片头部：图标 + 标题 + 操作 -->
               <div class="item-card-header">
@@ -565,15 +567,12 @@ onBeforeUnmount(() => {
   clip-path: polygon(100% 0, 100% 100%, 0 0);
   z-index: 5;
 
-  &::before {
-    content: '\f005';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
+  .fas {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    right: 5px;
+    top: 5px;
     color: #fff;
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 
