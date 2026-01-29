@@ -622,11 +622,9 @@ class PageController extends BaseController
                 return; // 项目未启用 AI 知识库功能，不触发索引
             }
 
-            // 异步触发索引更新（使用简单的 HTTP 请求，不等待响应）
-            $url = rtrim($ai_service_url, '/') . '/api/index/upsert';
-
             // 如果是删除操作，直接调用删除接口
             if ($action == 'delete') {
+                $url = rtrim($ai_service_url, '/') . '/api/index/delete';
                 $ai_service_token = D("Options")->get("ai_service_token");
                 \Api\Helper\AiHelper::callAiServiceAsync($url, array(
                     'item_id' => $item_id,
@@ -634,6 +632,9 @@ class PageController extends BaseController
                 ), $ai_service_token, 'DELETE');
                 return;
             }
+
+            // 异步触发索引更新（使用简单的 HTTP 请求，不等待响应）
+            $url = rtrim($ai_service_url, '/') . '/api/index/upsert';
 
             // 确保获取最新数据：先删除缓存，再从数据库读取
             D("Page")->deleteCache($page_id);
@@ -664,7 +665,7 @@ class PageController extends BaseController
                 return;
             }
 
-            // 获取目录名称
+            // 获取目录名称，拼接到标题便于 AI 搜索（接口无 cat_name 参数）
             $cat_name = '';
             if ($page['cat_id'] > 0) {
                 $catalog = D("Catalog")->where(array('cat_id' => $page['cat_id'], 'item_id' => $item_id))->find();
@@ -672,14 +673,17 @@ class PageController extends BaseController
                     $cat_name = $catalog['cat_name'];
                 }
             }
+            $page_title = $page['page_title'];
+            if ($cat_name !== '') {
+                $page_title = $cat_name . ' / ' . $page_title;
+            }
 
             $postData = array(
                 'item_id' => $item_id,
                 'page_id' => $page_id,
-                'page_title' => $page['page_title'],
+                'page_title' => $page_title,
                 'page_content' => $content,
                 'page_type' => $pageType,
-                'cat_name' => $cat_name,
                 'update_time' => isset($page['update_time']) ? $page['update_time'] : time()
             );
 

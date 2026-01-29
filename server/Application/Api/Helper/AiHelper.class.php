@@ -43,14 +43,11 @@ class AiHelper
       }
 
       $totalPages = count($pageData);
-      \Think\Log::record("自动触发重建索引: item_id={$item_id}, 页面总数={$totalPages}");
 
       // 重建索引前，先清空整个项目的旧索引，避免分批处理时重复删除操作
       $deleteUrl = rtrim($ai_service_url, '/') . '/api/index/delete-item';
       $deleteResult = self::callService($deleteUrl, array('item_id' => $item_id), $ai_service_token, 'DELETE', 30);
-      if ($deleteResult !== false) {
-        \Think\Log::record("已清空项目旧索引: item_id={$item_id}");
-      } else {
+      if ($deleteResult === false) {
         \Think\Log::record("清空项目旧索引失败（可能不存在）: item_id={$item_id}");
       }
 
@@ -83,8 +80,6 @@ class AiHelper
       $errorBatches = 0;
       $taskIds = array();
 
-      \Think\Log::record("使用分批方式重建索引: item_id={$item_id}, 总批次数={$totalBatches}, 每批={$batchSize}个页面");
-
       for ($i = 0; $i < $totalPages; $i += $batchSize) {
         $batch = array_slice($pageData, $i, $batchSize);
         $batchNum = floor($i / $batchSize) + 1;
@@ -100,7 +95,6 @@ class AiHelper
           if (isset($result['task_id'])) {
             $taskIds[] = $result['task_id'];
           }
-          \Think\Log::record("重建索引进度: item_id={$item_id}, 批次 {$batchNum}/{$totalBatches} 已提交, task_id=" . (isset($result['task_id']) ? $result['task_id'] : ''));
         } else {
           $errorBatches++;
           \Think\Log::record("重建索引进度: item_id={$item_id}, 批次 {$batchNum}/{$totalBatches} 提交失败");
@@ -111,8 +105,6 @@ class AiHelper
           usleep(200000);  // 延迟 0.2 秒
         }
       }
-
-      \Think\Log::record("重建索引任务提交完成: item_id={$item_id}, 成功批次={$successBatches}, 失败批次={$errorBatches}, 总计={$totalBatches}");
 
       return array(
         'status' => $errorBatches == 0 ? 'success' : 'partial_success',
@@ -249,6 +241,99 @@ class AiHelper
   }
 
   /**
+   * 更新单个页面的索引（增量索引）
+   * @param int $item_id 项目ID
+   * @param int $page_id 页面ID
+   * @param string $action 操作类型：'update' 或 'delete'
+   * @param string $ai_service_url AI服务地址
+   * @param string $ai_service_token AI服务Token
+   * @return bool 成功返回 true，失败返回 false
+   */
+  public static function updatePageIndex($item_id, $page_id, $action, $ai_service_url, $ai_service_token)
+  {
+    try {
+      // 设置超时时间（增量索引应该很快）
+      set_time_limit(60);
+      ini_set('memory_limit', '128M');
+
+      $url = rtrim($ai_service_url, '/') . '/api/index/upsert';
+
+      if ($action === 'delete') {
+        // 删除页面索引（DELETE 方法）
+        $postData = array(
+          'item_id' => $item_id,
+          'page_id' => $page_id
+        );
+        $result = self::callService($url, $postData, $ai_service_token, 'DELETE', 30);
+      } else {
+        // 更新页面索引，先获取页面内容
+        $page = D("Page")->getById($page_id);
+        if (!$page) {
+          \Think\Log::record("获取页面失败: item_id={$item_id}, page_id={$page_id}");
+          return false;
+        }
+
+        // 获取页面所属目录的名称，拼接到标题便于 AI 搜索（接口无 cat_name 参数）
+        $catName = '';
+        if (!empty($page['cat_id'])) {
+          $catalog = D("Catalog")->getById($page['cat_id']);
+          if ($catalog) {
+            $catName = isset($catalog['cat_name']) ? $catalog['cat_name'] : '';
+          }
+        }
+        $pageTitle = isset($page['page_title']) ? $page['page_title'] : '';
+        if ($catName !== '') {
+          $pageTitle = $catName . ' / ' . $pageTitle;
+        }
+
+        // 处理页面内容
+        $content = isset($page['page_content']) ? $page['page_content'] : '';
+        $pageType = isset($page['page_type']) ? $page['page_type'] : 'regular';
+
+        // HTML 反转义
+        $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // 尝试转换为 Markdown（如果是 API 文档）
+        $convert = new Convert();
+        $mdContent = $convert->runapiToMd($content);
+        if ($mdContent !== false) {
+          $content = $mdContent;
+        }
+
+        // 跳过空内容
+        if (empty($content) || trim($content) === '') {
+          // 如果内容为空，则删除该页面的索引
+          $postData = array(
+            'item_id' => $item_id,
+            'page_id' => $page_id
+          );
+          $result = self::callService($url, $postData, $ai_service_token, 'DELETE', 30);
+        } else {
+          $postData = array(
+            'item_id' => $item_id,
+            'page_id' => $page_id,
+            'page_title' => $pageTitle,
+            'page_content' => $content,
+            'page_type' => $pageType,
+            'update_time' => isset($page['update_time']) ? $page['update_time'] : time()
+          );
+          $result = self::callService($url, $postData, $ai_service_token, 'POST', 30);
+        }
+      }
+
+      if ($result === false) {
+        \Think\Log::record("更新页面索引失败: item_id={$item_id}, page_id={$page_id}, action={$action}");
+        return false;
+      }
+
+      return true;
+    } catch (Exception $e) {
+      \Think\Log::record("更新页面索引异常: item_id={$item_id}, page_id={$page_id}, action={$action}, error=" . $e->getMessage());
+      return false;
+    }
+  }
+
+  /**
    * 调用 AI 服务（流式）
    * @param string $url 请求URL
    * @param array $postData POST数据
@@ -332,6 +417,8 @@ class AiHelper
   {
     $content = $page['page_content'];
     $pageType = isset($page['page_type']) ? $page['page_type'] : 'regular';
+    $pageId = isset($page['page_id']) ? $page['page_id'] : 0;
+    $catId = isset($page['cat_id']) ? $page['cat_id'] : 0;
 
     // HTML 反转义（因为存储的内容是 HTML 转义的）
     $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -344,16 +431,27 @@ class AiHelper
 
     // 跳过空内容的页面
     if (empty($content) || !is_string($content) || trim($content) === '') {
-      \Think\Log::record("跳过空内容页面: page_id={$page['page_id']}, title={$page['page_title']}");
       return;
     }
 
+    // 获取页面所属目录的名称（主动查询），拼接到标题便于 AI 搜索（接口无 cat_name 参数）
+    $catName = '';
+    if ($catId > 0) {
+      $catalog = D("Catalog")->getById($catId);
+      if ($catalog) {
+        $catName = isset($catalog['cat_name']) ? $catalog['cat_name'] : '';
+      }
+    }
+    $pageTitle = isset($page['page_title']) ? $page['page_title'] : '';
+    if ($catName !== '') {
+      $pageTitle = $catName . ' / ' . $pageTitle;
+    }
+
     $pageData[] = array(
-      'page_id' => $page['page_id'],
-      'page_title' => $page['page_title'],
+      'page_id' => $pageId,
+      'page_title' => $pageTitle,
       'page_content' => $content,
       'page_type' => $pageType,
-      'cat_name' => isset($page['cat_name']) ? $page['cat_name'] : '',
       'update_time' => isset($page['update_time']) ? $page['update_time'] : time()
     );
   }
