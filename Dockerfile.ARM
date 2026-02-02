@@ -1,4 +1,4 @@
-FROM wordpress:php8.1-apache
+FROM wordpress:php8.1
 
 COPY ./ /var/www/html/
 RUN mkdir -p /showdoc_data/html
