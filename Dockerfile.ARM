@@ -1,4 +1,4 @@
-FROM  arm64v8/wordpress:php8.3
+FROM wordpress:8.3-apache
 
 COPY ./ /var/www/html/
 RUN mkdir -p /showdoc_data/html
