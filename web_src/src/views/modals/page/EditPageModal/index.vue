@@ -445,6 +445,15 @@ const handleSave = async (notify = false, notifyContent = '') => {
     return
   }
 
+  // 🔧 修复：保存前强制从编辑器获取最新内容
+  // 解决问题：通过 insertValue 等方法插入内容后，v-model 可能还没有同步，
+  // 导致保存的是旧内容
+  if (editormdEditorRef.value && editormdEditorRef.value.getValue) {
+    form.value.content = editormdEditorRef.value.getValue()
+  } else if (editorRef.value && editorRef.value.getMarkdown) {
+    form.value.content = editorRef.value.getMarkdown()
+  }
+
   // 如果标题为空，使用默认标题
   if (!form.value.title.trim()) {
     isEditingTitle.value = false
