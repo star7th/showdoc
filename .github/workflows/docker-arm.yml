@@ -1,4 +1,4 @@
-﻿name: ci
+name: ci
 
 on:
   push:
@@ -26,8 +26,7 @@ jobs:
           context: .
           push: true
           tags: star7th/showdoc:arm-latest
-          file: Dockerfile.ARM
+          file: Dockerfile
           platforms: |
-            linux/arm/v5
             linux/arm/v7
             linux/arm64
