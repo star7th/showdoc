@@ -79,7 +79,7 @@ class PageController extends BaseController
 
         // 检查访问权限
         if (!$this->checkItemVisit($uid, $itemId)) {
-            return $this->error($response, 10103, '您没有访问权限');
+            return $this->error($response, 10101, '您没有访问权限');
         }
 
         // 转换为数组格式
@@ -221,7 +221,7 @@ class PageController extends BaseController
 
         // 验证内容不能为空
         if (empty($pageContent)) {
-            return $this->error($response, 10103, '不允许保存空内容，请随便写点什么');
+            return $this->error($response, 10101, '不允许保存空内容，请随便写点什么');
         }
 
         // URL 解码
@@ -234,7 +234,7 @@ class PageController extends BaseController
 
         // 检查编辑权限
         if (!$this->checkItemEdit($uid, $itemId)) {
-            return $this->error($response, 10103, '您没有编辑权限');
+            return $this->error($response, 10101, '没有编辑权限');
         }
 
         $item = \App\Model\Item::findById($itemId);
@@ -293,11 +293,11 @@ class PageController extends BaseController
             }
 
             if ((int) $page['item_id'] !== $itemId) {
-                return $this->error($response, 10103, '页面不属于该项目');
+                return $this->error($response, 10101, '页面不属于该项目');
             }
 
             if (!$this->checkItemEdit($uid, (int) $page['item_id'])) {
-                return $this->error($response, 10103, '您没有编辑权限');
+                return $this->error($response, 10101, '您没有编辑权限');
             }
 
             // 保存历史版本
@@ -320,7 +320,7 @@ class PageController extends BaseController
             $ret = \App\Model\Page::savePage($pageId, $itemId, $data);
 
             if (!$ret) {
-                return $this->error($response, 10103, '保存失败');
+                return $this->error($response, 10101, '保存失败');
             }
 
             // 记录变更日志
@@ -382,7 +382,7 @@ class PageController extends BaseController
             // 添加页面
             $pageId = \App\Model\Page::addPage($itemId, $data);
             if ($pageId <= 0) {
-                return $this->error($response, 10103, '创建页面失败');
+                return $this->error($response, 10101, '创建页面失败');
             }
 
             // 记录变更日志
@@ -515,7 +515,7 @@ class PageController extends BaseController
 
         // 检查访问权限
         if (!$this->checkItemVisit($uid, $itemId)) {
-            return $this->error($response, 10103, '您没有访问权限');
+            return $this->error($response, 10101, '您没有访问权限');
         }
 
         // 获取历史版本列表
@@ -560,7 +560,7 @@ class PageController extends BaseController
 
         // 检查访问权限
         if (!$this->checkItemVisit($uid, $itemId)) {
-            return $this->error($response, 10103, '您没有访问权限');
+            return $this->error($response, 10101, '您没有访问权限');
         }
 
         // 获取历史版本
@@ -607,7 +607,7 @@ class PageController extends BaseController
 
         // 检查编辑权限
         if (!$this->checkItemEdit($uid, $itemId)) {
-            return $this->error($response, 10103, '您没有编辑权限');
+            return $this->error($response, 10101, '您没有编辑权限');
         }
 
         // 更新历史版本备注
@@ -832,7 +832,7 @@ class PageController extends BaseController
         $uid = (int) ($loginUser['uid'] ?? 0);
 
         if (!$this->checkItemEdit($uid, $itemId)) {
-            return $this->error($response, 10103, '您没有编辑权限');
+            return $this->error($response, 10101, '您没有编辑权限');
         }
 
         // 先删除旧记录
@@ -943,7 +943,7 @@ class PageController extends BaseController
 
         $uid = (int) ($loginUser['uid'] ?? 0);
         if (!$this->checkItemEdit($uid, $itemId)) {
-            return $this->error($response, 10103, '您没有编辑权限');
+            return $this->error($response, 10101, '您没有编辑权限');
         }
 
         $dataArray = json_decode(htmlspecialchars_decode($pagesJson, ENT_QUOTES), true);
@@ -996,7 +996,7 @@ class PageController extends BaseController
         }
 
         if (!$this->checkItemEdit($uid, $itemId)) {
-            return $this->error($response, 10103, '您没有编辑权限');
+            return $this->error($response, 10101, '您没有编辑权限');
         }
 
         $now = time();
@@ -1012,7 +1012,7 @@ class PageController extends BaseController
             ->first();
 
         if ($row && (int) ($row->lock_uid ?? 0) !== $uid) {
-            return $this->error($response, 10103, '该页面已被其他用户锁定');
+            return $this->error($response, 10101, '该页面已被其他用户锁定');
         }
 
         // 删除当前页面的旧锁
