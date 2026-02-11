@@ -177,6 +177,12 @@ $app->get('/{domain:[a-zA-Z0-9_-]+}', function (Request $request, Response $resp
     return $controller->show($request, $response);
 });
 
+// CLI 命令路由：home/common/repasswd（重置管理员密码）
+$app->any('/home/common/repasswd', function (Request $request, Response $response) use ($container) {
+    $controller = $container->get(\App\Home\Controller\CommonController::class);
+    return $controller->repasswd($request, $response);
+});
+
 // 兜底路由：所有其他路径（多段路径，如 /user/login）都返回 Vue 应用
 $app->any('/{path:.*}', function (Request $request, Response $response) {
     // 开源版前端构建产物在 web/ 目录下，而不是使用主版的 web.html
