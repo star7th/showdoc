@@ -278,11 +278,13 @@ export default {
   oss_domain_placeholder: 'Custom domain, e.g., https://cdn.example.com',
   // Homepage Settings
   home_page: 'Homepage Settings',
+  home_page_tips: 'Set the display mode of the website homepage',
   full_page: 'Full Intro Page',
   login_page: 'Login Page',
   jump_to_item: 'Jump to Specified Item',
   jump_to_item_placeholder: 'Select item',
   home_item: 'Homepage Jump Item',
+  home_item_tips: 'Select the item to jump to on homepage',
   home_item_placeholder: 'Select item to jump to',
   // History Version
   history_version_count: 'History Version Count',
