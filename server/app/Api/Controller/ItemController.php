@@ -750,6 +750,8 @@ class ItemController extends BaseController
             'item_name'        => $itemName,
             'item_description' => $itemDescription,
             'password'         => $password,
+            //更新时间
+            'last_update_time'      => time(),
         ];
 
         // 处理评论和反馈功能开关（仅常规项目）
@@ -769,7 +771,7 @@ class ItemController extends BaseController
             ->update($saveData);
 
         if ($affected <= 0) {
-            return $this->error($response, 10103, '更新失败');
+            return $this->error($response, 10101, '更新失败');
         }
 
         // 处理项目分组（多选）
@@ -874,7 +876,7 @@ class ItemController extends BaseController
         // 如果是复制项目
         if ($copyItemId > 0) {
             if (!$this->checkItemEdit($uid, $copyItemId)) {
-                return $this->error($response, 10103);
+                return $this->error($response, 10101, '没有编辑权限');
             }
 
             $newItemId = \App\Model\Item::copy($copyItemId, $uid, $itemName, $itemDescription, $password, $itemDomain);
@@ -1625,7 +1627,7 @@ class ItemController extends BaseController
         }
 
         if (!$this->checkItemEdit($uid, $itemId)) {
-            return $this->error($response, 10103, '没有编辑权限');
+            return $this->error($response, 10101, '没有编辑权限');
         }
 
         $ret = \App\Model\ItemChangeLog::getLog($itemId, $page, $count);
@@ -1651,7 +1653,7 @@ class ItemController extends BaseController
         $uid = (int) ($loginUser['uid'] ?? 0);
 
         if (!$this->checkItemVisit($uid, $itemId)) {
-            return $this->error($response, 10103, '没有权限');
+            return $this->error($response, 1, '没有权限');
         }
 
         $now = date('Y-m-d H:i:s');
