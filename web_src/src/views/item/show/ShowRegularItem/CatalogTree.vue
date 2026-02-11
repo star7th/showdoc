@@ -884,6 +884,7 @@ onMounted(() => {
   height: 100%;
   padding: 12px;
   scroll-behavior: smooth;
+  overflow: hidden;
 
   // 滚动条样式已移至全局样式（styles/index.scss）
   // 所有滚动条统一使用全局样式，无需重复定义
@@ -946,6 +947,8 @@ onMounted(() => {
 
 .tree-container {
   flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 :deep(.ant-tree) {
@@ -954,8 +957,9 @@ onMounted(() => {
 
   .ant-tree-treenode {
     padding: 1px 0;
-    width: max-content;
-    min-width: 100%;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 
     &:hover {
       .node-title {
@@ -965,6 +969,7 @@ onMounted(() => {
       // 显示更多按钮
       .node-more {
         opacity: 1;
+        visibility: visible;
       }
     }
   }
@@ -974,11 +979,15 @@ onMounted(() => {
     transition: all 0.15s ease;
     flex: 1;
     min-width: 0;
+    max-width: 100%;
     min-height: 32px;
     display: flex;
     align-items: center;
     position: relative;
-    padding-right: 0;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    box-sizing: border-box;
 
     &:hover {
       background: var(--hover-overlay);
@@ -1051,14 +1060,15 @@ onMounted(() => {
 
 // 树节点内容
 .tree-node-content {
-  display: flex;
+  display: grid;
+  grid-template-columns: 18px 1fr 28px;
+  gap: 6px;
   align-items: center;
   width: 100%;
-  min-width: 0;
   min-height: 32px;
-  padding-right: 40px;
-  padding-left: 4px;
+  padding: 0 4px;
   position: relative;
+  box-sizing: border-box;
 
   // 选中状态下的样式
   &.node-selected {
@@ -1070,14 +1080,11 @@ onMounted(() => {
 }
 
 .node-icon {
-  flex-shrink: 0;
-  width: 16px;
+  width: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-text-secondary);
-  margin-left: 4px;
-  margin-right: 8px;
 
   i {
     font-size: 14px;
@@ -1096,7 +1103,6 @@ onMounted(() => {
 }
 
 .node-title {
-  flex: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1106,28 +1112,24 @@ onMounted(() => {
   font-size: 13px;
   cursor: pointer;
   line-height: 1.5;
-  padding-right: 8px;
 }
 
 .node-more {
-  position: absolute;
-  right: 4px;
-  top: 50%;
-  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
   opacity: 0;
-  transition: opacity 0.15s ease;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
   font-size: 12px;
   color: var(--color-text-secondary);
   border-radius: 4px;
   background-color: var(--color-bg-secondary);
-  z-index: 10;
   box-shadow: 0 0 0 1px var(--color-border);
+  justify-self: end;
 
   &:hover {
     background-color: var(--hover-overlay);

@@ -534,6 +534,13 @@
   color: var(--editormd-hljs-section) !important;
 }
 
+/* 运算符使用更亮的颜色 - 提高对比度 */
+.editormd-preview-container pre .hljs-operator,
+.editormd-preview pre .hljs-operator,
+.markdown-body pre .hljs-operator {
+  color: var(--editormd-hljs-punctuation) !important;
+}
+
 /* 删除标记使用红色但更亮 */
 .editormd-preview-container pre .hljs-deletion,
 .editormd-preview pre .hljs-deletion,

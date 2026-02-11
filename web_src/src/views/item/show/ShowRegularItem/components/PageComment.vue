@@ -76,7 +76,7 @@
             :maxlength="500"
             :placeholder="
               $t('pageComment.replyPlaceholder', {
-                username: replyingToUsername
+                username: '@' + replyingToUsername
               })
             "
           />

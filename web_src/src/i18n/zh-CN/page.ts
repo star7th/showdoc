@@ -79,7 +79,6 @@ export default {
   mock_response_tips: '这里填写的是Mock接口的返回结果。你可以直接编辑/粘贴一段json字符串，支持使用MockJs语法（关于MockJs语法,可以查看下方的帮助说明按钮）。输入完毕后，点击保存，就会自动生成Mock地址',
   mock_url_and_path: 'Mock Url和路径',
   help_document: '帮助说明',
-  beautify_json: 'json快速美化',
   beautify_success: '美化成功',
   json_format_error: 'JSON格式错误，请检查',
   please_input_content: '请先输入内容',
@@ -129,8 +128,6 @@ export default {
   ai_generate_failed: 'AI 生成失败',
   // 版本对比相关
   version_comparison: '版本对比',
-  cur_page_content: '当前最新版本',
-  history_version: '历史版本',
   side_by_side: '并排',
   inline: '行内',
   // 模板相关补充
@@ -255,5 +252,11 @@ export default {
   select: '选择',
   page_limit_exceeded: '该项目页面数量已达到上限',
   page_limit_exceeded_with_link: '该项目页面数量超出限制。项目创建者可以开通高级版以获取更多配额。<a href="/prices" target="_blank">点此查看不同账户类型的额度限制差异</a>，也可以<a href="/user/center" target="_blank">点此去升级账户类型</a>。',
+  // 接口列表视图
+  interface_list_view: '接口列表视图',
+  search_interface: '搜索接口',
+  catalog_path: '目录路径',
+  view: '查看',
+  root_catalog: '根目录',
 }
 

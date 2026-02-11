@@ -53,7 +53,7 @@
               <!-- 卡片底部：元数据 -->
               <div class="item-card-footer">
                 <div class="item-meta">
-                  <span class="meta-item">
+                  <span v-if="getLatestTime(item.last_update_time, item.addtime)" class="meta-item">
                     <i class="far fa-clock"></i>
                     {{ formatTime(getLatestTime(item.last_update_time, item.addtime)) }}
                   </span>
@@ -352,22 +352,27 @@ const handleExit = async (item_id: number) => {
 }
 
 // 获取两个时间中较新的时间
-const getLatestTime = (time1: number | undefined, time2: number | undefined): number => {
+const getLatestTime = (time1: number | string | undefined, time2: number | string | undefined): number => {
+  // 将字符串转换为数字
+  const t1 = time1 ? Number(time1) : 0
+  const t2 = time2 ? Number(time2) : 0
+
   // 如果两个时间都不存在，返回 0
-  if (!time1 && !time2) return 0
-  
+  if (!t1 && !t2) return 0
+
   // 如果其中一个不存在，返回另一个
-  if (!time1) return time2!
-  if (!time2) return time1
-  
+  if (!t1) return t2
+  if (!t2) return t1
+
   // 返回较大的时间戳
-  return Math.max(time1, time2)
+  return Math.max(t1, t2)
 }
 
 // 格式化时间
 const formatTime = (timestamp: number) => {
-  if (!timestamp) return ''
-  
+  // 如果时间戳为0或不存在，返回空字符串
+  if (timestamp === 0 || !timestamp) return ''
+
   const now = Date.now() / 1000
   const diff = now - timestamp
   

@@ -85,22 +85,22 @@ const tableHeader = computed<TableHeaderItem[]>(() => [
   {
     title: t('item.op_time'),
     key: 'optime',
-    width: 170
+    minWidth: 150
   },
   {
     title: t('item.oper'),
     key: 'oper',
-    width: 120
+    minWidth: 80
   },
   {
     title: t('item.op_action_type_desc'),
     key: 'op_action_type_desc',
-    width: 120
+    minWidth: 80
   },
   {
     title: t('item.op_object_type_desc'),
     key: 'op_object_type_desc',
-    width: 110
+    minWidth: 80
   },
   {
     title: t('item.op_object_name'),
@@ -110,7 +110,7 @@ const tableHeader = computed<TableHeaderItem[]>(() => [
   {
     title: t('item.remark'),
     key: 'remark',
-    width: 300
+    minWidth: 150
   }
 ])
 

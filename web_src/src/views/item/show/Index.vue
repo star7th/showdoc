@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { message } from 'ant-design-vue'
+import AlertModal from '@/components/AlertModal'
 import ShowRegularItem from './ShowRegularItem/index.vue'
 import ShowSinglePageItem from './ShowSinglePageItem/index.vue'
 import ShowTableItem from './ShowTableItem/index.vue'
@@ -146,7 +146,7 @@ const fetchItemInfo = async (searchKeyword = '') => {
         }
       })
     } else {
-      message.error(response.error_message)
+      AlertModal(response.error_message)
     }
   } catch (error) {
     loading.value = false

@@ -45,6 +45,7 @@ import PromptModal from '@/components/PromptModal/index'
 import RecycleModal from '@/views/modals/item/RecycleModal/index'
 import HistoryModal from '@/views/modals/page/HistoryModal/index'
 import EditPageModal from '@/views/modals/page/EditPageModal/index'
+import InterfaceListModal from '@/views/modals/page/InterfaceListModal/index'
 import CommonDropdownMenu from '@/components/CommonDropdownMenu.vue'
 import type { DropdownMenuItem } from '@/components/CommonDropdownMenu.vue'
 
@@ -101,6 +102,11 @@ const menuList = computed<DropdownMenuItem[]>(() => {
   }
 
   list.push(
+    {
+      icon: ['far', 'fa-list'],
+      text: t('page.interface_list_view'),
+      value: 'interface-list'
+    },
     {
       icon: ['far', 'fa-folder-open'],
       text: t('catalog.expand_all'),
@@ -190,6 +196,11 @@ const handleMenuSelect = async (item: DropdownMenuItem) => {
       break
     case 'info':
       handleShowPageInfo()
+      break
+    case 'interface-list':
+      if (props.itemId) {
+        await InterfaceListModal({ itemId: props.itemId })
+      }
       break
     case 'expand-all':
       props.expandAll()

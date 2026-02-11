@@ -684,7 +684,7 @@ onUnmounted(() => {
   :deep(.catalog-tree) {
     flex: 1;
     overflow-y: auto;
-    overflow-x: auto;
+    overflow-x: hidden;
     min-height: 0; // 确保滚动条正常显示
   }
 

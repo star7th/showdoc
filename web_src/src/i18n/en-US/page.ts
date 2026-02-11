@@ -25,7 +25,6 @@ export default {
   sort_page: 'Sort Pages',
   update_time: 'Update Time',
   update_by_who: 'Updated By',
-  history_version: 'History Version',
   page_history_version: 'History Version',
   recover_to_this_version: 'Restore to this version',
   confirm_recover_version: 'Are you sure to restore to this version?',
@@ -75,7 +74,6 @@ export default {
   mock_response_tips: 'This is the return result of the Mock interface. You can directly edit/paste a JSON string here. Supports MockJs syntax (click the help button below for more information). After entering, click save, and the Mock address will be automatically generated.',
   mock_url_and_path: 'Mock Url and Path',
   help_document: 'Help Documentation',
-  beautify_json: 'Beautify JSON',
   beautify_success: 'Beautified successfully',
   json_format_error: 'JSON format error, please check',
   please_input_content: 'Please enter content first',
@@ -105,7 +103,6 @@ export default {
   save_templ_text: 'Template saved successfully. You can click "More Templates" button when creating or editing a page in the future to use your saved templates',
   // Version comparison
   version_comparison: 'Version Comparison',
-  history_version: 'History Version',
   side_by_side: 'Side by Side',
   inline: 'Inline',
   welcome_use_showdoc: 'Welcome to ShowDoc!',
@@ -253,5 +250,11 @@ export default {
   bind_success: 'Bind successful',
   bind_failed: 'Bind failed',
   select: 'Select',
+  // Interface List View
+  interface_list_view: 'Interface List View',
+  search_interface: 'Search Interface',
+  catalog_path: 'Catalog Path',
+  view: 'View',
+  root_catalog: 'Root',
 }
 

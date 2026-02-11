@@ -335,8 +335,12 @@ onMounted(() => {
         }
 
         &.active {
-          background-color: var(--color-primary);
-          color: var(--color-text-primary);
+          background-color: var(--color-forth);
+
+          .menu-label,
+          .menu-icon i {
+            color: var(--color-obvious) !important;
+          }
         }
       }
     }

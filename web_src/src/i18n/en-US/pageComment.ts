@@ -5,7 +5,7 @@ export default {
   title: 'Comments',
   total: 'Total {count} comments',
   placeholder: 'Leave a comment...',
-  replyPlaceholder: 'Reply to @{username}',
+  replyPlaceholder: 'Reply to {username}',
   submit: 'Submit Comment',
   submitReply: 'Submit Reply',
   reply: 'Reply',

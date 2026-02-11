@@ -7,6 +7,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getUserInfo } from '@/models/user'
 import { getServerHost, getStaticPath } from '@/utils/system'
+import { copyToClipboard } from '@/utils/tools'
 import Viewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
 
@@ -388,19 +389,18 @@ const dealWithContent = async () => {
         }
       })
 
-      $(`#${editorId.value}`).off('click', '.code-copy-btn').on('click', '.code-copy-btn', function(this: HTMLElement) {
+      $(`#${editorId.value}`).off('click', '.code-copy-btn').on('click', '.code-copy-btn', async function(this: HTMLElement) {
         const $btn = $(this)
         const $pre = $btn.parent()
         const codeText = $pre.find('> code').text().trim()
 
-        navigator.clipboard.writeText(codeText).then(() => {
+        const success = await copyToClipboard(codeText)
+        if (success) {
           $btn.text(t('common.copy_success'))
           setTimeout(() => {
             $btn.text(t('common.copy'))
           }, 1500)
-        }).catch(() => {
-          // Copy failed ignored
-        })
+        }
       })
     } catch (e) {
       // Copy button error ignored

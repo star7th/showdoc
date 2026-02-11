@@ -5,7 +5,7 @@ export default {
   title: '评论',
   total: '共 {count} 条评论',
   placeholder: '发表评论...',
-  replyPlaceholder: '回复 @{username}',
+  replyPlaceholder: '回复 {username}',
   submit: '提交评论',
   submitReply: '提交回复',
   reply: '回复',
