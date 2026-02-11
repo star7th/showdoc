@@ -173,6 +173,12 @@ class UserController extends BaseController
         $captchaVal       = $this->getParam($request, 'captcha', '');
         $inviteCode       = trim($this->getParam($request, 'invite_code', ''));
 
+        // 检查管理员是否关闭了注册（对齐旧架构逻辑）
+        $registerOpen = \App\Model\Options::get('register_open');
+        if ($registerOpen === '0') {
+            return $this->error($response, 10101, '管理员已关闭注册');
+        }
+
         if ($username === '' || $password === '') {
             return $this->error($response, 10101, '用户名或密码不能为空');
         }
