@@ -588,7 +588,7 @@ class User
 
         $ldapOpen = \App\Model\Options::get('ldap_open');
         $ldapForm = \App\Model\Options::get('ldap_form');
-        $ldapForm = htmlspecialchars_decode($ldapForm);
+        $ldapForm = htmlspecialchars_decode($ldapForm ?: '');
         $ldapForm = json_decode($ldapForm, true);
 
         if (!$ldapOpen || !$ldapForm) {
