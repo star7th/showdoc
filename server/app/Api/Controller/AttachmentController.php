@@ -175,7 +175,7 @@ class AttachmentController extends BaseController
         }
 
         if ($checkFilename && !\App\Model\Attachment::isAllowedFilename($originalName)) {
-            return $this->json($response, ['message' => '不支持上传该文件类型。如有需要请联系网站管理员', 'success' => 0]);
+            return $this->json($response, ['message' => '不支持上传该文件类型。可将文件压缩成 zip/rar 等压缩包后上传，或联系网站管理员', 'success' => 0]);
         }
 
         // 创建临时文件
@@ -250,7 +250,7 @@ class AttachmentController extends BaseController
 
         $originalName = $uploadedFile->getClientFilename();
         if ($checkFilename && !\App\Model\Attachment::isAllowedFilename($originalName)) {
-            return $this->error($response, 10101, '不支持上传该文件类型。如有需要请联系网站管理员');
+            return $this->error($response, 10101, '不支持上传该文件类型。可将文件压缩成 zip/rar 等压缩包后上传，或联系网站管理员');
         }
 
         // 创建临时文件

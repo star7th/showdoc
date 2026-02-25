@@ -604,7 +604,7 @@ class OpenController extends BaseController
         // 检查文件扩展名
         $filename = $file->getClientFilename();
         if (!Attachment::isAllowedFilename($filename)) {
-            return $this->error($response, 10101, '不支持上传该文件类型');
+            return $this->error($response, 10101, '不支持上传该文件类型。可将文件压缩成 zip/rar 等压缩包后上传，或联系网站管理员');
         }
 
         // 转换为 $_FILES 格式
