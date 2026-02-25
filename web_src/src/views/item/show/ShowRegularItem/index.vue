@@ -878,6 +878,20 @@ onUnmounted(() => {
   flex-direction: column;
   height: 100%;
   padding-bottom: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* 为iOS设备提供平滑滚动 */
+
+  // 确保目录树在抽屉中可以正常滚动
+  :deep(.catalog-tree) {
+    flex: 1;
+    min-height: 0;
+    overflow: visible; // 让 tree-container 处理滚动
+  }
+
+  :deep(.tree-container) {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 :deep(.ant-drawer-body) {
