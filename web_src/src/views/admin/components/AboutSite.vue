@@ -100,7 +100,7 @@ const handleUpdate = async () => {
     await request('/api/adminUpdate/download', {}, 'post')
 
     loadingMessage()
-    const updatingMessage = message.loading(t('admin.updating_files'), 0)
+    const updatingMessage = message.loading(t('common.updating_files'), 0)
 
     // 更新文件
     await request('/api/adminUpdate/updateFiles', {}, 'post')
