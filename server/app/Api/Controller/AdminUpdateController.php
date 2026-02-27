@@ -118,7 +118,7 @@ class AdminUpdateController extends BaseController
             || !$this->newIsWriteable($showdocPath . "server/vendor/autoload.php")
             || !$this->newIsWriteable($showdocPath . "server/app/Api")
         ) {
-            return $this->error($response, 10101, '请手动给showdoc安装目录下的所有文件可写权限，否则程序无法覆盖旧文件');
+            return $this->error($response, 10101, '请手动给showdoc安装目录下的所有文件可写权限，否则程序无法覆盖旧文件。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
         }
 
         $tempDir = sys_get_temp_dir() . "/showdoc_update/";
@@ -126,7 +126,7 @@ class AdminUpdateController extends BaseController
 
         if (!is_dir($tempDir)) {
             if (!mkdir($tempDir, 0755, true)) {
-                return $this->error($response, 10101, '创建临时目录失败，请检查目录权限');
+                return $this->error($response, 10101, '创建临时目录失败，请检查目录权限。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
             }
         }
         
@@ -136,7 +136,7 @@ class AdminUpdateController extends BaseController
 
         $file = file_get_contents($fileUrl);
         if ($file === false) {
-            return $this->error($response, 10101, '下载更新文件失败');
+            return $this->error($response, 10101, '下载更新文件失败。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
         }
 
         file_put_contents($zipFile, $file);
@@ -144,20 +144,20 @@ class AdminUpdateController extends BaseController
         $zip = new \ZipArchive();
         $flag = $zip->open($zipFile);
         if ($flag !== true) {
-            return $this->error($response, 10101, '下载更新压缩包失败');
+            return $this->error($response, 10101, '下载更新压缩包失败。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
         }
         $zip->extractTo($tempDir);
         $zip->close();
 
         $zipFileSubpath = $tempDir . 'showdoc-' . $versionNum . "/";
 
-        if (file_exists($zipFileSubpath . 'composer.json') && file_exists($zipFileSubpath . 'web/index.php') && file_exists($zipFileSubpath . 'server/vendor/autoload.php')) {
+        if (file_exists($zipFileSubpath . 'composer.json') && file_exists($zipFileSubpath . 'web/index.html') && file_exists($zipFileSubpath . 'server/vendor/autoload.php')) {
             // 移动目录到upload/update
             $this->copyDir($zipFileSubpath, $showdocPath . 'Public/Uploads/update/');
             $this->delDir($tempDir);
             return $this->success($response, []);
         } else {
-            return $this->error($response, 10101, '下载更新压缩包后，解压的文件缺失');
+            return $this->error($response, 10101, '下载更新压缩包后，解压的文件缺失。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
         }
     }
 
@@ -201,7 +201,7 @@ class AdminUpdateController extends BaseController
             || !$this->newIsWriteable($showdocPath . "server/vendor/autoload.php")
             || !$this->newIsWriteable($showdocPath . "server/app/Api")
         ) {
-            return $this->error($response, 10101, '请手动给showdoc安装目录下的所有文件可写权限，否则程序无法覆盖旧文件');
+            return $this->error($response, 10101, '请手动给showdoc安装目录下的所有文件可写权限，否则程序无法覆盖旧文件。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
         }
 
         if (file_exists($showdocPath . 'Public/Uploads/update/composer.json') && file_exists($showdocPath . 'Public/Uploads/update/server/vendor/autoload.php')) {
@@ -235,10 +235,10 @@ class AdminUpdateController extends BaseController
 
                 return $this->success($response, []);
             } else {
-                return $this->error($response, 10101, '版本号显示不需要升级');
+                return $this->error($response, 10101, '版本号显示不需要升级。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
             }
         } else {
-            return $this->error($response, 10101, '升级文件不存在');
+            return $this->error($response, 10101, '升级文件不存在。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
         }
     }
 

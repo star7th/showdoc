@@ -36,6 +36,7 @@
               <i :class="menu.icon"></i>
             </div>
             <span class="menu-label">{{ menu.label }}</span>
+            <span v-if="menu.key === 'about' && hasUpdate" class="update-badge">NEW</span>
           </div>
         </div>
       </div>
@@ -53,6 +54,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store'
+import request from '@/utils/request'
 
 // 导入各个管理模块组件
 import UserManagement from './UserManagement.vue'
@@ -68,10 +70,23 @@ const { t } = useI18n()
 const appStore = useAppStore()
 
 const selectedMenuKeys = ref(['user'])
+const hasUpdate = ref(false)
 
 // 切换主题
 const handleToggleTheme = () => {
   appStore.toggleTheme()
+}
+
+// 检查更新
+const checkUpdate = async () => {
+  try {
+    const res = await request('/api/adminUpdate/checkUpdate', {}, 'get')
+    if (res && res.data && res.data.url) {
+      hasUpdate.value = true
+    }
+  } catch (error) {
+    console.error('Failed to check update:', error)
+  }
 }
 
 // 菜单配置
@@ -111,6 +126,7 @@ const goBack = () => {
 
 onMounted(() => {
   selectedMenuKeys.value = ['user']
+  checkUpdate()
 })
 </script>
 
@@ -253,6 +269,20 @@ onMounted(() => {
         font-weight: 500;
       }
 
+      .update-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px 6px;
+        font-size: 10px;
+        font-weight: 600;
+        color: #fff;
+        background-color: var(--color-red);
+        border-radius: 4px;
+        margin-left: 4px;
+        animation: pulse 2s infinite;
+      }
+
       &:hover {
         background-color: var(--hover-overlay);
       }
@@ -304,6 +334,15 @@ onMounted(() => {
     &:hover {
       background: var(--color-primary);
     }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
   }
 }
 

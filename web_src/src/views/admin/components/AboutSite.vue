@@ -30,7 +30,10 @@
 
       <div v-if="hasUpdate" class="update-section">
         <hr />
-        <h3 class="section-title update-title">{{ $t('admin.update_available') }}({{ newVersion }})</h3>
+        <h3 class="section-title update-title">
+          {{ $t('admin.update_available') }}({{ newVersion }})
+          <span class="new-badge">NEW</span>
+        </h3>
         <p class="info-text">
           {{ $t('admin.update_content') }}
           <a href="https://www.showdoc.com.cn/help/13733" target="_blank" class="link">{{ $t('admin.update_log') }}</a>
@@ -91,7 +94,7 @@ const checkUpdate = async () => {
 
 // 执行更新
 const handleUpdate = async () => {
-  const loadingMessage = message.loading(t('admin.downloading_update_package'), 0)
+  const loadingMessage = message.loading(t('common.downloading_update_package'), 0)
   try {
     // 下载更新包
     await request('/api/adminUpdate/download', {}, 'post')
@@ -104,8 +107,8 @@ const handleUpdate = async () => {
 
     updatingMessage()
     const refreshingMessage = message.loading(
-      t('admin.upgrade_success_ready_to_refresh') +
-      t('admin.if_cache_not_auto_update_refresh_manually'),
+      t('common.upgrade_success_ready_to_refresh') +
+      t('common.if_cache_not_auto_update_refresh_manually'),
       0
     )
 
@@ -185,8 +188,33 @@ onMounted(() => {
 
       .update-title {
         color: var(--color-active);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .new-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2px 8px;
+          font-size: 11px;
+          font-weight: 600;
+          color: #fff;
+          background-color: var(--color-red);
+          border-radius: 4px;
+          animation: pulse 2s infinite;
+        }
       }
     }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
   }
 }
 
