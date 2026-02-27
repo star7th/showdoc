@@ -35,5 +35,6 @@ export interface ContextmenuModalItemInterface {
   children?: ContextmenuModalItemInterface[]
   onclick?: Function
   shortcut?: string // 快捷键，例如 "Ctrl+C", "Delete", "Ctrl+D" 等
+  tooltip?: string // 鼠标悬停提示
 }
 

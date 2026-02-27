@@ -62,7 +62,7 @@ class Item
         // 开源版：使用单表 page，不支持分表
         $table = 'page';
         $allPages = DB::table($table)
-            ->select(['page_id', 'author_uid', 'cat_id', 'page_title', 'addtime', 'ext_info'])
+            ->select(['page_id', 'author_uid', 'cat_id', 'page_title', 'addtime', 'ext_info', 'is_draft'])
             ->where('item_id', $itemId)
             ->where('is_del', 0)
             ->orderBy('s_number', 'asc')
@@ -404,6 +404,10 @@ class Item
         $pages = [];
         foreach ($allPages as $page) {
             $pageData = (array) $page;
+            // 跳过草稿页面（导出不包含草稿）
+            if (($pageData['is_draft'] ?? 0) == 1) {
+                continue;
+            }
             // 开源版：page_content 不压缩存储，但兼容旧压缩数据
             if ($uncompress && !empty($pageData['page_content'])) {
                 $decoded = \App\Common\Helper\ContentCodec::decompress($pageData['page_content']);
@@ -460,6 +464,10 @@ class Item
         foreach ($allPages as $page) {
             if ((int) ($page->cat_id ?? 0) === $catId) {
                 $pageData = (array) $page;
+                // 跳过草稿页面（导出不包含草稿）
+                if (($pageData['is_draft'] ?? 0) == 1) {
+                    continue;
+                }
                 // 开源版：page_content 不压缩存储，但兼容旧压缩数据
                 if ($uncompress && !empty($pageData['page_content'])) {
                     $decoded = \App\Common\Helper\ContentCodec::decompress($pageData['page_content']);
@@ -927,5 +935,59 @@ class Item
 
         // 导入为新项目
         return self::import($json, $uid, 0, $itemName, $itemDescription, $itemPassword, $itemDomain);
+    }
+
+    /**
+     * 过滤草稿页面（非作者不可见）
+     *
+     * @param array $menu 菜单结构
+     * @param int $uid 当前用户 ID（0 表示游客）
+     * @return array 过滤后的菜单结构
+     */
+    public static function filterDraftPages(array $menu, int $uid): array
+    {
+        // 过滤根目录页面
+        if (!empty($menu['pages'])) {
+            $menu['pages'] = array_values(array_filter($menu['pages'], function($page) use ($uid) {
+                $isDraft = (int) ($page['is_draft'] ?? 0);
+                $authorUid = (int) ($page['author_uid'] ?? 0);
+                return $isDraft === 0 || $authorUid === $uid;
+            }));
+        }
+
+        // 递归过滤目录中的页面
+        if (!empty($menu['catalogs'])) {
+            $menu['catalogs'] = array_map(function($catalog) use ($uid) {
+                return self::filterDraftInCatalog($catalog, $uid);
+            }, $menu['catalogs']);
+        }
+
+        return $menu;
+    }
+
+    /**
+     * 递归过滤目录中的草稿页面
+     *
+     * @param array $catalog 目录数据
+     * @param int $uid 当前用户 ID
+     * @return array 过滤后的目录数据
+     */
+    private static function filterDraftInCatalog(array $catalog, int $uid): array
+    {
+        if (!empty($catalog['pages'])) {
+            $catalog['pages'] = array_values(array_filter($catalog['pages'], function($page) use ($uid) {
+                $isDraft = (int) ($page['is_draft'] ?? 0);
+                $authorUid = (int) ($page['author_uid'] ?? 0);
+                return $isDraft === 0 || $authorUid === $uid;
+            }));
+        }
+
+        if (!empty($catalog['catalogs'])) {
+            $catalog['catalogs'] = array_map(function($subCatalog) use ($uid) {
+                return self::filterDraftInCatalog($subCatalog, $uid);
+            }, $catalog['catalogs']);
+        }
+
+        return $catalog;
     }
 }

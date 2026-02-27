@@ -103,6 +103,10 @@
           <!-- 页面标题 -->
           <div class="doc-title-box">
             <span class="doc-title">{{ pageTitle }}</span>
+            <!-- 草稿标签 -->
+            <a-tooltip v-if="pageInfo && pageInfo.is_draft == 1" :title="$t('page.draft_tooltip')">
+              <a-tag color="orange" class="draft-tag">{{ $t('page.draft') }}</a-tag>
+            </a-tooltip>
             <span class="doc-actions">
               <i
                 v-if="attachmentCount"
@@ -739,6 +743,16 @@ onUnmounted(() => {
   font-weight: 600;
   color: var(--color-text-primary);
   line-height: 1.4;
+}
+
+// 草稿标签
+.draft-tag {
+  margin-left: 12px;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 0 8px;
+  border-radius: 4px;
+  vertical-align: middle;
 }
 
 .doc-actions {

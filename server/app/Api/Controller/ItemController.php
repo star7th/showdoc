@@ -327,7 +327,7 @@ class ItemController extends BaseController
         if (!empty($keyword)) {
             // 搜索模式：获取用户有权限的目录 ID
             $catIds = \App\Model\Member::getCatIds($itemId, $uid);
-            $menu['pages']    = \App\Model\Page::search($itemId, $catIds, $keyword);
+            $menu['pages']    = \App\Model\Page::search($itemId, $catIds, $keyword, $uid);
             $menu['catalogs'] = [];
         } else {
             // 正常模式：获取完整菜单
@@ -335,6 +335,9 @@ class ItemController extends BaseController
             if ($uid > 0) {
                 $menu = \App\Model\Item::filterMemberItem($uid, $itemId, $menu);
             }
+            // 过滤草稿页面（对所有用户都生效，包括游客）
+            // 游客（uid=0）看不到任何草稿，登录用户只能看到自己创建的草稿
+            $menu = \App\Model\Item::filterDraftPages($menu, $uid);
         }
 
         // 应用筛选条件

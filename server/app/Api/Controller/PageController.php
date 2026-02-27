@@ -85,6 +85,14 @@ class PageController extends BaseController
         // 转换为数组格式
         $page = (array) $page;
 
+        // 检查草稿访问权限
+        if (($page['is_draft'] ?? 0) == 1) {
+            $authorUid = (int) ($page['author_uid'] ?? 0);
+            if ($uid <= 0 || $uid !== $authorUid) {
+                return $this->error($response, 10101, '该页面是草稿状态，暂不可访问');
+            }
+        }
+
         // 格式化时间
         $page['addtime'] = date('Y-m-d H:i:s', (int) ($page['addtime'] ?? time()));
         if (!empty($page['page_addtime']) && (int) $page['page_addtime'] > 0) {
@@ -218,6 +226,7 @@ class PageController extends BaseController
         $isNotify     = $this->getParam($request, 'is_notify', 0);
         $notifyContent = $this->getParam($request, 'notify_content', '');
         $extInfo      = $this->getParam($request, 'ext_info', '');
+        $isDraft      = $this->getParam($request, 'is_draft', -1); // -1 表示不改变状态
 
         // 验证内容不能为空
         if (empty($pageContent)) {
@@ -255,6 +264,11 @@ class PageController extends BaseController
 
         if ($sNumber > 0) {
             $data['s_number'] = $sNumber;
+        }
+
+        // 处理草稿状态
+        if ($isDraft >= 0) {
+            $data['is_draft'] = (int) $isDraft;
         }
 
         // 对于 runapi 项目类型，填充 ext_info 字段

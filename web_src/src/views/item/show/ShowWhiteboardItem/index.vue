@@ -268,7 +268,14 @@ const toggleDrawing = () => {
   isErasing.value = false
   isInsertingText.value = false
   pendingShapeType.value = null
-  applyBrush()
+  applyBrush(
+    isReadOnly.value,
+    isDrawing.value,
+    isErasing.value,
+    isInsertingText.value,
+    brushColor.value,
+    brushWidth.value
+  )
 }
 
 // 切换橡皮擦模式
@@ -280,7 +287,14 @@ const toggleEraser = () => {
   }
   isInsertingText.value = false
   pendingShapeType.value = null
-  applyBrush()
+  applyBrush(
+    isReadOnly.value,
+    isDrawing.value,
+    isErasing.value,
+    isInsertingText.value,
+    brushColor.value,
+    brushWidth.value
+  )
 }
 
 // 切换文本插入模式
@@ -295,7 +309,14 @@ const toggleTextInsert = () => {
     isDrawing.value = true
     isErasing.value = false
   }
-  applyBrush()
+  applyBrush(
+    isReadOnly.value,
+    isDrawing.value,
+    isErasing.value,
+    isInsertingText.value,
+    brushColor.value,
+    brushWidth.value
+  )
 }
 
 // 切换全屏

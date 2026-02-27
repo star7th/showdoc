@@ -4,6 +4,7 @@ namespace App\Common\Helper;
 
 use App\Model\Options;
 use AsyncAws\S3\S3Client;
+use App\Common\Helper\HttpHelper;
 
 /**
  * 开源版 OSS Helper
@@ -216,7 +217,7 @@ class OssHelper
     private static function getQiuniuEndpointByKey(string $key, string $bucket): ?string
     {
         $queryUrl = "https://api.qiniu.com/v2/query?ak={$key}&bucket={$bucket}";
-        $res = http_post($queryUrl, []);
+        $res = HttpHelper::post($queryUrl, []);
         $array = $res ? json_decode($res, true) : null;
 
         if ($array && isset($array['s3']['src']['main'][0]) && $array['s3']['src']['main'][0]) {

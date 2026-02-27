@@ -3,42 +3,50 @@
     @contextmenu.stop="closeHandle">
     <div class="container" ref="contextmenuRef" :style="{ top: `${top}px`, left: `${left}px` }" @click.stop @scroll="handleScroll">
       <div class="column">
-        <div class="contextmenu-item bgColor-select" v-for="(item, index) in useList" :key="index" v-show="!item.hidden"
-          @click="clickHandle(item)" @dblclick.stop @contextmenu.stop 
-          :ref="el => setItemRef(el as HTMLElement, index)"
-          @mouseenter="() => handleItemMouseEnter(index)"
-          @mouseleave="() => handleItemMouseLeave(index)">
-          <div class="line-container text-default">
-            <div class="item-container">
-              <img class="img" v-if="item.img" :src="item.img">
-              <div class="icon" v-if="item.icon">
-                <i :class="getIconClass(item.icon)"></i>
+        <a-tooltip
+          v-for="(item, index) in useList"
+          :key="index"
+          :title="item.tooltip"
+          placement="right"
+          :mouse-enter-delay="0.5"
+        >
+          <div class="contextmenu-item bgColor-select" v-show="!item.hidden"
+            @click="clickHandle(item)" @dblclick.stop @contextmenu.stop 
+            :ref="el => setItemRef(el as HTMLElement, index)"
+            @mouseenter="() => handleItemMouseEnter(index)"
+            @mouseleave="() => handleItemMouseLeave(index)">
+            <div class="line-container text-default">
+              <div class="item-container">
+                <img class="img" v-if="item.img" :src="item.img">
+                <div class="icon" v-if="item.icon">
+                  <i :class="getIconClass(item.icon)"></i>
+                </div>
+                <div class="text">{{ item.text }}</div>
+                <!-- 使用 teleport 将子菜单渲染到 body，避免滚动影响 -->
+                <teleport to="body" v-if="item.children && item.children.length">
+                  <Children 
+                    :show="activeSubmenuIndex === index" 
+                    :itemRef="itemRefs.get(index)" 
+                    :scrollOffset="scrollOffset"
+                    :list="item.children" 
+                    @close="closeHandle"
+                    @mouseenter="() => handleSubmenuMouseEnter(index)"
+                    @mouseleave="() => handleSubmenuMouseLeave(index)" />
+                </teleport>
               </div>
-              <div class="text">{{ item.text }}</div>
-              <!-- 使用 teleport 将子菜单渲染到 body，避免滚动影响 -->
-              <teleport to="body" v-if="item.children && item.children.length">
-                <Children 
-                  :show="activeSubmenuIndex === index" 
-                  :itemRef="itemRefs.get(index)" 
-                  :scrollOffset="scrollOffset"
-                  :list="item.children" 
-                  @close="closeHandle"
-                  @mouseenter="() => handleSubmenuMouseEnter(index)"
-                  @mouseleave="() => handleSubmenuMouseLeave(index)" />
-              </teleport>
-            </div>
 
-            <div class="shortcut text-secondary" v-if="item.shortcut && !item.children">
-              {{ formatShortcut(item.shortcut) }}
-            </div>
-            <div class="checked" v-if="item.checked">
-              <i class="fas fa-check"></i>
-            </div>
-            <div class="arrow text-secondary" v-if="item.children && item.children.length">
-              <i class="fas fa-angle-right"></i>
+              <div class="shortcut text-secondary" v-if="item.shortcut && !item.children">
+                {{ formatShortcut(item.shortcut) }}
+              </div>
+              <div class="checked" v-if="item.checked">
+                <i class="fas fa-check"></i>
+              </div>
+              <div class="arrow text-secondary" v-if="item.children && item.children.length">
+                <i class="fas fa-angle-right"></i>
+              </div>
             </div>
           </div>
-        </div>
+        </a-tooltip>
       </div>
     </div>
   </div>

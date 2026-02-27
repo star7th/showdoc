@@ -16,6 +16,10 @@
                 {{ form.title || $t('page.untitled') }}
               </span>
             </a-tooltip>
+            <!-- 草稿标签 -->
+            <a-tooltip v-if="form.isDraft === 1" :title="$t('page.draft_tooltip')">
+              <a-tag color="orange" class="draft-tag">{{ $t('page.draft') }}</a-tag>
+            </a-tooltip>
           </template>
           <CommonInput
             v-else
@@ -184,6 +188,7 @@ const form = ref({
   title: '',
   content: '',
   catId: 0,
+  isDraft: 0, // 草稿状态：0=已发布，1=草稿
 })
 const isEditingTitle = ref(false)
 const saving = ref(false)
@@ -223,26 +228,60 @@ const uploadConfig = computed(() => ({
 }))
 
 // 保存菜单
-const saveMenuList = computed<ContextmenuModalItemInterface[]>(() => [
-  {
-    icon: ['fas', 'fa-comment-dots'],
-    text: t('page.save_and_notify'),
-    value: 'notify',
-    onclick: handleNotify,
-  },
-  {
-    icon: ['fas', 'fa-file-export'],
-    text: t('page.save_as_template'),
-    value: 'template',
-    onclick: handleSaveTemplate,
-  },
-  {
-    icon: isLocked.value ? ['fas', 'fa-unlock'] : ['fas', 'fa-lock'],
-    text: isLocked.value ? t('page.unlock') : t('page.lock_edit'),
-    value: 'lock',
-    onclick: toggleLock,
-  },
-])
+const saveMenuList = computed<ContextmenuModalItemInterface[]>(() => {
+  const menu: ContextmenuModalItemInterface[] = [
+    {
+      icon: ['fas', 'fa-save'],
+      text: t('page.save'),
+      value: 'save',
+      onclick: () => handleSave(false, '', -1),
+    },
+  ]
+
+  // 根据草稿状态显示不同的选项
+  if (form.value.isDraft === 1) {
+    // 当前是草稿状态，显示"保存并发布"
+    menu.push({
+      icon: ['fas', 'fa-paper-plane'],
+      text: t('page.save_and_publish'),
+      value: 'publish',
+      tooltip: t('page.save_and_publish_tooltip'),
+      onclick: () => handleSave(false, '', 0),
+    })
+  } else {
+    // 当前是发布状态，显示"保存为草稿"
+    menu.push({
+      icon: ['fas', 'fa-file-pen'],
+      text: t('page.save_as_draft'),
+      value: 'draft',
+      tooltip: t('page.save_as_draft_tooltip'),
+      onclick: () => handleSave(false, '', 1),
+    })
+  }
+
+  menu.push(
+    {
+      icon: ['fas', 'fa-comment-dots'],
+      text: t('page.save_and_notify'),
+      value: 'notify',
+      onclick: handleNotify,
+    },
+    {
+      icon: ['fas', 'fa-file-export'],
+      text: t('page.save_as_template'),
+      value: 'template',
+      onclick: handleSaveTemplate,
+    },
+    {
+      icon: isLocked.value ? ['fas', 'fa-unlock'] : ['fas', 'fa-lock'],
+      text: isLocked.value ? t('page.unlock') : t('page.lock_edit'),
+      value: 'lock',
+      onclick: toggleLock,
+    }
+  )
+
+  return menu
+})
 
 // 模板菜单
 const templateMenuList = computed<ContextmenuModalItemInterface[]>(() => [
@@ -374,6 +413,7 @@ const loadPageContent = async (loadPageId: string | number) => {
       form.value.title = data.data.page_title || ''
       form.value.catId = Number(data.data.cat_id || 0)
       form.value.content = renderPageContent(data.data.page_content || '')
+      form.value.isDraft = Number(data.data.is_draft || 0)
       attachmentCount.value =
         data.data.attachment_count > 0 ? data.data.attachment_count : 0
 
@@ -439,7 +479,7 @@ const loadCatalogs = async () => {
   }
 }
 
-const handleSave = async (notify = false, notifyContent = '') => {
+const handleSave = async (notify = false, notifyContent = '', isDraft = -1) => {
   if (!itemId.value) {
     await AlertModal(t('page.item_id_required'))
     return
@@ -462,19 +502,27 @@ const handleSave = async (notify = false, notifyContent = '') => {
 
   saving.value = true
 
+  // 构建请求参数
+  const requestData: Record<string, any> = {
+    page_id: currentPageId.value || '',
+    item_id: String(itemId.value),
+    cat_id: form.value.catId,
+    page_title: form.value.title,
+    is_urlencode: 1,
+    page_content: encodeURIComponent(form.value.content),
+    is_notify: notify ? 1 : 0,
+    notify_content: notifyContent,
+  }
+
+  // 如果指定了草稿状态，添加到请求参数
+  if (isDraft >= 0) {
+    requestData.is_draft = isDraft
+  }
+
   try {
     const response = await request(
       '/api/page/save',
-      {
-        page_id: currentPageId.value || '',
-        item_id: String(itemId.value),
-        cat_id: form.value.catId,
-        page_title: form.value.title,
-        is_urlencode: 1,
-        page_content: encodeURIComponent(form.value.content),
-        is_notify: notify ? 1 : 0,
-        notify_content: notifyContent,
-      },
+      requestData,
       'post',
       false
     )
@@ -485,6 +533,11 @@ const handleSave = async (notify = false, notifyContent = '') => {
       // 更新页面ID（如果是新建页面）
       if (!currentPageId.value && response.data?.page_id) {
         currentPageId.value = response.data.page_id
+      }
+
+      // 更新草稿状态
+      if (isDraft >= 0) {
+        form.value.isDraft = isDraft
       }
 
       // 清除草稿
@@ -1268,6 +1321,15 @@ onBeforeUnmount(() => {
   &:hover {
     background: var(--hover-overlay);
   }
+}
+
+// 草稿标签
+.draft-tag {
+  margin-left: 8px;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 0 8px;
+  border-radius: 4px;
 }
 
 .page-title-input {

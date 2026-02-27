@@ -13,7 +13,8 @@ export const itemMenuDataToTreeData = (menu: any): any[] => {
         page_id: page.page_id,
         page_cat_id: 0,
         key: `page_${page.page_id}`,
-        type: 'page'
+        type: 'page',
+        is_draft: page.is_draft
       })
     })
   }
@@ -42,7 +43,8 @@ export const itemMenuDataToTreeData = (menu: any): any[] => {
             page_id: catData[index].pages[k].page_id,
             page_cat_id: catData[index].cat_id,
             key: `page_${catData[index].pages[k].page_id}`,
-            type: 'page'
+            type: 'page',
+            is_draft: catData[index].pages[k].is_draft
           })
         }
       }

@@ -66,9 +66,10 @@ class Page
      * @param int $itemId 项目 ID
      * @param array|int $catIds 目录 ID 或目录 ID 数组（0 表示所有目录）
      * @param string $keyword 搜索关键词
+     * @param int $uid 当前用户 ID（用于过滤草稿）
      * @return array 匹配的页面数组
      */
-    public static function search(int $itemId, $catIds = 0, string $keyword = ''): array
+    public static function search(int $itemId, $catIds = 0, string $keyword = '', int $uid = 0): array
     {
         if ($itemId <= 0 || empty($keyword)) {
             return [];
@@ -97,6 +98,13 @@ class Page
         $result  = [];
 
         foreach ($pages as $page) {
+            // 过滤草稿页面（非作者不可见）
+            $isDraft = (int) ($page->is_draft ?? 0);
+            $authorUid = (int) ($page->author_uid ?? 0);
+            if ($isDraft === 1 && $authorUid !== $uid) {
+                continue;
+            }
+
             $pageTitle   = strtolower((string) ($page->page_title ?? ''));
             $pageContent = (string) ($page->page_content ?? '');
 

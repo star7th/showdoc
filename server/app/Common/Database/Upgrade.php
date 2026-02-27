@@ -16,7 +16,7 @@ class Upgrade
      * 当前数据库版本号
      * 注意：如果更新数据库结构，务必更改此版本号
      */
-    private const CURRENT_VERSION = 28;
+    private const CURRENT_VERSION = 29;
 
     /**
      * 检查并执行数据库升级
@@ -672,6 +672,11 @@ class Upgrade
 
             // 创建唯一索引
             DB::statement("CREATE UNIQUE INDEX IF NOT EXISTS uniq_item_env_name ON runapi_db_config (item_id, env_id, config_name)");
+
+            // page表增加is_draft字段
+            if (!self::isColumnExist('page', 'is_draft')) {
+                DB::statement("ALTER TABLE page ADD is_draft INT(1) NOT NULL DEFAULT '0'");
+            }
 
             return true;
         } catch (\Throwable $e) {

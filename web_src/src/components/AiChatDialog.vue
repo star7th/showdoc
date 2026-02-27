@@ -122,6 +122,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import request from '@/utils/request'
 import { getServerHost } from '@/utils/system'
@@ -151,6 +152,7 @@ const emit = defineEmits<{}>()
 
 // Composables
 const { t } = useI18n()
+const router = useRouter()
 const userStore = useUserStore()
 
 // Refs
@@ -467,9 +469,12 @@ const formatRelevance = (relevance: number) => {
 
 const goToSource = (source: any) => {
   if (source.page_id && props.itemId) {
-    const routePath = `/${props.itemId}/${source.page_id}`
-    const href = window.location.origin + routePath
-    window.open(href, '_blank')
+    // 使用 router.resolve 生成链接，自动适配 History/Hash 模式
+    const resolved = router.resolve({
+      name: 'ItemShowPage',
+      params: { item_id: props.itemId, page_id: source.page_id }
+    })
+    window.open(resolved.href, '_blank')
   }
 }
 
