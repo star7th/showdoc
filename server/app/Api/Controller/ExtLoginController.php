@@ -95,27 +95,11 @@ class ExtLoginController extends BaseController
         $tokenTtl = 60 * 60 * 24 * 180; // 180 天
         $userToken = UserToken::createToken($uid, $tokenTtl);
 
-        // 设置 cookie（兼容旧版）
-        $cookieExpire = time() + $tokenTtl;
-        if (version_compare(PHP_VERSION, '7.3.0', '>')) {
-            setcookie('cookie_token', $userToken, [
-                'expires' => $cookieExpire,
-                'httponly' => true,
-                'samesite' => 'Strict',
-                'path' => '/'
-            ]);
-        } else {
-            setcookie('cookie_token', $userToken, $cookieExpire, '/', '', false, true);
-        }
-
-        // 重定向
-        if ($redirect) {
-            $redirect = urldecode($redirect);
-            return $response->withStatus(302)->withHeader('Location', $redirect);
-        } else {
-            $baseUrl = UrlHelper::siteUrl();
-            return $response->withStatus(302)->withHeader('Location', $baseUrl . '/web/#/item/index');
-        }
+        // 重定向到 LoginByUserToken 页面，让前端处理 localStorage 和 cookie
+        $baseUrl = UrlHelper::siteUrl();
+        $redirectUri = $redirect ? urldecode($redirect) : '/item/index';
+        $loginUrl = $baseUrl . '/web/#/user/loginByUserToken?user_token=' . urlencode($userToken) . '&redirect_uri=' . urlencode($redirectUri);
+        return $response->withStatus(302)->withHeader('Location', $loginUrl);
     }
 
     /**
@@ -296,28 +280,14 @@ class ExtLoginController extends BaseController
             $tokenTtl = 60 * 60 * 24 * 180; // 180 天
             $userToken = UserToken::createToken((int) $user->uid, $tokenTtl);
 
-            // 设置 cookie
-            $cookieExpire = time() + $tokenTtl;
-            if (version_compare(PHP_VERSION, '7.3.0', '>')) {
-                setcookie('cookie_token', $userToken, [
-                    'expires' => $cookieExpire,
-                    'httponly' => true,
-                    'samesite' => 'Strict',
-                    'path' => '/'
-                ]);
-            } else {
-                setcookie('cookie_token', $userToken, $cookieExpire, '/', '', false, true);
-            }
-
-            // 重定向
-            if (isset($_SESSION['redirect']) && $_SESSION['redirect']) {
-                $redirect = urldecode($_SESSION['redirect']);
+            // 重定向到 LoginByUserToken 页面，让前端处理 localStorage 和 cookie
+            $baseUrl = UrlHelper::siteUrl();
+            $redirectUri = isset($_SESSION['redirect']) && $_SESSION['redirect'] ? urldecode($_SESSION['redirect']) : '/item/index';
+            if (isset($_SESSION['redirect'])) {
                 unset($_SESSION['redirect']);
-                return $response->withStatus(302)->withHeader('Location', $redirect);
-            } else {
-                $baseUrl = UrlHelper::siteUrl();
-                return $response->withStatus(302)->withHeader('Location', $baseUrl . '/web/#/item/index');
             }
+            $loginUrl = $baseUrl . '/web/#/user/loginByUserToken?user_token=' . urlencode($userToken) . '&redirect_uri=' . urlencode($redirectUri);
+            return $response->withStatus(302)->withHeader('Location', $loginUrl);
         } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
             return $this->error($response, 10101, $e->getMessage());
         }
@@ -404,22 +374,10 @@ class ExtLoginController extends BaseController
         $tokenTtl = 60 * 60 * 24 * 180; // 180 天
         $userToken = UserToken::createToken((int) $user->uid, $tokenTtl);
 
-        // 设置 cookie
-        $cookieExpire = time() + $tokenTtl;
-        if (version_compare(PHP_VERSION, '7.3.0', '>')) {
-            setcookie('cookie_token', $userToken, [
-                'expires' => $cookieExpire,
-                'httponly' => true,
-                'samesite' => 'Strict',
-                'path' => '/'
-            ]);
-        } else {
-            setcookie('cookie_token', $userToken, $cookieExpire, '/', '', false, true);
-        }
-
-        // 重定向
+        // 重定向到 LoginByUserToken 页面，让前端处理 localStorage 和 cookie
         $baseUrl = UrlHelper::siteUrl();
-        return $response->withStatus(302)->withHeader('Location', $baseUrl . '/web/#/item/index');
+        $loginUrl = $baseUrl . '/web/#/user/loginByUserToken?user_token=' . urlencode($userToken) . '&redirect_uri=' . urlencode('/item/index');
+        return $response->withStatus(302)->withHeader('Location', $loginUrl);
     }
 }
 
