@@ -324,7 +324,7 @@ class AdminSettingController extends BaseController
 
         $ldapOpen = Options::get("ldap_open");
         $ldapForm = Options::get("ldap_form");
-        $ldapForm = json_decode($ldapForm, true);
+        $ldapForm = $ldapForm ? json_decode($ldapForm, true) : null;
 
         if ($ldapForm && !empty($ldapForm['host']) && empty($ldapForm['search_filter'])) {
             $ldapForm['search_filter'] = '(cn=*)';
