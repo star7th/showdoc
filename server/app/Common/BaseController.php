@@ -282,11 +282,11 @@ abstract class BaseController
      * @param int $status HTTP 状态码
      * @return Response
      */
-    protected function success(Response $response, mixed $data = [], int $status = 200): Response
+    protected function success(Response $response, $data = [], int $status = 200): Response
     {
         return $this->json($response, [
             'error_code' => 0,
-            'data'       => $data,
+            'data' => $data,
         ], $status);
     }
 
@@ -314,7 +314,7 @@ abstract class BaseController
         }
 
         $body = array_merge([
-            'error_code'    => $code,
+            'error_code' => $code,
             'error_message' => $message,
         ], $extra);
 
