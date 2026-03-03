@@ -22,3 +22,4 @@ web_src/*.sln
 showdocdata/
 AGENTS.md
 .claude/
+server/vendor/
