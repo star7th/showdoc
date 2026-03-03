@@ -80,6 +80,7 @@ export default {
   cancel_single: 'Are you sure you want to cancel the single page link? After cancellation, original link will be invalid immediately',
   cancel_single_yes: 'Cancel Single Page',
   cancel_single_no: 'Keep Single Page',
+  api_json_link: 'JSON API Link',
   expire_time: 'Expire Time',
   permanent: 'Permanent',
   one_day: 'One day',

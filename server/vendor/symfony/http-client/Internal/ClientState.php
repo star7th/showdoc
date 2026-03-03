@@ -20,7 +20,7 @@ namespace Symfony\Component\HttpClient\Internal;
  */
 class ClientState
 {
-    public array $handlesActivity = [];
-    public array $openHandles = [];
-    public ?float $lastTimeout = null;
+    public $handlesActivity = [];
+    public $openHandles = [];
+    public $lastTimeout;
 }

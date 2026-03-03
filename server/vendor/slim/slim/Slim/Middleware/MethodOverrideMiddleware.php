@@ -18,6 +18,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use function is_array;
 use function strtoupper;
 
+/** @api */
 class MethodOverrideMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -29,7 +30,7 @@ class MethodOverrideMiddleware implements MiddlewareInterface
         } elseif (strtoupper($request->getMethod()) === 'POST') {
             $body = $request->getParsedBody();
 
-            if (is_array($body) && !empty($body['_METHOD'])) {
+            if (is_array($body) && !empty($body['_METHOD']) && is_string($body['_METHOD'])) {
                 $request = $request->withMethod($body['_METHOD']);
             }
 

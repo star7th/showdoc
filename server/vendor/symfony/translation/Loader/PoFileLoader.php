@@ -57,8 +57,10 @@ class PoFileLoader extends FileLoader
      * - Message IDs are allowed to have other encodings as just US-ASCII.
      *
      * Items with an empty id are ignored.
+     *
+     * {@inheritdoc}
      */
-    protected function loadResource(string $resource): array
+    protected function loadResource(string $resource)
     {
         $stream = fopen($resource, 'r');
 
@@ -81,15 +83,15 @@ class PoFileLoader extends FileLoader
                 }
                 $item = $defaults;
                 $flags = [];
-            } elseif (str_starts_with($line, '#,')) {
+            } elseif ('#,' === substr($line, 0, 2)) {
                 $flags = array_map('trim', explode(',', substr($line, 2)));
-            } elseif (str_starts_with($line, 'msgid "')) {
+            } elseif ('msgid "' === substr($line, 0, 7)) {
                 // We start a new msg so save previous
                 // TODO: this fails when comments or contexts are added
                 $this->addMessage($messages, $item);
                 $item = $defaults;
                 $item['ids']['singular'] = substr($line, 7, -1);
-            } elseif (str_starts_with($line, 'msgstr "')) {
+            } elseif ('msgstr "' === substr($line, 0, 8)) {
                 $item['translated'] = substr($line, 8, -1);
             } elseif ('"' === $line[0]) {
                 $continues = isset($item['translated']) ? 'translated' : 'ids';
@@ -100,9 +102,9 @@ class PoFileLoader extends FileLoader
                 } else {
                     $item[$continues] .= substr($line, 1, -1);
                 }
-            } elseif (str_starts_with($line, 'msgid_plural "')) {
+            } elseif ('msgid_plural "' === substr($line, 0, 14)) {
                 $item['ids']['plural'] = substr($line, 14, -1);
-            } elseif (str_starts_with($line, 'msgstr[')) {
+            } elseif ('msgstr[' === substr($line, 0, 7)) {
                 $size = strpos($line, ']');
                 $item['translated'][(int) substr($line, 7, 1)] = substr($line, $size + 3, -1);
             }
@@ -122,7 +124,7 @@ class PoFileLoader extends FileLoader
      * A .po file could contain by error missing plural indexes. We need to
      * fix these before saving them.
      */
-    private function addMessage(array &$messages, array $item): void
+    private function addMessage(array &$messages, array $item)
     {
         if (!empty($item['ids']['singular'])) {
             $id = stripcslashes($item['ids']['singular']);

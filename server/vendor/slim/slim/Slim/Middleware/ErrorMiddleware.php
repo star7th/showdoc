@@ -25,6 +25,7 @@ use Throwable;
 use function get_class;
 use function is_subclass_of;
 
+/** @api */
 class ErrorMiddleware implements MiddlewareInterface
 {
     protected CallableResolverInterface $callableResolver;
@@ -88,6 +89,7 @@ class ErrorMiddleware implements MiddlewareInterface
         $exceptionType = get_class($exception);
         $handler = $this->getErrorHandler($exceptionType);
 
+        /** @var ResponseInterface */
         return $handler($request, $exception, $this->displayErrorDetails, $this->logErrors, $this->logErrorDetails);
     }
 
@@ -140,7 +142,8 @@ class ErrorMiddleware implements MiddlewareInterface
      *
      * The callable signature MUST match the ErrorHandlerInterface
      *
-     * @see \Slim\Interfaces\ErrorHandlerInterface
+     * @param string|callable|ErrorHandler $handler
+     * @see ErrorHandlerInterface
      *
      * 1. Instance of \Psr\Http\Message\ServerRequestInterface
      * 2. Instance of \Throwable
@@ -151,7 +154,6 @@ class ErrorMiddleware implements MiddlewareInterface
      * The callable MUST return an instance of
      * \Psr\Http\Message\ResponseInterface.
      *
-     * @param string|callable|ErrorHandler $handler
      */
     public function setDefaultErrorHandler($handler): self
     {
@@ -168,7 +170,12 @@ class ErrorMiddleware implements MiddlewareInterface
      * Pass true to $handleSubclasses to make the handler handle all subclasses of
      * the type as well. Pass an array of classes to make the same function handle multiple exceptions.
      *
-     * @see \Slim\Interfaces\ErrorHandlerInterface
+     * @param string|string[] $typeOrTypes Exception/Throwable name.
+     * ie: RuntimeException::class or an array of classes
+     * ie: [HttpNotFoundException::class, HttpMethodNotAllowedException::class]
+     * @param string|callable|ErrorHandlerInterface $handler
+     *
+     * @see ErrorHandlerInterface
      *
      * 1. Instance of \Psr\Http\Message\ServerRequestInterface
      * 2. Instance of \Throwable
@@ -179,10 +186,6 @@ class ErrorMiddleware implements MiddlewareInterface
      * The callable MUST return an instance of
      * \Psr\Http\Message\ResponseInterface.
      *
-     * @param string|string[] $typeOrTypes Exception/Throwable name.
-     * ie: RuntimeException::class or an array of classes
-     * ie: [HttpNotFoundException::class, HttpMethodNotAllowedException::class]
-     * @param string|callable|ErrorHandlerInterface $handler
      */
     public function setErrorHandler($typeOrTypes, $handler, bool $handleSubclasses = false): self
     {

@@ -22,7 +22,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class HttpOptions
 {
-    private array $options = [];
+    private $options = [];
 
     public function toArray(): array
     {
@@ -32,7 +32,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setAuthBasic(string $user, #[\SensitiveParameter] string $password = ''): static
+    public function setAuthBasic(string $user, string $password = '')
     {
         $this->options['auth_basic'] = $user;
 
@@ -46,7 +46,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setAuthBearer(#[\SensitiveParameter] string $token): static
+    public function setAuthBearer(string $token)
     {
         $this->options['auth_bearer'] = $token;
 
@@ -56,7 +56,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setQuery(array $query): static
+    public function setQuery(array $query)
     {
         $this->options['query'] = $query;
 
@@ -66,7 +66,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setHeaders(iterable $headers): static
+    public function setHeaders(iterable $headers)
     {
         $this->options['headers'] = $headers;
 
@@ -78,7 +78,7 @@ class HttpOptions
      *
      * @return $this
      */
-    public function setBody(mixed $body): static
+    public function setBody($body)
     {
         $this->options['body'] = $body;
 
@@ -86,9 +86,11 @@ class HttpOptions
     }
 
     /**
+     * @param mixed $json
+     *
      * @return $this
      */
-    public function setJson(mixed $json): static
+    public function setJson($json)
     {
         $this->options['json'] = $json;
 
@@ -98,7 +100,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setUserData(mixed $data): static
+    public function setUserData($data)
     {
         $this->options['user_data'] = $data;
 
@@ -108,7 +110,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setMaxRedirects(int $max): static
+    public function setMaxRedirects(int $max)
     {
         $this->options['max_redirects'] = $max;
 
@@ -118,7 +120,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setHttpVersion(string $version): static
+    public function setHttpVersion(string $version)
     {
         $this->options['http_version'] = $version;
 
@@ -128,7 +130,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setBaseUri(string $uri): static
+    public function setBaseUri(string $uri)
     {
         $this->options['base_uri'] = $uri;
 
@@ -138,17 +140,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setVars(array $vars): static
-    {
-        $this->options['vars'] = $vars;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function buffer(bool $buffer): static
+    public function buffer(bool $buffer)
     {
         $this->options['buffer'] = $buffer;
 
@@ -160,7 +152,7 @@ class HttpOptions
      *
      * @return $this
      */
-    public function setOnProgress(callable $callback): static
+    public function setOnProgress(callable $callback)
     {
         $this->options['on_progress'] = $callback;
 
@@ -170,7 +162,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function resolve(array $hostIps): static
+    public function resolve(array $hostIps)
     {
         $this->options['resolve'] = $hostIps;
 
@@ -180,7 +172,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setProxy(string $proxy): static
+    public function setProxy(string $proxy)
     {
         $this->options['proxy'] = $proxy;
 
@@ -190,7 +182,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setNoProxy(string $noProxy): static
+    public function setNoProxy(string $noProxy)
     {
         $this->options['no_proxy'] = $noProxy;
 
@@ -200,7 +192,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setTimeout(float $timeout): static
+    public function setTimeout(float $timeout)
     {
         $this->options['timeout'] = $timeout;
 
@@ -210,7 +202,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setMaxDuration(float $maxDuration): static
+    public function setMaxDuration(float $maxDuration)
     {
         $this->options['max_duration'] = $maxDuration;
 
@@ -220,7 +212,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function bindTo(string $bindto): static
+    public function bindTo(string $bindto)
     {
         $this->options['bindto'] = $bindto;
 
@@ -230,7 +222,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function verifyPeer(bool $verify): static
+    public function verifyPeer(bool $verify)
     {
         $this->options['verify_peer'] = $verify;
 
@@ -240,7 +232,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function verifyHost(bool $verify): static
+    public function verifyHost(bool $verify)
     {
         $this->options['verify_host'] = $verify;
 
@@ -250,7 +242,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setCaFile(string $cafile): static
+    public function setCaFile(string $cafile)
     {
         $this->options['cafile'] = $cafile;
 
@@ -260,7 +252,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setCaPath(string $capath): static
+    public function setCaPath(string $capath)
     {
         $this->options['capath'] = $capath;
 
@@ -270,7 +262,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setLocalCert(string $cert): static
+    public function setLocalCert(string $cert)
     {
         $this->options['local_cert'] = $cert;
 
@@ -280,7 +272,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setLocalPk(string $pk): static
+    public function setLocalPk(string $pk)
     {
         $this->options['local_pk'] = $pk;
 
@@ -290,7 +282,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setPassphrase(string $passphrase): static
+    public function setPassphrase(string $passphrase)
     {
         $this->options['passphrase'] = $passphrase;
 
@@ -300,7 +292,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setCiphers(string $ciphers): static
+    public function setCiphers(string $ciphers)
     {
         $this->options['ciphers'] = $ciphers;
 
@@ -308,9 +300,11 @@ class HttpOptions
     }
 
     /**
+     * @param string|array $fingerprint
+     *
      * @return $this
      */
-    public function setPeerFingerprint(string|array $fingerprint): static
+    public function setPeerFingerprint($fingerprint)
     {
         $this->options['peer_fingerprint'] = $fingerprint;
 
@@ -320,7 +314,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function capturePeerCertChain(bool $capture): static
+    public function capturePeerCertChain(bool $capture)
     {
         $this->options['capture_peer_cert_chain'] = $capture;
 
@@ -330,7 +324,7 @@ class HttpOptions
     /**
      * @return $this
      */
-    public function setExtra(string $name, mixed $value): static
+    public function setExtra(string $name, $value)
     {
         $this->options['extra'][$name] = $value;
 

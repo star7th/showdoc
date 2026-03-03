@@ -14,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
+/** @api */
 interface RouteInterface
 {
     /**
@@ -46,14 +47,14 @@ interface RouteInterface
     /**
      * Get route callable
      *
-     * @return callable|string
+     * @return callable|array{class-string, string}|string
      */
     public function getCallable();
 
     /**
      * Set route callable
      *
-     * @param callable|string $callable
+     * @param callable|array{class-string, string}|string $callable
      */
     public function setCallable($callable): RouteInterface;
 
@@ -88,6 +89,8 @@ interface RouteInterface
 
     /**
      * Set a route argument
+     *
+     * @deprecated 4.14.1 Use a middleware for custom route arguments now.
      */
     public function setArgument(string $name, string $value): RouteInterface;
 
@@ -95,6 +98,8 @@ interface RouteInterface
      * Replace route arguments
      *
      * @param array<string, string> $arguments
+     *
+     * @deprecated 4.14.1 Use a middleware for custom route arguments now.
      */
     public function setArguments(array $arguments): self;
 

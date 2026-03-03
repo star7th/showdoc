@@ -14,21 +14,63 @@ if (PHP_SAPI !== 'cli') {
 
 // ===== 安装状态检测（参考旧版逻辑）=====
 if (PHP_SAPI !== 'cli') {
-    // 不存在安装文件夹的，表示已经安装过
-    if (!file_exists("./install")) {
-        header("location:./web/#/");
-        exit();
+    $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+    $requestPath = parse_url($requestUri, PHP_URL_PATH);
+    $queryString = parse_url($requestUri, PHP_URL_QUERY) ?? '';
+
+    // 直接处理 /web/ 静态文件，不加载 Slim 框架
+    if (strpos($requestPath, '/web/') === 0) {
+        $file = __DIR__ . $requestPath;
+
+        // 如果是目录，尝试返回 index.html
+        if (is_dir($file)) {
+            $file = $file . (substr($file, -1) === '/' ? '' : '/') . 'index.html';
+        }
+
+        if (is_file($file)) {
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            $mimeTypes = [
+                'html' => 'text/html; charset=UTF-8',
+                'js' => 'application/javascript',
+                'css' => 'text/css',
+                'json' => 'application/json',
+                'png' => 'image/png',
+                'jpg' => 'image/jpeg',
+                'gif' => 'image/gif',
+                'svg' => 'image/svg+xml',
+                'woff' => 'font/woff',
+                'woff2' => 'font/woff2',
+                'ico' => 'image/x-icon',
+            ];
+            header('Content-Type: ' . ($mimeTypes[$ext] ?? 'application/octet-stream'));
+            readfile($file);
+            exit();
+        }
     }
 
-    // 如果 install 存在 && install.lock 存在 && install 可写 && install.lock 可写
-    if (file_exists("./install") && file_exists("./install/install.lock") && newIsWriteable("./install") && newIsWriteable("./install/install.lock")) {
-        header("location:./web/#/");
+    // 排除 API 请求的安装状态检测（允许 API 请求直接通过）
+    $isApiRequest = (isset($_GET['s']) && strpos($_GET['s'], '/api/') === 0) ||
+                    strpos($requestPath, '/api/') === 0 ||
+                    strpos($requestPath, '/server/api/') === 0;
+
+    if (!$isApiRequest) {
+        // 其他路径的安装状态检测
+        // 不存在安装文件夹的，表示已经安装过
+        if (!file_exists("./install")) {
+            header("location:/web/#/");
+            exit();
+        }
+
+        // 如果 install 存在 && install.lock 存在 && install 可写 && install.lock 可写
+        if (file_exists("./install") && file_exists("./install/install.lock") && newIsWriteable("./install") && newIsWriteable("./install/install.lock")) {
+            header("location:/web/#/");
+            exit();
+        }
+
+        // 其他情况都跳转到安装页面
+        header("location:/install/index.php");
         exit();
     }
-    
-    // 其他情况都跳转到安装页面
-    header("location:./install/index.php");
-    exit();
 }
 
 /**
@@ -183,12 +225,48 @@ $app->any('/home/common/repasswd', function (Request $request, Response $respons
     return $controller->repasswd($request, $response);
 });
 
+// API 路由：处理所有 /api/ 请求
+$app->any('/api/{path:.*}', function (Request $request, Response $response, array $args) use ($container) {
+    $path = $args['path'] ?? '';
+
+    // 解析路径：/page/jsonByKey -> PageController::jsonByKey
+    $parts = explode('/', trim($path, '/'));
+    if (count($parts) < 2) {
+        return $response->withStatus(404);
+    }
+
+    $controllerName = ucfirst($parts[0]); // page -> Page
+    $methodName = lcfirst(implode('', array_map('ucfirst', explode('_', $parts[1])))); // json_by_key -> jsonByKey
+
+    $controllerClass = "\\App\\Api\\Controller\\{$controllerName}Controller";
+
+    if (!class_exists($controllerClass)) {
+        return $response->withStatus(404);
+    }
+
+    $controller = $container->get($controllerClass);
+
+    if (!method_exists($controller, $methodName)) {
+        return $response->withStatus(404);
+    }
+
+    // 对于 GET 请求，将查询参数添加到请求属性中
+    if ($request->getMethod() === 'GET') {
+        $queryParams = $request->getQueryParams();
+        foreach ($queryParams as $key => $value) {
+            $request = $request->withAttribute($key, $value);
+        }
+    }
+
+    return $controller->$methodName($request, $response);
+});
+
 // 兜底路由：所有其他路径（多段路径，如 /user/login）都返回 Vue 应用
 $app->any('/{path:.*}', function (Request $request, Response $response) {
     // 开源版前端构建产物在 web/ 目录下，而不是使用主版的 web.html
     // 这里统一把所有未被前面路由匹配的路径交给前端 SPA 处理
     return $response
-        ->withHeader('Location', './web/#/')
+        ->withHeader('Location', '/web/#/')
         ->withStatus(302);
 });
 

@@ -35,7 +35,7 @@ abstract class FileDumper implements DumperInterface
     /**
      * Sets the template for the relative paths to files.
      *
-     * @return void
+     * @param string $relativePathTemplate A template for the relative paths to files
      */
     public function setRelativePathTemplate(string $relativePathTemplate)
     {
@@ -43,7 +43,7 @@ abstract class FileDumper implements DumperInterface
     }
 
     /**
-     * @return void
+     * {@inheritdoc}
      */
     public function dump(MessageCatalogue $messages, array $options = [])
     {
@@ -57,7 +57,7 @@ abstract class FileDumper implements DumperInterface
             if (!file_exists($fullpath)) {
                 $directory = \dirname($fullpath);
                 if (!file_exists($directory) && !@mkdir($directory, 0777, true)) {
-                    throw new RuntimeException(\sprintf('Unable to create directory "%s".', $directory));
+                    throw new RuntimeException(sprintf('Unable to create directory "%s".', $directory));
                 }
             }
 
@@ -86,13 +86,17 @@ abstract class FileDumper implements DumperInterface
 
     /**
      * Transforms a domain of a message catalogue to its string representation.
+     *
+     * @return string
      */
-    abstract public function formatCatalogue(MessageCatalogue $messages, string $domain, array $options = []): string;
+    abstract public function formatCatalogue(MessageCatalogue $messages, string $domain, array $options = []);
 
     /**
      * Gets the file extension of the dumper.
+     *
+     * @return string
      */
-    abstract protected function getExtension(): string;
+    abstract protected function getExtension();
 
     /**
      * Gets the relative file path using the template.

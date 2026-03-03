@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
   backupStaticAttributes="false"
+  convertDeprecationsToExceptions="true"
   verbose="true"
   bootstrap="tests/bootstrap.php">
   <testsuites>
@@ -8,4 +9,9 @@
        <directory suffix="Test.php">tests</directory>
     </testsuite>
   </testsuites>
+  <coverage includeUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+  </coverage>
 </phpunit>

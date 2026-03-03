@@ -15,7 +15,7 @@ interface CallableResolverInterface
     /**
      * Resolve $toResolve into a callable
      *
-     * @param string|callable $toResolve
+     * @param callable|array{class-string, string}|string $toResolve
      */
     public function resolve($toResolve): callable;
 }

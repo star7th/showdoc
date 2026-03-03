@@ -1,0 +1,41 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions:
+          - 5.4
+          - 5.5
+          - 5.6
+          - 7.2
+          - 7.3
+          - 7.4
+          - 8.0
+          - 8.1
+          - 8.2
+          - 8.3
+          - 8.4
+
+
+    steps:
+      -   name: Checkout
+          uses: actions/checkout@v4
+      -   name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+              php-version: ${{ matrix.php-versions }}     
+              coverage: xdebug
+      -   name: Composer Install
+          run: composer install --classmap-authoritative --no-interaction --no-cache
+      -   name: run tests
+          run: vendor/bin/phpunit --configuration phpunit.xml --bootstrap=tests/bootstrap.php --coverage-html=coverage/html/
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report-${{ matrix.php-versions }}
+          path: coverage/html/
