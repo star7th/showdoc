@@ -7,8 +7,8 @@ web_src/dist/
 web_src/npm-debug.log*
 web_src/yarn-debug.log*
 web_src/yarn-error.log*
-web_src//test/unit/coverage/
-web_src//test/e2e/reports/
+web_src/test/unit/coverage/
+web_src/test/e2e/reports/
 web_src/selenium-debug.log
 
 # Editor directories and files
