@@ -20,6 +20,5 @@ web_src/*.njsproj
 web_src/*.sln
 
 showdocdata/
-CLAUDE.md
 AGENTS.md
 .claude/

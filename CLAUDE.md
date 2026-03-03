@@ -1,4 +1,4 @@
-# CLAUDE.md
+co# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -58,7 +58,7 @@ Entry point: `/web_src/src/main.ts`
 
 ## Development Environment
 
-**Important**: This project runs in Docker container `smy-develop-smy-backend-1`. All CLI commands must be executed inside this container. HTTP requests should use `https://showdocdev.sanmaoyou.com`.
+**Important**: This project runs in Docker container `smy-develop-smy-backend-1`. All CLI commands must be executed inside this container. HTTP requests should use `https://localhost`.
 
 ### Docker Container Access
 
@@ -94,7 +94,7 @@ composer install
 composer update
 
 # Test API endpoint
-curl --resolve showdocdev.sanmaoyou.com:443:127.0.0.1 https://showdocdev.sanmaoyou.com/server/api/item/info
+curl --resolve localhost:443:127.0.0.1 https://localhost/server/api/item/info
 ```
 
 ### Docker Management
@@ -239,6 +239,6 @@ docker exec -it smy-develop-smy-backend-1 tail -f /var/www/html/server/app/Runti
 
 ```bash
 # Test endpoint
-curl --resolve showdocdev.sanmaoyou.com:443:127.0.0.1 \
-  https://showdocdev.sanmaoyou.com/server/api/item/info
+curl --resolve localhost:443:127.0.0.1 \
+  https://localhost/server/api/item/info
 ```
