@@ -56,16 +56,6 @@ Entry point: `/web_src/src/main.ts`
 - `/web_src/src/utils/` - Utility functions
 - `/web_src/src/i18n/` - Language packs
 
-## Development Environment
-
-**Important**: This project runs in Docker container `smy-develop-smy-backend-1`. All CLI commands must be executed inside this container. HTTP requests should use `https://localhost`.
-
-### Docker Container Access
-
-```bash
-# Enter the container for CLI operations
-docker exec -it smy-develop-smy-backend-1 bash
-```
 
 ## Common Development Commands
 
@@ -93,25 +83,6 @@ php server/index.php /api/endpoint
 composer install
 composer update
 
-# Test API endpoint
-curl --resolve localhost:443:127.0.0.1 https://localhost/server/api/item/info
-```
-
-### Docker Management
-
-```bash
-# Build image (with China mirror support)
-docker compose build
-IN_CHINA=true docker compose build
-
-# Start services
-docker compose up -d
-
-# Stop services
-docker compose down
-
-# View logs
-docker compose logs -f showdoc
 ```
 
 ## Database
@@ -225,20 +196,10 @@ The `CacheManager` in `/server/app/Common/` provides caching:
 
 ## Debugging & Troubleshooting
 
-**PHP Errors**: Check logs in `/server/app/Runtime/Logs/` (inside container)
-
-```bash
-docker exec -it smy-develop-smy-backend-1 tail -f /var/www/html/server/app/Runtime/Logs/error.log
-```
+**PHP Errors**: Check logs in `/server/app/Runtime/Logs/`
 
 **Frontend Issues**: Check browser console and Vite dev server output
 
 **Database Issues**: SQLite database is file-based; check `/Sqlite/showdoc.db.php` exists and is readable
 
 **API Testing**: Use curl with proper domain resolution:
-
-```bash
-# Test endpoint
-curl --resolve localhost:443:127.0.0.1 \
-  https://localhost/server/api/item/info
-```
