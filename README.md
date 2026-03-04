@@ -2,6 +2,8 @@
 
 ## [点击查看中文版教程](https://www.showdoc.com.cn/help)
 
+## 2026-3-3 新增接口 JSON 分享功能，方便AI工具调用
+
 ### What is ShowDoc?
 
 When we take over a module or project which has been developed by others, we always feel crazy watching at the codes without notes or comments.

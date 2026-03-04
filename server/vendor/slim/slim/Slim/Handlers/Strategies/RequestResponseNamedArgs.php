@@ -17,16 +17,10 @@ use RuntimeException;
 
 /**
  * Route callback strategy with route parameters as individual arguments.
+ * @api
  */
 class RequestResponseNamedArgs implements InvocationStrategyInterface
 {
-    public function __construct()
-    {
-        if (PHP_VERSION_ID < 80000) {
-            throw new RuntimeException('Named arguments are only available for PHP >= 8.0.0');
-        }
-    }
-
     /**
      * Invoke a route callable with request, response and all route parameters
      * as individual arguments.
@@ -39,6 +33,7 @@ class RequestResponseNamedArgs implements InvocationStrategyInterface
         ResponseInterface $response,
         array $routeArguments
     ): ResponseInterface {
+        /** @var ResponseInterface */
         return $callable($request, $response, ...$routeArguments);
     }
 }

@@ -26,14 +26,21 @@ trait AsyncDecoratorTrait
     use DecoratorTrait;
 
     /**
+     * {@inheritdoc}
+     *
      * @return AsyncResponse
      */
     abstract public function request(string $method, string $url, array $options = []): ResponseInterface;
 
-    public function stream(ResponseInterface|iterable $responses, ?float $timeout = null): ResponseStreamInterface
+    /**
+     * {@inheritdoc}
+     */
+    public function stream($responses, ?float $timeout = null): ResponseStreamInterface
     {
         if ($responses instanceof AsyncResponse) {
             $responses = [$responses];
+        } elseif (!is_iterable($responses)) {
+            throw new \TypeError(sprintf('"%s()" expects parameter 1 to be an iterable of AsyncResponse objects, "%s" given.', __METHOD__, get_debug_type($responses)));
         }
 
         return new ResponseStream(AsyncResponse::stream($responses, $timeout, static::class));

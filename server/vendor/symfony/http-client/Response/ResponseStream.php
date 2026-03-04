@@ -20,7 +20,7 @@ use Symfony\Contracts\HttpClient\ResponseStreamInterface;
  */
 final class ResponseStream implements ResponseStreamInterface
 {
-    private \Generator $generator;
+    private $generator;
 
     public function __construct(\Generator $generator)
     {

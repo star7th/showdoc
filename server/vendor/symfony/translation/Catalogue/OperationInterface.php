@@ -36,26 +36,36 @@ interface OperationInterface
 {
     /**
      * Returns domains affected by operation.
+     *
+     * @return array
      */
-    public function getDomains(): array;
+    public function getDomains();
 
     /**
      * Returns all valid messages ('all') after operation.
+     *
+     * @return array
      */
-    public function getMessages(string $domain): array;
+    public function getMessages(string $domain);
 
     /**
      * Returns new messages ('new') after operation.
+     *
+     * @return array
      */
-    public function getNewMessages(string $domain): array;
+    public function getNewMessages(string $domain);
 
     /**
      * Returns obsolete messages ('obsolete') after operation.
+     *
+     * @return array
      */
-    public function getObsoleteMessages(string $domain): array;
+    public function getObsoleteMessages(string $domain);
 
     /**
      * Returns resulting catalogue ('result').
+     *
+     * @return MessageCatalogueInterface
      */
-    public function getResult(): MessageCatalogueInterface;
+    public function getResult();
 }

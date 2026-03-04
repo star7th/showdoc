@@ -6,12 +6,10 @@ The HttpClient component provides powerful methods to fetch HTTP resources synch
 Sponsor
 -------
 
-The HttpClient component for Symfony 6.4 is [backed][1] by [Innovative Web AG][2].
+The Httpclient component for Symfony 5.4/6.0 is [backed][1] by [Klaxoon][2].
 
-Innovative Web AG (i-web) is a specialist for web, applications and the
-digitalisation of the public sector based in Switzerland. With their i-CMS,
-public authorities and institutions implement modern websites and eGovernment
-portals and offer user-friendly eServices for residents and companies.
+Klaxoon is a platform that empowers organizations to run effective and
+productive workshops easily in a hybrid environment. Anytime, Anywhere.
 
 Help Symfony by [sponsoring][3] its development!
 
@@ -25,5 +23,5 @@ Resources
    in the [main Symfony repository](https://github.com/symfony/symfony)
 
 [1]: https://symfony.com/backers
-[2]: https://www.i-web.ch
+[2]: https://klaxoon.com
 [3]: https://symfony.com/sponsor

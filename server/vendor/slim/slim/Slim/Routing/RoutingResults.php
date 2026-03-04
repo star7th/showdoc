@@ -14,6 +14,7 @@ use Slim\Interfaces\DispatcherInterface;
 
 use function rawurldecode;
 
+/** @api */
 class RoutingResults
 {
     public const NOT_FOUND = 0;

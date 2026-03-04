@@ -18,18 +18,26 @@ use Slim\Interfaces\RouteCollectorProxyInterface;
 use Slim\Interfaces\RouteGroupInterface;
 use Slim\Interfaces\RouteInterface;
 
+/**
+ * @template TContainerInterface of (ContainerInterface|null)
+ * @template-implements RouteCollectorProxyInterface<TContainerInterface>
+ */
 class RouteCollectorProxy implements RouteCollectorProxyInterface
 {
     protected ResponseFactoryInterface $responseFactory;
 
     protected CallableResolverInterface $callableResolver;
 
+    /** @var TContainerInterface */
     protected ?ContainerInterface $container = null;
 
     protected RouteCollectorInterface $routeCollector;
 
     protected string $groupPattern;
 
+    /**
+     * @param TContainerInterface $container
+     */
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         CallableResolverInterface $callableResolver,
@@ -62,6 +70,7 @@ class RouteCollectorProxy implements RouteCollectorProxyInterface
 
     /**
      * {@inheritdoc}
+     * @return TContainerInterface
      */
     public function getContainer(): ?ContainerInterface
     {

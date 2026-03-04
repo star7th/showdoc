@@ -25,20 +25,22 @@ class StreamWrapper
     /** @var resource|null */
     public $context;
 
-    private HttpClientInterface|ResponseInterface $client;
+    /** @var HttpClientInterface */
+    private $client;
 
-    private ResponseInterface $response;
+    /** @var ResponseInterface */
+    private $response;
 
     /** @var resource|string|null */
     private $content;
 
-    /** @var resource|callable|null */
+    /** @var resource|null */
     private $handle;
 
-    private bool $blocking = true;
-    private ?float $timeout = null;
-    private bool $eof = false;
-    private ?int $offset = 0;
+    private $blocking = true;
+    private $timeout;
+    private $eof = false;
+    private $offset = 0;
 
     /**
      * Creates a PHP stream resource from a ResponseInterface.
@@ -56,7 +58,7 @@ class StreamWrapper
         }
 
         if (null === $client && !method_exists($response, 'stream')) {
-            throw new \InvalidArgumentException(\sprintf('Providing a client to "%s()" is required when the response doesn\'t have any "stream()" method.', __CLASS__));
+            throw new \InvalidArgumentException(sprintf('Providing a client to "%s()" is required when the response doesn\'t have any "stream()" method.', __CLASS__));
         }
 
         static $registered = false;
@@ -94,7 +96,7 @@ class StreamWrapper
     {
         if ('r' !== $mode) {
             if ($options & \STREAM_REPORT_ERRORS) {
-                trigger_error(\sprintf('Invalid mode "%s": only "r" is supported.', $mode), \E_USER_WARNING);
+                trigger_error(sprintf('Invalid mode "%s": only "r" is supported.', $mode), \E_USER_WARNING);
             }
 
             return false;
@@ -116,7 +118,7 @@ class StreamWrapper
         return false;
     }
 
-    public function stream_read(int $count): string|false
+    public function stream_read(int $count)
     {
         if (\is_resource($this->content)) {
             // Empty the internal activity list
@@ -174,7 +176,9 @@ class StreamWrapper
 
                 if ('' !== $data = $chunk->getContent()) {
                     if (\strlen($data) > $count) {
-                        $this->content ??= substr($data, $count);
+                        if (null === $this->content) {
+                            $this->content = substr($data, $count);
+                        }
                         $data = substr($data, 0, $count);
                     }
                     $this->offset += \strlen($data);
@@ -266,9 +270,6 @@ class StreamWrapper
         return false;
     }
 
-    /**
-     * @return resource|false
-     */
     public function stream_cast(int $castAs)
     {
         if (\STREAM_CAST_FOR_SELECT === $castAs) {

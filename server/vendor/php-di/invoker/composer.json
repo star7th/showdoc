@@ -20,7 +20,7 @@
         "psr/container": "^1.0|^2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "^9.0 || ^10 || ^11 || ^12",
         "athletic/athletic": "~0.1.8",
         "mnapoli/hard-mode": "~0.3.0"
     },

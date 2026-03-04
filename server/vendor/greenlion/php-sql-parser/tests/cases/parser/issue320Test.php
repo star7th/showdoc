@@ -41,7 +41,7 @@ namespace PHPSQLParser\Test\Parser;
 use PHPSQLParser\PHPSQLParser;
 use PHPSQLParser\PHPSQLCreator;
 
-class issue320Test extends \PHPUnit_Framework_TestCase
+class issue320Test extends \PHPUnit\Framework\TestCase
 {
     public function test_no_warning_is_issued_when_help_table_is_used()
     {
@@ -51,7 +51,7 @@ class issue320Test extends \PHPUnit_Framework_TestCase
         // there currently is an exception because `HELP` is a keyword
         // but this query seems valid at least in mysql and mssql
         // so ideally PHPSQLParser would be able to parse it
-        $this->setExpectedException(
+        $this->expectException(
             '\PHPSQLParser\exceptions\UnableToCalculatePositionException'
         );
 

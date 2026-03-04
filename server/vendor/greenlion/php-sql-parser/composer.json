@@ -40,7 +40,7 @@
 		"php" : ">=5.3.2"
 	},
 	"require-dev" : {
-		"squizlabs/php_codesniffer" : "^1.5.1",
+		"squizlabs/php_codesniffer" : "^2.8.1",
 		"phpunit/phpunit" : "^9.5.13",
 		"analog/analog" : "^1.0.6"
 	}

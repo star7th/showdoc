@@ -25,7 +25,14 @@
               <i class="fas fa-copy copy-icon" @click="handleCopySingle"></i>
             </div>
 
-            <p class="label">{{ $t('item.expire_time') }}:</p>
+            <!-- JSON 接口链接（用于 AI 集成） -->
+            <p class="label" style="margin-top: 16px">{{ $t('item.api_json_link') || 'JSON API 链接' }}:</p>
+            <div class="link-container json-link">
+              <code class="link">{{ shareJsonLink }}</code>
+              <i class="fas fa-copy copy-icon" @click="handleCopyJson"></i>
+            </div>
+
+            <p class="label" style="margin-top: 16px">{{ $t('item.expire_time') }}:</p>
             <a-radio-group v-model:value="expireDays" @change="handleExpireChange">
               <a-radio :value="0">{{ $t('item.permanent') }}</a-radio>
               <a-radio :value="1">{{ $t('item.one_day') }}</a-radio>
@@ -116,6 +123,15 @@ const shareSingleLink = computed(() => {
   return `${baseUrl}#/p/${pageUniqueKey.value}`
 })
 
+// 生成 JSON 接口链接（用于 AI 集成）
+const shareJsonLink = computed(() => {
+  if (!pageUniqueKey.value) return ''
+
+  // 获取当前的基础 URL（使用根域名）
+  const baseUrl = window.location.origin
+  return `${baseUrl}/api/page/jsonByKey?unique_key=${pageUniqueKey.value}`
+})
+
 // 复制页面链接
 const handleCopyPage = async () => {
   const success = await copyToClipboard(sharePageLink.value)
@@ -129,6 +145,16 @@ const handleCopyPage = async () => {
 // 复制单页链接
 const handleCopySingle = async () => {
   const success = await copyToClipboard(shareSingleLink.value)
+  if (success) {
+    Message.success(t('common.copy_success'))
+  } else {
+    AlertModal(t('common.error'))
+  }
+}
+
+// 复制 JSON 接口链接
+const handleCopyJson = async () => {
+  const success = await copyToClipboard(shareJsonLink.value)
   if (success) {
     Message.success(t('common.copy_success'))
   } else {
@@ -363,6 +389,11 @@ const checkSinglePageExists = async () => {
 
   &.single-link {
     background: var(--color-info-bg);
+  }
+
+  &.json-link {
+    background: rgba(76, 175, 80, 0.08);
+    border-color: rgba(76, 175, 80, 0.3);
   }
 }
 

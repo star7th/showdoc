@@ -87,6 +87,7 @@ export default {
   cancel_single: '是否确定取消单页链接？取消后，原链接会立马失效',
   cancel_single_yes: '取消单页链接',
   cancel_single_no: '保留单页链接',
+  api_json_link: 'JSON API 链接',
   expire_time: '有效时间',
   permanent: '永久',
   one_day: '一天',
