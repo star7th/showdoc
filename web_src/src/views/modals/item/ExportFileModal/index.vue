@@ -133,39 +133,29 @@ const pages = ref<any[]>([{ page_id: '0', page_title: t('item.all_pages') }])
 const userInfo = getUserInfoFromStorage()
 const userToken = userInfo?.user_token || ''
 
-// 计算目录列表（包含子目录）
-const catalogOptions = computed(() => {
-  const info = catalogs.value.slice(0)
-  const catArray: any[] = []
-
-  for (let i = 0; i < info.length; i++) {
-    catArray.push(info[i])
-    const sub = info[i]['sub']
-    if (sub && sub.length > 0) {
-      for (let j = 0; j < sub.length; j++) {
-        catArray.push({
-          cat_id: sub[j]['cat_id'],
-          cat_name: info[i]['cat_name'] + ' / ' + sub[j]['cat_name']
-        })
-
-        const subSub = sub[j]['sub']
-        if (subSub && subSub.length > 0) {
-          for (let k = 0; k < subSub.length; k++) {
-            catArray.push({
-              cat_id: subSub[k]['cat_id'],
-              cat_name:
-                info[i]['cat_name'] +
-                ' / ' +
-                sub[j]['cat_name'] +
-                ' / ' +
-                subSub[k]['cat_name']
-            })
-          }
-        }
-      }
+// 递归提取所有目录（扁平化，带层级路径前缀）
+const flattenCatalogs = (
+  catalogList: any[],
+  parentPath: string = '',
+  result: any[] = []
+): any[] => {
+  for (const cat of catalogList) {
+    const catName = parentPath ? `${parentPath} / ${cat.cat_name}` : cat.cat_name
+    result.push({
+      cat_id: cat.cat_id,
+      cat_name: catName
+    })
+    // 递归处理子目录
+    if (cat.sub && cat.sub.length > 0) {
+      flattenCatalogs(cat.sub, catName, result)
     }
   }
+  return result
+}
 
+// 计算目录列表（包含子目录）
+const catalogOptions = computed(() => {
+  const catArray = flattenCatalogs(catalogs.value)
   catArray.unshift({ cat_id: '', cat_name: t('item.none') })
   return catArray.map(cat => ({
     label: cat.cat_name,

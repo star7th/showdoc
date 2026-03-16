@@ -195,6 +195,10 @@ class ImportSwaggerController extends BaseController
         if (empty($pageTitle) && !empty($request['operationId'])) {
             $pageTitle = $request['operationId'];
         }
+        // 当没有 summary/description/operationId 时，使用 "方法 URL" 作为默认标题
+        if (empty($pageTitle)) {
+            $pageTitle = strtoupper($method) . ' ' . $url;
+        }
         $pageTitle = mb_substr($pageTitle, 0, 50, 'utf-8');
         $return['page_title'] = $pageTitle;
         $return['s_number'] = 99;
