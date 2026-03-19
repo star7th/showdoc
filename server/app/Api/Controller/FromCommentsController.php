@@ -85,15 +85,21 @@ class FromCommentsController extends BaseController
         // 转换为 RunApi 格式
         $pageContent = $this->toRunapiFormat($array);
 
+        $pageTitle = $array['title'] ?? '';
+        $catName = $array['cat_name'] ?? '';
+        $sNumber = !empty($array['s_number']) ? (int) $array['s_number'] : 99;
+
+        // 如果是 RunApi 项目，尝试保留已有页面中用户手动填写的值
+        if ($item->item_type == 3) {
+            $pageContent = $this->preserveExistingValues($itemId, $pageTitle, $catName, $pageContent);
+        }
+
         // 如果不是 RunApi 项目，转换为 Markdown
         if ($item->item_type != 3) {
             $pageContent = $convert->runapiToMd($pageContent);
         }
 
-        $pageTitle = $array['title'] ?? '';
         $pageContent = htmlspecialchars($pageContent);
-        $catName = $array['cat_name'] ?? '';
-        $sNumber = !empty($array['s_number']) ? (int) $array['s_number'] : 99;
 
         // 更新或创建页面
         $pageId = Page::updateByTitle($itemId, $pageTitle, $pageContent, $catName, $sNumber);
@@ -105,6 +111,195 @@ class FromCommentsController extends BaseController
         }
 
         return false;
+    }
+
+    /**
+     * 保留已有页面中用户手动填写的值
+     *
+     * 对于 RunApi 类型的项目，当通过注释更新文档时，保留用户已在 RunApi 中填写的：
+     * - 请求参数的示例值（value）
+     * - 返回参数的说明（remark）
+     *
+     * @param int $itemId 项目 ID
+     * @param string $pageTitle 页面标题
+     * @param string $catName 目录名称
+     * @param string $newContent 新生成的 RunApi JSON 内容
+     * @return string 合并后的 RunApi JSON 内容
+     */
+    private function preserveExistingValues(int $itemId, string $pageTitle, string $catName, string $newContent): string
+    {
+        // 获取目录 ID
+        $catId = 0;
+        if (!empty($catName)) {
+            $catId = \App\Model\Catalog::saveCatPath($catName, $itemId);
+            if ($catId === false) {
+                return $newContent;
+            }
+        }
+
+        // 查找已存在的页面（开源版：使用单表 page，不支持分表）
+        $existing = DB::table('page')
+            ->where('item_id', $itemId)
+            ->where('is_del', 0)
+            ->where('cat_id', $catId)
+            ->where('page_title', $pageTitle)
+            ->first();
+
+        if (!$existing) {
+            return $newContent;
+        }
+
+        // 解压已有页面内容（兼容旧压缩数据）
+        $existingContent = $existing->page_content;
+        $decompressed = \App\Common\Helper\ContentCodec::decompress($existingContent);
+        if ($decompressed !== '' && $decompressed !== $existingContent) {
+            $existingContent = $decompressed;
+        }
+
+        // HTML 解码
+        $existingContent = htmlspecialchars_decode($existingContent);
+
+        // 解析 JSON
+        $existingData = json_decode($existingContent, true);
+        $newData = json_decode($newContent, true);
+
+        if (!$existingData || !$newData) {
+            return $newContent;
+        }
+
+        // 合并请求参数中的 value
+        $this->mergeRequestValues($existingData, $newData);
+
+        // 合并返回参数说明中的 value 和 remark
+        $this->mergeResponseValues($existingData, $newData);
+
+        $result = json_encode($newData, JSON_UNESCAPED_UNICODE);
+        if ($result === false) {
+            return $newContent;
+        }
+        return $result;
+    }
+
+    /**
+     * 合并请求参数中的 value 值
+     *
+     * @param array $existingData 已有页面数据
+     * @param array $newData 新生成的页面数据
+     */
+    private function mergeRequestValues(array $existingData, array &$newData): void
+    {
+        if (!isset($existingData['request']) || !isset($newData['request'])) {
+            return;
+        }
+
+        // 合并 headers
+        $this->mergeParamListValues(
+            $existingData['request']['headers'] ?? [],
+            $newData['request']['headers'] ?? []
+        );
+
+        // 合并 query
+        $this->mergeParamListValues(
+            $existingData['request']['query'] ?? [],
+            $newData['request']['query'] ?? []
+        );
+
+        // 合并 formdata
+        $this->mergeParamListValues(
+            $existingData['request']['params']['formdata'] ?? [],
+            $newData['request']['params']['formdata'] ?? []
+        );
+
+        // 合并 jsonDesc
+        $this->mergeParamListValues(
+            $existingData['request']['params']['jsonDesc'] ?? [],
+            $newData['request']['params']['jsonDesc'] ?? []
+        );
+
+        // 合并 urlencoded
+        $this->mergeParamListValues(
+            $existingData['request']['params']['urlencoded'] ?? [],
+            $newData['request']['params']['urlencoded'] ?? []
+        );
+    }
+
+    /**
+     * 合并参数列表中的 value 值
+     * 根据 name 字段匹配，保留已有页面中的 value
+     *
+     * @param array $existingList 已有参数列表
+     * @param array $newList 新参数列表（引用传递，会被修改）
+     */
+    private function mergeParamListValues(array $existingList, array &$newList): void
+    {
+        if (empty($existingList) || empty($newList)) {
+            return;
+        }
+
+        // 建立已有参数的 name -> value 映射
+        $existingValues = [];
+        foreach ($existingList as $param) {
+            if (isset($param['name']) && $param['name'] !== '') {
+                $existingValues[$param['name']] = $param['value'] ?? '';
+            }
+        }
+
+        // 遍历新参数列表，如果 name 匹配且已有 value，则保留
+        foreach ($newList as $key => $param) {
+            $name = $param['name'] ?? '';
+            if ($name !== '' && isset($existingValues[$name]) && $existingValues[$name] !== '') {
+                $newList[$key]['value'] = $existingValues[$name];
+            }
+        }
+    }
+
+    /**
+     * 合并返回参数说明中的 value 和 remark 值
+     *
+     * @param array $existingData 已有页面数据
+     * @param array $newData 新生成的页面数据（引用传递，会被修改）
+     */
+    private function mergeResponseValues(array $existingData, array &$newData): void
+    {
+        if (
+            !isset($existingData['response']['responseParamsDesc'])
+            || !isset($newData['response']['responseParamsDesc'])
+        ) {
+            return;
+        }
+
+        $existingParams = $existingData['response']['responseParamsDesc'];
+        $newParams = &$newData['response']['responseParamsDesc'];
+
+        if (empty($existingParams) || empty($newParams)) {
+            return;
+        }
+
+        // 建立已有参数的 name -> [value, remark] 映射
+        $existingValues = [];
+        foreach ($existingParams as $param) {
+            if (isset($param['name']) && $param['name'] !== '') {
+                $existingValues[$param['name']] = [
+                    'value' => $param['value'] ?? '',
+                    'remark' => $param['remark'] ?? '',
+                ];
+            }
+        }
+
+        // 遍历新参数列表，如果 name 匹配且已有值，则保留
+        foreach ($newParams as $key => $param) {
+            $name = $param['name'] ?? '';
+            if ($name !== '' && isset($existingValues[$name])) {
+                // 保留 value
+                if ($existingValues[$name]['value'] !== '') {
+                    $newParams[$key]['value'] = $existingValues[$name]['value'];
+                }
+                // 保留 remark（如果已有说明且新说明为空或相同）
+                if ($existingValues[$name]['remark'] !== '') {
+                    $newParams[$key]['remark'] = $existingValues[$name]['remark'];
+                }
+            }
+        }
     }
 
     /**

@@ -168,6 +168,90 @@ const loadCSS = (href: string): Promise<void> => {
 // ============================================
 // 工具函数
 // ============================================
+
+/**
+ * 预处理 Markdown 内容，修复表格前缺少空行的问题
+ *
+ * 问题背景：AI 生成的 Markdown 内容经常出现标题/加粗文本与表格之间缺少空行的情况，
+ * 导致表格无法正确渲染。
+ *
+ * 处理的场景：
+ * 1. **xxx：** 或 **xxx:** 后紧跟 |（加粗文本后直接跟表格）
+ * 2. **xxx** 后紧跟 |（换行后）
+ * 3. 任何以 | 开头的表格行紧跟在非空行之后（且前一行不是空行或表格行）
+ *
+ * 表格识别规则（避免误判）：
+ * 1. 不在代码块内
+ * 2. 以 | 开头（忽略前导空白）
+ * 3. 行中至少包含 2 个 |（确保是表格而不是普通文本中的管道符）
+ * 4. 或者是表格分隔行（包含 - 和 | 的组合，如 |---|---|）
+ *
+ * @param markdown 原始 Markdown 内容
+ * @returns 修复后的 Markdown 内容
+ */
+const preprocessMarkdownForTables = (markdown: string): string => {
+  if (!markdown) return markdown
+
+  // 按行分割内容
+  const lines = markdown.split('\n')
+  const result: string[] = []
+  
+  // 跟踪代码块状态
+  let inCodeBlock = false
+  let codeBlockLang = ''
+
+  for (let i = 0; i < lines.length; i++) {
+    const currentLine = lines[i]
+    const prevLine = i > 0 ? lines[i - 1] : ''
+    
+    // 检测代码块的开始和结束
+    const codeBlockMatch = currentLine.match(/^\s*```(\w*)/)
+    if (codeBlockMatch) {
+      if (!inCodeBlock) {
+        // 进入代码块
+        inCodeBlock = true
+        codeBlockLang = codeBlockMatch[1] || ''
+      } else {
+        // 离开代码块
+        inCodeBlock = false
+        codeBlockLang = ''
+      }
+      result.push(currentLine)
+      continue
+    }
+    
+    // 如果在代码块内，不进行任何处理
+    if (inCodeBlock) {
+      result.push(currentLine)
+      continue
+    }
+
+    // 检查当前行是否是真正的表格行
+    // 规则：以 | 开头，且行中至少有 2 个 |，或者是表格分隔行
+    const isTableLine = /^\s*\|/.test(currentLine)
+    const pipeCount = (currentLine.match(/\|/g) || []).length
+    const isTableSeparator = /^\s*\|[\s\-:|]+\|/.test(currentLine)
+    const isRealTableLine = isTableLine && (pipeCount >= 2 || isTableSeparator)
+
+    // 检查前一行是否是空行
+    const prevLineIsEmpty = prevLine.trim() === ''
+
+    // 检查前一行是否也是表格行（使用相同的判断标准）
+    const prevIsTableLine = /^\s*\|/.test(prevLine) &&
+      ((prevLine.match(/\|/g) || []).length >= 2 || /^\s*\|[\s\-:|]+\|/.test(prevLine))
+
+    // 如果当前行是真正的表格行，且前一行不是空行、不是表格行
+    // 则需要在当前行前插入空行
+    if (isRealTableLine && !prevLineIsEmpty && !prevIsTableLine && prevLine !== '') {
+      result.push('') // 插入空行
+    }
+
+    result.push(currentLine)
+  }
+
+  return result.join('\n')
+}
+
 const htmlDecode = (str: string): string => {
   if (!str || str.length === 0) return ''
   let s = str
@@ -512,11 +596,17 @@ const initEditor = async () => {
     }
 
     // 按模式处理 Markdown，预览/HTML 模式下去掉 [TOC] 标记，交给新版 TOC 组件处理
+    // 同时预处理 Markdown 内容，修复表格前缺少空行的问题（兼容 AI 生成的内容）
     const rawMarkdown = props.modelValue || ''
-    const markdown =
-      props.mode === 'editor'
-        ? rawMarkdown
-        : rawMarkdown.replace(/\[TOC\]\s*/gi, '')
+    let markdown = rawMarkdown
+    
+    // 预处理：修复表格前缺少空行的问题
+    markdown = preprocessMarkdownForTables(markdown)
+    
+    // 预览/HTML 模式下去掉 [TOC] 标记
+    if (props.mode !== 'editor') {
+      markdown = markdown.replace(/\[TOC\]\s*/gi, '')
+    }
 
     // 构建编辑器配置
     const editorConfig: any = {
