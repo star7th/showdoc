@@ -40,6 +40,23 @@
             </div>
             <i class="fas fa-chevron-right arrow-icon"></i>
           </div>
+
+          <div class="menu-item" @click="handleAiToken">
+            <div class="menu-item-content">
+              <div class="menu-item-icon ai-token-icon">
+                <i class="fas fa-robot"></i>
+              </div>
+              <span class="menu-item-label">{{
+                $t('user.ai_token_management')
+              }}</span>
+            </div>
+            <div class="menu-item-right">
+              <span class="status-text status-none">
+                {{ $t('user.manage_tokens') }}
+              </span>
+              <i class="fas fa-chevron-right arrow-icon"></i>
+            </div>
+          </div>
         </div>
 
         <!-- 底部按钮 -->
@@ -66,6 +83,7 @@ import request from '@/utils/request'
 import PromptModal from '@/components/PromptModal'
 import PasswordModal from '../PasswordModal'
 import PushUrlModal from '../PushUrlModal'
+import AiTokenModal from '../AiTokenModal'
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -129,6 +147,11 @@ const handleEditName = async () => {
 // 修改密码
 const handlePassword = async () => {
   await PasswordModal()
+}
+
+// AI 令牌管理
+const handleAiToken = async () => {
+  await AiTokenModal()
 }
 
 // 获取用户推送地址
@@ -326,6 +349,10 @@ onMounted(() => {
 
 .push-icon {
   background-color: var(--color-success);
+}
+
+.ai-token-icon {
+  background-color: #6366f1;
 }
 
 .menu-item-label {

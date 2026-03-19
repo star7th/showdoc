@@ -16,7 +16,7 @@ class Upgrade
      * 当前数据库版本号
      * 注意：如果更新数据库结构，务必更改此版本号
      */
-    private const CURRENT_VERSION = 29;
+    private const CURRENT_VERSION = 30;
 
     /**
      * 检查并执行数据库升级
@@ -677,6 +677,29 @@ class Upgrade
             if (!self::isColumnExist('page', 'is_draft')) {
                 DB::statement("ALTER TABLE page ADD is_draft INT(1) NOT NULL DEFAULT '0'");
             }
+
+            // 创建user_ai_token表（MCP功能）
+            DB::statement("CREATE TABLE IF NOT EXISTS `user_ai_token` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+                `uid` int(11) NOT NULL DEFAULT '0',
+                `token` CHAR(150) NOT NULL DEFAULT '',
+                `name` CHAR(100) DEFAULT NULL,
+                `permission` CHAR(20) NOT NULL DEFAULT 'write',
+                `scope` CHAR(20) NOT NULL DEFAULT 'all',
+                `allowed_items` text DEFAULT NULL,
+                `can_create_item` int(1) NOT NULL DEFAULT '1',
+                `can_delete_item` int(1) NOT NULL DEFAULT '0',
+                `auto_add_created_item` int(1) NOT NULL DEFAULT '1',
+                `expires_at` datetime DEFAULT NULL,
+                `created_at` datetime DEFAULT NULL,
+                `last_used_at` datetime DEFAULT NULL,
+                `is_active` int(1) NOT NULL DEFAULT '1'
+            )");
+
+            // 创建索引
+            DB::statement("CREATE INDEX IF NOT EXISTS idx_uid ON user_ai_token (uid)");
+            DB::statement("CREATE INDEX IF NOT EXISTS idx_token ON user_ai_token (token)");
+            DB::statement("CREATE INDEX IF NOT EXISTS idx_is_active ON user_ai_token (is_active)");
 
             return true;
         } catch (\Throwable $e) {

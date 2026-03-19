@@ -12,6 +12,19 @@ use Illuminate\Database\Capsule\Manager as DB;
  */
 class Page
 {
+    /**
+     * 获取页面表名（开源版：始终返回 'page'）
+     * 
+     * 此方法为了与主版代码兼容，主版使用分表，开源版使用单表。
+     * 
+     * @param int $itemId 项目 ID（开源版忽略此参数）
+     * @return string 表名
+     */
+    public static function tableForItem(int $itemId): string
+    {
+        return 'page';
+    }
+
     public static function listTitles(int $itemId): array
     {
         if ($itemId <= 0) {
