@@ -32,12 +32,25 @@
         <!-- 页面标题 -->
         <div class="doc-title-box">
           <h2 id="doc-title">{{ pageTitle }}</h2>
-          <i
-            v-if="!isMobile && showFullPageBtn && !isFullPage"
-            :class="isFullPage ? 'fas fa-compress' : 'fas fa-expand'"
-            id="full-page"
-            @click="toggleFullPage"
-          ></i>
+          <div class="title-actions">
+            <!-- 复制为 Markdown 按钮 -->
+            <a-tooltip
+              v-if="!isMobile && content"
+              :title="t('page.show.copy_as_markdown_tooltip')"
+            >
+              <i
+                class="fas fa-copy copy-markdown-btn"
+                @click="copyAsMarkdown"
+              ></i>
+            </a-tooltip>
+            <!-- 全屏按钮 -->
+            <i
+              v-if="!isMobile && showFullPageBtn && !isFullPage"
+              :class="isFullPage ? 'fas fa-compress' : 'fas fa-expand'"
+              id="full-page"
+              @click="toggleFullPage"
+            ></i>
+          </div>
         </div>
 
 
@@ -71,12 +84,14 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { message } from 'ant-design-vue'
 // 引入 ShowDoc 编辑器适配器（包装底层 EditormdEditor 组件）
 // 适配器提供了 ShowDoc 特定的默认配置和事件处理
 import EditormdEditor from '@/components/EditormdEditor/ShowdocAdapter.vue'
 import Toc from '@/components/Toc.vue'
 import { renderPageContent, unescapeHTML } from '@/models/page'
 import request from '@/utils/request'
+import { copyToClipboard } from '@/utils/tools'
 
 const route = useRoute()
 const router = useRouter()
@@ -192,6 +207,18 @@ const getPageContent = async () => {
     }
   } catch (error) {
     errorMessage.value = t('page.show.load_failed')
+  }
+}
+
+// 复制页面内容为 Markdown
+const copyAsMarkdown = async () => {
+  if (!content.value) return
+
+  const success = await copyToClipboard(content.value)
+  if (success) {
+    message.success(t('page.show.copy_success'))
+  } else {
+    message.error(t('page.show.copy_failed'))
   }
 }
 
@@ -459,10 +486,17 @@ onBeforeUnmount(() => {
     padding: 0;
   }
 
-  #full-page {
+  .title-actions {
     position: absolute;
     top: 4px;
     right: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .copy-markdown-btn,
+  #full-page {
     width: 32px;
     height: 32px;
     display: flex;

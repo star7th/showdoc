@@ -197,9 +197,9 @@ const contextMenuList = computed(() => {
         onclick: () => handleEditPage(node),
       },
       {
-        icon: ['far', 'fa-copy'],
-        text: t('page.copy_page'),
-        onclick: () => handleCopyPage(node),
+        icon: ['far', 'fa-clone'],
+        text: t('page.clone_page'),
+        onclick: () => handleClonePage(node),
       },
       {
         icon: ['far', 'fa-circle-info'],
@@ -704,7 +704,8 @@ const handleEditPage = async (node: any) => {
   }
 }
 
-const handleCopyPage = async (node: any) => {
+// 克隆页面（创建新页面并复制内容）
+const handleClonePage = async (node: any) => {
   try {
     const result = await EditPageModal({
       itemId: props.itemInfo.item_id,

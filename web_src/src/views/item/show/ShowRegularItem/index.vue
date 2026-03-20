@@ -108,6 +108,15 @@
               <a-tag color="orange" class="draft-tag">{{ $t('page.draft') }}</a-tag>
             </a-tooltip>
             <span class="doc-actions">
+              <a-tooltip
+                v-if="pageContent && !isMobile()"
+                :title="$t('page.show.copy_as_markdown_tooltip')"
+              >
+                <i
+                  class="far fa-copy copy-markdown-icon"
+                  @click="copyAsMarkdown"
+                />
+              </a-tooltip>
               <i
                 v-if="attachmentCount"
                 class="far fa-paperclip attachment-icon"
@@ -188,11 +197,13 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { message } from 'ant-design-vue'
 import { useItemStore } from '@/store'
 import { renderPageContent } from '@/models/page'
 import { toggleNthTaskCheckbox } from '@/models/markdown'
 import { getItem } from '@/models/item'
 import request from '@/utils/request'
+import { copyToClipboard } from '@/utils/tools'
 // 引入 ShowDoc 编辑器适配器（包装底层 EditormdEditor 组件）
 // 适配器提供了 ShowDoc 特定的默认配置和事件处理
 import EditormdEditor from '@/components/EditormdEditor/ShowdocAdapter.vue'
@@ -395,6 +406,18 @@ const handleGetPageContent = async (pageId: number) => {
   } catch (error) {
     console.error('获取页面内容失败:', error)
     await AlertModal(t('fetch_page_content_failed'))
+  }
+}
+
+// 复制页面内容为 Markdown
+const copyAsMarkdown = async () => {
+  if (!pageContent.value) return
+
+  const success = await copyToClipboard(pageContent.value)
+  if (success) {
+    message.success(t('page.show.copy_success'))
+  } else {
+    message.error(t('page.show.copy_failed'))
   }
 }
 
@@ -763,7 +786,8 @@ onUnmounted(() => {
 }
 
 .attachment-icon,
-.full-page-icon {
+.full-page-icon,
+.copy-markdown-icon {
   width: 32px;
   height: 32px;
   display: flex;

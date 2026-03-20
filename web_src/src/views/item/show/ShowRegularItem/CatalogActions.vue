@@ -6,8 +6,8 @@
       </div>
     </a-tooltip>
 
-    <a-tooltip :title="$t('page.copy_page')" placement="top">
-      <div class="action-item" @click="handleCopyPage">
+    <a-tooltip :title="$t('page.clone_page')" placement="top">
+      <div class="action-item" @click="handleClonePage">
         <i class="far fa-clone"></i>
       </div>
     </a-tooltip>
@@ -144,7 +144,7 @@ const handleCreatePage = async () => {
   }
 }
 
-const handleCopyPage = async () => {
+const handleClonePage = async () => {
   if (!props.pageId) {
     Message.info(t('common.please_select_page'))
     return
@@ -161,7 +161,7 @@ const handleCopyPage = async () => {
       emit('reloadItem')
     }
   } catch (error) {
-    console.error('复制页面失败:', error)
+    console.error('克隆页面失败:', error)
   }
 }
 

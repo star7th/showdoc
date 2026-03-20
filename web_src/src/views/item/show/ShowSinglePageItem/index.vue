@@ -73,6 +73,13 @@
           </div>
         </div>
 
+        <!-- 复制为 Markdown 图标 -->
+        <a-tooltip :title="$t('page.show.copy_as_markdown')" v-if="content && !isMobile">
+          <div class="copy-markdown-icon">
+            <i class="far fa-copy" @click="copyAsMarkdown"></i>
+          </div>
+        </a-tooltip>
+
         <!-- 附件图标 -->
         <div class="attachment-icon" v-if="attachmentCount">
           <i class="far fa-paperclip" @click="showAttachmentModal = true"></i>
@@ -101,7 +108,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, onUnmounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { message } from 'ant-design-vue'
 import request from '@/utils/request'
+import { copyToClipboard } from '@/utils/tools'
 import { renderPageContent } from '@/models/page'
 import { toggleNthTaskCheckbox } from '@/models/markdown'
 import ItemHeader from '../../components/ItemHeader.vue'
@@ -244,6 +253,18 @@ const handleEdit = async () => {
 
 const goBack = () => {
   window.location.href = '/item/index'
+}
+
+// 复制页面内容为 Markdown
+const copyAsMarkdown = async () => {
+  if (!content.value) return
+
+  const success = await copyToClipboard(content.value)
+  if (success) {
+    message.success(t('page.show.copy_success'))
+  } else {
+    message.error(t('page.show.copy_failed'))
+  }
 }
 
 // 退出全屏（刷新页面）
@@ -574,6 +595,37 @@ onUnmounted(() => {
   }
 }
 
+// 复制为 Markdown 图标（克制设计）
+.copy-markdown-icon {
+  position: absolute;
+  top: 24px;
+  right: 88px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: var(--hover-overlay);
+    color: var(--color-active);
+  }
+
+  i {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    transition: color 0.15s ease;
+  }
+
+  &:hover i {
+    color: var(--color-active);
+  }
+}
+
 // 移动端适配
 .mobile-view {
   .page-wrapper {
@@ -601,6 +653,11 @@ onUnmounted(() => {
   .attachment-icon {
     top: 20px;
     right: 15px;
+  }
+
+  .copy-markdown-icon {
+    top: 20px;
+    right: 55px;
   }
 }
 
