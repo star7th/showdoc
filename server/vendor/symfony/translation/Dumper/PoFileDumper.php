@@ -20,7 +20,10 @@ use Symfony\Component\Translation\MessageCatalogue;
  */
 class PoFileDumper extends FileDumper
 {
-    public function formatCatalogue(MessageCatalogue $messages, string $domain, array $options = []): string
+    /**
+     * {@inheritdoc}
+     */
+    public function formatCatalogue(MessageCatalogue $messages, string $domain, array $options = [])
     {
         $output = 'msgid ""'."\n";
         $output .= 'msgstr ""'."\n";
@@ -51,21 +54,21 @@ class PoFileDumper extends FileDumper
             $sourceRules = $this->getStandardRules($source);
             $targetRules = $this->getStandardRules($target);
             if (2 == \count($sourceRules) && [] !== $targetRules) {
-                $output .= \sprintf('msgid "%s"'."\n", $this->escape($sourceRules[0]));
-                $output .= \sprintf('msgid_plural "%s"'."\n", $this->escape($sourceRules[1]));
+                $output .= sprintf('msgid "%s"'."\n", $this->escape($sourceRules[0]));
+                $output .= sprintf('msgid_plural "%s"'."\n", $this->escape($sourceRules[1]));
                 foreach ($targetRules as $i => $targetRule) {
-                    $output .= \sprintf('msgstr[%d] "%s"'."\n", $i, $this->escape($targetRule));
+                    $output .= sprintf('msgstr[%d] "%s"'."\n", $i, $this->escape($targetRule));
                 }
             } else {
-                $output .= \sprintf('msgid "%s"'."\n", $this->escape($source));
-                $output .= \sprintf('msgstr "%s"'."\n", $this->escape($target));
+                $output .= sprintf('msgid "%s"'."\n", $this->escape($source));
+                $output .= sprintf('msgstr "%s"'."\n", $this->escape($target));
             }
         }
 
         return $output;
     }
 
-    private function getStandardRules(string $id): array
+    private function getStandardRules(string $id)
     {
         // Partly copied from TranslatorTrait::trans.
         $parts = [];
@@ -108,7 +111,10 @@ EOF;
         return $standardRules;
     }
 
-    protected function getExtension(): string
+    /**
+     * {@inheritdoc}
+     */
+    protected function getExtension()
     {
         return 'po';
     }
@@ -118,12 +124,12 @@ EOF;
         return addcslashes($str, "\0..\37\42\134");
     }
 
-    private function formatComments(string|array $comments, string $prefix = ''): ?string
+    private function formatComments($comments, string $prefix = ''): ?string
     {
         $output = null;
 
         foreach ((array) $comments as $comment) {
-            $output .= \sprintf('#%s %s'."\n", $prefix, $comment);
+            $output .= sprintf('#%s %s'."\n", $prefix, $comment);
         }
 
         return $output;

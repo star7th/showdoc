@@ -939,6 +939,69 @@ class PageController extends BaseController
     }
 
     /**
+     * 通过唯一 key 获取页面 JSON 数据（用于 AI 集成）。
+     * 返回纯 JSON 格式的页面内容，方便提供给 AI 使用。
+     */
+    public function jsonByKey(Request $request, Response $response): Response
+    {
+        $uniqueKey = (string) $this->getParam($request, 'unique_key', '');
+        if ($uniqueKey === '') {
+            return $this->error($response, 10101, '参数错误');
+        }
+
+        $singlePage = DB::table('single_page')
+            ->where('unique_key', $uniqueKey)
+            ->first();
+
+        if (!$singlePage) {
+            return $this->error($response, 10101, '该分享链接已过期或不存在');
+        }
+
+        $pageId = (int) ($singlePage->page_id ?? 0);
+
+        // 检查链接是否已过期
+        $expireTime = (int) ($singlePage->expire_time ?? 0);
+        if ($expireTime > 0 && $expireTime < time()) {
+            DB::table('single_page')
+                ->where('unique_key', $uniqueKey)
+                ->delete();
+            return $this->error($response, 10101, '该分享链接已过期');
+        }
+
+        $page = DB::table('page')
+            ->where('page_id', $pageId)
+            ->first();
+
+        if (!$page || (int) ($page->is_del ?? 0) === 1) {
+            return $this->error($response, 10101, '页面不存在');
+        }
+
+        // 转换为数组格式
+        $page = (array) $page;
+
+        // 构建 JSON 响应数据
+        $jsonData = [
+            'page_id' => (int) ($page['page_id'] ?? 0),
+            'page_title' => $page['page_title'] ?? '',
+            'page_content' => $page['page_content'] ?? '',
+            'page_comments' => (int) ($page['page_comments'] ?? 0),
+            'addtime' => date('Y-m-d H:i:s', (int) ($page['addtime'] ?? time())),
+            'unique_key' => $uniqueKey,
+            'expire_time' => $expireTime,
+        ];
+
+        // 设置 JSON 响应头
+        $response = $response
+            ->withHeader('Content-Type', 'application/json; charset=utf-8')
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+        $response->getBody()->write(json_encode($jsonData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+        return $response;
+    }
+
+    /**
      * 同一目录下页面排序（兼容旧接口 Api/Page/sort）。
      */
     public function sort(Request $request, Response $response): Response

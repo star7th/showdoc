@@ -16,18 +16,18 @@
         }
     ],
     "require": {
-        "php": ">=8.1"
+        "php": ">=7.2.5"
+    },
+    "suggest": {
+        "symfony/translation-implementation": ""
     },
     "autoload": {
-        "psr-4": { "Symfony\\Contracts\\Translation\\": "" },
-        "exclude-from-classmap": [
-            "/Test/"
-        ]
+        "psr-4": { "Symfony\\Contracts\\Translation\\": "" }
     },
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-main": "3.6-dev"
+            "dev-main": "2.5-dev"
         },
         "thanks": {
             "name": "symfony/contracts",

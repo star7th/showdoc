@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Translation\Command;
 
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
@@ -29,17 +28,19 @@ use Symfony\Component\Translation\Writer\TranslationWriterInterface;
 /**
  * @author Mathieu Santostefano <msantostefano@protonmail.com>
  */
-#[AsCommand(name: 'translation:pull', description: 'Pull translations from a given provider.')]
 final class TranslationPullCommand extends Command
 {
     use TranslationTrait;
 
-    private TranslationProviderCollection $providerCollection;
-    private TranslationWriterInterface $writer;
-    private TranslationReaderInterface $reader;
-    private string $defaultLocale;
-    private array $transPaths;
-    private array $enabledLocales;
+    protected static $defaultName = 'translation:pull';
+    protected static $defaultDescription = 'Pull translations from a given provider.';
+
+    private $providerCollection;
+    private $writer;
+    private $reader;
+    private $defaultLocale;
+    private $transPaths;
+    private $enabledLocales;
 
     public function __construct(TranslationProviderCollection $providerCollection, TranslationWriterInterface $writer, TranslationReaderInterface $reader, string $defaultLocale, array $transPaths = [], array $enabledLocales = [])
     {
@@ -64,8 +65,9 @@ final class TranslationPullCommand extends Command
         if ($input->mustSuggestOptionValuesFor('domains')) {
             $provider = $this->providerCollection->get($input->getArgument('provider'));
 
-            if (method_exists($provider, 'getDomains')) {
-                $suggestions->suggestValues($provider->getDomains());
+            if ($provider && method_exists($provider, 'getDomains')) {
+                $domains = $provider->getDomains();
+                $suggestions->suggestValues($domains);
             }
 
             return;
@@ -82,7 +84,10 @@ final class TranslationPullCommand extends Command
         }
     }
 
-    protected function configure(): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
     {
         $keys = $this->providerCollection->keys();
         $defaultProvider = 1 === \count($keys) ? $keys[0] : null;
@@ -92,10 +97,9 @@ final class TranslationPullCommand extends Command
                 new InputArgument('provider', null !== $defaultProvider ? InputArgument::OPTIONAL : InputArgument::REQUIRED, 'The provider to pull translations from.', $defaultProvider),
                 new InputOption('force', null, InputOption::VALUE_NONE, 'Override existing translations with provider ones (it will delete not synchronized messages).'),
                 new InputOption('intl-icu', null, InputOption::VALUE_NONE, 'Associated to --force option, it will write messages in "%domain%+intl-icu.%locale%.xlf" files.'),
-                new InputOption('domains', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify the domains to pull.'),
-                new InputOption('locales', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify the locales to pull.'),
-                new InputOption('format', null, InputOption::VALUE_REQUIRED, 'Override the default output format.', 'xlf12'),
-                new InputOption('as-tree', null, InputOption::VALUE_REQUIRED, 'Write messages as a tree-like structure. Needs --format=yaml. The given value defines the level where to switch to inline YAML'),
+                new InputOption('domains', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify the domains to pull.'),
+                new InputOption('locales', null, InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Specify the locales to pull.'),
+                new InputOption('format', null, InputOption::VALUE_OPTIONAL, 'Override the default output format.', 'xlf12'),
             ])
             ->setHelp(<<<'EOF'
 The <info>%command.name%</> command pulls translations from the given provider. Only
@@ -117,6 +121,9 @@ EOF
         ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -127,7 +134,6 @@ EOF
         $locales = $input->getOption('locales') ?: $this->enabledLocales;
         $domains = $input->getOption('domains');
         $format = $input->getOption('format');
-        $asTree = (int) $input->getOption('as-tree');
         $xliffVersion = '1.2';
 
         if ($intlIcu && !$force) {
@@ -144,8 +150,6 @@ EOF
             'path' => end($this->transPaths),
             'xliff_version' => $xliffVersion,
             'default_locale' => $this->defaultLocale,
-            'as_tree' => (bool) $asTree,
-            'inline' => $asTree,
         ];
 
         if (!$domains) {
@@ -163,7 +167,7 @@ EOF
                 $this->writer->write($operation->getResult(), $format, $writeOptions);
             }
 
-            $io->success(\sprintf('Local translations has been updated from "%s" (for "%s" locale(s), and "%s" domain(s)).', parse_url($provider, \PHP_URL_SCHEME), implode(', ', $locales), implode(', ', $domains)));
+            $io->success(sprintf('Local translations has been updated from "%s" (for "%s" locale(s), and "%s" domain(s)).', parse_url($provider, \PHP_URL_SCHEME), implode(', ', $locales), implode(', ', $domains)));
 
             return 0;
         }
@@ -177,7 +181,7 @@ EOF
             $this->writer->write($catalogue, $format, $writeOptions);
         }
 
-        $io->success(\sprintf('New translations from "%s" has been written locally (for "%s" locale(s), and "%s" domain(s)).', parse_url($provider, \PHP_URL_SCHEME), implode(', ', $locales), implode(', ', $domains)));
+        $io->success(sprintf('New translations from "%s" has been written locally (for "%s" locale(s), and "%s" domain(s)).', parse_url($provider, \PHP_URL_SCHEME), implode(', ', $locales), implode(', ', $domains)));
 
         return 0;
     }

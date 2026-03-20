@@ -26,12 +26,19 @@ use function json_encode;
 use function preg_match;
 use function sprintf;
 
+/**
+ * @template TContainerInterface of (ContainerInterface|null)
+ */
 final class CallableResolver implements AdvancedCallableResolverInterface
 {
     public static string $callablePattern = '!^([^\:]+)\:([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)$!';
 
+    /** @var TContainerInterface $container */
     private ?ContainerInterface $container;
 
+    /**
+     * @param TContainerInterface $container
+     */
     public function __construct(?ContainerInterface $container = null)
     {
         $this->container = $container;
@@ -72,7 +79,7 @@ final class CallableResolver implements AdvancedCallableResolverInterface
     }
 
     /**
-     * @param string|callable $toResolve
+     * @param callable|array{class-string, string}|string $toResolve
      *
      * @throws RuntimeException
      */
@@ -120,11 +127,10 @@ final class CallableResolver implements AdvancedCallableResolverInterface
      */
     private function resolveSlimNotation(string $toResolve): array
     {
+        /** @psalm-suppress ArgumentTypeCoercion */
         preg_match(CallableResolver::$callablePattern, $toResolve, $matches);
         [$class, $method] = $matches ? [$matches[1], $matches[2]] : [$toResolve, null];
 
-        /** @var string $class */
-        /** @var string|null $method */
         if ($this->container && $this->container->has($class)) {
             $instance = $this->container->get($class);
             if (!is_object($instance)) {
@@ -174,8 +180,9 @@ final class CallableResolver implements AdvancedCallableResolverInterface
     }
 
     /**
-     * @param string|callable $toResolve
-     * @return string|callable
+     * @param callable|string|array{class-string, string}|mixed $toResolve
+     *
+     * @return callable|string|array{class-string, string}|mixed
      */
     private function prepareToResolve($toResolve)
     {

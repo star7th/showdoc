@@ -43,7 +43,7 @@ class Gitignore
         foreach ($gitignoreLines as $line) {
             $line = preg_replace('~(?<!\\\\)[ \t]+$~', '', $line);
 
-            if (str_starts_with($line, '!')) {
+            if ('!' === substr($line, 0, 1)) {
                 $line = substr($line, 1);
                 $isNegative = true;
             } else {
@@ -79,7 +79,9 @@ class Gitignore
         }
 
         $regex = preg_quote(str_replace('\\', '', $gitignoreLine), '~');
-        $regex = preg_replace_callback('~\\\\\[((?:\\\\!)?)([^\[\]]*)\\\\\]~', fn (array $matches): string => '['.('' !== $matches[1] ? '^' : '').str_replace('\\-', '-', $matches[2]).']', $regex);
+        $regex = preg_replace_callback('~\\\\\[((?:\\\\!)?)([^\[\]]*)\\\\\]~', function (array $matches): string {
+            return '['.('' !== $matches[1] ? '^' : '').str_replace('\\-', '-', $matches[2]).']';
+        }, $regex);
         $regex = preg_replace('~(?:(?:\\\\\*){2,}(/?))+~', '(?:(?:(?!//).(?<!//))+$1)?', $regex);
         $regex = preg_replace('~\\\\\*~', '[^/]*', $regex);
         $regex = preg_replace('~\\\\\?~', '[^/]', $regex);

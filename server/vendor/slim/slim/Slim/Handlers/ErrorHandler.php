@@ -43,6 +43,7 @@ use function preg_match;
  *
  * It outputs the error message and diagnostic information in one of the following formats:
  * JSON, XML, Plain Text or HTML based on the Accept header.
+ * @api
  */
 class ErrorHandler implements ErrorHandlerInterface
 {
@@ -188,6 +189,7 @@ class ErrorHandler implements ErrorHandlerInterface
                 }
             }
 
+            // @phpstan-ignore-next-line
             if (is_string($current)) {
                 return $current;
             }
@@ -258,11 +260,15 @@ class ErrorHandler implements ErrorHandlerInterface
     protected function writeToErrorLog(): void
     {
         $renderer = $this->callableResolver->resolve($this->logErrorRenderer);
+
+        /** @var string $error */
         $error = $renderer($this->exception, $this->logErrorDetails);
-        if (!$this->displayErrorDetails) {
+
+        if ($this->logErrorRenderer === PlainTextErrorRenderer::class && !$this->displayErrorDetails) {
             $error .= "\nTips: To display error details in HTTP response ";
             $error .= 'set "displayErrorDetails" to true in the ErrorHandler constructor.';
         }
+
         $this->logError($error);
     }
 

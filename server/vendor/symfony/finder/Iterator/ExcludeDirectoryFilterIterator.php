@@ -11,31 +11,25 @@
 
 namespace Symfony\Component\Finder\Iterator;
 
-use Symfony\Component\Finder\SplFileInfo;
-
 /**
  * ExcludeDirectoryFilterIterator filters out directories.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  *
- * @extends \FilterIterator<string, SplFileInfo>
+ * @extends \FilterIterator<string, \SplFileInfo>
  *
- * @implements \RecursiveIterator<string, SplFileInfo>
+ * @implements \RecursiveIterator<string, \SplFileInfo>
  */
 class ExcludeDirectoryFilterIterator extends \FilterIterator implements \RecursiveIterator
 {
-    /** @var \Iterator<string, SplFileInfo> */
-    private \Iterator $iterator;
-    private bool $isRecursive;
-    /** @var array<string, true> */
-    private array $excludedDirs = [];
-    private ?string $excludedPattern = null;
-    /** @var list<callable(SplFileInfo):bool> */
-    private array $pruneFilters = [];
+    private $iterator;
+    private $isRecursive;
+    private $excludedDirs = [];
+    private $excludedPattern;
 
     /**
-     * @param \Iterator<string, SplFileInfo>          $iterator    The Iterator to filter
-     * @param list<string|callable(SplFileInfo):bool> $directories An array of directories to exclude
+     * @param \Iterator $iterator    The Iterator to filter
+     * @param string[]  $directories An array of directories to exclude
      */
     public function __construct(\Iterator $iterator, array $directories)
     {
@@ -43,16 +37,6 @@ class ExcludeDirectoryFilterIterator extends \FilterIterator implements \Recursi
         $this->isRecursive = $iterator instanceof \RecursiveIterator;
         $patterns = [];
         foreach ($directories as $directory) {
-            if (!\is_string($directory)) {
-                if (!\is_callable($directory)) {
-                    throw new \InvalidArgumentException('Invalid PHP callback.');
-                }
-
-                $this->pruneFilters[] = $directory;
-
-                continue;
-            }
-
             $directory = rtrim($directory, '/');
             if (!$this->isRecursive || str_contains($directory, '/')) {
                 $patterns[] = preg_quote($directory, '#');
@@ -69,8 +53,11 @@ class ExcludeDirectoryFilterIterator extends \FilterIterator implements \Recursi
 
     /**
      * Filters the iterator values.
+     *
+     * @return bool
      */
-    public function accept(): bool
+    #[\ReturnTypeWillChange]
+    public function accept()
     {
         if ($this->isRecursive && isset($this->excludedDirs[$this->getFilename()]) && $this->isDir()) {
             return false;
@@ -83,23 +70,23 @@ class ExcludeDirectoryFilterIterator extends \FilterIterator implements \Recursi
             return !preg_match($this->excludedPattern, $path);
         }
 
-        if ($this->pruneFilters && $this->hasChildren()) {
-            foreach ($this->pruneFilters as $pruneFilter) {
-                if (!$pruneFilter($this->current())) {
-                    return false;
-                }
-            }
-        }
-
         return true;
     }
 
-    public function hasChildren(): bool
+    /**
+     * @return bool
+     */
+    #[\ReturnTypeWillChange]
+    public function hasChildren()
     {
         return $this->isRecursive && $this->iterator->hasChildren();
     }
 
-    public function getChildren(): self
+    /**
+     * @return self
+     */
+    #[\ReturnTypeWillChange]
+    public function getChildren()
     {
         $children = new self($this->iterator->getChildren(), []);
         $children->excludedDirs = $this->excludedDirs;

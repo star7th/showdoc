@@ -26,12 +26,10 @@ class TranslationWriter implements TranslationWriterInterface
     /**
      * @var array<string, DumperInterface>
      */
-    private array $dumpers = [];
+    private $dumpers = [];
 
     /**
      * Adds a dumper to the writer.
-     *
-     * @return void
      */
     public function addDumper(string $format, DumperInterface $dumper)
     {
@@ -40,8 +38,10 @@ class TranslationWriter implements TranslationWriterInterface
 
     /**
      * Obtains the list of supported formats.
+     *
+     * @return array
      */
-    public function getFormats(): array
+    public function getFormats()
     {
         return array_keys($this->dumpers);
     }
@@ -52,21 +52,19 @@ class TranslationWriter implements TranslationWriterInterface
      * @param string $format  The format to use to dump the messages
      * @param array  $options Options that are passed to the dumper
      *
-     * @return void
-     *
      * @throws InvalidArgumentException
      */
     public function write(MessageCatalogue $catalogue, string $format, array $options = [])
     {
         if (!isset($this->dumpers[$format])) {
-            throw new InvalidArgumentException(\sprintf('There is no dumper associated with format "%s".', $format));
+            throw new InvalidArgumentException(sprintf('There is no dumper associated with format "%s".', $format));
         }
 
         // get the right dumper
         $dumper = $this->dumpers[$format];
 
         if (isset($options['path']) && !is_dir($options['path']) && !@mkdir($options['path'], 0777, true) && !is_dir($options['path'])) {
-            throw new RuntimeException(\sprintf('Translation Writer was not able to create directory "%s".', $options['path']));
+            throw new RuntimeException(sprintf('Translation Writer was not able to create directory "%s".', $options['path']));
         }
 
         // save
