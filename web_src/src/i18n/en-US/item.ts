@@ -35,6 +35,11 @@ export default {
   api_token_label: 'API Token',
   open_api_tips2:
     'If you want to use the runAPI client to generate API documents, you can refer to <a target="_blank" href="https://www.showdoc.cc/runapi">runapi introduction</a>',
+  open_api_tips_mcp:
+    'If you want to use AI editors (like Cursor, Claude, etc.) to manage your documents, refer to <a target="_blank" href="https://www.showdoc.com.cn/p/d974cb91609ffecba40153354794bd75">MCP Integration Tutorial</a>',
+  empty_item_tips1: 'This project is empty. You can click the + button at the bottom left to add pages manually.',
+  empty_item_tips2:
+    'You can also use AI editors to create documents. Refer to <a target="_blank" href="https://www.showdoc.com.cn/p/d974cb91609ffecba40153354794bd75">MCP Integration Tutorial</a>',
   open_api_tips3:
     'If you want to automate the generation of API documentation, you can refer to <a target="_blank" href="https://www.showdoc.cc/page/741656402509783">API documentation</a>',
   open_api_tips4:

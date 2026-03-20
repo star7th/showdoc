@@ -95,6 +95,11 @@
             调试API并自动生成文档
             <a class="text-link ml-2" @click="toOutLink('https://www.showdoc.com.cn/runapi')">试试</a>
           </div>
+          <div class="content">
+            <i class="far fa-robot"></i>
+            用AI编辑器管理文档
+            <a class="text-link ml-2" @click="toOutLink('https://www.showdoc.com.cn/p/d974cb91609ffecba40153354794bd75')">了解</a>
+          </div>
         </div>
       </div>
 
@@ -717,9 +722,11 @@ a {
   bottom: 35px;
   left: calc((100% - 870px) / 2);
   display: flex;
+  flex-direction: column;
+  gap: 8px;
   justify-content: center;
   align-items: center;
-  width: 230px;
+  width: auto;
   z-index: 10;
   transition: all 0.15s ease;
 }
@@ -727,7 +734,7 @@ a {
 /* 卡片视图模式下的底部元素 */
 .card-view-mode .left-bottom-bar {
   left: calc((100% - 1050px) / 2);
-  width: 200px;
+  width: auto;
 }
 
 .left-bottom-bar .content {

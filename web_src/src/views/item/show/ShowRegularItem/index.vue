@@ -149,7 +149,8 @@
                   <i class="far fa-exclamation-triangle"></i>
                 </div>
                 <div class="text">
-                  <p>当前项目是空的，你可以点击左下方的 + 以手动添加页面。</p>
+                  <p v-html="t('item.empty_item_tips1')"></p>
+                  <p v-html="t('item.empty_item_tips2')"></p>
                 </div>
               </div>
             </div>

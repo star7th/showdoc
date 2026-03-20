@@ -31,6 +31,7 @@
         <div class="tips-section">
           <p v-html="t('item.open_api_tips1')"></p>
           <p v-html="t('item.open_api_tips2')"></p>
+          <p v-html="t('item.open_api_tips_mcp')"></p>
           <p v-html="t('item.open_api_tips3')"></p>
           <p v-html="t('item.open_api_tips4')"></p>
           <p v-html="t('item.open_api_tips5')"></p>

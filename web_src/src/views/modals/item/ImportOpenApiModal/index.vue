@@ -15,6 +15,9 @@
             <span v-html="$t('item.open_api_tips2')"></span>
           </p>
           <p class="tips">
+            <span v-html="$t('item.open_api_tips_mcp')"></span>
+          </p>
+          <p class="tips">
             <span v-html="$t('item.open_api_tips3')"></span>
           </p>
           <p class="tips">
