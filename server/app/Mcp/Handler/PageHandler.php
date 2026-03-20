@@ -321,6 +321,12 @@ class PageHandler extends McpHandler
    * 搜索页面
    *
    * @param array $params 参数
+   *   - query: 搜索关键字（必填）
+   *   - item_id: 项目ID（可选，不传则搜索所有有权限的项目）
+   *   - search_mode: 搜索模式（可选，默认 title）
+   *     - title: 只搜索标题（数据库 LIKE，速度快）
+   *     - content: 只搜索内容（需解压后 PHP 层面搜索，速度慢）
+   *     - all: 搜索标题和内容（需解压后 PHP 层面搜索，速度慢）
    * @return array
    * @throws McpException
    */
@@ -332,23 +338,69 @@ class PageHandler extends McpHandler
     }
 
     $itemId = (int) ($params['item_id'] ?? 0);
+    // 搜索模式：title（默认，只搜索标题）、content（只搜索内容）、all（搜索标题和内容）
+    $searchMode = $params['search_mode'] ?? 'title';
+    if (!in_array($searchMode, ['title', 'content', 'all'], true)) {
+      $searchMode = 'title';
+    }
+
     $result = [];
     $maxResults = 50;
+    $queryLower = strtolower($query);
 
     // 如果指定了项目ID，只搜索该项目的分表
     if ($itemId > 0) {
       // 检查读取权限
       $this->requireReadPermission($itemId);
 
-      $tableName = Page::tableForItem($itemId);
+      $result = $this->searchInItem($itemId, $query, $queryLower, $searchMode, $maxResults);
+    } else {
+      // 没有指定项目ID，遍历用户有权限的所有项目
+      $uid = $this->getUid();
+      $itemIds = $this->getUserItemIds($uid);
+
+      foreach ($itemIds as $itemId) {
+        if (count($result) >= $maxResults) {
+          break;
+        }
+
+        $remaining = $maxResults - count($result);
+        $found = $this->searchInItem($itemId, $query, $queryLower, $searchMode, $remaining);
+        $result = array_merge($result, $found);
+      }
+    }
+
+    return [
+      'query' => $query,
+      'item_id' => $itemId,
+      'search_mode' => $searchMode,
+      'pages' => $result,
+      'total' => count($result),
+    ];
+  }
+
+  /**
+   * 在单个项目中搜索页面
+   *
+   * @param int $itemId 项目ID
+   * @param string $query 原始搜索关键字
+   * @param string $queryLower 小写搜索关键字
+   * @param string $searchMode 搜索模式
+   * @param int $limit 最大返回数量
+   * @return array
+   */
+  private function searchInItem(int $itemId, string $query, string $queryLower, string $searchMode, int $limit): array
+  {
+    $result = [];
+    $tableName = Page::tableForItem($itemId);
+
+    // 标题搜索模式：直接数据库 LIKE 搜索（速度快）
+    if ($searchMode === 'title') {
       $pages = DB::table($tableName)
         ->where('item_id', $itemId)
         ->where('is_del', 0)
-        ->where(function ($q) use ($query) {
-          $q->where('page_title', 'like', "%{$query}%")
-            ->orWhere('page_content', 'like', "%{$query}%");
-        })
-        ->limit($maxResults)
+        ->where('page_title', 'like', "%{$query}%")
+        ->limit($limit)
         ->get(['page_id', 'page_title', 'item_id', 'cat_id', 'addtime'])
         ->all();
 
@@ -361,46 +413,63 @@ class PageHandler extends McpHandler
           'addtime' => $p->addtime ?? '',
         ];
       }
-    } else {
-      // 没有指定项目ID，遍历用户有权限的所有项目，每个项目查自己的分表
-      $uid = $this->getUid();
-      $itemIds = $this->getUserItemIds($uid);
 
-      foreach ($itemIds as $itemId) {
-        if (count($result) >= $maxResults) {
-          break;
-        }
-
-        $tableName = Page::tableForItem($itemId);
-        $pages = DB::table($tableName)
-          ->where('item_id', $itemId)
-          ->where('is_del', 0)
-          ->where(function ($q) use ($query) {
-            $q->where('page_title', 'like', "%{$query}%")
-              ->orWhere('page_content', 'like', "%{$query}%");
-          })
-          ->limit($maxResults - count($result))
-          ->get(['page_id', 'page_title', 'item_id', 'cat_id', 'addtime'])
-          ->all();
-
-        foreach ($pages as $p) {
-          $result[] = [
-            'page_id' => (int) $p->page_id,
-            'page_title' => $p->page_title,
-            'item_id' => (int) $p->item_id,
-            'cat_id' => (int) ($p->cat_id ?? 0),
-            'addtime' => $p->addtime ?? '',
-          ];
-        }
-      }
+      // 释放内存
+      unset($pages);
+      return $result;
     }
 
-    return [
-      'query' => $query,
-      'item_id' => $itemId,
-      'pages' => $result,
-      'total' => count($result),
-    ];
+    // 内容搜索模式：需要加载到 PHP 内存解压后搜索（速度慢）
+    // 先获取所有页面（只获取必要字段）
+    $pages = DB::table($tableName)
+      ->where('item_id', $itemId)
+      ->where('is_del', 0)
+      ->get(['page_id', 'page_title', 'page_content', 'item_id', 'cat_id', 'addtime'])
+      ->all();
+
+    foreach ($pages as $p) {
+      if (count($result) >= $limit) {
+        break;
+      }
+
+      $pageTitle = strtolower((string) ($p->page_title ?? ''));
+      $pageContent = (string) ($p->page_content ?? '');
+
+      // 解压内容
+      $decoded = \App\Common\Helper\ContentCodec::decompress($pageContent);
+      if ($decoded !== '') {
+        $pageContent = $decoded;
+      }
+      $pageContentLower = strtolower($pageContent);
+
+      // 根据搜索模式匹配
+      $matched = false;
+      if ($searchMode === 'content') {
+        // 只搜索内容
+        $matched = strpos($pageContentLower, $queryLower) !== false;
+      } elseif ($searchMode === 'all') {
+        // 搜索标题和内容
+        $matched = strpos($pageTitle, $queryLower) !== false || strpos($pageContentLower, $queryLower) !== false;
+      }
+
+      if ($matched) {
+        $result[] = [
+          'page_id' => (int) $p->page_id,
+          'page_title' => $p->page_title,
+          'item_id' => (int) $p->item_id,
+          'cat_id' => (int) ($p->cat_id ?? 0),
+          'addtime' => $p->addtime ?? '',
+        ];
+      }
+
+      // 释放当前页面内容的内存（特别是解压后的大内容）
+      unset($pageContent, $pageContentLower, $decoded);
+    }
+
+    // 释放内存
+    unset($pages);
+
+    return $result;
   }
 
   /**

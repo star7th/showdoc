@@ -179,12 +179,76 @@ if ($firstItemId) {
   $tester->recordTest('list_pages', false, '跳过：没有可用的项目');
 }
 
-// 测试 search_pages
+// 测试 search_pages（默认 title 模式）
 $result = $tester->callTool('search_pages', ['query' => 'test'], $token);
 if (isset($result['body']['error'])) {
-  $tester->recordTest('search_pages', false, $result['body']['error']['message'] ?? '未知错误');
+  $tester->recordTest('search_pages (title模式)', false, $result['body']['error']['message'] ?? '未知错误');
 } else {
-  $tester->recordTest('search_pages', true, '成功');
+  $tester->recordTest('search_pages (title模式)', true, '成功');
+}
+
+// 测试 search_pages 的 search_mode 参数
+if ($firstItemId > 0) {
+  // title 模式（只搜索标题）
+  $result = $tester->callTool('search_pages', [
+    'query' => 'test',
+    'item_id' => $firstItemId,
+    'search_mode' => 'title',
+  ], $token);
+  if (isset($result['body']['error'])) {
+    $tester->recordTest('search_pages title模式', false, $result['body']['error']['message'] ?? '未知错误');
+  } else {
+    // MCP 返回结构：body.result.content[0].text 是 JSON 字符串
+    $text = $result['body']['result']['content'][0]['text'] ?? '';
+    $data = json_decode($text, true) ?: [];
+    $mode = $data['search_mode'] ?? '';
+    $tester->recordTest('search_pages title模式', $mode === 'title', "search_mode={$mode}");
+  }
+
+  // content 模式（只搜索内容）
+  $result = $tester->callTool('search_pages', [
+    'query' => 'test',
+    'item_id' => $firstItemId,
+    'search_mode' => 'content',
+  ], $token);
+  if (isset($result['body']['error'])) {
+    $tester->recordTest('search_pages content模式', false, $result['body']['error']['message'] ?? '未知错误');
+  } else {
+    $text = $result['body']['result']['content'][0]['text'] ?? '';
+    $data = json_decode($text, true) ?: [];
+    $mode = $data['search_mode'] ?? '';
+    $tester->recordTest('search_pages content模式', $mode === 'content', "search_mode={$mode}");
+  }
+
+  // all 模式（搜索标题和内容）
+  $result = $tester->callTool('search_pages', [
+    'query' => 'test',
+    'item_id' => $firstItemId,
+    'search_mode' => 'all',
+  ], $token);
+  if (isset($result['body']['error'])) {
+    $tester->recordTest('search_pages all模式', false, $result['body']['error']['message'] ?? '未知错误');
+  } else {
+    $text = $result['body']['result']['content'][0]['text'] ?? '';
+    $data = json_decode($text, true) ?: [];
+    $mode = $data['search_mode'] ?? '';
+    $tester->recordTest('search_pages all模式', $mode === 'all', "search_mode={$mode}");
+  }
+
+  // 无效的 search_mode 应该回退到 title 模式
+  $result = $tester->callTool('search_pages', [
+    'query' => 'test',
+    'item_id' => $firstItemId,
+    'search_mode' => 'invalid_mode',
+  ], $token);
+  if (isset($result['body']['error'])) {
+    $tester->recordTest('search_pages 无效模式回退', false, $result['body']['error']['message'] ?? '未知错误');
+  } else {
+    $text = $result['body']['result']['content'][0]['text'] ?? '';
+    $data = json_decode($text, true) ?: [];
+    $mode = $data['search_mode'] ?? '';
+    $tester->recordTest('search_pages 无效模式回退', $mode === 'title', "无效模式应回退到title，实际={$mode}");
+  }
 }
 
 // 测试 get_page_template
@@ -765,7 +829,7 @@ $tester->recordTest('create_item 超长名称被拒绝或截断', $hasError || t
 $specialChars = '<>&"\'';
 $result = $tester->callTool('search_pages', [
   'item_id' => $firstItemId,
-  'keyword' => $specialChars,
+  'query' => $specialChars,
 ], $token);
 // 特殊字符可能被过滤导致空字符串错误，这是预期行为
 $hasError = isset($result['body']['error']);
@@ -929,7 +993,7 @@ if (!$testItemId) {
   }
 
   // 测试2: HTML 内容存储时转义测试
-  // 验证存储时内容被转义（通过数据库直接查询验证）
+  // 验证存储时内容被转义（开源版不压缩，直接保存）
   $testContent2 = '<div class="test">Test & "quotes"</div>';
   $result = $tester->callTool('create_page', [
     'item_id' => $testItemId,
@@ -945,18 +1009,18 @@ if (!$testItemId) {
       $tester->addCreatedPage($createdPageId2);
 
       // 直接从数据库查询验证存储时已转义
-      // 开源版使用单一 page 表
+      // 开源版使用单一 page 表，且不压缩内容
       $dbPage = Capsule::table('page')
         ->where('page_id', $createdPageId2)
         ->first();
 
-      // 存储的内容应该是转义后的
-      $expectedStored = htmlspecialchars($testContent2, ENT_QUOTES, 'UTF-8');
-      $isEscaped = ($dbPage->page_content === $expectedStored);
+      // 开源版：存储的内容应该是转义后的（不压缩）
+      $expectedEscaped = htmlspecialchars($testContent2, ENT_QUOTES, 'UTF-8');
+      $isCorrect = ($dbPage->page_content === $expectedEscaped);
       $tester->recordTest(
         'create_page 存储时 HTML 转义',
-        $isEscaped,
-        $isEscaped ? '存储时正确转义' : "存储内容不符合预期"
+        $isCorrect,
+        $isCorrect ? '存储时正确转义' : "存储内容不符合预期"
       );
     }
   } else {

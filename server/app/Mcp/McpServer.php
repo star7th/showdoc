@@ -340,7 +340,7 @@ class McpServer
 
     $this->tools['search_pages'] = [
       'name' => 'search_pages',
-      'description' => '搜索页面（按关键字搜索）',
+      'description' => '搜索页面（按关键字搜索，默认只搜索标题）',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -351,6 +351,11 @@ class McpServer
           'item_id' => [
             'type' => 'integer',
             'description' => '项目ID（可选，限定搜索范围）',
+          ],
+          'search_mode' => [
+            'type' => 'string',
+            'description' => '搜索模式：title（默认，只搜索标题）、content（只搜索内容）、all（搜索标题和内容）',
+            'enum' => ['title', 'content', 'all'],
           ],
         ],
         'required' => ['query'],
