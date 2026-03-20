@@ -1112,6 +1112,11 @@ const checkRemoteLock = async () => {
 }
 
 const handleShowAttachment = async () => {
+  // 新建页面时，需要先保存才能添加附件
+  if (!currentPageId.value) {
+    await AlertModal(t('page.please_save_page_first'))
+    return
+  }
   await AttachmentListModal({
     itemId: itemId.value,
     pageId: currentPageId.value,

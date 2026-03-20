@@ -135,6 +135,7 @@ const keyword = ref('')
 const selectedKeys = ref<string[]>([])
 const expandedKeys = ref<string[]>([])
 const treeData = ref<any[]>([])
+const treeRef = ref<any>(null)
 const contextMenu = ref({
   show: false,
   x: 0,
@@ -233,17 +234,31 @@ const initTreeData = () => {
       expandedKeys.value = parentIds
       selectedKeys.value = [`page_${defaultPageId}`]
 
-      // 延迟滚动到选中节点
+      // 延迟滚动到选中节点（只调整纵向滚动）
       nextTick(() => {
         setTimeout(() => {
-          const nodeElement = document.querySelector(
-            `[data-node-key="page_${defaultPageId}"]`
-          )
-          if (nodeElement) {
-            nodeElement.scrollIntoView({ block: 'center', behavior: 'smooth' })
+          const key = `page_${defaultPageId}`
+          const nodeElement = document.querySelector(`#node-${key}`)
+          // 使用 .catalog-tree 作为滚动容器
+          const containerElement = document.querySelector(
+            '.catalog-tree',
+          ) as HTMLElement
+          if (nodeElement && containerElement) {
+            // 计算纵向滚动位置，保持横向不变
+            const containerRect = containerElement.getBoundingClientRect()
+            const nodeRect = nodeElement.getBoundingClientRect()
+            const relativeTop =
+              nodeRect.top - containerRect.top + containerElement.scrollTop
+            const targetTop =
+              relativeTop - containerRect.height / 2 + nodeRect.height / 2
+            // 只设置纵向滚动，横向保持不变
+            containerElement.scrollTo({
+              top: Math.max(0, targetTop),
+              behavior: 'smooth',
+            })
           }
           props.getPageContent(defaultPageId)
-        }, 500)
+        }, 800)
       })
     }
   }
@@ -792,14 +807,29 @@ const scrollToPage = (pageId: number) => {
   // 选中节点
   selectedKeys.value = [key]
 
-  // 延迟滚动到选中节点
+  // 延迟滚动到选中节点（只调整纵向滚动）
   nextTick(() => {
     setTimeout(() => {
       const nodeElement = document.querySelector(`#node-${key}`)
-      if (nodeElement) {
-        nodeElement.scrollIntoView({ block: 'center', behavior: 'smooth' })
+      // 使用 .catalog-tree 作为滚动容器
+      const containerElement = document.querySelector(
+        '.catalog-tree',
+      ) as HTMLElement
+      if (nodeElement && containerElement) {
+        // 计算纵向滚动位置，保持横向不变
+        const containerRect = containerElement.getBoundingClientRect()
+        const nodeRect = nodeElement.getBoundingClientRect()
+        const relativeTop =
+          nodeRect.top - containerRect.top + containerElement.scrollTop
+        const targetTop =
+          relativeTop - containerRect.height / 2 + nodeRect.height / 2
+        // 只设置纵向滚动，横向保持不变
+        containerElement.scrollTo({
+          top: Math.max(0, targetTop),
+          behavior: 'smooth',
+        })
       }
-    }, 500)
+    }, 800)
   })
 }
 
@@ -947,7 +977,7 @@ onMounted(() => {
 
 .tree-container {
   flex: 1;
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: auto;
 }
 
@@ -957,8 +987,8 @@ onMounted(() => {
 
   .ant-tree-treenode {
     padding: 1px 0;
-    width: 100%;
-    max-width: 100%;
+    width: max-content;
+    min-width: 100%;
     box-sizing: border-box;
 
     &:hover {
@@ -979,7 +1009,6 @@ onMounted(() => {
     transition: all 0.15s ease;
     flex: 1;
     min-width: 0;
-    max-width: 100%;
     min-height: 32px;
     display: flex;
     align-items: center;
@@ -1103,7 +1132,8 @@ onMounted(() => {
 }
 
 .node-title {
-  min-width: 0;
+  min-width: 150px; // 至少显示11个中文字（13px * 11 ≈ 143px）
+  max-width: 180px; // 最大显示约13个中文字，超出截断
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1119,7 +1149,9 @@ onMounted(() => {
   height: 24px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.15s ease, visibility 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    visibility 0.15s ease;
   cursor: pointer;
   display: flex;
   align-items: center;

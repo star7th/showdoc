@@ -92,14 +92,18 @@ class Page
             ->where('item_id', $itemId)
             ->where('is_del', 0);
 
-        // 目录筛选
+        // 目录筛选（扩展为包含所有子目录）
         if (is_array($catIds) && !empty($catIds)) {
             $catIds = array_filter(array_map('intval', $catIds));
             if ($catIds) {
-                $query->whereIn('cat_id', $catIds);
+                // 扩展目录 ID 以包含所有子目录
+                $expandedCatIds = \App\Model\Catalog::expandCatIdsWithChildren($itemId, $catIds);
+                $query->whereIn('cat_id', $expandedCatIds);
             }
         } elseif (is_numeric($catIds) && $catIds > 0) {
-            $query->where('cat_id', (int) $catIds);
+            // 单个目录 ID 也需要扩展
+            $expandedCatIds = \App\Model\Catalog::expandCatIdsWithChildren($itemId, [(int) $catIds]);
+            $query->whereIn('cat_id', $expandedCatIds);
         }
 
         $pages = $query

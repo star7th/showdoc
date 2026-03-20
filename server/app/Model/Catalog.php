@@ -410,6 +410,58 @@ class Catalog
     }
 
     /**
+     * 获取指定目录 ID 及其所有子目录的 ID（递归）
+     * 用于扩展目录权限，使搜索能够覆盖子目录下的页面
+     *
+     * @param int $itemId 项目 ID
+     * @param array $catIds 初始目录 ID 数组
+     * @return array 包含所有子目录的 ID 数组
+     */
+    public static function expandCatIdsWithChildren(int $itemId, array $catIds): array
+    {
+        if ($itemId <= 0 || empty($catIds)) {
+            return $catIds;
+        }
+
+        // 获取项目下所有目录
+        $allCatalogs = self::getList($itemId);
+        if (empty($allCatalogs)) {
+            return $catIds;
+        }
+
+        // 构建 parent_cat_id -> [child_cat_ids] 的映射
+        $parentToChildren = [];
+        foreach ($allCatalogs as $catalog) {
+            $parentId = (int) ($catalog['parent_cat_id'] ?? 0);
+            $childId = (int) ($catalog['cat_id'] ?? 0);
+            if ($parentId > 0 && $childId > 0) {
+                if (!isset($parentToChildren[$parentId])) {
+                    $parentToChildren[$parentId] = [];
+                }
+                $parentToChildren[$parentId][] = $childId;
+            }
+        }
+
+        // 递归获取所有子目录 ID
+        $result = array_map('intval', $catIds);
+        $toProcess = $result;
+
+        while (!empty($toProcess)) {
+            $currentId = array_shift($toProcess);
+            if (isset($parentToChildren[$currentId])) {
+                foreach ($parentToChildren[$currentId] as $childId) {
+                    if (!in_array($childId, $result, true)) {
+                        $result[] = $childId;
+                        $toProcess[] = $childId;
+                    }
+                }
+            }
+        }
+
+        return array_values(array_unique($result));
+    }
+
+    /**
      * 删除目录（包括子目录和页面）
      *
      * @param int $catId 目录 ID

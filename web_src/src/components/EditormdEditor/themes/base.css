@@ -511,6 +511,25 @@
   color: var(--editormd-code-text);
 }
 
+/* hljs 代码块默认文本颜色 - 确保在深色背景上可见 */
+.editormd-preview-container pre code.hljs,
+.editormd-preview pre code.hljs,
+.markdown-body pre code.hljs,
+.editormd-preview-container .hljs,
+.editormd-preview .hljs,
+.markdown-body .hljs {
+  color: var(--editormd-code-text, #abb2bf) !important;
+}
+
+/* 为代码块中带有语言类名的 span 设置默认浅色（如 <span class="javascript">） */
+/* 这确保未被 hljs 高亮类覆盖的文本也能显示浅色 */
+/* 注意：只对没有 hljs 高亮类的 span 生效，避免覆盖语法高亮颜色 */
+.editormd-preview-container pre code span:not([class*="hljs-"]),
+.editormd-preview pre code span:not([class*="hljs-"]),
+.markdown-body pre code span:not([class*="hljs-"]) {
+  color: var(--editormd-code-text);
+}
+
 /* ========== 代码高亮样式覆盖（适配暗色背景） ========== */
 /* 这些类在 atom-one-dark 主题中使用 #e06c75（暗红色），在暗色背景下对比度不够 */
 
@@ -613,11 +632,10 @@
   border-spacing: 0;
   width: 100%;
   margin: 16px 0;
-  overflow-x: auto;
-  display: block;
   border-radius: 4px;
   border: 1px solid var(--editormd-border-color);
   font-size: 0.929em;
+  table-layout: fixed;
 }
 
 .editormd-preview-container table th,

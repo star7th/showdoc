@@ -45,6 +45,12 @@
   scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
+// 防止页面切换时滚动条出现/消失导致的布局抖动
+// scrollbar-gutter: stable 会预留滚动条空间，避免宽度突变
+html {
+  scrollbar-gutter: stable;
+}
+
 // 主题切换过渡动画
 body {
   transition: background-color 0.3s ease, color 0.3s ease;
