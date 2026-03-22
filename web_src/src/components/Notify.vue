@@ -31,7 +31,7 @@ const getUnreadMessage = async () => {
 
     // 提醒类消息
     if (json['remind'] && json['remind'].id) {
-      userStore.setNewMsg(1) // 设置全局 new 标识
+      userStore.setNewMsg(1, 'remind') // 设置全局 new 标识和类型
 
       // 如果启用弹窗通知
       if (popup.value) {
@@ -92,7 +92,7 @@ const getUnreadMessage = async () => {
 
     // 公告类消息
     if (json['announce'] && json['announce'].id) {
-      userStore.setNewMsg(1) // 设置全局 new 标识
+      userStore.setNewMsg(1, 'announcement') // 设置全局 new 标识和类型
 
       // 如果启用弹窗通知
       if (popup.value) {
@@ -211,7 +211,7 @@ const browserNotify = (
 
 // 设置消息已读
 const setReadMessage = async (fromUid: number, messageContentId: number) => {
-  userStore.setNewMsg(0)
+  userStore.clearNewMsg()
   setTimeout(async () => {
     try {
       await setRead({

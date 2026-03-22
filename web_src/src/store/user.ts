@@ -20,6 +20,8 @@ export const useUserStore = defineStore('user', {
     userInfo: null as UserInfo | null,
     /** 新消息数量 */
     newMsg: 0,
+    /** 新消息类型：'remind' | 'announcement' | '' */
+    newMsgType: '' as 'remind' | 'announcement' | '',
     /** 加载状态 */
     loading: false,
   }),
@@ -115,8 +117,17 @@ export const useUserStore = defineStore('user', {
     },
 
     /** 设置新消息数量 */
-    setNewMsg(count: number) {
+    setNewMsg(count: number, type?: 'remind' | 'announcement') {
       this.newMsg = count
+      if (type) {
+        this.newMsgType = type
+      }
+    },
+
+    /** 清除新消息标记 */
+    clearNewMsg() {
+      this.newMsg = 0
+      this.newMsgType = ''
     },
   },
 })

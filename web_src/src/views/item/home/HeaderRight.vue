@@ -135,8 +135,13 @@ const handleAttachment = async () => {
 
 // 显示消息弹窗
 const handleMessage = async () => {
-  userStore.setNewMsg(0)
-  await MessageModal()
+  // 根据消息类型确定初始 tab
+  let initialTab = 'remindList'
+  if (userStore.newMsgType === 'announcement') {
+    initialTab = 'announcementList'
+  }
+  userStore.clearNewMsg()
+  await MessageModal(initialTab)
 }
 
 // 显示用户中心

@@ -232,8 +232,13 @@ const handleShare = async () => {
 }
 
 const handleMessage = async () => {
-  appStore.setNewMsg(0)
-  await MessageModal()
+  // 根据消息类型确定初始 tab
+  let initialTab = 'remindList'
+  if (userStore.newMsgType === 'announcement') {
+    initialTab = 'announcementList'
+  }
+  userStore.clearNewMsg()
+  await MessageModal(initialTab)
 }
 
 const handleUserCenter = async () => {
