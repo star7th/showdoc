@@ -746,6 +746,7 @@ a {
   color: var(--color-yellow-text);
   border: var(--color-yellow-border);
   border-radius: 8px;
+  padding-left: 10px;
 }
 
 .left-bottom-bar .content .text-link {
