@@ -12,6 +12,11 @@ class ImportSwaggerController extends BaseController
 {
     private $jsonArray = [];
     private $urlPre = '';
+    
+    /**
+     * 已解析的 $ref 缓存，避免重复解析
+     */
+    private $resolvedRefs = [];
 
     /**
      * 导入 Swagger/OpenAPI 文档
@@ -22,7 +27,7 @@ class ImportSwaggerController extends BaseController
      */
     public function import(Request $request, Response $response): Response
     {
-        set_time_limit(100);
+        set_time_limit(300);
         ini_set('memory_limit', '6000M');
 
         $user = [];
@@ -69,6 +74,8 @@ class ImportSwaggerController extends BaseController
 
         $jsonArray['item_id'] = $itemId;
         $this->jsonArray = $jsonArray;
+        $this->resolvedRefs = []; // 重置引用缓存
+        $this->toBRefPath = []; // 重置循环引用检测路径
 
         // 根据 Swagger/OpenAPI 版本分别处理
         $swaggerVersion = '';
@@ -92,10 +99,8 @@ class ImportSwaggerController extends BaseController
             }
         }
 
-        // 转换10次（解析引用）
-        for ($i = 0; $i < 10; $i++) {
-            $this->jsonArray = $this->transferDefinition($this->jsonArray);
-        }
+        // 使用引用传递方式解析引用
+        $this->transferDefinitionOptimized($this->jsonArray);
 
         return $this->fromSwagger($this->jsonArray, $itemId, $swaggerVersion, $uid, $response, $request);
     }
@@ -270,9 +275,15 @@ class ImportSwaggerController extends BaseController
 
     /**
      * 定义转 JSON 数组
+     * 添加递归深度限制防止循环引用导致的无限递归
      */
-    private function definitionToJsonArray(array $refArray): array
+    private function definitionToJsonArray(array $refArray, int $depth = 0): array
     {
+        // 防止循环引用导致的无限递归
+        if ($depth > 20) {
+            return [];
+        }
+
         $res = [];
         if (!isset($refArray['properties'])) {
             return $res;
@@ -302,11 +313,11 @@ class ImportSwaggerController extends BaseController
             ];
 
             if (isset($value['properties'])) {
-                $tmpJsonArray = $this->definitionToJsonArray($value);
+                $tmpJsonArray = $this->definitionToJsonArray($value, $depth + 1);
                 $res = array_merge($res, $tmpJsonArray);
             }
             if (isset($value['items'])) {
-                $tmpJsonArray = $this->definitionToJsonArray($value['items']);
+                $tmpJsonArray = $this->definitionToJsonArray($value['items'], $depth + 1);
                 $res = array_merge($res, $tmpJsonArray);
             }
         }
@@ -324,28 +335,48 @@ class ImportSwaggerController extends BaseController
     }
 
     /**
-     * 转换为示例值
+     * 已解析的 $ref 路径，用于检测循环引用
      */
-    private function toB(array $jsonArray): array
+    private $toBRefPath = [];
+
+    /**
+     * 转换为示例值
+     * 添加循环引用检测防止无限递归
+     */
+    private function toB(array $jsonArray, int $depth = 0): array
     {
+        // 防止循环引用导致的无限递归
+        if ($depth > 20) {
+            return [];
+        }
+
         $resArray = [];
         if (isset($jsonArray['properties'])) {
             foreach ($jsonArray['properties'] as $key => $value) {
                 $resArray[$key] = $this->formatToFakeValue($value['type'] ?? 'string', $value['format'] ?? '');
                 if (isset($value['items'])) {
-                    $resArray[$key] = [$this->toB($value['items'])];
+                    $resArray[$key] = [$this->toB($value['items'], $depth + 1)];
                 }
                 if (isset($value['properties'])) {
-                    $resArray[$key] = $this->toB($value);
+                    $resArray[$key] = $this->toB($value, $depth + 1);
                 }
             }
         } elseif (isset($jsonArray['$ref'])) {
-            $refData = $this->getDefinition($jsonArray['$ref']);
-            if ($refData) {
-                $resArray = $this->toB($refData);
+            $refStr = $jsonArray['$ref'];
+            
+            // 检测循环引用：如果这个 $ref 已经在解析路径中，则跳过
+            if (in_array($refStr, $this->toBRefPath)) {
+                return [];
             }
+            
+            $this->toBRefPath[] = $refStr;
+            $refData = $this->getDefinition($refStr);
+            if ($refData) {
+                $resArray = $this->toB($refData, $depth + 1);
+            }
+            array_pop($this->toBRefPath);
         } elseif (isset($jsonArray['type']) && $jsonArray['type'] == 'array' && isset($jsonArray['items'])) {
-            $resArray = [$this->toB($jsonArray['items'])];
+            $resArray = [$this->toB($jsonArray['items'], $depth + 1)];
         }
         return $resArray;
     }
@@ -378,7 +409,53 @@ class ImportSwaggerController extends BaseController
     }
 
     /**
-     * 转换定义（将引用改为真实数据）
+     * 优化版：转换定义（将引用改为真实数据）
+     * 使用引用传递减少内存复制，并添加循环引用检测
+     */
+    private function transferDefinitionOptimized(array &$curArray, int $depth = 0): bool
+    {
+        // 防止无限递归
+        if ($depth > 50) {
+            return false;
+        }
+
+        $hasRef = false;
+        
+        foreach ($curArray as $key => &$value) {
+            if (is_array($value)) {
+                if (isset($value['$ref'])) {
+                    $refStr = $value['$ref'];
+                    
+                    // 使用缓存避免重复解析同一个引用
+                    if (!isset($this->resolvedRefs[$refStr])) {
+                        $refData = $this->getDefinition($refStr);
+                        if ($refData !== null) {
+                            // 递归解析引用中的引用
+                            $this->transferDefinitionOptimized($refData, $depth + 1);
+                            $this->resolvedRefs[$refStr] = $refData;
+                        } else {
+                            $this->resolvedRefs[$refStr] = $value; // 保持原值
+                        }
+                    }
+                    
+                    $value = $this->resolvedRefs[$refStr];
+                    $hasRef = true;
+                } else {
+                    // 递归处理子数组
+                    if ($this->transferDefinitionOptimized($value, $depth + 1)) {
+                        $hasRef = true;
+                    }
+                }
+            }
+        }
+        unset($value); // 解除引用
+        
+        return $hasRef;
+    }
+
+    /**
+     * 转换定义（将引用改为真实数据）- 保留旧方法以兼容
+     * @deprecated 使用 transferDefinitionOptimized 代替
      */
     private function transferDefinition(array $curArray): array
     {
