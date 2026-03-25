@@ -953,6 +953,9 @@ class McpServer
         case 'initialize':
           return $this->handleInitialize($params);
 
+        case 'notifications/initialized':
+          return $this->handleInitializedNotification();
+
         case 'tools/list':
           return $this->handleToolsList();
 
@@ -1024,6 +1027,18 @@ class McpServer
         'version' => '1.0.0',
       ],
     ], $this->requestId);
+  }
+
+  /**
+   * 处理 notifications/initialized 通知
+   *
+   * Streamable HTTP 客户端会在 initialize 成功后发送该通知。
+   *
+   * @return array
+   */
+  private function handleInitializedNotification(): array
+  {
+    return McpError::createSuccessResponse((object) [], $this->requestId);
   }
 
   /**

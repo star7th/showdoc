@@ -73,6 +73,15 @@ $tester->recordTest(
   $result['body']['result']['protocolVersion'] ?? ($result['body']['error']['message'] ?? '未知错误')
 );
 
+// 测试 initialized notification
+$result = $tester->initialized();
+$notificationAccepted = ($result['http_code'] ?? 0) === 202 && (($result['raw_body'] ?? '') === '');
+$tester->recordTest(
+  'notifications/initialized',
+  $notificationAccepted,
+  $notificationAccepted ? '返回 202 Accepted' : ('HTTP ' . ($result['http_code'] ?? 0) . ' body=' . (($result['raw_body'] ?? '') === '' ? '[empty]' : $result['raw_body']))
+);
+
 // 测试无 Token 时访问 tools/call
 $result = $tester->callTool('list_items');
 $hasError = isset($result['body']['error']);

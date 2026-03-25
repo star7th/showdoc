@@ -66,13 +66,17 @@ class McpController extends BaseController
    */
   private function handleSingleRequest(Request $request, Response $response, array $jsonRequest): Response
   {
-    // 验证 Token（除了 initialize 和 ping）
     $method = $jsonRequest['method'] ?? '';
+    $isNotification = $this->isNotification($jsonRequest);
     $tokenInfo = null;
 
-    if (!in_array($method, ['initialize', 'ping'])) {
+    if ($this->shouldValidateToken($method)) {
       $tokenInfo = $this->validateToken($request);
       if ($tokenInfo === null) {
+        if ($isNotification) {
+          return $this->acceptedNotificationResponse($response);
+        }
+
         return $this->jsonResponse($response, McpError::createResponse(
           McpError::TOKEN_INVALID,
           'Token 无效或已过期',
@@ -86,6 +90,10 @@ class McpController extends BaseController
       if ($token) {
         $rateLimit = UserAiToken::checkRateLimit($token);
         if (!$rateLimit['allowed']) {
+          if ($isNotification) {
+            return $this->acceptedNotificationResponse($response);
+          }
+
           return $this->jsonResponse($response, McpError::createResponse(
             McpError::RATE_LIMITED,
             '请求频率超限，请稍后重试',
@@ -114,6 +122,10 @@ class McpController extends BaseController
     // 处理请求
     $result = $mcpServer->handleRequest($jsonRequest);
 
+    if ($isNotification) {
+      return $this->acceptedNotificationResponse($response);
+    }
+
     return $this->jsonResponse($response, $result);
   }
 
@@ -129,31 +141,64 @@ class McpController extends BaseController
     $results = [];
 
     foreach ($requests as $jsonRequest) {
-      // 批量请求也需要验证 Token
       $method = $jsonRequest['method'] ?? '';
+      $isNotification = $this->isNotification($jsonRequest);
+      $tokenInfo = null;
 
-      if (!in_array($method, ['initialize', 'ping'])) {
+      if ($this->shouldValidateToken($method)) {
         $tokenInfo = $this->validateTokenFromGlobals();
         if ($tokenInfo === null) {
-          $results[] = McpError::createResponse(
-            McpError::TOKEN_INVALID,
-            'Token 无效或已过期',
-            null,
-            $jsonRequest['id'] ?? null
-          );
+          if (!$isNotification) {
+            $results[] = McpError::createResponse(
+              McpError::TOKEN_INVALID,
+              'Token 无效或已过期',
+              null,
+              $jsonRequest['id'] ?? null
+            );
+          }
+
           continue;
         }
       }
 
       $mcpServer = new McpServer();
-      if (isset($tokenInfo)) {
+      if ($tokenInfo !== null) {
         $mcpServer->setTokenInfo($tokenInfo);
       }
 
-      $results[] = $mcpServer->handleRequest($jsonRequest);
+      $result = $mcpServer->handleRequest($jsonRequest);
+      if (!$isNotification) {
+        $results[] = $result;
+      }
+    }
+
+    if ($results === []) {
+      return $this->acceptedNotificationResponse($response);
     }
 
     return $this->jsonResponse($response, $results);
+  }
+
+  /**
+   * 是否需要鉴权
+   *
+   * @param string $method MCP 方法名
+   * @return bool
+   */
+  private function shouldValidateToken(string $method): bool
+  {
+    return !in_array($method, ['initialize', 'notifications/initialized', 'ping'], true);
+  }
+
+  /**
+   * 判断请求是否为 JSON-RPC notification
+   *
+   * @param array $jsonRequest JSON 请求体
+   * @return bool
+   */
+  private function isNotification(array $jsonRequest): bool
+  {
+    return !array_key_exists('id', $jsonRequest);
   }
 
   /**
@@ -261,8 +306,31 @@ class McpController extends BaseController
 
     $response->getBody()->write($payload);
 
+    return $this->withCorsHeaders(
+      $response->withHeader('Content-Type', 'application/json')
+    );
+  }
+
+  /**
+   * 返回 notification 接收成功响应
+   *
+   * @param Response $response 响应对象
+   * @return Response
+   */
+  private function acceptedNotificationResponse(Response $response): Response
+  {
+    return $this->withCorsHeaders($response)->withStatus(202);
+  }
+
+  /**
+   * 附加 CORS 响应头
+   *
+   * @param Response $response 响应对象
+   * @return Response
+   */
+  private function withCorsHeaders(Response $response): Response
+  {
     return $response
-      ->withHeader('Content-Type', 'application/json')
       ->withHeader('Access-Control-Allow-Origin', '*')
       ->withHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
       ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-Token');
@@ -277,10 +345,6 @@ class McpController extends BaseController
    */
   public function options(Request $request, Response $response): Response
   {
-    return $response
-      ->withHeader('Access-Control-Allow-Origin', '*')
-      ->withHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
-      ->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-Token')
-      ->withStatus(204);
+    return $this->withCorsHeaders($response)->withStatus(204);
   }
 }
