@@ -567,6 +567,13 @@
   color: #ff6b6b !important;
 }
 
+/* 函数参数使用亮色 - atom-one-dark 主题未定义，需要覆盖 */
+.editormd-preview-container pre .hljs-params,
+.editormd-preview pre .hljs-params,
+.markdown-body pre .hljs-params {
+  color: var(--editormd-hljs-symbol) !important;
+}
+
 /* ========== 代码块复制按钮 ========== */
 .editormd-preview-container pre .code-copy-btn,
 .editormd-preview pre .code-copy-btn,
