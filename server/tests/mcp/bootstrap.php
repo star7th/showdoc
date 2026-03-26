@@ -362,14 +362,17 @@ class McpTester
   /**
    * 发送 MCP 请求
    */
-  public function sendRequest($method, $params = [], $token = null)
+  public function sendRequest($method, $params = [], $token = null, $includeId = true)
   {
     $requestData = [
       'jsonrpc' => '2.0',
-      'id' => uniqid(),
       'method' => $method,
       'params' => $params,
     ];
+
+    if ($includeId) {
+      $requestData['id'] = uniqid();
+    }
 
     $headers = ['Content-Type: application/json'];
     if ($token) {
@@ -393,8 +396,17 @@ class McpTester
 
     return [
       'http_code' => $httpCode,
+      'raw_body' => $response,
       'body' => json_decode($response, true),
     ];
+  }
+
+  /**
+   * 发送 MCP Notification
+   */
+  public function sendNotification($method, $params = [], $token = null)
+  {
+    return $this->sendRequest($method, $params, $token, false);
   }
 
   /**
@@ -429,6 +441,14 @@ class McpTester
         'version' => '1.0.0',
       ],
     ]);
+  }
+
+  /**
+   * 发送 initialized notification
+   */
+  public function initialized($token = null)
+  {
+    return $this->sendNotification('notifications/initialized', [], $token);
   }
 
   /**
