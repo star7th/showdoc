@@ -313,7 +313,8 @@ const checkAiEnabled = async () => {
 }
 
 // Methods
-// 高亮文本中的关键词
+// 高亮文本中的关键词（排除代码块，避免 <mark> 标签污染代码内容）
+// 注意：此函数处理的是 Markdown 源码（非 HTML），需要跳过 ```...``` 围起来的代码块
 const highlightKeyword = (text: string, keyword: string): string => {
   if (!keyword || !text) return text
 
@@ -321,7 +322,21 @@ const highlightKeyword = (text: string, keyword: string): string => {
   const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const regex = new RegExp(`(${escapedKeyword})`, 'gi')
 
-  return text.replace(regex, '<mark>$1</mark>')
+  // 将 Markdown 按 ```...``` 代码块拆分，只对非代码块部分进行高亮
+  const codeBlockRegex = /(```[\s\S]*?```)/g
+  const parts = text.split(codeBlockRegex)
+
+  return parts
+    .map((part, index) => {
+      // split 的结果：偶数索引是普通文本，奇数索引是代码块
+      if (index % 2 === 1) {
+        // 代码块部分，不处理
+        return part
+      }
+      // 普通文本部分，进行关键字高亮
+      return part.replace(regex, '<mark>$1</mark>')
+    })
+    .join('')
 }
 
 const handleGetPageContent = async (pageId: number) => {

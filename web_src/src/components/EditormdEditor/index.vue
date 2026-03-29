@@ -446,6 +446,8 @@ const dealWithContent = async () => {
   }
 
   // 关键字高亮
+  // 注意：mark.js 的 exclude 只检查直接父元素，无法排除 hljs 生成的 <span> 子元素
+  // 因此先全局 mark，再手动清除代码块（pre）内的 <mark> 标签
   if (props.keyword && $ && $.fn && $.fn.mark) {
     try {
       const $container = $(`#${editorId.value}`)
@@ -454,7 +456,12 @@ const dealWithContent = async () => {
         separateWordSearch: true,
         caseSensitive: false,
         accuracy: 'partially',
-        ignoreJoiners: true
+        ignoreJoiners: true,
+      })
+      // 清除代码块内的 <mark> 标签，恢复原始文本
+      $container.find('pre mark').each(function (this: HTMLElement) {
+        const $mark = $(this)
+        $mark.replaceWith($mark.text())
       })
     } catch (e) {
       // Mark keyword error ignored
