@@ -291,7 +291,13 @@ class CatalogController extends BaseController
         $ret = '';
         $data_array = json_decode(htmlspecialchars_decode($cats), true);
         if ($data_array) {
+            $item_id = intval($item_id);
             foreach ($data_array as $key => $value) {
+                $value['cat_id'] = intval($value['cat_id']);
+                $value['parent_cat_id'] = intval($value['parent_cat_id']);
+                $value['level'] = intval($value['level']);
+                $value['s_number'] = intval($value['s_number']);
+                $value['page_id'] = intval($value['page_id']);
                 if ($value['cat_name']) {
                     $ret = D("Catalog")->where(" cat_id = '%d' and item_id = '%d' ", array($value['cat_id'], $item_id))->save(array(
                         "cat_name" => $value['cat_name'],

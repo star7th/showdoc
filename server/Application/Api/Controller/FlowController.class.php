@@ -229,8 +229,11 @@ class FlowController extends BaseController
         }
         $data_array = json_decode(htmlspecialchars_decode($orders), true);
         if ($data_array) {
+            $flow_id = intval($flow_id);
             foreach ($data_array as $key => $value) {
-                if ($value['id']) {
+                $value['id'] = intval($value['id']);
+                $value['s_number'] = intval($value['s_number']);
+                if ($value['id'] > 0) {
                     D("RunapiFlowPage")->where(" flow_id = '%d' and id = '%d' ", array($flow_id, $value['id']))->save(array(
                         "s_number" => $value['s_number']
                     ));
@@ -253,11 +256,13 @@ class FlowController extends BaseController
         }
         $data_array = json_decode(htmlspecialchars_decode($ids), true);
         if ($data_array) {
+            $flow_id = intval($flow_id);
             D("RunapiFlowPage")->where(array('flow_id' => $flow_id))->save(array(
                 "enabled" => 0
             ));
             foreach ($data_array as $key => $value) {
-                if ($value) {
+                $value = intval($value);
+                if ($value > 0) {
                     D("RunapiFlowPage")->where(" flow_id = '%d' and id = '%d' ", array($flow_id, $value))->save(array(
                         "enabled" => 1
                     ));

@@ -539,6 +539,12 @@ class PageController extends BaseController
         $data_array = json_decode(htmlspecialchars_decode($pages), true);
         if ($data_array) {
             foreach ($data_array as $key => $value) {
+                $key = intval($key);
+                $value = intval($value);
+                $item_id = intval($item_id);
+                if ($key <= 0 || $item_id <= 0) {
+                    continue;
+                }
                 $ret = D("Page")->where(" page_id = '%d' and item_id = '%d' ", array($key, $item_id))->save(array(
                     "s_number" => $value,
                 ));

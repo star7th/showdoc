@@ -85,7 +85,11 @@ class ItemGroupController extends BaseController
         if ($data_array) {
             foreach ($data_array as $key => $value) {
                 $id = intval($value['id']);
-                $ret = D("ItemGroup")->where(" id = '%d' and uid = '%d'", array($id, $uid))->save(array('s_number' => $value['s_number']));
+                $s_number = intval($value['s_number']);
+                if ($id <= 0) {
+                    continue;
+                }
+                $ret = D("ItemGroup")->where(" id = '%d' and uid = '%d'", array($id, $uid))->save(array('s_number' => $s_number));
             }
         }
         $this->sendResult(array());
