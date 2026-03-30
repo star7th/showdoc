@@ -420,10 +420,13 @@ class PageHandler extends McpHandler
     }
 
     // 内容搜索模式：需要加载到 PHP 内存解压后搜索（速度慢）
-    // 先获取所有页面（只获取必要字段）
+    // 限制最多加载 500 条记录，避免大项目下加载全部页面导致内存/CPU 爆炸
     $pages = DB::table($tableName)
       ->where('item_id', $itemId)
       ->where('is_del', 0)
+      ->orderBy('s_number')
+      ->orderBy('page_id')
+      ->limit(500)
       ->get(['page_id', 'page_title', 'page_content', 'item_id', 'cat_id', 'addtime'])
       ->all();
 
@@ -892,7 +895,7 @@ MARKDOWN;
    * @return array
    * @throws McpException
    */
-  private function createPage(array $params): array
+  private function createPage(array $params, bool $skipPermissionCheck = false): array
   {
     $itemId = (int) ($params['item_id'] ?? 0);
     if ($itemId <= 0) {
@@ -908,8 +911,10 @@ MARKDOWN;
     $catName = trim($params['cat_name'] ?? '');
     $sNumber = (int) ($params['s_number'] ?? 99);
 
-    // 检查写入权限
-    $this->requireWritePermission($itemId);
+    // 检查写入权限（batch_upsert_pages 已在外层检查过时跳过）
+    if (!$skipPermissionCheck) {
+      $this->requireWritePermission($itemId);
+    }
 
     // 验证内容不能为空（与 PageController::save 一致）
     if (empty($pageContent)) {
@@ -1269,7 +1274,7 @@ MARKDOWN;
    * @return array
    * @throws McpException
    */
-  private function updatePage(array $params): array
+  private function updatePage(array $params, bool $skipPermissionCheck = false): array
   {
     $pageId = (int) ($params['page_id'] ?? 0);
     if ($pageId <= 0) {
@@ -1288,8 +1293,10 @@ MARKDOWN;
 
     $itemId = (int) $page->item_id;
 
-    // 检查写入权限
-    $this->requireWritePermission($itemId);
+    // 检查写入权限（batch_upsert_pages 已在外层检查过时跳过）
+    if (!$skipPermissionCheck) {
+      $this->requireWritePermission($itemId);
+    }
 
     // 准备更新数据
     $updateData = [];
@@ -1416,7 +1423,7 @@ MARKDOWN;
    * @return array
    * @throws McpException
    */
-  private function upsertPage(array $params): array
+  private function upsertPage(array $params, bool $skipPermissionCheck = false): array
   {
     $itemId = (int) ($params['item_id'] ?? 0);
     if ($itemId <= 0) {
@@ -1432,8 +1439,10 @@ MARKDOWN;
     $catName = trim($params['cat_name'] ?? '');
     $sNumber = (int) ($params['s_number'] ?? 99);
 
-    // 检查写入权限
-    $this->requireWritePermission($itemId);
+    // 检查写入权限（batch_upsert_pages 已在外层检查过时跳过）
+    if (!$skipPermissionCheck) {
+      $this->requireWritePermission($itemId);
+    }
 
     // 获取分表名称
     $tableName = Page::tableForItem($itemId);
@@ -1446,15 +1455,15 @@ MARKDOWN;
       ->first();
 
     if ($existingPage) {
-      // 更新已存在的页面
+      // 更新已存在的页面（page_id 由内部通过 item_id+title 查得，不存在越权风险）
       return $this->updatePage([
         'page_id' => $existingPage->page_id,
         'page_content' => $pageContent,
-      ]);
+      ], true);
     }
 
-    // 创建新页面
-    return $this->createPage($params);
+    // 创建新页面（item_id 来自外层已验证的参数，不存在越权风险）
+    return $this->createPage($params, true);
   }
 
   /**

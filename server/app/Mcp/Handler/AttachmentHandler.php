@@ -363,21 +363,15 @@ class AttachmentHandler extends McpHandler
 
     // 如果只提供了 page_id，需要获取 item_id 来检查权限
     if ($itemId <= 0 && $pageId > 0) {
-      // 需要遍历分表查找页面
-      $page = null;
-      for ($i = 1; $i <= 100; $i++) {
-        $page = DB::table("page_{$i}")
-          ->where('page_id', $pageId)
-          ->where('is_del', 0)
-          ->first();
-        if ($page) {
-          break;
-        }
-      }
-      if (!$page) {
+      // 通过 page 主表索引获取 item_id（替代遍历 100 个分表）
+      $pageRow = DB::table('page')
+        ->where('page_id', $pageId)
+        ->where('is_del', 0)
+        ->first();
+      if (!$pageRow) {
         McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
       }
-      $itemId = (int) $page->item_id;
+      $itemId = (int) $pageRow->item_id;
     }
 
     // 检查读取权限
