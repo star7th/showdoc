@@ -56,7 +56,10 @@ class AttachmentHandler extends McpHandler
   }
 
   /**
-   * 上传附件（通过 URL 或 Base64）
+   * 上传附件（通过 Base64）
+   *
+   * 注意：出于安全考虑，已移除 URL 抓取上传功能（防止 SSRF 攻击）。
+   * AI 编辑器应自行下载文件后通过 file_base64 参数上传。
    *
    * @param array $params 参数
    * @return array
@@ -73,13 +76,12 @@ class AttachmentHandler extends McpHandler
     $this->requireWritePermission($itemId);
 
     $pageId = (int) ($params['page_id'] ?? 0);
-    $fileUrl = trim($params['file_url'] ?? '');
     $fileBase64 = trim($params['file_base64'] ?? '');
     $fileName = trim($params['file_name'] ?? '');
 
-    // 必须提供 file_url 或 file_base64
-    if ($fileUrl === '' && $fileBase64 === '') {
-      McpError::throw(McpError::INVALID_PARAMS, '必须提供 file_url 或 file_base64');
+    // 必须提供 file_base64
+    if ($fileBase64 === '') {
+      McpError::throw(McpError::INVALID_PARAMS, '必须提供 file_base64 参数（Base64 编码的文件内容）');
     }
 
     $uid = $this->getUid();
@@ -92,15 +94,10 @@ class AttachmentHandler extends McpHandler
       McpError::throw(McpError::OPERATION_FAILED, $quotaCheck['message']);
     }
 
-    // 检查单文件大小限制（开源版：固定 100MB）
+    // 检查单文件大小限制（开源版：固定 10GB）
     $fileSizeLimit = $this->getFileSizeLimit();
 
-    // 通过 URL 上传
-    if ($fileUrl !== '') {
-      return $this->uploadFromUrl($itemId, $pageId, $fileUrl, $fileName, $uid, $fileSizeLimit);
-    }
-
-    // 通过 Base64 上传（此时 fileBase64 必定不为空）
+    // 通过 Base64 上传
     return $this->uploadFromBase64($itemId, $pageId, $fileBase64, $fileName, $uid, $fileSizeLimit);
   }
 
@@ -148,104 +145,6 @@ class AttachmentHandler extends McpHandler
   private function getFileSizeLimit(): int
   {
     return 10 * 1024 * 1024 * 1024; // 开源版固定 10GB
-  }
-
-  /**
-   * 通过 URL 上传文件
-   *
-   * @param int $itemId 项目ID
-   * @param int $pageId 页面ID
-   * @param string $fileUrl 文件URL
-   * @param string $fileName 文件名
-   * @param int $uid 用户ID
-   * @param int $fileSizeLimit 文件大小限制（字节）
-   * @return array
-   * @throws McpException
-   */
-  private function uploadFromUrl(int $itemId, int $pageId, string $fileUrl, string $fileName, int $uid, int $fileSizeLimit): array
-  {
-    // 下载文件
-    $fileContent = @file_get_contents($fileUrl);
-    if ($fileContent === false) {
-      McpError::throw(McpError::OPERATION_FAILED, '无法下载文件: ' . $fileUrl);
-    }
-
-    // 检查文件大小
-    $fileSize = strlen($fileContent);
-    if ($fileSize > $fileSizeLimit) {
-      $limitMB = round($fileSizeLimit / 1024 / 1024, 1);
-      McpError::throw(McpError::OPERATION_FAILED, "文件大小超出限制（{$limitMB}MB）。可开通更高级版本获取更大限制");
-    }
-
-    // 获取文件名
-    if ($fileName === '') {
-      $urlPath = parse_url($fileUrl, PHP_URL_PATH);
-      $fileName = basename($urlPath ?: 'file');
-    }
-
-    // 检查文件名是否允许
-    if (!Attachment::isAllowedFilename($fileName)) {
-      McpError::throw(McpError::OPERATION_FAILED, '不支持上传该文件类型。可将文件压缩成 zip/rar 等压缩包后上传');
-    }
-
-    // 获取文件类型
-    $fileType = $this->getMimeType($fileName, $fileContent);
-
-    // 保存到临时文件
-    $tmpFile = sys_get_temp_dir() . '/mcp_upload_' . uniqid('', true);
-    file_put_contents($tmpFile, $fileContent);
-
-    try {
-      // 构建 $_files 格式
-      $_files = [
-        'file' => [
-          'name'     => $fileName,
-          'type'     => $fileType,
-          'tmp_name' => $tmpFile,
-          'error'    => UPLOAD_ERR_OK,
-          'size'     => $fileSize,
-        ],
-      ];
-
-      // 调用 Attachment::upload
-      $showdocUrl = Attachment::upload($_files, 'file', $uid, $itemId, $pageId, false);
-
-      if (!$showdocUrl) {
-        McpError::throw(McpError::OPERATION_FAILED, '上传失败');
-      }
-
-      // 从 URL 中提取 sign 参数
-      $sign = '';
-      $parsedUrl = parse_url($showdocUrl);
-      if (isset($parsedUrl['query'])) {
-        parse_str($parsedUrl['query'], $queryParams);
-        $sign = $queryParams['sign'] ?? '';
-      }
-
-      // 通过 sign 查找 file_id
-      $fileId = 0;
-      if ($sign) {
-        $file = UploadFile::findBySign($sign);
-        if ($file) {
-          $fileId = (int) ($file->file_id ?? 0);
-        }
-      }
-
-      return [
-        'file_id'   => $fileId,
-        'file_name' => $fileName,
-        'file_type' => $fileType,
-        'file_size' => $fileSize,
-        'url'       => $showdocUrl,
-        'sign'      => $sign,
-        'item_id'   => $itemId,
-        'page_id'   => $pageId,
-        'message'   => '上传成功',
-      ];
-    } finally {
-      // 清理临时文件
-      @unlink($tmpFile);
-    }
   }
 
   /**
@@ -530,4 +429,5 @@ class AttachmentHandler extends McpHandler
     $mimeType = $finfo->buffer($content);
     return $mimeType ?: 'application/octet-stream';
   }
+
 }

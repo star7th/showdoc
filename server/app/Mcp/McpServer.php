@@ -625,7 +625,7 @@ class McpServer
     // 附件管理
     $this->tools['upload_attachment'] = [
       'name' => 'upload_attachment',
-      'description' => '上传附件（通过URL或Base64）',
+      'description' => '上传附件（通过Base64编码的文件内容）',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -637,20 +637,16 @@ class McpServer
             'type' => 'integer',
             'description' => '页面ID（可选）',
           ],
-          'file_url' => [
-            'type' => 'string',
-            'description' => '文件URL（与file_base64二选一）',
-          ],
           'file_base64' => [
             'type' => 'string',
-            'description' => 'Base64编码的文件内容（与file_url二选一）',
+            'description' => 'Base64编码的文件内容（必填）。请先下载文件，然后将文件内容编码为Base64后传入',
           ],
           'file_name' => [
             'type' => 'string',
-            'description' => '文件名（可选）',
+            'description' => '文件名（可选，包含扩展名，如 image.png）',
           ],
         ],
-        'required' => ['item_id'],
+        'required' => ['item_id', 'file_base64'],
       ],
       'handler' => 'attachment',
     ];

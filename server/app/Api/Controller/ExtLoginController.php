@@ -64,7 +64,7 @@ class ExtLoginController extends BaseController
         // 查找或创建用户（仅按用户名查找，不包含邮箱）
         $user = User::findByUsername($username);
         if (!$user) {
-            $newUid = User::register($username, md5('savsnyjh' . time() . rand()));
+            $newUid = User::register($username, bin2hex(random_bytes(16)));
             if (!$newUid) {
                 return $this->error($response, 10101, '用户注册失败');
             }

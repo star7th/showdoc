@@ -32,7 +32,7 @@ class ExtLoginController extends BaseController
 
         $res = D("User")->where("( username='%s' ) ", array($username))->find();
         if (!$res) {
-            $new_uid = D("User")->register($username, md5("savsnyjh" . time() . rand()));
+            $new_uid = D("User")->register($username, bin2hex(random_bytes(16)));
             $res = D("User")->where("( username='%s' ) ", array($username))->find();
             if ($name) {
                 D("User")->where(" uid = '%d' ", array($new_uid))->save(array("name" => $name));

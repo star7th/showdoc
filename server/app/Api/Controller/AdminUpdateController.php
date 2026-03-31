@@ -37,6 +37,8 @@ class AdminUpdateController extends BaseController
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, "version={$version}");
         curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         $sContent = curl_exec($ch);
         curl_close($ch);
 
@@ -106,6 +108,27 @@ class AdminUpdateController extends BaseController
             return $this->error($response, 10101, '检测更新时异常');
         }
 
+        // 安全检查：fileUrl 必须来自 showdoc.cc 官方域名
+        $parsedFileUrl = parse_url($fileUrl);
+        $allowedHosts = ['www.showdoc.cc', 'showdoc.cc', 'cdn.showdoc.cc', 'github.com', 'githubusercontent.com'];
+        $fileUrlHost = strtolower($parsedFileUrl['host'] ?? '');
+        $isAllowedHost = false;
+        foreach ($allowedHosts as $allowedHost) {
+            if ($fileUrlHost === $allowedHost || str_ends_with($fileUrlHost, '.' . $allowedHost)) {
+                $isAllowedHost = true;
+                break;
+            }
+        }
+        if (!$isAllowedHost) {
+            return $this->error($response, 10101, '更新文件来源不受信任');
+        }
+
+        // 安全检查：只允许 https 协议
+        $fileUrlScheme = strtolower($parsedFileUrl['scheme'] ?? '');
+        if ($fileUrlScheme !== 'https') {
+            return $this->error($response, 10101, '更新文件必须使用 HTTPS 协议');
+        }
+
         $versionNum = str_replace("v", "", $newVersion);
 
         // 进行文件读写权限检查
@@ -146,6 +169,19 @@ class AdminUpdateController extends BaseController
         if ($flag !== true) {
             return $this->error($response, 10101, '下载更新压缩包失败。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
         }
+
+        // Zip Slip 保护：检查解压路径是否在临时目录内
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $entryName = $zip->getNameIndex($i);
+            $realPath = realpath($tempDir) . DIRECTORY_SEPARATOR . $entryName;
+            $realTempDir = realpath($tempDir);
+            if ($realTempDir === false || strpos($realPath, $realTempDir . DIRECTORY_SEPARATOR) !== 0) {
+                $zip->close();
+                $this->delDir($tempDir);
+                return $this->error($response, 10101, '更新包包含不安全的文件路径');
+            }
+        }
+
         $zip->extractTo($tempDir);
         $zip->close();
 
