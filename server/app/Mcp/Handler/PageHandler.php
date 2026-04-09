@@ -1589,16 +1589,20 @@ MARKDOWN;
     $parentCatId = 0;
     $catId = 0;
 
-    foreach ($catNames as $name) {
+    for ($i = 0; $i < count($catNames); $i++) {
+      $name = $catNames[$i];
       if ($name === '') {
         continue;
       }
+
+      $level = $i + 2;
 
       // 查找目录
       $catalog = DB::table('catalog')
         ->where('item_id', $itemId)
         ->where('cat_name', $name)
         ->where('parent_cat_id', $parentCatId)
+        ->where('level', $level)
         ->first();
 
       if ($catalog) {
@@ -1611,6 +1615,7 @@ MARKDOWN;
           'parent_cat_id' => $parentCatId,
           's_number' => 99,
           'addtime' => time(),
+          'level' => $level,
         ]);
       }
 
