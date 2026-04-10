@@ -955,20 +955,21 @@ MARKDOWN;
       );
     }
 
-    // 检查页面是否已存在
+    // 处理目录（提前计算 cat_id，用于后续唯一性检查）
+    $catId = 0;
+    if ($catName !== '') {
+      $catId = $this->getOrCreateCatalog($itemId, $catName);
+    }
+
+    // 检查页面是否已存在（按 item_id + cat_id + page_title 判重，允许不同目录下存在同名页面）
     $existingPage = DB::table($tableName)
       ->where('item_id', $itemId)
+      ->where('cat_id', $catId)
       ->where('page_title', $pageTitle)
       ->where('is_del', 0)
       ->first();
     if ($existingPage) {
       McpError::throw(McpError::OPERATION_FAILED, "页面标题已存在: {$pageTitle}");
-    }
-
-    // 处理目录
-    $catId = 0;
-    if ($catName !== '') {
-      $catId = $this->getOrCreateCatalog($itemId, $catName);
     }
 
     try {
@@ -1073,9 +1074,10 @@ MARKDOWN;
     // 获取分表名称
     $tableName = Page::tableForItem($itemId);
 
-    // 检查页面是否已存在
+    // 检查页面是否已存在（按 item_id + cat_id + page_title 判重，允许不同目录下存在同名页面）
     $existingPage = DB::table($tableName)
       ->where('item_id', $itemId)
+      ->where('cat_id', $catId)
       ->where('page_title', $pageTitle)
       ->where('is_del', 0)
       ->first();
@@ -1315,9 +1317,10 @@ MARKDOWN;
     }
 
     if ($pageTitle !== '') {
-      // 检查标题是否与其他页面重复
+      // 检查标题是否与其他页面重复（按 item_id + cat_id + page_title 判重，允许不同目录下存在同名页面）
       $existingPage = DB::table('page')
         ->where('item_id', $itemId)
+        ->where('cat_id', $page->cat_id)
         ->where('page_title', $pageTitle)
         ->where('page_id', '<>', $pageId)
         ->where('is_del', 0)
@@ -1447,9 +1450,16 @@ MARKDOWN;
     // 获取分表名称
     $tableName = Page::tableForItem($itemId);
 
-    // 检查页面是否已存在
+    // 处理目录（提前计算 cat_id，用于后续唯一性检查）
+    $catId = 0;
+    if ($catName !== '') {
+      $catId = $this->getOrCreateCatalog($itemId, $catName);
+    }
+
+    // 检查页面是否已存在（按 item_id + cat_id + page_title 判重，允许不同目录下存在同名页面）
     $existingPage = DB::table($tableName)
       ->where('item_id', $itemId)
+      ->where('cat_id', $catId)
       ->where('page_title', $pageTitle)
       ->where('is_del', 0)
       ->first();
