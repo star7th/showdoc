@@ -463,6 +463,11 @@ const dealWithContent = async () => {
         const $mark = $(this)
         $mark.replaceWith($mark.text())
       })
+      // 清除超链接内的 <mark> 标签，恢复原始文本
+      $container.find('a mark').each(function (this: HTMLElement) {
+        const $mark = $(this)
+        $mark.replaceWith($mark.text())
+      })
     } catch (e) {
       // Mark keyword error ignored
     }
