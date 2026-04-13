@@ -322,15 +322,14 @@ const highlightKeyword = (text: string, keyword: string): string => {
   const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   const regex = new RegExp(`(${escapedKeyword})`, 'gi')
 
-  // 将 Markdown 按 ```...``` 代码块拆分，只对非代码块部分进行高亮
-  const codeBlockRegex = /(```[\s\S]*?```)/g
-  const parts = text.split(codeBlockRegex)
+  // 将 Markdown 按代码块(```...```)和行内代码(`...`)拆分，只对非代码部分进行高亮
+  const codeRegex = /(```[\s\S]*?```|`[^`]+`)/g
+  const parts = text.split(codeRegex)
 
   return parts
     .map((part, index) => {
-      // split 的结果：偶数索引是普通文本，奇数索引是代码块
+      // split 的结果：偶数索引是普通文本，奇数索引是代码块或行内代码
       if (index % 2 === 1) {
-        // 代码块部分，不处理
         return part
       }
       // 普通文本部分，进行关键字高亮

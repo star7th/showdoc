@@ -473,6 +473,21 @@ const dealWithContent = async () => {
         const $mark = $(this)
         $mark.replaceWith($mark.text())
       })
+      // 清除单行代码块内的 <mark> 标签（两种情况）
+      // 1. 清除真正的 DOM <mark> 标签（mark.js 可能包裹在 code 内部）
+      $container.find('code:not(pre code) mark').each(function (this: HTMLElement) {
+        const $mark = $(this)
+        $mark.replaceWith($mark.text())
+      })
+      // 2. 清除转义的 mark 标签文本（&lt;mark&gt; 和 &lt;/mark&gt;）
+      $container.find('code:not(pre code)').each(function (this: HTMLElement) {
+        const $code = $(this)
+        let html = $code.html() || ''
+        // 正则移除转义的 mark 标签：&lt;mark&gt; 和 &lt;/mark&gt;
+        // 以及带属性的 &lt;mark data-markjs="xxx"&gt;
+        html = html.replace(/&lt;\/?mark[^&]*?&gt;/gi, '')
+        $code.html(html)
+      })
     } catch (e) {
       // Mark keyword error ignored
     }

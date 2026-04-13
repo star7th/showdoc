@@ -1035,4 +1035,8 @@ form fieldset select {
 }
 
 
+.x-spreadsheet-editor .x-spreadsheet-editor-area textarea {
+  background-color: #fff;
+}
+
 /*# sourceMappingURL=xspreadsheet.css.map*/
