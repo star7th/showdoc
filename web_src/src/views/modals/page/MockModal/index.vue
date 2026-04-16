@@ -189,7 +189,7 @@ onMounted(() => {
 
   // 构建 Mock URL 前缀
   const baseUrl = window.location.protocol + '//' + window.location.host
-  mockUrlPre.value = `${baseUrl}${getServerHost()}mock-path/${props.itemId}?path=`
+  mockUrlPre.value = `${baseUrl}/${getServerHost()}mock-path/${props.itemId}?path=`
 
   loadMockConfig()
 })
