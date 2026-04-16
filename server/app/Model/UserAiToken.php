@@ -204,12 +204,12 @@ class UserAiToken
     }
 
     try {
-      $affected = DB::table(self::TABLE)
+      DB::table(self::TABLE)
         ->where('id', $id)
         ->where('uid', $uid)
         ->update($updateData);
 
-      return $affected > 0;
+      return true;
     } catch (\Throwable $e) {
       return false;
     }

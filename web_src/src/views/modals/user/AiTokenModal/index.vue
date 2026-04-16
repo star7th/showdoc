@@ -122,6 +122,7 @@ import ConfirmModal from '@/components/ConfirmModal'
 import Message from '@/components/Message'
 import request from '@/utils/request'
 import { getBaseUrl } from '@/utils/system'
+import { copyToClipboard } from '@/utils/tools'
 import CreateTokenModal from './CreateTokenModal'
 
 interface Token {
@@ -244,10 +245,10 @@ const handleEdit = async (token: Token) => {
 
 // 复制 Token
 const handleCopy = async (token: string) => {
-  try {
-    await navigator.clipboard.writeText(token)
+  const ok = await copyToClipboard(token)
+  if (ok) {
     Message.success(t('common.copy_success'))
-  } catch (error) {
+  } else {
     Message.error(t('common.copy_failed'))
   }
 }
@@ -304,10 +305,10 @@ const generateConfig = (token: string): string => {
 
 // 复制配置
 const handleCopyConfig = async () => {
-  try {
-    await navigator.clipboard.writeText(getConfigExample())
+  const ok = await copyToClipboard(getConfigExample())
+  if (ok) {
     Message.success(t('common.copy_success'))
-  } catch (error) {
+  } else {
     Message.error(t('common.copy_failed'))
   }
 }
