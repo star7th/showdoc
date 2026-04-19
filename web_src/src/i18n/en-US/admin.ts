@@ -283,6 +283,7 @@ export default {
   login_page: 'Login Page',
   jump_to_item: 'Jump to Specified Item',
   jump_to_item_placeholder: 'Select item',
+  public_square_page: 'Public Square',
   home_item: 'Homepage Jump Item',
   home_item_tips: 'Select the item to jump to on homepage',
   home_item_placeholder: 'Select item to jump to',

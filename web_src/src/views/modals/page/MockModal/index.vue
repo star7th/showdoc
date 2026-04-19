@@ -189,7 +189,8 @@ onMounted(() => {
 
   // 构建 Mock URL 前缀
   const baseUrl = window.location.protocol + '//' + window.location.host
-  const prefix = `${baseUrl}/${getServerHost()}mock-path/${props.itemId}`
+  let prefix = `${baseUrl}/${getServerHost()}mock-path/${props.itemId}`
+  prefix = prefix.replace(/\.\./g, '')
   mockUrlPre.value = prefix.includes('?') ? `${prefix}&path=` : `${prefix}?path=`
 
   loadMockConfig()

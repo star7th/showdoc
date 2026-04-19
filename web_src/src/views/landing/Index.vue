@@ -371,6 +371,11 @@ const getHomePageSetting = async () => {
         router.replace({
           path: '/' + data.data.home_item
         })
+      } else if (data.data.home_page == 4) {
+        // 跳转到公开广场
+        router.replace({
+          path: '/public-square/index'
+        })
       }
     }
   } catch (error) {

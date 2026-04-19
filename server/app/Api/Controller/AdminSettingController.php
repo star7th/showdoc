@@ -72,6 +72,11 @@ class AdminSettingController extends BaseController
         }
         $sessionExpireDays = (string) $sessionExpireDaysInt;
 
+        // 校验：首页设为公开广场时，必须先启用公开广场
+        if ($homePage === '4' && $enablePublicSquare !== '1') {
+            return $this->error($response, 10101, '请先启用公共广场功能，再设置首页为公开广场');
+        }
+
         // 保存配置
         // 注意：所有配置项都需要保存，即使值没变化也要确保写入数据库
         Options::set("history_version_count", $historyVersionCount);

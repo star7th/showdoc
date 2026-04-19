@@ -34,6 +34,10 @@ class AdminSettingController extends BaseController
         if ($session_expire_days < 1 || $session_expire_days > 3650) {
             $session_expire_days = 180; // 使用默认值180天
         }
+        if ($home_page == 4 && !$enable_public_square) {
+            $this->sendError(10101, "请先启用公共广场功能，再设置首页为公开广场");
+            return;
+        }
 
         D("Options")->set("history_version_count", $history_version_count);
         D("Options")->set("register_open", $register_open);

@@ -51,6 +51,7 @@
                 <a-select-option value="1">{{ $t('admin.full_page') }}</a-select-option>
                 <a-select-option value="2">{{ $t('admin.login_page') }}</a-select-option>
                 <a-select-option value="3">{{ $t('admin.jump_to_item') }}</a-select-option>
+                <a-select-option value="4">{{ $t('admin.public_square_page') }}</a-select-option>
               </a-select>
             </div>
 
@@ -630,7 +631,7 @@ const handleSave = async () => {
 
     message.success(t('common.save_success'))
   } catch (error) {
-    message.error(t('common.save_failed'))
+    // request 已自动弹出后端错误信息
   }
 }
 

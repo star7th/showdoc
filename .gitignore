@@ -22,3 +22,4 @@ web_src/*.sln
 showdocdata/
 /server/app/Runtime/mcp_rate_limit
 /fixtime.sh
+/install/install.lock

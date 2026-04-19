@@ -140,6 +140,7 @@
                 :key="`${currentPageId}-${isFullPage}`"
                 v-model="pageContent"
                 mode="preview"
+                :keyword="searchKeyword"
                 @task-toggle="handleTaskToggle"
               />
 

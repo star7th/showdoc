@@ -295,6 +295,7 @@ export default {
   login_page: '登录页',
   jump_to_item: '跳转到指定项目',
   jump_to_item_placeholder: '选择项目',
+  public_square_page: '公开广场',
   home_item: '首页跳转项目',
   home_item_tips: '选择首页跳转到的项目',
   home_item_placeholder: '选择要跳转的项目',
