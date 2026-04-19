@@ -191,6 +191,7 @@ onMounted(() => {
   const baseUrl = window.location.protocol + '//' + window.location.host
   let prefix = `${baseUrl}/${getServerHost()}mock-path/${props.itemId}`
   prefix = prefix.replace(/\.\./g, '')
+  prefix = prefix.replace(/^(https?:\/\/)(.*)/, (_, protocol, rest) => protocol + rest.replace(/\/{2,}/g, '/'))
   mockUrlPre.value = prefix.includes('?') ? `${prefix}&path=` : `${prefix}?path=`
 
   loadMockConfig()
