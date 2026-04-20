@@ -880,6 +880,11 @@ onBeforeUnmount(() => {
 // ============================================
 defineExpose({
   getMarkdown: () => instance?.getMarkdown() || '',
+  setValue: (value: string) => {
+    if (instance) {
+      instance.setMarkdown(value)
+    }
+  },
   insertValue: (value: string) => {
     if (instance) {
       instance.insertValue(htmlDecode(value))

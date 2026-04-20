@@ -643,6 +643,7 @@ const handleDocumentToolItem = async (key: string) => {
       pageId: currentPageId.value,
       onRestore: async (pageContent: string) => {
         form.value.content = pageContent
+        editormdEditorRef.value?.setValue(pageContent)
         Message.success(t('page.restore_success'))
       },
     })

@@ -1165,26 +1165,28 @@ MARKDOWN;
     }
 
     // 解析 @param 标签
+    // 格式: @param 参数名 是否必选 类型 说明
     $data['params'] = [];
     if (preg_match_all('/@param\s+(\S+)\s+(\S+)\s+(\S+)\s+(.+)/i', $content, $matches, PREG_SET_ORDER)) {
       foreach ($matches as $match) {
         $data['params'][] = [
           'name' => $match[1],
-          'type' => $match[2],
-          'required' => $match[3],
+          'required' => $match[2],
+          'type' => $match[3],
           'description' => $match[4],
         ];
       }
     }
 
     // 解析 @header 标签
+    // 格式: @header 参数名 是否必选 类型 说明
     $data['headers'] = [];
     if (preg_match_all('/@header\s+(\S+)\s+(\S+)\s+(\S+)\s+(.+)/i', $content, $matches, PREG_SET_ORDER)) {
       foreach ($matches as $match) {
         $data['headers'][] = [
           'name' => $match[1],
-          'type' => $match[2],
-          'required' => $match[3],
+          'required' => $match[2],
+          'type' => $match[3],
           'description' => $match[4],
         ];
       }
