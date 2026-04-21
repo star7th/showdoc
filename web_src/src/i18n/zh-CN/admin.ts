@@ -55,6 +55,8 @@ export default {
   single_page_item: '单页项目',
   runapi_item: 'runapi项目',
   table_item: '表格项目',
+  whiteboard_item: '白板项目',
+  kanban_item: '看板项目',
   ai_knowledge_base: 'AI 知识库',
   owner_placeholder: '所有者',
   all_items: '全部项目',

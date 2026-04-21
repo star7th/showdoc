@@ -71,6 +71,14 @@ const whiteboardItem = async () => {
   }
 }
 
+// 创建看板项目
+const kanbanItem = async () => {
+  const result = await CreateItemModal({ item_type: '6', item_group_id: props.itemGroupId })
+  if (result) {
+    props.callback()
+  }
+}
+
 // 导入文件
 const importFile = async () => {
   const result = await ImportFileModal()
@@ -115,6 +123,12 @@ menuListGroup.value = [
         icon: 'fas fa-pen',
         desc: t('item.whiteboard_item_desc'),
         method: whiteboardItem
+      },
+      {
+        title: t('item.kanban_item'),
+        icon: 'fas fa-columns',
+        desc: t('item.kanban_item_desc'),
+        method: kanbanItem
       }
     ]
   },

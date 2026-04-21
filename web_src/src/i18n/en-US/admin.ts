@@ -58,6 +58,8 @@ export default {
   single_page_item: 'Single Page Item',
   runapi_item: 'RunApi Item',
   table_item: 'Table Item',
+  whiteboard_item: 'Whiteboard Item',
+  kanban_item: 'Kanban Item',
   owner_placeholder: 'Owner',
   all_items: 'All Items',
   valid_items: 'Valid Items Only',

@@ -161,7 +161,7 @@ abstract class BaseController
      * @param int $depth 当前递归深度，默认为 0
      * @return mixed 处理后的数据
      */
-    private function convertLargeIntegersToString($data, int $depth = 0)
+    protected function convertLargeIntegersToString($data, int $depth = 0)
     {
         // JavaScript 的最大安全整数：2^53 - 1 = 9007199254740991
         $maxSafeInteger = 9007199254740991;

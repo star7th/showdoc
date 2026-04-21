@@ -7,6 +7,7 @@ use App\Mcp\Handler\CatalogHandler;
 use App\Mcp\Handler\PageHandler;
 use App\Mcp\Handler\AttachmentHandler;
 use App\Mcp\Handler\OpenApiHandler;
+use App\Mcp\Handler\KanbanHandler;
 use App\Model\UserAiToken;
 use App\Common\Helper\IpHelper;
 
@@ -116,7 +117,7 @@ class McpServer
           ],
           'item_type' => [
             'type' => 'integer',
-            'description' => '项目类型：1=普通文档（默认），3=RunApi项目',
+            'description' => '项目类型：1=普通文档（默认），3=RunApi项目，6=看板',
           ],
           'item_description' => [
             'type' => 'string',
@@ -272,7 +273,7 @@ class McpServer
     // 页面管理
     $this->tools['list_pages'] = [
       'name' => 'list_pages',
-      'description' => '获取项目/目录下的页面列表（分页，不含内容）',
+      'description' => '获取项目/目录下的页面列表（分页，不含内容）。注意：当项目 item_type=6（看板）时，请使用 kanban_get_board 获取板面，kanban_list_tasks 筛选任务',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -300,7 +301,7 @@ class McpServer
 
     $this->tools['get_page'] = [
       'name' => 'get_page',
-      'description' => '获取页面详情',
+      'description' => '获取页面详情。注意：当项目 item_type=6（看板）时，请使用 kanban_get_task 获取任务详情',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -340,7 +341,7 @@ class McpServer
 
     $this->tools['search_pages'] = [
       'name' => 'search_pages',
-      'description' => '搜索页面（按关键字搜索，默认只搜索标题）',
+      'description' => '搜索页面（按关键字搜索，默认只搜索标题）。注意：看板项目(item_type=6)请使用 kanban_search_tasks 搜索任务',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -381,7 +382,7 @@ class McpServer
 
     $this->tools['create_page'] = [
       'name' => 'create_page',
-      'description' => '创建页面（Markdown内容）',
+      'description' => '创建页面（Markdown内容）。注意：当项目 item_type=6（看板）时，请使用 kanban_create_task 创建任务',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -413,7 +414,7 @@ class McpServer
 
     $this->tools['create_page_by_comment'] = [
       'name' => 'create_page_by_comment',
-      'description' => '通过代码注释创建RunApi格式页面',
+      'description' => '通过代码注释创建RunApi格式页面。注意：不适用于看板项目(item_type=6)',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -433,7 +434,7 @@ class McpServer
 
     $this->tools['update_page'] = [
       'name' => 'update_page',
-      'description' => '更新页面',
+      'description' => '更新页面。注意：当项目 item_type=6（看板）时，请使用 kanban_update_task 更新任务',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -461,7 +462,7 @@ class McpServer
 
     $this->tools['upsert_page'] = [
       'name' => 'upsert_page',
-      'description' => '按标题智能匹配：存在则更新，不存在则创建',
+      'description' => '按标题智能匹配：存在则更新，不存在则创建。注意：当项目 item_type=6（看板）时，请使用 kanban_create_task 或 kanban_update_task',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -493,7 +494,7 @@ class McpServer
 
     $this->tools['batch_upsert_pages'] = [
       'name' => 'batch_upsert_pages',
-      'description' => '批量创建/更新页面（最多50个）',
+      'description' => '批量创建/更新页面（最多50个页面对象）。注意：不适用于看板项目(item_type=6)，请使用 kanban_create_task',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -523,7 +524,7 @@ class McpServer
 
     $this->tools['delete_page'] = [
       'name' => 'delete_page',
-      'description' => '删除页面（软删除）',
+      'description' => '删除页面（软删除）。注意：当项目 item_type=6（看板）时，请使用 kanban_delete_task 删除任务',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -540,7 +541,7 @@ class McpServer
     // 页面历史管理
     $this->tools['get_page_history'] = [
       'name' => 'get_page_history',
-      'description' => '获取页面的修改历史列表',
+      'description' => '获取页面的修改历史列表（兼容看板任务页面）',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -560,7 +561,7 @@ class McpServer
 
     $this->tools['get_page_version'] = [
       'name' => 'get_page_version',
-      'description' => '获取页面指定历史版本的内容',
+      'description' => '获取页面指定历史版本的内容（兼容看板任务页面）',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -580,7 +581,7 @@ class McpServer
 
     $this->tools['diff_page_versions'] = [
       'name' => 'diff_page_versions',
-      'description' => '对比两个页面版本的差异',
+      'description' => '对比两个页面版本的差异（兼容看板任务页面）',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -604,7 +605,7 @@ class McpServer
 
     $this->tools['restore_page_version'] = [
       'name' => 'restore_page_version',
-      'description' => '恢复页面到指定的历史版本',
+      'description' => '恢复页面到指定的历史版本（兼容看板任务页面）',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -625,7 +626,7 @@ class McpServer
     // 附件管理
     $this->tools['upload_attachment'] = [
       'name' => 'upload_attachment',
-      'description' => '上传附件（通过Base64编码的文件内容）',
+      'description' => '上传附件（通过Base64编码的文件内容）。兼容看板任务页面',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -653,7 +654,7 @@ class McpServer
 
     $this->tools['list_attachments'] = [
       'name' => 'list_attachments',
-      'description' => '获取项目或页面的附件列表',
+      'description' => '获取项目或页面的附件列表（兼容看板任务页面）',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -694,7 +695,7 @@ class McpServer
     // OpenAPI 导入
     $this->tools['import_openapi'] = [
       'name' => 'import_openapi',
-      'description' => '导入 OpenAPI/Swagger 文档，批量创建/更新 API 页面',
+      'description' => '导入 OpenAPI/Swagger 文档，批量创建/更新 API 页面。注意：不适用于看板项目(item_type=6)',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -718,6 +719,426 @@ class McpServer
         'required' => [],
       ],
       'handler' => 'openapi',
+    ];
+
+    // 看板管理
+    $this->tools['kanban_get_board'] = [
+      'name' => 'kanban_get_board',
+      'description' => '获取看板板面结构。当项目的 item_type=6（看板项目）时，使用此工具获取板面，而非 list_pages。返回列表定义、每个列表的任务列表及已归档列表',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+        ],
+        'required' => ['item_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_get_task'] = [
+      'name' => 'kanban_get_task',
+      'description' => '获取看板任务详情。当项目的 item_type=6（看板项目）时，使用此工具获取任务详情，而非 get_page',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'page_id' => [
+            'type' => 'integer',
+            'description' => '任务ID（即任务的page_id，可通过 kanban_get_board 或 kanban_list_tasks 获取）',
+          ],
+        ],
+        'required' => ['page_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_list_tasks'] = [
+      'name' => 'kanban_list_tasks',
+      'description' => '列出看板任务，支持按列表、负责人、创建者、标签、优先级、截止日期筛选。默认不显示已完成的任务，传 show_completed=true 可显示。当项目 item_type=6 时使用此工具筛选任务',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+          'list_id' => [
+            'type' => 'string',
+            'description' => '列表ID（可选）',
+          ],
+          'assignee_uid' => [
+            'type' => 'string',
+            'description' => '负责人UID（可选，传UID数字字符串如"123"，或传"none"筛选无负责人的任务）',
+          ],
+          'creator_uid' => [
+            'type' => 'integer',
+            'description' => '创建者UID（可选）',
+          ],
+          'tag' => [
+            'type' => 'string',
+            'description' => '标签文本（可选）',
+          ],
+          'priority' => [
+            'type' => 'string',
+            'description' => '优先级（可选）：high/medium/low',
+          ],
+          'due_date_start' => [
+            'type' => 'string',
+            'description' => '截止日期起始（可选，格式：YYYY-MM-DD）',
+          ],
+          'due_date_end' => [
+            'type' => 'string',
+            'description' => '截止日期结束（可选，格式：YYYY-MM-DD）',
+          ],
+          'show_completed' => [
+            'type' => 'boolean',
+            'description' => '是否显示已完成的任务（可选，默认false）',
+          ],
+        ],
+        'required' => ['item_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_search_tasks'] = [
+      'name' => 'kanban_search_tasks',
+      'description' => '按关键字搜索看板任务。当项目 item_type=6 时使用此工具搜索任务',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+          'query' => [
+            'type' => 'string',
+            'description' => '搜索关键字',
+          ],
+        ],
+        'required' => ['item_id', 'query'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_create_task'] = [
+      'name' => 'kanban_create_task',
+      'description' => '在看板指定列表中创建新任务，自动更新板面排序。当项目 item_type=6 时使用此工具，而非 create_page',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+          'list_id' => [
+            'type' => 'string',
+            'description' => '目标列表ID',
+          ],
+          'title' => [
+            'type' => 'string',
+            'description' => '任务标题（最多100字符）',
+          ],
+          'description' => [
+            'type' => 'string',
+            'description' => '任务描述（可选）',
+          ],
+          'due_date' => [
+            'type' => 'string',
+            'description' => '截止日期（可选，格式：YYYY-MM-DD）',
+          ],
+          'tags' => [
+            'type' => 'array',
+            'items' => [
+              'type' => 'object',
+              'properties' => [
+                'color' => ['type' => 'string', 'description' => '标签颜色：red/orange/yellow/green/blue/purple/gray'],
+                'text' => ['type' => 'string', 'description' => '标签文本，最多20字符'],
+              ],
+            ],
+            'description' => '标签列表（可选，最多3个，每项含color和text）',
+          ],
+          'priority' => [
+            'type' => 'string',
+            'description' => '优先级（可选）：high/medium/low',
+          ],
+          'linked_pages' => [
+            'type' => 'array',
+            'items' => [
+              'type' => 'object',
+              'properties' => [
+                'item_id' => ['type' => 'string', 'description' => '关联页面所属项目ID'],
+                'page_id' => ['type' => 'string', 'description' => '关联页面ID'],
+                'page_title' => ['type' => 'string', 'description' => '关联页面标题'],
+              ],
+            ],
+            'description' => '关联页面列表（可选）',
+          ],
+        ],
+        'required' => ['item_id', 'list_id', 'title'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_update_task'] = [
+      'name' => 'kanban_update_task',
+      'description' => '更新看板任务信息，只传需要修改的字段。支持设置 completed 字段来标记完成状态。当项目 item_type=6 时使用此工具，而非 update_page',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'page_id' => [
+            'type' => 'integer',
+            'description' => '任务页面ID',
+          ],
+          'title' => [
+            'type' => 'string',
+            'description' => '任务标题（可选，最多100字符）',
+          ],
+          'description' => [
+            'type' => 'string',
+            'description' => '任务描述（可选）',
+          ],
+          'assignee_uid' => [
+            'type' => 'string',
+            'description' => '负责人UID（可选，传入UID数字字符串如"123"）',
+          ],
+          'assignee_username' => [
+            'type' => 'string',
+            'description' => '负责人用户名（可选，建议与assignee_uid同时传入以保持数据一致）',
+          ],
+          'due_date' => [
+            'type' => 'string',
+            'description' => '截止日期（可选，格式：YYYY-MM-DD）',
+          ],
+          'tags' => [
+            'type' => 'array',
+            'items' => [
+              'type' => 'object',
+              'properties' => [
+                'color' => ['type' => 'string', 'description' => '标签颜色：red/orange/yellow/green/blue/purple/gray'],
+                'text' => ['type' => 'string', 'description' => '标签文本，最多20字符'],
+              ],
+            ],
+            'description' => '标签列表（可选，最多3个，每项含color和text）',
+          ],
+          'priority' => [
+            'type' => 'string',
+            'description' => '优先级（可选）：high/medium/low',
+          ],
+          'linked_pages' => [
+            'type' => 'array',
+            'items' => [
+              'type' => 'object',
+              'properties' => [
+                'item_id' => ['type' => 'string', 'description' => '关联页面所属项目ID'],
+                'page_id' => ['type' => 'string', 'description' => '关联页面ID'],
+                'page_title' => ['type' => 'string', 'description' => '关联页面标题'],
+              ],
+            ],
+            'description' => '关联页面列表（可选）',
+          ],
+          'completed' => [
+            'type' => 'boolean',
+            'description' => '完成状态（可选）：true=已完成，false=未完成',
+          ],
+        ],
+        'required' => ['page_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_move_task'] = [
+      'name' => 'kanban_move_task',
+      'description' => '移动看板任务到指定列表，自动更新任务 list_id 和板面 tasks_order',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'page_id' => [
+            'type' => 'integer',
+            'description' => '任务页面ID',
+          ],
+          'target_list_id' => [
+            'type' => 'string',
+            'description' => '目标列表ID',
+          ],
+        ],
+        'required' => ['page_id', 'target_list_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_delete_task'] = [
+      'name' => 'kanban_delete_task',
+      'description' => '删除看板任务，同时清理板面排序。当项目 item_type=6 时使用此工具，而非 delete_page',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'page_id' => [
+            'type' => 'integer',
+            'description' => '任务页面ID',
+          ],
+        ],
+        'required' => ['page_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_add_list'] = [
+      'name' => 'kanban_add_list',
+      'description' => '在看板中添加新列表',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+          'title' => [
+            'type' => 'string',
+            'description' => '列表标题',
+          ],
+        ],
+        'required' => ['item_id', 'title'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_update_list'] = [
+      'name' => 'kanban_update_list',
+      'description' => '更新看板列表标题',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+          'list_id' => [
+            'type' => 'string',
+            'description' => '列表ID',
+          ],
+          'title' => [
+            'type' => 'string',
+            'description' => '新列表标题',
+          ],
+        ],
+        'required' => ['item_id', 'list_id', 'title'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_delete_list'] = [
+      'name' => 'kanban_delete_list',
+      'description' => '删除看板列表，列表内任务自动标记为完成。唯一列表不允许删除',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+          'list_id' => [
+            'type' => 'string',
+            'description' => '列表ID',
+          ],
+        ],
+        'required' => ['item_id', 'list_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_archive_list'] = [
+      'name' => 'kanban_archive_list',
+      'description' => '归档看板列表（含其下所有任务）。归档后列表从看板中移除，可通过 kanban_restore_list 恢复',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+          'list_id' => [
+            'type' => 'string',
+            'description' => '要归档的列表ID',
+          ],
+        ],
+        'required' => ['item_id', 'list_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_restore_list'] = [
+      'name' => 'kanban_restore_list',
+      'description' => '恢复已归档的看板列表（含其下所有任务），列表和任务恢复到看板活跃区',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+          'list_id' => [
+            'type' => 'string',
+            'description' => '要恢复的已归档列表ID',
+          ],
+        ],
+        'required' => ['item_id', 'list_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_list_archived_lists'] = [
+      'name' => 'kanban_list_archived_lists',
+      'description' => '列出看板中所有已归档的列表（含每个列表的任务数量）',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+        ],
+        'required' => ['item_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_get_activity'] = [
+      'name' => 'kanban_get_activity',
+      'description' => '查询看板活动日志，可按事件类型和时间范围筛选。支持按周、按月或自定义时间段查看任务完成情况',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+          'event_types' => [
+            'type' => 'array',
+            'items' => ['type' => 'string'],
+            'description' => '事件类型过滤（可选）：task_created/task_completed/task_uncompleted/task_moved/task_deleted/task_updated/list_created/list_updated/list_deleted/list_archived/list_restored',
+          ],
+          'start_time' => [
+            'type' => 'integer',
+            'description' => '开始时间戳（可选）',
+          ],
+          'end_time' => [
+            'type' => 'integer',
+            'description' => '结束时间戳（可选）',
+          ],
+          'page' => [
+            'type' => 'integer',
+            'description' => '页码（默认1）',
+          ],
+          'page_size' => [
+            'type' => 'integer',
+            'description' => '每页数量（默认50，最大100）',
+          ],
+        ],
+        'required' => ['item_id'],
+      ],
+      'handler' => 'kanban',
     ];
   }
 
@@ -905,6 +1326,43 @@ class McpServer
           ],
         ],
       ],
+      'kanban_pick_task' => [
+        'name' => 'kanban_pick_task',
+        'description' => '从看板中选择一个待办任务',
+        'arguments' => [
+          [
+            'name' => 'item_id',
+            'description' => '项目ID',
+            'required' => true,
+          ],
+          [
+            'name' => 'list_id',
+            'description' => '指定列表ID（可选，不传则从第一个列表选取）',
+            'required' => false,
+          ],
+        ],
+      ],
+      'kanban_report_progress' => [
+        'name' => 'kanban_report_progress',
+        'description' => '汇报看板任务的工作进展',
+        'arguments' => [
+          [
+            'name' => 'page_id',
+            'description' => '任务页面ID',
+            'required' => true,
+          ],
+          [
+            'name' => 'status',
+            'description' => '进展状态：done、in_progress、blocked',
+            'required' => true,
+          ],
+          [
+            'name' => 'note',
+            'description' => '进展说明（可选）',
+            'required' => false,
+          ],
+        ],
+      ],
     ];
   }
 
@@ -1085,6 +1543,7 @@ class McpServer
       $handler = $this->getHandler($handlerName);
       $handler->setTokenInfo($this->tokenInfo);
       $result = $handler->execute($toolName, $arguments);
+      $result = $this->convertLargeIntegersToString($result);
 
       return McpError::createSuccessResponse([
         'content' => [
@@ -1192,6 +1651,8 @@ class McpServer
           $this->requestId
         );
       }
+
+      $result = $this->convertLargeIntegersToString($result);
 
       return McpError::createSuccessResponse([
         'contents' => [
@@ -1428,6 +1889,55 @@ class McpServer
           ],
         ];
 
+      case 'kanban_pick_task':
+        $itemId = $arguments['item_id'] ?? '';
+        $listId = $arguments['list_id'] ?? '';
+
+        $listHint = $listId !== '' ? "指定列表ID: {$listId}\n" : '';
+
+        return [
+          [
+            'role' => 'user',
+            'content' => [
+              'type' => 'text',
+              'text' => "请从看板中选择一个待办任务。\n\n" .
+                "项目ID: {$itemId}\n" .
+                $listHint .
+                "\n请执行以下步骤：\n" .
+                "1. 使用 kanban_get_board 工具获取看板面板\n" .
+                "2. 从指定列表（或第一个列表）中选择一个优先级最高的任务\n" .
+                "3. 使用 kanban_get_task 获取任务详情\n" .
+                "4. 如果选择了任务，使用 kanban_move_task 将其移到进行中的列表\n" .
+                "5. 报告选中的任务信息",
+            ],
+          ],
+        ];
+
+      case 'kanban_report_progress':
+        $pageId = $arguments['page_id'] ?? '';
+        $status = $arguments['status'] ?? 'in_progress';
+        $note = $arguments['note'] ?? '';
+
+        return [
+          [
+            'role' => 'user',
+            'content' => [
+              'type' => 'text',
+                'text' => "请汇报看板任务的工作进展。\n\n" .
+                "任务页面ID: {$pageId}\n" .
+                "进展状态: {$status}\n" .
+                ($note !== '' ? "进展说明: {$note}\n" : '') .
+                "\n请执行以下步骤：\n" .
+                "1. 使用 kanban_get_task 获取任务详情\n" .
+                "2. 根据状态更新任务信息：\n" .
+                "   - 如果状态是 done，使用 kanban_update_task 设置 completed: true\n" .
+                "   - 如果状态是 blocked，使用 kanban_update_task 在描述中标注阻塞原因\n" .
+                "   - 如果状态是 in_progress，使用 kanban_move_task 将任务移到进行中的列表\n" .
+                "3. 如果有进展说明，追加到任务描述中",
+            ],
+          ],
+        ];
+
       default:
         return [];
     }
@@ -1458,11 +1968,43 @@ class McpServer
         case 'openapi':
           $this->handlers[$name] = new OpenApiHandler();
           break;
+        case 'kanban':
+          $this->handlers[$name] = new KanbanHandler();
+          break;
         default:
           throw new \RuntimeException("Handler 不存在: {$name}");
       }
     }
 
     return $this->handlers[$name];
+  }
+
+  private function convertLargeIntegersToString($data, int $depth = 0)
+  {
+    $maxSafeInteger = 9007199254740991;
+
+    if (is_int($data) && $data > $maxSafeInteger) {
+      return (string) $data;
+    }
+
+    if ($depth >= 6) {
+      return $data;
+    }
+
+    if (is_array($data)) {
+      $result = [];
+      foreach ($data as $key => $value) {
+        $result[$key] = $this->convertLargeIntegersToString($value, $depth + 1);
+      }
+      return $result;
+    } elseif (is_object($data)) {
+      $result = new \stdClass();
+      foreach ($data as $key => $value) {
+        $result->$key = $this->convertLargeIntegersToString($value, $depth + 1);
+      }
+      return $result;
+    } else {
+      return $data;
+    }
   }
 }

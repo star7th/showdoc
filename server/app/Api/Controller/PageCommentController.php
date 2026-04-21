@@ -51,8 +51,7 @@ class PageCommentController extends BaseController
 
         // 检查项目是否开启评论功能
         $item = \App\Model\Item::findById($itemId);
-        if (!$item || (int) ($item->item_type ?? 0) != 1) {
-            // 非常规项目或未开启，返回空列表
+        if (!$item || !in_array((int) ($item->item_type ?? 0), [1, 6])) {
             return $this->success($response, [
                 'total' => 0,
                 'page' => $page,
@@ -148,7 +147,7 @@ class PageCommentController extends BaseController
 
         // 检查项目是否开启评论功能
         $item = \App\Model\Item::findById($itemId);
-        if (!$item || (int) ($item->item_type ?? 0) != 1) {
+        if (!$item || !in_array((int) ($item->item_type ?? 0), [1, 6])) {
             return $this->error($response, 10100, '此项目类型不支持评论功能');
         }
 

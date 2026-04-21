@@ -31,6 +31,14 @@
       :item-info="itemInfo"
     />
 
+    <!-- 展示看板项目 (item_type: 6) -->
+    <ShowKanbanItem
+      v-if="itemInfo && itemInfo.item_type == 6"
+      :key="itemKey"
+      :item-info="itemInfo"
+      @reload="handleReloadItem"
+    />
+
     <!-- 如果是处于登录态的话，则引入通知组件 -->
     <Notify v-if="itemInfo && itemInfo.is_login" :popup="true" />
 
@@ -49,6 +57,7 @@ import ShowRegularItem from './ShowRegularItem/index.vue'
 import ShowSinglePageItem from './ShowSinglePageItem/index.vue'
 import ShowTableItem from './ShowTableItem/index.vue'
 import ShowWhiteboardItem from './ShowWhiteboardItem/index.vue'
+import ShowKanbanItem from './ShowKanbanItem/index.vue'
 import Notify from '@/components/Notify.vue'
 import request from '@/utils/request'
 import { useUserStore } from '@/store/user'

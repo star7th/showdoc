@@ -268,6 +268,105 @@ class ItemHandler extends McpHandler
       McpError::throw(McpError::OPERATION_FAILED, '项目创建失败');
     }
 
+    // 看板项目：初始化板面 page 及示例任务
+    if ($itemType == 6) {
+      $username = '';
+      $userObj = \App\Model\User::findById($uid);
+      if ($userObj) {
+        $username = $userObj->username ?? '';
+      }
+
+      $defaultContent = json_encode([
+        'lists' => [
+          ['id' => 'list_default_1', 'title' => '待办', 'position' => 1],
+          ['id' => 'list_default_2', 'title' => '进行中', 'position' => 2],
+        ],
+        'tasks_order' => [
+          'list_default_1' => [],
+          'list_default_2' => [],
+        ],
+        'archived_lists' => [],
+        'archived_tasks_order' => [],
+        'meta' => ['version' => 1, 'last_updated' => 0],
+      ], JSON_UNESCAPED_UNICODE);
+
+      $boardPageData = [
+        'author_uid'      => $uid,
+        'author_username' => $username,
+        'page_title'      => '__kanban_board__',
+        'item_id'         => $itemId,
+        'cat_id'          => 0,
+        'page_content'    => htmlspecialchars($defaultContent, ENT_QUOTES, 'UTF-8'),
+        'addtime'         => time(),
+      ];
+      $boardPageId = \App\Model\Page::addPage($itemId, $boardPageData);
+
+      DB::table('item')->where('item_id', $itemId)->update(['allow_comment' => 1]);
+
+      $exampleTasks = [
+        ['title' => '了解看板功能', 'list_id' => 'list_default_1', 'description' => '看板是一个轻量级的任务管理工具，你可以通过拖拽来管理任务的状态。', 'tags' => [['color' => 'blue', 'text' => '文档']], 'priority' => 'medium'],
+        ['title' => '创建第一个任务', 'list_id' => 'list_default_1', 'description' => '点击列表底部的 + 按钮创建新任务。', 'tags' => [['color' => 'green', 'text' => '入门']], 'priority' => 'high'],
+        ['title' => '尝试拖拽任务', 'list_id' => 'list_default_2', 'description' => '将任务从一个列表拖拽到另一个列表来更新状态。', 'tags' => [['color' => 'orange', 'text' => '技巧']], 'priority' => 'medium'],
+        ['title' => '设置任务详情', 'list_id' => 'list_default_2', 'description' => '点击任务卡片打开详情，可以设置负责人、截止日期、优先级等。', 'tags' => [['color' => 'purple', 'text' => '进阶']], 'priority' => 'low'],
+      ];
+
+      $taskPageIds1 = [];
+      $taskPageIds2 = [];
+      foreach ($exampleTasks as $task) {
+        $taskContent = json_encode([
+          'list_id'           => $task['list_id'],
+          'description'       => $task['description'],
+          'assignee_uid'      => '',
+          'assignee_username' => '',
+          'creator_uid'       => $uid,
+          'creator_username'  => $username,
+          'due_date'          => '',
+          'tags'              => $task['tags'],
+          'priority'          => $task['priority'],
+          'linked_pages'      => [],
+          'completed'         => false,
+        ], JSON_UNESCAPED_UNICODE);
+        $extInfo = json_encode(['completed' => false, 'tags' => $task['tags']], JSON_UNESCAPED_UNICODE);
+        $taskPageData = [
+          'author_uid'      => $uid,
+          'author_username' => $username,
+          'page_title'      => $task['title'],
+          'item_id'         => $itemId,
+          'cat_id'          => 0,
+          'page_content'    => htmlspecialchars($taskContent, ENT_QUOTES, 'UTF-8'),
+          'ext_info'        => $extInfo,
+          'addtime'         => time(),
+        ];
+        $taskPageId = \App\Model\Page::addPage($itemId, $taskPageData);
+        if ($taskPageId) {
+          if ($task['list_id'] === 'list_default_1') {
+            $taskPageIds1[] = (string) $taskPageId;
+          } else {
+            $taskPageIds2[] = (string) $taskPageId;
+          }
+        }
+      }
+
+      if ($boardPageId && ($taskPageIds1 || $taskPageIds2)) {
+        $boardContent = json_encode([
+          'lists' => [
+            ['id' => 'list_default_1', 'title' => '待办', 'position' => 1],
+            ['id' => 'list_default_2', 'title' => '进行中', 'position' => 2],
+          ],
+          'tasks_order' => [
+            'list_default_1' => $taskPageIds1,
+            'list_default_2' => $taskPageIds2,
+          ],
+          'archived_lists' => [],
+          'archived_tasks_order' => [],
+          'meta' => ['version' => 1, 'last_updated' => 0],
+        ], JSON_UNESCAPED_UNICODE);
+        \App\Model\Page::savePage($boardPageId, $itemId, [
+          'page_content' => htmlspecialchars($boardContent, ENT_QUOTES, 'UTF-8'),
+        ]);
+      }
+    }
+
     // 将新项目添加到 Token 的权限范围
     $this->addCreatedItemToScope($itemId);
 

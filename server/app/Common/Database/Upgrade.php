@@ -16,7 +16,7 @@ class Upgrade
      * 当前数据库版本号
      * 注意：如果更新数据库结构，务必更改此版本号
      */
-    private const CURRENT_VERSION = 30;
+    private const CURRENT_VERSION = 31;
 
     /**
      * 检查并执行数据库升级
@@ -700,6 +700,19 @@ class Upgrade
             DB::statement("CREATE INDEX IF NOT EXISTS idx_uid ON user_ai_token (uid)");
             DB::statement("CREATE INDEX IF NOT EXISTS idx_token ON user_ai_token (token)");
             DB::statement("CREATE INDEX IF NOT EXISTS idx_is_active ON user_ai_token (is_active)");
+
+            // kanban_activity_log 表（看板活动日志）
+            DB::statement("CREATE TABLE IF NOT EXISTS `kanban_activity_log` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+                `item_id` bigint(40) NOT NULL DEFAULT '0',
+                `page_id` bigint(40) NOT NULL DEFAULT '0',
+                `event_type` varchar(32) NOT NULL DEFAULT '',
+                `event_data` text,
+                `operator_uid` int(11) NOT NULL DEFAULT '0',
+                `addtime` int(11) NOT NULL DEFAULT '0'
+            )");
+            DB::statement("CREATE INDEX IF NOT EXISTS idx_kanban_activity_item ON kanban_activity_log (item_id)");
+            DB::statement("CREATE INDEX IF NOT EXISTS idx_kanban_activity_addtime ON kanban_activity_log (addtime)");
 
             return true;
         } catch (\Throwable $e) {

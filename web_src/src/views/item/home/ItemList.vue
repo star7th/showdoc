@@ -18,6 +18,8 @@
             <i v-if="item.item_type == '2'" class="item-icon fas fa-file"></i>
             <i v-else-if="item.item_type == '4'" class="item-icon fas fa-table"></i>
             <i v-else-if="item.item_type == '3'" class="item-icon fas fa-terminal"></i>
+            <i v-else-if="item.item_type == '5'" class="item-icon fas fa-chalkboard"></i>
+            <i v-else-if="item.item_type == '6'" class="item-icon fas fa-columns"></i>
             <i v-else class="item-icon fas fa-notes"></i>
             <i
               v-if="item.is_star > 0"

@@ -302,6 +302,7 @@ class McpController extends BaseController
    */
   private function jsonResponse(Response $response, array $data): Response
   {
+    $data = $this->convertLargeIntegersToString($data);
     $payload = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
     $response->getBody()->write($payload);

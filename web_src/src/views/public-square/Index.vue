@@ -49,6 +49,7 @@
               <i v-else-if="item.item_type == '4'" class="item-icon fas fa-table"></i>
               <i v-else-if="item.item_type == '3'" class="item-icon fas fa-terminal"></i>
               <i v-else-if="item.item_type == '5'" class="item-icon fas fa-chalkboard"></i>
+              <i v-else-if="item.item_type == '6'" class="item-icon fas fa-columns"></i>
               <i v-else class="item-icon fas fa-book"></i>
             </div>
             <h3 class="project-title">{{ item.item_name }}</h3>
@@ -209,7 +210,8 @@ const getItemTypeName = (itemType: string | number) => {
     '2': t('item.type_single'),
     '3': t('item.type_runapi'),
     '4': t('item.type_table'),
-    '5': t('item.type_whiteboard')
+    '5': t('item.type_whiteboard'),
+    '6': t('item.type_kanban')
   }
   return typeMap[String(itemType)] || t('item.type_regular')
 }
@@ -542,6 +544,11 @@ onMounted(() => {
     background: rgba(108, 117, 125, 0.1);
     color: var(--color-text-secondary);
   }
+  
+  &.type-6 {
+    background: rgba(111, 66, 193, 0.1);
+    color: #6f42c1;
+  }
 }
 
 .empty-container {
@@ -669,6 +676,10 @@ onMounted(() => {
     
     &.type-5 {
       background: rgba(140, 152, 163, 0.15);
+    }
+    
+    &.type-6 {
+      background: rgba(111, 66, 193, 0.15);
     }
   }
 

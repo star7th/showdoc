@@ -85,3 +85,23 @@ export function uploadFile(formData: FormData) {
     true
   )
 }
+
+export function getPageAttachments(params: { page_id: number | string }) {
+  return request(
+    '/api/page/uploadList',
+    params,
+    'post',
+    true,
+    'form'
+  )
+}
+
+export function deletePageAttachment(params: { file_id: number | string; page_id: number | string }) {
+  return request(
+    '/api/page/deleteUploadFile',
+    params,
+    'post',
+    true,
+    'form'
+  )
+}
