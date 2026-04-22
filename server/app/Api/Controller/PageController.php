@@ -727,6 +727,13 @@ class PageController extends BaseController
                 (string) ($page['page_title'] ?? '')
             );
 
+            if ($page['page_title'] !== '__kanban_board__') {
+                $itemRow = DB::table('item')->where('item_id', $itemId)->first();
+                if ($itemRow && (int) $itemRow->item_type === 6) {
+                    $this->cleanKanbanTaskOrder($itemId, $pageId);
+                }
+            }
+
             // 删除菜单与页面缓存
             \App\Model\Item::deleteCache($itemId);
             \App\Model\Page::deleteCache($pageId);
@@ -766,6 +773,52 @@ class PageController extends BaseController
         }
 
         return $this->error($response, 10101, '删除失败');
+    }
+
+    private function cleanKanbanTaskOrder(int $itemId, int $pageId): void
+    {
+        $tableName = \App\Model\Page::tableForItem($itemId);
+        $boardPage = DB::table($tableName)
+            ->where('item_id', $itemId)
+            ->where('page_title', '__kanban_board__')
+            ->where('is_del', 0)
+            ->first();
+        if (!$boardPage) {
+            return;
+        }
+
+        $content = \App\Common\Helper\ContentCodec::decompress($boardPage->page_content);
+        if ($content !== '') {
+            $boardPage->page_content = $content;
+        }
+        $boardData = json_decode(htmlspecialchars_decode($boardPage->page_content, ENT_QUOTES), true);
+        if (!$boardData || !isset($boardData['tasks_order'])) {
+            return;
+        }
+
+        $changed = false;
+        foreach ($boardData['tasks_order'] as $listId => &$tasks) {
+            if (is_array($tasks)) {
+                $filtered = array_values(array_filter($tasks, function ($id) use ($pageId) {
+                    return (int) $id !== $pageId;
+                }));
+                if (count($filtered) !== count($tasks)) {
+                    $tasks = $filtered;
+                    $changed = true;
+                }
+            }
+        }
+        unset($tasks);
+
+        if ($changed) {
+            $encoded = json_encode($boardData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $encoded = htmlspecialchars($encoded, ENT_QUOTES, 'UTF-8');
+            $encoded = \App\Common\Helper\ContentCodec::compress($encoded);
+            DB::table($tableName)->where('page_id', (int) $boardPage->page_id)->update([
+                'page_content' => $encoded,
+            ]);
+            \App\Model\Page::deleteCache((int) $boardPage->page_id);
+        }
     }
 
     /**

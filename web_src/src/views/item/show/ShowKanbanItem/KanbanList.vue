@@ -135,6 +135,7 @@ const getTaskTags = (id: string) => {
 
 const filteredTaskIds = computed(() => {
   let ids = props.taskIds
+  ids = ids.filter(id => props.taskPages.some(p => p.page_id == id))
   const showCompleted = props.filters?.show_completed
   if (!showCompleted) {
     ids = ids.filter(id => !isTaskCompleted(id))
