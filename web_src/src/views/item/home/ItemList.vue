@@ -338,34 +338,31 @@ const handleExit = async (item_id: number) => {
 
 // 拖动排序结束
 const onDropEnd = async ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) => {
-  // 如果位置没变，不处理
   if (oldIndex === newIndex) return
 
-  // 获取拖动后的元素顺序（从 DOM 读取）
   const container = document.querySelector('.item-list-container') as HTMLElement
   const children = container?.children
   if (!children) return
 
-  // 按 DOM 顺序构建排序数据：{ item_id: 序号 }
   const data: Record<string, number> = {}
+  const newOrder: string[] = []
   for (let i = 0; i < children.length; i++) {
     const child = children[i] as HTMLElement
     const itemId = child.dataset.key
     if (itemId) {
       data[itemId] = i + 1
+      newOrder.push(itemId)
     }
   }
 
-  // 调用保存排序接口
   try {
     await sortItem(data, props.itemGroupId)
-    Message.success(t('common.op_success'))
-    // 刷新列表以获取服务器端排序
-    await props.getItemList()
+    const list = props.itemList
+    const reordered = newOrder.map(id => list.find((item: any) => String(item.item_id) === id)).filter(Boolean)
+    list.splice(0, list.length, ...reordered)
   } catch (error) {
     console.error('Sort item failed:', error)
     await AlertModal(t('common.op_failed'))
-    // 刷新列表恢复顺序
     await props.getItemList()
   }
 }

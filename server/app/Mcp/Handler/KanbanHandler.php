@@ -223,6 +223,7 @@ class KanbanHandler extends McpHandler
   {
     return [
       'kanban_get_board',
+      'kanban_get_lists',
       'kanban_get_task',
       'kanban_list_tasks',
       'kanban_search_tasks',
@@ -245,6 +246,8 @@ class KanbanHandler extends McpHandler
     switch ($operation) {
       case 'kanban_get_board':
         return $this->getBoard($params);
+      case 'kanban_get_lists':
+        return $this->getLists($params);
       case 'kanban_get_task':
         return $this->getTask($params);
       case 'kanban_list_tasks':
@@ -322,6 +325,52 @@ class KanbanHandler extends McpHandler
       'page_id' => $board['pageId'],
       'lists' => $resultLists,
       'archived_lists' => $boardData['archived_lists'] ?? [],
+    ];
+  }
+
+  private function getLists(array $params): array
+  {
+    $itemId = (int) ($params['item_id'] ?? 0);
+    if ($itemId <= 0) {
+      McpError::throw(McpError::INVALID_PARAMS, '项目ID不能为空');
+    }
+    $this->requireReadPermission($itemId);
+
+    $board = $this->requireBoard($itemId);
+    $boardData = $board['boardData'];
+    $lists = $boardData['lists'] ?? [];
+    $tasksOrder = $boardData['tasks_order'] ?? [];
+    $archivedLists = $boardData['archived_lists'] ?? [];
+    $archivedTasksOrder = $boardData['archived_tasks_order'] ?? [];
+
+    $resultLists = [];
+    foreach ($lists as $list) {
+      $listId = $list['id'] ?? '';
+      $taskCount = count($tasksOrder[$listId] ?? []);
+      $resultLists[] = [
+        'id' => $listId,
+        'title' => $list['title'] ?? '',
+        'position' => (int) ($list['position'] ?? 0),
+        'task_count' => $taskCount,
+      ];
+    }
+
+    $resultArchived = [];
+    foreach ($archivedLists as $list) {
+      $listId = $list['id'] ?? '';
+      $taskCount = count($archivedTasksOrder[$listId] ?? []);
+      $resultArchived[] = [
+        'id' => $listId,
+        'title' => $list['title'] ?? '',
+        'position' => (int) ($list['position'] ?? 0),
+        'task_count' => $taskCount,
+      ];
+    }
+
+    return [
+      'item_id' => $itemId,
+      'lists' => $resultLists,
+      'archived_lists' => $resultArchived,
     ];
   }
 

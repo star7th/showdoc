@@ -724,7 +724,23 @@ class McpServer
     // 看板管理
     $this->tools['kanban_get_board'] = [
       'name' => 'kanban_get_board',
-      'description' => '获取看板板面结构。当项目的 item_type=6（看板项目）时，使用此工具获取板面，而非 list_pages。返回列表定义、每个列表的任务列表及已归档列表',
+      'description' => '获取看板完整板面（包含所有列表及全部任务详情）。如果只需了解列表概览，请优先使用 kanban_get_lists，它更轻量且不返回任务详情。当项目的 item_type=6（看板项目）时，使用此工具获取板面，而非 list_pages。返回列表定义、每个列表的任务列表及已归档列表',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID',
+          ],
+        ],
+        'required' => ['item_id'],
+      ],
+      'handler' => 'kanban',
+    ];
+
+    $this->tools['kanban_get_lists'] = [
+      'name' => 'kanban_get_lists',
+      'description' => '获取看板的所有列表，只返回列表定义和任务数量，不返回任务详情。比 kanban_get_board 更轻量，适合只需了解列表结构的场景',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
