@@ -9,7 +9,7 @@
         v-for="list in boardData.lists"
         :key="list.id"
         :list="list"
-        :task-ids="boardData.tasks_order[list.id] || []"
+        :task-ids="deduplicatedTaskIds(list.id)"
         :task-pages="taskPages"
         :task-details-cache="taskDetailsCache"
         :is-editable="isEditable"
@@ -125,6 +125,12 @@ watch(() => props.boardData.lists.length, () => {
     initListSortable()
   })
 })
+
+const deduplicatedTaskIds = (listId: string): string[] => {
+  const ids = props.boardData.tasks_order[listId]
+  if (!ids || !ids.length) return []
+  return [...new Set(ids)]
+}
 
 const getBoardData = () => props.boardData
 

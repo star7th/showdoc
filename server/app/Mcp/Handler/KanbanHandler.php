@@ -664,7 +664,17 @@ class KanbanHandler extends McpHandler
     if (!isset($boardData['tasks_order'][$listId])) {
       $boardData['tasks_order'][$listId] = [];
     }
-    $boardData['tasks_order'][$listId][] = $pageId;
+    $pageIdInt = (int) $pageId;
+    $alreadyExists = false;
+    foreach ($boardData['tasks_order'][$listId] as $existingId) {
+      if ((int) $existingId === $pageIdInt) {
+        $alreadyExists = true;
+        break;
+      }
+    }
+    if (!$alreadyExists) {
+      $boardData['tasks_order'][$listId][] = (string) $pageId;
+    }
 
     $this->saveBoardData($itemId, $board['pageId'], $boardData);
 
@@ -812,7 +822,17 @@ class KanbanHandler extends McpHandler
     if (!isset($boardData['tasks_order'][$targetListId])) {
       $boardData['tasks_order'][$targetListId] = [];
     }
-    $boardData['tasks_order'][$targetListId][] = $pageId;
+    $pageIdInt = (int) $pageId;
+    $alreadyExists = false;
+    foreach ($boardData['tasks_order'][$targetListId] as $existingId) {
+      if ((int) $existingId === $pageIdInt) {
+        $alreadyExists = true;
+        break;
+      }
+    }
+    if (!$alreadyExists) {
+      $boardData['tasks_order'][$targetListId][] = $pageId;
+    }
 
     $this->saveBoardData($itemId, $board['pageId'], $boardData);
 
@@ -1231,16 +1251,4 @@ class KanbanHandler extends McpHandler
         'event_data' => json_decode($log->event_data, true) ?? [],
         'operator_uid' => $uid,
         'operator_username' => $operatorNames[$uid] ?? '',
-        'addtime' => (int) $log->addtime,
-      ];
-    }
-
-    return [
-      'item_id' => $itemId,
-      'activities' => $result,
-      'total' => $total,
-      'page' => $page,
-      'page_size' => $pageSize,
-    ];
-  }
-}
+        'addtime' => (int) $log->addtime,                                                                                                                                                                                                  

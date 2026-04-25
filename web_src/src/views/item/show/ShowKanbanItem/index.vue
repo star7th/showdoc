@@ -204,12 +204,18 @@ const loadBoard = async () => {
     const content = JSON.parse(unescapeHTML(res.data.page_content))
     if (content.tasks_order) {
       for (const listId of Object.keys(content.tasks_order)) {
-        content.tasks_order[listId] = [...new Set(content.tasks_order[listId])]
+        const ids = content.tasks_order[listId]
+        if (Array.isArray(ids)) {
+          content.tasks_order[listId] = [...new Set(ids)]
+        }
       }
     }
     if (content.archived_tasks_order) {
       for (const listId of Object.keys(content.archived_tasks_order)) {
-        content.archived_tasks_order[listId] = [...new Set(content.archived_tasks_order[listId])]
+        const ids = content.archived_tasks_order[listId]
+        if (Array.isArray(ids)) {
+          content.archived_tasks_order[listId] = [...new Set(ids)]
+        }
       }
     }
     boardData.value = content
@@ -250,16 +256,15 @@ const loadTaskDetail = async (pageId: string): Promise<KanbanTaskData | null> =>
   return null
 }
 
-const dedupTasksOrder = (tasksOrder: Record<string, string[]>): Record<string, string[]> => {
-  const result: Record<string, string[]> = {}
-  for (const listId of Object.keys(tasksOrder)) {
-    result[listId] = [...new Set(tasksOrder[listId])]
-  }
-  return result
-}
-
 const saveBoard = async (data: KanbanBoardData, retryCount = 0): Promise<boolean> => {
-  data.tasks_order = dedupTasksOrder(data.tasks_order)
+  if (data.tasks_order) {
+    for (const listId of Object.keys(data.tasks_order)) {
+      const ids = data.tasks_order[listId]
+      if (Array.isArray(ids)) {
+        data.tasks_order[listId] = [...new Set(ids)]
+      }
+    }
+  }
   data.meta.version = boardVersion.value
   const content = JSON.stringify(data)
   const res = await request('/api/page/save', {
@@ -274,7 +279,7 @@ const saveBoard = async (data: KanbanBoardData, retryCount = 0): Promise<boolean
   if (res.error_code === 0) {
     boardVersion.value = data.meta.version + 1
     boardData.value = data
-    fetchLatestBoard()
+    fetchLatestBoard().catch(() => {})
     return true
   } else if (res.error_code === 10410) {
     if (retryCount < 2) {
@@ -309,7 +314,10 @@ const fetchLatestBoard = async () => {
       const content = JSON.parse(unescapeHTML(res.data.page_content))
       if (content.tasks_order) {
         for (const listId of Object.keys(content.tasks_order)) {
-          content.tasks_order[listId] = [...new Set(content.tasks_order[listId])]
+          const ids = content.tasks_order[listId]
+          if (Array.isArray(ids)) {
+            content.tasks_order[listId] = [...new Set(ids)]
+          }
         }
       }
       const prevIds = new Set<string>()
@@ -475,11 +483,11 @@ const handleDeleteTask = async (pageId: string) => {
 
   await request('/api/page/delete', { page_id: pageId })
   logKanbanEvent('task_deleted', pageId, { title: taskPages.value.find(p => p.page_id == pageId)?.page_title || '' })
-  taskPages.value = taskPages.value.filter(p => p.page_id !== pageId)
+  taskPages.value = taskPages.value.filter(p => String(p.page_id) !== String(pageId))
   delete taskDetailsCache.value[pageId]
   if (boardData.value) {
     Object.keys(boardData.value.tasks_order).forEach(listId => {
-      boardData.value!.tasks_order[listId] = boardData.value!.tasks_order[listId].filter(id => id !== pageId)
+      boardData.value!.tasks_order[listId] = boardData.value!.tasks_order[listId].filter(id => String(id) !== String(pageId))
     })
     await saveBoard({ ...boardData.value })
   }
@@ -536,7 +544,7 @@ const handleCopyTask = async (pageId: string) => {
       if (!boardData.value.tasks_order[listId]) {
         boardData.value.tasks_order[listId] = []
       }
-      const idx = boardData.value.tasks_order[listId].indexOf(pageId)
+      const idx = boardData.value.tasks_order[listId].findIndex(id => String(id) === String(pageId))
       boardData.value.tasks_order[listId].splice(idx + 1, 0, newPageId)
       await saveBoard({ ...boardData.value })
     }
@@ -681,11 +689,11 @@ const confirmBatchMove = async () => {
   for (const pageId of pageIds) {
     let fromListId = ''
     for (const listId of Object.keys(newTasksOrder)) {
-      if (newTasksOrder[listId].includes(pageId)) fromListId = listId
+      if (newTasksOrder[listId].some(id => String(id) === String(pageId))) fromListId = listId
     }
     if (fromListId && fromListId !== targetListId) {
       moves.push({ pageId, fromListId })
-      newTasksOrder[fromListId] = newTasksOrder[fromListId].filter(id => id !== pageId)
+      newTasksOrder[fromListId] = newTasksOrder[fromListId].filter(id => String(id) !== String(pageId))
     }
   }
 
@@ -730,11 +738,11 @@ const handleBatchDelete = async (pageIds: string[]) => {
   for (const pageId of pageIds) {
     logKanbanEvent('task_deleted', pageId, { title: taskPages.value.find(p => p.page_id == pageId)?.page_title || '' })
     await request('/api/page/delete', { page_id: pageId })
-    taskPages.value = taskPages.value.filter(p => p.page_id !== pageId)
+    taskPages.value = taskPages.value.filter(p => String(p.page_id) !== String(pageId))
     delete taskDetailsCache.value[pageId]
     if (boardData.value) {
       Object.keys(boardData.value.tasks_order).forEach(listId => {
-        boardData.value!.tasks_order[listId] = boardData.value!.tasks_order[listId].filter(id => id !== pageId)
+        boardData.value!.tasks_order[listId] = boardData.value!.tasks_order[listId].filter(id => String(id) !== String(pageId))
       })
     }
   }
@@ -927,4 +935,4 @@ onBeforeUnmount(() => {
   font-size: var(--font-size-s);
   color: var(--color-text-secondary);
 }
-</style>
+</style>                
