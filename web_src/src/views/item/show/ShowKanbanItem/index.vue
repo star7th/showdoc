@@ -202,6 +202,16 @@ const loadBoard = async () => {
   const res = await request('/api/page/info', { page_id: boardPage.page_id })
   if (res.data && res.data.page_content) {
     const content = JSON.parse(unescapeHTML(res.data.page_content))
+    if (content.tasks_order) {
+      for (const listId of Object.keys(content.tasks_order)) {
+        content.tasks_order[listId] = [...new Set(content.tasks_order[listId])]
+      }
+    }
+    if (content.archived_tasks_order) {
+      for (const listId of Object.keys(content.archived_tasks_order)) {
+        content.archived_tasks_order[listId] = [...new Set(content.archived_tasks_order[listId])]
+      }
+    }
     boardData.value = content
     boardVersion.value = content.meta?.version || 0
     if (!boardData.value.archived_lists) boardData.value.archived_lists = []
@@ -240,7 +250,16 @@ const loadTaskDetail = async (pageId: string): Promise<KanbanTaskData | null> =>
   return null
 }
 
+const dedupTasksOrder = (tasksOrder: Record<string, string[]>): Record<string, string[]> => {
+  const result: Record<string, string[]> = {}
+  for (const listId of Object.keys(tasksOrder)) {
+    result[listId] = [...new Set(tasksOrder[listId])]
+  }
+  return result
+}
+
 const saveBoard = async (data: KanbanBoardData, retryCount = 0): Promise<boolean> => {
+  data.tasks_order = dedupTasksOrder(data.tasks_order)
   data.meta.version = boardVersion.value
   const content = JSON.stringify(data)
   const res = await request('/api/page/save', {
@@ -288,6 +307,11 @@ const fetchLatestBoard = async () => {
     const res = await request('/api/page/info', { page_id: boardPageId.value })
     if (res.data && res.data.page_content) {
       const content = JSON.parse(unescapeHTML(res.data.page_content))
+      if (content.tasks_order) {
+        for (const listId of Object.keys(content.tasks_order)) {
+          content.tasks_order[listId] = [...new Set(content.tasks_order[listId])]
+        }
+      }
       const prevIds = new Set<string>()
       if (boardData.value) {
         Object.values(boardData.value.tasks_order).forEach(ids => {

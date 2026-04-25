@@ -297,10 +297,15 @@ class KanbanHandler extends McpHandler
     $resultLists = [];
     foreach ($lists as $list) {
       $listId = $list['id'] ?? '';
-      $taskIds = $tasksOrder[$listId] ?? [];
+      $taskIds = array_unique($tasksOrder[$listId] ?? []);
       $tasks = [];
+      $seenPageIds = [];
       foreach ($taskIds as $pid) {
         $pid = (int) $pid;
+        if (in_array($pid, $seenPageIds, true)) {
+          continue;
+        }
+        $seenPageIds[] = $pid;
         $pageRow = DB::table('page')
           ->where('page_id', $pid)
           ->where('is_del', 0)
@@ -346,7 +351,7 @@ class KanbanHandler extends McpHandler
     $resultLists = [];
     foreach ($lists as $list) {
       $listId = $list['id'] ?? '';
-      $taskCount = count($tasksOrder[$listId] ?? []);
+      $taskCount = count(array_unique($tasksOrder[$listId] ?? []));
       $resultLists[] = [
         'id' => $listId,
         'title' => $list['title'] ?? '',
@@ -358,7 +363,7 @@ class KanbanHandler extends McpHandler
     $resultArchived = [];
     foreach ($archivedLists as $list) {
       $listId = $list['id'] ?? '';
-      $taskCount = count($archivedTasksOrder[$listId] ?? []);
+      $taskCount = count(array_unique($archivedTasksOrder[$listId] ?? []));
       $resultArchived[] = [
         'id' => $listId,
         'title' => $list['title'] ?? '',
