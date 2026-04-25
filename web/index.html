@@ -30,6 +30,8 @@
         server: '../server/index.php?s=', // 向上访问 server 目录
         originalServer: '../server/index.php?s=', // 向上访问 server 目录
         lang: 'zh-cn',
+        // plantumlHost将在Docker启动时通过环境变量注入，默认使用官方服务器
+        plantumlHost: 'https://www.plantuml.com/plantuml',
         staticPath: './' // 相对路径（指向 web/ 下资源根）
       }
     </script>

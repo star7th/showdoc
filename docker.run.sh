@@ -62,8 +62,14 @@ docker_build() {
     cd $showdoc_dir/mock || exit 1
     ## fix old warn
     # rm -f package-lock.json
+    npm install --legacy-peer-deps
 
-    npm install
+    cd $showdoc_dir_html/web_src || exit 1
+    ## 安装依赖
+    npm install --legacy-peer-deps
+    npm run build
+
+    rm  -rf $showdoc_dir_html/web_src 
 }
 
 backup_dbfile() {
@@ -159,6 +165,13 @@ docker_run() {
     chmod 666 "$web_dir/server/Application/Home/Conf/config.php"
     chmod 666 "$web_dir/web/index.html"
     chmod 666 "$web_dir/web_src/index.html"
+    
+    ## 从环境变量注入PLANTUML_HOST到前端配置
+    if [ -n "$PLANTUML_HOST" ]; then
+        echo "Setting PLANTUML_HOST to $PLANTUML_HOST"
+        sed -i "s|plantumlHost: '[^']*'|plantumlHost: '$PLANTUML_HOST'|g" "$web_dir/web/index.html"
+        sed -i "s|plantumlHost: '[^']*'|plantumlHost: '$PLANTUML_HOST'|g" "$web_dir/web_src/index.html"
+    fi
 
     ## 检查 web/ 目录是否有 index.php，如果没有则创建
     if [ ! -f "$web_dir/web/index.php" ]; then
