@@ -299,6 +299,7 @@ export default {
   beian: 'ICP Filing Number',
   beian_tips: 'Will be displayed at the bottom of the website homepage',
   // Attachment Management
+  display_name: 'Display Name',
   display_name_placeholder: 'Display Name',
   all_attachment_type: 'All Attachment Types',
   image: 'Image',
@@ -313,6 +314,7 @@ export default {
   delete_selected: 'Delete Selected',
   file_id: 'File ID',
   file_type: 'File Type',
+  file_size: 'File Size',
   file_size_m: 'File Size (MB)',
   visit_times: 'Visit Times',
   accumulated_used_space: 'Accumulated Used Space',

@@ -46,6 +46,7 @@ export default {
   pagination_info: '第 {start} - {end} 条，共 {total} 条',
   prev_page: '上一页',
   next_page: '下一页',
+  per_page_unit: '条/页',
   required: '不能为空',
   optional: '可选',
   please_select_page: '请选择页面',

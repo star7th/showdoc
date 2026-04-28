@@ -699,7 +699,7 @@ class AttachmentController extends BaseController
                         'display_name' => $value->display_name ?? '',
                         'file_size'    => (int) ($value->file_size ?? 0),
                         'file_size_m'  => round((int) ($value->file_size ?? 0) / (1024 * 1024), 3),
-                        'addtime'      => $value->addtime ?? 0,
+                        'addtime'      => date('Y-m-d H:i:s', (int) ($value->addtime ?? time())),
                         'username'     => $value->username ?? '',
                         'uid'          => (int) ($value->uid ?? 0),
                     ];

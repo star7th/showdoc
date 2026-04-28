@@ -311,6 +311,7 @@ export default {
   beian: '备案号',
   beian_tips: '设置后会展示在网站首页最下方',
   // 附件管理
+  display_name: '显示名称',
   display_name_placeholder: '显示名称',
   all_attachment_type: '全部附件类型',
   image: '图片',
@@ -325,6 +326,7 @@ export default {
   delete_selected: '删除选中',
   file_id: '文件ID',
   file_type: '文件类型',
+  file_size: '文件大小',
   file_size_m: '文件大小(MB)',
   visit_times: '访问次数',
   accumulated_used_space: '累计已使用空间',

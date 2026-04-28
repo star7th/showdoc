@@ -64,6 +64,7 @@
           :row-selection="cleanupRowSelection"
           :pagination="cleanupPagination"
           :loading="cleanupLoading"
+          :page-size-options="pageSizeOptions"
           row-key="file_id"
           max-height="500px"
           @page-change="handleCleanupPageChange"
@@ -118,6 +119,7 @@
         :row-selection="rowSelection"
         :pagination="pagination"
         :loading="loading"
+        :page-size-options="pageSizeOptions"
         row-key="file_id"
         max-height="calc(100vh - 380px)"
         @page-change="handleTableChange"
@@ -164,6 +166,20 @@ const username = ref('')
 const attachmentType = ref('-1')
 const usedSpace = ref(0)
 
+// 每页行数选项
+const STORAGE_KEY = 'admin_attachment_page_size'
+const pageSizeOptions = [10, 20, 50, 100]
+
+// 从 localStorage 恢复用户偏好
+const getSavedPageSize = (): number => {
+  const saved = localStorage.getItem(STORAGE_KEY)
+  if (saved) {
+    const parsed = parseInt(saved, 10)
+    if (pageSizeOptions.includes(parsed)) return parsed
+  }
+  return 10
+}
+
 // 清理未使用附件相关
 const cleanupModalVisible = ref(false)
 const cleanupList = ref<any[]>([])
@@ -175,7 +191,7 @@ const cleanupSearch = reactive({
 })
 const cleanupPagination = reactive({
   current: 1,
-  pageSize: 10,
+  pageSize: getSavedPageSize(),
   total: 0
 })
 
@@ -185,7 +201,7 @@ const attachmentTypeLabel = ref(t('admin.all_attachment_type'))
 // 分页配置
 const pagination = reactive({
   current: 1,
-  pageSize: 10,
+  pageSize: getSavedPageSize(),
   total: 0
 })
 
@@ -263,7 +279,10 @@ const handleSearch = () => {
 
 const handleTableChange = (page: number, pageSize: number) => {
   pagination.current = page
-  pagination.pageSize = pageSize
+  if (pageSize !== pagination.pageSize) {
+    pagination.pageSize = pageSize
+    localStorage.setItem(STORAGE_KEY, String(pageSize))
+  }
   fetchList()
 }
 
@@ -327,7 +346,10 @@ const handleCleanupSearch = () => {
 
 const handleCleanupPageChange = (page: number, pageSize: number) => {
   cleanupPagination.current = page
-  cleanupPagination.pageSize = pageSize
+  if (pageSize !== cleanupPagination.pageSize) {
+    cleanupPagination.pageSize = pageSize
+    localStorage.setItem(STORAGE_KEY, String(pageSize))
+  }
   fetchCleanupList()
 }
 

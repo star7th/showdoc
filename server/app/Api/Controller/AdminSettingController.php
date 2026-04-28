@@ -219,7 +219,7 @@ class AdminSettingController extends BaseController
                 return $this->error($response, 10011, "Can't connect to LDAP server");
             }
 
-            $ldapForm['bind_password'] = htmlspecialchars_decode($ldapForm['bind_password']);
+            $ldapForm['bind_password'] = htmlspecialchars_decode($ldapForm['bind_password'] ?? '');
 
             ldap_set_option($ldapConn, LDAP_OPT_PROTOCOL_VERSION, $ldapForm['version']);
             $rs = ldap_bind($ldapConn, $ldapForm['bind_dn'], $ldapForm['bind_password']);
@@ -228,7 +228,7 @@ class AdminSettingController extends BaseController
             }
 
             $ldapForm['search_filter'] = !empty($ldapForm['search_filter']) ? $ldapForm['search_filter'] : '(cn=*)';
-            $ldapForm['search_filter'] = trim(htmlspecialchars_decode($ldapForm['search_filter']));
+            $ldapForm['search_filter'] = trim(htmlspecialchars_decode($ldapForm['search_filter'] ?? ''));
 
             // 检测search_filter中是否包含占位符 %(user)s
             $hasPlaceholder = strpos($ldapForm['search_filter'], '%(user)s') !== false;
@@ -391,7 +391,7 @@ class AdminSettingController extends BaseController
 
         $oauth2Open = Options::get("oauth2_open");
         $oauth2Form = Options::get("oauth2_form");
-        $oauth2Form = htmlspecialchars_decode($oauth2Form);
+        $oauth2Form = htmlspecialchars_decode($oauth2Form ?? '');
         $oauth2Form = json_decode($oauth2Form, true);
 
         $array = [

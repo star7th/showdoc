@@ -158,6 +158,17 @@
         {{ t('common.pagination_info', { start: paginationStart, end: paginationEnd, total: pagination.total }) }}
       </div>
       <div class="pagination-controls">
+        <div v-if="pageSizeOptions && pageSizeOptions.length > 0" class="pagination-size-selector">
+          <select
+            class="page-size-select"
+            :value="pagination.pageSize"
+            @change="handlePageSizeChange(($event.target as HTMLSelectElement).value)"
+          >
+            <option v-for="size in pageSizeOptions" :key="size" :value="size">
+              {{ size }} {{ t('common.per_page_unit') || '' }}
+            </option>
+          </select>
+        </div>
         <button
           class="pagination-btn"
           :disabled="pagination.current === 1"
@@ -220,6 +231,7 @@ const props = withDefaults(
     typeFieldMapping?: Record<string, string>;
     emptyText?: string | (() => string);
     dataSource?: 'client' | 'server';
+    pageSizeOptions?: number[];
   }>(),
   {
     pagination: false,
@@ -230,6 +242,7 @@ const props = withDefaults(
     typeField: '',
     typeFieldMapping: () => ({}),
     dataSource: 'server',
+    pageSizeOptions: () => [],
   }
 );
 
@@ -386,6 +399,13 @@ function handlePageChange(page: number) {
   if (!paginationConfig.value) return;
   emit('pageChange', page, paginationConfig.value.pageSize);
 }
+
+function handlePageSizeChange(size: string) {
+  if (!paginationConfig.value) return;
+  const newPageSize = parseInt(size, 10);
+  if (isNaN(newPageSize) || newPageSize === paginationConfig.value.pageSize) return;
+  emit('pageChange', 1, newPageSize);
+}
 </script>
 
 <style scoped lang="scss">
@@ -530,6 +550,32 @@ tbody {
     align-items: center;
     gap: 12px;
   }
+
+  .pagination-size-selector {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .page-size-select {
+    padding: 5px 8px;
+    border: 1px solid var(--color-interval);
+    background-color: var(--color-default);
+    color: var(--color-text-primary);
+    border-radius: 6px;
+    font-size: var(--font-size-s);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: var(--color-primary);
+    }
+
+    &:focus {
+      border-color: var(--color-active);
+    }
+  }
   }
 
   .pagination-btn {
@@ -638,6 +684,21 @@ tbody {
       &:hover:not(:disabled) {
         background-color: #3a3a3a;
         border-color: var(--color-primary);
+      }
+    }
+
+    .page-size-select {
+      background-color: #2d2d2d;
+      color: #e0e0e0;
+      border-color: #3a3a3a;
+
+      &:hover {
+        border-color: var(--color-primary);
+      }
+
+      option {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
       }
     }
 

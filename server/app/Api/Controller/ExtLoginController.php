@@ -148,7 +148,7 @@ class ExtLoginController extends BaseController
 
         $oauth2Open = Options::get('oauth2_open');
         $oauth2Form = Options::get('oauth2_form');
-        $oauth2Form = htmlspecialchars_decode($oauth2Form);
+        $oauth2Form = htmlspecialchars_decode($oauth2Form ?? '');
         $oauth2Form = json_decode($oauth2Form, true);
 
         if (!$oauth2Open || !$oauth2Form) {
@@ -305,7 +305,7 @@ class ExtLoginController extends BaseController
         // CAS 配置从 Options 读取
         $casOpen = Options::get('cas_open');
         $casForm = Options::get('cas_form');
-        $casForm = htmlspecialchars_decode($casForm);
+        $casForm = htmlspecialchars_decode($casForm ?? '');
         $casForm = json_decode($casForm, true);
 
         if (!$casOpen || !$casForm) {

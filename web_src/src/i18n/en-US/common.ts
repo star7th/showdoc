@@ -42,6 +42,7 @@ export default {
   pagination_info: '{start} - {end} of {total} items',
   prev_page: 'Previous',
   next_page: 'Next',
+  per_page_unit: '/ page',
   required: 'Cannot be empty',
   optional: 'Optional',
   download: 'Download',
