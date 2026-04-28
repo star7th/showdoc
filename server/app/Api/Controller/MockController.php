@@ -43,9 +43,29 @@ class MockController extends BaseController
             return $this->error($response, 10303, '没有权限');
         }
 
-        // 路径处理：确保以 / 开头
-        if (substr($path, 0, 1) !== '/') {
-            $path = '/' . $path;
+        // 路径处理
+        if (strpos($path, "~") === 0) {
+            // 正则路径：以 ~ 开头
+            $regex = substr($path, 1);
+            if (strlen($regex) > 500) {
+                return $this->error($response, 10101, '正则表达式不能超过500个字符');
+            }
+            // 验证正则语法（将用户输入的正则包裹在定界符中测试）
+            $delimiter = '/';
+            $escapedPattern = str_replace($delimiter, '\\' . $delimiter, $regex);
+            $testResult = @preg_match($delimiter . $escapedPattern . '/u', '');
+            if ($testResult === false) {
+                return $this->error($response, 10101, '正则表达式语法错误：' . preg_last_error_msg());
+            }
+            // 安全检查
+            if (!Mock::isSafeRegex($regex)) {
+                return $this->error($response, 10101, '正则表达式过于复杂或存在安全风险，请简化');
+            }
+        } else {
+            // 普通路径：确保以 / 开头
+            if (substr($path, 0, 1) !== '/') {
+                $path = '/' . $path;
+            }
         }
 
         $itemId = (int) $page['item_id'];
@@ -157,7 +177,7 @@ class MockController extends BaseController
             // 直接使用原始 JSON 数据
 
             // 使用 json_encode 重新编码，确保安全（会自动转义所有特殊字符）
-            $response->getBody()->write(json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $response->getBody()->write(json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT));
             return $response->withHeader('Content-Type', 'application/json');
         } else {
             $response->getBody()->write('mock服务暂时不可用。网站管理员安装完showdoc后需要另行安装mock服务，详情请打开https://www.showdoc.com.cn/help');
@@ -177,6 +197,11 @@ class MockController extends BaseController
         // 使用 getParam 获取参数（更安全）
         $itemId = $this->getParam($request, 'item_id', 0);
         $path = $this->getParam($request, 'path', '/');
+
+        if (strlen($path) > 2048) {
+            $response->getBody()->write('path too long');
+            return $response->withStatus(400);
+        }
 
         $mock = Mock::findByItemIdAndPath($itemId, $path);
         if (!$mock) {
@@ -206,7 +231,7 @@ class MockController extends BaseController
             // 直接使用原始 JSON 数据
 
             // 使用 json_encode 重新编码，确保安全（会自动转义所有特殊字符）
-            $response->getBody()->write(json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            $response->getBody()->write(json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT));
             return $response->withHeader('Content-Type', 'application/json');
         } else {
             $response->getBody()->write('mock服务暂时不可用。网站管理员安装完showdoc后需要另行安装mock服务，详情请打开https://www.showdoc.com.cn/help');

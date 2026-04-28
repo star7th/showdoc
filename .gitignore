@@ -23,3 +23,10 @@ showdocdata/
 /server/app/Runtime/mcp_rate_limit
 /fixtime.sh
 /install/install.lock
+
+# PHPUnit
+server/.phpunit.cache/
+server/.phpunit.result.cache
+server/vendor/bin/.phpunit.result.cache
+server/phpunit.xml.bak
+server/composer.phar

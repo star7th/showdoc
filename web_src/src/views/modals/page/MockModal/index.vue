@@ -21,16 +21,28 @@
       <!-- Mock URL 和路径 -->
       <div class="mock-url-section">
         <label class="section-label">{{ $t('page.mock_url_and_path') }}</label>
+        <div class="match-mode-row">
+          <span class="match-mode-label">{{ $t('page.mock_match_mode') }}：</span>
+          <a-radio-group v-model:value="matchMode" size="small">
+            <a-radio value="exact">{{ $t('page.mock_exact_match') }}</a-radio>
+            <a-radio value="regex">{{ $t('page.mock_regex_match') }}</a-radio>
+          </a-radio-group>
+        </div>
         <div class="url-container">
           <code class="mock-url-prefix">{{ mockUrlPre }}</code>
           <CommonInput
             v-model="mockConfig.path"
             class="path-input"
-            placeholder="/path"
+            :placeholder="matchMode === 'regex' ? '^/api/users/\\d+$' : '/path'"
           />
-          <i class="fas fa-copy copy-icon" @click="handleCopyUrl" :title="$t('common.copy')"></i>
+          <i
+            class="fas fa-copy copy-icon"
+            @click="handleCopyUrl"
+            :title="$t('common.copy')"
+          ></i>
         </div>
         <code v-if="fullMockUrl" class="full-mock-url">{{ fullMockUrl }}</code>
+        <p v-if="matchMode === 'regex'" class="regex-tips">{{ $t('page.mock_regex_tips') }}</p>
       </div>
 
       <!-- 操作按钮 -->
@@ -87,6 +99,7 @@ const route = useRoute()
 
 // Refs
 const show = ref(false)
+const matchMode = ref<'exact' | 'regex'>('exact')
 const mockConfig = ref({
   content: '',
   path: '/'
@@ -105,10 +118,24 @@ const handleClose = () => {
 
 const handleSave = async () => {
   try {
+    let savePath = mockConfig.value.path
+
+    // 正则模式下验证语法并添加 ~ 前缀
+    if (matchMode.value === 'regex') {
+      const regexValue = savePath
+      try {
+        new RegExp(regexValue)
+      } catch (e) {
+        await AlertModal(t('page.mock_regex_invalid'))
+        return
+      }
+      savePath = '~' + regexValue
+    }
+
     const result = await request('/api/mock/add', {
       page_id: props.pageId,
       template: mockConfig.value.content,
-      path: mockConfig.value.path
+      path: savePath
     }, 'post', false)
 
     if (result.error_code === 0) {
@@ -164,7 +191,18 @@ const loadMockConfig = async () => {
     if (result.error_code === 0 && result.data) {
       if (result.data.unique_key && result.data.template) {
         mockConfig.value.content = unescapeHTML(result.data.template)
-        mockConfig.value.path = result.data.path || '/'
+        let loadedPath = result.data.path || '/'
+        // 检测是否为正则路径（以 ~ 开头）
+        if (loadedPath.startsWith('~')) {
+          matchMode.value = 'regex'
+          mockConfig.value.path = loadedPath.substring(1)
+        } else {
+          matchMode.value = 'exact'
+          mockConfig.value.path = loadedPath
+        }
+      } else {
+        // 新建 mock 场景，重置为精确匹配
+        matchMode.value = 'exact'
       }
     }
   } catch (error) {
@@ -230,6 +268,18 @@ onMounted(() => {
   margin-bottom: 20px;
 }
 
+.match-mode-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.match-mode-label {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  margin-right: 8px;
+}
+
 .url-container {
   display: flex;
   align-items: center;
@@ -275,6 +325,13 @@ onMounted(() => {
   font-size: 13px;
   color: var(--color-text-primary);
   word-break: break-all;
+  line-height: 1.5;
+}
+
+.regex-tips {
+  margin: 6px 0 0 0;
+  font-size: 12px;
+  color: var(--color-text-secondary);
   line-height: 1.5;
 }
 

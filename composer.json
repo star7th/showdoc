@@ -40,5 +40,8 @@
     },
     "config": {
         "vendor-dir": "./server/vendor"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10"
     }
 }
