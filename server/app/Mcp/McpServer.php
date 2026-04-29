@@ -8,6 +8,7 @@ use App\Mcp\Handler\PageHandler;
 use App\Mcp\Handler\AttachmentHandler;
 use App\Mcp\Handler\OpenApiHandler;
 use App\Mcp\Handler\KanbanHandler;
+use App\Mcp\Handler\RunapiPageHandler;
 use App\Model\UserAiToken;
 use App\Common\Helper\IpHelper;
 
@@ -273,7 +274,7 @@ class McpServer
     // 页面管理
     $this->tools['list_pages'] = [
       'name' => 'list_pages',
-      'description' => '获取项目/目录下的页面列表（分页，不含内容）。注意：当项目 item_type=6（看板）时，请使用 kanban_get_board 获取板面，kanban_list_tasks 筛选任务',
+      'description' => '获取项目/目录下的页面列表（分页，不含内容）。注意：当项目 item_type=6（看板）时，请使用 kanban_get_board 获取板面，kanban_list_tasks 筛选任务；当项目 item_type=3（RunApi）时，请使用 get_runapi_page 获取接口详情',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -301,7 +302,7 @@ class McpServer
 
     $this->tools['get_page'] = [
       'name' => 'get_page',
-      'description' => '获取页面详情。注意：当项目 item_type=6（看板）时，请使用 kanban_get_task 获取任务详情',
+      'description' => '获取页面详情。注意：当项目 item_type=6（看板）时，请使用 kanban_get_task 获取任务详情；当项目 item_type=3（RunApi）时，请使用 get_runapi_page 获取接口详情',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -341,7 +342,7 @@ class McpServer
 
     $this->tools['search_pages'] = [
       'name' => 'search_pages',
-      'description' => '搜索页面（按关键字搜索，默认只搜索标题）。注意：看板项目(item_type=6)请使用 kanban_search_tasks 搜索任务',
+      'description' => '搜索页面（按关键字搜索，默认只搜索标题）。注意：看板项目(item_type=6)请使用 kanban_search_tasks 搜索任务；RunApi项目(item_type=3)的接口也可通过此工具搜索',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -382,7 +383,7 @@ class McpServer
 
     $this->tools['create_page'] = [
       'name' => 'create_page',
-      'description' => '创建页面（Markdown内容）。注意：当项目 item_type=6（看板）时，请使用 kanban_create_task 创建任务',
+      'description' => '创建页面（Markdown内容）。注意：当项目 item_type=6（看板）时，请使用 kanban_create_task 创建任务；当项目 item_type=3（RunApi）时，请使用 create_runapi_page 创建接口页面',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -414,7 +415,7 @@ class McpServer
 
     $this->tools['create_page_by_comment'] = [
       'name' => 'create_page_by_comment',
-      'description' => '通过代码注释创建RunApi格式页面。注意：不适用于看板项目(item_type=6)',
+      'description' => '通过代码注释（showdoc格式）创建页面。注意：不适用于看板项目(item_type=6)；主要适用于普通文档项目(item_type=1)。对于RunApi项目(item_type=3)，推荐使用专门的 create_runapi_page / upsert_runapi_page 工具来创建接口页面',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -434,7 +435,7 @@ class McpServer
 
     $this->tools['update_page'] = [
       'name' => 'update_page',
-      'description' => '更新页面。注意：当项目 item_type=6（看板）时，请使用 kanban_update_task 更新任务',
+      'description' => '更新页面。注意：当项目 item_type=6（看板）时，请使用 kanban_update_task 更新任务；当项目 item_type=3（RunApi）时，请使用 update_runapi_page 更新接口页面',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -462,7 +463,7 @@ class McpServer
 
     $this->tools['upsert_page'] = [
       'name' => 'upsert_page',
-      'description' => '按标题智能匹配：存在则更新，不存在则创建。注意：当项目 item_type=6（看板）时，请使用 kanban_create_task 或 kanban_update_task',
+      'description' => '按标题智能匹配：存在则更新，不存在则创建。注意：当项目 item_type=6（看板）时，请使用 kanban_create_task 或 kanban_update_task；当项目 item_type=3（RunApi）时，请使用 upsert_runapi_page',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -494,7 +495,7 @@ class McpServer
 
     $this->tools['batch_upsert_pages'] = [
       'name' => 'batch_upsert_pages',
-      'description' => '批量创建/更新页面（最多50个页面对象）。注意：不适用于看板项目(item_type=6)，请使用 kanban_create_task',
+      'description' => '批量创建/更新页面（最多50个页面对象）。注意：不适用于看板项目(item_type=6)，请使用 kanban_create_task；不适用于RunApi项目(item_type=3)，请使用 create_runapi_page 或 upsert_runapi_page',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -524,7 +525,7 @@ class McpServer
 
     $this->tools['delete_page'] = [
       'name' => 'delete_page',
-      'description' => '删除页面（软删除）。注意：当项目 item_type=6（看板）时，请使用 kanban_delete_task 删除任务',
+      'description' => '删除页面（软删除）。注意：当项目 item_type=6（看板）时，请使用 kanban_delete_task 删除任务；RunApi项目(item_type=3)的接口页面也可使用此工具删除',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -1155,6 +1156,122 @@ class McpServer
         'required' => ['item_id'],
       ],
       'handler' => 'kanban',
+    ];
+
+    // RunApi 页面管理
+    $this->tools['get_runapi_page'] = [
+      'name' => 'get_runapi_page',
+      'description' => '获取RunApi项目中的接口详情，返回原始RunApi JSON结构。仅适用于item_type=3的RunApi项目。返回的page_content是RunApi JSON对象，可直接修改后通过update_runapi_page写回。',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'page_id' => [
+            'type' => 'integer',
+            'description' => '页面ID',
+          ],
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID（与page_title配合使用）',
+          ],
+          'page_title' => [
+            'type' => 'string',
+            'description' => '页面标题（与item_id配合使用）',
+          ],
+        ],
+      ],
+      'handler' => 'runapi_page',
+    ];
+
+    $this->tools['create_runapi_page'] = [
+      'name' => 'create_runapi_page',
+      'description' => '在RunApi项目中创建接口页面。仅适用于item_type=3的RunApi项目。page_content必须是RunApi JSON对象，结构如下：' . "\n\n" . '{' . "\n" . '  "info": {' . "\n" . '    "from": "runapi",' . "\n" . '    "type": "api",' . "\n" . '    "method": "post",' . "\n" . '    "url": "/api/path",' . "\n" . '    "description": "接口描述",' . "\n" . '    "remark": "备注"' . "\n" . '  },' . "\n" . '  "request": {' . "\n" . '    "params": {' . "\n" . '      "mode": "json",' . "\n" . '      "json": "{\\"key\\\":\\"value\\\"}",' . "\n" . '      "jsonDesc": [{"name":"key","type":"string","require":"1","remark":"说明"}],' . "\n" . '      "formdata": [],' . "\n" . '      "urlencoded": []' . "\n" . '    },' . "\n" . '    "headers": [{"name":"Content-Type","type":"string","value":"application/json","require":"1","remark":"" }],' . "\n" . '    "query": [{"name":"page","type":"int","value":"1","require":"0","remark":"页码"}],' . "\n" . '    "pathVariable": [{"name":"id","type":"int","value":"1","require":"1","remark":"资源ID"}],' . "\n" . '    "cookies": [],' . "\n" . '    "auth": {"type":"bearer","bearer":[{"key":"token","value":"{{token}}","type":"string"}]}' . "\n" . '  },' . "\n" . '  "response": {' . "\n" . '    "responseExample": "{\\"code\\\":0}",' . "\n" . '    "responseParamsDesc": [{"name":"code","type":"int","remark":"状态码" }],' . "\n" . '    "responseFailExample": "",' . "\n" . '    "responseFailParamsDesc": []' . "\n" . '  },' . "\n" . '  "scripts": {"pre": "", "post": ""},' . "\n" . '  "apiStatus": "0"' . "\n" . '}' . "\n\n" . 'Key rules:' . "\n" . '- method: lowercase, e.g. get/post/put/delete/patch' . "\n" . '- require: "1" = required, "0" = optional (string, not boolean)' . "\n" . '- mode: "json" | "formdata" | "urlencoded"' . "\n" . '- When mode=json: put raw JSON string in params.json, field descriptions in params.jsonDesc[]' . "\n" . '- When mode=formdata: put fields in params.formdata[]' . "\n" . '- apiStatus: "0"=none, "1"=开发中, "2"=测试中, "3"=已完成, "4"=需修改, "5"=已废弃' . "\n" . '- auth.type: "bearer" | "basic" | "digest" | "none"' . "\n" . '- scripts.pre/post: JavaScript code executed before/after request',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID（item_type必须为3）',
+          ],
+          'page_title' => [
+            'type' => 'string',
+            'description' => '接口名称',
+          ],
+          'page_content' => [
+            'type' => 'object',
+            'description' => 'RunApi JSON对象（参见description中的格式说明）',
+          ],
+          'cat_name' => [
+            'type' => 'string',
+            'description' => '目录名称（可选，不存在则自动创建，支持/分隔多级目录）',
+          ],
+          's_number' => [
+            'type' => 'integer',
+            'description' => '排序号（可选，默认99）',
+          ],
+        ],
+        'required' => ['item_id', 'page_title', 'page_content'],
+      ],
+      'handler' => 'runapi_page',
+    ];
+
+    $this->tools['update_runapi_page'] = [
+      'name' => 'update_runapi_page',
+      'description' => '更新RunApi项目中的接口页面。仅适用于item_type=3的RunApi项目。page_content必须是完整的RunApi JSON对象（从get_runapi_page获取后修改再传回），不支持部分更新。支持乐观锁：传入expected_hash可检测版本冲突。',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'page_id' => [
+            'type' => 'integer',
+            'description' => '页面ID',
+          ],
+          'page_title' => [
+            'type' => 'string',
+            'description' => '接口名称（可选）',
+          ],
+          'page_content' => [
+            'type' => 'object',
+            'description' => '完整的RunApi JSON对象（必须是完整对象，不支持部分更新）',
+          ],
+          'expected_hash' => [
+            'type' => 'string',
+            'description' => '期望的当前内容哈希（乐观锁，可选，从get_runapi_page返回的content_hash获取）',
+          ],
+        ],
+        'required' => ['page_id'],
+      ],
+      'handler' => 'runapi_page',
+    ];
+
+    $this->tools['upsert_runapi_page'] = [
+      'name' => 'upsert_runapi_page',
+      'description' => '按标题智能匹配：存在则更新，不存在则创建。仅适用于item_type=3的RunApi项目。page_content格式与create_runapi_page相同。',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'integer',
+            'description' => '项目ID（item_type必须为3）',
+          ],
+          'page_title' => [
+            'type' => 'string',
+            'description' => '接口名称',
+          ],
+          'page_content' => [
+            'type' => 'object',
+            'description' => 'RunApi JSON对象',
+          ],
+          'cat_name' => [
+            'type' => 'string',
+            'description' => '目录名称（可选，不存在则自动创建）',
+          ],
+          's_number' => [
+            'type' => 'integer',
+            'description' => '排序号（可选，默认99）',
+          ],
+        ],
+        'required' => ['item_id', 'page_title', 'page_content'],
+      ],
+      'handler' => 'runapi_page',
     ];
   }
 
@@ -1986,6 +2103,9 @@ class McpServer
           break;
         case 'kanban':
           $this->handlers[$name] = new KanbanHandler();
+          break;
+        case 'runapi_page':
+          $this->handlers[$name] = new RunapiPageHandler();
           break;
         default:
           throw new \RuntimeException("Handler 不存在: {$name}");
