@@ -86,7 +86,9 @@ implements CAS_Request_RequestInterface
 
         }
         // close the CURL session
-        curl_close($ch);
+        if (PHP_VERSION_ID < 80000) {
+            curl_close($ch);
+        }
 
         phpCAS::traceEnd($res);
         return $res;

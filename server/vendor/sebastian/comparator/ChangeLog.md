@@ -2,51 +2,17 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [5.0.5] - 2026-01-24
+## [4.0.10] - 2026-01-24
 
 ### Changed
 
 * [#134](https://github.com/sebastianbergmann/comparator/issues/134): Suppress warning introduced in PHP 8.5
 
-## [5.0.4] - 2025-09-07
+## [4.0.9] - 2025-08-10
 
 ### Changed
 
 * Do not use `SplObjectStorage` methods that will be deprecated in PHP 8.5
-
-## [5.0.3] - 2024-10-18
-
-### Fixed
-
-* Reverted [#113](https://github.com/sebastianbergmann/comparator/pull/113) as it broke backward compatibility
-
-## [5.0.2] - 2024-08-12
-
-### Fixed
-
-* [#112](https://github.com/sebastianbergmann/comparator/issues/112): Arrays with different keys and the same values are considered equal in canonicalize mode
-
-## [5.0.1] - 2023-08-14
-
-### Fixed
-
-* `MockObjectComparator` only works on instances of `PHPUnit\Framework\MockObject\MockObject`, but not on instances of `PHPUnit\Framework\MockObject\Stub`
-* `MockObjectComparator` only ignores the `$__phpunit_invocationMocker` property, but not other properties with names prefixed with `__phpunit_`
-
-## [5.0.0] - 2023-02-03
-
-### Changed
-
-* Methods now have parameter and return type declarations
-* `Comparator::$factory` is now private, use `Comparator::factory()` instead
-* `ComparisonFailure`, `DOMNodeComparator`, `DateTimeComparator`, `ExceptionComparator`, `MockObjectComparator`, `NumericComparator`, `ResourceComparator`, `SplObjectStorageComparator`, and `TypeComparator` are now `final`
-* `ScalarComparator` and `DOMNodeComparator` now use `mb_strtolower($string, 'UTF-8')` instead of `strtolower($string)`
-
-### Removed
-
-* Removed `$identical` parameter from `ComparisonFailure::__construct()`
-* Removed `Comparator::$exporter`
-* Removed support for PHP 7.3, PHP 7.4, and PHP 8.0
 
 ## [4.0.8] - 2022-09-14
 
@@ -101,6 +67,18 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Removed
 
 * Removed support for PHP 7.1 and PHP 7.2
+
+## [3.0.7] - 2026-01-24
+
+### Changed
+
+* [#134](https://github.com/sebastianbergmann/comparator/issues/134): Suppress warning introduced in PHP 8.5
+
+## [3.0.6] - 2025-08-10
+
+### Changed
+
+* Do not use `SplObjectStorage` methods that will be deprecated in PHP 8.5
 
 ## [3.0.5] - 2022-09-14
 
@@ -168,12 +146,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added `SebastianBergmann\Comparator\Factory::reset()` to unregister all non-default comparators
 * Added support for `phpunit/phpunit-mock-objects` version `^5.0`
 
-[5.0.5]: https://github.com/sebastianbergmann/comparator/compare/5.0.4...5.0.5
-[5.0.4]: https://github.com/sebastianbergmann/comparator/compare/5.0.3...5.0.4
-[5.0.3]: https://github.com/sebastianbergmann/comparator/compare/5.0.2...5.0.3
-[5.0.2]: https://github.com/sebastianbergmann/comparator/compare/5.0.1...5.0.2
-[5.0.1]: https://github.com/sebastianbergmann/comparator/compare/5.0.0...5.0.1
-[5.0.0]: https://github.com/sebastianbergmann/comparator/compare/4.0...5.0.0
 [4.0.10]: https://github.com/sebastianbergmann/comparator/compare/4.0.9...4.0.10
 [4.0.9]: https://github.com/sebastianbergmann/comparator/compare/4.0.8...4.0.9
 [4.0.8]: https://github.com/sebastianbergmann/comparator/compare/4.0.7...4.0.8

@@ -114,7 +114,7 @@ class AdminUpdateController extends BaseController
         $fileUrlHost = strtolower($parsedFileUrl['host'] ?? '');
         $isAllowedHost = false;
         foreach ($allowedHosts as $allowedHost) {
-            if ($fileUrlHost === $allowedHost || str_ends_with($fileUrlHost, '.' . $allowedHost)) {
+            if ($fileUrlHost === $allowedHost || substr($fileUrlHost, -(strlen('.' . $allowedHost))) === '.' . $allowedHost) {
                 $isAllowedHost = true;
                 break;
             }

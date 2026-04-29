@@ -55,7 +55,7 @@ implements CAS_Exception
      * authenticated.
      *
      * @param CAS_Client $client       phpcas client
-     * @param string     $failure      the failure that occured
+     * @param string     $failure      the failure that occurred
      * @param string     $cas_url      the URL the CAS server was asked for
      * @param bool       $no_response  the response from the CAS server (other
      * parameters are ignored if TRUE)

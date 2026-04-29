@@ -35,14 +35,14 @@ class CachingHttpClient implements HttpClientInterface, ResetInterface
 {
     use HttpClientTrait;
 
-    private HttpClientInterface $client;
-    private HttpCache $cache;
-    private array $defaultOptions = self::OPTIONS_DEFAULTS;
+    private $client;
+    private $cache;
+    private $defaultOptions = self::OPTIONS_DEFAULTS;
 
     public function __construct(HttpClientInterface $client, StoreInterface $store, array $defaultOptions = [])
     {
         if (!class_exists(HttpClientKernel::class)) {
-            throw new \LogicException(\sprintf('Using "%s" requires the HttpKernel component, try running "composer require symfony/http-kernel".', __CLASS__));
+            throw new \LogicException(sprintf('Using "%s" requires that the HttpKernel component version 4.3 or higher is installed, try running "composer require symfony/http-kernel:^5.4".', __CLASS__));
         }
 
         $this->client = $client;
@@ -52,7 +52,6 @@ class CachingHttpClient implements HttpClientInterface, ResetInterface
         unset($defaultOptions['debug']);
         unset($defaultOptions['default_ttl']);
         unset($defaultOptions['private_headers']);
-        unset($defaultOptions['skip_response_headers']);
         unset($defaultOptions['allow_reload']);
         unset($defaultOptions['allow_revalidate']);
         unset($defaultOptions['stale_while_revalidate']);
@@ -65,6 +64,9 @@ class CachingHttpClient implements HttpClientInterface, ResetInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
         [$url, $options] = $this->prepareRequest($method, $url, $options, $this->defaultOptions, true);
@@ -105,10 +107,15 @@ class CachingHttpClient implements HttpClientInterface, ResetInterface
         return MockResponse::fromRequest($method, $url, $options, $response);
     }
 
-    public function stream(ResponseInterface|iterable $responses, ?float $timeout = null): ResponseStreamInterface
+    /**
+     * {@inheritdoc}
+     */
+    public function stream($responses, ?float $timeout = null): ResponseStreamInterface
     {
         if ($responses instanceof ResponseInterface) {
             $responses = [$responses];
+        } elseif (!is_iterable($responses)) {
+            throw new \TypeError(sprintf('"%s()" expects parameter 1 to be an iterable of ResponseInterface objects, "%s" given.', __METHOD__, get_debug_type($responses)));
         }
 
         $mockResponses = [];
@@ -136,9 +143,6 @@ class CachingHttpClient implements HttpClientInterface, ResetInterface
         })());
     }
 
-    /**
-     * @return void
-     */
     public function reset()
     {
         if ($this->client instanceof ResetInterface) {

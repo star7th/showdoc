@@ -9,34 +9,25 @@
  */
 namespace SebastianBergmann\Diff;
 
-use ArrayIterator;
-use IteratorAggregate;
-use Traversable;
-
-/**
- * @template-implements IteratorAggregate<int, Chunk>
- */
-final class Diff implements IteratorAggregate
+final class Diff
 {
     /**
-     * @psalm-var non-empty-string
+     * @var string
      */
-    private string $from;
+    private $from;
 
     /**
-     * @psalm-var non-empty-string
+     * @var string
      */
-    private string $to;
+    private $to;
 
     /**
-     * @psalm-var list<Chunk>
+     * @var Chunk[]
      */
-    private array $chunks;
+    private $chunks;
 
     /**
-     * @psalm-param non-empty-string $from
-     * @psalm-param non-empty-string $to
-     * @psalm-param list<Chunk> $chunks
+     * @param Chunk[] $chunks
      */
     public function __construct(string $from, string $to, array $chunks = [])
     {
@@ -45,70 +36,29 @@ final class Diff implements IteratorAggregate
         $this->chunks = $chunks;
     }
 
-    /**
-     * @psalm-return non-empty-string
-     */
-    public function from(): string
-    {
-        return $this->from;
-    }
-
-    /**
-     * @psalm-return non-empty-string
-     */
-    public function to(): string
-    {
-        return $this->to;
-    }
-
-    /**
-     * @psalm-return list<Chunk>
-     */
-    public function chunks(): array
-    {
-        return $this->chunks;
-    }
-
-    /**
-     * @psalm-param list<Chunk> $chunks
-     */
-    public function setChunks(array $chunks): void
-    {
-        $this->chunks = $chunks;
-    }
-
-    /**
-     * @psalm-return non-empty-string
-     *
-     * @deprecated
-     */
     public function getFrom(): string
     {
         return $this->from;
     }
 
-    /**
-     * @psalm-return non-empty-string
-     *
-     * @deprecated
-     */
     public function getTo(): string
     {
         return $this->to;
     }
 
     /**
-     * @psalm-return list<Chunk>
-     *
-     * @deprecated
+     * @return Chunk[]
      */
     public function getChunks(): array
     {
         return $this->chunks;
     }
 
-    public function getIterator(): Traversable
+    /**
+     * @param Chunk[] $chunks
+     */
+    public function setChunks(array $chunks): void
     {
-        return new ArrayIterator($this->chunks);
+        $this->chunks = $chunks;
     }
 }

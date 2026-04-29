@@ -9,24 +9,34 @@
  */
 namespace SebastianBergmann\Template;
 
-use function array_keys;
 use function array_merge;
+use function file_exists;
 use function file_get_contents;
 use function file_put_contents;
-use function is_file;
 use function sprintf;
 use function str_replace;
 
 final class Template
 {
-    private string $template = '';
-    private string $openDelimiter;
-    private string $closeDelimiter;
+    /**
+     * @var string
+     */
+    private $template = '';
 
     /**
-     * @psalm-var array<string,string>
+     * @var string
      */
-    private array $values = [];
+    private $openDelimiter;
+
+    /**
+     * @var string
+     */
+    private $closeDelimiter;
+
+    /**
+     * @var array
+     */
+    private $values = [];
 
     /**
      * @throws InvalidArgumentException
@@ -44,47 +54,36 @@ final class Template
      */
     public function setFile(string $file): void
     {
-        if (is_file($file)) {
-            $this->template = file_get_contents($file);
-
-            return;
-        }
-
         $distFile = $file . '.dist';
 
-        if (is_file($distFile)) {
+        if (file_exists($file)) {
+            $this->template = file_get_contents($file);
+        } elseif (file_exists($distFile)) {
             $this->template = file_get_contents($distFile);
-
-            return;
+        } else {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Failed to load template "%s"',
+                    $file
+                )
+            );
         }
-
-        throw new InvalidArgumentException(
-            sprintf(
-                'Failed to load template "%s"',
-                $file
-            )
-        );
     }
 
-    /**
-     * @psalm-param array<string,string> $values
-     */
     public function setVar(array $values, bool $merge = true): void
     {
         if (!$merge || empty($this->values)) {
             $this->values = $values;
-
-            return;
+        } else {
+            $this->values = array_merge($this->values, $values);
         }
-
-        $this->values = array_merge($this->values, $values);
     }
 
     public function render(): string
     {
         $keys = [];
 
-        foreach (array_keys($this->values) as $key) {
+        foreach ($this->values as $key => $value) {
             $keys[] = $this->openDelimiter . $key . $this->closeDelimiter;
         }
 
@@ -96,7 +95,7 @@ final class Template
      */
     public function renderTo(string $target): void
     {
-        if (!@file_put_contents($target, $this->render())) {
+        if (!file_put_contents($target, $this->render())) {
             throw new RuntimeException(
                 sprintf(
                     'Writing rendered result to "%s" failed',

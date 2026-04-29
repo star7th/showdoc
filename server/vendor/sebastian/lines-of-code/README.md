@@ -1,11 +1,11 @@
-[![Latest Stable Version](https://poser.pugx.org/sebastian/lines-of-code/v/stable.png)](https://packagist.org/packages/sebastian/lines-of-code)
-[![CI Status](https://github.com/sebastianbergmann/lines-of-code/workflows/CI/badge.svg)](https://github.com/sebastianbergmann/lines-of-code/actions)
-[![Type Coverage](https://shepherd.dev/github/sebastianbergmann/lines-of-code/coverage.svg)](https://shepherd.dev/github/sebastianbergmann/lines-of-code)
-[![codecov](https://codecov.io/gh/sebastianbergmann/lines-of-code/branch/main/graph/badge.svg)](https://codecov.io/gh/sebastianbergmann/lines-of-code)
-
 # sebastian/lines-of-code
 
 Library for counting the lines of code in PHP source code.
+
+[![Latest Stable Version](https://img.shields.io/packagist/v/sebastian/lines-of-code.svg?style=flat-square)](https://packagist.org/packages/sebastian/lines-of-code)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.3-8892BF.svg?style=flat-square)](https://php.net/)
+[![CI Status](https://github.com/sebastianbergmann/lines-of-code/workflows/CI/badge.svg?branch=master&event=push)](https://phpunit.de/build-status.html)
+[![Type Coverage](https://shepherd.dev/github/sebastianbergmann/lines-of-code/coverage.svg)](https://shepherd.dev/github/sebastianbergmann/lines-of-code)
 
 ## Installation
 

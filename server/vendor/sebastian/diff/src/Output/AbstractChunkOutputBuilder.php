@@ -25,14 +25,14 @@ abstract class AbstractChunkOutputBuilder implements DiffOutputBuilderInterface
         $chunkSize    = 0;
         $commonChunks = [];
 
-        for ($i = 0; $i < $diffSize; $i++) {
+        for ($i = 0; $i < $diffSize; ++$i) {
             if ($diff[$i][1] === 0 /* OLD */) {
                 if ($capturing === false) {
                     $capturing  = true;
                     $chunkStart = $i;
                     $chunkSize  = 0;
                 } else {
-                    $chunkSize++;
+                    ++$chunkSize;
                 }
             } elseif ($capturing !== false) {
                 if ($chunkSize >= $lineThreshold) {

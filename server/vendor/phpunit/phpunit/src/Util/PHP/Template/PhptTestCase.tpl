@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Driver\Selector;
 use SebastianBergmann\CodeCoverage\Filter;
@@ -18,10 +18,11 @@ if ($composerAutoload) {
     require $phar;
 }
 
+{globals}
 $coverage = null;
 
-if ('{bootstrap}' !== '') {
-    require_once '{bootstrap}';
+if (isset($GLOBALS['__PHPUNIT_BOOTSTRAP'])) {
+    require_once $GLOBALS['__PHPUNIT_BOOTSTRAP'];
 }
 
 if (class_exists('SebastianBergmann\CodeCoverage\CodeCoverage')) {

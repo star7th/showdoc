@@ -39,7 +39,7 @@ namespace PHPSQLParser\Test\Parser;
 
 use PHPSQLParser\PHPSQLParser;
 
-class issue335Test extends \PHPUnit_Framework_TestCase
+class issue335Test extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

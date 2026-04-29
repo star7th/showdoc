@@ -31,15 +31,15 @@ final class Project extends Node
     {
         $buildNode = $this->dom()->getElementsByTagNameNS(
             'https://schema.phpunit.de/coverage/1.0',
-            'build',
+            'build'
         )->item(0);
 
         if (!$buildNode) {
             $buildNode = $this->dom()->documentElement->appendChild(
                 $this->dom()->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',
-                    'build',
-                ),
+                    'build'
+                )
             );
         }
 
@@ -50,15 +50,15 @@ final class Project extends Node
     {
         $testsNode = $this->contextNode()->getElementsByTagNameNS(
             'https://schema.phpunit.de/coverage/1.0',
-            'tests',
+            'tests'
         )->item(0);
 
         if (!$testsNode) {
             $testsNode = $this->contextNode()->appendChild(
                 $this->dom()->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',
-                    'tests',
-                ),
+                    'tests'
+                )
             );
         }
 
@@ -78,8 +78,8 @@ final class Project extends Node
         $this->setContextNode(
             $dom->getElementsByTagNameNS(
                 'https://schema.phpunit.de/coverage/1.0',
-                'project',
-            )->item(0),
+                'project'
+            )->item(0)
         );
     }
 

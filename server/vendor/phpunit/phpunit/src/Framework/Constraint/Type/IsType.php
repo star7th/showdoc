@@ -21,7 +21,7 @@ use function is_object;
 use function is_scalar;
 use function is_string;
 use function sprintf;
-use PHPUnit\Framework\UnknownTypeException;
+use PHPUnit\Framework\Exception;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
@@ -94,7 +94,7 @@ final class IsType extends Constraint
     public const TYPE_ITERABLE = 'iterable';
 
     /**
-     * @psalm-var array<string,bool>
+     * @var array<string,bool>
      */
     private const KNOWN_TYPES = [
         'array'             => true,
@@ -117,19 +117,23 @@ final class IsType extends Constraint
     ];
 
     /**
-     * @psalm-var 'array'|'boolean'|'bool'|'double'|'float'|'integer'|'int'|'null'|'numeric'|'object'|'real'|'resource'|'resource (closed)'|'string'|'scalar'|'callable'|'iterable'
+     * @var string
      */
-    private readonly string $type;
+    private $type;
 
     /**
-     * @psalm-param 'array'|'boolean'|'bool'|'double'|'float'|'integer'|'int'|'null'|'numeric'|'object'|'real'|'resource'|'resource (closed)'|'string'|'scalar'|'callable'|'iterable' $type
-     *
-     * @throws UnknownTypeException
+     * @throws Exception
      */
     public function __construct(string $type)
     {
         if (!isset(self::KNOWN_TYPES[$type])) {
-            throw new UnknownTypeException($type);
+            throw new Exception(
+                sprintf(
+                    'Type specified for PHPUnit\Framework\Constraint\IsType <%s> ' .
+                    'is not a valid type.',
+                    $type,
+                ),
+            );
         }
 
         $this->type = $type;
@@ -141,7 +145,7 @@ final class IsType extends Constraint
     public function toString(): string
     {
         return sprintf(
-            'is of type %s',
+            'is of type "%s"',
             $this->type,
         );
     }
@@ -149,8 +153,10 @@ final class IsType extends Constraint
     /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
+     *
+     * @param mixed $other value or object to evaluate
      */
-    protected function matches(mixed $other): bool
+    protected function matches($other): bool
     {
         switch ($this->type) {
             case 'numeric':

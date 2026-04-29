@@ -34,31 +34,22 @@ class UnicodeString extends AbstractUnicodeString
 {
     public function __construct(string $string = '')
     {
-        if ('' === $string || normalizer_is_normalized($this->string = $string)) {
-            return;
-        }
+        $this->string = normalizer_is_normalized($string) ? $string : normalizer_normalize($string);
 
-        if (false === $string = normalizer_normalize($string)) {
+        if (false === $this->string) {
             throw new InvalidArgumentException('Invalid UTF-8 string.');
         }
-
-        $this->string = $string;
     }
 
-    public function append(string ...$suffix): static
+    public function append(string ...$suffix): AbstractString
     {
         $str = clone $this;
         $str->string = $this->string.(1 >= \count($suffix) ? ($suffix[0] ?? '') : implode('', $suffix));
+        normalizer_is_normalized($str->string) ?: $str->string = normalizer_normalize($str->string);
 
-        if (normalizer_is_normalized($str->string)) {
-            return $str;
-        }
-
-        if (false === $string = normalizer_normalize($str->string)) {
+        if (false === $str->string) {
             throw new InvalidArgumentException('Invalid UTF-8 string.');
         }
-
-        $str->string = $string;
 
         return $str;
     }
@@ -91,12 +82,14 @@ class UnicodeString extends AbstractUnicodeString
         return $chunks;
     }
 
-    public function endsWith(string|iterable|AbstractString $suffix): bool
+    public function endsWith($suffix): bool
     {
         if ($suffix instanceof AbstractString) {
             $suffix = $suffix->string;
-        } elseif (!\is_string($suffix)) {
+        } elseif (\is_array($suffix) || $suffix instanceof \Traversable) {
             return parent::endsWith($suffix);
+        } else {
+            $suffix = (string) $suffix;
         }
 
         $form = null === $this->ignoreCase ? \Normalizer::NFD : \Normalizer::NFC;
@@ -113,12 +106,14 @@ class UnicodeString extends AbstractUnicodeString
         return $suffix === grapheme_extract($this->string, \strlen($suffix), \GRAPHEME_EXTR_MAXBYTES, \strlen($this->string) - \strlen($suffix));
     }
 
-    public function equalsTo(string|iterable|AbstractString $string): bool
+    public function equalsTo($string): bool
     {
         if ($string instanceof AbstractString) {
             $string = $string->string;
-        } elseif (!\is_string($string)) {
+        } elseif (\is_array($string) || $string instanceof \Traversable) {
             return parent::equalsTo($string);
+        } else {
+            $string = (string) $string;
         }
 
         $form = null === $this->ignoreCase ? \Normalizer::NFD : \Normalizer::NFC;
@@ -131,12 +126,14 @@ class UnicodeString extends AbstractUnicodeString
         return $string === $this->string;
     }
 
-    public function indexOf(string|iterable|AbstractString $needle, int $offset = 0): ?int
+    public function indexOf($needle, int $offset = 0): ?int
     {
         if ($needle instanceof AbstractString) {
             $needle = $needle->string;
-        } elseif (!\is_string($needle)) {
+        } elseif (\is_array($needle) || $needle instanceof \Traversable) {
             return parent::indexOf($needle, $offset);
+        } else {
+            $needle = (string) $needle;
         }
 
         $form = null === $this->ignoreCase ? \Normalizer::NFD : \Normalizer::NFC;
@@ -148,19 +145,21 @@ class UnicodeString extends AbstractUnicodeString
 
         try {
             $i = $this->ignoreCase ? grapheme_stripos($this->string, $needle, $offset) : grapheme_strpos($this->string, $needle, $offset);
-        } catch (\ValueError) {
+        } catch (\ValueError $e) {
             return null;
         }
 
         return false === $i ? null : $i;
     }
 
-    public function indexOfLast(string|iterable|AbstractString $needle, int $offset = 0): ?int
+    public function indexOfLast($needle, int $offset = 0): ?int
     {
         if ($needle instanceof AbstractString) {
             $needle = $needle->string;
-        } elseif (!\is_string($needle)) {
+        } elseif (\is_array($needle) || $needle instanceof \Traversable) {
             return parent::indexOfLast($needle, $offset);
+        } else {
+            $needle = (string) $needle;
         }
 
         $form = null === $this->ignoreCase ? \Normalizer::NFD : \Normalizer::NFC;
@@ -185,7 +184,7 @@ class UnicodeString extends AbstractUnicodeString
         return false === $i ? null : $i;
     }
 
-    public function join(array $strings, ?string $lastGlue = null): static
+    public function join(array $strings, ?string $lastGlue = null): AbstractString
     {
         $str = parent::join($strings, $lastGlue);
         normalizer_is_normalized($str->string) ?: $str->string = normalizer_normalize($str->string);
@@ -198,7 +197,10 @@ class UnicodeString extends AbstractUnicodeString
         return grapheme_strlen($this->string);
     }
 
-    public function normalize(int $form = self::NFC): static
+    /**
+     * @return static
+     */
+    public function normalize(int $form = self::NFC): parent
     {
         $str = clone $this;
 
@@ -214,25 +216,20 @@ class UnicodeString extends AbstractUnicodeString
         return $str;
     }
 
-    public function prepend(string ...$prefix): static
+    public function prepend(string ...$prefix): AbstractString
     {
         $str = clone $this;
         $str->string = (1 >= \count($prefix) ? ($prefix[0] ?? '') : implode('', $prefix)).$this->string;
+        normalizer_is_normalized($str->string) ?: $str->string = normalizer_normalize($str->string);
 
-        if (normalizer_is_normalized($str->string)) {
-            return $str;
-        }
-
-        if (false === $string = normalizer_normalize($str->string)) {
+        if (false === $str->string) {
             throw new InvalidArgumentException('Invalid UTF-8 string.');
         }
-
-        $str->string = $string;
 
         return $str;
     }
 
-    public function replace(string $from, string $to): static
+    public function replace(string $from, string $to): AbstractString
     {
         $str = clone $this;
         normalizer_is_normalized($from) ?: $from = normalizer_normalize($from);
@@ -249,22 +246,17 @@ class UnicodeString extends AbstractUnicodeString
             }
 
             $str->string = $result.$tail;
+            normalizer_is_normalized($str->string) ?: $str->string = normalizer_normalize($str->string);
 
-            if (normalizer_is_normalized($str->string)) {
-                return $str;
-            }
-
-            if (false === $string = normalizer_normalize($str->string)) {
+            if (false === $str->string) {
                 throw new InvalidArgumentException('Invalid UTF-8 string.');
             }
-
-            $str->string = $string;
         }
 
         return $str;
     }
 
-    public function replaceMatches(string $fromRegexp, string|callable $to): static
+    public function replaceMatches(string $fromRegexp, $to): AbstractString
     {
         $str = parent::replaceMatches($fromRegexp, $to);
         normalizer_is_normalized($str->string) ?: $str->string = normalizer_normalize($str->string);
@@ -272,39 +264,40 @@ class UnicodeString extends AbstractUnicodeString
         return $str;
     }
 
-    public function slice(int $start = 0, ?int $length = null): static
+    public function slice(int $start = 0, ?int $length = null): AbstractString
     {
         $str = clone $this;
 
+        if (\PHP_VERSION_ID < 80000 && 0 > $start && grapheme_strlen($this->string) < -$start) {
+            $start = 0;
+        }
         $str->string = (string) grapheme_substr($this->string, $start, $length ?? 2147483647);
 
         return $str;
     }
 
-    public function splice(string $replacement, int $start = 0, ?int $length = null): static
+    public function splice(string $replacement, int $start = 0, ?int $length = null): AbstractString
     {
         $str = clone $this;
 
+        if (\PHP_VERSION_ID < 80000 && 0 > $start && grapheme_strlen($this->string) < -$start) {
+            $start = 0;
+        }
         $start = $start ? \strlen(grapheme_substr($this->string, 0, $start)) : 0;
         $length = $length ? \strlen(grapheme_substr($this->string, $start, $length ?? 2147483647)) : $length;
         $str->string = substr_replace($this->string, $replacement, $start, $length ?? 2147483647);
+        normalizer_is_normalized($str->string) ?: $str->string = normalizer_normalize($str->string);
 
-        if (normalizer_is_normalized($str->string)) {
-            return $str;
-        }
-
-        if (false === $string = normalizer_normalize($str->string)) {
+        if (false === $str->string) {
             throw new InvalidArgumentException('Invalid UTF-8 string.');
         }
-
-        $str->string = $string;
 
         return $str;
     }
 
     public function split(string $delimiter, ?int $limit = null, ?int $flags = null): array
     {
-        if (1 > $limit ??= 2147483647) {
+        if (1 > $limit = $limit ?? 2147483647) {
             throw new InvalidArgumentException('Split limit must be a positive integer.');
         }
 
@@ -340,12 +333,14 @@ class UnicodeString extends AbstractUnicodeString
         return $chunks;
     }
 
-    public function startsWith(string|iterable|AbstractString $prefix): bool
+    public function startsWith($prefix): bool
     {
         if ($prefix instanceof AbstractString) {
             $prefix = $prefix->string;
-        } elseif (!\is_string($prefix)) {
+        } elseif (\is_array($prefix) || $prefix instanceof \Traversable) {
             return parent::startsWith($prefix);
+        } else {
+            $prefix = (string) $prefix;
         }
 
         $form = null === $this->ignoreCase ? \Normalizer::NFD : \Normalizer::NFC;
@@ -362,9 +357,6 @@ class UnicodeString extends AbstractUnicodeString
         return $prefix === grapheme_extract($this->string, \strlen($prefix), \GRAPHEME_EXTR_MAXBYTES);
     }
 
-    /**
-     * @return void
-     */
     public function __wakeup()
     {
         if (!\is_string($this->string)) {

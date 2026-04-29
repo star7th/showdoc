@@ -133,29 +133,28 @@ if (!function_exists('mb_str_split')) {
 }
 
 if (!function_exists('mb_str_pad')) {
-    function mb_str_pad(string $string, int $length, string $pad_string = ' ', int $pad_type = STR_PAD_RIGHT, ?string $encoding = null): string { return p\Mbstring::mb_str_pad($string, $length, $pad_string, $pad_type, $encoding); }
+    function mb_str_pad(string $string, int $length, string $pad_string = ' ', int $pad_type = STR_PAD_RIGHT, ?string $encoding = null) { return p\Mbstring::mb_str_pad($string, $length, $pad_string, $pad_type, $encoding); }
 }
 
 if (!function_exists('mb_ucfirst')) {
-    function mb_ucfirst(string $string, ?string $encoding = null): string { return p\Mbstring::mb_ucfirst($string, $encoding); }
+    function mb_ucfirst(string $string, ?string $encoding = null) { return p\Mbstring::mb_ucfirst($string, $encoding); }
 }
 
 if (!function_exists('mb_lcfirst')) {
-    function mb_lcfirst(string $string, ?string $encoding = null): string { return p\Mbstring::mb_lcfirst($string, $encoding); }
+    function mb_lcfirst(string $string, ?string $encoding = null) { return p\Mbstring::mb_lcfirst($string, $encoding); }
 }
 
 if (!function_exists('mb_trim')) {
-    function mb_trim(string $string, ?string $characters = null, ?string $encoding = null): string { return p\Mbstring::mb_trim($string, $characters, $encoding); }
+    function mb_trim(string $string, ?string $characters = null, ?string $encoding = null) { return p\Mbstring::mb_trim($string, $characters, $encoding); }
 }
 
 if (!function_exists('mb_ltrim')) {
-    function mb_ltrim(string $string, ?string $characters = null, ?string $encoding = null): string { return p\Mbstring::mb_ltrim($string, $characters, $encoding); }
+    function mb_ltrim(string $string, ?string $characters = null, ?string $encoding = null) { return p\Mbstring::mb_ltrim($string, $characters, $encoding); }
 }
 
 if (!function_exists('mb_rtrim')) {
-    function mb_rtrim(string $string, ?string $characters = null, ?string $encoding = null): string { return p\Mbstring::mb_rtrim($string, $characters, $encoding); }
+    function mb_rtrim(string $string, ?string $characters = null, ?string $encoding = null) { return p\Mbstring::mb_rtrim($string, $characters, $encoding); }
 }
-
 
 if (extension_loaded('mbstring')) {
     return;

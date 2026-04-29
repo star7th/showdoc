@@ -62,7 +62,7 @@ final class ResourceUsageFormatter
     {
         foreach (self::SIZES as $unit => $value) {
             if ($bytes >= $value) {
-                return sprintf('%.2f %s', $bytes / $value, $unit);
+                return sprintf('%.2f %s', $bytes >= 1024 ? $bytes / $value : $bytes, $unit);
             }
         }
 

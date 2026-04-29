@@ -57,7 +57,7 @@ if (!isset($_SERVER['REQUEST_URI']) && isset($_SERVER['SCRIPT_NAME']) && isset($
 /**
  * phpCAS version. accessible for the user by phpCAS::getVersion().
  */
-define('PHPCAS_VERSION', '1.6.1');
+define('PHPCAS_VERSION', '1.6.2');
 
 /**
  * @addtogroup public
@@ -303,7 +303,7 @@ class phpCAS
 
     /**
      * This variable is used to enable verbose mode
-     * This pevents debug info to be show to the user. Since it's a security
+     * This prevents debug info to be show to the user. Since it's a security
      * feature the default is false
      *
      * @hideinitializer
@@ -338,7 +338,7 @@ class phpCAS
      * @param bool                     $changeSessionID Allow phpCAS to change the session_id
      *                                                  (Single Sign Out/handleLogoutRequests
      *                                                  is based on that change)
-     * @param \SessionHandlerInterface $sessionHandler  the session handler
+     * @param \SessionHandlerInterface|null $sessionHandler  the session handler
      *
      * @return void a newly created CAS_Client object
      * @note Only one of the phpCAS::client() and phpCAS::proxy functions should be
@@ -347,7 +347,7 @@ class phpCAS
      */
     public static function client($server_version, $server_hostname,
         $server_port, $server_uri, $service_base_url,
-        $changeSessionID = true, \SessionHandlerInterface $sessionHandler = null
+        $changeSessionID = true, ?\SessionHandlerInterface $sessionHandler = null
     ) {
         phpCAS :: traceBegin();
         if (is_object(self::$_PHPCAS_CLIENT)) {
@@ -393,7 +393,7 @@ class phpCAS
      * @param bool                     $changeSessionID Allow phpCAS to change the session_id
      *                                                  (Single Sign Out/handleLogoutRequests
      *                                                  is based on that change)
-     * @param \SessionHandlerInterface $sessionHandler  the session handler
+     * @param \SessionHandlerInterface|null $sessionHandler  the session handler
      *
      * @return void a newly created CAS_Client object
      * @note Only one of the phpCAS::client() and phpCAS::proxy functions should be
@@ -402,14 +402,14 @@ class phpCAS
      */
     public static function proxy($server_version, $server_hostname,
         $server_port, $server_uri, $service_base_url,
-        $changeSessionID = true, \SessionHandlerInterface $sessionHandler = null
+        $changeSessionID = true, ?\SessionHandlerInterface $sessionHandler = null
     ) {
         phpCAS :: traceBegin();
         if (is_object(self::$_PHPCAS_CLIENT)) {
             phpCAS :: error(self::$_PHPCAS_INIT_CALL['method'] . '() has already been called (at ' . self::$_PHPCAS_INIT_CALL['file'] . ':' . self::$_PHPCAS_INIT_CALL['line'] . ')');
         }
 
-        // store where the initialzer is called from
+        // store where the initializer is called from
         $dbg = debug_backtrace();
         self::$_PHPCAS_INIT_CALL = array (
             'done' => true,
@@ -560,7 +560,7 @@ class phpCAS
 
                 $indent_str .= '|    ';
             }
-            // allow for multiline output with proper identing. Usefull for
+            // allow for multiline output with proper identing. Useful for
             // dumping cas answers etc.
             $str2 = str_replace("\n", "\n" . self::$_PHPCAS_DEBUG['unique_id'] . ' ' . $indent_str, $str);
             $str3 = self::$_PHPCAS_DEBUG['unique_id'] . ' ' . $indent_str . $str2;
@@ -568,7 +568,7 @@ class phpCAS
                 self::$_PHPCAS_DEBUG['logger']->info($str3);
             }
             if (!empty(self::$_PHPCAS_DEBUG['filename'])) {
-                // Check if file exists and modifiy file permissions to be only
+                // Check if file exists and modify file permissions to be only
                 // readable by the webserver
                 if (!file_exists(self::$_PHPCAS_DEBUG['filename'])) {
                     touch(self::$_PHPCAS_DEBUG['filename']);
@@ -1769,7 +1769,7 @@ class phpCAS
 
     /**
      * If you want your service to be proxied you have to enable it (default
-     * disabled) and define an accepable list of proxies that are allowed to
+     * disabled) and define an acceptable list of proxies that are allowed to
      * proxy your service.
      *
      * Add each allowed proxy definition object. For the normal CAS_ProxyChain
@@ -1790,7 +1790,7 @@ class phpCAS
      *				'http://client.example.com/'
      *			)));
      *
-     * For quick testing or in certain production screnarios you might want to
+     * For quick testing or in certain production scenarios you might want to
      * allow allow any other valid service to proxy your service. To do so, add
      * the "Any" chain:
      *		phpCAS::allowProxyChain(new CAS_ProxyChain_Any);
@@ -1897,7 +1897,7 @@ class phpCAS
     }
 
     /**
-     * Checks of a proxy client aready exists
+     * Checks of a proxy client already exists
      *
      * @throws CAS_OutOfSequenceBeforeProxyException
      *

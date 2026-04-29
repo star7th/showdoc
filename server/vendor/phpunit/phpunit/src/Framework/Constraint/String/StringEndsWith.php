@@ -9,25 +9,21 @@
  */
 namespace PHPUnit\Framework\Constraint;
 
-use function str_ends_with;
-use PHPUnit\Framework\EmptyStringException;
+use function strlen;
+use function substr;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
 final class StringEndsWith extends Constraint
 {
-    private readonly string $suffix;
-
     /**
-     * @throws EmptyStringException
+     * @var string
      */
+    private $suffix;
+
     public function __construct(string $suffix)
     {
-        if ($suffix === '') {
-            throw new EmptyStringException;
-        }
-
         $this->suffix = $suffix;
     }
 
@@ -42,9 +38,11 @@ final class StringEndsWith extends Constraint
     /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
+     *
+     * @param mixed $other value or object to evaluate
      */
-    protected function matches(mixed $other): bool
+    protected function matches($other): bool
     {
-        return str_ends_with((string) $other, $this->suffix);
+        return substr($other, 0 - strlen($this->suffix)) === $this->suffix;
     }
 }

@@ -9,6 +9,7 @@
  */
 namespace PHPUnit\Framework\Constraint;
 
+use function get_class;
 use function gettype;
 use function is_object;
 use function sprintf;
@@ -19,7 +20,10 @@ use ReflectionObject;
  */
 final class ObjectHasProperty extends Constraint
 {
-    private readonly string $propertyName;
+    /**
+     * @var string
+     */
+    private $propertyName;
 
     public function __construct(string $propertyName)
     {
@@ -43,7 +47,7 @@ final class ObjectHasProperty extends Constraint
      *
      * @param mixed $other value or object to evaluate
      */
-    protected function matches(mixed $other): bool
+    protected function matches($other): bool
     {
         if (!is_object($other)) {
             return false;
@@ -60,13 +64,13 @@ final class ObjectHasProperty extends Constraint
      *
      * @param mixed $other evaluated value or object
      */
-    protected function failureDescription(mixed $other): string
+    protected function failureDescription($other): string
     {
         if (is_object($other)) {
             return sprintf(
                 'object of class "%s" %s',
-                $other::class,
-                $this->toString(true),
+                get_class($other),
+                $this->toString(),
             );
         }
 
@@ -74,7 +78,7 @@ final class ObjectHasProperty extends Constraint
             '"%s" (%s) %s',
             $other,
             gettype($other),
-            $this->toString(true),
+            $this->toString(),
         );
     }
 }

@@ -2,18 +2,6 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [2.0.0] - 2023-02-03
-
-### Added
-
-* Added `SebastianBergmann\CodeUnit\FileUnit` value object that represents a sourcecode file 
-
-### Removed
-
-* `SebastianBergmann\CodeUnit\CodeUnitCollection::fromArray()` has been removed
-* `SebastianBergmann\CodeUnit\Mapper::stringToCodeUnits()` no longer supports `ClassName<*>`
-* This component is no longer supported on PHP 7.3, PHP 7.4, and PHP 8.0
-
 ## [1.0.8] - 2020-10-26
 
 ### Fixed
@@ -66,7 +54,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Initial release
 
-[2.0.0]: https://github.com/sebastianbergmann/code-unit/compare/1.0.8...2.0.0
 [1.0.8]: https://github.com/sebastianbergmann/code-unit/compare/1.0.7...1.0.8
 [1.0.7]: https://github.com/sebastianbergmann/code-unit/compare/1.0.6...1.0.7
 [1.0.6]: https://github.com/sebastianbergmann/code-unit/compare/1.0.5...1.0.6

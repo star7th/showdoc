@@ -17,7 +17,7 @@ final class Timer
     /**
      * @psalm-var list<float>
      */
-    private array $startTimes = [];
+    private $startTimes = [];
 
     public function start(): void
     {

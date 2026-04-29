@@ -25,15 +25,15 @@ final class DnsCache
      *
      * @var string[]
      */
-    public array $hostnames = [];
+    public $hostnames = [];
 
     /**
      * @var string[]
      */
-    public array $removals = [];
+    public $removals = [];
 
     /**
      * @var string[]
      */
-    public array $evictions = [];
+    public $evictions = [];
 }

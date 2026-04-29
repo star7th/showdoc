@@ -31,10 +31,10 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 class TraceableResponse implements ResponseInterface, StreamableInterface
 {
-    private HttpClientInterface $client;
-    private ResponseInterface $response;
-    private mixed $content;
-    private ?StopwatchEvent $event;
+    private $client;
+    private $response;
+    private $content;
+    private $event;
 
     public function __construct(HttpClientInterface $client, ResponseInterface $response, &$content, ?StopwatchEvent $event = null)
     {
@@ -44,12 +44,12 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
         $this->event = $event;
     }
 
-    public function __serialize(): array
+    public function __sleep(): array
     {
         throw new \BadMethodCallException('Cannot serialize '.__CLASS__);
     }
 
-    public function __unserialize(array $data): void
+    public function __wakeup()
     {
         throw new \BadMethodCallException('Cannot unserialize '.__CLASS__);
     }
@@ -61,7 +61,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
                 $this->response->__destruct();
             }
         } finally {
-            if ($this->event?->isStarted()) {
+            if ($this->event && $this->event->isStarted()) {
                 $this->event->stop();
             }
         }
@@ -72,7 +72,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
         try {
             return $this->response->getStatusCode();
         } finally {
-            if ($this->event?->isStarted()) {
+            if ($this->event && $this->event->isStarted()) {
                 $this->event->lap();
             }
         }
@@ -83,7 +83,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
         try {
             return $this->response->getHeaders($throw);
         } finally {
-            if ($this->event?->isStarted()) {
+            if ($this->event && $this->event->isStarted()) {
                 $this->event->lap();
             }
         }
@@ -98,7 +98,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
 
             return $this->content = $this->response->getContent(false);
         } finally {
-            if ($this->event?->isStarted()) {
+            if ($this->event && $this->event->isStarted()) {
                 $this->event->stop();
             }
             if ($throw) {
@@ -116,7 +116,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
 
             return $this->content = $this->response->toArray(false);
         } finally {
-            if ($this->event?->isStarted()) {
+            if ($this->event && $this->event->isStarted()) {
                 $this->event->stop();
             }
             if ($throw) {
@@ -129,12 +129,12 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
     {
         $this->response->cancel();
 
-        if ($this->event?->isStarted()) {
+        if ($this->event && $this->event->isStarted()) {
             $this->event->stop();
         }
     }
 
-    public function getInfo(?string $type = null): mixed
+    public function getInfo(?string $type = null)
     {
         return $this->response->getInfo($type);
     }
@@ -173,7 +173,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
 
         foreach ($responses as $r) {
             if (!$r instanceof self) {
-                throw new \TypeError(\sprintf('"%s::stream()" expects parameter 1 to be an iterable of TraceableResponse objects, "%s" given.', TraceableHttpClient::class, get_debug_type($r)));
+                throw new \TypeError(sprintf('"%s::stream()" expects parameter 1 to be an iterable of TraceableResponse objects, "%s" given.', TraceableHttpClient::class, get_debug_type($r)));
             }
 
             $traceableMap[$r->response] = $r;
@@ -204,7 +204,7 @@ class TraceableResponse implements ResponseInterface, StreamableInterface
         }
     }
 
-    private function checkStatusCode(int $code): void
+    private function checkStatusCode(int $code)
     {
         if (500 <= $code) {
             throw new ServerException($this);

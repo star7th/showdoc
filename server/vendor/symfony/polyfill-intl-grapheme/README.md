@@ -21,6 +21,7 @@ This component provides a partial, native PHP implementation of the
 - [`grapheme_strstr`](https://php.net/grapheme_strstr): Returns part of haystack string from
   the first occurrence of needle to the end of haystack
 - [`grapheme_substr`](https://php.net/grapheme_substr): Return part of a string
+- [`grapheme_str_split`](https://php.net/grapheme_str_split): Splits a string into an array of individual or chunks of graphemes
 
 More information can be found in the
 [main Polyfill README](https://github.com/symfony/polyfill/blob/main/README.md).

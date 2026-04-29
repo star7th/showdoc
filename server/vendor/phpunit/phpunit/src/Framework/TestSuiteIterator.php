@@ -16,18 +16,19 @@ use RecursiveIterator;
 /**
  * @template-implements RecursiveIterator<int, Test>
  *
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
- *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class TestSuiteIterator implements RecursiveIterator
 {
-    private int $position = 0;
+    /**
+     * @var int
+     */
+    private $position = 0;
 
     /**
-     * @psalm-var list<Test>
+     * @var Test[]
      */
-    private readonly array $tests;
+    private $tests;
 
     public function __construct(TestSuite $testSuite)
     {

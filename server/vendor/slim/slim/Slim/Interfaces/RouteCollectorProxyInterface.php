@@ -14,12 +14,19 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\UriInterface;
 
+/**
+ * @api
+ * @template TContainerInterface of (ContainerInterface|null)
+ */
 interface RouteCollectorProxyInterface
 {
     public function getResponseFactory(): ResponseFactoryInterface;
 
     public function getCallableResolver(): CallableResolverInterface;
 
+    /**
+     * @return TContainerInterface
+     */
     public function getContainer(): ?ContainerInterface;
 
     public function getRouteCollector(): RouteCollectorInterface;
@@ -31,71 +38,72 @@ interface RouteCollectorProxyInterface
 
     /**
      * Set the RouteCollectorProxy's base path
+     * @return RouteCollectorProxyInterface<TContainerInterface>
      */
     public function setBasePath(string $basePath): RouteCollectorProxyInterface;
 
     /**
      * Add GET route
      *
-     * @param  string          $pattern  The route URI pattern
-     * @param  callable|string $callable The route callback routine
+     * @param string $pattern The route URI pattern
+     * @param callable|array{class-string, string}|string $callable The route callback routine
      */
     public function get(string $pattern, $callable): RouteInterface;
 
     /**
      * Add POST route
      *
-     * @param  string          $pattern  The route URI pattern
-     * @param  callable|string $callable The route callback routine
+     * @param string $pattern The route URI pattern
+     * @param callable|array{class-string, string}|string $callable The route callback routine
      */
     public function post(string $pattern, $callable): RouteInterface;
 
     /**
      * Add PUT route
      *
-     * @param  string          $pattern  The route URI pattern
-     * @param  callable|string $callable The route callback routine
+     * @param string $pattern The route URI pattern
+     * @param callable|array{class-string, string}|string $callable The route callback routine
      */
     public function put(string $pattern, $callable): RouteInterface;
 
     /**
      * Add PATCH route
      *
-     * @param  string          $pattern  The route URI pattern
-     * @param  callable|string $callable The route callback routine
+     * @param string $pattern The route URI pattern
+     * @param callable|array{class-string, string}|string $callable The route callback routine
      */
     public function patch(string $pattern, $callable): RouteInterface;
 
     /**
      * Add DELETE route
      *
-     * @param  string          $pattern  The route URI pattern
-     * @param  callable|string $callable The route callback routine
+     * @param string $pattern The route URI pattern
+     * @param callable|array{class-string, string}|string $callable The route callback routine
      */
     public function delete(string $pattern, $callable): RouteInterface;
 
     /**
      * Add OPTIONS route
      *
-     * @param  string          $pattern  The route URI pattern
-     * @param  callable|string $callable The route callback routine
+     * @param string $pattern The route URI pattern
+     * @param callable|array{class-string, string}|string $callable The route callback routine
      */
     public function options(string $pattern, $callable): RouteInterface;
 
     /**
      * Add route for any HTTP method
      *
-     * @param  string          $pattern  The route URI pattern
-     * @param  callable|string $callable The route callback routine
+     * @param string $pattern The route URI pattern
+     * @param callable|array{class-string, string}|string $callable The route callback routine
      */
     public function any(string $pattern, $callable): RouteInterface;
 
     /**
      * Add route with multiple methods
      *
-     * @param  string[]        $methods  Numeric array of HTTP method names
-     * @param  string          $pattern  The route URI pattern
-     * @param  callable|string $callable The route callback routine
+     * @param string[] $methods Numeric array of HTTP method names
+     * @param string $pattern The route URI pattern
+     * @param callable|array{class-string, string}|string $callable The route callback routine
      */
     public function map(array $methods, string $pattern, $callable): RouteInterface;
 

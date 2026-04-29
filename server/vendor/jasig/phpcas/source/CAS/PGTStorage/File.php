@@ -127,6 +127,12 @@ class CAS_PGTStorage_File extends CAS_PGTStorage_AbstractStorage
             if (!preg_match('`^[a-zA-Z]:`', $path)) {
                 phpCAS::error('an absolute path is needed for PGT storage to file');
             }
+            
+			// ensure that the directory separator on Windows is '/' for consistency with the rest of the phpcas code
+			$path = str_replace(DIRECTORY_SEPARATOR , '/', $path); 
+ 
+			// store the path (with a trailing '/') 
+			$path = preg_replace('|([^/])$|', '$1/', $path);            
 
         } else {
 

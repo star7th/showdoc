@@ -1,9 +1,7 @@
-[![Latest Stable Version](https://poser.pugx.org/sebastian/code-unit-reverse-lookup/v/stable.png)](https://packagist.org/packages/sebastian/code-unit-reverse-lookup)
+# sebastian/code-unit-reverse-lookup
+
 [![CI Status](https://github.com/sebastianbergmann/code-unit-reverse-lookup/workflows/CI/badge.svg)](https://github.com/sebastianbergmann/code-unit-reverse-lookup/actions)
 [![Type Coverage](https://shepherd.dev/github/sebastianbergmann/code-unit-reverse-lookup/coverage.svg)](https://shepherd.dev/github/sebastianbergmann/code-unit-reverse-lookup)
-[![codecov](https://codecov.io/gh/sebastianbergmann/code-unit-reverse-lookup/branch/main/graph/badge.svg)](https://codecov.io/gh/sebastianbergmann/code-unit-reverse-lookup)
-
-# sebastian/code-unit-reverse-lookup
 
 Looks up which function or method a line of code belongs to.
 

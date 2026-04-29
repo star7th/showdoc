@@ -17,7 +17,7 @@ use SplFixedArray;
 final class TimeEfficientLongestCommonSubsequenceCalculator implements LongestCommonSubsequenceCalculator
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function calculate(array $from, array $to): array
     {
@@ -27,16 +27,16 @@ final class TimeEfficientLongestCommonSubsequenceCalculator implements LongestCo
         $width      = $fromLength + 1;
         $matrix     = new SplFixedArray($width * ($toLength + 1));
 
-        for ($i = 0; $i <= $fromLength; $i++) {
+        for ($i = 0; $i <= $fromLength; ++$i) {
             $matrix[$i] = 0;
         }
 
-        for ($j = 0; $j <= $toLength; $j++) {
+        for ($j = 0; $j <= $toLength; ++$j) {
             $matrix[$j * $width] = 0;
         }
 
-        for ($i = 1; $i <= $fromLength; $i++) {
-            for ($j = 1; $j <= $toLength; $j++) {
+        for ($i = 1; $i <= $fromLength; ++$i) {
+            for ($j = 1; $j <= $toLength; ++$j) {
                 $o = ($j * $width) + $i;
 
                 // don't use max() to avoid function call overhead
@@ -64,15 +64,15 @@ final class TimeEfficientLongestCommonSubsequenceCalculator implements LongestCo
         while ($i > 0 && $j > 0) {
             if ($from[$i - 1] === $to[$j - 1]) {
                 $common[] = $from[$i - 1];
-                $i--;
-                $j--;
+                --$i;
+                --$j;
             } else {
                 $o = ($j * $width) + $i;
 
                 if ($matrix[$o - $width] > $matrix[$o - 1]) {
-                    $j--;
+                    --$j;
                 } else {
-                    $i--;
+                    --$i;
                 }
             }
         }

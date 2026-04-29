@@ -9,33 +9,43 @@
  */
 namespace PHPUnit\Framework\Constraint;
 
-use PHPUnit\Util\Exporter;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
 final class LessThan extends Constraint
 {
-    private readonly mixed $value;
+    /**
+     * @var float|int
+     */
+    private $value;
 
-    public function __construct(mixed $value)
+    /**
+     * @param float|int $value
+     */
+    public function __construct($value)
     {
         $this->value = $value;
     }
 
     /**
      * Returns a string representation of the constraint.
+     *
+     * @throws InvalidArgumentException
      */
-    public function toString(bool $exportObjects = false): string
+    public function toString(): string
     {
-        return 'is less than ' . Exporter::export($this->value, $exportObjects);
+        return 'is less than ' . $this->exporter()->export($this->value);
     }
 
     /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
+     *
+     * @param mixed $other value or object to evaluate
      */
-    protected function matches(mixed $other): bool
+    protected function matches($other): bool
     {
         return $this->value > $other;
     }

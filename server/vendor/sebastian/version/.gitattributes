@@ -1,0 +1,4 @@
+/.github        export-ignore
+/.php_cs.dist   export-ignore
+
+*.php diff=php

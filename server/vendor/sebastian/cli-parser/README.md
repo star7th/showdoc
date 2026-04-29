@@ -1,8 +1,3 @@
-[![Latest Stable Version](https://poser.pugx.org/sebastian/cli-parser/v/stable.png)](https://packagist.org/packages/sebastian/cli-parser)
-[![CI Status](https://github.com/sebastianbergmann/cli-parser/workflows/CI/badge.svg)](https://github.com/sebastianbergmann/cli-parser/actions)
-[![Type Coverage](https://shepherd.dev/github/sebastianbergmann/cli-parser/coverage.svg)](https://shepherd.dev/github/sebastianbergmann/cli-parser)
-[![codecov](https://codecov.io/gh/sebastianbergmann/cli-parser/branch/main/graph/badge.svg)](https://codecov.io/gh/sebastianbergmann/cli-parser)
-
 # sebastian/cli-parser
 
 Library for parsing `$_SERVER['argv']`, extracted from `phpunit/phpunit`.

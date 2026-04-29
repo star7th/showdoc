@@ -17,8 +17,8 @@ abstract class HttpSpecializedException extends HttpException
 {
     /**
      * @param ServerRequestInterface $request
-     * @param string|null            $message
-     * @param Throwable|null         $previous
+     * @param string|null $message
+     * @param Throwable|null $previous
      */
     public function __construct(ServerRequestInterface $request, ?string $message = null, ?Throwable $previous = null)
     {
@@ -26,6 +26,7 @@ abstract class HttpSpecializedException extends HttpException
             $this->message = $message;
         }
 
+        // @phpstan-ignore-next-line
         parent::__construct($request, $this->message, $this->code, $previous);
     }
 }

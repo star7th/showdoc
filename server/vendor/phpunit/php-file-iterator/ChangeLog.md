@@ -2,32 +2,6 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [4.1.0] - 2023-08-31
-
-### Added
-
-* [#81](https://github.com/sebastianbergmann/php-file-iterator/issues/81): Accept `array|string $paths` in `Facade::getFilesAsArray()`
-
-## [4.0.2] - 2023-05-07
-
-### Fixed
-
-* [#80](https://github.com/sebastianbergmann/php-file-iterator/pull/80): Ignore unresolvable symbolic link
-
-## [4.0.1] - 2023-02-10
-
-### Fixed
-
-* [#67](https://github.com/sebastianbergmann/php-file-iterator/issues/61): Excluded directories are traversed unnecessarily
-
-## [4.0.0] - 2023-02-03
-
-### Removed
-
-* The optional `$commonPath` parameter of `SebastianBergmann\FileIterator\Facade` as well as the functionality it controlled has been removed
-* The `SebastianBergmann\FileIterator\Factory` and `SebastianBergmann\FileIterator\Iterator` classes are now marked `@internal`
-* This component is no longer supported on PHP 7.3, PHP 7.4 and PHP 8.0
-
 ## [3.0.6] - 2021-12-02
 
 ### Changed
@@ -150,10 +124,6 @@ No changes
 
 * [#23](https://github.com/sebastianbergmann/php-file-iterator/pull/23): Added support for wildcards (glob) in exclude
 
-[4.1.0]: https://github.com/sebastianbergmann/php-file-iterator/compare/4.0.2...4.1.0
-[4.0.2]: https://github.com/sebastianbergmann/php-file-iterator/compare/4.0.1...4.0.2
-[4.0.1]: https://github.com/sebastianbergmann/php-file-iterator/compare/4.0.0...4.0.1
-[4.0.0]: https://github.com/sebastianbergmann/php-file-iterator/compare/3.0.6...4.0.0
 [3.0.6]: https://github.com/sebastianbergmann/php-file-iterator/compare/3.0.5...3.0.6
 [3.0.5]: https://github.com/sebastianbergmann/php-file-iterator/compare/3.0.4...3.0.5
 [3.0.4]: https://github.com/sebastianbergmann/php-file-iterator/compare/3.0.3...3.0.4

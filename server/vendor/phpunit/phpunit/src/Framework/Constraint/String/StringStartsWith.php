@@ -9,23 +9,23 @@
  */
 namespace PHPUnit\Framework\Constraint;
 
-use function str_starts_with;
-use PHPUnit\Framework\EmptyStringException;
+use function strpos;
+use PHPUnit\Framework\InvalidArgumentException;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
 final class StringStartsWith extends Constraint
 {
-    private readonly string $prefix;
-
     /**
-     * @throws EmptyStringException
+     * @var string
      */
+    private $prefix;
+
     public function __construct(string $prefix)
     {
         if ($prefix === '') {
-            throw new EmptyStringException;
+            throw InvalidArgumentException::create(1, 'non-empty string');
         }
 
         $this->prefix = $prefix;
@@ -42,9 +42,11 @@ final class StringStartsWith extends Constraint
     /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
+     *
+     * @param mixed $other value or object to evaluate
      */
-    protected function matches(mixed $other): bool
+    protected function matches($other): bool
     {
-        return str_starts_with((string) $other, $this->prefix);
+        return strpos((string) $other, $this->prefix) === 0;
     }
 }

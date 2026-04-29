@@ -18,18 +18,23 @@ use Symfony\Component\Finder\SplFileInfo;
  * Extends the \RecursiveDirectoryIterator to support relative paths.
  *
  * @author Victor Berchet <victor@suumit.com>
- *
- * @extends \RecursiveDirectoryIterator<string, SplFileInfo>
  */
 class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
 {
-    private bool $ignoreUnreadableDirs;
-    private bool $ignoreFirstRewind = true;
+    /**
+     * @var bool
+     */
+    private $ignoreUnreadableDirs;
+
+    /**
+     * @var bool
+     */
+    private $ignoreFirstRewind = true;
 
     // these 3 properties take part of the performance optimization to avoid redoing the same work in all iterations
-    private string $rootPath;
-    private string $subPath;
-    private string $directorySeparator = '/';
+    private $rootPath;
+    private $subPath;
+    private $directorySeparator = '/';
 
     /**
      * @throws \RuntimeException
@@ -50,15 +55,17 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
 
     /**
      * Return an instance of SplFileInfo with support for relative paths.
+     *
+     * @return SplFileInfo
      */
-    public function current(): SplFileInfo
+    #[\ReturnTypeWillChange]
+    public function current()
     {
         // the logic here avoids redoing the same work in all iterations
 
-        if (!isset($this->subPath)) {
-            $this->subPath = $this->getSubPath();
+        if (null === $subPathname = $this->subPath) {
+            $subPathname = $this->subPath = $this->getSubPath();
         }
-        $subPathname = $this->subPath;
         if ('' !== $subPathname) {
             $subPathname .= $this->directorySeparator;
         }
@@ -72,7 +79,13 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
         return new SplFileInfo($basePath.$subPathname, $this->subPath, $subPathname);
     }
 
-    public function hasChildren(bool $allowLinks = false): bool
+    /**
+     * @param bool $allowLinks
+     *
+     * @return bool
+     */
+    #[\ReturnTypeWillChange]
+    public function hasChildren($allowLinks = false)
     {
         $hasChildren = parent::hasChildren($allowLinks);
 
@@ -84,16 +97,19 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
             parent::getChildren();
 
             return true;
-        } catch (\UnexpectedValueException) {
+        } catch (\UnexpectedValueException $e) {
             // If directory is unreadable and finder is set to ignore it, skip children
             return false;
         }
     }
 
     /**
+     * @return \RecursiveDirectoryIterator
+     *
      * @throws AccessDeniedException
      */
-    public function getChildren(): \RecursiveDirectoryIterator
+    #[\ReturnTypeWillChange]
+    public function getChildren()
     {
         try {
             $children = parent::getChildren();
@@ -112,14 +128,22 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
         }
     }
 
-    public function next(): void
+    /**
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function next()
     {
         $this->ignoreFirstRewind = false;
 
         parent::next();
     }
 
-    public function rewind(): void
+    /**
+     * @return void
+     */
+    #[\ReturnTypeWillChange]
+    public function rewind()
     {
         // some streams like FTP are not rewindable, ignore the first rewind after creation,
         // as newly created DirectoryIterator does not need to be rewound

@@ -12,14 +12,12 @@ namespace PHPUnit\Runner\Filter;
 use function in_array;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
- *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class IncludeGroupFilterIterator extends GroupFilterIterator
 {
-    protected function doAccept(int $id): bool
+    protected function doAccept(string $hash): bool
     {
-        return in_array($id, $this->groupTests, true);
+        return in_array($hash, $this->groupTests, true);
     }
 }

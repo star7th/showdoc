@@ -19,8 +19,8 @@ final class RequiredOptionArgumentMissingException extends RuntimeException impl
         parent::__construct(
             sprintf(
                 'Required argument for option "%s" is missing',
-                $option,
-            ),
+                $option
+            )
         );
     }
 }

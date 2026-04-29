@@ -56,10 +56,9 @@ class leftTest extends \PHPUnit\Framework\TestCase {
         $this->assertSame($expected, $created, 'left joins and table-expression');
 
     }
-
-    /**
-     * @doesNotPerformAssertions
-     */
+/**
+ * @doesNotPerformAssertions
+*/
     public function testLeftIn() {
         $sql = 'SELECT *
             FROM (t1 LEFT JOIN t2 ON t1.a=t2.a)

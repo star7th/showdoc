@@ -11,19 +11,37 @@ namespace SebastianBergmann\Comparator;
 
 use function gettype;
 use function sprintf;
-use SebastianBergmann\Exporter\Exporter;
 
-final class TypeComparator extends Comparator
+/**
+ * Compares values for type equality.
+ */
+class TypeComparator extends Comparator
 {
-    public function accepts(mixed $expected, mixed $actual): bool
+    /**
+     * Returns whether the comparator can compare two values.
+     *
+     * @param mixed $expected The first value to compare
+     * @param mixed $actual   The second value to compare
+     *
+     * @return bool
+     */
+    public function accepts($expected, $actual)
     {
         return true;
     }
 
     /**
+     * Asserts that two values are equal.
+     *
+     * @param mixed $expected     First value to compare
+     * @param mixed $actual       Second value to compare
+     * @param float $delta        Allowed numerical distance between two values to consider them equal
+     * @param bool  $canonicalize Arrays are sorted before comparison when set to true
+     * @param bool  $ignoreCase   Case is ignored when set to true
+     *
      * @throws ComparisonFailure
      */
-    public function assertEquals(mixed $expected, mixed $actual, float $delta = 0.0, bool $canonicalize = false, bool $ignoreCase = false): void
+    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false)/*: void*/
     {
         if (gettype($expected) != gettype($actual)) {
             throw new ComparisonFailure(
@@ -32,11 +50,12 @@ final class TypeComparator extends Comparator
                 // we don't need a diff
                 '',
                 '',
+                false,
                 sprintf(
                     '%s does not match expected type "%s".',
-                    (new Exporter)->shortenedExport($actual),
-                    gettype($expected),
-                ),
+                    $this->exporter->shortenedExport($actual),
+                    gettype($expected)
+                )
             );
         }
     }

@@ -2,7 +2,7 @@
     "name": "sebastian/global-state",
     "description": "Snapshotting of global state",
     "keywords": ["global state"],
-    "homepage": "https://www.github.com/sebastianbergmann/global-state",
+    "homepage": "http://www.github.com/sebastianbergmann/global-state",
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -10,26 +10,25 @@
             "email": "sebastian@phpunit.de"
         }
     ],
-    "support": {
-        "issues": "https://github.com/sebastianbergmann/global-state/issues",
-        "security": "https://github.com/sebastianbergmann/global-state/security/policy"
-    },
     "prefer-stable": true,
     "config": {
         "platform": {
-            "php": "8.1.0"
+            "php": "7.3.0"
         },
         "optimize-autoloader": true,
         "sort-packages": true
     },
     "require": {
-        "php": ">=8.1",
-        "sebastian/object-reflector": "^3.0",
-        "sebastian/recursion-context": "^5.0"
+        "php": ">=7.3",
+        "sebastian/object-reflector": "^2.0",
+        "sebastian/recursion-context": "^4.0"
     },
     "require-dev": {
         "ext-dom": "*",
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^9.3"
+    },
+    "suggest": {
+        "ext-uopz": "*"
     },
     "autoload": {
         "classmap": [
@@ -46,7 +45,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "6.0-dev"
+            "dev-master": "5.0-dev"
         }
     }
 }

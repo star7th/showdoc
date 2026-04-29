@@ -9,7 +9,6 @@
  */
 namespace PHPUnit\Util\Xml;
 
-use const PHP_OS_FAMILY;
 use function chdir;
 use function dirname;
 use function error_reporting;
@@ -21,16 +20,14 @@ use function sprintf;
 use DOMDocument;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
- *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class Loader
 {
     /**
-     * @throws XmlException
+     * @throws Exception
      */
-    public function loadFile(string $filename): DOMDocument
+    public function loadFile(string $filename, bool $isHtml = false, bool $xinclude = false, bool $strict = false): DOMDocument
     {
         $reporting = error_reporting(0);
         $contents  = file_get_contents($filename);
@@ -38,33 +35,30 @@ final class Loader
         error_reporting($reporting);
 
         if ($contents === false) {
-            throw new XmlException(
+            throw new Exception(
                 sprintf(
-                    'Could not read XML from file "%s"',
+                    'Could not read "%s".',
                     $filename,
                 ),
             );
         }
 
-        return $this->load($contents, $filename);
+        return $this->load($contents, $isHtml, $filename, $xinclude, $strict);
     }
 
     /**
-     * @throws XmlException
+     * @throws Exception
      */
-    public function load(string $actual, ?string $filename = null): DOMDocument
+    public function load(string $actual, bool $isHtml = false, string $filename = '', bool $xinclude = false, bool $strict = false): DOMDocument
     {
         if ($actual === '') {
-            if ($filename === null) {
-                throw new XmlException('Could not parse XML from empty string');
-            }
+            throw new Exception('Could not load XML from empty string');
+        }
 
-            throw new XmlException(
-                sprintf(
-                    'Could not parse XML from empty file "%s"',
-                    $filename,
-                ),
-            );
+        // Required for XInclude on Windows.
+        if ($xinclude) {
+            $cwd = getcwd();
+            @chdir(dirname($filename));
         }
 
         $document                     = new DOMDocument;
@@ -74,20 +68,18 @@ final class Loader
         $message   = '';
         $reporting = error_reporting(0);
 
-        // Required for XInclude
-        if ($filename !== null) {
-            // Required for XInclude on Windows
-            if (PHP_OS_FAMILY === 'Windows') {
-                $cwd = getcwd();
-                @chdir(dirname($filename));
-            }
-
+        if ($filename !== '') {
+            // Required for XInclude
             $document->documentURI = $filename;
         }
 
-        $loaded = $document->loadXML($actual);
+        if ($isHtml) {
+            $loaded = $document->loadHTML($actual);
+        } else {
+            $loaded = $document->loadXML($actual);
+        }
 
-        if ($filename !== null) {
+        if (!$isHtml && $xinclude) {
             $document->xinclude();
         }
 
@@ -102,24 +94,22 @@ final class Loader
             @chdir($cwd);
         }
 
-        if ($loaded === false || $message !== '') {
-            if ($filename !== null) {
-                throw new XmlException(
+        if ($loaded === false || ($strict && $message !== '')) {
+            if ($filename !== '') {
+                throw new Exception(
                     sprintf(
-                        'Could not load "%s"%s',
+                        'Could not load "%s".%s',
                         $filename,
-                        $message !== '' ? ":\n" . $message : '',
+                        $message !== '' ? "\n" . $message : '',
                     ),
                 );
             }
 
             if ($message === '') {
-                // @codeCoverageIgnoreStart
                 $message = 'Could not load XML for unknown reason';
-                // @codeCoverageIgnoreEnd
             }
 
-            throw new XmlException($message);
+            throw new Exception($message);
         }
 
         return $document;

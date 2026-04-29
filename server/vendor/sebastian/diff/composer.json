@@ -14,24 +14,20 @@
             "email": "mail@kore-nordmann.de"
         }
     ],
-    "support": {
-        "issues": "https://github.com/sebastianbergmann/diff/issues",
-        "security": "https://github.com/sebastianbergmann/diff/security/policy"
-    },
     "prefer-stable": true,
     "config": {
         "platform": {
-            "php": "8.1.0"
+            "php": "7.3.0"
         },
         "optimize-autoloader": true,
         "sort-packages": true
     },
     "require": {
-        "php": ">=8.1"
+        "php": ">=7.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.0",
-        "symfony/process": "^6.4"
+        "phpunit/phpunit": "^9.3",
+        "symfony/process": "^4.2 || ^5"
     },
     "autoload": {
         "classmap": [
@@ -45,7 +41,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "5.1-dev"
+            "dev-master": "4.0-dev"
         }
     }
 }

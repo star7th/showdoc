@@ -10,10 +10,11 @@
 namespace PHPUnit\Runner;
 
 use function array_slice;
+use function assert;
 use function dirname;
 use function explode;
 use function implode;
-use function str_contains;
+use function strpos;
 use SebastianBergmann\Version as VersionId;
 
 /**
@@ -21,11 +22,20 @@ use SebastianBergmann\Version as VersionId;
  */
 final class Version
 {
-    private static string $pharVersion = '';
-    private static string $version     = '';
+    /**
+     * @var string
+     */
+    private static $pharVersion = '';
+
+    /**
+     * @var string
+     */
+    private static $version = '';
 
     /**
      * Returns the current version of PHPUnit.
+     *
+     * @psalm-return non-empty-string
      */
     public static function id(): string
     {
@@ -34,16 +44,21 @@ final class Version
         }
 
         if (self::$version === '') {
-            self::$version = (new VersionId('10.5.63', dirname(__DIR__, 2)))->asString();
+            self::$version = (new VersionId('9.6.34', dirname(__DIR__, 2)))->getVersion();
+
+            assert(!empty(self::$version));
         }
 
         return self::$version;
     }
 
+    /**
+     * @psalm-return non-empty-string
+     */
     public static function series(): string
     {
-        if (str_contains(self::id(), '-')) {
-            $version = explode('-', self::id(), 2)[0];
+        if (strpos(self::id(), '-')) {
+            $version = explode('-', self::id())[0];
         } else {
             $version = self::id();
         }
@@ -51,11 +66,9 @@ final class Version
         return implode('.', array_slice(explode('.', $version), 0, 2));
     }
 
-    public static function majorVersionNumber(): int
-    {
-        return (int) explode('.', self::series())[0];
-    }
-
+    /**
+     * @psalm-return non-empty-string
+     */
     public static function getVersionString(): string
     {
         return 'PHPUnit ' . self::id() . ' by Sebastian Bergmann and contributors.';

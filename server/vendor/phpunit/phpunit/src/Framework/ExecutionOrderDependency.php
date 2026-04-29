@@ -12,53 +12,56 @@ namespace PHPUnit\Framework;
 use function array_filter;
 use function array_map;
 use function array_values;
+use function count;
 use function explode;
 use function in_array;
-use function str_contains;
-use PHPUnit\Metadata\DependsOnClass;
-use PHPUnit\Metadata\DependsOnMethod;
-use Stringable;
+use function strpos;
+use function trim;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
- *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final class ExecutionOrderDependency implements Stringable
+final class ExecutionOrderDependency
 {
-    private string $className  = '';
-    private string $methodName = '';
-    private readonly bool $shallowClone;
-    private readonly bool $deepClone;
+    /**
+     * @var string
+     */
+    private $className = '';
 
-    public static function invalid(): self
-    {
-        return new self(
-            '',
-            '',
-            false,
-            false,
-        );
-    }
+    /**
+     * @var string
+     */
+    private $methodName = '';
 
-    public static function forClass(DependsOnClass $metadata): self
-    {
-        return new self(
-            $metadata->className(),
-            'class',
-            $metadata->deepClone(),
-            $metadata->shallowClone(),
-        );
-    }
+    /**
+     * @var bool
+     */
+    private $useShallowClone = false;
 
-    public static function forMethod(DependsOnMethod $metadata): self
+    /**
+     * @var bool
+     */
+    private $useDeepClone = false;
+
+    public static function createFromDependsAnnotation(string $className, string $annotation): self
     {
-        return new self(
-            $metadata->className(),
-            $metadata->methodName(),
-            $metadata->deepClone(),
-            $metadata->shallowClone(),
-        );
+        // Split clone option and target
+        $parts = explode(' ', trim($annotation), 2);
+
+        if (count($parts) === 1) {
+            $cloneOption = '';
+            $target      = $parts[0];
+        } else {
+            $cloneOption = $parts[0];
+            $target      = $parts[1];
+        }
+
+        // Prefix provided class for targets assumed to be in scope
+        if ($target !== '' && strpos($target, '::') === false) {
+            $target = $className . '::' . $target;
+        }
+
+        return new self($target, null, $cloneOption);
     }
 
     /**
@@ -71,7 +74,10 @@ final class ExecutionOrderDependency implements Stringable
         return array_values(
             array_filter(
                 $dependencies,
-                static fn (self $d) => $d->isValid(),
+                static function (self $d)
+                {
+                    return $d->isValid();
+                },
             ),
         );
     }
@@ -85,18 +91,19 @@ final class ExecutionOrderDependency implements Stringable
     public static function mergeUnique(array $existing, array $additional): array
     {
         $existingTargets = array_map(
-            static fn ($dependency) => $dependency->getTarget(),
+            static function ($dependency)
+            {
+                return $dependency->getTarget();
+            },
             $existing,
         );
 
         foreach ($additional as $dependency) {
-            $additionalTarget = $dependency->getTarget();
-
-            if (in_array($additionalTarget, $existingTargets, true)) {
+            if (in_array($dependency->getTarget(), $existingTargets, true)) {
                 continue;
             }
 
-            $existingTargets[] = $additionalTarget;
+            $existingTargets[] = $dependency->getTarget();
             $existing[]        = $dependency;
         }
 
@@ -121,7 +128,10 @@ final class ExecutionOrderDependency implements Stringable
 
         $diff         = [];
         $rightTargets = array_map(
-            static fn ($dependency) => $dependency->getTarget(),
+            static function ($dependency)
+            {
+                return $dependency->getTarget();
+            },
             $right,
         );
 
@@ -136,20 +146,23 @@ final class ExecutionOrderDependency implements Stringable
         return $diff;
     }
 
-    public function __construct(string $classOrCallableName, ?string $methodName = null, bool $deepClone = false, bool $shallowClone = false)
+    public function __construct(string $classOrCallableName, ?string $methodName = null, ?string $option = null)
     {
-        $this->deepClone    = $deepClone;
-        $this->shallowClone = $shallowClone;
-
         if ($classOrCallableName === '') {
             return;
         }
 
-        if (str_contains($classOrCallableName, '::')) {
+        if (strpos($classOrCallableName, '::') !== false) {
             [$this->className, $this->methodName] = explode('::', $classOrCallableName);
         } else {
             $this->className  = $classOrCallableName;
             $this->methodName = !empty($methodName) ? $methodName : 'class';
+        }
+
+        if ($option === 'clone') {
+            $this->useDeepClone = true;
+        } elseif ($option === 'shallowClone') {
+            $this->useShallowClone = true;
         }
     }
 
@@ -164,14 +177,14 @@ final class ExecutionOrderDependency implements Stringable
         return $this->className !== '' && $this->methodName !== '';
     }
 
-    public function shallowClone(): bool
+    public function useShallowClone(): bool
     {
-        return $this->shallowClone;
+        return $this->useShallowClone;
     }
 
-    public function deepClone(): bool
+    public function useDeepClone(): bool
     {
-        return $this->deepClone;
+        return $this->useDeepClone;
     }
 
     public function targetIsClass(): bool

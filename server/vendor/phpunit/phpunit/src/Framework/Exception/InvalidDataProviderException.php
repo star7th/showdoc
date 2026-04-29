@@ -10,8 +10,6 @@
 namespace PHPUnit\Framework;
 
 /**
- * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
- *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class InvalidDataProviderException extends Exception

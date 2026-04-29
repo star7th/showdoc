@@ -139,7 +139,12 @@ implements CAS_Request_MultiRequestInterface
             $buf = curl_multi_getcontent($handles[$i]);
             $request->_storeResponseBody($buf);
             curl_multi_remove_handle($multiHandle, $handles[$i]);
-            curl_close($handles[$i]);
+            if (PHP_VERSION_ID < 80000) {
+                curl_close($handles[$i]);
+            } else {
+                // unreference it => it will be closed
+                unset($handles[$i]);
+            }
         }
 
         curl_multi_close($multiHandle);

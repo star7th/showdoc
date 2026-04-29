@@ -26,6 +26,9 @@ namespace Symfony\Polyfill\Intl\Grapheme;
  * - grapheme_strrpos  - Find position (in grapheme units) of last occurrence of a string
  * - grapheme_strstr   - Returns part of haystack string from the first occurrence of needle to the end of haystack
  * - grapheme_substr   - Return part of a string
+ * - grapheme_str_split - Splits a string into an array of individual or chunks of graphemes
+ * - grapheme_levenshtein - Calculate the grapheme-unit Levenshtein distance between two strings
+ * - grapheme_strrev - Reverse a string by grapheme clusters
  *
  * @author Nicolas Grekas <p@tchwork.com>
  *
@@ -50,7 +53,7 @@ final class Grapheme
 
         if (!\is_scalar($s)) {
             $hasError = false;
-            set_error_handler(function () use (&$hasError) { $hasError = true; });
+            set_error_handler(static function () use (&$hasError) { $hasError = true; });
             $next = substr($s, $start);
             restore_error_handler();
             if ($hasError) {
@@ -191,6 +194,85 @@ final class Grapheme
         return mb_strstr($s, $needle, $beforeNeedle, 'UTF-8');
     }
 
+    public static function grapheme_str_split($s, $len = 1)
+    {
+        if (0 > $len || 1073741823 < $len) {
+            if (80000 > \PHP_VERSION_ID) {
+                return false;
+            }
+
+            throw new \ValueError('grapheme_str_split(): Argument #2 ($length) must be greater than 0 and less than or equal to 1073741823.');
+        }
+
+        if ('' === $s) {
+            return [];
+        }
+
+        if (!preg_match_all('/('.SYMFONY_GRAPHEME_CLUSTER_RX.')/u', $s, $matches)) {
+            return false;
+        }
+
+        if (1 === $len) {
+            return $matches[0];
+        }
+
+        $chunks = array_chunk($matches[0], $len);
+
+        foreach ($chunks as &$chunk) {
+            $chunk = implode('', $chunk);
+        }
+
+        return $chunks;
+    }
+
+    public static function grapheme_levenshtein($s1, $s2, $insertion_cost = 1, $replacement_cost = 1, $deletion_cost = 1)
+    {
+        if (!preg_match('//u', $s1) || !preg_match('//u', $s2)) {
+            return false;
+        }
+
+        if (0 > $insertion_cost || 0 > $replacement_cost || 0 > $deletion_cost) {
+            if (80000 > \PHP_VERSION_ID) {
+                return false;
+            }
+
+            throw new \ValueError('grapheme_levenshtein(): Argument #3 ($insertion_cost), #4 ($replacement_cost), and #5 ($deletion_cost) must be greater than or equal to 0');
+        }
+
+        preg_match_all('/'.SYMFONY_GRAPHEME_CLUSTER_RX.'/u', $s1, $s1);
+        preg_match_all('/'.SYMFONY_GRAPHEME_CLUSTER_RX.'/u', $s2, $s2);
+
+        $s1 = $s1[0];
+        $s2 = $s2[0];
+        $l1 = \count($s1);
+        $l2 = \count($s2);
+
+        if (0 === $l1) {
+            return $l2 * $insertion_cost;
+        }
+        if (0 === $l2) {
+            return $l1 * $deletion_cost;
+        }
+
+        $dp = array_fill(0, $l1 + 1, array_fill(0, $l2 + 1, 0));
+
+        for ($i = 1; $i <= $l1; ++$i) {
+            $dp[$i][0] = $dp[$i - 1][0] + $deletion_cost;
+        }
+        for ($j = 1; $j <= $l2; ++$j) {
+            $dp[0][$j] = $dp[0][$j - 1] + $insertion_cost;
+        }
+
+        for ($i = 1; $i <= $l1; ++$i) {
+            for ($j = 1; $j <= $l2; ++$j) {
+                $cost = ($s1[$i - 1] === $s2[$j - 1]) ? 0 : $replacement_cost;
+                $dp[$i][$j] = min($dp[$i - 1][$j] + $deletion_cost, $dp[$i][$j - 1] + $insertion_cost, $dp[$i - 1][$j - 1] + $cost);
+            }
+        }
+
+        return $dp[$l1][$l2];
+    }
+
     private static function grapheme_position($s, $needle, $offset, $mode)
     {
         $needle = (string) $needle;
@@ -243,5 +325,16 @@ final class Grapheme
         }
 
         return false !== $needlePos ? self::grapheme_strlen(substr($s, 0, $needlePos)) + $offset : false;
+    }
+
+    public static function grapheme_strrev(string $string)
+    {
+        $units = grapheme_str_split($string);
+
+        if (false === $units) {
+            return false;
+        }
+
+        return implode('', array_reverse($units));
     }
 }

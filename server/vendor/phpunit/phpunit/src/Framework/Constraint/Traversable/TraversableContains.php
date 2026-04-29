@@ -11,26 +11,31 @@ namespace PHPUnit\Framework\Constraint;
 
 use function is_array;
 use function sprintf;
-use PHPUnit\Util\Exporter;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
 abstract class TraversableContains extends Constraint
 {
-    private readonly mixed $value;
+    /**
+     * @var mixed
+     */
+    private $value;
 
-    public function __construct(mixed $value)
+    public function __construct($value)
     {
         $this->value = $value;
     }
 
     /**
      * Returns a string representation of the constraint.
+     *
+     * @throws InvalidArgumentException
      */
-    public function toString(bool $exportObjects = false): string
+    public function toString(): string
     {
-        return 'contains ' . Exporter::export($this->value, $exportObjects);
+        return 'contains ' . $this->exporter()->export($this->value);
     }
 
     /**
@@ -38,17 +43,21 @@ abstract class TraversableContains extends Constraint
      *
      * The beginning of failure messages is "Failed asserting that" in most
      * cases. This method should return the second part of that sentence.
+     *
+     * @param mixed $other evaluated value or object
+     *
+     * @throws InvalidArgumentException
      */
-    protected function failureDescription(mixed $other): string
+    protected function failureDescription($other): string
     {
         return sprintf(
             '%s %s',
             is_array($other) ? 'an array' : 'a traversable',
-            $this->toString(true),
+            $this->toString(),
         );
     }
 
-    protected function value(): mixed
+    protected function value()
     {
         return $this->value;
     }

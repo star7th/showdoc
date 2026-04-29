@@ -17,8 +17,15 @@ use DOMElement;
  */
 class File
 {
-    private readonly DOMDocument $dom;
-    private readonly DOMElement $contextNode;
+    /**
+     * @var DOMDocument
+     */
+    private $dom;
+
+    /**
+     * @var DOMElement
+     */
+    private $contextNode;
 
     public function __construct(DOMElement $context)
     {
@@ -34,8 +41,8 @@ class File
             $totalsContainer = $this->contextNode->appendChild(
                 $this->dom->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',
-                    'totals',
-                ),
+                    'totals'
+                )
             );
         }
 
@@ -46,23 +53,23 @@ class File
     {
         $coverage = $this->contextNode->getElementsByTagNameNS(
             'https://schema.phpunit.de/coverage/1.0',
-            'coverage',
+            'coverage'
         )->item(0);
 
         if (!$coverage) {
             $coverage = $this->contextNode->appendChild(
                 $this->dom->createElementNS(
                     'https://schema.phpunit.de/coverage/1.0',
-                    'coverage',
-                ),
+                    'coverage'
+                )
             );
         }
 
         $lineNode = $coverage->appendChild(
             $this->dom->createElementNS(
                 'https://schema.phpunit.de/coverage/1.0',
-                'line',
-            ),
+                'line'
+            )
         );
 
         return new Coverage($lineNode, $line);

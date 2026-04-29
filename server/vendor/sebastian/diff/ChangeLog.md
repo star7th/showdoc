@@ -2,59 +2,18 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [5.1.1] - 2024-03-02
+## [4.0.6] - 2024-03-02
 
 ### Changed
 
 * Do not use implicitly nullable parameters
 
-## [5.1.0] - 2023-12-22
-
-### Added
-
-* `SebastianBergmann\Diff\Chunk::start()`, `SebastianBergmann\Diff\Chunk::startRange()`, `SebastianBergmann\Diff\Chunk::end()`, `SebastianBergmann\Diff\Chunk::endRange()`, and `SebastianBergmann\Diff\Chunk::lines()`
-* `SebastianBergmann\Diff\Diff::from()`, `SebastianBergmann\Diff\Diff::to()`, and `SebastianBergmann\Diff\Diff::chunks()`
-* `SebastianBergmann\Diff\Line::content()` and `SebastianBergmann\Diff\Diff::type()`
-* `SebastianBergmann\Diff\Line::isAdded()`,`SebastianBergmann\Diff\Line::isRemoved()`, and `SebastianBergmann\Diff\Line::isUnchanged()`
-
-### Changed
-
-* `SebastianBergmann\Diff\Diff` now implements `IteratorAggregate`, iterating over it yields the aggregated `SebastianBergmann\Diff\Chunk` objects
-* `SebastianBergmann\Diff\Chunk` now implements `IteratorAggregate`, iterating over it yields the aggregated `SebastianBergmann\Diff\Line` objects
-
-### Deprecated
-
-* `SebastianBergmann\Diff\Chunk::getStart()`, `SebastianBergmann\Diff\Chunk::getStartRange()`, `SebastianBergmann\Diff\Chunk::getEnd()`, `SebastianBergmann\Diff\Chunk::getEndRange()`, and `SebastianBergmann\Diff\Chunk::getLines()`
-* `SebastianBergmann\Diff\Diff::getFrom()`, `SebastianBergmann\Diff\Diff::getTo()`, and `SebastianBergmann\Diff\Diff::getChunks()`
-* `SebastianBergmann\Diff\Line::getContent()` and `SebastianBergmann\Diff\Diff::getType()`
-
-## [5.0.3] - 2023-05-01
-
-### Changed
-
-* [#119](https://github.com/sebastianbergmann/diff/pull/119): Improve performance of `TimeEfficientLongestCommonSubsequenceCalculator`
-
-## [5.0.2] - 2023-05-01
+## [4.0.5] - 2023-05-07
 
 ### Changed
 
 * [#118](https://github.com/sebastianbergmann/diff/pull/118): Improve performance of `MemoryEfficientLongestCommonSubsequenceCalculator`
-
-## [5.0.1] - 2023-03-23
-
-### Fixed
-
-* [#115](https://github.com/sebastianbergmann/diff/pull/115): `Parser::parseFileDiff()` does not handle diffs correctly that only add lines or only remove lines
-
-## [5.0.0] - 2023-02-03
-
-### Changed
-
-* Passing a `DiffOutputBuilderInterface` instance to `Differ::__construct()` is no longer optional
-
-### Removed
-
-* Removed support for PHP 7.3, PHP 7.4, and PHP 8.0
+* [#119](https://github.com/sebastianbergmann/diff/pull/119): Improve performance of `TimeEfficientLongestCommonSubsequenceCalculator`
 
 ## [4.0.4] - 2020-10-26
 
@@ -130,12 +89,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * This component is no longer supported on PHP 5.6
 
-[5.1.1]: https://github.com/sebastianbergmann/diff/compare/5.1.0...5.1.1
-[5.1.0]: https://github.com/sebastianbergmann/diff/compare/5.0.3...5.1.0
-[5.0.3]: https://github.com/sebastianbergmann/diff/compare/5.0.2...5.0.3
-[5.0.2]: https://github.com/sebastianbergmann/diff/compare/5.0.1...5.0.2
-[5.0.1]: https://github.com/sebastianbergmann/diff/compare/5.0.0...5.0.1
-[5.0.0]: https://github.com/sebastianbergmann/diff/compare/4.0.4...5.0.0
+[4.0.6]: https://github.com/sebastianbergmann/diff/compare/4.0.5...4.0.6
+[4.0.5]: https://github.com/sebastianbergmann/diff/compare/4.0.4...4.0.5
 [4.0.4]: https://github.com/sebastianbergmann/diff/compare/4.0.3...4.0.4
 [4.0.3]: https://github.com/sebastianbergmann/diff/compare/4.0.2...4.0.3
 [4.0.2]: https://github.com/sebastianbergmann/diff/compare/4.0.1...4.0.2

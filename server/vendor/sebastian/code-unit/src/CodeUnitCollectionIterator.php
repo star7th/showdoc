@@ -11,16 +11,17 @@ namespace SebastianBergmann\CodeUnit;
 
 use Iterator;
 
-/**
- * @template-implements Iterator<int, CodeUnit>
- */
 final class CodeUnitCollectionIterator implements Iterator
 {
     /**
      * @psalm-var list<CodeUnit>
      */
-    private array $codeUnits;
-    private int $position = 0;
+    private $codeUnits;
+
+    /**
+     * @var int
+     */
+    private $position = 0;
 
     public function __construct(CodeUnitCollection $collection)
     {

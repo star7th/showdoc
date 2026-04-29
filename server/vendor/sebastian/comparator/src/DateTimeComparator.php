@@ -10,29 +10,50 @@
 namespace SebastianBergmann\Comparator;
 
 use function abs;
-use function assert;
 use function floor;
 use function sprintf;
 use DateInterval;
+use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
+use Exception;
 
-final class DateTimeComparator extends ObjectComparator
+/**
+ * Compares DateTimeInterface instances for equality.
+ */
+class DateTimeComparator extends ObjectComparator
 {
-    public function accepts(mixed $expected, mixed $actual): bool
+    /**
+     * Returns whether the comparator can compare two values.
+     *
+     * @param mixed $expected The first value to compare
+     * @param mixed $actual   The second value to compare
+     *
+     * @return bool
+     */
+    public function accepts($expected, $actual)
     {
-        return ($expected instanceof DateTimeInterface) &&
-               ($actual instanceof DateTimeInterface);
+        return ($expected instanceof DateTime || $expected instanceof DateTimeInterface) &&
+               ($actual instanceof DateTime || $actual instanceof DateTimeInterface);
     }
 
     /**
+     * Asserts that two values are equal.
+     *
+     * @param mixed $expected     First value to compare
+     * @param mixed $actual       Second value to compare
+     * @param float $delta        Allowed numerical distance between two values to consider them equal
+     * @param bool  $canonicalize Arrays are sorted before comparison when set to true
+     * @param bool  $ignoreCase   Case is ignored when set to true
+     * @param array $processed    List of already processed elements (used to prevent infinite recursion)
+     *
+     * @throws Exception
      * @throws ComparisonFailure
      */
-    public function assertEquals(mixed $expected, mixed $actual, float $delta = 0.0, bool $canonicalize = false, bool $ignoreCase = false, array &$processed = []): void
+    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false, array &$processed = [])/*: void*/
     {
-        assert($expected instanceof DateTimeInterface);
-        assert($actual instanceof DateTimeInterface);
-
+        /** @var DateTimeInterface $expected */
+        /** @var DateTimeInterface $actual */
         $absDelta = abs($delta);
         $delta    = new DateInterval(sprintf('PT%dS', $absDelta));
         $delta->f = $absDelta - floor($absDelta);
@@ -54,7 +75,8 @@ final class DateTimeComparator extends ObjectComparator
                 $actual,
                 $this->dateTimeToString($expected),
                 $this->dateTimeToString($actual),
-                'Failed asserting that two DateTime objects are equal.',
+                false,
+                'Failed asserting that two DateTime objects are equal.'
             );
         }
     }

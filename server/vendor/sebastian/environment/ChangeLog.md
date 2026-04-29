@@ -2,28 +2,7 @@
 
 All notable changes in `sebastianbergmann/environment` are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [6.1.0] - 2024-03-23
-
-### Added
-
-* [#72](https://github.com/sebastianbergmann/environment/pull/72): `Runtime::getRawBinary()`
-
-## [6.0.1] - 2023-04-11
-
-### Fixed
-
-* [#68](https://github.com/sebastianbergmann/environment/pull/68): The Just-in-Time compiler is disabled when `opcache.jit_buffer_size` is set to `0`
-* [#70](https://github.com/sebastianbergmann/environment/pull/70): The first `0` of `opcache.jit` only disables CPU-specific optimizations, not the Just-in-Time compiler itself
-
-## [6.0.0] - 2023-02-03
-
-### Removed
-
-* Removed `SebastianBergmann\Environment\OperatingSystem::getFamily()` because this component is no longer supported on PHP versions that do not have `PHP_OS_FAMILY`
-* Removed `SebastianBergmann\Environment\Runtime::isHHVM()`
-* This component is no longer supported on PHP 7.3, PHP 7.4, and PHP 8.0
-
-## [5.1.5] - 2022-MM-DD
+## [5.1.5] - 2023-02-03
 
 ### Fixed
 
@@ -178,9 +157,6 @@ All notable changes in `sebastianbergmann/environment` are documented in this fi
 
 * This component is no longer supported on PHP 5.6
 
-[6.1.0]: https://github.com/sebastianbergmann/environment/compare/6.0.1...6.1.0
-[6.0.1]: https://github.com/sebastianbergmann/environment/compare/6.0.0...6.0.1
-[6.0.0]: https://github.com/sebastianbergmann/environment/compare/5.1.5...6.0.0
 [5.1.5]: https://github.com/sebastianbergmann/environment/compare/5.1.4...5.1.5
 [5.1.4]: https://github.com/sebastianbergmann/environment/compare/5.1.3...5.1.4
 [5.1.3]: https://github.com/sebastianbergmann/environment/compare/5.1.2...5.1.3

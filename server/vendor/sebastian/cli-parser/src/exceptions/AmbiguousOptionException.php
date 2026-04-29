@@ -19,8 +19,8 @@ final class AmbiguousOptionException extends RuntimeException implements Excepti
         parent::__construct(
             sprintf(
                 'Option "%s" is ambiguous',
-                $option,
-            ),
+                $option
+            )
         );
     }
 }

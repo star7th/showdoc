@@ -10,6 +10,7 @@
 namespace PHPUnit\Framework\Constraint;
 
 use function array_map;
+use function array_values;
 use function count;
 
 /**
@@ -18,16 +19,28 @@ use function count;
 abstract class BinaryOperator extends Operator
 {
     /**
-     * @psalm-var list<Constraint>
+     * @var Constraint[]
      */
-    private readonly array $constraints;
+    private $constraints = [];
 
-    protected function __construct(mixed ...$constraints)
+    public static function fromConstraints(Constraint ...$constraints): self
     {
-        $this->constraints = array_map(
-            fn ($constraint): Constraint => $this->checkConstraint($constraint),
-            $constraints,
-        );
+        $constraint = new static;
+
+        $constraint->constraints = $constraints;
+
+        return $constraint;
+    }
+
+    /**
+     * @param mixed[] $constraints
+     */
+    public function setConstraints(array $constraints): void
+    {
+        $this->constraints = array_map(function ($constraint): Constraint
+        {
+            return $this->checkConstraint($constraint);
+        }, array_values($constraints));
     }
 
     /**
@@ -75,7 +88,7 @@ abstract class BinaryOperator extends Operator
     }
 
     /**
-     * @psalm-return list<Constraint>
+     * Returns the nested constraints.
      */
     final protected function constraints(): array
     {
@@ -108,6 +121,9 @@ abstract class BinaryOperator extends Operator
 
     /**
      * Returns string representation of given operand in context of this operator.
+     *
+     * @param Constraint $constraint operand constraint
+     * @param int        $position   position of $constraint in this expression
      */
     private function constraintToString(Constraint $constraint, int $position): string
     {

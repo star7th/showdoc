@@ -9,18 +9,20 @@
  */
 namespace PHPUnit\Framework\Constraint;
 
+use function get_class;
 use function sprintf;
 use PHPUnit\Util\Filter;
 use Throwable;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
- *
- * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class Exception extends Constraint
 {
-    private readonly string $className;
+    /**
+     * @var string
+     */
+    private $className;
 
     public function __construct(string $className)
     {
@@ -41,8 +43,10 @@ final class Exception extends Constraint
     /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
+     *
+     * @param mixed $other value or object to evaluate
      */
-    protected function matches(mixed $other): bool
+    protected function matches($other): bool
     {
         return $other instanceof $this->className;
     }
@@ -53,29 +57,29 @@ final class Exception extends Constraint
      * The beginning of failure messages is "Failed asserting that" in most
      * cases. This method should return the second part of that sentence.
      *
-     * @throws \PHPUnit\Framework\Exception
+     * @param mixed $other evaluated value or object
      */
-    protected function failureDescription(mixed $other): string
+    protected function failureDescription($other): string
     {
-        if ($other === null) {
+        if ($other !== null) {
+            $message = '';
+
+            if ($other instanceof Throwable) {
+                $message = '. Message was: "' . $other->getMessage() . '" at'
+                    . "\n" . Filter::getFilteredStacktrace($other);
+            }
+
             return sprintf(
-                'exception of type "%s" is thrown',
+                'exception of type "%s" matches expected exception "%s"%s',
+                get_class($other),
                 $this->className,
+                $message,
             );
         }
 
-        $message = '';
-
-        if ($other instanceof Throwable) {
-            $message = '. Message was: "' . $other->getMessage() . '" at'
-                . "\n" . Filter::getFilteredStacktrace($other);
-        }
-
         return sprintf(
-            'exception of type "%s" matches expected exception "%s"%s',
-            $other::class,
+            'exception of type "%s" is thrown',
             $this->className,
-            $message,
         );
     }
 }

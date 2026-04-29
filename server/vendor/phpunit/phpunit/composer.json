@@ -22,43 +22,45 @@
     },
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=7.3",
         "ext-dom": "*",
         "ext-json": "*",
         "ext-libxml": "*",
         "ext-mbstring": "*",
         "ext-xml": "*",
         "ext-xmlwriter": "*",
+        "doctrine/instantiator": "^1.5.0 || ^2",
         "myclabs/deep-copy": "^1.13.4",
         "phar-io/manifest": "^2.0.4",
         "phar-io/version": "^3.2.1",
-        "phpunit/php-code-coverage": "^10.1.16",
-        "phpunit/php-file-iterator": "^4.1.0",
-        "phpunit/php-invoker": "^4.0.0",
-        "phpunit/php-text-template": "^3.0.1",
-        "phpunit/php-timer": "^6.0.0",
-        "sebastian/cli-parser": "^2.0.1",
-        "sebastian/code-unit": "^2.0.0",
-        "sebastian/comparator": "^5.0.5",
-        "sebastian/diff": "^5.1.1",
-        "sebastian/environment": "^6.1.0",
-        "sebastian/exporter": "^5.1.4",
-        "sebastian/global-state": "^6.0.2",
-        "sebastian/object-enumerator": "^5.0.0",
-        "sebastian/recursion-context": "^5.0.1",
-        "sebastian/type": "^4.0.0",
-        "sebastian/version": "^4.0.1"
+        "phpunit/php-code-coverage": "^9.2.32",
+        "phpunit/php-file-iterator": "^3.0.6",
+        "phpunit/php-invoker": "^3.1.1",
+        "phpunit/php-text-template": "^2.0.4",
+        "phpunit/php-timer": "^5.0.3",
+        "sebastian/cli-parser": "^1.0.2",
+        "sebastian/code-unit": "^1.0.8",
+        "sebastian/comparator": "^4.0.10",
+        "sebastian/diff": "^4.0.6",
+        "sebastian/environment": "^5.1.5",
+        "sebastian/exporter": "^4.0.8",
+        "sebastian/global-state": "^5.0.8",
+        "sebastian/object-enumerator": "^4.0.4",
+        "sebastian/resource-operations": "^3.0.4",
+        "sebastian/type": "^3.2.1",
+        "sebastian/version": "^3.0.2"
     },
     "config": {
         "platform": {
-            "php": "8.1.0"
+            "php": "7.3.0"
         },
         "classmap-authoritative": true,
         "optimize-autoloader": true,
         "sort-packages": true
     },
     "suggest": {
-        "ext-soap": "To be able to generate mocks based on WSDL files"
+        "ext-soap": "To be able to generate mocks based on WSDL files",
+        "ext-xdebug": "PHP extension that provides line coverage as well as branch and path coverage"
     },
     "bin": [
         "phpunit"
@@ -73,23 +75,17 @@
     },
     "autoload-dev": {
         "classmap": [
-            "tests/_files"
+            "tests/"
         ],
         "files": [
-            "tests/unit/Event/AbstractEventTestCase.php",
-            "tests/unit/Framework/MockObject/TestDoubleTestCase.php",
-            "tests/unit/Metadata/Parser/AnnotationParserTestCase.php",
-            "tests/unit/Metadata/Parser/AttributeParserTestCase.php",
             "tests/_files/CoverageNamespacedFunctionTest.php",
             "tests/_files/CoveredFunction.php",
-            "tests/_files/Generator.php",
-            "tests/_files/NamespaceCoveredFunction.php",
-            "tests/end-to-end/code-coverage/ignore-function-using-attribute/src/CoveredFunction.php"
+            "tests/_files/NamespaceCoveredFunction.php"
         ]
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "10.5-dev"
+            "dev-master": "9.6-dev"
         }
     }
 }

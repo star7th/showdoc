@@ -14,8 +14,12 @@ final class Parameter
     /**
      * @psalm-var non-empty-string
      */
-    private string $name;
-    private Type $type;
+    private $name;
+
+    /**
+     * @var Type
+     */
+    private $type;
 
     /**
      * @psalm-param non-empty-string $name

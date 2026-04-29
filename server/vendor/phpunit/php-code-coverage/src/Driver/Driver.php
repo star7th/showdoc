@@ -11,8 +11,11 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 
 use function sprintf;
 use SebastianBergmann\CodeCoverage\BranchAndPathCoverageNotSupportedException;
-use SebastianBergmann\CodeCoverage\Data\RawCodeCoverageData;
 use SebastianBergmann\CodeCoverage\DeadCodeDetectionNotSupportedException;
+use SebastianBergmann\CodeCoverage\Filter;
+use SebastianBergmann\CodeCoverage\NoCodeCoverageDriverAvailableException;
+use SebastianBergmann\CodeCoverage\NoCodeCoverageDriverWithPathCoverageSupportAvailableException;
+use SebastianBergmann\CodeCoverage\RawCodeCoverageData;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for phpunit/php-code-coverage
@@ -52,9 +55,45 @@ abstract class Driver
      *
      * @see http://xdebug.org/docs/code_coverage
      */
-    public const BRANCH_HIT                    = 1;
-    private bool $collectBranchAndPathCoverage = false;
-    private bool $detectDeadCode               = false;
+    public const BRANCH_HIT = 1;
+
+    /**
+     * @var bool
+     */
+    private $collectBranchAndPathCoverage = false;
+
+    /**
+     * @var bool
+     */
+    private $detectDeadCode = false;
+
+    /**
+     * @throws NoCodeCoverageDriverAvailableException
+     * @throws PcovNotAvailableException
+     * @throws PhpdbgNotAvailableException
+     * @throws Xdebug2NotEnabledException
+     * @throws Xdebug3NotEnabledException
+     * @throws XdebugNotAvailableException
+     *
+     * @deprecated Use DriverSelector::forLineCoverage() instead
+     */
+    public static function forLineCoverage(Filter $filter): self
+    {
+        return (new Selector)->forLineCoverage($filter);
+    }
+
+    /**
+     * @throws NoCodeCoverageDriverWithPathCoverageSupportAvailableException
+     * @throws Xdebug2NotEnabledException
+     * @throws Xdebug3NotEnabledException
+     * @throws XdebugNotAvailableException
+     *
+     * @deprecated Use DriverSelector::forLineAndPathCoverage() instead
+     */
+    public static function forLineAndPathCoverage(Filter $filter): self
+    {
+        return (new Selector)->forLineAndPathCoverage($filter);
+    }
 
     public function canCollectBranchAndPathCoverage(): bool
     {
@@ -75,8 +114,8 @@ abstract class Driver
             throw new BranchAndPathCoverageNotSupportedException(
                 sprintf(
                     '%s does not support branch and path coverage',
-                    $this->nameAndVersion(),
-                ),
+                    $this->nameAndVersion()
+                )
             );
         }
 
@@ -107,8 +146,8 @@ abstract class Driver
             throw new DeadCodeDetectionNotSupportedException(
                 sprintf(
                     '%s does not support dead code detection',
-                    $this->nameAndVersion(),
-                ),
+                    $this->nameAndVersion()
+                )
             );
         }
 

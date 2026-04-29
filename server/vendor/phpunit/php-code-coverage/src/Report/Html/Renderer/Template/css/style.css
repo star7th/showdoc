@@ -40,23 +40,23 @@ body {
 }
 
 .table tbody tr.covered-by-large-tests, li.covered-by-large-tests, tr.success, td.success, li.success, span.success {
- background-color: {{success-low}};
+ background-color: #dff0d8;
 }
 
 .table tbody tr.covered-by-medium-tests, li.covered-by-medium-tests {
- background-color: {{success-medium}};
+ background-color: #c3e3b5;
 }
 
 .table tbody tr.covered-by-small-tests, li.covered-by-small-tests {
- background-color: {{success-high}};
-}
-
-.table tbody tr.warning, .table tbody td.warning, li.warning, span.warning {
- background-color: {{warning}};
+ background-color: #99cb84;
 }
 
 .table tbody tr.danger, .table tbody td.danger, li.danger, span.danger {
- background-color: {{danger}};
+ background-color: #f2dede;
+}
+
+.table tbody tr.warning, .table tbody td.warning, li.warning, span.warning {
+ background-color: #fcf8e3;
 }
 
 .table tbody td.info {
@@ -138,21 +138,21 @@ table + .structure-heading {
 }
 
 .covered-by-small-tests {
- background-color: {{success-high}};
+ background-color: #99cb84;
 }
 
 .covered-by-medium-tests {
- background-color: {{success-medium}};
+ background-color: #c3e3b5;
 }
 
 .covered-by-large-tests {
- background-color: {{success-low}};
+ background-color: #dff0d8;
 }
 
 .not-covered {
- background-color: {{danger}};
+ background-color: #f2dede;
 }
 
 .not-coverable {
- background-color: {{warning}};
+ background-color: #fcf8e3;
 }

@@ -18,6 +18,9 @@ namespace Symfony\Component\HttpClient\Chunk;
  */
 class LastChunk extends DataChunk
 {
+    /**
+     * {@inheritdoc}
+     */
     public function isLast(): bool
     {
         return true;

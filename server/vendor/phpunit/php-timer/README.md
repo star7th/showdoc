@@ -1,9 +1,7 @@
 # phpunit/php-timer
 
-[![Latest Stable Version](https://poser.pugx.org/phpunit/php-timer/v/stable.png)](https://packagist.org/packages/phpunit/php-timer)
 [![CI Status](https://github.com/sebastianbergmann/php-timer/workflows/CI/badge.svg)](https://github.com/sebastianbergmann/php-timer/actions)
 [![Type Coverage](https://shepherd.dev/github/sebastianbergmann/php-timer/coverage.svg)](https://shepherd.dev/github/sebastianbergmann/php-timer)
-[![codecov](https://codecov.io/gh/sebastianbergmann/php-timer/branch/main/graph/badge.svg)](https://codecov.io/gh/sebastianbergmann/php-timer)
 
 Utility class for timing things, factored out of PHPUnit into a stand-alone component.
 

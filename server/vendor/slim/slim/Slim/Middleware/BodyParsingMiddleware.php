@@ -19,7 +19,6 @@ use RuntimeException;
 use function count;
 use function explode;
 use function is_array;
-use function is_null;
 use function is_object;
 use function is_string;
 use function json_decode;
@@ -33,6 +32,7 @@ use function trim;
 
 use const LIBXML_VERSION;
 
+/** @api */
 class BodyParsingMiddleware implements MiddlewareInterface
 {
     /**
@@ -65,8 +65,8 @@ class BodyParsingMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param string   $mediaType A HTTP media type (excluding content-type params).
-     * @param callable $callable  A callable that returns parsed contents for media type.
+     * @param string $mediaType A HTTP media type (excluding content-type params).
+     * @param callable $callable A callable that returns parsed contents for media type.
      */
     public function registerBodyParser(string $mediaType, callable $callable): self
     {
@@ -75,7 +75,7 @@ class BodyParsingMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param string   $mediaType A HTTP media type (excluding content-type params).
+     * @param string $mediaType A HTTP media type (excluding content-type params).
      */
     public function hasBodyParser(string $mediaType): bool
     {
@@ -83,7 +83,7 @@ class BodyParsingMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param string    $mediaType A HTTP media type (excluding content-type params).
+     * @param string $mediaType A HTTP media type (excluding content-type params).
      * @throws RuntimeException
      */
     public function getBodyParser(string $mediaType): callable
@@ -97,6 +97,7 @@ class BodyParsingMiddleware implements MiddlewareInterface
     protected function registerDefaultBodyParsers(): void
     {
         $this->registerBodyParser('application/json', static function ($input) {
+            /** @var string $input */
             $result = json_decode($input, true);
 
             if (!is_array($result)) {
@@ -107,11 +108,15 @@ class BodyParsingMiddleware implements MiddlewareInterface
         });
 
         $this->registerBodyParser('application/x-www-form-urlencoded', static function ($input) {
+            /** @var string $input */
             parse_str($input, $data);
+
             return $data;
         });
 
         $xmlCallable = static function ($input) {
+            /** @var string $input */
+
             $backup = self::disableXmlEntityLoader(true);
             $backup_errors = libxml_use_internal_errors(true);
             $result = simplexml_load_string($input);

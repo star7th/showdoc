@@ -10,7 +10,7 @@
 namespace SebastianBergmann\Type;
 
 use function assert;
-use ReflectionFunction;
+use ReflectionFunctionAbstract;
 use ReflectionIntersectionType;
 use ReflectionMethod;
 use ReflectionNamedType;
@@ -22,7 +22,7 @@ final class ReflectionMapper
     /**
      * @psalm-return list<Parameter>
      */
-    public function fromParameterTypes(ReflectionFunction|ReflectionMethod $functionOrMethod): array
+    public function fromParameterTypes(ReflectionFunctionAbstract $functionOrMethod): array
     {
         $parameters = [];
 
@@ -68,7 +68,7 @@ final class ReflectionMapper
         return $parameters;
     }
 
-    public function fromReturnType(ReflectionFunction|ReflectionMethod $functionOrMethod): Type
+    public function fromReturnType(ReflectionFunctionAbstract $functionOrMethod): Type
     {
         if (!$this->hasReturnType($functionOrMethod)) {
             return new UnknownType;
@@ -91,7 +91,7 @@ final class ReflectionMapper
         }
     }
 
-    private function mapNamedType(ReflectionNamedType $type, ReflectionFunction|ReflectionMethod $functionOrMethod): Type
+    private function mapNamedType(ReflectionNamedType $type, ReflectionFunctionAbstract $functionOrMethod): Type
     {
         if ($functionOrMethod instanceof ReflectionMethod && $type->getName() === 'self') {
             return ObjectType::fromName(
@@ -124,7 +124,7 @@ final class ReflectionMapper
         );
     }
 
-    private function mapUnionType(ReflectionUnionType $type, ReflectionFunction|ReflectionMethod $functionOrMethod): Type
+    private function mapUnionType(ReflectionUnionType $type, ReflectionFunctionAbstract $functionOrMethod): Type
     {
         $types = [];
 
@@ -143,7 +143,7 @@ final class ReflectionMapper
         return new UnionType(...$types);
     }
 
-    private function mapIntersectionType(ReflectionIntersectionType $type, ReflectionFunction|ReflectionMethod $functionOrMethod): Type
+    private function mapIntersectionType(ReflectionIntersectionType $type, ReflectionFunctionAbstract $functionOrMethod): Type
     {
         $types = [];
 
@@ -156,19 +156,27 @@ final class ReflectionMapper
         return new IntersectionType(...$types);
     }
 
-    private function hasReturnType(ReflectionFunction|ReflectionMethod $functionOrMethod): bool
+    private function hasReturnType(ReflectionFunctionAbstract $functionOrMethod): bool
     {
         if ($functionOrMethod->hasReturnType()) {
             return true;
         }
 
+        if (!method_exists($functionOrMethod, 'hasTentativeReturnType')) {
+            return false;
+        }
+
         return $functionOrMethod->hasTentativeReturnType();
     }
 
-    private function returnType(ReflectionFunction|ReflectionMethod $functionOrMethod): ?ReflectionType
+    private function returnType(ReflectionFunctionAbstract $functionOrMethod): ?ReflectionType
     {
         if ($functionOrMethod->hasReturnType()) {
             return $functionOrMethod->getReturnType();
+        }
+
+        if (!method_exists($functionOrMethod, 'getTentativeReturnType')) {
+            return null;
         }
 
         return $functionOrMethod->getTentativeReturnType();

@@ -19,8 +19,8 @@ final class OptionDoesNotAllowArgumentException extends RuntimeException impleme
         parent::__construct(
             sprintf(
                 'Option "%s" does not allow an argument',
-                $option,
-            ),
+                $option
+            )
         );
     }
 }

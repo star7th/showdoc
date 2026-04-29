@@ -10,15 +10,15 @@
         "Doctrine"
     ],
     "require": {
-        "php": "^8.1"
+        "php": "^7.4 || ^8.0"
     },
     "require-dev": {
-        "doctrine/dbal": "^4.0.0",
+        "doctrine/dbal": "^3.7.0",
         "nesbot/carbon": "^2.71.0 || ^3.0.0",
         "phpunit/phpunit": "^10.3"
     },
     "conflict": {
-        "doctrine/dbal": "<4.0.0 || >=5.0.0"
+        "doctrine/dbal": "<3.7.0 || >=4.0.0"
     },
     "license": "MIT",
     "autoload": {

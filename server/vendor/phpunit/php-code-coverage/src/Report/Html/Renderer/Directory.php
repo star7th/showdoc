@@ -12,10 +12,8 @@ namespace SebastianBergmann\CodeCoverage\Report\Html;
 use function count;
 use function sprintf;
 use function str_repeat;
-use SebastianBergmann\CodeCoverage\FileCouldNotBeWrittenException;
 use SebastianBergmann\CodeCoverage\Node\AbstractNode as Node;
 use SebastianBergmann\CodeCoverage\Node\Directory as DirectoryNode;
-use SebastianBergmann\Template\Exception;
 use SebastianBergmann\Template\Template;
 
 /**
@@ -44,18 +42,10 @@ final class Directory extends Renderer
             [
                 'id'    => $node->id(),
                 'items' => $items,
-            ],
+            ]
         );
 
-        try {
-            $template->renderTo($file);
-        } catch (Exception $e) {
-            throw new FileCouldNotBeWrittenException(
-                $e->getMessage(),
-                $e->getCode(),
-                $e,
-            );
-        }
+        $template->renderTo($file);
     }
 
     private function renderItem(Node $node, bool $total = false): string
@@ -93,7 +83,7 @@ final class Directory extends Renderer
                 $data['name'] = sprintf(
                     '<a href="%s/index.html">%s</a>',
                     $node->name(),
-                    $node->name(),
+                    $node->name()
                 );
                 $data['icon'] = sprintf('<img src="%s_icons/file-directory.svg" class="octicon" />', $up);
             } elseif ($this->hasBranchCoverage) {
@@ -102,13 +92,13 @@ final class Directory extends Renderer
                     $node->name(),
                     $node->name(),
                     $node->name(),
-                    $node->name(),
+                    $node->name()
                 );
             } else {
                 $data['name'] = sprintf(
                     '<a href="%s.html">%s</a>',
                     $node->name(),
-                    $node->name(),
+                    $node->name()
                 );
             }
         }
@@ -117,7 +107,7 @@ final class Directory extends Renderer
 
         return $this->renderItemTemplate(
             new Template($templateName, '{{', '}}'),
-            $data,
+            $data
         );
     }
 }

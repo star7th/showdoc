@@ -32,7 +32,7 @@ final class EventSourceHttpClient implements HttpClientInterface, ResetInterface
         AsyncDecoratorTrait::withOptions insteadof HttpClientTrait;
     }
 
-    private float $reconnectionTime;
+    private $reconnectionTime;
 
     public function __construct(?HttpClientInterface $client = null, float $reconnectionTime = 10.0)
     {
@@ -40,9 +40,9 @@ final class EventSourceHttpClient implements HttpClientInterface, ResetInterface
         $this->reconnectionTime = $reconnectionTime;
     }
 
-    public function connect(string $url, array $options = [], string $method = 'GET'): ResponseInterface
+    public function connect(string $url, array $options = []): ResponseInterface
     {
-        return $this->request($method, $url, self::mergeDefaultOptions($options, [
+        return $this->request('GET', $url, self::mergeDefaultOptions($options, [
             'buffer' => false,
             'headers' => [
                 'Accept' => 'text/event-stream',
@@ -53,11 +53,11 @@ final class EventSourceHttpClient implements HttpClientInterface, ResetInterface
 
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
-        $state = new class {
-            public ?string $buffer = null;
-            public ?string $lastEventId = null;
-            public float $reconnectionTime;
-            public ?float $lastError = null;
+        $state = new class() {
+            public $buffer = null;
+            public $lastEventId = null;
+            public $reconnectionTime;
+            public $lastError = null;
         };
         $state->reconnectionTime = $this->reconnectionTime;
 
@@ -85,15 +85,15 @@ final class EventSourceHttpClient implements HttpClientInterface, ResetInterface
 
                     return;
                 }
-            } catch (TransportExceptionInterface) {
-                $state->lastError = $lastError ?? hrtime(true) / 1E9;
+            } catch (TransportExceptionInterface $e) {
+                $state->lastError = $lastError ?? microtime(true);
 
-                if (null === $state->buffer || ($isTimeout && hrtime(true) / 1E9 - $state->lastError < $state->reconnectionTime)) {
+                if (null === $state->buffer || ($isTimeout && microtime(true) - $state->lastError < $state->reconnectionTime)) {
                     yield $chunk;
                 } else {
                     $options['headers']['Last-Event-ID'] = $state->lastEventId;
                     $state->buffer = '';
-                    $state->lastError = hrtime(true) / 1E9;
+                    $state->lastError = microtime(true);
                     $context->getResponse()->cancel();
                     $context->replaceRequest($method, $url, $options);
                     if ($isTimeout) {
@@ -110,7 +110,7 @@ final class EventSourceHttpClient implements HttpClientInterface, ResetInterface
                 if (preg_match('/^text\/event-stream(;|$)/i', $context->getHeaders()['content-type'][0] ?? '')) {
                     $state->buffer = '';
                 } elseif (null !== $lastError || (null !== $state->buffer && 200 === $context->getStatusCode())) {
-                    throw new EventSourceException(\sprintf('Response content-type is "%s" while "text/event-stream" was expected for "%s".', $context->getHeaders()['content-type'][0] ?? '', $context->getInfo('url')));
+                    throw new EventSourceException(sprintf('Response content-type is "%s" while "text/event-stream" was expected for "%s".', $context->getHeaders()['content-type'][0] ?? '', $context->getInfo('url')));
                 } else {
                     $context->passthru();
                 }

@@ -11,31 +11,41 @@ namespace SebastianBergmann\ObjectReflector;
 
 use function count;
 use function explode;
+use function get_class;
+use function is_object;
 
-final class ObjectReflector
+class ObjectReflector
 {
     /**
-     * @psalm-return array<string,mixed>
+     * @param object $object
+     *
+     * @throws InvalidArgumentException
      */
-    public function getProperties(object $object): array
+    public function getAttributes($object): array
     {
-        $properties = [];
-        $className  = $object::class;
+        if (!is_object($object)) {
+            throw new InvalidArgumentException;
+        }
+
+        $attributes = [];
+        $className  = get_class($object);
 
         foreach ((array) $object as $name => $value) {
             $name = explode("\0", (string) $name);
 
             if (count($name) === 1) {
                 $name = $name[0];
-            } elseif ($name[1] !== $className) {
-                $name = $name[1] . '::' . $name[2];
             } else {
-                $name = $name[2];
+                if ($name[1] !== $className) {
+                    $name = $name[1] . '::' . $name[2];
+                } else {
+                    $name = $name[2];
+                }
             }
 
-            $properties[$name] = $value;
+            $attributes[$name] = $value;
         }
 
-        return $properties;
+        return $attributes;
     }
 }

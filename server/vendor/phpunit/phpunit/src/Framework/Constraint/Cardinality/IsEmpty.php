@@ -12,7 +12,7 @@ namespace PHPUnit\Framework\Constraint;
 use function count;
 use function gettype;
 use function sprintf;
-use function str_starts_with;
+use function strpos;
 use Countable;
 use EmptyIterator;
 
@@ -32,8 +32,10 @@ final class IsEmpty extends Constraint
     /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
+     *
+     * @param mixed $other value or object to evaluate
      */
-    protected function matches(mixed $other): bool
+    protected function matches($other): bool
     {
         if ($other instanceof EmptyIterator) {
             return true;
@@ -51,16 +53,18 @@ final class IsEmpty extends Constraint
      *
      * The beginning of failure messages is "Failed asserting that" in most
      * cases. This method should return the second part of that sentence.
+     *
+     * @param mixed $other evaluated value or object
      */
-    protected function failureDescription(mixed $other): string
+    protected function failureDescription($other): string
     {
         $type = gettype($other);
 
         return sprintf(
             '%s %s %s',
-            str_starts_with($type, 'a') || str_starts_with($type, 'o') ? 'an' : 'a',
+            strpos($type, 'a') === 0 || strpos($type, 'o') === 0 ? 'an' : 'a',
             $type,
-            $this->toString(true),
+            $this->toString(),
         );
     }
 }

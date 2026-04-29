@@ -10,15 +10,15 @@
 namespace PHPUnit\Framework\Constraint;
 
 use function count;
-use function is_countable;
+use function is_array;
 use function iterator_count;
 use function sprintf;
+use Countable;
 use EmptyIterator;
 use Generator;
 use Iterator;
 use IteratorAggregate;
 use PHPUnit\Framework\Exception;
-use PHPUnit\Framework\GeneratorNotSupportedException;
 use Traversable;
 
 /**
@@ -26,7 +26,10 @@ use Traversable;
  */
 class Count extends Constraint
 {
-    private readonly int $expectedCount;
+    /**
+     * @var int
+     */
+    private $expectedCount;
 
     public function __construct(int $expected)
     {
@@ -47,7 +50,7 @@ class Count extends Constraint
      *
      * @throws Exception
      */
-    protected function matches(mixed $other): bool
+    protected function matches($other): bool
     {
         return $this->expectedCount === $this->getCountOf($other);
     }
@@ -55,9 +58,9 @@ class Count extends Constraint
     /**
      * @throws Exception
      */
-    protected function getCountOf(mixed $other): ?int
+    protected function getCountOf($other): ?int
     {
-        if (is_countable($other)) {
+        if ($other instanceof Countable || is_array($other)) {
             return count($other);
         }
 
@@ -81,7 +84,7 @@ class Count extends Constraint
             $iterator = $other;
 
             if ($iterator instanceof Generator) {
-                throw new GeneratorNotSupportedException;
+                return $this->getCountOfGenerator($iterator);
             }
 
             if (!$iterator instanceof Iterator) {
@@ -108,14 +111,27 @@ class Count extends Constraint
     }
 
     /**
+     * Returns the total number of iterations from a generator.
+     * This will fully exhaust the generator.
+     */
+    protected function getCountOfGenerator(Generator $generator): int
+    {
+        for ($count = 0; $generator->valid(); $generator->next()) {
+            $count++;
+        }
+
+        return $count;
+    }
+
+    /**
      * Returns the description of the failure.
      *
      * The beginning of failure messages is "Failed asserting that" in most
      * cases. This method should return the second part of that sentence.
      *
-     * @throws Exception
+     * @param mixed $other evaluated value or object
      */
-    protected function failureDescription(mixed $other): string
+    protected function failureDescription($other): string
     {
         return sprintf(
             'actual size %d matches expected size %d',

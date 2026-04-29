@@ -788,7 +788,7 @@ class CAS_Client
             'file' => $dbg[1]['file'],
             'line' => $dbg[1]['line'],
             'method' => $dbg[1]['class'] . '::' . $dbg[1]['function'],
-            'result' => (boolean)$auth
+            'result' => (bool)$auth
         );
     }
     private $_authentication_caller;
@@ -926,7 +926,7 @@ class CAS_Client
      *                                                  CAS_ServiceBaseUrl_Interface for custom
      *                                                  behavior. Added in 1.6.0. Similar to
      *                                                  serverName config in other CAS clients.
-     * @param \SessionHandlerInterface $sessionHandler  the session handler
+     * @param \SessionHandlerInterface|null $sessionHandler  the session handler
      *
      * @return self a newly created CAS_Client object
      */
@@ -938,7 +938,7 @@ class CAS_Client
         $server_uri,
         $service_base_url,
         $changeSessionID = true,
-        \SessionHandlerInterface $sessionHandler = null
+        ?\SessionHandlerInterface $sessionHandler = null
     ) {
         // Argument validation
         if (gettype($server_version) != 'string')
@@ -3166,7 +3166,7 @@ class CAS_Client
                 $proxiedService->setCasClient($this);
             }
             return $proxiedService;
-        case PHPCAS_PROXIED_SERVICE_IMAP;
+        case PHPCAS_PROXIED_SERVICE_IMAP:
             $proxiedService = new CAS_ProxiedService_Imap($this->_getUser());
             if ($proxiedService instanceof CAS_ProxiedService_Testable) {
                 $proxiedService->setCasClient($this);
@@ -4163,7 +4163,7 @@ class CAS_Client
     * This method is used to print the HTML output when the user was not
     * authenticated.
     *
-    * @param string $failure      the failure that occured
+    * @param string $failure      the failure that occurred
     * @param string $cas_url      the URL the CAS server was asked for
     * @param bool   $no_response  the response from the CAS server (other
     * parameters are ignored if true)

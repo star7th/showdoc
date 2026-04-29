@@ -11,21 +11,24 @@ namespace PHPUnit\Framework\Constraint;
 
 use function is_string;
 use function sprintf;
-use function str_contains;
+use function strpos;
 use function trim;
 use PHPUnit\Framework\ExpectationFailedException;
-use PHPUnit\Util\Exporter;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Comparator\Factory as ComparatorFactory;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
 final class IsEqualIgnoringCase extends Constraint
 {
-    private readonly mixed $value;
+    /**
+     * @var mixed
+     */
+    private $value;
 
-    public function __construct(mixed $value)
+    public function __construct($value)
     {
         $this->value = $value;
     }
@@ -42,7 +45,7 @@ final class IsEqualIgnoringCase extends Constraint
      *
      * @throws ExpectationFailedException
      */
-    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool
+    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool
     {
         // If $this->value and $other are identical, they are also equal.
         // This is the most common path and will allow us to skip
@@ -82,11 +85,13 @@ final class IsEqualIgnoringCase extends Constraint
 
     /**
      * Returns a string representation of the constraint.
+     *
+     * @throws InvalidArgumentException
      */
-    public function toString(bool $exportObjects = false): string
+    public function toString(): string
     {
         if (is_string($this->value)) {
-            if (str_contains($this->value, "\n")) {
+            if (strpos($this->value, "\n") !== false) {
                 return 'is equal to <text>';
             }
 
@@ -98,7 +103,7 @@ final class IsEqualIgnoringCase extends Constraint
 
         return sprintf(
             'is equal to %s',
-            Exporter::export($this->value, $exportObjects),
+            $this->exporter()->export($this->value),
         );
     }
 }

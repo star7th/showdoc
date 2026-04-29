@@ -11,18 +11,12 @@ namespace PHPUnit\Framework\Constraint;
 
 use function array_reduce;
 use function array_shift;
-use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
  */
 final class LogicalXor extends BinaryOperator
 {
-    public static function fromConstraints(mixed ...$constraints): self
-    {
-        return new self(...$constraints);
-    }
-
     /**
      * Returns the name of this operator.
      */
@@ -45,9 +39,9 @@ final class LogicalXor extends BinaryOperator
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
-     * @throws ExpectationFailedException
+     * @param mixed $other value or object to evaluate
      */
-    public function matches(mixed $other): bool
+    public function matches($other): bool
     {
         $constraints = $this->constraints();
 
@@ -59,7 +53,10 @@ final class LogicalXor extends BinaryOperator
 
         return array_reduce(
             $constraints,
-            static fn (bool $matches, Constraint $constraint): bool => $matches xor $constraint->evaluate($other, '', true),
+            static function (bool $matches, Constraint $constraint) use ($other): bool
+            {
+                return $matches xor $constraint->evaluate($other, '', true);
+            },
             $initial->evaluate($other, '', true),
         );
     }

@@ -22,29 +22,29 @@
     },
     "config": {
         "platform": {
-            "php": "8.1.0"
+            "php": "7.3.0"
         },
         "optimize-autoloader": true,
         "sort-packages": true
     },
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=7.3",
         "ext-dom": "*",
         "ext-libxml": "*",
         "ext-xmlwriter": "*",
         "nikic/php-parser": "^4.19.1 || ^5.1.0",
-        "phpunit/php-file-iterator": "^4.1.0",
-        "phpunit/php-text-template": "^3.0.1",
-        "sebastian/code-unit-reverse-lookup": "^3.0.0",
-        "sebastian/complexity": "^3.2.0",
-        "sebastian/environment": "^6.1.0",
-        "sebastian/lines-of-code": "^2.0.2",
-        "sebastian/version": "^4.0.1",
+        "phpunit/php-file-iterator": "^3.0.6",
+        "phpunit/php-text-template": "^2.0.4",
+        "sebastian/code-unit-reverse-lookup": "^2.0.3",
+        "sebastian/complexity": "^2.0.3",
+        "sebastian/environment": "^5.1.5",
+        "sebastian/lines-of-code": "^1.0.4",
+        "sebastian/version": "^3.0.2",
         "theseer/tokenizer": "^1.2.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.1"
+        "phpunit/phpunit": "^9.6"
     },
     "suggest": {
         "ext-pcov": "PHP extension that provides line coverage",
@@ -63,7 +63,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "10.1.x-dev"
+            "dev-main": "9.2.x-dev"
         }
     }
 }

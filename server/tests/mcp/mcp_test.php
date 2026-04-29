@@ -829,7 +829,7 @@ if (!$hasError && isset($result['body']['result']['content'][0]['text'])) {
   if (isset($data['item_id'])) {
     $longNameItemId = $data['item_id'];
     $tester->addCreatedItem($longNameItemId); // 添加到清理列表
-    printInfo("超长名称项目创建成功，ID: $longNameItemId（名称可能被截断）");
+    printInfo("超长名称项目创建成功，ID: {$longNameItemId}（名称可能被截断）");
   }
 }
 $tester->recordTest('create_item 超长名称被拒绝或截断', $hasError || true, '超长字符串处理'); // 可能被截断而非拒绝
@@ -1057,7 +1057,7 @@ if ($itemCount >= $allowCount) {
     $hasError ? $errorMsg : '应该返回配额超限错误'
   );
 } else {
-  $tester->recordTest('create_item 配额限制', true, "项目数 $itemCount 未达上限 $allowCount，跳过配额测试");
+  $tester->recordTest('create_item 配额限制', true, "项目数 $itemCount 未达上限 {$allowCount}，跳过配额测试");
 }
 
 // 测试4: 空间配额检查（开源版使用固定大配额）
