@@ -4,7 +4,7 @@ FROM  webdevops/php-nginx:8.3-alpine
 ARG IN_CHINA=false
 
 # 环境变量
-ENV SHOWDOC_DOCKER_VERSION=3.4.1
+ENV SHOWDOC_DOCKER_VERSION=3.5.2
 ENV IN_CHINA=${IN_CHINA}
 
 WORKDIR /showdoc_data/html
