@@ -451,6 +451,10 @@ class McpServer
             'type' => 'string',
             'description' => '页面标题（可选）',
           ],
+          'cat_name' => [
+            'type' => 'string',
+            'description' => '目录名称（可选，传入时可将页面移动到指定目录，不存在则自动创建）',
+          ],
           'expected_hash' => [
             'type' => 'string',
             'description' => '期望的当前内容哈希（乐观锁，可选）',

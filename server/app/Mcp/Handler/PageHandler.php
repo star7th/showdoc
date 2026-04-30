@@ -1306,6 +1306,8 @@ MARKDOWN;
     $updateData = [];
     $pageTitle = trim($params['page_title'] ?? '');
     $pageContent = $params['page_content'] ?? null;
+    $catName = trim((string) ($params['cat_name'] ?? ''));
+    $targetCatId = (int) ($page->cat_id ?? 0);
 
     if ($pageContent !== null) {
       // 验证内容不能为空（与 PageController::save 一致）
@@ -1318,11 +1320,16 @@ MARKDOWN;
       $updateData['page_content'] = $pageContent;
     }
 
+    if ($catName !== '') {
+      $targetCatId = $this->getOrCreateCatalog($itemId, $catName);
+      $updateData['cat_id'] = $targetCatId;
+    }
+
     if ($pageTitle !== '') {
       // 检查标题是否与其他页面重复（按 item_id + cat_id + page_title 判重，允许不同目录下存在同名页面）
       $existingPage = DB::table('page')
         ->where('item_id', $itemId)
-        ->where('cat_id', $page->cat_id)
+        ->where('cat_id', $targetCatId)
         ->where('page_title', $pageTitle)
         ->where('page_id', '<>', $pageId)
         ->where('is_del', 0)
@@ -1331,6 +1338,20 @@ MARKDOWN;
         McpError::throw(McpError::OPERATION_FAILED, "页面标题已存在: {$pageTitle}");
       }
       $updateData['page_title'] = $pageTitle;
+    }
+
+    if ($pageTitle === '' && $catName !== '') {
+      // 仅改目录时，也要保证目标目录下标题不冲突
+      $existingInTargetCat = DB::table('page')
+        ->where('item_id', $itemId)
+        ->where('cat_id', $targetCatId)
+        ->where('page_title', (string) ($page->page_title ?? ''))
+        ->where('page_id', '<>', $pageId)
+        ->where('is_del', 0)
+        ->first();
+      if ($existingInTargetCat) {
+        McpError::throw(McpError::OPERATION_FAILED, '目标目录下已存在同名页面，无法移动');
+      }
     }
 
     if (empty($updateData)) {
@@ -1600,6 +1621,7 @@ MARKDOWN;
     $catNames = array_map('trim', explode('/', $catName));
     $parentCatId = 0;
     $catId = 0;
+    $depth = 0;
 
     for ($i = 0; $i < count($catNames); $i++) {
       $name = $catNames[$i];
@@ -1607,7 +1629,8 @@ MARKDOWN;
         continue;
       }
 
-      $level = $i + 2;
+      $depth++;
+      $level = $depth + 1;
 
       // 查找目录
       $catalog = DB::table('catalog')
