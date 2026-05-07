@@ -1,25 +1,44 @@
+version: '3'
+
+networks:
+    showdocnet:
 
 services:
-  showdoc:
-    ## 方式1: 官方 image ################################
-    # image: star7th/showdoc
+    showdoc:
+        ## 方式1: 官方 image ################################
+        # image: star7th/showdoc
 
-    ## 方式2: 源码 build image ################################
-    ## 国内构建镜像方式1: docker compose build --build-arg IN_CHINA=true
-    ## 国内构建镜像方式2: IN_CHINA=true docker compose build
-    ## 启动: IN_CHINA=true docker compose up -d
-    build:
-      context: ./
-      args:
-        - IN_CHINA=${IN_CHINA:-false}
-    environment:
-      IN_CHINA: ${IN_CHINA:-false}
-    hostname: showdoc
-    ports:
-      - 4999:80
-    volumes:
-      ## 兼容历史版本文件
-      - /showdoc_data:/showdoc_data_old
-      - ./showdocdata/html:/var/www/html
-    restart: always
-    tty: true
+        ## 方式2: 源码 build image ################################
+        ## 国内构建镜像方式1: docker compose build --build-arg IN_CHINA=true
+        ## 国内构建镜像方式2: IN_CHINA=true docker compose build
+        ## 启动: IN_CHINA=true docker compose up -d
+        build:
+            context: ./
+            args:
+                - IN_CHINA=${IN_CHINA:-false}
+        environment:
+            IN_CHINA: ${IN_CHINA:-false}
+            # 可以通过环境变量自定义PlantUML服务器地址
+            # 例如: PLANTUML_HOST=http://plantuml:8080/plantuml
+            PLANTUML_HOST: ${PLANTUML_HOST:-https://www.plantuml.com/plantuml}
+        hostname: showdoc
+        ports:
+            - 4999:80
+        volumes:
+            ## 兼容历史版本文件
+            - /showdoc_data:/showdoc_data_old
+            - ./showdocdata/html:/var/www/html
+        restart: always
+        tty: true
+        networks:
+            - showdocnet
+
+    plantuml:
+        image: plantuml/plantuml-server:jetty
+        container_name: plantuml
+        ports:
+            - '8080:8080'
+        restart: always
+        environment:
+            PLANTUML_LIMIT_SIZE: 8192 # 设置图片大小限制，默认 4096，可以根据需要调整
+            PLANTUML_SECURITY_PROFILE: 'none' #关闭安全检查，否则可能无法使用网络资源
