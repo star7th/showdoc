@@ -4,6 +4,7 @@ namespace App\Mcp;
 
 use App\Model\UserAiToken;
 use App\Model\Item;
+use App\Common\Cache\CacheManager;
 use Illuminate\Database\Capsule\Manager as DB;
 
 /**
@@ -136,7 +137,41 @@ abstract class McpHandler
   }
 
   /**
-   * 检查用户是否是项目成员
+   * 缓存 TTL（秒）
+   */
+  private const CACHE_TTL = 300;
+
+  /**
+   * 从缓存获取 Item 信息
+   *
+   * @param int $itemId 项目 ID
+   * @return object|null
+   */
+  protected function getItemCached(int $itemId): ?object
+  {
+    if ($itemId <= 0) {
+      return null;
+    }
+
+    $cache = CacheManager::getInstance();
+    if ($cache->isEnabled()) {
+      $key = 'mcp_item:' . $itemId;
+      $cached = $cache->get($key);
+      if ($cached !== null) {
+        return $cached === false ? null : $cached;
+      }
+
+      $item = Item::findById($itemId);
+      // 用 false 标记「不存在」，避免穿透
+      $cache->set($key, $item ?? false, self::CACHE_TTL);
+      return $item;
+    }
+
+    return Item::findById($itemId);
+  }
+
+  /**
+   * 检查用户是否是项目成员（带 Redis 缓存）
    *
    * @param int $itemId 项目 ID
    * @return bool
@@ -147,35 +182,48 @@ abstract class McpHandler
       return false;
     }
 
-    // 检查是否是项目创建者
-    $item = Item::findById($itemId);
+    // 尝试 Redis 缓存
+    $cache = CacheManager::getInstance();
+    if ($cache->isEnabled()) {
+      $key = 'mcp_item_member:' . $this->uid . ':' . $itemId;
+      $cached = $cache->get($key);
+      if ($cached !== null) {
+        return $cached === true;
+      }
+    }
+
+    // 以下为原始 DB 查询逻辑（改用 getItemCached）
+    $item = $this->getItemCached($itemId);
     if ($item && (int) $item->uid === $this->uid) {
-      return true;
+      $result = true;
+    } else {
+      // 检查是否是项目成员
+      $member = DB::table('item_member')
+        ->where('item_id', $itemId)
+        ->where('uid', $this->uid)
+        ->first();
+      if ($member) {
+        $result = true;
+      } else {
+        // 检查是否是团队成员
+        $teamMember = DB::table('team_item_member')
+          ->where('item_id', $itemId)
+          ->where('member_uid', $this->uid)
+          ->first();
+        $result = (bool) $teamMember;
+      }
     }
 
-    // 检查是否是项目成员
-    $member = DB::table('item_member')
-      ->where('item_id', $itemId)
-      ->where('uid', $this->uid)
-      ->first();
-    if ($member) {
-      return true;
+    // 写入缓存
+    if ($cache->isEnabled()) {
+      $cache->set('mcp_item_member:' . $this->uid . ':' . $itemId, $result, self::CACHE_TTL);
     }
 
-    // 检查是否是团队成员
-    $teamMember = DB::table('team_item_member')
-      ->where('item_id', $itemId)
-      ->where('member_uid', $this->uid)
-      ->first();
-    if ($teamMember) {
-      return true;
-    }
-
-    return false;
+    return $result;
   }
 
   /**
-   * 获取用户在项目中的角色
+   * 获取用户在项目中的角色（带 Redis 缓存）
    *
    * @param int $itemId 项目 ID
    * @return string|null 角色：owner/admin/editor/readonly/null
@@ -186,55 +234,79 @@ abstract class McpHandler
       return null;
     }
 
-    // 检查是否是项目创建者
-    $item = Item::findById($itemId);
+    // 尝试 Redis 缓存
+    $cache = CacheManager::getInstance();
+    if ($cache->isEnabled()) {
+      $key = 'mcp_item_role:' . $this->uid . ':' . $itemId;
+      $cached = $cache->get($key);
+      if ($cached !== null) {
+        // "__none__" 标记表示非成员（null 不能序列化区分）
+        return $cached === '__none__' ? null : $cached;
+      }
+    }
+
+    // 以下为原始 DB 查询逻辑（改用 getItemCached）
+    $item = $this->getItemCached($itemId);
     if (!$item) {
-      return null;
-    }
-    if ((int) $item->uid === $this->uid) {
-      return 'owner';
-    }
-
-    // 检查是否是系统管理员
-    $user = \App\Model\User::findById($this->uid);
-    if ($user && (int) $user->groupid === 1) {
-      return 'admin';
-    }
-
-    // 检查项目成员表
-    $member = DB::table('item_member')
-      ->where('item_id', $itemId)
-      ->where('uid', $this->uid)
-      ->first();
-    if ($member) {
-      // member_group_id: 1=编辑, 2=管理员, 3=只读
-      $groupId = (int) $member->member_group_id;
-      if ($groupId === 2) {
-        return 'admin';
-      } elseif ($groupId === 1) {
-        return 'editor';
-      } elseif ($groupId === 3) {
-        return 'readonly';
+      $result = null;
+    } elseif ((int) $item->uid === $this->uid) {
+      $result = 'owner';
+    } else {
+      // 检查是否是系统管理员
+      $user = \App\Model\User::findById($this->uid);
+      if ($user && (int) $user->groupid === 1) {
+        $result = 'admin';
+      } else {
+        // 检查项目成员表
+        $member = DB::table('item_member')
+          ->where('item_id', $itemId)
+          ->where('uid', $this->uid)
+          ->first();
+        if ($member) {
+          $groupId = (int) $member->member_group_id;
+          if ($groupId === 2) {
+            $result = 'admin';
+          } elseif ($groupId === 1) {
+            $result = 'editor';
+          } elseif ($groupId === 3) {
+            $result = 'readonly';
+          } else {
+            $result = null;
+          }
+        } else {
+          // 检查团队成员表
+          $teamMember = DB::table('team_item_member')
+            ->where('item_id', $itemId)
+            ->where('member_uid', $this->uid)
+            ->first();
+          if ($teamMember) {
+            $groupId = (int) $teamMember->member_group_id;
+            if ($groupId === 2) {
+              $result = 'admin';
+            } elseif ($groupId === 1) {
+              $result = 'editor';
+            } elseif ($groupId === 3) {
+              $result = 'readonly';
+            } else {
+              $result = null;
+            }
+          } else {
+            $result = null;
+          }
+        }
       }
     }
 
-    // 检查团队成员表
-    $teamMember = DB::table('team_item_member')
-      ->where('item_id', $itemId)
-      ->where('member_uid', $this->uid)
-      ->first();
-    if ($teamMember) {
-      $groupId = (int) $teamMember->member_group_id;
-      if ($groupId === 2) {
-        return 'admin';
-      } elseif ($groupId === 1) {
-        return 'editor';
-      } elseif ($groupId === 3) {
-        return 'readonly';
-      }
+    // 写入缓存（用 "__none__" 标记 null，避免每次穿透）
+    if ($cache->isEnabled()) {
+      $cache->set(
+        'mcp_item_role:' . $this->uid . ':' . $itemId,
+        $result ?? '__none__',
+        self::CACHE_TTL
+      );
     }
 
-    return null;
+    return $result;
   }
 
   /**
@@ -326,6 +398,26 @@ abstract class McpHandler
         '权限不足：您在该项目中无编辑权限'
       );
     }
+  }
+
+  /**
+   * 清除指定用户和项目的权限缓存
+   * TODO: 在成员变更时（加入/移除成员、变更角色、转让项目等）应调用此方法清除缓存
+   *
+   * @param int $uid 用户 ID
+   * @param int $itemId 项目 ID
+   * @return void
+   */
+  protected static function clearPermissionCache(int $uid, int $itemId): void
+  {
+    $cache = CacheManager::getInstance();
+    if (!$cache->isEnabled()) {
+      return;
+    }
+
+    $cache->delete('mcp_item_member:' . $uid . ':' . $itemId);
+    $cache->delete('mcp_item_role:' . $uid . ':' . $itemId);
+    $cache->delete('mcp_item:' . $itemId);
   }
 
   /**

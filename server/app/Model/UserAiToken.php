@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Capsule\Manager as DB;
 use App\Common\Helper\IpHelper;
+use App\Common\Cache\CacheManager;
 
 /**
  * 用户级 AI Token Model
@@ -431,45 +432,64 @@ class UserAiToken
       return ['allowed' => false, 'remaining' => 0, 'reset_at' => 0];
     }
 
-    // 使用 Token 的哈希作为缓存键（避免文件名过长）
-    $cacheKey = 'mcp_rate_' . md5($token);
-    $cacheFile = self::getRateLimitCachePath($cacheKey);
     $now = time();
+    $cache = CacheManager::getInstance();
 
-    // 读取当前计数
-    $data = self::readRateLimitCache($cacheFile);
+    // Redis 可用时走 Redis，否则降级到文件缓存
+    if ($cache->isEnabled()) {
+      return self::checkRateLimitRedis($cache, $token, $now);
+    }
+    return self::checkRateLimitFile($token, $now);
+  }
 
-    // 如果窗口已过期，重置计数
+  /**
+   * Redis 方式的频率限制
+   */
+  private static function checkRateLimitRedis(CacheManager $cache, string $token, int $now): array
+  {
+    $cacheKey = 'mcp_rate_limit:' . md5($token);
+
+    $data = $cache->get($cacheKey);
     if ($data && isset($data['reset_at']) && $data['reset_at'] <= $now) {
       $data = null;
     }
-
     if (!$data) {
-      // 新窗口
-      $data = [
-        'count' => 0,
-        'reset_at' => $now + self::RATE_LIMIT_WINDOW,
-      ];
+      $data = ['count' => 0, 'reset_at' => $now + self::RATE_LIMIT_WINDOW];
     }
-
-    // 检查是否超过限制
     if ($data['count'] >= self::RATE_LIMIT_MAX_REQUESTS) {
-      return [
-        'allowed' => false,
-        'remaining' => 0,
-        'reset_at' => $data['reset_at'],
-      ];
+      return ['allowed' => false, 'remaining' => 0, 'reset_at' => $data['reset_at']];
     }
 
-    // 增加计数
+    $data['count']++;
+    $ttl = max(1, $data['reset_at'] - $now);
+    $cache->set($cacheKey, $data, $ttl);
+
+    return ['allowed' => true, 'remaining' => self::RATE_LIMIT_MAX_REQUESTS - $data['count'], 'reset_at' => $data['reset_at']];
+  }
+
+  /**
+   * 文件缓存方式的频率限制（Redis 不可用时的降级方案）
+   */
+  private static function checkRateLimitFile(string $token, int $now): array
+  {
+    $cacheKey = 'mcp_rate_' . md5($token);
+    $cacheFile = self::getRateLimitCachePath($cacheKey);
+
+    $data = self::readRateLimitCache($cacheFile);
+    if ($data && isset($data['reset_at']) && $data['reset_at'] <= $now) {
+      $data = null;
+    }
+    if (!$data) {
+      $data = ['count' => 0, 'reset_at' => $now + self::RATE_LIMIT_WINDOW];
+    }
+    if ($data['count'] >= self::RATE_LIMIT_MAX_REQUESTS) {
+      return ['allowed' => false, 'remaining' => 0, 'reset_at' => $data['reset_at']];
+    }
+
     $data['count']++;
     self::writeRateLimitCache($cacheFile, $data);
 
-    return [
-      'allowed' => true,
-      'remaining' => self::RATE_LIMIT_MAX_REQUESTS - $data['count'],
-      'reset_at' => $data['reset_at'],
-    ];
+    return ['allowed' => true, 'remaining' => self::RATE_LIMIT_MAX_REQUESTS - $data['count'], 'reset_at' => $data['reset_at']];
   }
 
   /**

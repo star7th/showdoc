@@ -123,6 +123,16 @@ class CacheManager
     }
 
     /**
+     * 判断 Redis 是否可用
+     *
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->redis instanceof \Redis;
+    }
+
+    /**
      * 获取 Redis 实例（用于需要直接操作 Redis 的场景）
      *
      * @return \Redis|null Redis 实例，未启用或连接失败时返回 null

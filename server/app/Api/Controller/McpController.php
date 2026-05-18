@@ -7,6 +7,7 @@ use App\Mcp\McpServer;
 use App\Mcp\McpError;
 use App\Model\UserAiToken;
 use App\Common\Helper\IpHelper;
+use App\Common\Cache\CacheManager;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -215,15 +216,7 @@ class McpController extends BaseController
       return null;
     }
 
-    // 验证 Token 格式
-    if (!UserAiToken::isValidTokenFormat($token)) {
-      return null;
-    }
-
-    // 获取 Token 信息
-    $tokenInfo = UserAiToken::getToken($token);
-
-    return $tokenInfo;
+    return $this->verifyToken($token);
   }
 
   /**
@@ -260,8 +253,42 @@ class McpController extends BaseController
       return null;
     }
 
-    // 获取 Token 信息
-    return UserAiToken::getToken($token);
+    return $this->verifyToken($token);
+  }
+
+  /**
+   * 验证 Token（带 Redis 缓存）
+   *
+   * @param string $token Token 字符串
+   * @return array|null Token 信息，无效返回 null
+   */
+  private function verifyToken(string $token): ?array
+  {
+    // 验证 Token 格式
+    if (!UserAiToken::isValidTokenFormat($token)) {
+      return null;
+    }
+
+    // 查 Redis 缓存
+    $cacheKey = 'mcp_token_cache:' . md5($token);
+    $cache = CacheManager::getInstance();
+    $cached = $cache->get($cacheKey);
+
+    if ($cached !== null) {
+      // 缓存中标记为无效的 Token
+      if ($cached === false) {
+        return null;
+      }
+      return $cached;
+    }
+
+    // 查数据库
+    $tokenInfo = UserAiToken::getToken($token);
+
+    // 写入缓存（有效 token 缓存 300 秒，无效 token 也缓存 300 秒防止穿透）
+    $cache->set($cacheKey, $tokenInfo ?? false, 300);
+
+    return $tokenInfo;
   }
 
   /**
