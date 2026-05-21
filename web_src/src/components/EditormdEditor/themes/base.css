@@ -553,6 +553,13 @@
   color: var(--editormd-hljs-section) !important;
 }
 
+/* 代码块内行内代码 */
+.editormd-preview-container pre .hljs-code,
+.editormd-preview pre .hljs-code,
+.markdown-body pre .hljs-code {
+  color: var(--editormd-code-text) !important;
+}
+
 /* 运算符使用更亮的颜色 - 提高对比度 */
 .editormd-preview-container pre .hljs-operator,
 .editormd-preview pre .hljs-operator,
