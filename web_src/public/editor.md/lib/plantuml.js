@@ -1,5 +1,7 @@
 function plantuml_imgsrc(data) {
-  return 'https://www.plantuml.com/plantuml/svg/' + plantuml_encode(data)
+  // 使用DocConfig中的plantumlHost，如果不存在则使用默认地址
+  var plantumlHost = window.DocConfig && window.DocConfig.plantumlHost ? window.DocConfig.plantumlHost : 'https://www.plantuml.com/plantuml';
+  return plantumlHost + '/svg/' + plantuml_encode(data);
 }
 
 function plantuml_encode(data) {
