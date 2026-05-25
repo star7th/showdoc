@@ -158,7 +158,8 @@ abstract class McpHandler
       $key = 'mcp_item:' . $itemId;
       $cached = $cache->get($key);
       if ($cached !== null) {
-        return $cached === false ? null : $cached;
+        if ($cached === false) return null;
+        return is_array($cached) ? (object) $cached : $cached;
       }
 
       $item = Item::findById($itemId);

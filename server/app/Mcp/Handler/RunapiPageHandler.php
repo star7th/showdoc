@@ -154,6 +154,7 @@ class RunapiPageHandler extends McpHandler
       $this->requireWritePermission($itemId);
     }
 
+    try {
     $item = Item::findById($itemId);
     if (!$item) {
       McpError::throw(McpError::RESOURCE_NOT_FOUND, '项目不存在');
@@ -203,7 +204,6 @@ class RunapiPageHandler extends McpHandler
       McpError::throw(McpError::OPERATION_FAILED, "页面标题已存在: {$pageTitle}");
     }
 
-    try {
       $now = time();
       $data = [
         'page_title' => $pageTitle,
@@ -264,6 +264,7 @@ class RunapiPageHandler extends McpHandler
       $this->requireWritePermission($itemId);
     }
 
+    try {
     $updateData = [];
     $pageTitle = trim($params['page_title'] ?? '');
     $pageContent = $params['page_content'] ?? null;
@@ -343,7 +344,6 @@ class RunapiPageHandler extends McpHandler
       }
     }
 
-    try {
       $now = time();
 
       $historyData = [

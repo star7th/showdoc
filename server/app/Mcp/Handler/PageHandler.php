@@ -929,6 +929,7 @@ MARKDOWN;
       $this->requireWritePermission($itemId);
     }
 
+    try {
     // 验证内容不能为空（与 PageController::save 一致）
     if (empty($pageContent)) {
       McpError::throw(McpError::INVALID_PARAMS, '不允许保存空内容，请随便写点什么');
@@ -985,7 +986,6 @@ MARKDOWN;
       McpError::throw(McpError::OPERATION_FAILED, "页面标题已存在: {$pageTitle}");
     }
 
-    try {
       $now = time();
       $data = [
         'page_title' => $pageTitle,
@@ -1051,6 +1051,7 @@ MARKDOWN;
     // 检查写入权限
     $this->requireWritePermission($itemId);
 
+    try {
     // 解析注释内容
     $parsedData = $this->parseShowdocComment($commentContent);
     if (empty($parsedData['title'])) {
@@ -1095,7 +1096,7 @@ MARKDOWN;
       ->where('is_del', 0)
       ->first();
 
-    try {
+
       $now = time();
       $data = [
         'page_title' => $pageTitle,
@@ -1315,6 +1316,7 @@ MARKDOWN;
       $this->requireWritePermission($itemId);
     }
 
+    try {
     // 准备更新数据
     $updateData = [];
     $pageTitle = trim($params['page_title'] ?? '');
@@ -1397,7 +1399,6 @@ MARKDOWN;
       }
     }
 
-    try {
       $now = time();
       $updateData['addtime'] = $now;
       $updateData['author_uid'] = $this->getUid();
@@ -2003,13 +2004,13 @@ MARKDOWN;
     // 检查写入权限
     $this->requireWritePermission($itemId);
 
+    try {
     // 获取历史版本
     $historyPage = PageHistory::findById($pageId, $versionId);
     if (!$historyPage) {
       McpError::throw(McpError::RESOURCE_NOT_FOUND, '历史版本不存在');
     }
 
-    try {
       $now = time();
       $uid = $this->getUid();
       $username = $this->getUsername();
