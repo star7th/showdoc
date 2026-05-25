@@ -7,6 +7,7 @@ use App\Common\Helper\Env;
 use App\Common\Helper\Security;
 use App\Model\Captcha;
 use App\Model\Item;
+use App\Model\LoginFailureLock;
 use App\Model\User;
 use App\Model\UserToken;
 use App\Model\UserSetting;
@@ -37,6 +38,10 @@ class UserController extends BaseController
             return $this->error($response, 10206, '验证码不正确');
         }
 
+        if (LoginFailureLock::isLocked($username)) {
+            return $this->error($response, 10204, '登录失败次数过多，账号已锁定5分钟');
+        }
+
         $user = User::checkLogin($username, $password);
         
         // 如果普通登录失败，尝试 LDAP 登录
@@ -45,10 +50,13 @@ class UserController extends BaseController
         }
 
         if (!$user) {
+            LoginFailureLock::recordFailure($username);
             return $this->error($response, 10210, '用户名或密码错误');
         }
 
         $uid = (int) $user['uid'];
+
+        LoginFailureLock::clearFailure($username);
 
         // 更新最后登录时间
         User::setLastTime($uid);

@@ -12,29 +12,13 @@ class CacheManager
 
     private function __construct()
     {
-        // 开源版默认不启用 Redis（REDIS_ENABLED=false），降级为无缓存模式
-        // 只有明确设置为 'true' 或 '1' 时才启用 Redis
-        $enabled = Env::get('REDIS_ENABLED', 'false');
-        
-        // 检查是否启用 Redis：只有 'true' 或 '1' 才启用，其他情况（包括未配置）都禁用
-        $isEnabled = false;
-        if (is_string($enabled)) {
-            $enabled = strtolower(trim($enabled));
-            $isEnabled = ($enabled === 'true' || $enabled === '1');
-        } elseif (is_bool($enabled)) {
-            $isEnabled = $enabled;
-        } elseif (is_numeric($enabled)) {
-            $isEnabled = ((int) $enabled) === 1;
-        }
-        
-        if (!$isEnabled) {
-            // 未启用 Redis，直接返回，使用无缓存模式
+        $host = Env::get('REDIS_HOST', '');
+        if ($host === '') {
             return;
         }
 
         try {
             if (!extension_loaded('redis')) {
-                // Redis 扩展未安装，降级为无缓存模式
                 return;
             }
             $redis = new \Redis();
@@ -43,7 +27,6 @@ class CacheManager
             $redis->connect($host, (int) $port, 1.0);
             $this->redis = $redis;
         } catch (\Throwable $e) {
-            // 连接失败时降级为无 Redis 模式，避免影响正常请求
             $this->redis = null;
         }
     }
@@ -58,88 +41,118 @@ class CacheManager
         return self::$instance;
     }
 
-    /**
-     * 获取缓存值
-     *
-     * @param string $key 缓存键
-     * @return mixed|null 缓存值，不存在时返回 null
-     */
     public function get(string $key)
     {
-        if (!$this->redis instanceof \Redis) {
-            return null;
+        if ($this->redis instanceof \Redis) {
+            try {
+                $value = $this->redis->get($key);
+                if ($value !== false) {
+                    return json_decode($value, true);
+                }
+            } catch (\Throwable $e) {
+            }
         }
 
-        try {
-            $value = $this->redis->get($key);
-            if ($value === false) {
-                return null;
-            }
-            return json_decode($value, true);
-        } catch (\Throwable $e) {
-            return null;
-        }
+        return $this->fileGet($key);
     }
 
-    /**
-     * 设置缓存值
-     *
-     * @param string $key 缓存键
-     * @param mixed $value 缓存值（会自动序列化）
-     * @param int $ttl 过期时间（秒），默认 86400（24小时）
-     * @return bool 是否设置成功
-     */
     public function set(string $key, $value, int $ttl = 86400): bool
     {
-        if (!$this->redis instanceof \Redis) {
-            return false;
+        if ($this->redis instanceof \Redis) {
+            try {
+                $serialized = json_encode($value, JSON_UNESCAPED_UNICODE);
+                if ($this->redis->setex($key, $ttl, $serialized)) {
+                    return true;
+                }
+            } catch (\Throwable $e) {
+            }
         }
 
-        try {
-            $serialized = json_encode($value, JSON_UNESCAPED_UNICODE);
-            return $this->redis->setex($key, $ttl, $serialized);
-        } catch (\Throwable $e) {
-            return false;
-        }
+        return $this->fileSet($key, $value, $ttl);
     }
 
-    /**
-     * 删除缓存
-     *
-     * @param string $key 缓存键
-     * @return bool 是否删除成功
-     */
     public function delete(string $key): bool
     {
-        if (!$this->redis instanceof \Redis) {
-            return false;
+        $result = false;
+
+        if ($this->redis instanceof \Redis) {
+            try {
+                $result = $this->redis->del($key) > 0;
+            } catch (\Throwable $e) {
+            }
         }
 
-        try {
-            return $this->redis->del($key) > 0;
-        } catch (\Throwable $e) {
-            return false;
-        }
+        $fileResult = $this->fileDelete($key);
+
+        return $result || $fileResult;
     }
 
-    /**
-     * 判断 Redis 是否可用
-     *
-     * @return bool
-     */
     public function isEnabled(): bool
     {
         return $this->redis instanceof \Redis;
     }
 
-    /**
-     * 获取 Redis 实例（用于需要直接操作 Redis 的场景）
-     *
-     * @return \Redis|null Redis 实例，未启用或连接失败时返回 null
-     */
     public function getRedis(): ?\Redis
     {
         return $this->redis instanceof \Redis ? $this->redis : null;
     }
-}
 
+    private static function getCacheDir(): string
+    {
+        $runtimePath = defined('RUNTIME_PATH') ? RUNTIME_PATH : dirname(__DIR__, 2) . '/Runtime/';
+        $dir = $runtimePath . 'cache';
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0755, true);
+        }
+        return $dir;
+    }
+
+    private static function getCachePath(string $key): string
+    {
+        return self::getCacheDir() . DIRECTORY_SEPARATOR . md5($key) . '.json';
+    }
+
+    private function fileGet(string $key)
+    {
+        $file = self::getCachePath($key);
+        if (!file_exists($file)) {
+            return null;
+        }
+
+        $content = @file_get_contents($file);
+        if ($content === false) {
+            return null;
+        }
+
+        $data = json_decode($content, true);
+        if (!is_array($data) || !isset($data['expire_at'], $data['value'])) {
+            return null;
+        }
+
+        if ($data['expire_at'] > 0 && $data['expire_at'] <= time()) {
+            @unlink($file);
+            return null;
+        }
+
+        return $data['value'];
+    }
+
+    private function fileSet(string $key, $value, int $ttl): bool
+    {
+        $file = self::getCachePath($key);
+        $data = [
+            'expire_at' => $ttl > 0 ? time() + $ttl : 0,
+            'value'     => $value,
+        ];
+        return @file_put_contents($file, json_encode($data, JSON_UNESCAPED_UNICODE)) !== false;
+    }
+
+    private function fileDelete(string $key): bool
+    {
+        $file = self::getCachePath($key);
+        if (file_exists($file)) {
+            return @unlink($file);
+        }
+        return false;
+    }
+}

@@ -17,8 +17,7 @@ class UserToken
         $ttl   = $ttlSeconds > 0 ? $ttlSeconds : (60 * 60 * 24 * 90);
         $expire = $now + $ttl;
 
-        $token = md5(md5($uid . $expire . $now . rand() . 'showdoc') . 'rdgtrd12367hghf54t')
-            . md5($uid . $expire . $now . rand() . 'showdoc');
+        $token = bin2hex(random_bytes(32)) . bin2hex(random_bytes(32));
 
         // 旧版开源版的 user_token 表没有 user_agent 字段，这里只写旧表中已有的字段
         $data = [
