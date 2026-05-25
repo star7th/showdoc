@@ -4,6 +4,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { sanitizeHtml } from '@/utils/sanitize'
 
 const props = defineProps<{
   queries: string[]
@@ -29,10 +30,11 @@ const highlightedText = computed(() => {
   let result = text.value
   props.queries.forEach(query => {
     if (!query) return
-    const regex = new RegExp(`(${query})`, 'gi')
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const regex = new RegExp(`(${escapedQuery})`, 'gi')
     result = result.replace(regex, '<mark>$1</mark>')
   })
-  return result
+  return sanitizeHtml(result)
 })
 </script>
 

@@ -202,10 +202,12 @@ const fetchAttachments = async () => {
   } catch { /* ignore */ }
 }
 
+import { sanitizeHtml } from '@/utils/sanitize'
+
 const descPreviewHtml = computed(() => {
   const md = editForm.description || ''
   if (!md) return `<p style="color:var(--color-text-secondary)">${t('item.kanban_task_description_placeholder')}</p>`
-  return md
+  const raw = md
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -221,6 +223,7 @@ const descPreviewHtml = computed(() => {
     .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br>')
+  return sanitizeHtml(raw)
 })
 
 const onDueDateChange = (val: string) => {

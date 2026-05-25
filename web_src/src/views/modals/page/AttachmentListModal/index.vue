@@ -6,23 +6,36 @@
       :width="'900px'"
       @close="closeHandle(false)"
     >
-      <!-- 操作栏 -->
-      <div class="action-bar" v-if="manage">
-        <CommonButton @click="showFilehub = true">
-          <i class="fas fa-folder-open"></i>
-          {{ $t('page.from_filehub') }}
-        </CommonButton>
-        <CommonButton type="primary" @click="showUpload = true">
-          <i class="fas fa-cloud-upload-alt"></i>
-          {{ $t('common.upload') }}
-        </CommonButton>
-        <small class="tips">{{ $t('page.file_size_tips') }}</small>
+      <!-- 顶部操作栏 -->
+      <div class="modal-toolbar">
+        <CommonTab
+          class="toolbar-tabs"
+          :items="filterTabs"
+          :value="activeFilter"
+          type="segmented"
+          @updateValue="activeFilter = $event"
+        />
+        <div class="toolbar-actions" v-if="manage">
+          <CommonButton @click="showFilehub = true">
+            <i class="fas fa-folder-open"></i>
+            {{ $t('page.from_filehub') }}
+          </CommonButton>
+          <CommonButton type="primary" @click="showUpload = true">
+            <i class="fas fa-cloud-upload-alt"></i>
+            {{ $t('common.upload') }}
+          </CommonButton>
+        </div>
+      </div>
+
+      <!-- 提示 -->
+      <div class="toolbar-hint" v-if="manage">
+        <small>{{ $t('page.file_size_tips') }}</small>
       </div>
 
       <!-- 附件列表 -->
       <CommonTable
         :tableHeader="tableHeader"
-        :tableData="tableData"
+        :tableData="filteredData"
         :loading="loading"
         :maxHeight="'400px'"
         :pagination="null"
@@ -83,6 +96,7 @@ import { message } from 'ant-design-vue'
 import CommonModal from '@/components/CommonModal.vue'
 import CommonButton from '@/components/CommonButton.vue'
 import CommonTable from '@/components/CommonTable.vue'
+import CommonTab from '@/components/CommonTab.vue'
 import FilehubModal from '../FilehubModal/index'
 import UploadModal from '../UploadModal/index'
 import ConfirmModal from '@/components/ConfirmModal/index'
@@ -97,6 +111,24 @@ const props = defineProps<{
   onClose: () => void
   onInsert?: (markdown: string) => void
 }>()
+
+// 筛选 Tab
+const activeFilter = ref<string | number>('file')
+const filterTabs = computed(() => [
+  { text: t('page.filter_all'), value: 'all' },
+  { text: t('page.filter_file'), value: 'file' },
+  { text: t('page.filter_image'), value: 'image' }
+])
+
+// 根据筛选过滤附件列表
+const filteredData = computed(() => {
+  if (activeFilter.value === 'all') return tableData.value
+  const isImage = (ft: string) => ft && ft.toLowerCase().includes('image')
+  if (activeFilter.value === 'image') {
+    return tableData.value.filter(row => isImage(row.file_type || ''))
+  }
+  return tableData.value.filter(row => !isImage(row.file_type || ''))
+})
 
 const show = ref(false)
 const loading = ref(false)
@@ -214,21 +246,36 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .page-attachment-modal :deep(.modal-content) {
-  padding: 20px;
+  padding: 0;
 }
 
-.action-bar {
+.modal-toolbar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--color-border, #eee);
 
-  .tips {
-    color: var(--color-text-secondary);
-    font-size: 12px;
-    margin-left: auto;
+  .toolbar-tabs {
+    width: auto;
+    min-width: 240px;
   }
+
+  .toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.toolbar-hint {
+  padding: 4px 20px 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+:deep(.common-table-wrapper) {
+  padding: 0 20px 20px;
 }
 
 .tools {

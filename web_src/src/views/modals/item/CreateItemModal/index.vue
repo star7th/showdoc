@@ -43,7 +43,7 @@
               <a-select-option
                 v-for="g in itemGroupList"
                 :key="g.id"
-                :value="Number(g.id)"
+                :value="g.id"
               >
                 {{ g.group_name }}
               </a-select-option>
@@ -209,7 +209,7 @@ const initCreateForm = () => {
   }
   // 如果有分组ID，设置为默认分组
   if (props.item_group_id && props.item_group_id > 0) {
-    itemGroupIdsLocal.value = [props.item_group_id]
+    itemGroupIdsLocal.value = [Number(props.item_group_id)]
   }
   // 创建模式默认为公开项目
   isOpenItem.value = true
@@ -220,7 +220,8 @@ const loadGroupList = async () => {
   try {
     const data = await getGroupList()
     if (data && data.data) {
-      itemGroupList.value = data.data || []
+      // 统一将 id 转为数字，确保与 a-select-option 的 :value 类型一致
+      itemGroupList.value = (data.data || []).map((g: any) => ({ ...g, id: Number(g.id) }))
     }
   } catch (error) {
     console.error('Load group list failed:', error)

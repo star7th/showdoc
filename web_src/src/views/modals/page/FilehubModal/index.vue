@@ -6,27 +6,23 @@
       :width="'900px'"
       @close="closeHandle"
     >
-      <!-- 搜索和操作栏 -->
-      <div class="search-bar">
-        <div class="search-item">
+      <!-- 顶部工具栏 -->
+      <div class="modal-toolbar">
+        <CommonTab
+          class="toolbar-tabs"
+          :items="filterTabs"
+          :value="attachmentType"
+          type="segmented"
+          @updateValue="handleFilterChange"
+        />
+        <div class="toolbar-actions">
           <CommonInput
             v-model="displayName"
             :placeholder="$t('attachment.display_name')"
             @keyup.enter="handleSearch"
+            style="width: 180px"
           />
-        </div>
-        <div class="search-item">
-          <CommonSelector
-            v-model:value="attachmentType"
-            :options="attachmentTypeOptions"
-            style="width: 120px"
-            @change="handleSearch"
-          />
-        </div>
-        <div class="search-item">
           <CommonButton @click="handleSearch">{{ $t('common.search') }}</CommonButton>
-        </div>
-        <div class="search-item">
           <CommonButton type="primary" @click="showUpload = true">
             {{ $t('common.upload') }}
           </CommonButton>
@@ -82,7 +78,7 @@ import { message } from 'ant-design-vue'
 import CommonModal from '@/components/CommonModal.vue'
 import CommonInput from '@/components/CommonInput.vue'
 import CommonButton from '@/components/CommonButton.vue'
-import CommonSelector from '@/components/CommonSelector.vue'
+import CommonTab from '@/components/CommonTab.vue'
 import CommonTable from '@/components/CommonTable.vue'
 import FilehubUploadModal from '../FilehubUploadModal/index'
 import ConfirmModal from '@/components/ConfirmModal/index'
@@ -100,10 +96,10 @@ const show = ref(false)
 const loading = ref(false)
 const displayName = ref('')
 const attachmentType = ref('-1')
-const attachmentTypeOptions = computed(() => [
-  { label: t('attachment.all_attachment_type'), value: '-1' },
-  { label: t('attachment.image'), value: '1' },
-  { label: t('attachment.general_attachment'), value: '2' }
+const filterTabs = computed(() => [
+  { text: t('attachment.all_attachment_type'), value: '-1' },
+  { text: t('attachment.general_attachment'), value: '2' },
+  { text: t('attachment.image'), value: '1' }
 ])
 const used = ref(0)
 const usedFlow = ref(0)
@@ -180,6 +176,12 @@ const fetchList = async () => {
   } finally {
     loading.value = false
   }
+}
+
+// 筛选 Tab 切换
+const handleFilterChange = (value: string | number) => {
+  attachmentType.value = String(value)
+  handleSearch()
 }
 
 // 搜索
@@ -267,28 +269,38 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .filehub-modal :deep(.modal-content) {
-  padding: 20px;
+  padding: 0;
 }
 
-.search-bar {
+.modal-toolbar {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--color-border, #eee);
 
-  .search-item {
+  .toolbar-tabs {
+    width: auto;
+    min-width: 240px;
+  }
+
+  .toolbar-actions {
     display: flex;
     align-items: center;
+    gap: 8px;
   }
 }
 
 .info-bar {
-  margin-bottom: 15px;
-  padding: 10px;
+  margin: 0;
+  padding: 8px 20px;
   background-color: var(--color-bg-secondary);
-  border-radius: 4px;
   color: var(--color-text-secondary);
   font-size: var(--font-size-s);
+}
+
+:deep(.common-table-wrapper) {
+  padding: 0 20px 20px;
 }
 
 .tools {

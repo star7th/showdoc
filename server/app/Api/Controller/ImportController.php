@@ -283,6 +283,18 @@ class ImportController extends BaseController
         $zipArc->close();
         $zipArc->open($file, \ZipArchive::CREATE);
 
+        // Zip Slip 防护：检查每个条目路径，拒绝含 .. 或以 / 开头的条目
+        for ($i = 0; $i < $zipArc->numFiles; $i++) {
+            $entry = $zipArc->getNameIndex($i);
+            if (strpos($entry, '..') !== false || (isset($entry[0]) && $entry[0] === '/')) {
+                $zipArc->close();
+                @unlink($file);
+                FileHelper::clearRuntime($tmpDir);
+                @rmdir($tmpDir);
+                return $this->error($response, 10101, 'ZIP 文件包含不安全的路径');
+            }
+        }
+
         $zipArc->extractTo($tmpDir);
 
         // 遍历解压后的目录

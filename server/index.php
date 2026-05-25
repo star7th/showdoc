@@ -166,7 +166,7 @@ $app->any('/{module}/{controller}/{action}[/{params:.*}]', function (Request $re
     if (!class_exists($className)) {
         $response->getBody()->write(json_encode([
             'error_code'    => 10404,
-            'error_message' => "Controller not found: {$className}",
+            'error_message' => 'Invalid request',
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         return $response->withStatus(404)->withHeader('Content-Type', 'application/json');
     }
@@ -175,7 +175,7 @@ $app->any('/{module}/{controller}/{action}[/{params:.*}]', function (Request $re
     if (!method_exists($controllerInstance, $action)) {
         $response->getBody()->write(json_encode([
             'error_code'    => 10404,
-            'error_message' => "Action not found: {$action}",
+            'error_message' => 'Invalid request',
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         return $response->withStatus(404)->withHeader('Content-Type', 'application/json');
     }

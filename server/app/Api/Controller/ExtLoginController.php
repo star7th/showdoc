@@ -47,6 +47,11 @@ class ExtLoginController extends BaseController
         $redirect = $this->getParam($request, 'redirect', '');
         $name = $this->getParam($request, 'name', '');
 
+        // Open Redirect 防护：redirect 必须是安全的相对路径
+        if ($redirect && (!preg_match('#^/[^/\\]#', $redirect) || strpos($redirect, '://') !== false)) {
+            $redirect = '';
+        }
+
         if ($time < (time() - 60)) {
             return $this->error($response, 10101, '已过期');
         }
@@ -142,6 +147,10 @@ class ExtLoginController extends BaseController
         }
 
         $redirect = $this->getParam($request, 'redirect', '');
+        // Open Redirect 防护：redirect 必须是安全的相对路径
+        if ($redirect && (!preg_match('#^/[^/\\]#', $redirect) || strpos($redirect, '://') !== false)) {
+            $redirect = '';
+        }
         if ($redirect) {
             $_SESSION['redirect'] = $redirect;
         }

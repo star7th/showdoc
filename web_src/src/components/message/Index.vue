@@ -8,7 +8,7 @@
     }"
     @click="hide"
   >
-    <span class="message-text" v-html="message"></span>
+    <span class="message-text" v-html="sanitizeHtml(message)"></span>
     <div class="close-icon" @click.stop="hide">
       <i class="fas fa-xmark"></i>
     </div>
@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { sanitizeHtml } from '@/utils/sanitize'
 
 const props = defineProps<{
   message?: string

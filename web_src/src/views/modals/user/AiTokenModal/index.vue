@@ -383,6 +383,8 @@ onMounted(() => {
   }
 
   .token-items {
+    max-height: 500px;
+    overflow-y: auto;
     .token-item {
       display: flex;
       justify-content: space-between;

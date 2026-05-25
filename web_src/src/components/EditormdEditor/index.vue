@@ -56,11 +56,11 @@ const props = withDefaults(defineProps<EditormdEditorProps>(), {
     'undo', 'redo', '|',
     'bold', 'del', 'italic', 'quote', '|',
     'mindmap', 'plantuml', 'mermaid', 'tasklist',
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '|',
+    'h1', 'h2', 'h3', 'h4', 'h5', '|',
     'list-ul', 'list-ol', 'hr', 'center', '|',
     'link', 'reference-link', 'image', 'video', 'code', 'code-block', 'table',
     'datetime', 'html-entities', 'pagebreak', '|',
-    'watch', 'fullscreen', 'clear', 'search', '|',
+    'watch', 'fullscreen', 'search', '|',
     'help'
   ],
   features: () => ({}),

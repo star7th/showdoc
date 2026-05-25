@@ -62,6 +62,64 @@ class Attachment
      * @param string $filename 文件名
      * @return bool 是否允许
      */
+    // 危险扩展名黑名单，所有用户（含管理员）均禁止上传
+    private static array $blockedExtensions = [
+        '.php', '.php3', '.php4', '.php5', '.phtml', '.pht',
+        '.phps', '.php7', '.php8',
+        '.jsp', '.jspx', '.jspa', '.jsw', '.jsv',
+        '.asp', '.aspx', '.asa', '.asax', '.ascx', '.ashx',
+        '.cfm', '.cfml',
+        '.pl', '.cgi', '.py', '.sh', '.bash', '.zsh',
+        '.bat', '.cmd', '.com', '.scr',
+        '.vb', '.vbe', '.vbs', '.ws', '.wsf',
+        '.hta', '.htaccess',
+        '.shtml', '.shtm', '.stm',
+    ];
+
+    /**
+     * 从文件名中提取所有扩展名（清理特殊字符后）
+     * 例: "shell.php .jpg" → ['.php', '.jpg']
+     * 例: "test.tar.gz" → ['.tar', '.gz']
+     */
+    private static function extractExtensions(string $filename): array
+    {
+        // 去除空字节、首尾空白、末尾的点
+        $filename = str_replace("\0", '', $filename);
+        $filename = trim($filename);
+        $filename = rtrim($filename, '.');
+
+        $parts = explode('.', $filename);
+        if (count($parts) < 2) {
+            return [];
+        }
+
+        // 跳过第一段（文件名主体），其余都是扩展名
+        $extensions = [];
+        for ($i = 1; $i < count($parts); $i++) {
+            $ext = strtolower(trim($parts[$i]));
+            if ($ext !== '') {
+                $extensions[] = '.' . $ext;
+            }
+        }
+
+        return $extensions;
+    }
+
+    /**
+     * 检查是否为危险文件（黑名单，所有用户都禁止）
+     * 任何一个扩展名命中黑名单即拦截
+     */
+    public static function isBlockedFilename(string $filename): bool
+    {
+        $extensions = self::extractExtensions($filename);
+        foreach ($extensions as $ext) {
+            if (in_array($ext, self::$blockedExtensions, true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static function isAllowedFilename(string $filename): bool
     {
         $allowArray = [
@@ -105,8 +163,13 @@ class Attachment
             '.css',
         ];
 
-        $ext = strtolower(substr($filename, strripos($filename, '.')));
-        return in_array($ext, $allowArray, true);
+        // 最后一个扩展名必须在白名单内
+        $extensions = self::extractExtensions($filename);
+        if (empty($extensions)) {
+            return false;
+        }
+        $lastExt = $extensions[count($extensions) - 1];
+        return in_array($lastExt, $allowArray, true);
     }
 
     /**

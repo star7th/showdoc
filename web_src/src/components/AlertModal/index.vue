@@ -7,7 +7,7 @@
       @close="closeHandle"
     >
       <div class="modal-content">
-        <div class="text" v-html="dangerouslyUseHTMLString ? msg : msg"></div>
+        <div class="text" v-html="dangerouslyUseHTMLString ? msg : sanitizeHtml(msg)"></div>
       </div>
       <div class="modal-footer">
         <div class="primary-button" @click="closeHandle">{{ $t('common.confirm') }}</div>
@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import CommonModal from '@/components/CommonModal.vue'
+import { sanitizeHtml } from '@/utils/sanitize'
 
 const props = defineProps<{
   onClose: () => void

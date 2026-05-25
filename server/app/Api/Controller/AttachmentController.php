@@ -167,11 +167,16 @@ class AttachmentController extends BaseController
             $originalName = 'blob.jpg';
         }
 
-        // 检查文件扩展名
+        // 危险文件黑名单检查（所有用户，含管理员）
+        if (\App\Model\Attachment::isBlockedFilename($originalName)) {
+            return $this->json($response, ['message' => '禁止上传该文件类型', 'success' => 0]);
+        }
+
+        // 检查文件扩展名白名单
         $checkFilename = true;
         $user = \App\Model\User::findById($uid);
         if ($user && (int) ($user->groupid ?? 0) === 1) {
-            $checkFilename = false; // 管理员不检查
+            $checkFilename = false; // 管理员跳过白名单
         }
 
         if ($checkFilename && !\App\Model\Attachment::isAllowedFilename($originalName)) {
@@ -241,14 +246,20 @@ class AttachmentController extends BaseController
 
         $uploadedFile = $uploadedFiles['file'];
 
-        // 检查文件扩展名
+        $originalName = $uploadedFile->getClientFilename();
+
+        // 危险文件黑名单检查（所有用户，含管理员）
+        if (\App\Model\Attachment::isBlockedFilename($originalName)) {
+            return $this->error($response, 10101, '禁止上传该文件类型');
+        }
+
+        // 检查文件扩展名白名单
         $checkFilename = true;
         $user = \App\Model\User::findById($uid);
         if ($user && (int) ($user->groupid ?? 0) === 1) {
-            $checkFilename = false; // 管理员不检查
+            $checkFilename = false; // 管理员跳过白名单
         }
 
-        $originalName = $uploadedFile->getClientFilename();
         if ($checkFilename && !\App\Model\Attachment::isAllowedFilename($originalName)) {
             return $this->error($response, 10101, '不支持上传该文件类型。可将文件压缩成 zip/rar 等压缩包后上传，或联系网站管理员');
         }
@@ -331,6 +342,7 @@ class AttachmentController extends BaseController
                     'display_name' => $file['display_name'],
                     'url'         => $url,
                     'addtime'     => $file['addtime'],
+                    'file_type'   => $file['file_type'] ?? '',
                 ];
             }
         }

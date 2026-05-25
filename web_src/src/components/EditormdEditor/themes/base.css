@@ -1142,7 +1142,7 @@
 }
 
 /* CodeMirror 编辑器区域 - 需要调整 margin-top 以适配工具栏高度 */
-/* 工具栏是 absolute 定位，需要设置 top 或 padding 来避开工具栏 */
+/* 工具栏是 absolute 定位，需要 !important 覆盖 editormd 库内联样式 */
 .editormd .CodeMirror {
   margin-top: 50px !important;
   border-right: 1px solid var(--editormd-border-color);

@@ -66,7 +66,7 @@
                   </div>
                   <!-- VIP 提醒 -->
                   <div v-if="row.object_type === 'vip'">
-                    <span v-html="vipMessage"></span>
+                    <span v-html="sanitizeHtml(vipMessage)"></span>
                   </div>
                 </div>
               </template>
@@ -86,7 +86,7 @@
                 <a-badge v-if="row.status === 0" value="new" />
               </template>
               <template #cell-message_content="{ row }: { row: MessageItem }">
-                <div class="message-content" v-html="row.message_content"></div>
+                <div class="message-content" v-html="sanitizeHtml(row.message_content)"></div>
               </template>
             </CommonTable>
           </a-tab-pane>
@@ -111,6 +111,7 @@ import CommonModal from '@/components/CommonModal.vue'
 import CommonButton from '@/components/CommonButton.vue'
 import CommonTable from '@/components/CommonTable.vue'
 import { getRemindList, getAnnouncementList, setRead, type MessageItem } from '@/models/message'
+import { sanitizeHtml } from '@/utils/sanitize'
 import FeedbackModal from '../../common/FeedbackModal'
 
 const { t, locale } = useI18n()

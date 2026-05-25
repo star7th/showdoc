@@ -12,9 +12,24 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 /**
  * 由网站前台脚本触发的周期任务
+ * @deprecated
  */
 class ScriptCronController extends BaseController
 {
+    public function __construct()
+    {
+        $cronToken = getenv('CRON_TOKEN') ?: '2e704ba1f9344e1bb42f123132301887ac6c6c22e5b985ff78990ad5fc52c0f3';
+        if ($cronToken !== false && $cronToken !== '') {
+            $headerToken = $_SERVER['HTTP_X_CRON_TOKEN'] ?? '';
+            if ($headerToken !== $cronToken) {
+                http_response_code(403);
+                header('Content-Type: application/json');
+                echo json_encode(['error_code' => 10403, 'error_message' => 'Forbidden'], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+        }
+    }
+
     /**
      * 执行定时任务
      *

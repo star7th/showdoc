@@ -75,7 +75,7 @@ class CacheManager
             if ($value === false) {
                 return null;
             }
-            return unserialize($value);
+            return json_decode($value, true);
         } catch (\Throwable $e) {
             return null;
         }
@@ -96,7 +96,7 @@ class CacheManager
         }
 
         try {
-            $serialized = serialize($value);
+            $serialized = json_encode($value, JSON_UNESCAPED_UNICODE);
             return $this->redis->setex($key, $ttl, $serialized);
         } catch (\Throwable $e) {
             return false;

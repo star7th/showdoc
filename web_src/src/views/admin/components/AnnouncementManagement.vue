@@ -107,7 +107,7 @@
 
         <!-- 消息内容列 -->
         <template #cell-message_content="{ row }">
-          <div class="announcement-content" v-html="row.message_content"></div>
+          <div class="announcement-content" v-html="sanitizeHtml(row.message_content)"></div>
         </template>
       </CommonTable>
     </div>
@@ -123,6 +123,7 @@ import CommonButton from '@/components/CommonButton.vue'
 import CommonTextarea from '@/components/CommonTextarea.vue'
 import CommonTable from '@/components/CommonTable.vue'
 import { addAnnouncement, getAnnouncementList } from '@/models/admin'
+import { sanitizeHtml } from '@/utils/sanitize'
 import dayjs from 'dayjs'
 
 const { t } = useI18n()

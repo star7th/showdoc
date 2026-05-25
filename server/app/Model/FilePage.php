@@ -120,9 +120,10 @@ class FilePage
         foreach ($rows as $row) {
             $data = (array) $row;
             $result[] = [
-                'file_id'     => (int) $data['file_id'],
+                'file_id'      => (int) $data['file_id'],
                 'display_name' => $data['display_name'] ?? '',
-                'addtime'     => date('Y-m-d H:i:s', (int) ($data['addtime'] ?? time())),
+                'file_type'    => $data['file_type'] ?? '',
+                'addtime'      => date('Y-m-d H:i:s', (int) ($data['addtime'] ?? time())),
             ];
         }
 

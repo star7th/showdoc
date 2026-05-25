@@ -128,6 +128,7 @@ import request from '@/utils/request'
 import { getServerHost } from '@/utils/system'
 import { message } from 'ant-design-vue'
 import CommonButton from '@/components/CommonButton.vue'
+import { sanitizeHtml } from '@/utils/sanitize'
 
 interface Props {
   itemId: number
@@ -458,7 +459,7 @@ const formatMessageSync = (content: string) => {
     .replace(/^#####\s+(.*)$/gm, '<h5>$1</h5>')
     .replace(/^######\s+(.*)$/gm, '<h6>$1</h6>')
     .replace(/\n/g, '<br>')
-  return html
+  return sanitizeHtml(html)
 }
 
 const formatRelevance = (relevance: number) => {

@@ -609,6 +609,12 @@ class ExportHtmlController extends BaseController
             return;
         }
 
+        // 规范化 uploads 目录的真实路径，用于安全校验
+        $realUploadsDir = realpath($uploadsDir);
+        if ($realUploadsDir === false) {
+            return;
+        }
+
         // 从页面内容中提取图片路径
         $imagePaths = [];
         foreach ($pages as $page) {
@@ -624,16 +630,33 @@ class ExportHtmlController extends BaseController
 
         // 复制图片文件
         foreach (array_keys($imagePaths) as $imgPath) {
-            $source = $uploadsDir . '/' . $imgPath;
-            if (file_exists($source) && is_file($source)) {
-                $target = $targetDir . '/' . basename($imgPath);
-                // 确保目录存在
-                $targetDirPath = dirname($target);
-                if (!is_dir($targetDirPath)) {
-                    mkdir($targetDirPath, 0755, true);
-                }
-                copy($source, $target);
+            // 安全检查：防止路径遍历
+            // 去除开头的斜杠和点点斜杠
+            $safePath = ltrim($imgPath, '/');
+            // 拒绝包含路径遍历的路径
+            if (str_contains($safePath, '..')) {
+                continue;
             }
+            $source = $uploadsDir . '/' . $safePath;
+            // 二次校验：realpath 确保文件真实路径在 uploads 目录内
+            $realSource = realpath($source);
+            if ($realSource === false || !str_starts_with($realSource . '/', $realUploadsDir . '/')) {
+                continue;
+            }
+            if (!is_file($realSource)) {
+                continue;
+            }
+            // 安全检查：只复制白名单内的文件类型
+            if (!\App\Model\Attachment::isAllowedFilename(basename($realSource))) {
+                continue;
+            }
+            $target = $targetDir . '/' . basename($realSource);
+            // 确保目录存在
+            $targetDirPath = dirname($target);
+            if (!is_dir($targetDirPath)) {
+                mkdir($targetDirPath, 0755, true);
+            }
+            copy($realSource, $target);
         }
     }
 
