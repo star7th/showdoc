@@ -110,7 +110,7 @@ class AdminUpdateController extends BaseController
 
         // 安全检查：fileUrl 必须来自 showdoc.cc 官方域名
         $parsedFileUrl = parse_url($fileUrl);
-        $allowedHosts = ['www.showdoc.cc', 'showdoc.cc', 'cdn.showdoc.cc', 'github.com', 'githubusercontent.com'];
+        $allowedHosts = ['www.showdoc.cc', 'www.showdoc.com.cn', 'showdoc.com.cn', 'showdoc.cc', 'cdn.showdoc.cc', 'github.com', 'githubusercontent.com'];
         $fileUrlHost = strtolower($parsedFileUrl['host'] ?? '');
         $isAllowedHost = false;
         foreach ($allowedHosts as $allowedHost) {
