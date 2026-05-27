@@ -228,9 +228,8 @@ const handleSubmitAddTeam = async () => {
 
 // 删除团队
 const handleDeleteTeam = async (id: number) => {
-  const confirmed = await ConfirmModal.confirm({
-    title: t('item.confirm_delete'),
-    content: t('item.confirm_delete_team')
+  const confirmed = await ConfirmModal({
+    msg: t('item.confirm_delete_team')
   })
 
   if (confirmed) {
@@ -290,9 +289,8 @@ const handleSubmitAttorn = async () => {
 
 // 退出团队
 const handleExitTeam = async (id: number) => {
-  const confirmed = await ConfirmModal.confirm({
-    title: t('item.team_exit_confirm'),
-    content: t('item.team_exit_confirm_content')
+  const confirmed = await ConfirmModal({
+    msg: t('item.team_exit_confirm_content')
   })
 
   if (confirmed) {

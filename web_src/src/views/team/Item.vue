@@ -251,9 +251,8 @@ const handleViewItem = (itemId: string) => {
 
 // 解绑项目
 const handleUnbindItem = async (id: number) => {
-  const confirmed = await ConfirmModal.confirm({
-    title: t('item.confirm_unassign'),
-    content: t('item.confirm_unassign_item')
+  const confirmed = await ConfirmModal({
+    msg: t('item.confirm_unassign_item')
   })
 
   if (confirmed) {

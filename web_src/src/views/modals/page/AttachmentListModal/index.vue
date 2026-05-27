@@ -195,12 +195,13 @@ const handleInsert = (row: any) => {
 
 // 删除文件
 const handleDelete = async (row: any) => {
-  try {
-    await ConfirmModal({
-      msg: t('common.confirm_delete'),
-      title: t('common.tips')
-    })
+  const confirmed = await ConfirmModal({
+    msg: t('common.confirm_delete'),
+    title: t('common.tips')
+  })
+  if (!confirmed) return
 
+  try {
     const data = await request('/api/page/deleteUploadFile', {
       file_id: row.file_id,
       page_id: props.pageId
@@ -213,7 +214,7 @@ const handleDelete = async (row: any) => {
       message.error(data.error_message || t('common.delete_failed'))
     }
   } catch (error) {
-    // 用户取消
+    // ignore
   }
 }
 

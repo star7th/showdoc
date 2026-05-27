@@ -272,9 +272,9 @@ const onAttachmentSelected = async (e: Event) => {
 }
 
 const handleDeleteAttachment = async (att: any) => {
-  try {
-    await ConfirmModal({ msg: t('item.kanban_delete_attachment_confirm'), title: t('common.tips') })
-  } catch { return }
+  const confirmed = await ConfirmModal({ msg: t('item.kanban_delete_attachment_confirm'), title: t('common.tips') })
+  if (!confirmed) return
+
   try {
     const data = await deletePageAttachment({ file_id: att.file_id, page_id: props.taskPageId })
     if (data.error_code === 0) {

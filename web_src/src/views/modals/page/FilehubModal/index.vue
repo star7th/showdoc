@@ -225,12 +225,13 @@ const handleVisit = (row: any) => {
 
 // 删除文件
 const handleDelete = async (row: any) => {
-  try {
-    await ConfirmModal({
-      msg: t('attachment.confirm_delete'),
-      title: t('common.tips')
-    })
+  const confirmed = await ConfirmModal({
+    msg: t('attachment.confirm_delete'),
+    title: t('common.tips')
+  })
+  if (!confirmed) return
 
+  try {
     const data = await request('/api/attachment/deleteMyAttachment', {
       file_id: row.file_id
     }, 'post', false)
@@ -242,7 +243,7 @@ const handleDelete = async (row: any) => {
       message.error(data.error_message || t('common.op_failed'))
     }
   } catch (error) {
-    // 用户取消
+    // ignore
   }
 }
 

@@ -75,6 +75,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { message } from 'ant-design-vue'
+import ConfirmModal from '@/components/ConfirmModal'
 import CommonModal from '@/components/CommonModal.vue'
 import CommonInput from '@/components/CommonInput.vue'
 import CommonButton from '@/components/CommonButton.vue'
@@ -222,21 +223,18 @@ const handleCopyLink = (row: AttachmentItem) => {
 
 // 删除文件
 const handleDelete = async (row: AttachmentItem) => {
-  try {
-    await new Promise((resolve, reject) => {
-      import('@/components/ConfirmModal').then(({ default: confirmModal }) => {
-        confirmModal({
-          msg: t('attachment.confirm_delete'),
-          title: t('common.tips')
-        }).then(resolve).catch(reject)
-      })
-    })
+  const confirmed = await ConfirmModal({
+    msg: t('attachment.confirm_delete'),
+    title: t('common.tips')
+  })
+  if (!confirmed) return
 
+  try {
     await deleteMyAttachment({ file_id: row.file_id })
     message.success(t('common.op_success'))
     fetchList()
   } catch (error) {
-    // 用户取消删除
+    // ignore
   }
 }
 
