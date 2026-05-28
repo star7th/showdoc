@@ -92,7 +92,7 @@ class McpServer
 
     $this->tools['get_item'] = [
       'name' => 'get_item',
-      'description' => '获取项目详情',
+      'description' => '获取项目详情，包含 share_url（项目首页链接，可直接分享给他人访问）',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -118,7 +118,7 @@ class McpServer
           ],
           'item_type' => [
             'type' => 'integer',
-            'description' => '项目类型：1=普通文档（默认），3=RunApi项目，6=看板',
+            'description' => '项目类型：1=普通文档（默认），2=单页，3=RunApi项目，6=看板',
           ],
           'item_description' => [
             'type' => 'string',
@@ -302,7 +302,7 @@ class McpServer
 
     $this->tools['get_page'] = [
       'name' => 'get_page',
-      'description' => '获取页面详情。支持三种查找方式：page_id 直接获取、item_id + page_title 按标题查找、unique_key 通过唯一标识获取。注意：当项目 item_type=6（看板）时，请使用 kanban_get_task 获取任务详情；当项目 item_type=3（RunApi）时，请使用 get_runapi_page 获取接口详情',
+      'description' => '获取页面详情，包含 page_url（页面访问链接，可直接分享）。支持三种查找方式：page_id 直接获取、item_id + page_title 按标题查找、unique_key 通过唯一标识获取。注意：当项目 item_type=6（看板）时，请使用 kanban_get_task 获取任务详情；当项目 item_type=3（RunApi）时，请使用 get_runapi_page 获取接口详情',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -628,6 +628,59 @@ class McpServer
           ],
         ],
         'required' => ['page_id', 'version_id'],
+      ],
+      'handler' => 'page',
+    ];
+
+    // 单页分享链接
+    $this->tools['create_single_page_link'] = [
+      'name' => 'create_single_page_link',
+      'description' => '创建单页分享链接。返回 unique_key 和 share_url（独立的页面分享链接，无需项目权限即可访问）。支持设置过期天数。',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'page_id' => [
+            'type' => 'integer',
+            'description' => '页面ID',
+          ],
+          'expire_days' => [
+            'type' => 'integer',
+            'description' => '过期天数（可选，0或不同表示永久有效）',
+          ],
+        ],
+        'required' => ['page_id'],
+      ],
+      'handler' => 'page',
+    ];
+
+    $this->tools['get_single_page_link'] = [
+      'name' => 'get_single_page_link',
+      'description' => '查询页面已有的单页分享链接。返回 unique_key、share_url 和过期时间。',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'page_id' => [
+            'type' => 'integer',
+            'description' => '页面ID',
+          ],
+        ],
+        'required' => ['page_id'],
+      ],
+      'handler' => 'page',
+    ];
+
+    $this->tools['delete_single_page_link'] = [
+      'name' => 'delete_single_page_link',
+      'description' => '删除页面的单页分享链接，删除后该链接将失效。',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'page_id' => [
+            'type' => 'integer',
+            'description' => '页面ID',
+          ],
+        ],
+        'required' => ['page_id'],
       ],
       'handler' => 'page',
     ];

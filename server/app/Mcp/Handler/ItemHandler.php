@@ -8,6 +8,7 @@ use App\Mcp\McpException;
 use App\Model\Item;
 use App\Model\ItemMember;
 use App\Model\UserAiToken;
+use App\Common\Helper\UrlHelper;
 use Illuminate\Database\Capsule\Manager as DB;
 
 /**
@@ -190,6 +191,7 @@ class ItemHandler extends McpHandler
         ->where('item_id', $itemId)
         ->where('is_del', 0)
         ->count(),
+      'share_url' => UrlHelper::siteUrl() . '/web/#/' . $item->item_id,
     ];
   }
 
@@ -266,6 +268,25 @@ class ItemHandler extends McpHandler
     $itemId = Item::add($data);
     if ($itemId <= 0) {
       McpError::throw(McpError::OPERATION_FAILED, '项目创建失败');
+    }
+
+    // 单页项目：创建默认页（与 ItemController::add 一致）
+    if ($itemType == 2) {
+      $username = '';
+      $userObj = \App\Model\User::findById($uid);
+      if ($userObj) {
+          $username = $userObj->username ?? '';
+      }
+      $pageData = [
+          'author_uid'      => $uid,
+          'author_username' => $username,
+          'page_title'      => $itemName,
+          'item_id'         => $itemId,
+          'cat_id'          => 0,
+          'page_content'    => '欢迎使用showdoc。点击右上方的编辑按钮进行编辑吧！',
+          'addtime'         => time(),
+      ];
+      \App\Model\Page::addPage($itemId, $pageData);
     }
 
     // 看板项目：初始化板面 page 及示例任务

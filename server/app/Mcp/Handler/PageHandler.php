@@ -10,6 +10,7 @@ use App\Model\PageHistory;
 use App\Model\Catalog;
 use App\Model\Item;
 use App\Common\Helper\Convert;
+use App\Common\Helper\UrlHelper;
 use Illuminate\Database\Capsule\Manager as DB;
 
 /**
@@ -44,6 +45,10 @@ class PageHandler extends McpHandler
       'get_page_version',
       'diff_page_versions',
       'restore_page_version',
+      // 单页分享链接
+      'create_single_page_link',
+      'get_single_page_link',
+      'delete_single_page_link',
     ];
   }
 
@@ -102,6 +107,15 @@ class PageHandler extends McpHandler
 
       case 'restore_page_version':
         return $this->restorePageVersion($params);
+
+      case 'create_single_page_link':
+        return $this->createSinglePageLink($params);
+
+      case 'get_single_page_link':
+        return $this->getSinglePageLink($params);
+
+      case 'delete_single_page_link':
+        return $this->deleteSinglePageLink($params);
 
       default:
         McpError::throw(McpError::METHOD_NOT_FOUND, "操作不存在: {$operation}");
@@ -286,6 +300,7 @@ class PageHandler extends McpHandler
       'author_uid' => (int) ($page['author_uid'] ?? 0),
       'author_username' => $page['author_username'] ?? '',
       'attachment_count' => $attachmentCount,
+      'page_url' => UrlHelper::siteUrl() . '/web/#/' . $itemId . '/' . (int) $page['page_id'],
     ];
   }
 
@@ -2065,5 +2080,156 @@ MARKDOWN;
     } catch (\Throwable $e) {
       McpError::throw(McpError::OPERATION_FAILED, '恢复版本失败: ' . $e->getMessage());
     }
+  }
+
+  /**
+   * 创建单页分享链接
+   *
+   * @param array $params 参数
+   * @return array
+   * @throws McpException
+   */
+  private function createSinglePageLink(array $params): array
+  {
+    $pageId = (int) ($params['page_id'] ?? 0);
+    if ($pageId <= 0) {
+      McpError::throw(McpError::INVALID_PARAMS, '页面ID不能为空');
+    }
+
+    // 开源版：使用单表 page
+    $page = DB::table('page')
+      ->where('page_id', $pageId)
+      ->where('is_del', 0)
+      ->first();
+    if (!$page) {
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+    }
+
+    $itemId = (int) $page->item_id;
+
+    // 检查编辑权限
+    $this->requireWritePermission($itemId);
+
+    // 删除旧的分享链接
+    DB::table('single_page')->where('page_id', $pageId)->delete();
+
+    // 计算过期时间
+    $expireDays = (int) ($params['expire_days'] ?? 0);
+    $expireTime = 0;
+    if ($expireDays > 0) {
+      $expireTime = time() + $expireDays * 86400;
+    }
+
+    // 生成 unique_key
+    $uniqueKey = md5(microtime(true) . rand() . 'showdoc_single_page_salt');
+
+    // 插入 single_page 表（字段与 PageController::createSinglePage 一致）
+    DB::table('single_page')->insert([
+      'unique_key' => $uniqueKey,
+      'page_id' => $pageId,
+      'expire_time' => $expireTime,
+    ]);
+    ]);
+
+    return [
+      'unique_key' => $uniqueKey,
+      'share_url' => UrlHelper::siteUrl() . '/web/#/p/' . $uniqueKey,
+      'expire_time' => $expireTime,
+      'message' => '单页分享链接创建成功',
+    ];
+  }
+
+  /**
+   * 查询页面已有的单页分享链接
+   *
+   * @param array $params 参数
+   * @return array
+   * @throws McpException
+   */
+  private function getSinglePageLink(array $params): array
+  {
+    $pageId = (int) ($params['page_id'] ?? 0);
+    if ($pageId <= 0) {
+      McpError::throw(McpError::INVALID_PARAMS, '页面ID不能为空');
+    }
+
+    // 开源版：使用单表 page
+    $page = DB::table('page')
+      ->where('page_id', $pageId)
+      ->where('is_del', 0)
+      ->first();
+    if (!$page) {
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+    }
+
+    // 查询 single_page 表
+    $single = DB::table('single_page')
+      ->where('page_id', $pageId)
+      ->first();
+
+    if (!$single) {
+      return [
+        'has_link' => false,
+        'message' => '该页面没有单页分享链接',
+      ];
+    }
+
+    // 检查是否过期
+    $expireTime = (int) ($single->expire_time ?? 0);
+    if ($expireTime > 0 && $expireTime < time()) {
+      // 链接已过期，删除记录
+      DB::table('single_page')
+        ->where('page_id', $pageId)
+        ->delete();
+      return [
+        'has_link' => false,
+        'message' => '分享链接已过期',
+      ];
+    }
+
+    return [
+      'has_link' => true,
+      'unique_key' => $single->unique_key,
+      'share_url' => UrlHelper::siteUrl() . '/web/#/p/' . $single->unique_key,
+      'expire_time' => $expireTime,
+    ];
+  }
+
+  /**
+   * 删除页面的单页分享链接
+   *
+   * @param array $params 参数
+   * @return array
+   * @throws McpException
+   */
+  private function deleteSinglePageLink(array $params): array
+  {
+    $pageId = (int) ($params['page_id'] ?? 0);
+    if ($pageId <= 0) {
+      McpError::throw(McpError::INVALID_PARAMS, '页面ID不能为空');
+    }
+
+    // 开源版：使用单表 page
+    $page = DB::table('page')
+      ->where('page_id', $pageId)
+      ->where('is_del', 0)
+      ->first();
+    if (!$page) {
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+    }
+
+    $itemId = (int) $page->item_id;
+
+    // 检查编辑权限
+    $this->requireWritePermission($itemId);
+
+    // 删除分享链接
+    DB::table('single_page')
+      ->where('page_id', $pageId)
+      ->delete();
+
+    return [
+      'message' => '单页分享链接已删除',
+    ];
   }
 }
