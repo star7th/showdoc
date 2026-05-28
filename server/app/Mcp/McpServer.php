@@ -302,7 +302,7 @@ class McpServer
 
     $this->tools['get_page'] = [
       'name' => 'get_page',
-      'description' => '获取页面详情，包含 page_url（页面访问链接，可直接分享）。支持三种查找方式：page_id 直接获取、item_id + page_title 按标题查找、unique_key 通过唯一标识获取。注意：当项目 item_type=6（看板）时，请使用 kanban_get_task 获取任务详情；当项目 item_type=3（RunApi）时，请使用 get_runapi_page 获取接口详情',
+      'description' => '获取页面详情，包含 page_content（页面内容）和 page_url（页面访问链接，可直接分享）。支持三种查找方式：page_id 直接获取、item_id + page_title 按标题查找、unique_key 通过唯一标识获取。注意：当项目 item_type=6（看板）时，请使用 kanban_get_task 获取任务详情；当项目 item_type=3（RunApi）时，请使用 get_runapi_page 获取接口详情',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [

@@ -293,6 +293,7 @@ class PageHandler extends McpHandler
       'item_id' => $itemId,
       'cat_id' => (int) ($page['cat_id'] ?? 0),
       'type' => $pageType,
+      'page_content' => $content,
       'content' => $content,
       'content_hash' => $contentHash,
       's_number' => (int) ($page['s_number'] ?? 0),
@@ -2128,7 +2129,6 @@ MARKDOWN;
       'unique_key' => $uniqueKey,
       'page_id' => $pageId,
       'expire_time' => $expireTime,
-    ]);
     ]);
 
     return [
