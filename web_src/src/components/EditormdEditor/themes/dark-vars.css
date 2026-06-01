@@ -71,9 +71,9 @@
   --editormd-link-hover-color: #6bb0ff;
 
   /* ========== 滚动条样式 ========== */
-  --editormd-scroll-track: rgba(255, 255, 255, 0.04);
-  --editormd-scroll-thumb: rgba(255, 255, 255, 0.16);
-  --editormd-scroll-thumb-hover: rgba(255, 255, 255, 0.26);
+  --editormd-scroll-track: rgba(255, 255, 255, 0.06);
+  --editormd-scroll-thumb: rgba(255, 255, 255, 0.2);
+  --editormd-scroll-thumb-hover: rgba(255, 255, 255, 0.35);
 
   /* ========== 高亮标记样式 ========== */
   --editormd-mark-bg: rgba(255, 193, 7, 0.3);
