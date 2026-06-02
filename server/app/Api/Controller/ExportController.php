@@ -238,6 +238,8 @@ class ExportController extends BaseController
         if (!empty($catalog['catalogs'])) {
             $subParent = 1;
             foreach ($catalog['catalogs'] as $subCatalog) {
+                $subCatName = htmlspecialchars($subCatalog['cat_name'] ?? '');
+                $data .= "<{$hTag}>{$parentNum}.{$subParent}、{$subCatName}</{$hTag}>";
                 $subChild = 1;
                 $data .= $this->renderCatalogPages($subCatalog, $parentNum . '.' . $subParent, $subChild, $parsedown, $convert, $level + 1);
                 $subParent++;
