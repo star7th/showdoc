@@ -125,6 +125,7 @@ import ConfirmModal from '@/components/ConfirmModal'
 import CommonButton from '@/components/CommonButton.vue'
 import CommonInput from '@/components/CommonInput.vue'
 import CommonSelector from '@/components/CommonSelector.vue'
+import CommonTab from '@/components/CommonTab.vue'
 import CommonTable from '@/components/CommonTable.vue'
 import {
   getAdminItemList,
