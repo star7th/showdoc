@@ -412,7 +412,7 @@ class ImportSwaggerController extends BaseController
      * 优化版：转换定义（将引用改为真实数据）
      * 使用引用传递减少内存复制，并添加循环引用检测
      */
-    private function transferDefinitionOptimized(array &$curArray, int $depth = 0): bool
+    private function transferDefinitionOptimized(array &$curArray, int $depth = 0, array $resolvingStack = []): bool
     {
         // 防止无限递归
         if ($depth > 50) {
@@ -430,9 +430,14 @@ class ImportSwaggerController extends BaseController
                     if (!isset($this->resolvedRefs[$refStr])) {
                         $refData = $this->getDefinition($refStr);
                         if ($refData !== null) {
-                            // 递归解析引用中的引用
-                            $this->transferDefinitionOptimized($refData, $depth + 1);
-                            $this->resolvedRefs[$refStr] = $refData;
+                            // 循环引用检测：如果在当前解析栈中，用占位符代替
+                            if (in_array($refStr, $resolvingStack)) {
+                                $this->resolvedRefs[$refStr] = ['type' => 'object', '_circular_ref_placeholder' => true];
+                            } else {
+                                // 递归解析引用中的引用
+                                $this->transferDefinitionOptimized($refData, $depth + 1, array_merge($resolvingStack, [$refStr]));
+                                $this->resolvedRefs[$refStr] = $refData;
+                            }
                         } else {
                             $this->resolvedRefs[$refStr] = $value; // 保持原值
                         }
@@ -442,7 +447,7 @@ class ImportSwaggerController extends BaseController
                     $hasRef = true;
                 } else {
                     // 递归处理子数组
-                    if ($this->transferDefinitionOptimized($value, $depth + 1)) {
+                    if ($this->transferDefinitionOptimized($value, $depth + 1, $resolvingStack)) {
                         $hasRef = true;
                     }
                 }
