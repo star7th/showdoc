@@ -397,15 +397,16 @@ const dealWithContent = async () => {
       $(`#${editorId.value} table`).each(function () {
         const table = this as HTMLTableElement
         table.setAttribute('data-table-layout', 'fixed')
-        let hasOverflow = false
+        const cols = $(table).find('tr').first().find('th, td').length
+        const threshold = cols > 0 ? Math.floor(60 / cols) : 20
+        let hasLongText = false
         $(table).find('th, td').each(function () {
-          const cell = this as HTMLElement
-          if (cell.scrollWidth > cell.clientWidth) {
-            hasOverflow = true
-            return false // break
+          if ((this as HTMLElement).innerText.length > threshold) {
+            hasLongText = true
+            return false
           }
         })
-        if (hasOverflow) {
+        if (hasLongText) {
           table.setAttribute('data-table-layout', 'auto')
         }
       })
