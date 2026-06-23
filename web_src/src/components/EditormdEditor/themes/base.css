@@ -646,11 +646,19 @@
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
+  min-width: 100%;
+  table-layout: fixed; /* 默认等宽均分 */
   margin: 16px 0;
   border-radius: 4px;
   border: 1px solid var(--editormd-border-color);
   font-size: 0.929em;
-  table-layout: fixed;
+}
+
+/* 长文本溢出时，JS 会添加 data-table-layout="auto"，切换为自动布局 */
+.editormd-preview-container table[data-table-layout="auto"],
+.editormd-preview table[data-table-layout="auto"],
+.markdown-body table[data-table-layout="auto"] {
+  table-layout: auto;
 }
 
 .editormd-preview-container table th,
@@ -663,6 +671,10 @@
   text-align: left;
   font-weight: 600;
   color: var(--editormd-table-header-text);
+  min-width: 80px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .editormd-preview-container table td,
@@ -673,6 +685,10 @@
   line-height: 1.6;
   color: var(--editormd-text-color);
   vertical-align: top;
+  min-width: 80px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .editormd-preview-container table tbody tr:nth-child(odd),
@@ -701,6 +717,30 @@
 .markdown-body table tbody td {
   color: var(--editormd-text-color);
   background-color: transparent;
+}
+
+/* ========== 表格移动端适配 ========== */
+@media (max-width: 768px) {
+  .editormd-preview-container,
+  .editormd-preview,
+  .markdown-body {
+    overflow-x: auto;
+  }
+
+  .editormd-preview-container table,
+  .editormd-preview table,
+  .markdown-body table {
+    min-width: fit-content;
+  }
+
+  .editormd-preview-container table th,
+  .editormd-preview table th,
+  .markdown-body table th,
+  .editormd-preview-container table td,
+  .editormd-preview table td,
+  .markdown-body table td {
+    min-width: 60px;
+  }
 }
 
 /* ========== 图片样式 ========== */

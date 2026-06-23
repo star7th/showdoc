@@ -391,26 +391,26 @@ const dealWithContent = async () => {
     }
   }
 
-  // 表格宽度均分
-  if ($) {
+  // 表格布局检测：默认等宽 fixed，长文本溢出回退 auto
+  if ($ && $.each) {
     try {
-      const contentWidth = $(`#${editorId.value}`).width() || 722
-      $(`#${editorId.value} table`).each(function(this: HTMLElement) {
-        const $table = $(this)
-        const $v = $table.get(0) as HTMLTableElement
-        if ($v && $v.rows && $v.rows.length > 0) {
-          const firstRow = $v.rows.item(0)
-          if (firstRow) {
-            const num = firstRow.cells.length
-            const colWidth = Math.floor(contentWidth / num) - 2
-            if (num <= 5) {
-              $table.find('th').css('width', colWidth.toString() + 'px')
-            }
+      $(`#${editorId.value} table`).each(function () {
+        const table = this as HTMLTableElement
+        table.setAttribute('data-table-layout', 'fixed')
+        let hasOverflow = false
+        $(table).find('th, td').each(function () {
+          const cell = this as HTMLElement
+          if (cell.scrollWidth > cell.clientWidth) {
+            hasOverflow = true
+            return false // break
           }
+        })
+        if (hasOverflow) {
+          table.setAttribute('data-table-layout', 'auto')
         }
       })
     } catch (e) {
-      // Table width error ignored
+      // Table layout detection error ignored
     }
   }
 
