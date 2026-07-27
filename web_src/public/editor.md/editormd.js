@@ -1690,11 +1690,11 @@
         window.mermaid.initialize({
           startOnLoad: false,
           theme: 'default',
-          securityLevel: 'loose',
+          securityLevel: 'strict',
           fontFamily: 'Arial, sans-serif',
           flowchart: {
             useMaxWidth: false,
-            htmlLabels: true,
+            htmlLabels: false,
             padding: 15
           },
           sequence: {
@@ -1719,7 +1719,8 @@
       var _this = this
       this.previewContainer.find('.mermaid').each(function(index) {
         var $mermaidDiv = $(this)
-        var code = $mermaidDiv.text().trim()
+        var raw = $mermaidDiv.attr('data-src') || ''
+        var code = raw ? decodeURIComponent(escape(window.atob(raw))) : $mermaidDiv.text().trim()
         var id = $mermaidDiv.attr('id') || 'mermaid-' + Date.now() + '-' + index
 
         // 清空容器
@@ -1731,7 +1732,14 @@
           window.mermaid
             .render(id + '-svg', code)
             .then(function(result) {
-              $mermaidDiv.html(result.svg)
+              var safeSvg = window.DOMPurify
+                ? window.DOMPurify.sanitize(result.svg, {
+                    USE_PROFILES: { svg: true, svgFilters: true },
+                    FORBID_TAGS: ['script', 'foreignObject'],
+                    FORBID_ATTR: ['onload', 'onerror', 'onclick']
+                  })
+                : ''
+              $mermaidDiv.html(safeSvg)
 
               // 简单处理：确保 SVG 完整显示
               var $svg = $mermaidDiv.find('svg')
@@ -1745,22 +1753,15 @@
                   }
                 })
               }
+
             })
             .catch(function(error) {
               console.log('Mermaid render error:', error)
-              $mermaidDiv.html(
-                '<pre style="color: red;">Mermaid 渲染错误: ' +
-                  error.message +
-                  '</pre>'
-              )
+              $mermaidDiv.empty().append($('<pre style="color:red"></pre>').text('Mermaid render error: ' + error.message))
             })
         } catch (error) {
           console.log('Mermaid render error:', error)
-          $mermaidDiv.html(
-            '<pre style="color: red;">Mermaid 渲染错误: ' +
-              error.message +
-              '</pre>'
-          )
+          $mermaidDiv.empty().append($('<pre style="color:red"></pre>').text('Mermaid render error: ' + error.message))
         }
       })
 
@@ -3940,7 +3941,8 @@
         )
       } else if (/^mermaid/i.test(lang)) {
         var mermaidId = 'mermaid-' + Math.ceil(Math.random() * 1000000)
-        return "<div class='mermaid' id='" + mermaidId + "'>" + code + '</div>'
+        var payload = window.btoa(unescape(encodeURIComponent(code)))
+        return "<div class='mermaid' id='" + mermaidId + "' data-src='" + payload + "'></div>"
       } else {
         return marked.Renderer.prototype.code.apply(this, arguments)
       }
@@ -4294,7 +4296,8 @@
             'name',
             'type',
             'checked',
-            'disabled'
+            'disabled',
+            'data-src'
           ],
           whiteList = (function() {
             var result = {}
@@ -4539,11 +4542,11 @@
           window.mermaid.initialize({
             startOnLoad: false,
             theme: 'default',
-            securityLevel: 'loose',
+            securityLevel: 'strict',
             fontFamily: 'Arial, sans-serif',
             flowchart: {
               useMaxWidth: false,
-              htmlLabels: true,
+              htmlLabels: false,
               padding: 15
             },
             sequence: {
@@ -4567,9 +4570,9 @@
         // 渲染所有 mermaid 元素
         div.find('.mermaid').each(function(index) {
           var $mermaidDiv = $(this)
-          var code = $mermaidDiv.text().trim()
-          var id =
-            $mermaidDiv.attr('id') || 'mermaid-' + Date.now() + '-' + index
+          var raw = $mermaidDiv.attr('data-src') || ''
+          var code = raw ? decodeURIComponent(escape(window.atob(raw))) : $mermaidDiv.text().trim()
+          var id = $mermaidDiv.attr('id') || 'mermaid-' + Date.now() + '-' + index
 
           // 清空容器
           $mermaidDiv.html('')
@@ -4580,7 +4583,14 @@
             window.mermaid
               .render(id + '-svg', code)
               .then(function(result) {
-                $mermaidDiv.html(result.svg)
+                var safeSvg = window.DOMPurify
+                  ? window.DOMPurify.sanitize(result.svg, {
+                      USE_PROFILES: { svg: true, svgFilters: true },
+                      FORBID_TAGS: ['script', 'foreignObject'],
+                      FORBID_ATTR: ['onload', 'onerror', 'onclick']
+                    })
+                  : ''
+                $mermaidDiv.html(safeSvg)
 
                 // 简单处理：确保 SVG 完整显示
                 var $svg = $mermaidDiv.find('svg')
@@ -4594,22 +4604,15 @@
                     }
                   })
                 }
+
               })
               .catch(function(error) {
                 console.log('Mermaid render error:', error)
-                $mermaidDiv.html(
-                  '<pre style="color: red;">Mermaid 渲染错误: ' +
-                    error.message +
-                    '</pre>'
-                )
+                $mermaidDiv.empty().append($('<pre style="color:red"></pre>').text('Mermaid render error: ' + error.message))
               })
           } catch (error) {
             console.log('Mermaid render error:', error)
-            $mermaidDiv.html(
-              '<pre style="color: red;">Mermaid 渲染错误: ' +
-                error.message +
-                '</pre>'
-            )
+            $mermaidDiv.empty().append($('<pre style="color:red"></pre>').text('Mermaid render error: ' + error.message))
           }
         })
       })()
