@@ -48,7 +48,7 @@ class ExtLoginController extends BaseController
         $name = $this->getParam($request, 'name', '');
 
         // Open Redirect 防护：redirect 必须是安全的相对路径
-        if ($redirect && (!preg_match('#^/[^/\\]#', $redirect) || strpos($redirect, '://') !== false)) {
+        if ($redirect && (!preg_match('#^/[^/\\\\]#', $redirect) || strpos($redirect, '://') !== false)) {
             $redirect = '';
         }
 
@@ -148,7 +148,7 @@ class ExtLoginController extends BaseController
 
         $redirect = $this->getParam($request, 'redirect', '');
         // Open Redirect 防护：redirect 必须是安全的相对路径
-        if ($redirect && (!preg_match('#^/[^/\\]#', $redirect) || strpos($redirect, '://') !== false)) {
+        if ($redirect && (!preg_match('#^/[^/\\\\]#', $redirect) || strpos($redirect, '://') !== false)) {
             $redirect = '';
         }
         if ($redirect) {
