@@ -987,8 +987,19 @@ class Item
      * @param int $uid 当前用户 ID
      * @return array 过滤后的目录数据
      */
-    private static function filterDraftInCatalog(array $catalog, int $uid): array
+    private static function filterDraftInCatalog(array $catalog, int $uid, array $visitedIds = []): array
     {
+        // 循环引用检测
+        $catId = (int) ($catalog['cat_id'] ?? 0);
+        if ($catId > 0 && in_array($catId, $visitedIds)) {
+            // 检测到循环引用，清空子目录防止无限递归
+            $catalog['catalogs'] = [];
+            return $catalog;
+        }
+        if ($catId > 0) {
+            $visitedIds[] = $catId;
+        }
+
         if (!empty($catalog['pages'])) {
             $catalog['pages'] = array_values(array_filter($catalog['pages'], function($page) use ($uid) {
                 $isDraft = (int) ($page['is_draft'] ?? 0);
@@ -998,8 +1009,8 @@ class Item
         }
 
         if (!empty($catalog['catalogs'])) {
-            $catalog['catalogs'] = array_map(function($subCatalog) use ($uid) {
-                return self::filterDraftInCatalog($subCatalog, $uid);
+            $catalog['catalogs'] = array_map(function($subCatalog) use ($uid, $visitedIds) {
+                return self::filterDraftInCatalog($subCatalog, $uid, $visitedIds);
             }, $catalog['catalogs']);
         }
 
