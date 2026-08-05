@@ -292,7 +292,7 @@ class ImportSwaggerController extends BaseController
         foreach ($refArray['properties'] as $key => $value) {
             $remark = $value['title'] ?? $value['description'] ?? '';
 
-            $exampleValue = $value['example'] ?? '';
+            $exampleValue = $value['example'] ?? $value['default'] ?? '';
 
             $required = '0';
             if (isset($refArray['required']) && is_array($refArray['required']) && in_array($key, $refArray['required'])) {
@@ -353,12 +353,23 @@ class ImportSwaggerController extends BaseController
         $resArray = [];
         if (isset($jsonArray['properties'])) {
             foreach ($jsonArray['properties'] as $key => $value) {
-                $resArray[$key] = $this->formatToFakeValue($value['type'] ?? 'string', $value['format'] ?? '');
-                if (isset($value['items'])) {
-                    $resArray[$key] = [$this->toB($value['items'], $depth + 1)];
-                }
-                if (isset($value['properties'])) {
+                // 优先使用 example/default 值，fallback 到 formatToFakeValue
+                if (array_key_exists('example', $value)) {
+                    $resArray[$key] = $value['example'];
+                } elseif (array_key_exists('default', $value)) {
+                    $resArray[$key] = $value['default'];
+                } elseif (isset($value['items'])) {
+                    // items 是对象时递归 toB，原始类型直接取值避免 [[]]
+                    if (isset($value['items']['properties']) || isset($value['items']['$ref']) || (isset($value['items']['type']) && $value['items']['type'] == 'array' && isset($value['items']['items']))) {
+                        $resArray[$key] = [$this->toB($value['items'], $depth + 1)];
+                    } else {
+                        $itemVal = $value['items']['example'] ?? $value['items']['default'] ?? $this->formatToFakeValue($value['items']['type'] ?? 'string', $value['items']['format'] ?? '');
+                        $resArray[$key] = [$itemVal];
+                    }
+                } elseif (isset($value['properties'])) {
                     $resArray[$key] = $this->toB($value, $depth + 1);
+                } else {
+                    $resArray[$key] = $this->formatToFakeValue($value['type'] ?? 'string', $value['format'] ?? '');
                 }
             }
         } elseif (isset($jsonArray['$ref'])) {
@@ -376,7 +387,20 @@ class ImportSwaggerController extends BaseController
             }
             array_pop($this->toBRefPath);
         } elseif (isset($jsonArray['type']) && $jsonArray['type'] == 'array' && isset($jsonArray['items'])) {
-            $resArray = [$this->toB($jsonArray['items'], $depth + 1)];
+            $items = $jsonArray['items'];
+            // items 是对象（有 properties/$ref/array+items）时递归，原始类型直接取值
+            if (isset($items['properties']) || isset($items['$ref']) || (isset($items['type']) && $items['type'] == 'array' && isset($items['items']))) {
+                $resArray = [$this->toB($items, $depth + 1)];
+            } else {
+                // 原始类型 items：优先 example/default，fallback 到 formatToFakeValue
+                if (array_key_exists('example', $items)) {
+                    $resArray = [$items['example']];
+                } elseif (array_key_exists('default', $items)) {
+                    $resArray = [$items['default']];
+                } else {
+                    $resArray = [$this->formatToFakeValue($items['type'] ?? 'string', $items['format'] ?? '')];
+                }
+            }
         }
         return $resArray;
     }
