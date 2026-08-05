@@ -68,6 +68,7 @@ export default {
   unlock_edit: 'Unlock Edit',
   locked: 'Locked',
   unlocked: 'Unlocked',
+  locking: 'This page is being edited by',
   title_required: 'Page title cannot be empty',
   invalid_json: 'Invalid JSON format',
   json_content: 'JSON Content',

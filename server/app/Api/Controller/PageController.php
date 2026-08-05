@@ -1047,7 +1047,7 @@ class PageController extends BaseController
         $lockTo = (int) $this->getParam(
             $request,
             'lock_to',
-            time() + 30 * 60 * 60
+            time() + 30 * 60
         );
         $itemId = (int) $this->getParam($request, 'item_id', 0);
 

@@ -73,6 +73,7 @@ export default {
   unlock_edit: '解锁编辑',
   locked: '已锁定',
   unlocked: '已解锁',
+  locking: '该页面正在被',
   title_required: '页面标题不能为空',
   invalid_json: '无效的 JSON 格式',
   json_content: 'JSON 内容',
