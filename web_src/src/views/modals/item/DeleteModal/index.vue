@@ -110,6 +110,7 @@ onMounted(() => {
     show.value = true
   })
   // SSO 用户删除项目时校验项目名称，提前获取项目名称用于提示
+  if (userStore.isSso && !itemName.value) {
   getItem(String(props.item_id))
     .then((res: any) => {
       if (res && res.error_code === 0 && res.data) {
@@ -117,6 +118,7 @@ onMounted(() => {
       }
     })
     .catch(() => {})
+  }
 })
 </script>
 

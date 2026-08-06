@@ -48,7 +48,7 @@ class UserController extends BaseController
         // 如果普通登录失败，尝试 LDAP 登录
         if (!$user) {
             $user = User::checkLdapLogin($username, $password);
-            $isLdap = true;
+            $isLdap = (bool) $user;
         }
 
         if (!$user) {

@@ -1227,6 +1227,11 @@ class ItemController extends BaseController
         $isSso = !empty($loginUser['is_sso']);
 
         if ($isSso) {
+            // SSO 用户只能删除自己拥有的项目，协作者需联系 owner 操作
+            $ownerUid = (int) ($item->uid ?? 0);
+            if ($uid !== $ownerUid) {
+                return $this->error($response, 10303, 'SSO用户只能删除自己拥有的项目');
+            }
             $itemName = (string) ($item->item_name ?? '');
             if ($projectName === '' || $projectName !== $itemName) {
                 return $this->error($response, 10208, '项目名称不正确');

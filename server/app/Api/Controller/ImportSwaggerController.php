@@ -342,8 +342,9 @@ class ImportSwaggerController extends BaseController
     /**
      * 转换为示例值
      * 添加循环引用检测防止无限递归
+     * 返回值可能是数组（对象/数组类型）或标量（原始类型），供 json_encode 直接使用
      */
-    private function toB(array $jsonArray, int $depth = 0): array
+    private function toB(array $jsonArray, int $depth = 0)
     {
         // 防止循环引用导致的无限递归
         if ($depth > 20) {
@@ -353,33 +354,25 @@ class ImportSwaggerController extends BaseController
         $resArray = [];
         if (isset($jsonArray['properties'])) {
             foreach ($jsonArray['properties'] as $key => $value) {
-                // 优先使用 example/default 值，fallback 到 formatToFakeValue
-                if (array_key_exists('example', $value)) {
-                    $resArray[$key] = $value['example'];
-                } elseif (array_key_exists('default', $value)) {
-                    $resArray[$key] = $value['default'];
-                } elseif (isset($value['items'])) {
-                    // items 是对象时递归 toB，原始类型直接取值避免 [[]]
-                    if (isset($value['items']['properties']) || isset($value['items']['$ref']) || (isset($value['items']['type']) && $value['items']['type'] == 'array' && isset($value['items']['items']))) {
-                        $resArray[$key] = [$this->toB($value['items'], $depth + 1)];
-                    } else {
-                        $itemVal = $value['items']['example'] ?? $value['items']['default'] ?? $this->formatToFakeValue($value['items']['type'] ?? 'string', $value['items']['format'] ?? '');
-                        $resArray[$key] = [$itemVal];
-                    }
+                if (isset($value['items'])) {
+                    // 数组：递归处理 items（原始类型走末尾 else，避免出现 [[]]）
+                    $resArray[$key] = [$this->toB($value['items'], $depth + 1)];
                 } elseif (isset($value['properties'])) {
+                    // 嵌套对象
                     $resArray[$key] = $this->toB($value, $depth + 1);
                 } else {
-                    $resArray[$key] = $this->formatToFakeValue($value['type'] ?? 'string', $value['format'] ?? '');
+                    // 原始类型：优先 example → default，fallback 到 formatToFakeValue
+                    $resArray[$key] = $this->schemaToFakeValue($value);
                 }
             }
         } elseif (isset($jsonArray['$ref'])) {
             $refStr = $jsonArray['$ref'];
-            
+
             // 检测循环引用：如果这个 $ref 已经在解析路径中，则跳过
             if (in_array($refStr, $this->toBRefPath)) {
                 return [];
             }
-            
+
             $this->toBRefPath[] = $refStr;
             $refData = $this->getDefinition($refStr);
             if ($refData) {
@@ -387,22 +380,27 @@ class ImportSwaggerController extends BaseController
             }
             array_pop($this->toBRefPath);
         } elseif (isset($jsonArray['type']) && $jsonArray['type'] == 'array' && isset($jsonArray['items'])) {
-            $items = $jsonArray['items'];
-            // items 是对象（有 properties/$ref/array+items）时递归，原始类型直接取值
-            if (isset($items['properties']) || isset($items['$ref']) || (isset($items['type']) && $items['type'] == 'array' && isset($items['items']))) {
-                $resArray = [$this->toB($items, $depth + 1)];
-            } else {
-                // 原始类型 items：优先 example/default，fallback 到 formatToFakeValue
-                if (array_key_exists('example', $items)) {
-                    $resArray = [$items['example']];
-                } elseif (array_key_exists('default', $items)) {
-                    $resArray = [$items['default']];
-                } else {
-                    $resArray = [$this->formatToFakeValue($items['type'] ?? 'string', $items['format'] ?? '')];
-                }
-            }
+            $resArray = [$this->toB($jsonArray['items'], $depth + 1)];
+        } else {
+            // 原始类型 schema：优先 example → default，否则 formatToFakeValue
+            return $this->schemaToFakeValue($jsonArray);
         }
         return $resArray;
+    }
+
+    /**
+     * 从原始类型 schema 生成假值
+     * 优先顺序：example → default → formatToFakeValue
+     */
+    private function schemaToFakeValue(array $value)
+    {
+        if (array_key_exists('example', $value)) {
+            return $value['example'];
+        }
+        if (array_key_exists('default', $value)) {
+            return $value['default'];
+        }
+        return $this->formatToFakeValue($value['type'] ?? 'string', $value['format'] ?? '');
     }
 
     /**
