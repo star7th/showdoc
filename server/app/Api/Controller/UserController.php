@@ -43,10 +43,12 @@ class UserController extends BaseController
         }
 
         $user = User::checkLogin($username, $password);
-        
+        $isLdap = false;
+
         // 如果普通登录失败，尝试 LDAP 登录
         if (!$user) {
             $user = User::checkLdapLogin($username, $password);
+            $isLdap = true;
         }
 
         if (!$user) {
@@ -55,6 +57,11 @@ class UserController extends BaseController
         }
 
         $uid = (int) $user['uid'];
+
+        // LDAP 登录属于 SSO，标记用户以便删除项目时改用项目名称校验
+        if ($isLdap) {
+            \App\Model\User::updateSso($uid, 1);
+        }
 
         LoginFailureLock::clearFailure($username);
 
@@ -134,6 +141,7 @@ class UserController extends BaseController
             'groupid'         => $userFull['groupid'] ?? '',
             'reg_time'        => $userFull['reg_time'] ?? '',
             'is_wechat'       => $isWechat,
+            'is_sso'          => $userFull['is_sso'] ?? 0,
         ];
 
         return $this->success($response, $data);

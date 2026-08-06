@@ -12,6 +12,7 @@ export interface UserInfo {
   email_verify?: number
   reg_time?: string
   avatar?: string
+  is_sso?: number
 }
 
 export const useUserStore = defineStore('user', {
@@ -67,6 +68,8 @@ export const useUserStore = defineStore('user', {
     },
     /** 是否是管理员 */
     isAdmin: (state) => state.userInfo && Number(state.userInfo.groupid) === 1,
+    /** 是否通过 SSO（OAuth2/LDAP/CAS/SecretKey）登录 */
+    isSso: (state) => !!(state.userInfo && Number(state.userInfo.is_sso)),
   },
 
   actions: {

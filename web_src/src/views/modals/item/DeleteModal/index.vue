@@ -7,13 +7,22 @@
     >
       <div class="modal-content">
         <a-form layout="vertical">
-          <a-form-item :label="t('user.input_login_password')">
+          <a-form-item v-if="!userStore.isSso" :label="t('user.input_login_password')">
             <CommonInput
               v-model="form.password"
               type="password"
               :placeholder="t('user.input_login_password')"
               auto-complete="new-password"
             />
+          </a-form-item>
+          <a-form-item v-else :label="t('item.input_project_name')">
+            <CommonInput
+              v-model="form.projectName"
+              :placeholder="t('item.project_name_placeholder')"
+            />
+            <div class="sso-hint" v-if="itemName">
+              {{ t('item.delete_confirm_by_name') }}: <b>{{ itemName }}</b>
+            </div>
           </a-form-item>
         </a-form>
         <div class="tips-container">
@@ -36,9 +45,11 @@ import { useI18n } from 'vue-i18n'
 import { message } from 'ant-design-vue'
 import CommonModal from '@/components/CommonModal.vue'
 import CommonInput from '@/components/CommonInput.vue'
-import { deleteItem } from '@/models/item'
+import { deleteItem, getItem } from '@/models/item'
+import { useUserStore } from '@/store/user'
 
 const { t } = useI18n()
+const userStore = useUserStore()
 
 const props = defineProps<{
   item_id: string | number
@@ -46,19 +57,32 @@ const props = defineProps<{
 }>()
 
 const show = ref(false)
+const itemName = ref('')
 const form = ref({
-  password: ''
+  password: '',
+  projectName: ''
 })
 
 // 提交
 const handleSubmit = async () => {
-  if (!form.value.password) {
-    message.error(t('user.password_required'))
-    return
+  if (userStore.isSso) {
+    if (!form.value.projectName) {
+      message.error(t('item.project_name_required'))
+      return
+    }
+  } else {
+    if (!form.value.password) {
+      message.error(t('user.password_required'))
+      return
+    }
   }
 
   try {
-    const res = await deleteItem(String(props.item_id), form.value.password)
+    const res = await deleteItem(
+      String(props.item_id),
+      form.value.password,
+      userStore.isSso ? form.value.projectName : ''
+    )
 
     if (res.error_code === 0) {
       message.success(t('common.op_success'))
@@ -85,6 +109,14 @@ onMounted(() => {
   setTimeout(() => {
     show.value = true
   })
+  // SSO 用户删除项目时校验项目名称，提前获取项目名称用于提示
+  getItem(String(props.item_id))
+    .then((res: any) => {
+      if (res && res.error_code === 0 && res.data) {
+        itemName.value = res.data.item_name || ''
+      }
+    })
+    .catch(() => {})
 })
 </script>
 
@@ -128,6 +160,12 @@ onMounted(() => {
 .tips-container {
   margin-top: 16px;
   margin-bottom: 0;
+}
+
+.sso-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
 }
 
 .modal-footer {
