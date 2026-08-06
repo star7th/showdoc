@@ -1205,10 +1205,11 @@ class ItemController extends BaseController
             return $error;
         }
 
-        $itemId   = $this->getParam($request, 'item_id', 0);
-        $password = $this->getParam($request, 'password', '');
+        $itemId      = $this->getParam($request, 'item_id', 0);
+        $password    = $this->getParam($request, 'password', '');
+        $projectName = $this->getParam($request, 'project_name', '');
 
-        if ($itemId <= 0 || $password === '') {
+        if ($itemId <= 0) {
             return $this->error($response, 10101, '参数错误');
         }
 
@@ -1222,11 +1223,24 @@ class ItemController extends BaseController
             return $this->error($response, 10303, '您没有管理权限');
         }
 
-        // 校验项目拥有者密码
-        $ownerUsername = (string) ($item->username ?? '');
-        $owner         = \App\Model\User::checkLogin($ownerUsername, $password);
-        if (!$owner) {
-            return $this->error($response, 10208, '密码不正确');
+        // SSO 用户无登录密码，删除项目时改为校验项目名称
+        $isSso = !empty($loginUser['is_sso']);
+
+        if ($isSso) {
+            $itemName = (string) ($item->item_name ?? '');
+            if ($projectName === '' || $projectName !== $itemName) {
+                return $this->error($response, 10208, '项目名称不正确');
+            }
+        } else {
+            // 校验项目拥有者密码
+            if ($password === '') {
+                return $this->error($response, 10101, '参数错误');
+            }
+            $ownerUsername = (string) ($item->username ?? '');
+            $owner         = \App\Model\User::checkLogin($ownerUsername, $password);
+            if (!$owner) {
+                return $this->error($response, 10208, '密码不正确');
+            }
         }
 
         // 软删除项目

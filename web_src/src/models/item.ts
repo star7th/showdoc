@@ -69,12 +69,14 @@ export function updateItem(itemId: string, data: any, msgAlert = true) {
 }
 
 // 删除项目
-export function deleteItem(itemId: string, password: string) {
+// SSO 用户无登录密码，改为传 project_name 校验项目名称；普通用户传 password
+export function deleteItem(itemId: string, password: string, projectName: string = '') {
   return request(
     '/api/item/delete',
     {
       item_id: itemId,
-      password: password
+      password: password,
+      project_name: projectName
     },
     'post',
     true,

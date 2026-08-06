@@ -95,6 +95,7 @@ class ExtLoginController extends BaseController
         }
 
         User::setLastTime($uid);
+        User::updateSso($uid, 1);
 
         // 生成 token
         $tokenTtl = 60 * 60 * 24 * 180; // 180 天
@@ -295,6 +296,7 @@ class ExtLoginController extends BaseController
             }
 
             User::setLastTime((int) $user->uid);
+            User::updateSso((int) $user->uid, 1);
 
             // 生成 token
             $tokenTtl = 60 * 60 * 24 * 180; // 180 天
@@ -389,6 +391,7 @@ class ExtLoginController extends BaseController
         }
 
         User::setLastTime((int) $user->uid);
+        User::updateSso((int) $user->uid, 1);
 
         // 生成 token
         $tokenTtl = 60 * 60 * 24 * 180; // 180 天

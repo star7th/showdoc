@@ -79,6 +79,25 @@ class User
         return $affected > 0;
     }
 
+    /**
+     * 标记用户是否通过 SSO（OAuth2/LDAP/CAS/SecretKey）登录
+     *
+     * @param int $uid   用户ID
+     * @param int $value 1=SSO用户，0=普通密码用户
+     */
+    public static function updateSso(int $uid, int $value = 1): bool
+    {
+        if ($uid <= 0) {
+            return false;
+        }
+
+        $affected = DB::table('user')
+            ->where('uid', $uid)
+            ->update(['is_sso' => $value]);
+
+        return $affected > 0;
+    }
+
     public static function checkLogin(string $username, string $password): ?array
     {
         $username = trim($username);

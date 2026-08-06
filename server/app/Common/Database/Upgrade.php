@@ -16,7 +16,7 @@ class Upgrade
      * 当前数据库版本号
      * 注意：如果更新数据库结构，务必更改此版本号
      */
-    private const CURRENT_VERSION = 32;
+    private const CURRENT_VERSION = 33;
 
     /**
      * 检查并执行数据库升级
@@ -750,6 +750,11 @@ class Upgrade
                 `created_at` int(11) NOT NULL DEFAULT '0'
             )");
             DB::statement("CREATE INDEX IF NOT EXISTS idx_ai_message_session ON ai_chat_messages (session_id, id)");
+
+            // users表增加is_sso字段，标记通过SSO(OAuth2/LDAP/CAS/SecretKey)登录的用户
+            if (!self::isColumnExist('user', 'is_sso')) {
+                DB::statement("ALTER TABLE user ADD is_sso TINYINT(1) NOT NULL DEFAULT '0'");
+            }
 
             return true;
         } catch (\Throwable $e) {
