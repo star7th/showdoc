@@ -26,3 +26,6 @@ jobs:
           context: .
           push: true
           tags: star7th/showdoc:latest
+          platforms: |
+            linux/amd64
+            linux/arm64

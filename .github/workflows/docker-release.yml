@@ -24,3 +24,6 @@ jobs:
           context: .
           push: true
           tags: star7th/showdoc:${{ github.event.release.tag_name }}
+          platforms: |
+            linux/amd64
+            linux/arm64

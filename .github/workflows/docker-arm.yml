@@ -29,4 +29,3 @@ jobs:
           file: Dockerfile.ARM
           platforms: |
             linux/arm/v7
-            linux/arm64
