@@ -17,6 +17,7 @@ export default {
   submiting: 'Submitting...',
   goback: 'Go Back',
   back: 'Back',
+  home: 'Home',
   loading: 'Loading...',
   no_data: 'No Data',
   success: 'Success',

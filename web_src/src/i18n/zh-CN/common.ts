@@ -17,6 +17,7 @@ export default {
   submiting: '提交中...',
   goback: '返回',
   back: '返回',
+  home: '首页',
   loading: '加载中...',
   no_data: '暂无数据',
   success: '操作成功',
