@@ -330,7 +330,7 @@ const checkConfig = async () => {
       showWidget.value = false
       return
     }
-    const res = await getAiConfig(itemId.value || undefined)
+    const res = await getAiConfig(itemId.value || undefined, false)
     const config = res
     if (config.enabled) {
       showWidget.value = true

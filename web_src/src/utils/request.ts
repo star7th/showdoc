@@ -20,8 +20,8 @@ const request = (
   url: string = '',
   data: any = {},
   method: 'get' | 'post' = 'post',
-  msgAlert = true,
-  contentType: 'form' | 'json' = 'form'
+  contentType: 'form' | 'json' = 'form',
+  msgAlert = true
 ): Promise<any> => {
   const serverHost = getServerHost()
   let finalUrl = serverHost + url
@@ -89,24 +89,35 @@ const request = (
       .then(
         (response) => {
           // 业务错误处理
-          if (msgAlert && response.data && response.data.error_code !== 0) {
-            // 超时登录
+          if (response.data && response.data.error_code !== 0) {
+            // 登录态失效 — 始终清理过期 token，仅 msgAlert 时跳转登录页
+            // msgAlert=false 用于静默探测（如 AI config 检测），收到 10102 只清 token不跳转
             if (response.data.error_code === 10102) {
-              const currentPath = router.currentRoute.value?.fullPath || '/'
-              var redirect = currentPath.repeat(1)
-              if (redirect.indexOf('redirect=') > -1) {
-                // 防止重复 redirect
-                return false
+              try { localStorage.removeItem('userinfo') } catch (e) {}
+              if (msgAlert) {
+                const currentPath = router.currentRoute.value?.fullPath || '/'
+                var redirect = currentPath.repeat(1)
+                if (redirect.indexOf('redirect=') > -1) {
+                  // 防止重复 redirect
+                  return false
+                }
+                router.replace({
+                  path: '/user/login',
+                  query: { redirect: redirect },
+                })
               }
-              router.replace({
-                path: '/user/login',
-                query: { redirect: redirect }
-              })
-            } else {
+              reject(new Error('登录态失效'))
+              return
+            } else if (msgAlert) {
               // 使用 AlertModal 替换 Modal.error
               AlertModal(response.data.error_message || '操作失败')
             }
-            reject(new Error('业务级别的错误'))
+            if (msgAlert) {
+              reject(new Error('业务级别的错误'))
+            } else {
+              // msgAlert=false 时将错误数据透传给调用方自行处理
+              resolve(response.data)
+            }
             return
           }
 

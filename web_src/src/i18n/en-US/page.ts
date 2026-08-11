@@ -156,6 +156,7 @@ export default {
   share_template_to_items: 'Share Template to Items',
   select_items_to_share: 'Select items to share',
   no_items_to_share: 'No items available to share',
+  insert_template: 'Insert Template',
   share_to_these_items: 'Share to These Items',
   share_items_tips: 'Members of the shared project can see this template',
   no_my_template_text: 'You haven\'t saved any templates yet',

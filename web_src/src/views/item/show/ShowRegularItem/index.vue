@@ -270,31 +270,6 @@ const isItemEditable = computed(() => {
 })
 
 // Methods
-// 高亮文本中的关键词（排除代码块，避免 <mark> 标签污染代码内容）
-// 注意：此函数处理的是 Markdown 源码（非 HTML），需要跳过 ```...``` 围起来的代码块
-const highlightKeyword = (text: string, keyword: string): string => {
-  if (!keyword || !text) return text
-
-  // 转义正则表达式特殊字符
-  const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const regex = new RegExp(`(${escapedKeyword})`, 'gi')
-
-  // 将 Markdown 按代码块(```...```)和行内代码(`...`)拆分，只对非代码部分进行高亮
-  const codeRegex = /(```[\s\S]*?```|`[^`]+`)/g
-  const parts = text.split(codeRegex)
-
-  return parts
-    .map((part, index) => {
-      // split 的结果：偶数索引是普通文本，奇数索引是代码块或行内代码
-      if (index % 2 === 1) {
-        return part
-      }
-      // 普通文本部分，进行关键字高亮
-      return part.replace(regex, '<mark>$1</mark>')
-    })
-    .join('')
-}
-
 const handleGetPageContent = async (pageId: number) => {
   if (pageId <= 0) return
 
@@ -331,17 +306,10 @@ const handleGetPageContent = async (pageId: number) => {
     const data = await request('/api/page/info', params, 'post', false)
 
     if (data.error_code === 0 && data.data) {
-      let content = renderPageContent(
+      pageContent.value = renderPageContent(
         data.data.page_content || '',
         itemInfo.value.global_param
       )
-
-      // 如果是搜索结果，对内容进行关键词高亮
-      if (hasKeyword && searchKeyword.value) {
-        content = highlightKeyword(content, searchKeyword.value)
-      }
-
-      pageContent.value = content
 
       itemStore.setOpenCatId(data.data.cat_id)
       pageTitle.value = data.data.page_title

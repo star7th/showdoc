@@ -181,12 +181,12 @@ export function deleteSession(sessionId: number): Promise<void> {
 }
 
 /** 获取 AI 配置 */
-export function getAiConfig(itemId?: number): Promise<AiConfig> {
+export function getAiConfig(itemId?: number, msgAlert = true): Promise<AiConfig> {
   const params: any = {}
   if (itemId) {
     params.item_id = itemId
   }
-  return unwrapApi(request('/api/agent/config', withCommon(params)))
+  return unwrapApi(request('/api/agent/config', withCommon(params), 'post', 'form', msgAlert))
 }
 
 /** 提交反馈 */
