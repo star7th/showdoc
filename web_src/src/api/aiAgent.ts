@@ -186,7 +186,7 @@ export function getAiConfig(itemId?: number, msgAlert = true): Promise<AiConfig>
   if (itemId) {
     params.item_id = itemId
   }
-  return unwrapApi(request('/api/agent/config', withCommon(params), 'post', 'form', msgAlert))
+  return unwrapApi(request('/api/agent/config', withCommon(params), 'post', msgAlert))
 }
 
 /** 提交反馈 */
