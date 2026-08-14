@@ -1,17 +1,17 @@
 
 services:
   showdoc:
-    ## 方式1: 官方 image ################################
-    # image: star7th/showdoc
-
-    ## 方式2: 源码 build image ################################
-    ## 国内构建镜像方式1: docker compose build --build-arg IN_CHINA=true
-    ## 国内构建镜像方式2: IN_CHINA=true docker compose build
-    ## 启动: IN_CHINA=true docker compose up -d
+    ## image + build 同时设置：
+    ##   - 本地已有 image：直接使用；本地没有：默认先 pull，失败才用 build 本地构建；
+    ##   - 强制重新构建：docker compose build 或 docker compose up --build（产物以 image 打标签）。
+    ##   - 国内构建: docker compose build --build-arg IN_CHINA=true
+    ##   - arm/v7 等平台: BASE_IMAGE=wordpress:php8.1 docker compose build
+    image: star7th/showdoc:latest
     build:
       context: ./
       args:
         - IN_CHINA=${IN_CHINA:-false}
+        - BASE_IMAGE=${BASE_IMAGE:-webdevops/php-nginx:8.3-alpine}
     environment:
       IN_CHINA: ${IN_CHINA:-false}
     hostname: showdoc
