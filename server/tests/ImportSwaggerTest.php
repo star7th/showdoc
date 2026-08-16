@@ -574,6 +574,49 @@ class ImportSwaggerTest extends TestCase
     // ===============================================================
 
     /**
+     * 回归测试：toB 生成示例 JSON 时，数组/对象字段应优先使用字段自身的
+     * example/default，而不是用 type 占位值（如 ["string"] / [[]]）。
+     * 对应官方 issue #2569。
+     */
+    public function testToBArrayExamplePreference(): void
+    {
+        $schema = [
+            'type' => 'object',
+            'properties' => [
+                'baseDate' => [
+                    'type' => 'string',
+                    'example' => '2026-07-28',
+                    'default' => '2026-07-28',
+                ],
+                'countryCode' => [
+                    'type' => 'array',
+                    'items' => ['type' => 'string'],
+                    'example' => ['DE'],
+                    'default' => ['DE'],
+                ],
+                'bikeSeries' => [
+                    'type' => 'array',
+                    'items' => ['type' => 'string'],
+                    'example' => ['AGO'],
+                ],
+                'emptyList' => [
+                    'type' => 'array',
+                    'items' => ['type' => 'string'],
+                    'example' => [],
+                    'default' => [],
+                ],
+            ],
+        ];
+
+        $result = $this->invokeMethod('toB', [$schema]);
+
+        $this->assertEquals('2026-07-28', $result['baseDate'] ?? null);
+        $this->assertEquals(['DE'], $result['countryCode'] ?? null, 'array field should use its example');
+        $this->assertEquals(['AGO'], $result['bikeSeries'] ?? null, 'array field should use its example');
+        $this->assertEquals([], $result['emptyList'] ?? null, 'empty array example should be preserved');
+    }
+
+    /**
      * 直接测试 definitionToJsonArray — 基本属性提取
      */
     public function testDefinitionToJsonArrayBasic(): void

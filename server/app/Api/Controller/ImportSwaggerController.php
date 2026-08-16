@@ -354,7 +354,11 @@ class ImportSwaggerController extends BaseController
         $resArray = [];
         if (isset($jsonArray['properties'])) {
             foreach ($jsonArray['properties'] as $key => $value) {
-                if (isset($value['items'])) {
+                if (array_key_exists('example', $value) || array_key_exists('default', $value)) {
+                    // 属性自带 example/default 时优先使用完整值（数组/对象/标量通用），
+                    // 避免数组字段被生成成 ["string"] 之类的 type 占位值
+                    $resArray[$key] = $this->schemaToFakeValue($value);
+                } elseif (isset($value['items'])) {
                     // 数组：递归处理 items（原始类型走末尾 else，避免出现 [[]]）
                     $resArray[$key] = [$this->toB($value['items'], $depth + 1)];
                 } elseif (isset($value['properties'])) {
