@@ -22,6 +22,16 @@ use Psr\Http\Message\ResponseInterface as Response;
 class McpController extends BaseController
 {
   /**
+   * 单次批量请求最大工具调用数量
+   */
+  private const MAX_BATCH_REQUESTS = 10;
+
+  /**
+   * 请求体大小上限（字节）。JSON-RPC 消息体应很小，防止超大 POST 占用内存。
+   */
+  private const MAX_REQUEST_BODY_SIZE = 1048576; // 1 MB
+
+  /**
    * MCP 入口
    *
    * @param Request $request 请求对象
@@ -30,8 +40,24 @@ class McpController extends BaseController
    */
   public function index(Request $request, Response $response): Response
   {
+    // 请求体大小限制（Content-Length 为空时（如 chunked）以实际读取长度二次校验）
+    $contentLength = (int) $request->getHeaderLine('Content-Length');
+    if ($contentLength > self::MAX_REQUEST_BODY_SIZE) {
+      return $this->jsonResponse($response, McpError::createResponse(
+        McpError::INVALID_REQUEST,
+        '请求体过大，最大 ' . self::MAX_REQUEST_BODY_SIZE . ' 字节'
+      ));
+    }
+
     // 获取请求体
     $body = (string) $request->getBody();
+
+    if (strlen($body) > self::MAX_REQUEST_BODY_SIZE) {
+      return $this->jsonResponse($response, McpError::createResponse(
+        McpError::INVALID_REQUEST,
+        '请求体过大，最大 ' . self::MAX_REQUEST_BODY_SIZE . ' 字节'
+      ));
+    }
 
     // 解析 JSON
     $jsonRequest = json_decode($body, true);
@@ -138,11 +164,6 @@ class McpController extends BaseController
    * @param array $requests 请求数组
    * @return Response
    */
-  /**
-   * 单次批量请求最大工具调用数量
-   */
-  private const MAX_BATCH_REQUESTS = 10;
-
   private function handleBatchRequest(Response $response, array $requests): Response
   {
     // 限制单次批量请求的最大数量，防止绕过频率限制
@@ -174,6 +195,29 @@ class McpController extends BaseController
           }
 
           continue;
+        }
+
+        // 频率限制检查（仅对外部 ai_token；user_token/guest 为 Agent 内部回环，不受此限）
+        if ($tokenExtract !== null && in_array($tokenExtract['type'], ['bearer', 'api_token'], true)) {
+          $rateLimit = UserAiToken::checkRateLimit($tokenExtract['token']);
+          if (!$rateLimit['allowed']) {
+            if (!$isNotification) {
+              $results[] = McpError::createResponse(
+                McpError::RATE_LIMITED,
+                '请求频率超限，请稍后重试',
+                [
+                  'reset_at'   => $rateLimit['reset_at'],
+                  'retry_after' => $rateLimit['reset_at'] - time(),
+                ],
+                $jsonRequest['id'] ?? null
+              );
+            }
+
+            continue;
+          }
+
+          // 更新最后使用时间
+          UserAiToken::touchLastUsed($tokenExtract['token']);
         }
       }
 

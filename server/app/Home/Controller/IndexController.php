@@ -11,54 +11,28 @@ class IndexController extends BaseController
 {
     public function index(Request $request, Response $response): Response
     {
-        // 使用相对路径，与旧版保持一致（参考旧版逻辑）
+        // 计算站点基础路径（脚本所在目录），避免相对路径在深层路径下重定向失效
+        $webBase = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/server/index.php')), '/');
+
         // 不存在安装文件夹的，表示已经安装过
         if (!file_exists("./install")) {
             return $response
-                ->withHeader('Location', './web/#/')
+                ->withHeader('Location', $webBase . '/web/#/')
                 ->withStatus(302);
         }
 
-        // 如果 install 存在 && install.lock 存在 && install 可写 && install.lock 可写
-        if (file_exists("./install") && file_exists("./install/install.lock") && $this->newIsWriteable("./install") && $this->newIsWriteable("./install/install.lock")) {
+        // 存在安装锁文件的，表示已经安装过。
+        // 不依赖目录可写性：部署后常会把 install 目录设为只读加固，此时应视为已安装。
+        if (file_exists("./install/install.lock")) {
             return $response
-                ->withHeader('Location', './web/#/')
+                ->withHeader('Location', $webBase . '/web/#/')
                 ->withStatus(302);
         }
-        
+
         // 其他情况都跳转到安装页面
         return $response
-            ->withHeader('Location', './install/index.php')
+            ->withHeader('Location', $webBase . '/install/index.php')
             ->withStatus(302);
-    }
-
-    /**
-     * 判断 文件/目录 是否可写（取代系统自带的 is_writeable 函数）
-     *
-     * @param string $file 文件/目录
-     * @return boolean
-     */
-    private function newIsWriteable($file)
-    {
-        if (is_dir($file)) {
-            $dir = $file;
-            if ($fp = @fopen("$dir/test.txt", 'w')) {
-                @fclose($fp);
-                @unlink("$dir/test.txt");
-                $writeable = 1;
-            } else {
-                $writeable = 0;
-            }
-        } else {
-            if ($fp = @fopen($file, 'a+')) {
-                @fclose($fp);
-                $writeable = 1;
-            } else {
-                $writeable = 0;
-            }
-        }
-
-        return $writeable;
     }
 }
 
