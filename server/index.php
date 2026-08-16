@@ -20,7 +20,6 @@ use Slim\Factory\AppFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Dotenv\Dotenv;
-use App\Common\Helper\Env;
 
 // CLI 模式下支持：php server/index.php /ping
 if (PHP_SAPI === 'cli') {
@@ -93,10 +92,8 @@ $app->setBasePath('/server');
 $app->addRoutingMiddleware();
 $app->addBodyParsingMiddleware();
 
-// 错误处理：生产环境不向前端暴露堆栈与路径信息
-// 可通过环境变量 APP_DEBUG=true 在开发环境开启详细错误显示
-$appDebug = filter_var(Env::get('APP_DEBUG', 'false'), FILTER_VALIDATE_BOOL);
-$errorMiddleware = $app->addErrorMiddleware($appDebug, true, true);
+// 开源版开启错误显示，方便用户排查问题
+$errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $errorHandler = $errorMiddleware->getDefaultErrorHandler();
 $errorHandler->forceContentType('application/json');
 

@@ -12,27 +12,53 @@ if (PHP_SAPI !== 'cli') {
 }
 // ===== 爬虫拦截结束 =====
 
-// ===== 安装状态检测 =====
-// 计算站点基础路径（脚本所在目录），避免使用相对路径导致深层路径下重定向失效
-$webBase = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')), '/');
-
+// ===== 安装状态检测（参考旧版逻辑）=====
 if (PHP_SAPI !== 'cli') {
     // 不存在安装文件夹的，表示已经安装过
     if (!file_exists("./install")) {
-        header("location:{$webBase}/web/#/");
+        header("location:./web/#/");
         exit();
     }
 
-    // 存在安装锁文件的，表示已经安装过。
-    // 不依赖目录可写性：部署后常会把 install 目录设为只读加固，此时应视为已安装。
-    if (file_exists("./install/install.lock")) {
-        header("location:{$webBase}/web/#/");
+    // 如果 install 存在 && install.lock 存在 && install 可写 && install.lock 可写
+    if (file_exists("./install") && file_exists("./install/install.lock") && newIsWriteable("./install") && newIsWriteable("./install/install.lock")) {
+        header("location:./web/#/");
         exit();
     }
-
+    
     // 其他情况都跳转到安装页面
-    header("location:{$webBase}/install/index.php");
+    header("location:./install/index.php");
     exit();
+}
+
+/**
+ * 判断 文件/目录 是否可写（取代系统自带的 is_writeable 函数）
+ * 参考旧版逻辑
+ *
+ * @param string $file 文件/目录
+ * @return boolean
+ */
+function newIsWriteable($file)
+{
+    if (is_dir($file)) {
+        $dir = $file;
+        if ($fp = @fopen("$dir/test.txt", 'w')) {
+            @fclose($fp);
+            @unlink("$dir/test.txt");
+            $writeable = 1;
+        } else {
+            $writeable = 0;
+        }
+    } else {
+        if ($fp = @fopen($file, 'a+')) {
+            @fclose($fp);
+            $writeable = 1;
+        } else {
+            $writeable = 0;
+        }
+    }
+
+    return $writeable;
 }
 
 require __DIR__ . '/server/vendor/autoload.php';
@@ -42,7 +68,6 @@ use Slim\Factory\AppFactory;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Dotenv\Dotenv;
-use App\Common\Helper\Env;
 
 // CLI 模式下支持：php index.php / 或 /uid/xxx
 if (PHP_SAPI === 'cli') {
@@ -54,6 +79,22 @@ if (PHP_SAPI === 'cli') {
     $_SERVER['REQUEST_URI'] = $path;
     $scriptBase = basename(__FILE__);
     $_SERVER['SCRIPT_NAME'] = '/' . $scriptBase;
+}
+
+// 兼容查询参数路由：?s=/user/login 形式的路由（仅限 Web 环境）
+// 开源版主要使用此方式
+if (PHP_SAPI !== 'cli' && isset($_GET['s']) && $_GET['s'] !== '') {
+    $path = $_GET['s'];
+    if ($path !== '' && $path[0] !== '/') {
+        $path = '/' . $path;
+    }
+    // 设置 REQUEST_URI、PATH_INFO 和 SCRIPT_NAME，确保 Slim 能正确解析路径
+    $_SERVER['REQUEST_URI'] = $path;
+    $_SERVER['PATH_INFO'] = $path;
+    $_SERVER['SCRIPT_NAME'] = '/index.php';
+    // 清除查询字符串，避免 Slim 重复处理
+    $_SERVER['QUERY_STRING'] = '';
+    unset($_GET['s']);
 }
 
 // 加载根目录 .env（如果存在），供 Database 等使用 getenv() 读取配置
@@ -97,10 +138,8 @@ $app = AppFactory::create();
 
 $app->addRoutingMiddleware();
 
-// 错误处理：生产环境不向前端暴露堆栈与路径信息
-// 可通过环境变量 APP_DEBUG=true 在开发环境开启详细错误显示
-$appDebug = filter_var(Env::get('APP_DEBUG', 'false'), FILTER_VALIDATE_BOOL);
-$errorMiddleware = $app->addErrorMiddleware($appDebug, true, true);
+// 开源版开启错误显示，方便用户排查问题
+$errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $errorHandler = $errorMiddleware->getDefaultErrorHandler();
 $errorHandler->forceContentType('text/html');
 
@@ -145,11 +184,11 @@ $app->any('/home/common/repasswd', function (Request $request, Response $respons
 });
 
 // 兜底路由：所有其他路径（多段路径，如 /user/login）都返回 Vue 应用
-$app->any('/{path:.*}', function (Request $request, Response $response) use ($webBase) {
+$app->any('/{path:.*}', function (Request $request, Response $response) {
     // 开源版前端构建产物在 web/ 目录下，而不是使用主版的 web.html
     // 这里统一把所有未被前面路由匹配的路径交给前端 SPA 处理
     return $response
-        ->withHeader('Location', $webBase . '/web/#/')
+        ->withHeader('Location', './web/#/')
         ->withStatus(302);
 });
 
