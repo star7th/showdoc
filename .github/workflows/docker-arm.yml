@@ -26,6 +26,8 @@ jobs:
           context: .
           push: true
           tags: star7th/showdoc:arm-latest
-          file: Dockerfile.ARM
+          file: Dockerfile
+          build-args: |
+            BASE_IMAGE=wordpress:php8.1
           platforms: |
             linux/arm/v7

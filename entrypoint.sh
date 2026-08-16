@@ -3,6 +3,13 @@
 set -o pipefail
 pids=()
 
+# 基础镜像判定：默认 webdevops/php-nginx（amd64/arm64，supervisord 托管 nginx+php-fpm）。
+# 通过 Dockerfile 的 ARG BASE_IMAGE 注入旧版镜像（wordpress:*，用于 arm/v7 等），
+# 该镜像使用 apache 提供服务，无 supervisord / nginx 配置。
+is_legacy_base() {
+    [[ "${BASE_IMAGE:-}" == wordpress:* ]]
+}
+
 cleanup() {
     echo "receive SIGTERM, kill ${pids[*]}"
     for pid in "${pids[@]}"; do
@@ -26,6 +33,13 @@ set_mirror() {
 }
 
 docker_build() {
+    if is_legacy_base; then
+        # 旧版基础镜像（wordpress:*）为 apache 直供，无需 webdevops 的
+        # nginx/supervisor 配置与 mock 构建，代码拷贝在 Dockerfile 中完成。
+        echo "Legacy base image (${BASE_IMAGE}), skip webdevops build steps."
+        return 0
+    fi
+
     set -xe
     rm -rf /app
     ln -sf $web_dir /app
@@ -96,6 +110,11 @@ backup_dbfile() {
 }
 
 docker_run() {
+    if is_legacy_base; then
+        docker_run_legacy
+        return 0
+    fi
+
     ## 首次启动需要拷贝程序文件到 $web_dir/ (/var/www/html)
     if [ -f "$web_dir/index.php" ]; then
         echo "Found $web_dir/index.php, skip copy."
@@ -213,6 +232,13 @@ EOF
     pids+=("$!")
 
     wait
+}
+
+docker_run_legacy() {
+    ## 旧版基础镜像（wordpress:*）：代码已在 /var/www/html，直接启动 apache 提供服务。
+    ## 不启动 mock、不做每日备份（镜像内无相应依赖），保持与历史 ARM 镜像行为一致。
+    echo "Starting apache (legacy base image ${BASE_IMAGE})..."
+    exec apache2-foreground
 }
 
 main() {
