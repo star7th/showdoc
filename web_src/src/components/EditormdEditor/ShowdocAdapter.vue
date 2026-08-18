@@ -293,9 +293,11 @@ defineExpose({
 <style scoped>
 .editormd-editor-adapter {
   width: 100%;
+  height: 100%;
 }
 
 .editormd-editor-adapter.showdoc .editor-wrapper {
   width: 100%;
+  height: 100%;
 }
 </style>
