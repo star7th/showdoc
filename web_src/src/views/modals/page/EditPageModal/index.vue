@@ -114,7 +114,7 @@
           v-if="showEditor"
           v-model="form.content"
           mode="editor"
-          height="70vh"
+          height="100%"
           :upload="uploadConfig"
           @load="onEditorReady"
           @upload-error="handleUploadError"
@@ -1430,6 +1430,7 @@ onBeforeUnmount(() => {
 
 .edit-content {
   flex: 1;
+  min-height: 0;
   background-color: var(--color-bg-primary);
   padding: 20px 24px;
   overflow-y: auto;
