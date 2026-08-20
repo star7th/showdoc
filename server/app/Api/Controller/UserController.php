@@ -33,6 +33,10 @@ class UserController extends BaseController
             return $this->error($response, 10101, '用户名或密码不能为空');
         }
 
+        if (!preg_match('/^[a-zA-Z0-9_\-\x{4e00}-\x{9fa5}]{2,30}$/u', $username)) {
+            return $this->error($response, 10101, '用户名只允许字母、数字、下划线、横线、中文，2-30个字符');
+        }
+
         // 验证码校验（兼容旧版逻辑）
         if (!Captcha::check($captchaId, $captchaVal)) {
             return $this->error($response, 10206, '验证码不正确');
@@ -196,6 +200,10 @@ class UserController extends BaseController
 
         if ($username === '' || $password === '') {
             return $this->error($response, 10101, '用户名或密码不能为空');
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9_\-\x{4e00}-\x{9fa5}]{2,30}$/u', $username)) {
+            return $this->error($response, 10101, '用户名只允许字母、数字、下划线、横线、中文，2-30个字符');
         }
 
         if (strlen($password) > 100) {

@@ -77,7 +77,7 @@ class MockController extends BaseController
         }
 
         // 生成唯一key
-        $uniqueKey = md5(time() . rand() . "gbgdhbdgtfgfK3@bv45342asfsdfjhyfgkj54fofgfbv45342asfsdg");
+        $uniqueKey = bin2hex(random_bytes(16));
 
         // 检查是否已存在该页面的Mock
         $mockPage = Mock::findByPageId($pageId);

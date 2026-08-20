@@ -913,7 +913,7 @@ class PageController extends BaseController
 
         // 按旧实现约定，仅当 isCreateSiglePage 为 'true' 时创建
         if ((string) $isCreateSingle === 'true') {
-            $uniqueKey = md5(microtime(true) . rand() . 'showdoc_single_page_salt');
+            $uniqueKey = bin2hex(random_bytes(16));
             $data      = [
                 'unique_key'  => $uniqueKey,
                 'page_id'     => $pageId,

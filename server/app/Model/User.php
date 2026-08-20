@@ -39,15 +39,14 @@ class User
             return null;
         }
 
-        // 复用原有加密逻辑（算法一致，但通过新 Helper 实现）
-        $salt     = Security::generateSalt();
-        $hashed   = Security::hashPassword($password, $salt);
-        $now      = time();
+        // 新写入一律 bcrypt（自带盐），salt 列同步置空
+        $hashed  = Security::hashPasswordBcrypt($password);
+        $now     = time();
 
         $uid = DB::table('user')->insertGetId([
             'username'  => $username,
             'password'  => $hashed,
-            'salt'      => $salt,
+            'salt'      => '',
             'reg_time'  => $now,
         ]);
 
@@ -65,13 +64,13 @@ class User
             return false;
         }
 
-        $salt    = $row->salt ?: Security::generateSalt();
-        $hashed  = Security::hashPassword($password, $salt);
+        // 不再复用旧盐，直接生成全新 bcrypt hash，salt 清空
+        $hashed = Security::hashPasswordBcrypt($password);
 
         $affected = DB::table('user')
             ->where('uid', $uid)
             ->update([
-                'salt'            => $salt,
+                'salt'            => '',
                 'password'        => $hashed,
                 'last_login_time' => time(),
             ]);
@@ -126,11 +125,24 @@ class User
             return null;
         }
 
-        $salt    = (string) ($row->salt ?? '');
-        $hashed  = Security::hashPassword($password, $salt);
+        $verify = Security::verifyPassword(
+            $password,
+            (string) ($row->password ?? ''),
+            (string) ($row->salt ?? '')
+        );
 
-        if ($hashed !== $row->password) {
+        if (!$verify['ok']) {
             return null;
+        }
+
+        // 旧算法 md5 验证通过 → 原地升级为 bcrypt 写回
+        if ($verify['needs_upgrade']) {
+            DB::table('user')
+                ->where('uid', $row->uid)
+                ->update([
+                    'password' => Security::hashPasswordBcrypt($password),
+                    'salt'     => '',
+                ]);
         }
 
         return (array) $row;
@@ -161,10 +173,14 @@ class User
             return false;
         }
 
-        $salt   = (string) ($row->salt ?? '');
-        $hashed = Security::hashPassword($password, $salt);
+        // 只读校验，不做升级写回
+        $verify = Security::verifyPassword(
+            $password,
+            (string) ($row->password ?? ''),
+            (string) ($row->salt ?? '')
+        );
 
-        return $hashed === $row->password;
+        return $verify['ok'];
     }
 
     /**

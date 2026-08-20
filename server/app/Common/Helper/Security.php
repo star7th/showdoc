@@ -25,23 +25,20 @@ class Security
             $s = \SQLite3::escapeString($s);
         } else {
             // 备用方案：手动转义
-            // 先转义反斜杠，避免后续再次转义造成歧义
             $s = str_replace('\\', '\\\\', $s);
-            // 转义单引号和双引号（防止 SQL 注入）
             $s = str_replace("'", "\\'", $s);
-            $s = str_replace('"', '\\"', $s);
-            // 转义百分号和下划线（LIKE 查询特殊字符）
-            if ($strict) {
-                $s = str_replace('%', '\\%', $s);
-                $s = str_replace('_', '\\_', $s);
-            }
         }
+        // 无论 strict 与否，均转义 % 和 _ 通配符，防止搜索 % 匹配全表。
+        $s = str_replace('%', '\\%', $s);
+        $s = str_replace('_', '\\_', $s);
 
         return $s;
     }
 
     /**
      * 生成随机盐值
+     *
+     * 供旧版算法兼容使用（老用户 md5 hash 仍带盐）。
      *
      * @return string 盐值
      */
@@ -51,7 +48,69 @@ class Security
     }
 
     /**
-     * 加密密码（兼容旧版 encry_password 函数）
+     * 判断是否为 bcrypt 格式的 hash（严格正则）
+     *
+     * 输出固定 60 字符：$2y$ + 两位 cost + $ + 53 位 bcrypt base64 字符。
+     * md5 输出只含 [0-9a-f] 且为 32 位，与此格式互斥无歧义。
+     *
+     * @param string $hashed 待检查的 hash 串
+     * @return bool 是否 bcrypt 格式
+     */
+    private static function isBcrypt(string $hashed): bool
+    {
+        return (bool) preg_match('/^\$2y\$\d{2}\$[\.\/A-Za-z0-9]{53}$/', $hashed);
+    }
+
+    /**
+     * 生成 bcrypt 密码 hash
+     *
+     * bcrypt 是自适应慢哈希算法（基于 Blowfish），盐自动内嵌在输出中，无需单独存盐。
+     * 输出格式固定 60 字符：$2y$cost$ + 22 位盐 + 31 位 hash，例如
+     * $2y$10$e0MYzXyjpJS7Pd0RVvHwHe1HlCgSSK0pAZzBKAwJX8otOjZUckK7q
+     * cost（此处 10）控制计算耗时，每 +1 耗时翻倍，可随硬件升级调整。
+     * 该格式跨语言通用：PHP password_verify、Python bcrypt、Node bcrypt、jBCrypt 等
+     * 均可对同一字符串直接验证，便于多端/迁移场景复用。
+     *
+     * @param string $password 原始密码
+     * @return string bcrypt hash（60 字符）
+     */
+    public static function hashPasswordBcrypt(string $password): string
+    {
+        return password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
+    }
+
+    /**
+     * 统一密码验证入口（bcrypt + 旧版 md5 双轨兼容）
+     *
+     * 存储格式即路由：stored 是 bcrypt 格式 → 只走 password_verify，不再回退旧算法
+     * （避免双重 oracle）；否则按旧算法 md5(base64(md5) . '576hbgh6' . salt) 计算，
+     * hash_equals 恒时比较。旧算法验证成功时返回 needs_upgrade=true，由调用方决定
+     * 是否原地升级为 bcrypt 写回。
+     *
+     * @param string $password 用户输入的明文密码
+     * @param string $stored   数据库存储的 hash
+     * @param string $salt     旧算法盐值（bcrypt 用户/无盐老用户传空即可）
+     * @return array ['ok' => bool, 'needs_upgrade' => bool]
+     */
+    public static function verifyPassword(string $password, string $stored, string $salt = ''): array
+    {
+        // bcrypt 格式 → 只走 bcrypt 验证，不回退（防降级枚举）
+        if (self::isBcrypt($stored)) {
+            return ['ok' => password_verify($password, $stored), 'needs_upgrade' => false];
+        }
+
+        // 旧版算法（salt 为空即覆盖 Home 版无盐变体）
+        $legacy = self::hashPassword($password, $salt);
+        if (hash_equals($stored, $legacy)) {
+            return ['ok' => true, 'needs_upgrade' => true];
+        }
+
+        return ['ok' => false, 'needs_upgrade' => false];
+    }
+
+    /**
+     * 加密密码（旧版 md5 算法）
+     * @deprecated 仅存量数据兼容/内部回退使用，新代码一律用 hashPasswordBcrypt()
      *
      * @param string $password 原始密码
      * @param string $salt 盐值
