@@ -108,8 +108,13 @@ class OpenApiHandler extends McpHandler
     // 检查项目权限
     if ($itemId > 0) {
       $this->requireWritePermission($itemId);
+    } else {
+      // 不指定项目需要创建新项目，检查 Token 是否允许
+      if (!$this->canCreateItem()) {
+        McpError::throw(McpError::TOKEN_OPERATION_DENIED, '当前 Token 不允许创建新项目');
+      }
     }
-    // 如果没有指定项目，Item::import 会创建新项目
+
 
     $this->jsonArray = $jsonArray;
 

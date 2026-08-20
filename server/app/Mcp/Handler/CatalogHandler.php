@@ -391,6 +391,14 @@ class CatalogHandler extends McpHandler
     $parentCatId = isset($params['parent_cat_id']) ? (int) $params['parent_cat_id'] : (int) $catalog->parent_cat_id;
     $sNumber = isset($params['s_number']) ? (int) $params['s_number'] : (int) $catalog->s_number;
 
+    // 校验父目录归属当前项目（防止跨项目数据污染）
+    if ($parentCatId > 0) {
+      $parentCatalog = Catalog::findById($parentCatId);
+      if (!$parentCatalog || (int) $parentCatalog->item_id !== $itemId) {
+        McpError::throw(McpError::RESOURCE_NOT_FOUND, '父目录不存在');
+      }
+    }
+
     // 复用 Catalog::save 方法，确保与原后端逻辑一致（包括层级计算等）
     $result = Catalog::save($catId, $itemId, $catName, $parentCatId, $sNumber);
     if (!$result) {

@@ -2240,6 +2240,10 @@ MARKDOWN;
       McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
     }
 
+    // 检查读取权限（防止越权获取其他项目的分享链接）
+    $itemId = (int) $page->item_id;
+    $this->requireReadPermission($itemId);
+
     // 查询 single_page 表
     $single = DB::table('single_page')
       ->where('page_id', $pageId)
