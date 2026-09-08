@@ -193,31 +193,31 @@ class FromCommentsController extends BaseController
         }
 
         // 合并 headers
-        $this->mergeParamListValues(
+        $newData['request']['headers'] = $this->mergeParamListValues(
             $existingData['request']['headers'] ?? [],
             $newData['request']['headers'] ?? []
         );
 
         // 合并 query
-        $this->mergeParamListValues(
+        $newData['request']['query'] = $this->mergeParamListValues(
             $existingData['request']['query'] ?? [],
             $newData['request']['query'] ?? []
         );
 
         // 合并 formdata
-        $this->mergeParamListValues(
+        $newData['request']['params']['formdata'] = $this->mergeParamListValues(
             $existingData['request']['params']['formdata'] ?? [],
             $newData['request']['params']['formdata'] ?? []
         );
 
         // 合并 jsonDesc
-        $this->mergeParamListValues(
+        $newData['request']['params']['jsonDesc'] = $this->mergeParamListValues(
             $existingData['request']['params']['jsonDesc'] ?? [],
             $newData['request']['params']['jsonDesc'] ?? []
         );
 
         // 合并 urlencoded
-        $this->mergeParamListValues(
+        $newData['request']['params']['urlencoded'] = $this->mergeParamListValues(
             $existingData['request']['params']['urlencoded'] ?? [],
             $newData['request']['params']['urlencoded'] ?? []
         );
@@ -228,12 +228,13 @@ class FromCommentsController extends BaseController
      * 根据 name 字段匹配，保留已有页面中的 value
      *
      * @param array $existingList 已有参数列表
-     * @param array $newList 新参数列表（引用传递，会被修改）
+     * @param array $newList 新参数列表
+     * @return array 合并后的新参数列表
      */
-    private function mergeParamListValues(array $existingList, array &$newList): void
+    private function mergeParamListValues(array $existingList, array $newList): array
     {
         if (empty($existingList) || empty($newList)) {
-            return;
+            return $newList;
         }
 
         // 建立已有参数的 name -> value 映射
@@ -251,6 +252,8 @@ class FromCommentsController extends BaseController
                 $newList[$key]['value'] = $existingValues[$name];
             }
         }
+
+        return $newList;
     }
 
     /**
