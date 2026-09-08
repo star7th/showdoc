@@ -114,11 +114,13 @@ class FromCommentsController extends BaseController
     }
 
     /**
-     * 保留已有页面中用户手动填写的值
+     * 以已有页面为基座合并新生成的内容
      *
-     * 对于 RunApi 类型的项目，当通过注释更新文档时，保留用户已在 RunApi 中填写的：
-     * - 请求参数的示例值（value）
-     * - 返回参数的说明（remark）
+     * 对于 RunApi 类型的项目，当通过注释更新文档时：
+     * - javadoc 能生成的字段（info 基本信息、参数列表结构、返回示例等）以新生成内容覆盖；
+     * - 参数列表中用户手填的 value、返回参数的 value/remark 按名称合并保留；
+     * - javadoc 改动不到的字段（urlencoded/cookies/auth/extend 及客户端写入的
+     *   其他键）保留已有页面的值，不被新生成内容中的空默认值清掉
      *
      * @param int $itemId 项目 ID
      * @param string $pageTitle 页面标题
@@ -173,7 +175,35 @@ class FromCommentsController extends BaseController
         // 合并返回参数说明中的 value 和 remark
         $this->mergeResponseValues($existingData, $newData);
 
-        $result = json_encode($newData, JSON_UNESCAPED_UNICODE);
+        // 以已有页面为基座，仅覆盖 fromComments 能从 javadoc 生成的字段。
+        // javadoc 改动不到的字段（urlencoded/cookies/auth/extend 及客户端写入的
+        // 其他键）不在下方覆盖清单中，自然保留已有值
+        $base = $existingData;
+
+        $base['info']['from'] = 'runapi';
+        $base['info']['type'] = 'api';
+        foreach (['title', 'description', 'method', 'remark', 'url'] as $k) {
+            $base['info'][$k] = $newData['info'][$k];
+        }
+
+        $base['response']['responseExample'] = $newData['response']['responseExample'];
+        $base['response']['responseParamsDesc'] = $newData['response']['responseParamsDesc'];
+
+        $base['request']['headers'] = $newData['request']['headers'];
+        $base['request']['query'] = $newData['request']['query'];
+        $base['request']['params']['mode'] = $newData['request']['params']['mode'];
+        $base['request']['params']['json'] = $newData['request']['params']['json'];
+
+        // formdata/jsonDesc：新内容有则覆盖、无则清除，避免 mode 切换后残留死数据
+        foreach (['formdata', 'jsonDesc'] as $k) {
+            if (isset($newData['request']['params'][$k])) {
+                $base['request']['params'][$k] = $newData['request']['params'][$k];
+            } else {
+                unset($base['request']['params'][$k]);
+            }
+        }
+
+        $result = json_encode($base, JSON_UNESCAPED_UNICODE);
         if ($result === false) {
             return $newContent;
         }
@@ -221,6 +251,24 @@ class FromCommentsController extends BaseController
             $existingData['request']['params']['urlencoded'] ?? [],
             $newData['request']['params']['urlencoded'] ?? []
         );
+
+        // 同步 query 参数值到 url 查询串
+        // toRunapiFormat 会以空值把 GET 参数追加到 url（如 ?id=&），RunApi 客户端
+        // 以 url 查询串为准展示参数，若不同步，已合并保留的参数值在客户端会显示为空
+        if (!empty($newData['request']['query'])) {
+            $url = $newData['info']['url'] ?? '';
+            $pos = strpos($url, '?');
+            if ($pos !== false) {
+                $pairs = [];
+                foreach ($newData['request']['query'] as $param) {
+                    $name = $param['name'] ?? '';
+                    if ($name !== '') {
+                        $pairs[] = $name . '=' . rawurlencode((string) ($param['value'] ?? ''));
+                    }
+                }
+                $newData['info']['url'] = substr($url, 0, $pos + 1) . implode('&', $pairs);
+            }
+        }
     }
 
     /**
