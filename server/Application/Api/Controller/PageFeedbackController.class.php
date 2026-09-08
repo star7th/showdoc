@@ -13,6 +13,10 @@ class PageFeedbackController extends BaseController
         $this->checkLogin(false);
         $page_id = I("page_id/d");
         $client_id = I("client_id");
+        // 输入卫生：client_id 只允许十六进制/连字符，防任意字符串入库
+        if (!preg_match('/^[a-f0-9\-]{8,64}$/i', $client_id)) {
+            $client_id = '';
+        }
 
         if (!$page_id) {
             $this->sendError(10100, '缺少page_id参数');
@@ -105,6 +109,10 @@ class PageFeedbackController extends BaseController
         $page_id = I("page_id/d");
         $feedback_type = I("feedback_type/d");
         $client_id = I("client_id");
+        // 输入卫生：client_id 只允许十六进制/连字符，防任意字符串入库
+        if (!preg_match('/^[a-f0-9\-]{8,64}$/i', $client_id)) {
+            $client_id = '';
+        }
 
         if (!$page_id) {
             $this->sendError(10100, '缺少page_id参数');

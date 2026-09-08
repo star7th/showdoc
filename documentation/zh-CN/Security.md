@@ -50,7 +50,62 @@ APP_DEBUG=true    # 开发环境，开启详细错误信息
 **修复**：批量请求与单请求一致，对 `ai_token` 执行频率限制检查；单次批量最多处理
 10 个请求（`MAX_BATCH_REQUESTS`）。
 
+### 6. SQLite 库文件远程代码执行（Sqlite 目录访问拦截 + 输入卫生）
+
+**问题**：SQLite 数据库文件默认位于网站目录 `Sqlite/showdoc.db.php`，Web 服务器会按
+PHP 解析它。登录用户可通过可写字段（如个人资料 name）把 `<?php ... __halt_compiler();`
+写入数据库，随后直接访问 `/Sqlite/showdoc.db.php` 即可执行任意 PHP 代码（RCE）。
+
+**修复**（双重拦截 + 输入卫生）：
+
+1. **Nginx**：容器镜像构建时（entrypoint.sh）在
+   `/opt/docker/etc/nginx/vhost.common.d/20-deny-serverbin.conf` 写入
+   `location ^~ /Sqlite/ { deny all; }`，从访问层焊死。
+2. **Apache**：仓库根 `.htaccess` 新增 `RewriteRule ^Sqlite/ - [F,L]`，
+   确保已存在的 db.php 也被拦截。
+3. **输入卫生**：SSO（SecretKey/OAuth2/CAS）自动注册的用户名统一应用与
+   `registerByVerify` 相同的白名单
+   `/^[a-zA-Z0-9_\-\x{4e00}-\x{9fa5}]{2,30}$/u`，不合法则拒绝注册；
+   `Api/PageFeedback` 的 `client_id` 限制为十六进制/连字符格式
+   `/^[a-f0-9\-]{8,64}$/i`，不合法置空。
+
+**验证**：`curl -I http://your-host/Sqlite/showdoc.db.php` 应返回 403（Nginx）
+或 403/404（Apache），而不是 200 或数据库内容。
+
+> ⚠️ 注意：白名单收紧后，如果已有 SSO 用户的用户名含白名单外字符（如邮箱、空格），
+> 该用户在**首次自动注册**时会被拒绝；已注册用户不受影响（登录查找在白名单校验之前）。
+
 ## 生产环境部署建议
+
+### 拒绝访问 Sqlite 目录（自建 Nginx/Apache 必读）
+
+官方 Docker 镜像（webdevops/php-nginx 基础镜像）已自动包含该拦截规则。
+**自行搭建 Nginx/Apache 部署 ShowDoc 的用户必须手动添加 Sqlite 目录拒绝访问规则**，
+否则 SQLite 库文件（`Sqlite/showdoc.db.php`）可被直接下载，且在被写入恶意 PHP 代码后
+可被 Web 服务器解析执行，导致远程代码执行（RCE）：
+
+Nginx 示例：
+
+```nginx
+location ^~ /Sqlite/ {
+    deny all;
+}
+```
+
+Apache 示例（httpd.conf 或 VirtualHost 内，mod_rewrite）：
+
+```apache
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^Sqlite/ - [F,L]
+</IfModule>
+```
+
+（仓库根目录的 `.htaccess` 已包含上述 Apache 规则；若 httpd 配置中 `AllowOverride None`
+则 .htaccess 不生效，必须把规则写进主配置。）
+
+修改后验证：`curl -I http://your-host/Sqlite/showdoc.db.php` 应返回 403，
+而不是 200 或数据库内容。
 
 ### 使用 HTTPS
 

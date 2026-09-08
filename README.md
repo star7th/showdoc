@@ -74,6 +74,10 @@ ShowDoc is a tool designed for IT teams to share documents online. It improves c
 
   Please refer to: [AutoInstall.md](https://github.com/star7th/showdoc/blob/master/documentation/en/AutoInstall.md)
 
+- Security Hardening (self-hosted Nginx/Apache users **must read**: deny access to the `Sqlite/` directory to prevent RCE)
+
+  Please refer to: [Security.md（中文）](https://github.com/star7th/showdoc/blob/master/documentation/zh-CN/Security.md)
+
 - Development & Contribution
 
   Please refer to: [Development&Contribution.md](https://github.com/star7th/showdoc/blob/master/documentation/en/Development&Contribution.md)

@@ -326,6 +326,7 @@ export default {
   public_item: 'Public item',
   public_square: 'Public Square',
   search_keyword: 'Search projects',
+  input_keyword: 'Enter keywords and press Enter to search',
   search_placeholder: 'Search projects',
   search_title: 'Search Title',
   search_content: 'Search Content',

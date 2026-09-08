@@ -32,6 +32,11 @@ class ExtLoginController extends BaseController
 
         $res = D("User")->where("( username='%s' ) ", array($username))->find();
         if (!$res) {
+            // 输入卫生：SSO 自动注册的用户名必须满足白名单，防异常字符入库（与 registerByVerify 一致）
+            if (!preg_match('/^[a-zA-Z0-9_\-\x{4e00}-\x{9fa5}]{2,30}$/u', $username)) {
+                $this->sendError(10101, '用户名只允许字母、数字、下划线、横线、中文，2-30个字符');
+                return;
+            }
             $new_uid = D("User")->register($username, bin2hex(random_bytes(16)));
             $res = D("User")->where("( username='%s' ) ", array($username))->find();
             if ($name) {
@@ -229,6 +234,11 @@ class ExtLoginController extends BaseController
                     }
                     $info = D("User")->where("username='%s'", array($username))->find();
                     if (!$info) {
+                        // 输入卫生：SSO 自动注册的用户名必须满足白名单，防异常字符入库（与 registerByVerify 一致）
+                        if (!preg_match('/^[a-zA-Z0-9_\-\x{4e00}-\x{9fa5}]{2,30}$/u', $username)) {
+                            echo "用户名只允许字母、数字、下划线、横线、中文，2-30个字符";
+                            return;
+                        }
                         D("User")->register($username, md5($username . time() . rand()));
                         $info = D("User")->where("username='%s'", array($username))->find();
                         if ($res_array['name']) {
@@ -302,6 +312,11 @@ class ExtLoginController extends BaseController
             # 8 验证通过，或者说已经登陆系统，可进行已经登陆之后的逻辑处理...
             # 获得登陆CAS用户的名称
             $user_name = \phpCAS::getUser();
+            // 输入卫生：CAS 用户名必须满足白名单，防异常字符入库（与 registerByVerify 一致）
+            if (!preg_match('/^[a-zA-Z0-9_\-\x{4e00}-\x{9fa5}]{2,30}$/u', $user_name)) {
+                echo '用户名只允许字母、数字、下划线、横线、中文，2-30个字符';
+                return;
+            }
             echo $user_name . '已经成功登陆...<br>';
 
             # 9 你还可打印保存的phpCAS session信息
