@@ -78,6 +78,7 @@
           :status-text="getStatusText(msg)"
           :refs="getMessageRefs(msg)"
           :item-id="itemId"
+          :finalize-tick="finalizeTick"
           @regenerate="handleRegenerate"
           @feedback="handleFeedback"
         />
@@ -214,6 +215,11 @@ if (savedSessionId) {
   }
 }
 const messages = ref<AiChatMessage[]>([])
+
+// [Fix 流式渲染] done 事件触发的最终渲染回执序号。
+// AiMessageBubble 通过对该序号的 watch 显式触发完整重渲染（不依赖 isLoading/content watch 巧合），
+// 确保流式中未闭合的 [[... 半截标记在 done 后闭合渲染、半渲染 HTML 不残留。
+const finalizeTick = ref(0)
 
 // P2: sessionId 变化时同步到 localStorage
 watch(currentSessionId, (newId) => {
@@ -685,6 +691,8 @@ const handleSend = async (text: string, regenerateFromMsgId?: number) => {
       }
       isLoading.value = false
       isLoadingInternal.value = false
+      // [Fix 流式渲染] 中断（错误/内容安全拦截）同样触发最终渲染，让已接收内容闭合渲染
+      finalizeTick.value++
       if (isCollapsed.value) hasUnread.value = true
       abortHandle = null
       // 收到 AI 回复（或错误），记录活跃时间
@@ -693,6 +701,9 @@ const handleSend = async (text: string, regenerateFromMsgId?: number) => {
     onDone: () => {
       isLoading.value = false
       isLoadingInternal.value = false
+      // [Fix 流式渲染] done 后显式触发最终完整渲染：不依赖 watch isLoading/content 巧合，
+      // 避免 SSE done 后半渲染 HTML（空链接、残留短横线）残留
+      finalizeTick.value++
       if (isCollapsed.value) hasUnread.value = true
       abortHandle = null
       currentStatus.value = ''
@@ -718,6 +729,8 @@ const handleStop = () => {
   isLoading.value = false
   isLoadingInternal.value = false
   currentStatus.value = ''
+  // [Fix 流式渲染] 用户主动停止：同样触发最终渲染，半截标记闭合上屏
+  finalizeTick.value++
 }
 
 // ─── Message actions ──────────────────────────────────────

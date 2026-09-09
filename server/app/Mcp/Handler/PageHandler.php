@@ -9,6 +9,7 @@ use App\Model\Page;
 use App\Model\PageHistory;
 use App\Model\Catalog;
 use App\Model\Item;
+use App\Model\Options;
 use App\Common\Helper\Convert;
 use App\Common\Helper\UrlHelper;
 use Illuminate\Database\Capsule\Manager as DB;
@@ -124,6 +125,9 @@ class PageHandler extends McpHandler
 
       case 'delete_single_page_link':
         return $this->deleteSinglePageLink($params);
+
+      case 'search_help_docs':
+        return $this->searchHelpDocs($params);
 
       default:
         McpError::throw(McpError::METHOD_NOT_FOUND, "操作不存在: {$operation}");
@@ -2570,4 +2574,75 @@ MARKDOWN;
 
     return $contexts;
   }
+
+  /**
+   * 搜索 ShowDoc 帮助文档（从主版同步）
+   *
+   * 从 Options 表读取 ai_help_docs_item_id 获取帮助项目 ID，
+   * 在该项目中搜索页面标题和内容。跳过项目权限校验（所有角色可用）。
+   * 未配置时静默返回空结果（开源版无帮助文档项目时表现为空搜索，不影响使用）。
+   *
+   * @param array $params 参数
+   *   - query: 搜索关键字（必填）
+   *   - search_mode: 搜索模式（可选，默认 all：title/content/all）
+   * @return array
+   */
+  private function searchHelpDocs(array $params): array
+  {
+    $query = trim($params['query'] ?? '');
+    if ($query === '') {
+      McpError::throw(McpError::INVALID_PARAMS, '搜索关键字不能为空');
+    }
+
+    // 从 Options 表读取帮助文档项目 ID
+    $helpItemId = (int) Options::get('ai_help_docs_item_id', 0);
+    if ($helpItemId <= 0) {
+      // 未配置时静默返回空结果
+      return [
+        'query' => $query,
+        'search_mode' => $params['search_mode'] ?? 'all',
+        'pages' => [],
+        'total' => 0,
+      ];
+    }
+
+    // 搜索模式：默认 all
+    $searchMode = $params['search_mode'] ?? 'all';
+    if (!in_array($searchMode, ['title', 'content', 'all'], true)) {
+      $searchMode = 'all';
+    }
+
+    // 支持多关键字 OR 搜索（空格分隔）
+    $keywords = array_filter(array_map('trim', preg_split('/\s+/', $query)));
+    if (empty($keywords)) {
+      McpError::throw(McpError::INVALID_PARAMS, '搜索关键字不能为空');
+    }
+
+    $result = [];
+    $seenIds = [];
+    $maxResults = 20;
+
+    foreach ($keywords as $kw) {
+      if (count($result) >= $maxResults) break;
+      $kwLower = strtolower($kw);
+      $remaining = $maxResults - count($result);
+      $found = $this->searchInItem($helpItemId, $kw, $kwLower, $searchMode, $remaining);
+      foreach ($found as $page) {
+        $key = $page['page_id'];
+        if (!isset($seenIds[$key])) {
+          $seenIds[$key] = true;
+          $result[] = $page;
+        }
+      }
+    }
+
+    return [
+      'query' => $query,
+      'keywords' => $keywords,
+      'search_mode' => $searchMode,
+      'pages' => $result,
+      'total' => count($result),
+    ];
+  }
 }
+

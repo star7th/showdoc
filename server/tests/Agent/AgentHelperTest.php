@@ -781,21 +781,22 @@ class AgentHelperTest extends TestCase
         $this->assertEquals($text, $result);
     }
 
-    /** 超过2000字截断 */
+    /** 超过上限：保头尾+中间省略标记（从主版同步的新裁剪策略） */
     public function testTrimToolResultOverLimit(): void
     {
         $text = str_repeat('B', 2500);
         $result = $this->invoke('trimToolResult', [$text, 2000]);
-        $this->assertStringContainsString('内容已截断', $result);
-        $this->assertLessThanOrEqual(2020, mb_strlen($result));
+        $this->assertStringContainsString('中间内容已省略', $result);
+        $this->assertLessThanOrEqual(2100, mb_strlen($result));
     }
 
-    /** 自定义最大长度 */
+    /** 自定义最大长度：上限过小时退化为只保头部（兼容旧标记） */
     public function testTrimToolResultCustomMax(): void
     {
         $text = str_repeat('C', 200);
         $result = $this->invoke('trimToolResult', [$text, 100]);
-        $this->assertStringContainsString('内容已截断', $result);
+        // headChars=60 + tailChars=20 >= 200 才退化；100 上限时 60+20=80 < 200，走头尾保留分支
+        $this->assertStringContainsString('中间内容已省略', $result);
     }
 
     /** 空字符串 */
@@ -805,13 +806,13 @@ class AgentHelperTest extends TestCase
         $this->assertEquals('', $result);
     }
 
-    /** Unicode 字符截断 */
+    /** Unicode 字符截断（头尾保留策略） */
     public function testTrimToolResultUnicode(): void
     {
         $text = str_repeat('你好', 1500);
         $result = $this->invoke('trimToolResult', [$text, 2000]);
-        $this->assertStringContainsString('内容已截断', $result);
-        $this->assertLessThanOrEqual(2020, mb_strlen($result));
+        $this->assertStringContainsString('中间内容已省略', $result);
+        $this->assertLessThanOrEqual(2100, mb_strlen($result));
     }
 
     // ==================================================================

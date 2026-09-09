@@ -117,6 +117,8 @@ const props = defineProps<{
   statusText?: string
   refs?: RefItem[]
   itemId?: number
+  /** [Fix 流式渲染] done 事件驱动的最终渲染回执序号，变化时触发完整重渲染（含半截标记闭合） */
+  finalizeTick?: number
 }>()
 
 defineEmits<{
@@ -292,6 +294,15 @@ function createStreamState() {
 }
 const streamState = createStreamState()
 
+/**
+ * [Fix 流式渲染 v3] 最保守方案：流式期间不做任何剥离/暂缓，原文直接渲染。
+ *
+ * v3 原则：**任何字符都不扣不留不改**——流式中裸标记（半截 [[page:12、
+ * 孤立 ` 等）可能短暂可见（闪烁），但结束后 finalize 用完整原文全量
+ * 重渲染，最终显示保证正确。可见性瑕疵 << 内容丢失。
+ * （配合后端流式正文占位回填，项目名在流式中也不会缺失。）
+ */
+
 function scheduleStreamUpdate(content: string) {
   streamState.pendingContent = content
   if (streamState.rafId !== null) return // 已有调度，等待下一帧
@@ -453,6 +464,20 @@ watch(() => props.isLoading, (loading, wasLoading) => {
     streamState.lastRenderedContent = ''
   }
 }, { immediate: true })
+
+// ─── [Fix 流式渲染] done 事件驱动的最终渲染 ───────────
+// 父组件在 SSE done/错误/用户停止后递增 finalizeTick，
+// 此处显式触发完整重渲染，不依赖 isLoading/content watch 巧合，
+// 确保流式期间的半截标记闭合上屏、半渲染 HTML 不残留。
+watch(() => props.finalizeTick, (tick, oldTick) => {
+  if (tick === oldTick) return
+  const content = props.message.content
+  if (!content) return
+  nextTick(() => {
+    finalizeContent(content)
+    addCodeBlockCopyButtons()
+  })
+})
 
 // ─── 初始渲染（非流式消息的首次挂载） ─────────────────
 onMounted(() => {

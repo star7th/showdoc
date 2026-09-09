@@ -356,6 +356,79 @@ class AiHelper
         return ['key' => $key, 'host' => $host];
     }
 
+    /**
+     * 思考/推理模式控制：按模型家族返回应合并进请求体的参数（从主版同步，开源版无积分体系，仅保留参数注入部分）
+     *
+     * 目的：非推理场景关闭思考，节省 token 与响应时间。
+     * 内置默认表（模型名子串匹配，不区分大小写）：
+     * - deepseek*  → thinking: {type: disabled}（沿用原有处理，避免 reasoning_content 干扰兼容性）
+     * - glm*       → thinking: {type: disabled}（GLM-4.5+ / GLM-5 系支持关闭思考）
+     * - qwen*      → enable_thinking: false（Qwen3 系）
+     * - gpt-5* / o1 / o3 / o4 → reasoning_effort: low（OpenAI 推理模型降低思考力度）
+     * - 其他模型   → 不传参（未知参数可能被网关/上游拒绝）
+     *
+     * 可配置（Options 表，无需发版）：
+     * - `ai_thinking_control`：'0' 全局关闭本功能（默认开启），网关不兼容时的紧急开关
+     * - `ai_thinking_overrides`：JSON 对象，键为模型名子串（不区分大小写），值为要合并的
+     *   原始参数，如 {"claude": {"thinking": {"type": "disabled"}}}；命中时优先生效，
+     *   值传 {} 可对单个模型关闭传参
+     *
+     * 网关透传风险：open_ai_host 若指向统一网关（OneAPI/new-api 类），上述参数为请求体
+     * 顶层非标字段——多数网关原样透传 body，但严格校验未知字段的网关会返回 400，
+     * 剥离未知字段的网关则参数静默失效（表现为思考未关闭、token 消耗偏高）。
+     * 出现问题时优先用 ai_thinking_overrides 调整，或 ai_thinking_control=0 全局关闭。
+     *
+     * @param string $aiModelName 模型名（Options ai_model_name）
+     * @return array 需合并进请求体顶层的参数（空数组 = 不传）
+     */
+    public static function thinkingParamsFor(string $aiModelName): array
+    {
+        if ((string) Options::get('ai_thinking_control', '1') === '0') {
+            return [];
+        }
+
+        $model = strtolower(trim($aiModelName));
+
+        // 管理员覆盖配置优先：键为模型名子串，值为原始参数
+        $overridesJson = (string) Options::get('ai_thinking_overrides', '');
+        if ($overridesJson !== '') {
+            $overrides = json_decode($overridesJson, true);
+            if (is_array($overrides)) {
+                foreach ($overrides as $needle => $params) {
+                    if (is_string($needle) && $needle !== '' && strpos($model, strtolower($needle)) !== false) {
+                        return is_array($params) ? $params : [];
+                    }
+                }
+            }
+        }
+
+        // 内置默认表：仅覆盖已知支持关闭/调低思考的模型家族
+        if (strpos($model, 'deepseek') !== false || strpos($model, 'glm') !== false) {
+            return ['thinking' => ['type' => 'disabled']];
+        }
+        if (strpos($model, 'qwen') !== false) {
+            return ['enable_thinking' => false];
+        }
+        if (strpos($model, 'gpt-5') !== false || preg_match('/\bo[134]/', $model)) {
+            return ['reasoning_effort' => 'low'];
+        }
+
+        return [];
+    }
+
+    /**
+     * 将思考/推理控制参数合并进 LLM 请求体（参数说明见 thinkingParamsFor）
+     *
+     * @param array $requestBody LLM 请求体（引用传入，直接修改）
+     * @param string $aiModelName 模型名
+     */
+    public static function applyThinkingControl(array &$requestBody, string $aiModelName): void
+    {
+        foreach (self::thinkingParamsFor($aiModelName) as $key => $value) {
+            $requestBody[$key] = $value;
+        }
+    }
+
     public static function callOpenAI(array $messages, int $timeout = 120)
     {
         $aiModelName = Options::get('ai_model_name', 'gpt-4o-mini');

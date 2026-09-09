@@ -43,6 +43,7 @@ class AdminSettingController extends BaseController
         $beian = $this->getParam($request, 'beian', '');
         $siteUrl = $this->getParam($request, 'site_url', '');
         $aiModelName = $this->getParam($request, 'ai_model_name', '');
+        $aiHelpDocsItemId = $this->getParam($request, 'ai_help_docs_item_id', 0);
         $aiServiceUrl = $this->getParam($request, 'ai_service_url', '');
         $aiServiceToken = $this->getParam($request, 'ai_service_token', '');
         $openAiHost = $this->getParam($request, 'open_ai_host', '');
@@ -90,6 +91,7 @@ class AdminSettingController extends BaseController
         Options::set("beian", $beian);
         Options::set("site_url", $siteUrl);
         Options::set("ai_model_name", $aiModelName);
+        Options::set("ai_help_docs_item_id", (string) max(0, (int) $aiHelpDocsItemId));
         Options::set("ai_service_url", $aiServiceUrl);
         Options::set("ai_service_token", $aiServiceToken);
         Options::set("open_ai_host", $openAiHost);
@@ -139,6 +141,7 @@ class AdminSettingController extends BaseController
         $beian = Options::get("beian");
         $siteUrl = Options::get("site_url");
         $aiModelName = Options::get("ai_model_name");
+        $aiHelpDocsItemId = Options::get("ai_help_docs_item_id", 0);
         $aiServiceUrl = Options::get("ai_service_url");
         $aiServiceToken = Options::get("ai_service_token");
         // AI 配置：优先新 key open_ai_*，为空时兼容旧 key open_api_* 并自动迁移
@@ -187,6 +190,7 @@ class AdminSettingController extends BaseController
             "site_url" => $siteUrl,
             "oss_setting" => $ossSetting,
             "ai_model_name" => $aiModelName,
+            "ai_help_docs_item_id" => $aiHelpDocsItemId,
             "ai_service_url" => $aiServiceUrl,
             "ai_service_token" => $aiServiceToken,
             "open_ai_host" => $openAiHost,

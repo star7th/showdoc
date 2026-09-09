@@ -25,7 +25,7 @@ use App\Mcp\McpError;
  *     （开源版已删除 McpServer::checkToolPermission 方法，
  *      权限校验下沉到 Handler，且不再有 read/write/admin 层级模型，
  *      原 TC-091 断言的「权限不足」级别语义已不适用）
- *   - tools/list 断言数量为 53（开源版实际工具数）
+ *   - tools/list 断言数量为 59（开源版实际工具数：原 58 + 新增 search_help_docs；旧断言 53 为历史遗留未随工具增加更新）
  */
 class McpProtocolTest extends TestCase
 {
@@ -98,7 +98,7 @@ class McpProtocolTest extends TestCase
     }
 
     /**
-     * TC-090.2 tools/list 返回全部 53 个工具
+     * TC-090.2 tools/list 返回全部 59 个工具
      */
     public function testToolsListReturnsAllTools(): void
     {
@@ -107,7 +107,7 @@ class McpProtocolTest extends TestCase
         $this->assertArrayHasKey('result', $resp);
         $this->assertArrayHasKey('tools', $resp['result']);
 
-        $this->assertCount(53, $resp['result']['tools']);
+        $this->assertCount(59, $resp['result']['tools']);
 
         // 每个工具必须有 name / description / inputSchema
         foreach ($resp['result']['tools'] as $tool) {

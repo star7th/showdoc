@@ -871,6 +871,7 @@ class AgentController extends BaseController
         $this->initSseHeaders();
         $this->clearCancelled($sessionId, $turnToken);
         $this->consecutiveToolCounts = [];
+        $this->searchedItemIds = [];
 
         // ── 10. 构建 LLM 上下文 ─────────────────────────────
         if ($regenerateFrom > 0) {
@@ -1014,6 +1015,40 @@ class AgentController extends BaseController
                     continue;
                 }
 
+                // 🔴 项目内搜索优先校验（search_help_docs 兜底拦截，从主版同步）：
+                // 会话处于项目内（item_id>0）且本轮尚未对当前项目执行过 search_pages 时，
+                // 拦截 search_help_docs 并提示模型先搜当前项目（不依赖模型自觉）
+                if ($toolName === 'search_help_docs'
+                    && $sessionItemId > 0
+                    && !isset($this->searchedItemIds[$sessionItemId])
+                ) {
+                    $this->sendSse('status', '请先在当前项目内搜索');
+                    $llmMessages[] = [
+                        'role'         => 'tool',
+                        'content'     => json_encode([
+                            'error' => "当前会话处于项目内（item_id={$sessionItemId}），请先使用 search_pages 并传入 item_id={$sessionItemId} 搜索当前项目文档；仅当项目内搜索无相关结果时，才可调用 search_help_docs。请现在先用 search_pages 搜索当前项目。",
+                        ], JSON_UNESCAPED_UNICODE),
+                        'tool_call_id' => $toolCallId,
+                    ];
+                    continue;
+                }
+
+                // 重复调用拦截（从主版同步，温和不阻断）：同一工具+等价参数且上次执行成功时，
+                // 跳过实际执行，返回提示让 LLM 直接复用上下文中的已有结果（省 token）；
+                // 上次为 error 时不拦截，允许重试
+                $prevExec = $this->findExecutedToolCall($toolName, $toolArgs);
+                if ($prevExec !== null && !$prevExec['is_error']) {
+                    $this->sendSse('status', "工具 {$toolName} 参数未变，复用已获取的结果");
+                    $llmMessages[] = [
+                        'role'         => 'tool',
+                        'content'     => json_encode([
+                            'notice' => "该调用与之前的调用（{$prevExec['tool_call_id']}）使用完全相同的工具和参数，其结果已在上下文中。请直接使用已有结果回答，不要重复调用；如需不同结果请调整参数。",
+                        ], JSON_UNESCAPED_UNICODE),
+                        'tool_call_id' => $toolCallId,
+                    ];
+                    continue;
+                }
+
                 // 推送状态
                 $statusText = $this->getToolStatusText($toolName);
                 $this->sendSse('status', $statusText);
@@ -1021,14 +1056,24 @@ class AgentController extends BaseController
                 // 调用 MCP 工具
                 $result = $this->callMcpTool($toolName, $toolArgs, $mcpTokenInfo);
 
+                // 记录本次调用结果（供重复调用检测：成功则后续同参调用拦截，失败允许重试）
+                $this->rememberToolCallResult($toolName, $toolArgs, $toolCallId, $this->isToolResultError($result));
+
+                // 记录项目内搜索已执行（供 search_help_docs 兜底校验：先搜过项目才允许搜帮助文档）
+                if ($toolName === 'search_pages' && $sessionItemId > 0
+                    && (int) ($toolArgs['item_id'] ?? 0) === $sessionItemId
+                ) {
+                    $this->searchedItemIds[$sessionItemId] = true;
+                }
+
                 // 追踪 MCP 写操作（用于循环结束后发送 changes 事件）
                 $writeOp = $this->trackMcpWriteOp($toolName, $toolArgs, $result, $sessionItemId);
                 if ($writeOp !== null) {
                     $mcpWriteOps[] = $writeOp;
                 }
 
-                // 结果裁剪
-                $result = $this->trimToolResult($result, 10000);
+                // 结果裁剪（从主版同步）：≤5k 原样；>5k 前 3k + 尾 1k + 中间省略标记（省 token）
+                $result = $this->trimToolResult($result);
 
                 // 追加 tool 结果到上下文
                 $llmMessages[] = [
@@ -1049,7 +1094,9 @@ class AgentController extends BaseController
                     break;
                 }
             }
-            if ($hasSearchTool) {
+            if ($hasSearchTool && !isset($this->injectedSystemReminders['search_format'])) {
+                // 去重（从主版同步）：同一轮次内该提醒只追加一次，避免逐轮累积重复 system 消息浪费 token
+                $this->injectedSystemReminders['search_format'] = true;
                 $llmMessages[] = [
                     'role'    => 'system',
                     'content' => '【搜索结果回复格式提醒】你刚刚执行了文档搜索。请务必使用 [[page:页面ID|页面标题]] 引用格式提及搜索到的文档，不要使用表格、编号列表或其他格式罗列搜索结果。正确示例：相关文档请查看 [[page:123|接口认证说明]] 和 [[page:456|错误码大全]]。',
@@ -1076,17 +1123,10 @@ class AgentController extends BaseController
             }
             if ($hasToolCalls) {
                 $this->sendSse('text', '[AI 正在整理回答...]');
-                // 构造兜底 messages：system prompt 引导总结 + 已有的完整对话历史（含工具结果）
-                $fallbackMessages = [
-                    ['role' => 'system', 'content' => "你是一个文档助手。之前的对话因工具调用轮次耗尽而中断，但你已经收集了大量信息。请根据已有的工具调用结果，直接用中文总结回答用户的问题。不要调用任何工具，只给出最终回答。如果信息不足以完整回答，请基于已有信息尽量回答，并说明哪些部分信息不足。"],
-                ];
-                // 复用已有的 llmMessages（含 tool 结果），但去掉第一个 system prompt 避免重复
-                foreach ($llmMessages as $idx => $msg) {
-                    if ($idx === 0 && $msg['role'] === 'system') {
-                        continue; // 跳过原始 system prompt，用上面的兜底 prompt 替代
-                    }
-                    $fallbackMessages[] = $msg;
-                }
+                // Prompt cache 友好化（从主版同步）：复用完整 $llmMessages（保留首条 system prompt 与历史，
+                // 前缀与循环内最后一次请求逐字节一致，命中缓存），仅在尾部追加总结指令
+                $fallbackMessages = $llmMessages;
+                $fallbackMessages[] = ['role' => 'system', 'content' => "之前的对话因工具调用轮次耗尽而中断，但你已经收集了大量信息。请根据已有的工具调用结果，直接用中文总结回答用户的问题。不要调用任何工具，只给出最终回答。如果信息不足以完整回答，请基于已有信息尽量回答，并说明哪些部分信息不足。"];
                 try {
                     [$fallbackContent, , ] = $this->callLlmStream($fallbackMessages, [], $sessionItemId, $sessionId, $turnToken);
                     if (!empty($fallbackContent)) {

@@ -413,6 +413,29 @@ class McpServer
       'handler' => 'page',
     ];
 
+    // 帮助文档搜索（从主版同步，未配置 ai_help_docs_item_id 时返回空结果）
+    $this->tools['search_help_docs'] = [
+      'name' => 'search_help_docs',
+      'description' => '搜索 ShowDoc 官方帮助文档。注意：无论用户当前在哪个项目内，都必须先用 search_pages 搜索当前项目文档；仅当项目内无相关结果时才使用本工具。',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'query' => [
+            'type' => 'string',
+            'description' => '搜索关键词',
+          ],
+          'search_mode' => [
+            'type' => 'string',
+            'description' => '搜索模式：title（只搜索标题）、content（只搜索内容）、all（搜索标题和内容，默认）',
+            'enum' => ['title', 'content', 'all'],
+          ],
+        ],
+        'required' => ['query'],
+      ],
+      'handler' => 'page',
+      'level' => 'read',
+    ];
+
     $this->tools['get_page_template'] = [
       'name' => 'get_page_template',
       'description' => '获取文档模板（api/runapi_comment/database/general）',

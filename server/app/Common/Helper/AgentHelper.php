@@ -3,6 +3,7 @@
 namespace App\Common\Helper;
 
 use App\Common\Cache\CacheManager;
+use App\Common\Helper\AiHelper;
 use App\Model\Item;
 
 /**
@@ -237,6 +238,10 @@ trait AgentHelper
 
         // --- 用户当前页面路径 ---
         if ($currentPage !== '') {
+            // 防护（从主版同步）：截断超长路径，避免异常前端数据掉爆上下文
+            if (mb_strlen($currentPage) > 300) {
+                $currentPage = mb_substr($currentPage, 0, 300) . '...（已截断）';
+            }
             $parts[] = "用户当前页面路径：{$currentPage}";
         }
 
@@ -306,6 +311,12 @@ PROMPT;
 - 在正文中自然引用即可，例如："相关文档包括 [[page:123|接口认证说明]] 和 [[page:456|错误码大全]]"
 - 不要罗列所有搜索结果，只引用与用户问题最相关的文档
 - 如果搜索结果为空，直接告诉用户未找到相关文档，不要编造结果
+PROMPT;
+
+        // --- 帮助文档搜索指引（从主版同步） ---
+        $parts[] = <<<'PROMPT'
+可使用 `search_help_docs` 搜索 ShowDoc 帮助文档。
+【优先级规则】用户处于任何项目内时：必须先用 search_pages（传入当前 item_id）搜索当前项目文档；仅当项目内搜索无相关结果时，才可使用 search_help_docs，且需先告知用户「当前项目内未找到相关内容，正在搜索官方帮助文档」。禁止跳过项目内搜索直接搜帮助文档。
 PROMPT;
 
         // --- f) 全局会话提示 ---
@@ -651,6 +662,10 @@ GUEST_LIMIT;
             $requestData['thinking'] = ['type' => 'disabled'];
         }
 
+        // 思考模式统一控制（从主版同步）：按模型家族合并思考/推理参数，
+        // 参数说明见 AiHelper::thinkingParamsFor（含网关透传风险与紧急开关说明）
+        AiHelper::applyThinkingControl($requestData, $this->aiModelName);
+
         $postData = json_encode($requestData, JSON_UNESCAPED_UNICODE);
 
         $url = rtrim($this->aiServiceUrl, '/') . '/chat/completions';
@@ -760,6 +775,10 @@ GUEST_LIMIT;
 
                 // 处理引用标记
                 $tag = $match[1][0];
+                // Fix: 流式正文占位 —— 标记在 text 流中被剥离会导致流式期间正文缺失名称
+                // （仅靠底部引用来源区展示，正文列表项变空）。发送 ref 事件的同时，
+                // 在 text 流中回填解析到的名称，与入库文本（parseReferences 替换后）保持一致。
+                $placeholder = '';
                 if (preg_match('/^page:(\d+)(?:\|(.+))?$/', $tag, $m)) {
                     $pageId = (int) $m[1];
                     $pageTitle = isset($m[2]) ? $m[2] : $this->getPageTitle($pageId, $itemId);
@@ -768,6 +787,7 @@ GUEST_LIMIT;
                         'page_title'  => $pageTitle,
                         'item_id'     => $this->getPageItemId($pageId, $itemId),
                     ]);
+                    $placeholder = $pageTitle !== '' ? $pageTitle : "页面#{$pageId}";
                 } elseif (preg_match('/^item:(\d+)(?:\|(.+))?$/', $tag, $m)) {
                     $refItemId = (int) $m[1];
                     $itemName = isset($m[2]) ? $m[2] : $this->getItemName($refItemId);
@@ -775,8 +795,15 @@ GUEST_LIMIT;
                         'item_id'   => $refItemId,
                         'item_name' => $itemName,
                     ]);
+                    $placeholder = $itemName !== '' ? $itemName : "项目#{$refItemId}";
                 } else {
                     $this->sendSseRef($tag, []);
+                    // 占位与入库文本对齐：parseReferences 对系统级标记保留裸标签（如 item_list），
+                    // 流式占位同样用裸标签，保证流式中与刷新后显示一致
+                    $placeholder = $tag;
+                }
+                if ($placeholder !== '') {
+                    $this->sendSseTextFiltered($placeholder);
                 }
 
                 $lastSafePos = $matchEnd;
@@ -1088,12 +1115,75 @@ GUEST_LIMIT;
     }
 
     /**
+     * MCP 回环探测结果缓存（子目录前缀 => 可用 URL），避免每次工具调用重复探测
+     */
+    private static array $mcpUrlCache = [];
+
+    /**
      * 获取 MCP 回环 URL
+     *
+     * 优先用本地回环 URL（http://127.0.0.1:80{子目录前缀}/mcp.php，
+     * 避免走公网），探测失败才降级到 {siteUrl}/mcp.php 重试一次。
+     * 结果按前缀缓存。CLI/无请求上下文时直接使用 siteUrl。
      */
     private function getMcpUrl(): string
     {
-        // 开源版无 mcp.php 入口，MCP 通过 ?s=/api/mcp/index 路由访问 McpController::index
-        return \App\Common\Helper\UrlHelper::serverUrl('api/mcp/index');
+        $host = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? '');
+
+        // 从当前请求推导子目录前缀（参考 UrlHelper::siteUrl() 写法），根目录部署为空串
+        $prefix = '';
+        if (isset($_SERVER['PHP_SELF']) || isset($_SERVER['SCRIPT_NAME'])) {
+            $self = $_SERVER['PHP_SELF'] ?? $_SERVER['SCRIPT_NAME'];
+            $prefix = substr($self, 0, (int) strrpos($self, '/'));
+            $prefix = str_replace('/server', '', $prefix);
+        }
+
+        if (isset(self::$mcpUrlCache[$prefix])) {
+            return self::$mcpUrlCache[$prefix];
+        }
+
+        $fallbackUrl = \App\Common\Helper\UrlHelper::siteUrl() . '/mcp.php';
+
+        if ($host === '') {
+            // CLI/无请求上下文：无法构造回环，直接走 siteUrl
+            return self::$mcpUrlCache[$prefix] = $fallbackUrl;
+        }
+
+        $loopUrl = 'http://127.0.0.1:80' . $prefix . '/mcp.php';
+
+        if ($this->probeMcpUrl($loopUrl, $host)) {
+            return self::$mcpUrlCache[$prefix] = $loopUrl;
+        }
+
+        error_log("[AgentHelper] MCP loopback URL failed ({$loopUrl}), falling back to siteUrl ({$fallbackUrl})");
+        return self::$mcpUrlCache[$prefix] = $fallbackUrl;
+    }
+
+    /**
+     * 探测 MCP 回环 URL 是否可达（不校验 TLS 证书，带 Host 头防虚拟主机串站）
+     */
+    private function probeMcpUrl(string $url, string $host): bool
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_NOBODY, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 3);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 5);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ["Host: {$host}"]);
+        curl_exec($curl);
+        $errno = curl_errno($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+        if ($errno !== 0) {
+            error_log("[AgentHelper] MCP loopback probe error: url={$url}, errno={$errno}, msg=" . curl_strerror($errno));
+            return false;
+        }
+        // 404 说明该路径下没有入口，视为不可用；其他响应（200/405/3xx 等）视为可达
+        return $httpCode > 0 && $httpCode !== 404;
     }
 
     // -------------------------------------------------------
@@ -1298,6 +1388,15 @@ GUEST_LIMIT;
     /** @var array 连续工具调用计数 */
     private array $consecutiveToolCounts = [];
 
+    /** @var array 本轮 agent 循环内已执行过项目内搜索的 item_id 集合（search_help_docs 兜底校验用，从主版同步） */
+    private array $searchedItemIds = [];
+
+    /** @var array 已执行工具调用签名（工具名+规范参数）→ [tool_call_id, is_error]，用于重复调用检测（从主版同步） */
+    private array $executedToolCallSignatures = [];
+
+    /** @var array 已注入过的循环内 system 提醒（去重，避免逐轮累积重复提醒浪费 token，从主版同步） */
+    private array $injectedSystemReminders = [];
+
     /**
      * 检查连续同类工具调用是否超限
      *
@@ -1319,6 +1418,62 @@ GUEST_LIMIT;
         $this->consecutiveToolCounts['__last__'] = $toolName;
 
         return $count > $limit;
+    }
+
+    /**
+     * 查找此前已执行过的相同工具调用（同一工具 + 等价参数），返回其执行记录或 null。（从主版同步）
+     *
+     * 参数序列化：递归 ksort 后 JSON 编码，保证键序不同的等价参数也能命中。
+     *
+     * @return array|null ['tool_call_id' => string, 'is_error' => bool]
+     */
+    private function findExecutedToolCall(string $toolName, array $toolArgs): ?array
+    {
+        $signature = $toolName . ':' . $this->canonicalToolArgsKey($toolArgs);
+        return $this->executedToolCallSignatures[$signature] ?? null;
+    }
+
+    /**
+     * 记录一次工具调用执行结果（供重复调用检测判断：上次成功则拦截，失败允许重试）（从主版同步）
+     */
+    private function rememberToolCallResult(string $toolName, array $toolArgs, string $toolCallId, bool $isError): void
+    {
+        $signature = $toolName . ':' . $this->canonicalToolArgsKey($toolArgs);
+        $this->executedToolCallSignatures[$signature] = [
+            'tool_call_id' => $toolCallId,
+            'is_error'     => $isError,
+        ];
+    }
+
+    /**
+     * 生成工具参数的规范签名（递归 ksort 后 JSON 编码，键序无关）（从主版同步）
+     */
+    private function canonicalToolArgsKey(array $args): string
+    {
+        $this->normalizeToolArgsForHash($args);
+        return json_encode($args, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * 递归 ksort 参数数组，使等价参数生成稳定签名（从主版同步）
+     */
+    private function normalizeToolArgsForHash(array &$args): void
+    {
+        ksort($args);
+        foreach ($args as &$value) {
+            if (is_array($value)) {
+                $this->normalizeToolArgsForHash($value);
+            }
+        }
+    }
+
+    /**
+     * 判断工具结果是否为错误（JSON 文本含 error 字段视为错误，允许后续重试）（从主版同步）
+     */
+    private function isToolResultError(string $result): bool
+    {
+        $parsed = json_decode($result, true);
+        return is_array($parsed) && array_key_exists('error', $parsed);
     }
 
     // -------------------------------------------------------
@@ -1392,6 +1547,9 @@ GUEST_LIMIT;
         $map['memory_update'] = '正在更新记忆...';
         $map['memory_delete'] = '正在删除记忆...';
 
+        // 帮助文档搜索（从主版同步）
+        $map['search_help_docs'] = '正在搜索帮助文档...';
+
         return $map[$toolName] ?? '正在处理...';
     }
 
@@ -1400,15 +1558,29 @@ GUEST_LIMIT;
     // -------------------------------------------------------
 
     /**
-     * 裁剪工具结果至指定字数
+     * 裁剪工具结果（从主版同步）：≤maxChars 原样；超长时保头部 60% + 尾部 20% + 中间省略标记
      */
-    private function trimToolResult(string $result, int $maxChars = 10000): string
+    private function trimToolResult(string $result, int $maxChars = 5000): string
     {
-        if (mb_strlen($result) <= $maxChars) {
+        $len = mb_strlen($result);
+        if ($len <= $maxChars) {
             return $result;
         }
 
-        return mb_substr($result, 0, $maxChars) . '...（内容已截断）';
+        $headChars = max(1, (int) floor($maxChars * 0.6));
+        $tailChars = max(1, (int) floor($maxChars * 0.2));
+        // 极端保护：上限不足以容纳头尾时退化为只保头部（保持旧版标记格式，兼容既有测试预期）
+        if ($headChars + $tailChars >= $len) {
+            return mb_substr($result, 0, $maxChars) . '...（内容已截断）';
+        }
+
+        $head = mb_substr($result, 0, $headChars);
+        $tail = mb_substr($result, $len - $tailChars);
+        $omitted = $len - $headChars - $tailChars;
+
+        return $head
+            . "\n...（中间内容已省略约 {$omitted} 字，如需完整内容请分页或缩小查询范围）...\n"
+            . $tail;
     }
 
     // -------------------------------------------------------
