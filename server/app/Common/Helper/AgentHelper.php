@@ -657,12 +657,7 @@ GUEST_LIMIT;
             ],
         ];
 
-        // DeepSeek 模型默认关闭思考模式，避免 reasoning_content 干扰兼容性
-        if (stripos($this->aiModelName, 'deepseek') !== false) {
-            $requestData['thinking'] = ['type' => 'disabled'];
-        }
-
-        // 思考模式统一控制（从主版同步）：按模型家族合并思考/推理参数，
+        // 思考模式统一控制（从主版同步）：按模型家族合并思考/推理参数（含 DeepSeek），
         // 参数说明见 AiHelper::thinkingParamsFor（含网关透传风险与紧急开关说明）
         AiHelper::applyThinkingControl($requestData, $this->aiModelName);
 

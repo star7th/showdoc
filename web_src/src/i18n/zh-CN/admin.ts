@@ -184,6 +184,8 @@ export default {
   ai_edit_assistant_host_placeholder: '请输入API Host',
   ai_edit_assistant_host_tips: '自定义API请求地址',
   ai_edit_assistant_model: '模型名称',
+  ai_help_docs_item_id: '帮助文档项目 ID',
+  ai_help_docs_item_id_tips: 'AI 助手检索帮助文档的项目 ID，0 表示不启用',
   ai_edit_assistant_model_placeholder: '请输入模型名称，如gpt-4',
   ai_knowledge_base_service: 'AI知识库服务',
   ai_knowledge_base_service_desc: '配置独立的AI知识库服务，用于项目文档智能问答',

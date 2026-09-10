@@ -380,6 +380,20 @@
 
             <div class="form-row">
               <label class="form-label">
+                {{ $t('admin.ai_help_docs_item_id') }}
+                <a-tooltip :title="$t('admin.ai_help_docs_item_id_tips')" placement="top">
+                  <QuestionCircleOutlined class="question-icon" />
+                </a-tooltip>
+              </label>
+              <a-input
+                v-model:value="form.ai_help_docs_item_id"
+                :placeholder="'0'"
+                class="form-input"
+              />
+            </div>
+
+            <div class="form-row">
+              <label class="form-label">
                 {{ $t('admin.ai_system_prompt') }}
                 <a-tooltip :title="$t('admin.ai_system_prompt_tips')" placement="top">
                   <QuestionCircleOutlined class="question-icon" />
@@ -527,6 +541,7 @@ const form = reactive({
   home_item: '',
   site_url: '',
   ai_model_name: '',
+  ai_help_docs_item_id: '0',
   ai_service_url: '',
   ai_service_token: '',
   open_ai_host: '',
@@ -577,6 +592,7 @@ const loadConfig = async () => {
     form.home_item = data.home_item || ''
     form.site_url = data.site_url || ''
     form.ai_model_name = data.ai_model_name || ''
+    form.ai_help_docs_item_id = data.ai_help_docs_item_id ? String(data.ai_help_docs_item_id) : '0'
     form.ai_service_url = data.ai_service_url || ''
     form.ai_service_token = data.ai_service_token || ''
     form.open_ai_host = data.open_ai_host || ''
@@ -623,6 +639,7 @@ const handleSave = async () => {
       home_page: form.home_page,
       home_item: form.home_item,
       ai_model_name: form.ai_model_name,
+      ai_help_docs_item_id: form.ai_help_docs_item_id,
       ai_service_url: form.ai_service_url,
       ai_service_token: form.ai_service_token,
       open_ai_host: form.open_ai_host,

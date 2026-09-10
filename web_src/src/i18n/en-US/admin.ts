@@ -184,6 +184,8 @@ export default {
   ai_edit_assistant_host_placeholder: 'Please enter API Host',
   ai_edit_assistant_host_tips: 'Customize API request address',
   ai_edit_assistant_model: 'Model Name',
+  ai_help_docs_item_id: 'Help Docs Item ID',
+  ai_help_docs_item_id_tips: 'The item ID for AI assistant to search help docs. 0 means disabled',
   ai_edit_assistant_model_placeholder: 'Please enter model name, e.g. gpt-4',
   ai_knowledge_base_service: 'AI Knowledge Base Service',
   ai_knowledge_base_service_desc: 'Configure standalone AI knowledge base service for intelligent Q&A on project documents',

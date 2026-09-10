@@ -216,6 +216,7 @@ export const saveSystemConfig = (params: {
   open_api_key: string
   open_api_host: string
   ai_model_name: string
+  ai_help_docs_item_id: string
   ai_service_url: string
   ai_service_token: string
   force_login: boolean | string | number

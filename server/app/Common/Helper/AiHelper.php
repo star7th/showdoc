@@ -435,10 +435,15 @@ class AiHelper
         $cred = self::getAiCredential();
         $openApiKey = $cred['key'];
 
-        $postData = json_encode([
+        $requestBody = [
             'model' => $aiModelName,
             'messages' => $messages,
-        ]);
+        ];
+
+        // 思考/推理模式控制（DeepSeek/GLM 关闭思考、gpt-5/o 系 low，详见 thinkingParamsFor；从主版同步）
+        self::applyThinkingControl($requestBody, $aiModelName);
+
+        $postData = json_encode($requestBody);
 
         $openApiHost = $cred['host'];
 
