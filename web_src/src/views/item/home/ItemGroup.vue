@@ -69,6 +69,7 @@
           <CommonInput
             v-model="MyForm.group_name"
             :placeholder="t('item.group_name')"
+            :maxlength="50"
           />
         </div>
         <div class="item-selection">

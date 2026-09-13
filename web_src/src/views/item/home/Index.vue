@@ -85,7 +85,9 @@
           >
             <div class="item-one-block-content">
               <i class="mr-1 far fa-hashtag v3-font-size-sm"></i>
-              {{ one.group_name }}
+              <a-tooltip :title="one.group_name" placement="right">
+                <span class="group-name-text">{{ one.group_name }}</span>
+              </a-tooltip>
             </div>
           </div>
         </div>
@@ -516,10 +518,20 @@ a {
 }
 
 .item-one-block-content {
-  padding-left: 5px;
+  left: 17px;
+  right: 12px;
   position: absolute;
   top: 50%;
   transform: translate(0, -50%);
+  display: flex;
+  align-items: center;
+}
+
+.group-name-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .item-group-divider {
