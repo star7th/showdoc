@@ -4,6 +4,7 @@ namespace App\Common\Database;
 
 use Illuminate\Database\Capsule\Manager as DB;
 use App\Model\Options;
+use App\Common\Cache\CacheManager;
 
 /**
  * 数据库升级类
@@ -42,6 +43,30 @@ class Upgrade
             error_log('Database upgrade failed: ' . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * 带缓存的升级检查：避免每个 Web 请求都 SELECT options 表
+     *
+     * 缓存 key 包含 CURRENT_VERSION：代码升级后（常量变化）缓存自动失效，
+     * 新版本的首个请求立即触发迁移，不被 TTL 延迟。
+     * 迁移失败不写缓存，下个请求重试（与现状行为一致）。
+     */
+    public static function checkAndUpgradeCached(int $ttl = 600): bool
+    {
+        $cache = CacheManager::getInstance();
+        $key = 'db_upgrade_check_' . self::CURRENT_VERSION;
+
+        if ($cache->get($key) !== null) {
+            return true;
+        }
+
+        $result = self::checkAndUpgrade();
+        if ($result) {
+            $cache->set($key, 1, $ttl);
+        }
+
+        return $result;
     }
 
     /**
