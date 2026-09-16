@@ -54,12 +54,13 @@ class Database
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
 
-        // SQLite 并发优化：锁竞争时按序等待最多 5s，而非立即抛 SQLITE_BUSY
-        // （默认 busy_timeout=0，即日志中的 "database is locked"）。
+        // SQLite 并发优化：锁竞争时按序等待，而非立即抛 SQLITE_BUSY。
+        // PDO SQLite 驱动默认 busy_timeout 即为 60s（php-src 写死 60000ms），
+        // 这里显式设置同值以保持行为可控、不依赖驱动隐式默认值。
         // busy_timeout 是连接级参数，PHP-FPM 每个请求新建连接，须在连接建立时设置。
         if ($driver === 'sqlite') {
             try {
-                $capsule->getConnection()->statement('PRAGMA busy_timeout = 5000');
+                $capsule->getConnection()->statement('PRAGMA busy_timeout = 60000');
             } catch (\Throwable $e) {
                 // PRAGMA 失败不应阻断应用启动
                 error_log('SQLite busy_timeout setup failed: ' . $e->getMessage());
