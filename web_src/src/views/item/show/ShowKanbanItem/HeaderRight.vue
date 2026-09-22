@@ -6,6 +6,19 @@
       </a-tooltip>
     </div>
 
+    <!-- AI 接入 -->
+    <div
+      v-if="itemInfo.is_login == 1"
+      class="icon-item"
+      @click="handleAiAccess"
+    >
+      <a-tooltip :title="$t('header.ai_access_entry')" placement="bottom">
+        <a-badge :dot="userStore.showAiDot">
+          <i class="fas fa-plug"></i>
+        </a-badge>
+      </a-tooltip>
+    </div>
+
     <div
       v-if="itemInfo.item_manage == 1"
       class="icon-item"
@@ -50,6 +63,8 @@ import DeleteModal from '@/views/modals/item/DeleteModal/index'
 import CreateItemModal from '@/views/modals/item/CreateItemModal'
 import ChangeLogModal from '@/views/modals/item/ChangeLogModal/index'
 import AiSettingsModal from '@/views/modals/item/AiSettingsModal/index'
+import { useUserStore } from '@/store'
+import AiTokenModal from '@/views/modals/user/AiTokenModal'
 
 interface Props {
   itemInfo: any
@@ -60,6 +75,10 @@ const emit = defineEmits<{ (e: 'reload'): void }>()
 
 const { t } = useI18n()
 const router = useRouter()
+const userStore = useUserStore()
+
+// 检查 AI 令牌状态（控制 AI 接入图标红点；静默，仅一次）
+userStore.fetchAiTokenStatus()
 
 const menuItems = computed(() => [
   {
@@ -108,6 +127,11 @@ const handleMember = async () => {
   if (props.itemInfo) {
     await MemberModal(props.itemInfo.item_id)
   }
+}
+
+// 打开「AI 接入」弹窗
+const handleAiAccess = async () => {
+  await AiTokenModal()
 }
 
 const handleLogin = () => {

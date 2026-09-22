@@ -743,7 +743,7 @@ const handlePageInfo = async (node: any) => {
 
 const handlePageHistory = async (node: any) => {
   try {
-    await HistoryModal({ pageId: node.page_id })
+    await HistoryModal({ pageId: node.page_id, allowRecover: false, allowEdit: false })
     // 不需要刷新整个item，历史版本查看不影响目录
   } catch (error) {
     console.error('打开历史版本失败:', error)

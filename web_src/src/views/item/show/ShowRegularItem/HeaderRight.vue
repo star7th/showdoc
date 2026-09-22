@@ -21,6 +21,19 @@
       </div>
     </a-tooltip>
 
+    <!-- AI 接入 -->
+    <a-tooltip
+      v-if="itemInfo?.is_login"
+      :title="$t('header.ai_access_entry')"
+      placement="bottom"
+    >
+      <div class="icon-item" @click="handleAiAccess">
+        <a-badge :dot="userStore.showAiDot">
+          <i class="fas fa-plug"></i>
+        </a-badge>
+      </div>
+    </a-tooltip>
+
     <!-- 消息通知 -->
     <a-tooltip v-if="itemInfo?.is_login" :title="$t('message.my_notice')" placement="bottom">
       <a-badge :count="newMsg ? 'New' : 0" :offset="[-5, 5]">
@@ -92,6 +105,7 @@ import ShareModal from '@/views/modals/item/ShareModal/index'
 import MemberModal from '@/views/modals/item/MemberModal/index'
 import CreateItemModal from '@/views/modals/item/CreateItemModal'
 import UserCenterModal from '@/views/modals/user/UserCenterModal/index'
+import AiTokenModal from '@/views/modals/user/AiTokenModal'
 import MessageModal from '@/views/modals/message/MessageModal/index'
 import ImportFileModal from '@/views/modals/item/ImportFileModal/index'
 import ExportFileModal from '@/views/modals/item/ExportFileModal/index'
@@ -138,6 +152,9 @@ const handleToggleTheme = () => {
 
 // Computed
 const newMsg = computed(() => userStore.newMsg)
+
+// 检查 AI 令牌状态（控制 AI 接入图标红点；静默，仅一次）
+userStore.fetchAiTokenStatus()
 
 // 下拉菜单项
 const menuItems = computed<DropdownMenuItem[]>(() => [
@@ -243,6 +260,11 @@ const handleMessage = async () => {
 
 const handleUserCenter = async () => {
   await UserCenterModal()
+}
+
+// 打开「AI 接入」弹窗
+const handleAiAccess = async () => {
+  await AiTokenModal()
 }
 
 const handleLogin = () => {

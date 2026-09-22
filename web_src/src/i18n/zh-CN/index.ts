@@ -32,20 +32,31 @@ export default {
   view_demo: '查看演示',
   quick_start: '5分钟上手',
   team_collab: '团队协作',
+  ai_ready: 'AI 就绪',
   ai_illustration: 'AI插画：团队协作场景',
 
   // 核心功能区
   why_choose: '为什么选择 ShowDoc？',
   why_choose_desc: '专为IT团队设计的文档协作解决方案',
   api_card_desc: '简单快速编写美观的API文档',
-  data_dict_desc: '清晰展示数据库库结构',
-  manual_desc: '工具说明书和技术规范文档',
+  manual_card_desc: '团队知识库，沉淀经验与规范',
+  manual_card_title: '说明文档',
+  ai_collab_title: 'AI 协作',
+  ai_collab_desc: '接入 MCP，AI 编辑器实时读写文档',
   team_card_desc: '权限管理机制，团队协同编写文档',
   auto_doc_title: '文档自动化',
   auto_card_desc: '代码注释自动生成文档',
   open_source: '开源免费',
   open_source_desc: '可私有部署，数据自主可控',
   section_title6: '免费开源',
+
+  // AI 读懂文档
+  ai_read_title: '让 AI 直接读写你的文档',
+  ai_read_subtitle: '内置 MCP 服务，AI 编辑器实时读取最新文档写代码，文档与代码不再脱节',
+  ai_read_feature_1: '主流 AI 编辑器即插即用',
+  ai_read_feature_2: '文档一更新，AI 立刻感知最新版',
+  ai_read_feature_3: '接口约定自动成文，人工审阅把关',
+  ai_read_illustration: 'AI插画：AI 读懂文档场景',
 
   // 详细功能展示
   api_doc_title: '强大的API文档管理',
@@ -138,8 +149,6 @@ export default {
   section_description2: 'APP、web前端与服务器常用API来进行交互，用ShowDoc可以非常方便快速地编写出美观的API文档',
   section_title3: '数据字典',
   section_description3: '好的数据字典可以很方便地向别人描述你的数据库结构，用ShowDoc可以编辑出美观的数据字典',
-  section_title4: '说明文档',
-  section_description4: '你完全可以使用ShowDoc来编写一些工具的说明书，也可以编写一些技术规范说明文档以供团队查阅',
   section_title5: '团队协作',
   section_description5: '团队权限管理机制让团队良好地协同编写文档',
   section_title8: '立即体验',

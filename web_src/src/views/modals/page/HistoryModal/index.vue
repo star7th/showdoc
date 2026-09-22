@@ -38,7 +38,7 @@
             danger
             @click="handleRecover(row)"
           >
-            {{ $t('page.recover_to_this_version') }}
+            {{ onRestore ? $t('page.load_into_editor') : $t('page.recover_to_this_version') }}
           </a-button>
         </template>
       </CommonTable>
@@ -151,8 +151,8 @@ const handlePreviewDiff = (row: any) => {
 // 恢复到此版本
 const handleRecover = async (row: any) => {
   const confirmed = await ConfirmModal({
-    title: t('page.recover_to_this_version'),
-    msg: t('page.confirm_recover_version')
+    title: props.onRestore ? t('page.load_into_editor') : t('page.recover_to_this_version'),
+    msg: props.onRestore ? t('page.confirm_load_into_editor') : t('page.confirm_recover_version')
   })
 
   if (!confirmed) return
@@ -164,7 +164,6 @@ const handleRecover = async (row: any) => {
     // 从编辑器调用时（有 onRestore 回调），直接回调，不保存到服务器
     if (props.onRestore) {
       props.onRestore(content)
-      Message.success(t('common.op_success'))
       handleClose()
       return
     }

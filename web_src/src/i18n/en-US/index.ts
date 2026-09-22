@@ -33,20 +33,31 @@ export default {
   quick_start: 'Quick Start in 5 mins',
   open_source_and_free: 'Open Source & Free',
   team_collab: 'Team Collaboration',
+  ai_ready: 'AI Ready',
   ai_illustration: 'AI Illustration: Team Collaboration',
 
   // Features Section
   why_choose: 'Why Choose ShowDoc?',
   why_choose_desc: 'Document collaboration solution designed for IT teams',
   api_card_desc: 'Create beautiful API documents quickly and easily',
-  data_dict_desc: 'Display database structure clearly',
-  manual_desc: 'Tool manuals and technical specifications',
+  manual_card_desc: 'Team knowledge base for guides and standards',
+  manual_card_title: 'Manuals',
+  ai_collab_title: 'AI Collaboration',
+  ai_collab_desc: 'Connect via MCP, AI editors read & write docs in real time',
   team_card_desc: 'Permission management, collaborative writing',
   auto_doc_title: 'Document Automation',
   auto_card_desc: 'Auto-generate docs from code comments',
   open_source: 'Open Source & Free',
   open_source_desc: 'Private deployment, data under your control',
   section_title6: 'Open Source & Free',
+
+  // AI Reads Your Docs
+  ai_read_title: 'Let AI Read and Write Your Docs Directly',
+  ai_read_subtitle: 'Built-in MCP service lets AI editors read the latest docs in real time while writing code, so docs and code never drift apart',
+  ai_read_feature_1: 'Plug and play with mainstream AI editors',
+  ai_read_feature_2: 'AI senses the latest version as soon as docs update',
+  ai_read_feature_3: 'API contracts auto-documented, reviewed by humans',
+  ai_read_illustration: 'AI Illustration: AI Reads Your Docs',
 
   // Feature Details
   api_doc_title: 'Powerful API Document Management',
@@ -139,8 +150,6 @@ export default {
   section_description2: 'ShowDoc can compile exquisite API documents in a very fast and convenient way',
   section_title3: 'Data Dictionary',
   section_description3: 'A good Data Dictionary can easily exhibit database structure to other people',
-  section_title4: 'Explanation Document',
-  section_description4: 'You can absolutely use ShowDoc to compile explanation documents for some tools',
   section_title5: 'Team Work',
   section_description5: 'Your team will work with ShowDoc together very well',
   section_title8: 'Try it now',

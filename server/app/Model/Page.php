@@ -112,7 +112,9 @@ class Page
             ->all();
 
         $keyword = strtolower(trim($keyword));
-        $result  = [];
+        $result          = [];
+        $titleMatched    = [];
+        $contentMatched  = [];
 
         foreach ($pages as $page) {
             // 过滤草稿页面（非作者不可见）
@@ -133,13 +135,19 @@ class Page
 
             $pageContentLower = strtolower($pageContent);
 
-            // 在标题或内容中搜索关键词
-            if (strpos($pageTitle . '  ' . $pageContentLower, $keyword) !== false) {
+            // 在标题或内容中搜索关键词（标题命中排在仅内容命中的前面，同级保持 s_number 顺序）
+            if (strpos($pageTitle, $keyword) !== false) {
                 $data = (array) $page;
                 $data['page_content'] = $pageContent;
-                $result[] = $data;
+                $titleMatched[] = $data;
+            } elseif (strpos($pageContentLower, $keyword) !== false) {
+                $data = (array) $page;
+                $data['page_content'] = $pageContent;
+                $contentMatched[] = $data;
             }
         }
+
+        $result = array_merge($titleMatched, $contentMatched);
 
         return $result;
     }

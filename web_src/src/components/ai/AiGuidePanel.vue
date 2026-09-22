@@ -35,6 +35,14 @@
               </div>
             </div>
           </div>
+
+          <!-- AI 接入引导项：点击打开「AI 接入」弹窗（不发 prompt；游客隐藏，避免未登录接口报错） -->
+          <div v-if="!isGuest" class="guide-group">
+            <div class="group-item ai-access-item" @click="handleAiAccess">
+              <i class="fas fa-plug"></i>
+              在用 AI 编辑器？让编辑器直接读写 ShowDoc 文档
+            </div>
+          </div>
         </div>
 
         <!-- 保留旧的 feature-card 作为 fallback（无分组时） -->
@@ -58,6 +66,12 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import AiTokenModal from '@/views/modals/user/AiTokenModal'
+
+// 打开「AI 接入」弹窗
+const handleAiAccess = async () => {
+  await AiTokenModal()
+}
 
 interface FeatureItem {
   name: string
@@ -336,6 +350,18 @@ const activeGroups = computed((): GuideGroup[] => {
   [data-theme='dark'] & {
     background: var(--color-bg-secondary);
     border-color: var(--color-border);
+  }
+}
+
+// AI 接入引导项（带图标）
+.ai-access-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  i {
+    font-size: 11px;
+    color: var(--color-active);
   }
 }
 

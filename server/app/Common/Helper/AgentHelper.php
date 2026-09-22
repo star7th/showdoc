@@ -1031,11 +1031,22 @@ GUEST_LIMIT;
         curl_setopt($curl, CURLOPT_TIMEOUT, 60);
         curl_setopt($curl, CURLOPT_FRESH_CONNECT, false);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        // 回环请求不校验 TLS 证书（若被 nginx 强制 301 到 https 也能通；失败则降级链路兜底）
+        if (str_starts_with($mcpUrl, 'http://127.0.0.1')) {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+        }
 
         $reqHeaders = [
             'Content-Type: application/json',
             'Content-Length: ' . strlen($postData),
         ];
+
+        // 回环 URL（127.0.0.1）时补 Host 头，防 nginx 多虚拟主机串到默认站；降级 URL（siteUrl 域名）无需补
+        $loopHost = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? '');
+        if ($loopHost !== '' && str_starts_with($mcpUrl, 'http://127.0.0.1')) {
+            $reqHeaders[] = 'Host: ' . $loopHost;
+        }
 
         // 添加认证参数
         // S2 fix: Token 改为通过 HTTP Header 传递，避免 URL 泄露（日志/Referer/浏览器历史）
@@ -1177,8 +1188,13 @@ GUEST_LIMIT;
             error_log("[AgentHelper] MCP loopback probe error: url={$url}, errno={$errno}, msg=" . curl_strerror($errno));
             return false;
         }
-        // 404 说明该路径下没有入口，视为不可用；其他响应（200/405/3xx 等）视为可达
-        return $httpCode > 0 && $httpCode !== 404;
+        // 404 说明该路径下没有 mcp.php；5xx 属于响应异常（非 200/4xx），均视为不可用，降级到 siteUrl
+        if ($httpCode <= 0 || $httpCode === 404 || $httpCode >= 500) {
+            error_log("[AgentHelper] MCP loopback probe rejected: url={$url}, httpCode={$httpCode}");
+            return false;
+        }
+        // 其他响应（200/3xx/4xx 非 404）视为可达
+        return true;
     }
 
     // -------------------------------------------------------

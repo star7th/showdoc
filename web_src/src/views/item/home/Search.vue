@@ -54,6 +54,7 @@ const router = useRouter()
 const props = defineProps<{
   keyword: string
   itemList: any[]
+  scope?: 'all' | 'itemName' | 'pageContent'
 }>()
 
 // 数据状态
@@ -65,6 +66,12 @@ const itemResultList = ref<any[]>([])
 watch(() => props.keyword, (val) => {
   queries.value = []
   queries.value.push(val)
+  itemResultList.value = []
+  searchItems()
+})
+
+// 监听搜索范围变化，重新执行搜索
+watch(() => props.scope, () => {
   itemResultList.value = []
   searchItems()
 })
@@ -84,6 +91,19 @@ const searchItems = async () => {
       element.item_name.indexOf(props.keyword) > -1
     ) {
       isInItemName = 1
+    }
+
+    // 仅项目名：纯前端过滤，不调后端内容搜索接口
+    if (props.scope === 'itemName') {
+      if (isInItemName) {
+        itemResultList.value.push({ ...element, pages: [] })
+      }
+      continue
+    }
+
+    // 仅页面内容：跳过项目名命中判断，只搜内容
+    if (props.scope === 'pageContent') {
+      isInItemName = 0
     }
 
     // 远程搜索，按项目，一个个项目搜索

@@ -120,6 +120,20 @@ $schema->create('catalog', function ($table) {
     $table->integer('level')->default(1);
 });
 
+// 开源版 item_change_log：单表（与主版分表架构不同）。
+// MCP get_recent_changes / ItemChangeLog 模型读写此表
+$schema->create('item_change_log', function ($table) {
+    $table->increments('id');
+    $table->integer('uid')->default(0);
+    $table->integer('item_id')->default(0);
+    $table->string('op_action_type', 50)->default('');
+    $table->string('op_object_type', 50)->default('');
+    $table->integer('op_object_id')->default(0);
+    $table->string('op_object_name', 255)->default('');
+    $table->string('remark', 255)->default('');
+    $table->string('optime', 50)->default('');
+});
+
 // 开源版 page 表：单表存储（含 page_content），与主版分表架构不同。
 // 开源版 Page/PageHandler 全部读写此表，需包含 PageHandler 用到的全部列
 // （s_number / addtime / author_uid / author_username / is_draft / page_comments / ext_info）。

@@ -189,6 +189,36 @@ class McpServer
       'handler' => 'item',
     ];
 
+    // 变更感知：查询项目最近文档变更（只读，普通成员/只读成员可用）
+    $this->tools['get_recent_changes'] = [
+      'name' => 'get_recent_changes',
+      'description' => '查询项目最近的文档变更，用于感知约定/文档是否有更新。返回变更列表（动作类型、对象类型、页面标题、操作人、时间，按时间倒序）。只包含文档内容相关变更（页面创建/修改/删除、目录创建/修改、目录树调整），不含成员/团队管理、导出等敏感操作。建议用法：先用本工具查看变更列表，发现关心的页面有更新后，再用 get_page 拉取最新内容。数据窗口为项目最近 300 条变更',
+      'inputSchema' => [
+        'type' => 'object',
+        'properties' => [
+          'item_id' => [
+            'type' => 'string',
+            'description' => '项目ID',
+          ],
+          'since' => [
+            'type' => 'integer',
+            'description' => '起始时间 Unix 时间戳（可选，只返回此时间之后的变更；默认查最近全部窗口）',
+          ],
+          'limit' => [
+            'type' => 'integer',
+            'description' => '返回条数（可选，默认20，最大100）',
+          ],
+          'catalog_id' => [
+            'type' => 'integer',
+            'description' => '目录ID（可选，只返回该目录及其子目录范围内的变更）',
+          ],
+        ],
+        'required' => ['item_id'],
+      ],
+      'handler' => 'item',
+      'level' => 'read',
+    ];
+
     // 目录管理
     $this->tools['get_item_overview'] = [
       'name' => 'get_item_overview',

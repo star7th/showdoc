@@ -163,8 +163,20 @@ export default {
   // AI Token Management
   ai_token_management: 'AI Token Management',
   manage_tokens: 'Manage tokens',
+  // AI Access modal (4-section layout)
+  ai_access_title: 'AI Access',
+  ai_access_desc:
+    'Let AI editors read and write your ShowDoc documents directly via MCP.',
+  ai_access_step1: 'Create an AI token',
+  ai_access_step1_desc:
+    'A token is the credential for AI editors to access your documents. You can set its permission scope and expiry.',
+  ai_access_step_done: 'Done',
+  ai_access_step2: 'Copy the config into your editor',
+  ai_access_step2_desc:
+    'Add the config on the right to the MCP settings of your AI editor. Common entry: search MCP in Settings / extension settings.',
+  ai_access_full_tutorial: 'View the full tutorial',
   ai_token_desc:
-    'AI Tokens allow AI editors (such as VSCode, Cursor, Windsurf, Claude Desktop, OpenClaw, etc.) to access your ShowDoc projects via MCP protocol. Please keep your tokens secure and do not share them with others.',
+    'AI Tokens allow AI editors to access your ShowDoc projects via MCP protocol. Please keep your tokens secure and do not share them with others.',
   my_tokens: 'My Tokens',
   create_token: 'Create Token',
   no_tokens: 'No tokens yet. Click the button above to create one.',
@@ -172,7 +184,7 @@ export default {
   last_used: 'Last used',
   view_config: 'View config',
   token_name: 'Token Name',
-  token_name_placeholder: 'Enter token name, e.g. "Cursor Dev"',
+  token_name_placeholder: 'Enter token name, e.g. "Daily Dev"',
   token_name_required: 'Please enter token name',
   bind_project: 'Bind Project',
   all_projects: 'All Projects',

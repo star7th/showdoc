@@ -151,7 +151,15 @@
                 </div>
                 <div class="text">
                   <p v-html="t('item.empty_item_tips1')"></p>
-                  <p v-html="t('item.empty_item_tips2')"></p>
+                  <p>
+                    {{ $t('item.empty_item_tips2') }}
+                    <a class="text-link" @click="handleAiAccess">{{
+                      $t('item.empty_item_open_ai_access')
+                    }}</a>
+                    <template v-if="aiAssistantEnabled">
+                      {{ $t('item.empty_item_tips2_or') }}
+                    </template>
+                  </p>
                 </div>
               </div>
             </div>
@@ -199,6 +207,8 @@ import { toggleNthTaskCheckbox } from '@/models/markdown'
 import { getItem } from '@/models/item'
 import request from '@/utils/request'
 import { copyToClipboard } from '@/utils/tools'
+import { getAiConfig } from '@/api/aiAgent'
+import AiTokenModal from '@/views/modals/user/AiTokenModal'
 // 引入 ShowDoc 编辑器适配器（包装底层 EditormdEditor 组件）
 // 适配器提供了 ShowDoc 特定的默认配置和事件处理
 import EditormdEditor from '@/components/EditormdEditor/ShowdocAdapter.vue'
@@ -256,6 +266,7 @@ const searchKeyword = ref('')
 const isFullPage = ref(false) // 全屏模式
 const emptyItem = ref(false)
 const itemInfo = ref<any>(props.itemInfo || {})
+const aiAssistantEnabled = ref(false) // AI 助手开关（控制空状态备选文案）
 const _taskSaveTimer = ref<number | null>(null)
 const tocKey = ref(0) // 用于强制重新挂载 Toc 组件
 const _lastFetchTime = ref<Record<number, number>>({}) // 记录每个页面ID上次请求时间
@@ -264,6 +275,11 @@ const lastLoadedPageId = ref(0) // 记录上一次加载的页面ID，用于移�
 // Computed
 // 判断是否为移动设备或全屏模式
 const isMobile = () => window.innerWidth < 768 || isFullPage.value
+
+// 打开「AI 接入」弹窗
+const handleAiAccess = async () => {
+  await AiTokenModal()
+}
 const isItemEditable = computed(() => {
   // 使用弱等于判断，因为后端可能返回字符串
   return itemInfo.value?.item_edit == 1
@@ -573,6 +589,15 @@ watch(
         newItemInfo.menu.pages.length === 0
       ) {
         emptyItem.value = true
+        // 空项目时检查 AI 助手是否启用（控制备选文案，静默失败）
+        if (!aiAssistantEnabled.value) {
+          getAiConfig(itemId.value || undefined, false)
+            .then((res: any) => {
+              const config = res?.data || res
+              aiAssistantEnabled.value = !!(config && config.enabled)
+            })
+            .catch(() => {})
+        }
       } else {
         emptyItem.value = false
       }

@@ -3,6 +3,7 @@
  */
 export default {
   switch_language: '切换语言',
+  ai_access_entry: 'AI 接入（MCP）',
   client: '客户端',
   more_products: '更多产品功能',
   runapi_title: 'RunApi',

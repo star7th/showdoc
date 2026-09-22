@@ -23,7 +23,7 @@ class ItemHandler extends McpHandler
    */
   public function getSupportedOperations(): array
   {
-    return ['list_items', 'get_item', 'create_item', 'update_item', 'delete_item'];
+    return ['list_items', 'get_item', 'create_item', 'update_item', 'delete_item', 'get_recent_changes'];
   }
 
   /**
@@ -51,6 +51,9 @@ class ItemHandler extends McpHandler
 
       case 'delete_item':
         return $this->deleteItem($params);
+
+      case 'get_recent_changes':
+        return $this->getRecentChanges($params);
 
       default:
         McpError::throw(McpError::METHOD_NOT_FOUND, "操作不存在: {$operation}");
@@ -192,6 +195,52 @@ class ItemHandler extends McpHandler
         ->where('is_del', 0)
         ->count(),
       'share_url' => UrlHelper::siteUrl() . '/web/#/' . $item->item_id,
+    ];
+  }
+
+  /**
+   * 查询项目最近的文档变更（用于感知约定/文档是否有更新）
+   *
+   * 面向普通成员/只读成员：访问权限即可调用（requireReadPermission），
+   * 无需编辑权限；服务端硬编码类型白名单，只返回文档内容相关变更，
+   * 成员/团队绑定、导出、系统级项目操作等敏感操作一律不返回。
+   *
+   * @param array $params 参数
+   * @return array
+   * @throws McpException
+   */
+  private function getRecentChanges(array $params): array
+  {
+    $itemId = (int) ($params['item_id'] ?? 0);
+    if ($itemId <= 0) {
+      McpError::throw(McpError::INVALID_PARAMS, '项目ID不能为空');
+    }
+
+    // 检查读取权限（Token read 级别 + 项目范围 + 成员身份，无需编辑权限）
+    $this->requireReadPermission($itemId);
+
+    // 项目需存在
+    $item = $this->getItemCached($itemId);
+    if (!$item) {
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '项目不存在');
+    }
+
+    $limit = (int) ($params['limit'] ?? 20);
+    $since = (int) ($params['since'] ?? 0);
+    $catalogId = (int) ($params['catalog_id'] ?? 0);
+
+    $ret = \App\Model\ItemChangeLog::getRecentChanges($itemId, [
+      'since'      => $since,
+      'limit'      => $limit,
+      'catalog_id' => $catalogId,
+    ]);
+
+    return [
+      'item_id' => $itemId,
+      'item_name' => (string) ($item->item_name ?? ''),
+      'total' => (int) $ret['total'],
+      'count' => count($ret['list']),
+      'list' => $ret['list'],
     ];
   }
 

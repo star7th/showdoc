@@ -93,14 +93,14 @@
         </div>
         <div v-if="locale === 'zh-CN'" class="left-bottom-bar">
           <div class="content">
+            <i class="far fa-robot"></i>
+            用AI编辑器管理文档
+            <a class="text-link ml-2" @click="handleAiAccess">了解</a>
+          </div>
+          <div class="content">
             <i class="far fa-fire"></i>
             调试API并自动生成文档
             <a class="text-link ml-2" @click="toOutLink('https://www.showdoc.com.cn/runapi')">试试</a>
-          </div>
-          <div class="content">
-            <i class="far fa-robot"></i>
-            用AI编辑器管理文档
-            <a class="text-link ml-2" @click="toOutLink('https://www.showdoc.com.cn/p/d974cb91609ffecba40153354794bd75')">了解</a>
           </div>
         </div>
       </div>
@@ -122,6 +122,16 @@
                   <i class="fas fa-search"></i>
                 </template>
               </CommonInput>
+              <a-dropdown :trigger="['click']">
+                <span class="search-scope-link">{{ scopeLabel }} <i class="fas fa-angle-down"></i></span>
+                <template #overlay>
+                  <a-menu :selectedKeys="scopeMenuKey" @click="onScopeMenuClick">
+                    <a-menu-item key="all">{{ t('item.search_scope_all') }}</a-menu-item>
+                    <a-menu-item key="itemName">{{ t('item.search_scope_item_name') }}</a-menu-item>
+                    <a-menu-item key="pageContent">{{ t('item.search_scope_page_content') }}</a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
             </div>
           </div>
         </div>
@@ -177,6 +187,7 @@
           v-if="showSearch"
           :keyword="keyword"
           :itemList="itemList"
+          :scope="searchScope"
         />
 
         <!-- 新建项目按钮 -->
@@ -191,6 +202,9 @@
         </div>
       </div>
     </div>
+
+    <!-- 回到顶部：默认位于右下（right 40 / bottom 100），在 AI 助手按钮上方错开 -->
+    <CommonTop :visibilityHeight="300" />
 
     <!-- 项目分组管理弹窗 -->
     <ItemGroupCom
@@ -209,12 +223,14 @@ import CommonInput from '@/components/CommonInput.vue'
 import { getMyList } from '@/models/item'
 import { getGroupList } from '@/models/itemGroup'
 import HeaderRight from './HeaderRight.vue'
+import AiTokenModal from '@/views/modals/user/AiTokenModal'
 import ItemListCom from './ItemList.vue'
 import ItemCardList from './ItemCardList.vue'
 import Search from './Search.vue'
 import ItemAdd from './ItemAdd.vue'
 import ItemGroupCom from './ItemGroup.vue'
 import { checkPublicSquareEnabled } from '@/models/publicSquare'
+import CommonTop from '@/components/CommonTop.vue'
 import Message from '@/components/Message'
 import Notify from '@/components/Notify.vue'
 import request from '@/utils/request'
@@ -229,6 +245,23 @@ const itemList = ref<any[]>([])
 const isAdmin = ref(false)
 const keyword = ref('')
 const showSearch = ref(false)
+// 搜索范围：all=全部 / itemName=仅项目名 / pageContent=仅页面内容（仅组件内状态，不持久化）
+const searchScope = ref<'all' | 'itemName' | 'pageContent'>('all')
+const scopeLabel = computed(() => {
+  const map: Record<string, string> = {
+    all: t('item.search_scope_all'),
+    itemName: t('item.search_scope_item_name'),
+    pageContent: t('item.search_scope_page_content')
+  }
+  return map[searchScope.value] || map.all
+})
+const scopeMenuKey = computed(() => [searchScope.value])
+const onScopeMenuClick = ({ key }: { key: string | number }) => {
+  const val = String(key) as 'all' | 'itemName' | 'pageContent'
+  if (val !== searchScope.value) {
+    searchScope.value = val
+  }
+}
 const itemGroupId = ref<number>(0)
 const itemGroupList = ref<any[]>([])
 const showItemGroupCom = ref(false)
@@ -353,6 +386,11 @@ const fetchUserInfo = async () => {
 // 跳转到外部链接
 const toOutLink = (url: string) => {
   window.open(url)
+}
+
+// 打开「AI 接入」弹窗
+const handleAiAccess = async () => {
+  await AiTokenModal()
 }
 
 // 打开公共广场
@@ -588,13 +626,36 @@ a {
 }
 
 .search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   width: 100%;
   border-radius: 8px;
-  overflow: hidden;
   background-color: var(--color-bg-primary);
 }
 
+// 搜索范围轻文字菜单
+.search-scope-link {
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--gray2, #999);
+  white-space: nowrap;
+  user-select: none;
+
+  &:hover {
+    color: var(--gray1, #666);
+  }
+
+  i {
+    font-size: 12px;
+    margin-left: 2px;
+  }
+}
+
 .search-input {
+  flex: 1;
+  min-width: 0;
   width: 100%;
   max-width: 600px;
   transition: max-width 0.15s ease;

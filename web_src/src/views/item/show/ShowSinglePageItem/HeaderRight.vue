@@ -14,6 +14,19 @@
       </a-tooltip>
     </div>
 
+    <!-- AI 接入 -->
+    <div
+      v-if="itemInfo?.is_login == 1"
+      class="icon-item"
+      @click="handleAiAccess"
+    >
+      <a-tooltip :title="$t('header.ai_access_entry')" placement="bottom">
+        <a-badge :dot="userStore.showAiDot">
+          <i class="fas fa-plug"></i>
+        </a-badge>
+      </a-tooltip>
+    </div>
+
     <!-- 成员管理 -->
     <div
       v-if="itemInfo?.item_manage == 1"
@@ -90,7 +103,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import Message from '@/components/Message'
 import CommonDropdownMenu from '@/components/CommonDropdownMenu.vue'
-import { useAppStore } from '@/store'
+import { useAppStore, useUserStore } from '@/store'
 import ShareModal from '@/views/modals/item/ShareModal/index'
 import MemberModal from '@/views/modals/item/MemberModal/index'
 import CreateItemModal from '@/views/modals/item/CreateItemModal'
@@ -101,6 +114,7 @@ import AttornModal from '@/views/modals/item/AttornModal/index'
 import DeleteModal from '@/views/modals/item/DeleteModal/index'
 import HistoryModal from '@/views/modals/page/HistoryModal/index'
 import AiSettingsModal from '@/views/modals/item/AiSettingsModal/index'
+import AiTokenModal from '@/views/modals/user/AiTokenModal'
 import LanguageToggle from '@/components/LanguageToggle.vue'
 
 // Props
@@ -126,6 +140,10 @@ const emit = defineEmits<{
 const router = useRouter()
 const { t } = useI18n()
 const appStore = useAppStore()
+const userStore = useUserStore()
+
+// 检查 AI 令牌状态（控制 AI 接入图标红点；静默，仅一次）
+userStore.fetchAiTokenStatus()
 
 // Methods
 const handleToggleTheme = () => {
@@ -212,6 +230,11 @@ const handleMember = async () => {
   if (props.itemInfo) {
     await MemberModal(props.itemInfo.item_id)
   }
+}
+
+// 打开「AI 接入」弹窗
+const handleAiAccess = async () => {
+  await AiTokenModal()
 }
 
 const handleLogin = () => {

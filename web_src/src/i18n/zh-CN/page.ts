@@ -34,6 +34,8 @@ export default {
   update_by_who: '修改人',
   recover_to_this_version: '恢复到此版本',
   confirm_recover_version: '确认恢复到此版本吗？',
+  load_into_editor: '载入编辑器',
+  confirm_load_into_editor: '将把该版本内容载入编辑器，需保存后生效，确认继续？',
   edit_remark: '编辑备注',
   save_success: '保存成功',
   save_and_notify: '保存并通知',

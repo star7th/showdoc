@@ -165,8 +165,19 @@ export default {
   // AI 令牌管理
   ai_token_management: 'AI 令牌管理',
   manage_tokens: '管理令牌',
+  // AI 接入弹窗（四段式）
+  ai_access_title: 'AI 接入',
+  ai_access_desc: '让 AI 编辑器通过 MCP 直接读写你的 ShowDoc 文档。',
+  ai_access_step1: '创建 AI 令牌',
+  ai_access_step1_desc:
+    '令牌是 AI 编辑器访问你文档的凭证，可设置权限范围与有效期。',
+  ai_access_step_done: '已完成',
+  ai_access_step2: '复制配置到编辑器',
+  ai_access_step2_desc:
+    '将右侧配置添加到你 AI 编辑器的 MCP 设置中。常见入口：编辑器 Settings / 扩展设置里搜索 MCP。',
+  ai_access_full_tutorial: '查看完整教程',
   ai_token_desc:
-    'AI 令牌用于让 AI 编辑器（如 VSCode、Cursor、Windsurf、Claude Desktop、OpenClaw 等）通过 MCP 协议访问您的 ShowDoc 项目。请妥善保管您的令牌，不要泄露给他人。',
+    'AI 令牌用于让 AI 编辑器通过 MCP 协议访问您的 ShowDoc 项目。请妥善保管您的令牌，不要泄露给他人。',
   my_tokens: '我的令牌',
   create_token: '创建令牌',
   no_tokens: '暂无令牌，点击上方按钮创建',
@@ -174,7 +185,7 @@ export default {
   last_used: '上次使用',
   view_config: '查看配置',
   token_name: '令牌名称',
-  token_name_placeholder: '请输入令牌名称，如"Cursor 开发"',
+  token_name_placeholder: '请输入令牌名称，如"日常开发"',
   token_name_required: '请输入令牌名称',
   bind_project: '绑定项目',
   all_projects: '所有项目',

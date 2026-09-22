@@ -35,6 +35,14 @@
         </div>
       </a-tooltip>
 
+      <a-tooltip :title="t('header.ai_access_entry')" placement="top">
+        <div class="icon-item" @click="handleAiAccess">
+          <a-badge :dot="userStore.showAiDot">
+            <i class="fas fa-plug"></i>
+          </a-badge>
+        </div>
+      </a-tooltip>
+
       <a-tooltip :title="t('team.team_manage')" placement="top">
         <div class="icon-item" @click="handleTeam">
           <i class="fas fa-users"></i>
@@ -87,6 +95,7 @@ import { useUserStore } from '@/store/user'
 import { useAppStore } from '@/store/app'
 import MessageModal from '@/views/modals/message/MessageModal'
 import UserCenterModal from '@/views/modals/user/UserCenterModal'
+import AiTokenModal from '@/views/modals/user/AiTokenModal'
 import FeedbackModal from '@/views/modals/common/FeedbackModal'
 import AttachmentModal from '@/views/modals/attachment/AttachmentModal'
 import TeamModal from '@/views/modals/team/TeamModal'
@@ -149,6 +158,11 @@ const handleUserCenter = async () => {
   await UserCenterModal()
 }
 
+// 显示「AI 接入」弹窗
+const handleAiAccess = async () => {
+  await AiTokenModal()
+}
+
 // 显示团队管理弹窗
 const handleTeam = async () => {
   await TeamModal()
@@ -166,6 +180,9 @@ const checkPublicSquare = async () => {
 
 onMounted(() => {
   checkPublicSquare()
+
+  // 检查是否创建过 AI 令牌（控制 AI 接入图标红点，静默失败不影响主流程）
+  userStore.fetchAiTokenStatus()
 
   menuList.value = [
     {

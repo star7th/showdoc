@@ -3,6 +3,7 @@
  */
 export default {
   switch_language: 'Switch Language',
+  ai_access_entry: 'AI Access (MCP)',
   client: 'Client',
   more_products: 'More Products',
   runapi_title: 'RunApi',

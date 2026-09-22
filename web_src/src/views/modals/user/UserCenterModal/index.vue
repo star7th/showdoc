@@ -44,10 +44,10 @@
           <div class="menu-item" @click="handleAiToken">
             <div class="menu-item-content">
               <div class="menu-item-icon ai-token-icon">
-                <i class="fas fa-robot"></i>
+                <i class="fas fa-plug"></i>
               </div>
               <span class="menu-item-label">{{
-                $t('user.ai_token_management')
+                $t('user.ai_access_title')
               }}</span>
             </div>
             <div class="menu-item-right">

@@ -39,6 +39,10 @@
               <TeamOutlined />
               {{ $t('index.team_collab') || '团队协作' }}
             </span>
+            <span class="tag">
+              <RobotOutlined />
+              {{ $t('index.ai_ready') || 'AI 就绪' }}
+            </span>
           </div>
         </div>
 
@@ -67,18 +71,18 @@
 
         <div class="feature-card">
           <div class="feature-icon">
-            <DatabaseOutlined />
+            <FileTextOutlined />
           </div>
-          <h3>{{ $t('index.section_title3') || '数据字典' }}</h3>
-          <p>{{ $t('index.data_dict_desc') || '清晰展示数据库结构' }}</p>
+          <h3>{{ $t('index.manual_card_title') || '说明文档' }}</h3>
+          <p>{{ $t('index.manual_card_desc') || '团队知识库，沉淀经验与规范' }}</p>
         </div>
 
         <div class="feature-card">
           <div class="feature-icon">
-            <FileTextOutlined />
+            <RobotOutlined />
           </div>
-          <h3>{{ $t('index.section_title4') || '说明文档' }}</h3>
-          <p>{{ $t('index.manual_desc') || '工具说明书和技术规范文档' }}</p>
+          <h3>{{ $t('index.ai_collab_title') || 'AI 协作' }}</h3>
+          <p>{{ $t('index.ai_collab_desc') || '接入 MCP，AI 编辑器实时读写文档' }}</p>
         </div>
 
         <div class="feature-card">
@@ -126,11 +130,24 @@
         </div>
       </div>
 
-      <!-- 数据字典 -->
+      <!-- AI 读写文档 -->
       <div class="detail-row reverse">
         <div class="detail-image">
-          <DataDictionaryIllustration />
+          <AiCollabIllustration />
         </div>
+        <div class="detail-content">
+          <h2>{{ $t('index.ai_read_title') || '让 AI 直接读写你的文档' }}</h2>
+          <p class="detail-desc">{{ $t('index.ai_read_subtitle') || '内置 MCP 服务，AI 编辑器实时读取最新文档写代码，文档与代码不再脱节' }}</p>
+          <ul class="detail-list">
+            <li>{{ $t('index.ai_read_feature_1') || '主流 AI 编辑器即插即用' }}</li>
+            <li>{{ $t('index.ai_read_feature_2') || '文档一更新，AI 立刻感知最新版' }}</li>
+            <li>{{ $t('index.ai_read_feature_3') || '接口约定自动成文，人工审阅把关' }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 数据字典 -->
+      <div class="detail-row">
         <div class="detail-content">
           <h2>{{ $t('index.data_dict_title') || '清晰展示数据库结构' }}</h2>
           <p class="detail-desc">{{ $t('index.data_dict_detail_desc') || '好的数据字典可以方便描述数据库结构，用ShowDoc编辑出美观的数据字典' }}</p>
@@ -141,10 +158,16 @@
             <li>{{ $t('index.data_feature_4') || '一键导出共享' }}</li>
           </ul>
         </div>
+        <div class="detail-image">
+          <DataDictionaryIllustration />
+        </div>
       </div>
 
       <!-- 团队协作 -->
-      <div class="detail-row">
+      <div class="detail-row reverse">
+        <div class="detail-image">
+          <TeamCollaborationIllustration />
+        </div>
         <div class="detail-content">
           <h2>{{ $t('index.team_collab_title') || '高效的团队协作' }}</h2>
           <p class="detail-desc">{{ $t('index.team_collab_subtitle') || '团队权限管理机制让团队良好协同编写文档' }}</p>
@@ -154,16 +177,10 @@
             <li>{{ $t('index.team_feature_3') || '评论反馈机制' }}</li>
           </ul>
         </div>
-        <div class="detail-image">
-          <TeamCollaborationIllustration />
-        </div>
       </div>
 
       <!-- 自动生成文档 -->
-      <div class="detail-row reverse">
-        <div class="detail-image">
-          <AutoGenerateIllustration />
-        </div>
+      <div class="detail-row">
         <div class="detail-content">
           <h2>{{ $t('index.auto_gen_title') || '多种方式自动生成文档' }}</h2>
           <p class="detail-desc">{{ $t('index.auto_gen_subtitle') || '支持从代码注释、Swagger、Postman等多种方式自动生成API文档' }}</p>
@@ -174,10 +191,16 @@
             <li>{{ $t('index.auto_gen_feature_4') || 'Markdown压缩包导入' }}</li>
           </ul>
         </div>
+        <div class="detail-image">
+          <AutoGenerateIllustration />
+        </div>
       </div>
 
       <!-- RunAPI客户端 -->
-      <div class="detail-row">
+      <div class="detail-row reverse">
+        <div class="detail-image">
+          <IntegrationIllustration />
+        </div>
         <div class="detail-content">
           <h2>{{ $t('index.runapi_title') || '搭配RunAPI，提升接口开发效率' }}</h2>
           <p class="detail-desc">{{ $t('index.runapi_subtitle') || 'ShowDoc与RunAPI完美集成，接口调试与文档编写无缝衔接，让API开发更高效' }}</p>
@@ -187,9 +210,6 @@
             <li>{{ $t('index.runapi_feature_3') || 'Mock服务与文档联动' }}</li>
             <li>{{ $t('index.runapi_feature_4') || '前后端协作更顺畅' }}</li>
           </ul>
-        </div>
-        <div class="detail-image">
-          <IntegrationIllustration />
         </div>
       </div>
     </section>
@@ -314,12 +334,11 @@ import { useUserStore } from '@/store/user'
 import { useI18n } from 'vue-i18n'
 import {
   ApiOutlined,
-  DatabaseOutlined,
-  FileTextOutlined,
   TeamOutlined,
   RobotOutlined,
   GithubOutlined,
-  FileOutlined
+  FileOutlined,
+  FileTextOutlined
 } from '@ant-design/icons-vue'
 import CommonTop from '@/components/CommonTop.vue'
 import LandingHeader from './LandingHeader.vue'
@@ -329,6 +348,7 @@ import ApiDocumentIllustration from './illustrations/ApiDocumentIllustration.vue
 import DataDictionaryIllustration from './illustrations/DataDictionaryIllustration.vue'
 import TeamCollaborationIllustration from './illustrations/TeamCollaborationIllustration.vue'
 import AutoGenerateIllustration from './illustrations/AutoGenerateIllustration.vue'
+import AiCollabIllustration from './illustrations/AiCollabIllustration.vue'
 import IntegrationIllustration from './illustrations/IntegrationIllustration.vue'
 import request from '@/utils/request'
 

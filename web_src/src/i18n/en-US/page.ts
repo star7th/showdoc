@@ -33,6 +33,8 @@ export default {
   page_history_version: 'History Version',
   recover_to_this_version: 'Restore to this version',
   confirm_recover_version: 'Are you sure to restore to this version?',
+  load_into_editor: 'Load into editor',
+  confirm_load_into_editor: 'This will load this version into the editor (not saved yet). Continue?',
   edit_remark: 'Edit Remark',
   save_success: 'Save Success',
   save_and_notify: 'Save and Notify',
