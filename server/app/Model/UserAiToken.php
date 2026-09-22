@@ -30,6 +30,11 @@ class UserAiToken
   const TOKEN_RANDOM_BYTES = 43;
 
   /**
+   * last_used_at 写库节流时间（秒）
+   */
+  const TOUCH_THROTTLE_SECONDS = 60;
+
+  /**
    * 创建新的 AI Token
    *
    * @param int $uid 用户 ID
@@ -315,6 +320,10 @@ class UserAiToken
   /**
    * 更新最后使用时间
    *
+   * last_used_at 仅用于前端分钟级展示，无需每次请求都写库。
+   * 同一 token 在 60 秒内只写一次，避免高并发 MCP 调用场景下
+   * 频繁触发 SQLite 写事务造成锁竞争（database is locked）。
+   *
    * @param string $token Token 字符串
    * @return void
    */
@@ -323,6 +332,17 @@ class UserAiToken
     $token = trim($token);
     if ($token === '') {
       return;
+    }
+
+    try {
+      $cache = CacheManager::getInstance();
+      $throttleKey = 'mcp_touch_throttle_' . md5($token);
+      if ($cache->get($throttleKey)) {
+        return;
+      }
+      $cache->set($throttleKey, 1, self::TOUCH_THROTTLE_SECONDS);
+    } catch (\Throwable $e) {
+      // 缓存不可用时退回原逻辑：直接写库
     }
 
     DB::table(self::TABLE)
