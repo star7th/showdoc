@@ -103,7 +103,7 @@ import AttornModal from '@/views/modals/item/AttornModal/index'
 import DeleteModal from '@/views/modals/item/DeleteModal/index'
 import ChangeLogModal from '@/views/modals/item/ChangeLogModal/index'
 import AiSettingsModal from '@/views/modals/item/AiSettingsModal/index'
-import AiTokenModal from '@/views/modals/user/AiTokenModal'
+import AiTokenModal from '@/components/ai/AiTokenModal'
 
 // Props
 interface Props {

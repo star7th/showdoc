@@ -114,7 +114,7 @@ import AttornModal from '@/views/modals/item/AttornModal/index'
 import DeleteModal from '@/views/modals/item/DeleteModal/index'
 import HistoryModal from '@/views/modals/page/HistoryModal/index'
 import AiSettingsModal from '@/views/modals/item/AiSettingsModal/index'
-import AiTokenModal from '@/views/modals/user/AiTokenModal'
+import AiTokenModal from '@/components/ai/AiTokenModal'
 import LanguageToggle from '@/components/LanguageToggle.vue'
 
 // Props

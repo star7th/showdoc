@@ -208,7 +208,7 @@ import { getItem } from '@/models/item'
 import request from '@/utils/request'
 import { copyToClipboard } from '@/utils/tools'
 import { getAiConfig } from '@/api/aiAgent'
-import AiTokenModal from '@/views/modals/user/AiTokenModal'
+import AiTokenModal from '@/components/ai/AiTokenModal'
 // 引入 ShowDoc 编辑器适配器（包装底层 EditormdEditor 组件）
 // 适配器提供了 ShowDoc 特定的默认配置和事件处理
 import EditormdEditor from '@/components/EditormdEditor/ShowdocAdapter.vue'

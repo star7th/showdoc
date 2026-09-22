@@ -83,7 +83,7 @@ import request from '@/utils/request'
 import PromptModal from '@/components/PromptModal'
 import PasswordModal from '../PasswordModal'
 import PushUrlModal from '../PushUrlModal'
-import AiTokenModal from '../AiTokenModal'
+import AiTokenModal from '@/components/ai/AiTokenModal'
 
 const { t, locale } = useI18n()
 const router = useRouter()

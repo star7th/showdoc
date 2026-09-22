@@ -64,7 +64,7 @@ import CreateItemModal from '@/views/modals/item/CreateItemModal'
 import ChangeLogModal from '@/views/modals/item/ChangeLogModal/index'
 import AiSettingsModal from '@/views/modals/item/AiSettingsModal/index'
 import { useUserStore } from '@/store'
-import AiTokenModal from '@/views/modals/user/AiTokenModal'
+import AiTokenModal from '@/components/ai/AiTokenModal'
 
 interface Props {
   itemInfo: any

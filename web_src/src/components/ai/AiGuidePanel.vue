@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import AiTokenModal from '@/views/modals/user/AiTokenModal'
+import AiTokenModal from '@/components/ai/AiTokenModal'
 
 // 打开「AI 接入」弹窗
 const handleAiAccess = async () => {
