@@ -46,6 +46,10 @@
         :maxHeight="'400px'"
         @pageChange="handlePageChange"
       >
+        <!-- 最后访问时间 -->
+        <template #cell-last_visit_time="{ row }">
+          {{ Number(row.last_visit_time) > 0 ? row.last_visit_time : $t('attachment.never_visited') }}
+        </template>
         <!-- 操作列插槽 -->
         <template #cell-tools="{ row }">
           <div class="tools">
@@ -139,6 +143,11 @@ const tableHeader = computed(() => [
     title: t('attachment.visit_times'),
     key: 'visit_times',
     width: 70
+  },
+  {
+    title: t('attachment.last_visit_time'),
+    key: 'last_visit_time',
+    width: 150
   },
   {
     title: t('attachment.add_time'),

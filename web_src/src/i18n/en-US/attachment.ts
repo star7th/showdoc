@@ -15,6 +15,8 @@ export default {
   file_type: 'File Type',
   file_size_m: 'File Size(MB)',
   visit_times: 'Visit Times',
+  last_visit_time: 'Last Visit Time',
+  never_visited: 'Never visited',
   add_time: 'Add Time',
   visit: 'Visit',
   copy_link: 'Copy Link',

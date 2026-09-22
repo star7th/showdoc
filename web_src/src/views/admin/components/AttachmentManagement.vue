@@ -125,6 +125,10 @@
         @page-change="handleTableChange"
         @selection-change="handleSelectionChange"
       >
+        <!-- 最后访问时间 -->
+        <template #cell-last_visit_time="{ row }">
+          {{ Number(row.last_visit_time) > 0 ? row.last_visit_time : $t('admin.never_visited') }}
+        </template>
         <!-- 操作列 -->
         <template #cell-action="{ row }">
           <div class="table-action-buttons">
@@ -219,6 +223,7 @@ const tableHeader = computed(() => [
   { title: t('admin.file_type'), key: 'file_type', width: 140 },
   { title: t('admin.file_size'), key: 'file_size_m', width: 120 },
   { title: t('admin.visit_times'), key: 'visit_times', width: 100, center: true },
+  { title: t('admin.last_visit_time'), key: 'last_visit_time', width: 160 },
   { title: t('admin.uploader'), key: 'username', width: 140 },
   { title: t('admin.add_time'), key: 'addtime', width: 160 },
   { title: t('common.operation'), key: 'action', width: 240, center: true }

@@ -150,7 +150,7 @@ class UploadFile
             $data = (array) $row;
             $data['file_size_m'] = round($data['file_size'] / (1024 * 1024), 3);
             $data['addtime'] = date('Y-m-d H:i:s', (int) ($data['addtime'] ?? time()));
-            $data['last_visit_time'] = date('Y-m-d H:i:s', (int) ($data['last_visit_time'] ?? time()));
+            $data['last_visit_time'] = $data['last_visit_time'] > 0 ? date('Y-m-d H:i:s', (int) $data['last_visit_time']) : $data['last_visit_time'];
             $result[] = $data;
         }
 
@@ -235,7 +235,7 @@ class UploadFile
             $data['username'] = $username;
             $data['file_size_m'] = round($data['file_size'] / (1024 * 1024), 3);
             $data['addtime'] = date('Y-m-d H:i:s', (int) ($data['addtime'] ?? time()));
-            $data['last_visit_time'] = date('Y-m-d H:i:s', (int) ($data['last_visit_time'] ?? time()));
+            $data['last_visit_time'] = $data['last_visit_time'] > 0 ? date('Y-m-d H:i:s', (int) $data['last_visit_time']) : $data['last_visit_time'];
             $result[] = $data;
         }
 

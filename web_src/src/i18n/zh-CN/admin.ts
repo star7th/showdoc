@@ -356,6 +356,8 @@ export default {
   file_size: '文件大小',
   file_size_m: '文件大小(MB)',
   visit_times: '访问次数',
+  last_visit_time: '最后访问时间',
+  never_visited: '从未访问',
   accumulated_used_space: '累计已使用空间',
   attorn_username_required: '受让人用户名不能为空',
   no_file_selected: '未选择文件',

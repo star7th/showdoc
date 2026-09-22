@@ -15,6 +15,8 @@ export default {
   file_type: '文件类型',
   file_size_m: '文件大小(MB)',
   visit_times: '访问次数',
+  last_visit_time: '最后访问时间',
+  never_visited: '从未访问',
   add_time: '添加时间',
   visit: '访问',
   copy_link: '复制链接',

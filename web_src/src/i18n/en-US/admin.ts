@@ -344,6 +344,8 @@ export default {
   file_size: 'File Size',
   file_size_m: 'File Size (MB)',
   visit_times: 'Visit Times',
+  last_visit_time: 'Last Visit Time',
+  never_visited: 'Never visited',
   accumulated_used_space: 'Accumulated Used Space',
   visit: 'Visit',
   attorn_username_required: 'Recipient username cannot be empty',
