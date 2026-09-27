@@ -26,6 +26,20 @@
  * @since   2026-03-18
  */
 
+// CGI/FastCGI 环境下 Authorization 头可能被剥离，从 apache_request_headers 兜底恢复
+if (empty($_SERVER['HTTP_AUTHORIZATION']) && function_exists('apache_request_headers')) {
+    foreach (apache_request_headers() as $k => $v) {
+        if (strcasecmp($k, 'Authorization') === 0) {
+            $_SERVER['HTTP_AUTHORIZATION'] = $v;
+            $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = $v;
+            break;
+        }
+    }
+}
+if (empty($_SERVER['HTTP_AUTHORIZATION']) && !empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+    $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+}
+
 // MCP 独立入口，主版和开源版统一使用
 // 将请求路由到 MCP 控制器
 $_SERVER['REQUEST_URI'] = '/server/Api/Mcp/index';
