@@ -374,7 +374,11 @@ class UserController extends BaseController
         }
 
         $json = json_encode($infoArray, JSON_UNESCAPED_UNICODE);
-        $result = Item::import($json, $uid, 0);
+
+        // 生成随机密码，使示例项目默认为私密项目（与主版做法一致）
+        $itemPassword = rand(100000000, 10000000000000);
+
+        $result = Item::import($json, $uid, 0, '', '', (string) $itemPassword);
         
         return $result > 0;
     }
