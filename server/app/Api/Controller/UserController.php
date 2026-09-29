@@ -33,8 +33,8 @@ class UserController extends BaseController
             return $this->error($response, 10101, '用户名或密码不能为空');
         }
 
-        if (!preg_match('/^[a-zA-Z0-9_\-\x{4e00}-\x{9fa5}]{2,30}$/u', $username)) {
-            return $this->error($response, 10101, '用户名只允许字母、数字、下划线、横线、中文，2-30个字符');
+        if (mb_strlen($username) > 50) {
+            return $this->error($response, 10101, '账号长度不能超过50个字符');
         }
 
         // 验证码校验（兼容旧版逻辑）
