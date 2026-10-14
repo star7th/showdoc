@@ -298,6 +298,8 @@ onMounted(async () => {
 <style scoped lang="scss">
 .modal-content {
   width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
   padding: 30px 40px;
   border-bottom: 1px solid var(--color-interval);
 }
@@ -308,7 +310,7 @@ onMounted(async () => {
   color: var(--color-text-secondary);
 }
 
-.group-list {
+:deep(.group-list) {
   min-height: 200px;
   max-height: 400px;
   overflow-y: auto;
