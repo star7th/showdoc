@@ -107,26 +107,14 @@ class AttachmentController extends BaseController
         $filePath = '';
         if (count($array) > 1 && !empty($array[1])) {
             // 旧版使用 ../Public/Uploads/，这里根据项目根目录计算真实路径
-            $projectRoot = dirname(__DIR__, 3); // .../showdoc
+            $projectRoot = dirname(__DIR__, 4); // .../showdoc（Controller 向上 4 级到开源版根目录，Public/Uploads 在根目录下）
             $filePath = $projectRoot . DIRECTORY_SEPARATOR . 'Public' . DIRECTORY_SEPARATOR . 'Uploads' . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $array[1]);
         }
 
-        // 根据 oss_open 决定是否走本地下载逻辑
+        // 根据 oss_open 决定是否走本地输出逻辑
         $ossOpen = (int) \App\Model\Options::get('oss_open', 0);
-        if (
-            $ossOpen === 0 &&
-            $filePath &&
-            is_file($filePath) &&
-            !empty($fileData['display_name']) &&
-            !strstr(strtolower($filePath), '.bmp') &&
-            !strstr(strtolower($filePath), '.jpg') &&
-            !strstr(strtolower($filePath), '.png') &&
-            !strstr(strtolower($filePath), '.pdf') &&
-            !strstr(strtolower($filePath), '.doc') &&
-            !strstr(strtolower($filePath), '.xls') &&
-            !strstr(strtolower($filePath), '.ppt')
-        ) {
-            // 本地下载逻辑：设置 Content-Disposition: attachment 输出文件内容
+        if ($ossOpen === 0 && $filePath && is_file($filePath)) {
+            // 本地存储：统一走 PHP 流输出，按文件类型区分 inline 预览 / attachment 下载，均携带原始文件名
             return $this->downloadLocalFile($filePath, (string) $fileData['display_name'], $response);
         }
 
@@ -730,8 +718,51 @@ class AttachmentController extends BaseController
         ]);
     }
 
+    /** 可预览（inline）的扩展名白名单 */
+    private $inlineExtensions = [
+        // 图片
+        'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'avif', 'ico', 'tiff',
+        // PDF
+        'pdf',
+        // 音频
+        'mp3', 'wav', 'm4a', 'flac', 'aac',
+        // 视频（ogg 同时是音频/视频容器，允许 inline 预览）
+        'mp4', 'webm', 'mov', 'm4v', 'ogg',
+        // 文本类（svg/html/xml 等可含脚本的类型不在白名单，强制 attachment 下载）
+        'txt', 'md', 'markdown', 'json', 'csv', 'log', 'yml', 'yaml',
+        'php', 'py', 'java', 'c', 'h', 'cpp', 'hpp', 'cs', 'go', 'rs', 'rb',
+        'sh', 'bat', 'ps1', 'sql', 'ini', 'conf', 'toml', 'diff', 'patch',
+    ];
+
+    /** 扩展名 => Content-Type 映射（未命中则 application/octet-stream） */
+    private $contentTypeMap = [
+        'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png',
+        'gif' => 'image/gif', 'webp' => 'image/webp', 'bmp' => 'image/bmp',
+        'avif' => 'image/avif', 'ico' => 'image/x-icon', 'tiff' => 'image/tiff',
+        'pdf' => 'application/pdf',
+        'mp3' => 'audio/mpeg', 'wav' => 'audio/wav', 'm4a' => 'audio/mp4',
+        'flac' => 'audio/flac', 'aac' => 'audio/aac', 'ogg' => 'audio/ogg',
+        'mp4' => 'video/mp4', 'webm' => 'video/webm', 'mov' => 'video/quicktime',
+        'm4v' => 'video/x-m4v',
+        'txt' => 'text/plain; charset=utf-8', 'log' => 'text/plain; charset=utf-8',
+        'md' => 'text/plain; charset=utf-8', 'markdown' => 'text/plain; charset=utf-8',
+        'json' => 'application/json; charset=utf-8', 'csv' => 'text/csv; charset=utf-8',
+        'yml' => 'text/plain; charset=utf-8', 'yaml' => 'text/plain; charset=utf-8',
+        'xml' => 'application/xml; charset=utf-8',
+        'php' => 'text/plain; charset=utf-8', 'py' => 'text/plain; charset=utf-8',
+        'java' => 'text/plain; charset=utf-8', 'c' => 'text/plain; charset=utf-8',
+        'h' => 'text/plain; charset=utf-8', 'cpp' => 'text/plain; charset=utf-8',
+        'hpp' => 'text/plain; charset=utf-8', 'cs' => 'text/plain; charset=utf-8',
+        'go' => 'text/plain; charset=utf-8', 'rs' => 'text/plain; charset=utf-8',
+        'rb' => 'text/plain; charset=utf-8', 'sh' => 'text/plain; charset=utf-8',
+        'bat' => 'text/plain; charset=utf-8', 'ps1' => 'text/plain; charset=utf-8',
+        'sql' => 'text/plain; charset=utf-8', 'ini' => 'text/plain; charset=utf-8',
+        'conf' => 'text/plain; charset=utf-8', 'toml' => 'text/plain; charset=utf-8',
+        'diff' => 'text/plain; charset=utf-8', 'patch' => 'text/plain; charset=utf-8',
+    ];
+
     /**
-     * 输出本地文件到浏览器（下载），兼容旧版 _downloadFile 行为。
+     * 输出本地文件到浏览器（inline 预览或 attachment 下载），携带原始文件名。
      */
     private function downloadLocalFile(string $filename, string $rename, Response $response): Response
     {
@@ -740,9 +771,33 @@ class AttachmentController extends BaseController
             return $response->withStatus(404);
         }
 
+        // 尽早释放 session 文件锁，避免长下载期间阻塞同一用户的其他请求
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
         // 设置脚本的最大执行时间，设置为0则无时间限制
         @set_time_limit(3000);
         @ini_set('max_execution_time', '0');
+
+        // 处理原始文件名：过滤引号/换行等，防头注入；空则回退磁盘文件名
+        $rename = str_replace(["\"", "'", "\r", "\n", "\0", '%0d', '%0D', '%0a', '%0A'], '', $rename);
+        $rename = trim($rename);
+        if ($rename === '') {
+            $rename = basename($filename);
+        }
+
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+        // 可预览类型 inline，其余（含 svg/html 等可执行内容）强制 attachment 下载
+        $disposition = in_array($ext, $this->inlineExtensions, true) ? 'inline' : 'attachment';
+
+        // Content-Type：按扩展名映射，未命中则二进制流
+        $contentType = $this->contentTypeMap[$ext] ?? 'application/octet-stream';
+
+        // Content-Disposition 双写：ASCII 兜底 + RFC 5987 UTF-8 原名
+        $asciiName = preg_replace('/[\x80-\xFF]/', '_', $rename);
+        $encodedName = rawurlencode($rename);
 
         $filesize = filesize($filename);
         $handle = fopen($filename, 'rb');
@@ -751,14 +806,31 @@ class AttachmentController extends BaseController
             return $response->withStatus(500);
         }
 
-        $stream = new \Slim\Psr7\Stream($handle);
+        $response = $response
+            ->withHeader('Content-Type', $contentType)
+            ->withHeader('Content-Length', (string) $filesize)
+            ->withHeader(
+                'Content-Disposition',
+                $disposition . '; filename="' . $asciiName . '"; filename*=UTF-8\'\'' . $encodedName
+            )
+            // 私有附件：禁止共享缓存，允许浏览器本地缓存但需协商校验
+            ->withHeader('Cache-Control', 'private, no-cache')
+            ->withHeader('X-Content-Type-Options', 'nosniff');
 
-        return $response
-            ->withBody($stream)
-            ->withHeader('Content-Type', 'application/octet-stream')
-            ->withHeader('Accept-Ranges', 'bytes')
-            ->withHeader('Accept-Length', (string) $filesize)
-            ->withHeader('Content-Disposition', 'attachment;filename=' . basename($rename));
+        // 大文件分块写入响应体（8MB/块），避免一次性载入内存
+        while (!feof($handle)) {
+            $chunk = fread($handle, 8 * 1024 * 1024);
+            if ($chunk === false || $chunk === '') {
+                break;
+            }
+            $response->getBody()->write($chunk);
+            if (connection_aborted()) {
+                break;
+            }
+        }
+        fclose($handle);
+
+        return $response;
     }
 
     /**

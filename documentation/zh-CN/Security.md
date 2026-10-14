@@ -92,6 +92,16 @@ location ^~ /Sqlite/ {
 }
 ```
 
+同时建议封禁附件静态目录 `/Public/Uploads/`：附件下载统一走 `visitFile` PHP
+接口（带权限校验与正确文件名），静态直连是可被「知道随机文件名即绕过权限」
+利用的旁路：
+
+```nginx
+location ^~ /Public/Uploads/ {
+    deny all;
+}
+```
+
 Apache 示例（httpd.conf 或 VirtualHost 内，mod_rewrite）：
 
 ```apache

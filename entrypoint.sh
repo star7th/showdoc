@@ -58,6 +58,10 @@ docker_build() {
         # 此处兑底 rsync 把 server/ 整包拷进 web 根后防二进制被匿名下载）
         echo "location ^~ /server/bin/ { deny all; }"
         echo "location ^~ /Sqlite/ { deny all; }"
+        # 附件静态直链封禁：下载统一走 visitFile PHP 接口（带权限校验+正确文件名），
+        # 封掉 /Public/Uploads/ 静态直连，防止知道随机文件名即绕过权限下载。
+        # 用 URI 前缀匹配，不依赖文件系统 root 拼接，兼容任意 web_dir。
+        echo "location ^~ /Public/Uploads/ { deny all; }"
     ) >/opt/docker/etc/nginx/vhost.common.d/20-deny-serverbin.conf
 
     ## fix nginx warning

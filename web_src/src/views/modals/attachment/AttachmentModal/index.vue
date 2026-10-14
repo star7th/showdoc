@@ -79,6 +79,7 @@ import ConfirmModal from '@/components/ConfirmModal'
 import CommonModal from '@/components/CommonModal.vue'
 import CommonInput from '@/components/CommonInput.vue'
 import CommonButton from '@/components/CommonButton.vue'
+import { copyToClipboard } from '@/utils/tools'
 import CommonTab from '@/components/CommonTab.vue'
 import CommonTable from '@/components/CommonTable.vue'
 import UploadModal from '../UploadModal/index'
@@ -208,16 +209,14 @@ const handleVisit = (row: AttachmentItem) => {
 }
 
 // 复制链接
-const handleCopyLink = (row: AttachmentItem) => {
+const handleCopyLink = async (row: AttachmentItem) => {
   if (row.url) {
-    navigator.clipboard
-      .writeText(row.url)
-      .then(() => {
-        message.success(t('common.copy_success'))
-      })
-      .catch(() => {
-        message.error(t('common.copy_failed'))
-      })
+    const success = await copyToClipboard(row.url)
+    if (success) {
+      message.success(t('common.copy_success'))
+    } else {
+      message.error(t('common.copy_failed'))
+    }
   }
 }
 
