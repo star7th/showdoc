@@ -928,6 +928,7 @@ class AgentController extends BaseController
         $maxToolRounds = min((int) Options::get('ai_tool_rounds', 20), 30);
         $toolRound     = 0;
         $fullContent   = ''; // 最终回答内容
+        $hadLlmError   = false; // 本轮是否发生过 LLM 错误事件（用于兜底文案判断）
         $mcpWriteOps   = []; // MCP 写操作追踪
 
         while ($toolRound < $maxToolRounds) {
@@ -955,6 +956,7 @@ class AgentController extends BaseController
 
             // LLM 级别错误已通过 SSE 发送，终止循环
             if ($finishReason === 'error') {
+                $hadLlmError = true;
                 break;
             }
 
@@ -1128,7 +1130,10 @@ class AgentController extends BaseController
                 $fallbackMessages = $llmMessages;
                 $fallbackMessages[] = ['role' => 'system', 'content' => "之前的对话因工具调用轮次耗尽而中断，但你已经收集了大量信息。请根据已有的工具调用结果，直接用中文总结回答用户的问题。不要调用任何工具，只给出最终回答。如果信息不足以完整回答，请基于已有信息尽量回答，并说明哪些部分信息不足。"];
                 try {
-                    [$fallbackContent, , ] = $this->callLlmStream($fallbackMessages, [], $sessionItemId, $sessionId, $turnToken);
+                    [$fallbackContent, , $fallbackFinish] = $this->callLlmStream($fallbackMessages, [], $sessionItemId, $sessionId, $turnToken);
+                    if ($fallbackFinish === 'error') {
+                        $hadLlmError = true;
+                    }
                     if (!empty($fallbackContent)) {
                         $fullContent = $fallbackContent;
                     }
@@ -1139,7 +1144,13 @@ class AgentController extends BaseController
         }
         // 最终兜底：兜底总结也失败或无工具结果时
         if ($fullContent === '' && !$clientDisconnected) {
-            $fullContent = '抱歉，处理较复杂，请尝试更具体的问题。';
+            // Fix: 若本轮已发生过错误事件（真实错误已通过 SSE error 透传），
+            // 不再发误导性的「处理较复杂」兜底文案，改为明确的错误说明
+            if ($hadLlmError) {
+                $fullContent = '（AI 服务调用失败，请查看上方错误提示后重试）';
+            } else {
+                $fullContent = '抱歉，处理较复杂，请尝试更具体的问题。';
+            }
             $this->sendSse('text', $fullContent);
         }
 

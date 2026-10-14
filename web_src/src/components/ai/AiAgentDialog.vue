@@ -666,8 +666,13 @@ const handleSend = async (text: string, regenerateFromMsgId?: number) => {
           llm_error: t('ai.llm_error'),
           rate_limited: t('ai.rate_limited'),
         }
-        const hint = errorMessages[event.code] || event.message || t('ai.unknown_error')
+        const hint = event.message || errorMessages[event.code] || t('ai.unknown_error')
         message.warning(hint, 3)
+        // Fix: 错误信息同时写入聊天消息体，避免 3 秒 toast 消失后用户不知道发生了什么；
+        // 优先显示后端透传的 event.message，无则回退 i18n 文案
+        if (!assistantMsg.content) {
+          assistantMsg.content = hint
+        }
       } else if (event.type === 'message_id' && event.content) {
         // 后端在保存助手消息后、[DONE] 之前发送的 message_id 事件，
         // 让前端在 loadCurrentSession() 之前更新本地消息 ID，避免重复渲染。

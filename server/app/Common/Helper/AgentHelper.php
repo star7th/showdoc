@@ -5,6 +5,7 @@ namespace App\Common\Helper;
 use App\Common\Cache\CacheManager;
 use App\Common\Helper\AiHelper;
 use App\Model\Item;
+use App\Model\Options;
 
 /**
  * Agent 循环辅助方法
@@ -622,6 +623,112 @@ GUEST_LIMIT;
     private $mcpRequestId = 0;
 
     /**
+     * 检测上游错误信息是否为「不支持 system 消息」类错误
+     *
+     * 某些 OpenAI 兼容端点（如 Responses 协议网关）拒绝 role=system 消息，
+     * 报 invalid_request_error: System messages are not allowed。
+     */
+    private function isSystemNotSupportedError(string $msg): bool
+    {
+        $msg = strtolower($msg);
+        return (bool) preg_match(
+            '/system.{0,40}(not allowed|not support|unsupported|invalid)|invalid.{0,30}system|does not support.{0,30}system|reject.{0,30}system/',
+            $msg
+        );
+    }
+
+    /**
+     * 「不支持 system」端点记忆的缓存维度 key（aiServiceUrl + 模型名）
+     */
+    private function systemUnsupportedCacheKey(): string
+    {
+        return md5($this->aiServiceUrl . '|' . $this->aiModelName);
+    }
+
+    /**
+     * 该端点+模型是否已记忆为「不支持 system 消息」
+     */
+    private function isSystemUnsupportedCached(): bool
+    {
+        $map = json_decode((string) Options::get('ai_no_system_endpoints', '{}'), true);
+        return is_array($map) && !empty($map[$this->systemUnsupportedCacheKey()]);
+    }
+
+    /**
+     * 记忆「该端点+模型不支持 system 消息」，后续请求直接走降级路径
+     */
+    private function markSystemUnsupported(): void
+    {
+        $map = json_decode((string) Options::get('ai_no_system_endpoints', '{}'), true);
+        if (!is_array($map)) {
+            $map = [];
+        }
+        $map[$this->systemUnsupportedCacheKey()] = 1;
+        Options::set('ai_no_system_endpoints', json_encode($map));
+    }
+
+    /**
+     * 把 messages 中所有 role=system 的消息合并进相邻的 user 消息（降级路径）
+     *
+     * 每条 system 内容加 [系统指令] 前缀后合并进最近的一条 user 消息：
+     * 优先合并到其后的第一条 user 消息（前缀置顶）；其后无 user 时回退到其前最近的 user 消息。
+     * 正常端点不调用本方法，行为零变化。
+     */
+    private function mergeSystemIntoUser(array $messages): array
+    {
+        $hasSystem = false;
+        foreach ($messages as $m) {
+            if (($m['role'] ?? '') === 'system') {
+                $hasSystem = true;
+                break;
+            }
+        }
+        if (!$hasSystem) {
+            return $messages;
+        }
+
+        $count = count($messages);
+        $out = [];
+        foreach ($messages as $i => $m) {
+            if (($m['role'] ?? '') !== 'system') {
+                $out[$i] = $m;
+                continue;
+            }
+            $sysContent = "[系统指令]\n" . (string) ($m['content'] ?? '') . "\n[/系统指令]";
+            // 找最近的 user 消息：先向后，再向前
+            $target = null;
+            for ($j = $i + 1; $j < $count; $j++) {
+                if (($messages[$j]['role'] ?? '') === 'user') {
+                    $target = $j;
+                    break;
+                }
+            }
+            if ($target === null) {
+                for ($j = $i - 1; $j >= 0; $j--) {
+                    if (($messages[$j]['role'] ?? '') === 'user') {
+                        $target = $j;
+                        break;
+                    }
+                }
+            }
+            if ($target === null) {
+                // 无 user 消息可合并：转为 user 消息保底
+                $out[$i] = ['role' => 'user', 'content' => $sysContent];
+                continue;
+            }
+            if (!isset($out[$target])) {
+                $merged = $messages[$target];
+                $merged['content'] = $sysContent . "\n\n" . (string) ($merged['content'] ?? '');
+                $out[$target] = $merged;
+            } else {
+                $out[$target]['content'] .= "\n" . $sysContent;
+            }
+        }
+        ksort($out);
+        return array_values($out);
+    }
+
+    /**
      * 调用 LLM API（流式），返回收集到的 [fullContent, toolCalls]
      *
      * @param array $messages LLM messages
@@ -629,10 +736,17 @@ GUEST_LIMIT;
      * @param int   $itemId   当前项目 ID（用于引用标记解析）
      * @param int   $sessionId 会话 ID（用于检测取消标记，提前终止 LLM 流）
      * @param string $turnToken 当前 turn 的取消令牌（与 isCancelled/markCancelled 的 key 维度一致）
+     * @param bool $allowSystemFallback 是否允许在端点拒绝 system 消息时自动降级重试一次（防递归）
      * @return array [string $fullContent, array $toolCalls, ?string $finishReason, int $inputTokens, int $outputTokens]
      */
-    private function callLlmStream(array $messages, array $tools, int $itemId = 0, int $sessionId = 0, string $turnToken = ''): array
+    private function callLlmStream(array $messages, array $tools, int $itemId = 0, int $sessionId = 0, string $turnToken = '', bool $allowSystemFallback = true): array
     {
+        // 降级路径：该端点+模型已记忆为「不支持 system 消息」→ 直接合并，不再重试探测
+        if ($allowSystemFallback && $this->isSystemUnsupportedCached()) {
+            $messages = $this->mergeSystemIntoUser($messages);
+            $allowSystemFallback = false;
+        }
+
         $fullContent  = '';
         $toolCalls    = [];
         $finishReason = null;
@@ -697,6 +811,10 @@ GUEST_LIMIT;
 
         // 缓冲区用于拼接跨 chunk 的 SSE 数据行
         $buffer = '';
+
+        // HTTP 级错误捕获：非 2xx 响应时上游通常返回 JSON 错误体而非 SSE 流
+        $isHttpError = false;
+        $httpErrBody = '';
 
         $streamFlush = function () use (&$fullContent, &$refBuffer, &$editHold, &$inEditBlock, &$lastCheckPos, $itemId) {
             $len = strlen($fullContent);
@@ -835,13 +953,22 @@ GUEST_LIMIT;
             }
         };
 
-        $callback = function ($ch, $data) use (&$fullContent, &$toolCalls, &$finishReason, &$buffer, &$streamFlush, &$totalInputTokens, &$totalOutputTokens, &$sessionId, $turnToken) {
+        $callback = function ($ch, $data) use (&$fullContent, &$toolCalls, &$finishReason, &$buffer, &$streamFlush, &$totalInputTokens, &$totalOutputTokens, &$sessionId, $turnToken, &$isHttpError, &$httpErrBody) {
             if (connection_aborted()) {
                 return -1;
             }
             // 用户主动取消：提前终止 LLM 流，agent 循环顶部的 isCancelled 检查会结束本轮生成
             if ($sessionId > 0 && $this->isCancelled($sessionId, $turnToken)) {
                 return -1;
+            }
+
+            // 非 2xx 响应：响应体是 JSON 错误（非 SSE 流），先攒起来，curl_exec 后统一处理
+            $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if ($httpCode >= 400) {
+                $isHttpError = true;
+                $httpErrBody .= $data;
+                if (strlen($httpErrBody) > 65536) { return strlen($data); } // 防御：错误体过大不再累积
+                return strlen($data);
             }
 
             $buffer .= $data;
@@ -938,6 +1065,45 @@ GUEST_LIMIT;
 
         curl_setopt($curl, CURLOPT_WRITEFUNCTION, $callback);
         curl_exec($curl);
+
+        // ── HTTP 级错误：非 2xx 响应（此前被误当 llm_error，真实错误只进日志）──
+        $respHttpCode = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        if (!$isHttpError && $respHttpCode >= 400) {
+            // 响应体理论上都经 WRITEFUNCTION 到达，此处仅为状态码兜底标记
+            $isHttpError = true;
+        }
+        if ($isHttpError) {
+            $errMsg = $httpErrBody;
+            $decoded = @json_decode($httpErrBody, true);
+            if (is_array($decoded)) {
+                $errMsg = (string) ($decoded['error']['message'] ?? ($decoded['message'] ?? $httpErrBody));
+            }
+            $errMsg = trim($errMsg);
+            error_log("[AgentHelper] LLM HTTP {$respHttpCode} error: " . mb_substr($httpErrBody, 0, 500));
+
+            // 「不支持 system 消息」端点：自动降级（system 合并进 user）并重试一次，
+            // 结论按 aiServiceUrl+模型名 记忆，后续请求直接走降级路径
+            if ($allowSystemFallback && $this->isSystemNotSupportedError($errMsg)) {
+                curl_close($curl);
+                $this->markSystemUnsupported();
+                error_log("[AgentHelper] endpoint rejects system messages, retrying with merged prompt: {$this->aiServiceUrl} | {$this->aiModelName}");
+                return $this->callLlmStream(
+                    $this->mergeSystemIntoUser($messages),
+                    $tools,
+                    $itemId,
+                    $sessionId,
+                    $turnToken,
+                    false
+                );
+            }
+
+            curl_close($curl);
+            // 错误透传：把上游错误摘要放进 SSE error 事件的 message（截断前 200 字符）
+            $userMessage = $errMsg !== '' ? mb_substr($errMsg, 0, 200) : "AI 服务返回 HTTP {$respHttpCode}";
+            $this->sendSseError('llm_error', $userMessage);
+            $finishReason = 'error';
+            return [$fullContent, $toolCalls, $finishReason, $totalInputTokens, $totalOutputTokens];
+        }
 
         // ── 流结束：刷新缓冲中残留的内容 ──
         // 未成块的疑似 EDIT 标记前缀实为字面文本，正常发送；
