@@ -28,28 +28,51 @@ class AdminUpdateController extends BaseController
         $text = file_get_contents($composerPath);
         $composer = json_decode($text, true);
         $version = $composer['version'] ?? '';
+        // ShipDesk 要求纯 semver，去掉 v 前缀
+        $versionNum = ltrim($version, 'vV');
 
-        $url = "https://www.showdoc.cc/server/api/open/checkUpdate";
+        // 上游切换为 ShipDesk 发版台检测更新接口
+        $url = "https://shipdesk.showdoc.cc/api/v1/apps/showdoc/clients/source/latest?current_version=" . urlencode($versionNum);
         $ch = curl_init();
-        $timeout = 2;
+        $timeout = 5;
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "version={$version}");
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         $sContent = curl_exec($ch);
+        $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        // 转换字段名：将 file_url 改为 url（兼容前端）
-        $resArray = json_decode($sContent, true);
-        if ($resArray && isset($resArray['data']) && isset($resArray['data']['file_url'])) {
-            $resArray['data']['url'] = $resArray['data']['file_url'];
+        $resArray = is_string($sContent) ? json_decode($sContent, true) : null;
+
+        // 适配 ShipDesk 响应为前端（AboutSite.vue）期望的旧格式 {new_version, url, version}
+        $data = [
+            'new_version' => '',
+            'url' => '',
+            'version' => $version,
+        ];
+        if ($httpCode === 200 && is_array($resArray) && !empty($resArray['update']) && is_array($resArray['latest'])) {
+            $latest = $resArray['latest'];
+            $latestVersionNum = ltrim($latest['version'] ?? '', 'vV');
+            // 防御性二次校验：最新版本号必须大于本地版本
+            if ($latestVersionNum !== '' && version_compare($latestVersionNum, $versionNum) > 0) {
+                // 从资产中挑选 type=file 的下载地址（slug 为 null 的资产优先，否则回退第一个 file 资产）
+                $fileUrl = '';
+                $fileAsset = $this->pickFileAsset($latest);
+                if ($fileAsset !== null && !empty($fileAsset['url'])) {
+                    $fileUrl = $fileAsset['url'];
+                }
+                if ($fileUrl !== '') {
+                    $data['new_version'] = 'v' . $latestVersionNum;
+                    $data['url'] = $fileUrl;
+                }
+            }
         }
 
-        // 输出转换后的响应
-        $response->getBody()->write(json_encode($resArray));
+        // 输出适配后的响应（前端 request.ts 依赖 error_code === 0 判定业务成功）
+        $response->getBody()->write(json_encode(['error_code' => 0, 'data' => $data]));
         return $response->withHeader('Content-Type', 'application/json');
     }
 
@@ -92,25 +115,41 @@ class AdminUpdateController extends BaseController
         $text = file_get_contents($composerPath);
         $composer = json_decode($text, true);
         $version = $composer['version'] ?? '';
+        $versionNum = ltrim($version, 'vV');
 
-        $url = "https://www.showdoc.cc/server/api/open/checkUpdate";
-        $res = HttpHelper::post($url, ["version" => $version]);
-        $resArray = json_decode($res, true);
-        
-        if (!$resArray || !isset($resArray['data'])) {
-            return $this->error($response, 10101, '检测更新时异常');
+        // 上游切换为 ShipDesk 发版台检测更新接口
+        $url = "https://shipdesk.showdoc.cc/api/v1/apps/showdoc/clients/source/latest?current_version=" . urlencode($versionNum);
+        $res = HttpHelper::get($url);
+        $resArray = is_string($res) ? json_decode($res, true) : null;
+
+        if (!$resArray || empty($resArray['update']) || !is_array($resArray['latest'])) {
+            return $this->error($response, 10101, '当前已是最新版本或检测更新时异常');
         }
 
-        $newVersion = $resArray['data']['new_version'] ?? '';
-        $fileUrl = $resArray['data']['file_url'] ?? '';
+        $latest = $resArray['latest'];
+        $newVersion = $latest['version'] ?? '';
+        $newVersionNum = ltrim($newVersion, 'vV');
 
-        if (empty($fileUrl)) {
-            return $this->error($response, 10101, '检测更新时异常');
+        // 防御性二次校验（与 checkUpdate 一致）：最新版本号必须大于本地版本，否则不下载
+        if ($newVersionNum === '' || version_compare($newVersionNum, $versionNum) <= 0) {
+            return $this->error($response, 10101, '当前已是最新版本或检测更新时异常');
+        }
+
+        // 从资产中挑选 type=file 的下载地址与 sha256（slug 为 null 的资产优先，否则回退第一个 file 资产）
+        $fileAsset = $this->pickFileAsset($latest);
+        $fileUrl = $fileAsset['url'] ?? '';
+        $sha256 = '';
+        if ($fileAsset !== null) {
+            $sha256 = is_string($fileAsset['sha256'] ?? null) ? $fileAsset['sha256'] : '';
+        }
+
+        if (empty($fileUrl) || !is_string($sha256) || $sha256 === '') {
+            return $this->error($response, 10101, '检测更新时异常：更新包缺少下载地址或 sha256 校验值');
         }
 
         // 安全检查：fileUrl 必须来自 showdoc.cc 官方域名
         $parsedFileUrl = parse_url($fileUrl);
-        $allowedHosts = ['www.showdoc.cc', 'www.showdoc.com.cn', 'showdoc.com.cn', 'showdoc.cc', 'cdn.showdoc.cc', 'github.com', 'githubusercontent.com'];
+        $allowedHosts = ['showdoc.cc', 'showdoc.com.cn'];
         $fileUrlHost = strtolower($parsedFileUrl['host'] ?? '');
         $isAllowedHost = false;
         foreach ($allowedHosts as $allowedHost) {
@@ -123,13 +162,19 @@ class AdminUpdateController extends BaseController
             return $this->error($response, 10101, '更新文件来源不受信任');
         }
 
+        // 安全检查：白名单域名且仅允许 443/默认端口
+        $fileUrlPort = $parsedFileUrl['port'] ?? null;
+        if ($fileUrlPort !== null && (int)$fileUrlPort !== 443) {
+            return $this->error($response, 10101, '更新文件来源不受信任');
+        }
+
         // 安全检查：只允许 https 协议
         $fileUrlScheme = strtolower($parsedFileUrl['scheme'] ?? '');
         if ($fileUrlScheme !== 'https') {
             return $this->error($response, 10101, '更新文件必须使用 HTTPS 协议');
         }
 
-        $versionNum = str_replace("v", "", $newVersion);
+        $versionNum = ltrim($newVersion, 'vV');
 
         // 进行文件读写权限检查
         if (
@@ -163,6 +208,16 @@ class AdminUpdateController extends BaseController
         }
 
         file_put_contents($zipFile, $file);
+
+        // 完整性校验：ShipDesk 返回的 sha256 与下载文件实际哈希比对
+        $actualHash = hash_file('sha256', $zipFile);
+        if ($actualHash === false || !hash_equals(strtolower($sha256), $actualHash)) {
+            if (file_exists($zipFile)) {
+                unlink($zipFile);
+            }
+            $this->delDir($tempDir);
+            return $this->error($response, 10101, '更新包 sha256 校验失败，已放弃本次更新。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
+        }
 
         $zip = new \ZipArchive();
         $flag = $zip->open($zipFile);
@@ -276,6 +331,30 @@ class AdminUpdateController extends BaseController
         } else {
             return $this->error($response, 10101, '升级文件不存在。如自动更新失败，请参考 https://www.showdoc.com.cn/help/13732 手动升级');
         }
+    }
+
+    /**
+     * 从 ShipDesk 资产列表中挑选 type=file 且带下载地址的资产
+     * 多个 file 资产时：slug 为 null 的优先（source 平台约定），无匹配则回退第一个 file 资产
+     *
+     * @param array $latest ShipDesk latest 响应
+     * @return array|null 选中的资产，无可用资产时返回 null
+     */
+    private function pickFileAsset(array $latest): ?array
+    {
+        $fallback = null;
+        foreach (($latest['assets'] ?? []) as $asset) {
+            if (!is_array($asset) || ($asset['type'] ?? '') !== 'file' || empty($asset['url'])) {
+                continue;
+            }
+            if ($fallback === null) {
+                $fallback = $asset;
+            }
+            if (($asset['slug'] ?? null) === null) {
+                return $asset;
+            }
+        }
+        return $fallback;
     }
 
     /**
