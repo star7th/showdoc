@@ -49,6 +49,8 @@ docker_build() {
     (
         echo "upload_max_filesize=5120M;"
         echo "post_max_size=5120M;"
+        echo "session.use_strict_mode=1;"
+        echo "session.upload_progress.enabled=Off;"
     ) >>/opt/docker/etc/php/php.ini
     (
         echo "client_max_body_size 5120m;"
