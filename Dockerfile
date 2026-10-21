@@ -34,7 +34,7 @@ RUN case "$BASE_IMAGE" in \
         webdevops/php-nginx:8.3-*) \
             PHP_NOW=$(php -r 'echo PHP_VERSION;') && \
             if [ "$SKIP_PHP_PATCH" = "true" ] || \
-               [ "$(printf '%s\n' "$MIN_PHP_VERSION" "$PHP_NOW" | sort -V | head -1)" != "$MIN_PHP_VERSION" ]; then \
+               [ "$(printf '%s\n' "$MIN_PHP_VERSION" "$PHP_NOW" | sort -V | head -1)" != "$PHP_NOW" ]; then \
                 echo "[php-patch] skip: base PHP $PHP_NOW >= $MIN_PHP_VERSION (or SKIP_PHP_PATCH=true)"; \
                 exit 0; \
             fi \
