@@ -79,7 +79,9 @@ RUN case "$BASE_IMAGE" in \
             && make install \
             && make clean \
         ;; \
-        *) echo "[php-patch] skip: $BASE_IMAGE not a webdevops 8.3 image" ;; \
+        *) echo "[php-patch] skip: $BASE_IMAGE not a webdevops 8.3 image" \
+           && mkdir -p /usr/local/sbin \
+           && { command -v php-fpm || cp /usr/local/bin/php /usr/local/sbin/php-fpm; } ;; \
     esac
 
 # =============================================================================
@@ -96,9 +98,13 @@ ARG TARGETVARIANT
 # PHP 补丁二进制覆盖（基础镜像共享扩展 .so 跨补丁版本兼容，无需重装）
 COPY --from=php-patch-builder /usr/local/bin/php /usr/local/bin/php
 COPY --from=php-patch-builder /usr/local/sbin/php-fpm /usr/local/sbin/php-fpm
-RUN php -v | head -1 && php-fpm -v | head -1 \
-    && php -r 'var_dump(iconv("UTF-8","GBK","测试"));' > /dev/null \
-    && php --ri sodium > /dev/null && echo PHP_PATCH_OK
+RUN case "$BASE_IMAGE" in \
+        webdevops/php-nginx:8.3-*) \
+            php -v | head -1 && php-fpm -v | head -1 \
+            && php -r 'var_dump(iconv("UTF-8","GBK","测试"));' > /dev/null \
+            && php --ri sodium > /dev/null && echo PHP_PATCH_OK \
+        ;; \
+    esac
 
 # 环境变量
 ENV SHOWDOC_DOCKER_VERSION=3.4.2
