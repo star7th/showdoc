@@ -20,7 +20,19 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
+      # arm64: use the default patched base (webdevops/php-nginx:8.3-alpine, php2shell fixed)
+      - name: Build and push (arm64, patched PHP)
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: star7th/showdoc:arm-latest
+          file: Dockerfile
+          platforms: |
+            linux/arm64
+      # arm/v7: webdevops base does not support v7; keep wordpress:php8.1
+      # (unfixed PHP, Dockerfile bakes php2shell mitigation ini)
+      - name: Build and push (arm/v7, legacy base + mitigation)
         uses: docker/build-push-action@v4
         with:
           context: .

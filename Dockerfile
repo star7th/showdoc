@@ -32,6 +32,10 @@ COPY . .
 # 但用 !server/bin/anydoc 反排除了本文件，所以这里仍可 COPY
 COPY --chmod=755 server/bin/anydoc /usr/local/bin/anydoc
 
+# php2shell mitigation (CVE-2026-109618/109619): only meaningful on unfixed bases (arm/v7 wordpress:php8.1);
+# harmless on patched PHP
+COPY --chmod=644 docker/php2shell-mitigation.ini /usr/local/etc/php/conf.d/zz-php2shell-mitigation.ini
+
 # 旧版基础镜像（wordpress:*，如 arm/v7）：代码需放入 apache 网站根目录 /var/www/html，
 # 并提供 PHP 渲染 web/index.html 的入口，同时放宽权限以兼容历史行为。
 # 注意：RUN 默认 /bin/sh（POSIX），须用 case 而非 [[ ]]
