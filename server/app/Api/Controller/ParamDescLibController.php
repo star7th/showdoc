@@ -563,21 +563,31 @@ class ParamDescLibController extends BaseController
             return $this->error($response, 10001, '缺少要删除的ID');
         }
 
-        // 检查权限 - 获取第一个条目的item_id进行权限验证
-        $firstEntry = ParameterDescriptionEntry::findById($ids[0]);
-        if (!$firstEntry) {
-            return $this->error($response, 10001, '条目不存在');
+        // 逐条校验权限：对每个 id 取条目并验证调用者对其所属项目的编辑权限，
+        // 防止夹带其他项目的条目 id 造成越权删除
+        $allowedIds = [];
+        foreach ($ids as $entryId) {
+            $entry = ParameterDescriptionEntry::findById($entryId);
+            if (!$entry) {
+                continue; // 条目不存在则跳过
+            }
+
+            if (!$this->checkItemEdit($uid, $entry->item_id)) {
+                continue; // 无该项目编辑权限则跳过，不删除
+            }
+
+            $allowedIds[] = $entryId;
         }
 
-        if (!$this->checkItemEdit($uid, $firstEntry->item_id)) {
-            return $this->error($response, 10303, '您没有编辑权限');
+        if (empty($allowedIds)) {
+            return $this->error($response, 10303, '没有可删除的条目或您没有编辑权限');
         }
 
-        // 构建删除条件
-        $result = ParameterDescriptionEntry::delete($ids);
+        // 只删除通过权限校验的条目
+        $result = ParameterDescriptionEntry::delete($allowedIds);
 
         if ($result > 0) {
-            return $this->success($response, ['deleted' => count($ids)]);
+            return $this->success($response, ['deleted' => $result]);
         } else {
             return $this->error($response, 10001, '删除失败');
         }
