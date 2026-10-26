@@ -534,7 +534,17 @@ class McpController extends BaseController
    */
   private function acceptedNotificationResponse(Response $response): Response
   {
-    return $this->withCorsHeaders($response)->withStatus(202);
+    // 202 Accepted 空响应：去掉 Content-Type，避免部分 MCP 客户端误判响应格式（issue #2613）。
+    // 仅 withoutHeader 不够：Slim ResponseEmitter 走 header() 输出，PSR-7 响应本身虽无 Content-Type，
+    // 但 PHP SAPI 仍会在响应头阶段自动补 default_mimetype(text/html)，故需同时清空 default_mimetype。
+    // 显式声明 Content-Length: 0；Emitter 仅在输出 body 时读取该头，此处 body 为空，不会产生重复头。
+    if (function_exists('ini_set')) {
+      @ini_set('default_mimetype', '');
+    }
+    return $this->withCorsHeaders($response)
+      ->withoutHeader('Content-Type')
+      ->withHeader('Content-Length', '0')
+      ->withStatus(202);
   }
 
   /**
