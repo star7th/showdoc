@@ -76,8 +76,13 @@ class MockController extends BaseController
             return $this->error($response, 10101, '为了服务器安全，只允许写符合json语法的字符串');
         }
 
+        // mockjs 占位符参数存在 eval 求值面，入库前做白名单校验（与 mock-server JS 侧等价）
+        if (!self::mockTemplateIsSafe(htmlspecialchars_decode($template))) {
+            return $this->error($response, 10101, '为了服务器安全，模板含不支持的mockjs语法，仅允许标准占位符与字面量参数');
+        }
+
         // 生成唯一key
-        $uniqueKey = bin2hex(random_bytes(16));
+        $uniqueKey = bin2hex(random_bytes(32));
 
         // 检查是否已存在该页面的Mock
         $mockPage = Mock::findByPageId($pageId);
@@ -162,6 +167,12 @@ class MockController extends BaseController
         $mockHost = Env::get('MOCK_HOST', '127.0.0.1');
         $mockPort = Env::get('MOCK_PORT', '7123');
 
+        // 转发前兜底校验（覆盖历史库存/旁路写入的数据）
+        if (!self::mockTemplateIsSafe(htmlspecialchars_decode($template))) {
+            $response->getBody()->write('为了服务器安全，模板含不支持的mockjs语法，仅允许标准占位符与字面量参数');
+            return $response->withStatus(400);
+        }
+
         // 调用Mock服务
         $res = HttpHelper::post("http://{$mockHost}:{$mockPort}/mock", [
             'template' => htmlspecialchars_decode($template),
@@ -213,6 +224,12 @@ class MockController extends BaseController
         $mockHost = Env::get('MOCK_HOST', '127.0.0.1');
         $mockPort = Env::get('MOCK_PORT', '7123');
 
+        // 转发前兜底校验（覆盖历史库存/旁路写入的数据）
+        if (!self::mockTemplateIsSafe(htmlspecialchars_decode($template))) {
+            $response->getBody()->write('为了服务器安全，模板含不支持的mockjs语法，仅允许标准占位符与字面量参数');
+            return $response->withStatus(400);
+        }
+
         // 调用Mock服务
         $res = HttpHelper::post("http://{$mockHost}:{$mockPort}/mock", [
             'template' => htmlspecialchars_decode($template),
@@ -237,5 +254,76 @@ class MockController extends BaseController
             $response->getBody()->write('mock服务暂时不可用。网站管理员安装完showdoc后需要另行安装mock服务，详情请打开https://www.showdoc.com.cn/help');
             return $response->withStatus(503);
         }
+    }
+
+    /**
+     * mock 模板白名单校验（与 mock-server index.js 的 JS 侧逻辑等价）
+     * 背景：mockjs 对占位符 @xxx(参数) 的参数会拼接进 eval 求值，
+     * 白名单要求参数只能是：数字 / 单双引号字符串 / 裸标识符 token（纯变量引用，无调用面）/
+     * true / false / null / 字面量数组（如 @pick([1,2,3])，元素仅限 数字/字符串/true/false/null），逗号分隔。
+     * 拒绝：反引号（tagged template 无括号调用面）、\u 转义、
+     * 占位符名后跟 . 或 [（属性链，如 constructor）、任何无法按字面量完整解析的参数。
+     * 在 json_decode 后的解码形态上递归校验所有字符串值；
+     * 属性名修饰符（如 "list|1-10"）不参与占位符求值，不影响。
+     */
+    private static function mockTemplateIsSafe(string $tpl): bool
+    {
+        $decoded = json_decode($tpl, true);
+        if ($decoded === null && trim($tpl) !== 'null') {
+            return false;
+        }
+        return self::mockValueIsSafe($decoded);
+    }
+
+    private static function mockValueIsSafe($value): bool
+    {
+        if (is_string($value)) {
+            return self::mockPlaceholderStringIsSafe($value);
+        }
+        if (is_array($value)) {
+            foreach ($value as $v) {
+                if (!self::mockValueIsSafe($v)) {
+                    return false;
+                }
+            }
+        }
+        return true; // 数字/布尔/null 无占位符求值面
+    }
+
+    private static function mockPlaceholderStringIsSafe(string $str): bool
+    {
+        if (strpos($str, '`') !== false) {
+            return false; // 反引号：tagged template 可无括号调用函数
+        }
+        if (preg_match('/\\\\u/i', $str)) {
+            return false; // 字面反斜杠u序列（含 \u0028 括号转义 payload）
+        }
+        // mockjs RE_PLACEHOLDER 的真实名字字符集（[^@#%&()?\s]+，允许数字开头、$、.、非 ASCII 等），
+        // 探测必须覆盖同一字符集，否则 @0(...)、@nàme(...) 等形态会绕过校验直达 eval
+        $anyName = '@[^@#%&()\?\s]+';
+        if (preg_match('/' . $anyName . '(?:\\.|\\[)/', $str)) {
+            return false; // 占位符名后跟 . 或 [：属性链访问
+        }
+        $name = '@[A-Za-z][A-Za-z0-9_]*(?:\\/[A-Za-z][A-Za-z0-9_]*)?';
+        $strLit = '\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"]|\\\\.)*"';
+        $num = '-?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?';
+        // 裸 token：字母/_/$ 开头，另放行官方写法 \d+x\d+（如 200x100）与 #RRGGBB 颜色字面量；
+        // 字符集排除 . [ ] ( ) = ` ' " \\，无调用/属性链/赋值面
+        $bare = '[A-Za-z_$][A-Za-z0-9_$\\-]*|\\d+[xX]\\d+|#[0-9A-Fa-f]{3,8}';
+        // 数组字面量参数（@pick 官方用法）：元素仅限 数字/字符串/true/false/null
+        $arrElem = '(?:' . $strLit . '|' . $num . '|true|false|null)';
+        $arrLit = '\\[(?:' . $arrElem . '(?:\\s*,\\s*' . $arrElem . ')*)?\\]';
+        $arg = '(?:' . $strLit . '|' . $num . '|' . $arrLit . '|' . $bare . ')';
+        $args = $arg . '(?:\\s*,\\s*' . $arg . ')*';
+        $call = '/^(?:' . $name . '\\((?:' . $args . ')?\\))/';
+        if (!preg_match_all('/' . $anyName . '\\(/', $str, $m, PREG_OFFSET_CAPTURE)) {
+            return true; // 没有带参数的占位符，无 eval 面
+        }
+        foreach ($m[0] as $hit) {
+            if (!preg_match($call, substr($str, $hit[1]))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
