@@ -82,7 +82,7 @@ docker_build() {
     set_mirror
 
     apk update
-    apk add --update --no-cache nodejs npm sqlite sqlite-dev
+    apk add --update --no-cache nodejs npm sqlite sqlite-dev su-exec
 
     mv $showdoc_dir_html/mock $showdoc_dir/
     cd $showdoc_dir/mock || exit 1
@@ -90,6 +90,8 @@ docker_build() {
     # rm -f package-lock.json
 
     npm install
+    ## 允许降权用户（mockmock）读取 mock 目录与 node_modules（运行期只读，无写入需求）
+    chmod -R a+rX $showdoc_dir/mock
 }
 
 backup_dbfile() {
@@ -226,13 +228,19 @@ EOF
         cd $showdoc_dir_html/server || exit 1
         php index.php /api/update/dockerUpdateCode
     )
-    ## 延迟启动 mock 服务
+    ## 延迟启动 mock 服务（降权运行：su-exec 切到低权用户 mockmock，绕过 pm2 直接跑 node，
+    ## HOME 指向 /tmp 避免 npm/pm2 写 $HOME；7123 非特权端口，无文件写入需求，降权无功能影响）
     (
         echo "delay 30s start mock..."
         sleep 30
         echo "Starting mock server..."
         cd $showdoc_dir/mock/ || exit 1
-        npm run start
+        if command -v su-exec >/dev/null 2>&1 && id mockmock >/dev/null 2>&1; then
+            exec su-exec mockmock:mockmock env HOME=/tmp node index.js
+        else
+            ## 兜底：无 su-exec 或用户时保持旧行为
+            npm run start
+        fi
     ) &
     pids+=("$!")
 

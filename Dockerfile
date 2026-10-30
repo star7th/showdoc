@@ -19,7 +19,7 @@ ARG IN_CHINA=false
 ARG TARGETVARIANT
 
 # 环境变量
-ENV SHOWDOC_DOCKER_VERSION=3.4.2
+ENV SHOWDOC_DOCKER_VERSION=3.4.3
 ENV IN_CHINA=${IN_CHINA}
 ENV BASE_IMAGE=${BASE_IMAGE}
 ENV TARGETVARIANT=${TARGETVARIANT}
@@ -35,6 +35,13 @@ COPY --chmod=755 server/bin/anydoc /usr/local/bin/anydoc
 # php2shell mitigation (CVE-2026-109618/109619): only meaningful on unfixed bases (arm/v7 wordpress:php8.1);
 # harmless on patched PHP
 COPY --chmod=644 docker/php2shell-mitigation.ini /usr/local/etc/php/conf.d/zz-php2shell-mitigation.ini
+
+# mock 服务降权专用低权用户（entrypoint 中以 su-exec 切换该用户运行 mock/index.js）。
+# 仅在默认 alpine 基础镜像上创建；旧版 wordpress:* 基础镜像不启动 mock，无需创建。
+RUN case "$BASE_IMAGE" in \
+        wordpress:*) true ;; \
+        *) addgroup -S mockmock && adduser -S -G mockmock -H -h /tmp mockmock ;; \
+    esac
 
 # 旧版基础镜像（wordpress:*，如 arm/v7）：代码需放入 apache 网站根目录 /var/www/html，
 # 并提供 PHP 渲染 web/index.html 的入口，同时放宽权限以兼容历史行为。
