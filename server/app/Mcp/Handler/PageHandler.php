@@ -370,10 +370,12 @@ class PageHandler extends McpHandler
    * @param array $params 参数
    *   - query: 搜索关键字（必填）
    *   - item_id: 项目ID（可选，不传则搜索所有有权限的项目）
-   *   - search_mode: 搜索模式（可选，默认 title）
+   *   - search_mode: 搜索模式（可选，默认 auto）
+   *     - auto: 智能模式（默认）：先搜索标题，无命中时自动降级搜索正文（有护栏，见下）
    *     - title: 只搜索标题（数据库 LIKE，速度快）
    *     - content: 只搜索内容（需解压后 PHP 层面搜索，速度慢）
    *     - all: 搜索标题和内容（需解压后 PHP 层面搜索，速度慢）
+   *     - auto 降级护栏：指定了 item_id 或可访问项目数 <= 20 时才降级搜正文，否则保持 title 结果，避免全局正文扫描超时
    * @return array
    * @throws McpException
    */
@@ -385,11 +387,13 @@ class PageHandler extends McpHandler
     }
 
     $itemId = (int) ($params['item_id'] ?? 0);
-    // 搜索模式：title（默认，只搜索标题）、content（只搜索内容）、all（搜索标题和内容）
-    $searchMode = $params['search_mode'] ?? 'title';
-    if (!in_array($searchMode, ['title', 'content', 'all'], true)) {
-      $searchMode = 'title';
+    // 搜索模式：auto（默认，先搜标题，无命中自动降级搜正文）、title、content、all
+    $searchMode = $params['search_mode'] ?? 'auto';
+    if (!in_array($searchMode, ['title', 'content', 'all', 'auto'], true)) {
+      $searchMode = 'auto';
     }
+    // 实际生效的搜索模式（auto 在执行时表现为 title 或 content）
+    $effectiveMode = $searchMode === 'auto' ? 'title' : $searchMode;
 
     // 支持多关键字 OR 搜索（空格分隔）
     $keywords = array_filter(array_map('trim', preg_split('/\s+/', $query)));
@@ -401,8 +405,96 @@ class PageHandler extends McpHandler
     $seenIds = [];  // 用 "item_id:page_id" 去重
     $maxResults = 50;
 
+    // 未指定项目ID时，先取出有权限的项目列表（auto 降级判断也要用）
+    $userItemIds = [];
+    if ($itemId <= 0) {
+      $uid = $this->getUid();
+      $userItemIds = $this->getUserItemIds($uid);
+    }
+
+    // 标题轮搜索：auto/title 走 title 路径；content/all 直接走正文路径
+    if ($searchMode === 'auto' || $searchMode === 'title') {
+      if ($itemId > 0) {
+        // 指定了项目ID：在该项目中用所有关键字搜索
+        $this->requireReadPermission($itemId);
+        foreach ($keywords as $kw) {
+          $found = $this->searchInItem($itemId, $kw, strtolower($kw), 'title', $maxResults);
+          foreach ($found as $page) {
+            $key = $page['item_id'] . ':' . $page['page_id'];
+            if (!isset($seenIds[$key])) {
+              $seenIds[$key] = true;
+              $result[] = $page;
+            }
+          }
+          if (count($result) >= $maxResults) break;
+        }
+      } else {
+        // 未指定项目ID：遍历用户有权限的所有项目，每个关键字都搜索（title 模式）
+        foreach ($keywords as $kw) {
+          $kwLower = strtolower($kw);
+          foreach ($userItemIds as $eachItemId) {
+            if (count($result) >= $maxResults) break 2;
+            $remaining = $maxResults - count($result);
+            $found = $this->searchInItem($eachItemId, $kw, $kwLower, 'title', $remaining);
+            foreach ($found as $page) {
+              $key = $page['item_id'] . ':' . $page['page_id'];
+              if (!isset($seenIds[$key])) {
+                $seenIds[$key] = true;
+                $result[] = $page;
+              }
+            }
+          }
+        }
+      }
+    } else {
+      $result = $this->runContentSearch($keywords, $itemId, $userItemIds, $searchMode, $maxResults);
+    }
+
+    // auto 模式：标题无命中时降级搜索正文（带护栏，避免全局正文扫描超时）
+    $autoFellBack = false;
+    if ($searchMode === 'auto' && empty($result)) {
+      // 护栏：指定了 item_id，或可访问项目数不多时才降级
+      if ($itemId > 0 || count($userItemIds) <= 20) {
+        $result = $this->runContentSearch($keywords, $itemId, $userItemIds, 'content', $maxResults);
+        $effectiveMode = 'content';
+        $autoFellBack = !empty($result);
+      }
+    }
+
+    $return = [
+      'query' => $query,
+      'keywords' => $keywords,
+      'item_id' => $itemId,
+      'search_mode' => $searchMode,
+      'effective_mode' => $effectiveMode,
+      'pages' => $result,
+      'total' => count($result),
+    ];
+    // auto 降级命中时给调用方一句提示
+    if ($autoFellBack) {
+      $return['notice'] = '标题无命中，已自动搜索正文';
+    }
+    return $return;
+  }
+
+  /**
+   * 执行正文搜索（content/all 模式路径）
+   *
+   * 指定 item_id 时搜该项目，否则遍历所有有权限的项目。
+   * 复用 searchInItem() 的每项目 500 页上限逻辑，内部去重。
+   *
+   * @param array $keywords 关键字数组
+   * @param int $itemId 项目ID（0 表示全局）
+   * @param array $userItemIds 有权限的项目ID列表（全局搜索时使用）
+   * @param string $searchMode content 或 all
+   * @param int $maxResults 最大返回数
+   * @return array 命中的页面列表
+   */
+  private function runContentSearch(array $keywords, int $itemId, array $userItemIds, string $searchMode, int $maxResults): array
+  {
+    $result = [];
+    $seenIds = [];
     if ($itemId > 0) {
-      // 指定了项目ID：在该项目中用所有关键字搜索
       $this->requireReadPermission($itemId);
       foreach ($keywords as $kw) {
         $found = $this->searchInItem($itemId, $kw, strtolower($kw), $searchMode, $maxResults);
@@ -416,16 +508,13 @@ class PageHandler extends McpHandler
         if (count($result) >= $maxResults) break;
       }
     } else {
-      // 未指定项目ID：遍历用户有权限的所有项目，每个关键字都搜索
-      $uid = $this->getUid();
-      $itemIds = $this->getUserItemIds($uid);
-
+      // 逐项目解压搜索
       foreach ($keywords as $kw) {
         $kwLower = strtolower($kw);
-        foreach ($itemIds as $eachItemId) {
+        foreach ($userItemIds as $iid) {
           if (count($result) >= $maxResults) break 2;
           $remaining = $maxResults - count($result);
-          $found = $this->searchInItem($eachItemId, $kw, $kwLower, $searchMode, $remaining);
+          $found = $this->searchInItem($iid, $kw, $kwLower, $searchMode, $remaining);
           foreach ($found as $page) {
             $key = $page['item_id'] . ':' . $page['page_id'];
             if (!isset($seenIds[$key])) {
@@ -436,15 +525,7 @@ class PageHandler extends McpHandler
         }
       }
     }
-
-    return [
-      'query' => $query,
-      'keywords' => $keywords,
-      'item_id' => $itemId,
-      'search_mode' => $searchMode,
-      'pages' => $result,
-      'total' => count($result),
-    ];
+    return $result;
   }
 
   /**
@@ -455,7 +536,7 @@ class PageHandler extends McpHandler
    *
    * @param array $params 参数
    *   - keywords: 搜索关键字（必填）
-   *   - mode: 搜索模式（可选，title/content/all，默认 title）
+   *   - mode: 搜索模式（可选，title/content/all，默认 auto 智能降级）
    *   - limit: 最大返回数量（可选，默认 20，最大 50）
    * @return array
    * @throws McpException
@@ -467,10 +548,10 @@ class PageHandler extends McpHandler
       McpError::throw(McpError::INVALID_PARAMS, '搜索关键字不能为空');
     }
 
-    // 搜索模式：title（默认，只搜索标题）、content（只搜索内容）、all（搜索标题和内容）
-    $searchMode = $params['mode'] ?? 'title';
-    if (!in_array($searchMode, ['title', 'content', 'all'], true)) {
-      $searchMode = 'title';
+    // 搜索模式：auto（智能降级）、title、content、all（透传给 searchPages，默认 auto）
+    $searchMode = $params['mode'] ?? 'auto';
+    if (!in_array($searchMode, ['title', 'content', 'all', 'auto'], true)) {
+      $searchMode = 'auto';
     }
 
     // 最大返回数量

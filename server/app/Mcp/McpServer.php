@@ -395,7 +395,7 @@ class McpServer
 
     $this->tools['search_pages'] = [
       'name' => 'search_pages',
-      'description' => '搜索页面（按关键字搜索，默认只搜索标题）。注意：看板项目(item_type=6)请使用 kanban_search_tasks 搜索任务；RunApi项目(item_type=3)的接口也可通过此工具搜索',
+      'description' => '搜索页面（按关键字搜索）。默认智能模式：先搜标题，无命中时自动搜正文（项目过多时仅搜标题）。若明确只想搜正文，可显式传 search_mode=content。注意：看板项目(item_type=6)请使用 kanban_search_tasks 搜索任务；RunApi项目(item_type=3)的接口也可通过此工具搜索',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -409,8 +409,8 @@ class McpServer
           ],
           'search_mode' => [
             'type' => 'string',
-            'description' => '搜索模式：title（默认，只搜索标题）、content（只搜索内容）、all（搜索标题和内容）',
-            'enum' => ['title', 'content', 'all'],
+            'description' => '搜索模式（可选，默认 auto）：auto（先搜标题，无命中自动搜正文）、title（只搜索标题）、content（只搜索内容）、all（搜索标题和内容）',
+            'enum' => ['auto', 'title', 'content', 'all'],
           ],
         ],
         'required' => ['query'],
@@ -420,7 +420,7 @@ class McpServer
 
     $this->tools['search_all_pages'] = [
       'name' => 'search_all_pages',
-      'description' => '全局搜索页面：在当前用户有权限的所有项目中搜索页面。不需要指定项目ID，适合「我不知道在哪个项目里」的场景。默认只搜索标题（速度快），可选 content/all 模式搜索正文内容（较慢，因为需要解密后逐页匹配）。看板项目(item_type=6)的任务页面也会被搜索',
+      'description' => '全局搜索页面：在当前用户有权限的所有项目中搜索页面。不需要指定项目ID，适合「我不知道在哪个项目里」的场景。search_pages 未指定 item_id 时与本工具等价。默认智能降级（先搜标题，无命中且项目数不多时自动搜正文）；可选 content/all 模式强制搜索正文内容（较慢，因为需要解密后逐页匹配）。看板项目(item_type=6)的任务页面也会被搜索',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -430,8 +430,8 @@ class McpServer
           ],
           'mode' => [
             'type' => 'string',
-            'description' => '搜索模式：title（默认，只搜索标题，速度快）、content（只搜索正文内容，速度慢）、all（搜索标题和正文，速度慢）',
-            'enum' => ['title', 'content', 'all'],
+            'description' => '搜索模式（可选，默认 auto）：auto（先搜标题，无命中自动降级搜正文，项目过多时仅搜标题）、title（只搜标题，速度快）、content（只搜正文，速度慢）、all（标题和正文，速度慢）',
+            'enum' => ['auto', 'title', 'content', 'all'],
           ],
           'limit' => [
             'type' => 'integer',
