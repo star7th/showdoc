@@ -56,15 +56,31 @@ docker_build() {
         echo "client_max_body_size 5120m;"
     ) >/opt/docker/etc/nginx/vhost.common.d/10-general.conf
     (
-        # 禁止访问 server/bin（anydoc 二进制；镜像内已 COPY 到 /usr/local/bin，
-        # 此处兑底 rsync 把 server/ 整包拷进 web 根后防二进制被匿名下载）
-        echo "location ^~ /server/bin/ { deny all; }"
-        echo "location ^~ /Sqlite/ { deny all; }"
-        # 附件静态直链封禁：下载统一走 visitFile PHP 接口（带权限校验+正确文件名），
-        # 封掉 /Public/Uploads/ 静态直连，防止知道随机文件名即绕过权限下载。
-        # 用 URI 前缀匹配，不依赖文件系统 root 拼接，兼容任意 web_dir。
-        echo "location ^~ /Public/Uploads/ { deny all; }"
-    ) >/opt/docker/etc/nginx/vhost.common.d/20-deny-serverbin.conf
+        # 大小写绕过防护（漏洞修复）：
+        # 旧写法 location ^~ /Sqlite/ { deny all; } 是大小写敏感的前缀匹配，在
+        # 大小写不敏感文件系统（Windows/macOS bind mount）上，/sqlite/showdoc.db.PHP
+        # 等小写/大小写混合路径可绕过 deny，且 .PHP 后缀不命中基础镜像的
+        # `location ~ \.php$`（同样大小写敏感），不进 php-fpm 而落回静态回显，
+        # 导致整个 SQLite 数据库被匿名下载。
+        # 修复：改用大小写不敏感正则 location ~* ^/(server/bin|sqlite|public/uploads)/。
+        # nginx 前缀匹配没有 ~* 语法，正则 location 按配置出现顺序首个命中生效；
+        # vhost.conf include vhost.common.d/*.conf 按文件名字典序加载，
+        # 命名为 05-deny.conf 确保排在基础镜像 10-php.conf 的 `\.php$` 正则之前，
+        # deny 先命中。文件名切勿改成 10-/20- 开头（会排在 10-php.conf 之后或
+        # 同批顺序不定，php 正则先匹配导致防护失效）。
+        echo "location ~* ^/(server/bin|sqlite|public/uploads)/ { deny all; }"
+    ) >/opt/docker/etc/nginx/vhost.common.d/05-deny-serverbin.conf
+    (
+        # php 处理同样改为大小写不敏感（覆盖基础镜像的 10-php.conf），
+        # 避免 .PHP/.Php 等变体落回静态回显；fastcgi 参数保持不变。
+        echo 'location ~* \.php$ {'
+        echo '    fastcgi_split_path_info ^(.+\.php)(/.+)$;'
+        echo '    fastcgi_pass php;'
+        echo '    include fastcgi_params;'
+        echo '    fastcgi_param SCRIPT_FILENAME     $request_filename;'
+        echo '    fastcgi_read_timeout 600;'
+        echo '}'
+    ) >/opt/docker/etc/nginx/vhost.common.d/10-php.conf
 
     ## fix nginx warning
     sed -i -e '1 s/^/#/' /opt/docker/etc/nginx/vhost.ssl.conf
