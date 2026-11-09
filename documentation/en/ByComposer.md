@@ -1,4 +1,4 @@
-﻿Composer is a tool for dependency management in PHP. It allows you to declare the libraries your project depends on and it will manage (install/update) them for you.https://getcomposer.org/
+Composer is a tool for dependency management in PHP. It allows you to declare the libraries your project depends on and it will manage (install/update) them for you.https://getcomposer.org/
 You can install ShowDoc by Composer automatically.
 
 - New installation
@@ -13,7 +13,7 @@ http://your-domain.com/showdoc/install/ (change to your servser's address) to in
 
 - Upgrade
 
- Stop apache or nginx , and move showdoc folder to bakup
+ Stop apache or nginx , and move showdoc folder to backup
  ```
  mv showdoc  showdoc_backup 
  ```

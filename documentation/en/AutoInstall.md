@@ -1,10 +1,10 @@
 ### Foreword
 
-The automatic script uses Docker to install the runtime environment for Linux servers. If your server does't have a Docker service, the script will try to install it. The process of installing Docker maybe a bit slow. If you have already installed Docker, the script will omit some of the steps to speed up the ShowDoc installation.
+The automatic script uses Docker to install the runtime environment for Linux servers. If your server doesn't have a Docker service, the script will try to install it. The process of installing Docker maybe a bit slow. If you have already installed Docker, the script will omit some of the steps to speed up the ShowDoc installation.
 
 When the script fails to install Docker, you should manually install Docker before executing the script. If you still have problem in installing Docker, you can (un/re-)install and debug it step by step according to this tutorial: [ByDocker.md](https://github.com/star7th/showdoc/blob/master/documentation/en/ByDocker.md)
 
-If the server does't support Docker, you can only run ShowDoc by manually installing the PHP environment:  [DeployManual.md](https://github.com/star7th/showdoc/blob/master/documentation/en/DeployManual.md)
+If the server doesn't support Docker, you can only run ShowDoc by manually installing the PHP environment:  [DeployManual.md](https://github.com/star7th/showdoc/blob/master/documentation/en/DeployManual.md)
 
 ### Instructions
 
