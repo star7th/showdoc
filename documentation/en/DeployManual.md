@@ -1,4 +1,4 @@
-﻿### Introduction 
+### Introduction 
 
  About ShowDoc , Please refer to [/README.md](README.md)
  
@@ -37,7 +37,7 @@
 
  - Manually download the code from https://github.com/star7th/showdoc/
  - Backup your codes via: `mv showdoc  showdoc_backup`
- - Dowload new codes and decompression it to a new directory.Copy `/Sqlite/*` and `/Public/Uploads/*` from old directory to new directory
+ - Download new codes and decompression it to a new directory.Copy `/Sqlite/*` and `/Public/Uploads/*` from old directory to new directory
  
  - Open `http://your-domain.com/index.php?s=/home/update/db`  in your brown to update database 
  
