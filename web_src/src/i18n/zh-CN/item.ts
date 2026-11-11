@@ -99,6 +99,8 @@ export default {
   one_month: '一个月',
   half_year: '半年',
   create_single_page_tips: '单页链接将永久有效，除非设置了过期时间。设置过期时间后，用户只能通过单页链接访问页面，无法访问整个项目。',
+  markdown_link: 'Markdown 链接',
+  markdown_link_tips: 'Markdown 链接仅适用于公开（无密码）的项目页面。',
   export: '导出',
   export_format: '导出格式',
   export_format_word: 'word格式',

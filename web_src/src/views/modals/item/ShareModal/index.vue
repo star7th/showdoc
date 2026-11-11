@@ -13,6 +13,16 @@
           <i class="fas fa-copy copy-icon" @click="handleCopyPage"></i>
         </div>
 
+        <!-- Markdown 链接（仅公开项目的页面场景显示） -->
+        <template v-if="pageId && !isPrivateItem">
+          <p class="label">{{ $t('item.markdown_link') }}:</p>
+          <div class="link-container">
+            <code class="link">{{ shareMdLink }}</code>
+            <i class="fas fa-copy copy-icon" @click="handleCopyMd"></i>
+          </div>
+          <div class="tips-text">{{ $t('item.markdown_link_tips') }}</div>
+        </template>
+
         <!-- 单页链接设置（仅选中页面时显示） -->
         <div v-if="pageId && props.item_info?.item_edit" class="single-page-section">
           <p class="label">
@@ -73,6 +83,7 @@ const props = defineProps<{
     item_id?: number
     item_domain?: string
     item_edit?: boolean
+    is_private?: number
     unique_key?: string
     page_title?: string
   }
@@ -116,9 +127,33 @@ const shareSingleLink = computed(() => {
   return `${baseUrl}#/p/${pageUniqueKey.value}`
 })
 
+// 判断是否为私密（有密码）项目：口径与后端一致（有 password 即私密）
+const isPrivateItem = computed(() => Number(itemInfo.value?.is_private ?? 0) === 1)
+
+// 生成 Markdown 直出链接
+const shareMdLink = computed(() => {
+  if (!pageId.value || pageId.value <= 0 || isPrivateItem.value) return ''
+
+  // 前端部署在 web/ 目录下，server 入口相对其上一级
+  const path = window.location.pathname
+  const idx = path.lastIndexOf('web/')
+  const webBase = window.location.origin + (idx >= 0 ? path.slice(0, idx + 4) : '/')
+  return `${webBase}server/index.php?s=api/md/page&page_id=${pageId.value}&f=${pageId.value}.md`
+})
+
 // 复制页面链接
 const handleCopyPage = async () => {
   const success = await copyToClipboard(sharePageLink.value)
+  if (success) {
+    Message.success(t('common.copy_success'))
+  } else {
+    AlertModal(t('common.error'))
+  }
+}
+
+// 复制 Markdown 链接
+const handleCopyMd = async () => {
+  const success = await copyToClipboard(shareMdLink.value)
   if (success) {
     Message.success(t('common.copy_success'))
   } else {

@@ -423,6 +423,7 @@ class ItemController extends BaseController
             'default_cat_id4'            => $defaultCatId4,
             'unread_count'               => $unreadCount,
             'item_type'                  => $item->item_type ?? 0, // 直接使用数据库返回的原始值
+            'is_private'                 => empty($item->password ?? '') ? 0 : 1, // 与 myList 口径一致：有密码即私密
             'menu'                       => $menu,
             'is_login'                   => $uid > 0,
             'item_edit'                  => $itemEdit,

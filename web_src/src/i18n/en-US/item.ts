@@ -94,6 +94,8 @@ export default {
   one_month: 'One month',
   half_year: 'Half year',
   create_single_page_tips: 'Single page link will be permanently valid unless an expiration time is set. After setting the expiration time, users can only access the page through the single page link and cannot access the entire project.',
+  markdown_link: 'Markdown URL',
+  markdown_link_tips: 'The Markdown URL is only available for pages of public (password-less) items.',
   export: 'Export',
   export_format: 'Export Format',
   export_format_word: 'Word format',
