@@ -6,6 +6,7 @@ use App\Common\BaseController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use App\Model\User;
+use App\Common\Helper\Security;
 use App\Model\Item;
 use Illuminate\Database\Capsule\Manager as DB;
 
@@ -136,6 +137,11 @@ class AdminUserController extends BaseController
             return $this->error($response, 10101, '参数错误');
         }
 
+        // 极弱密码黑名单拦截（管理员重置用户密码入口）
+        if (Security::isWeakPassword($newPassword)) {
+            return $this->error($response, 10101, '密码过于简单，请换一个更安全的密码');
+        }
+
         $result = User::updatePwd($uid, $newPassword);
         if (!$result) {
             return $this->error($response, 10101, '修改失败');
@@ -172,6 +178,10 @@ class AdminUserController extends BaseController
         if ($uid) {
             // 更新用户
             if ($password) {
+                // 极弱密码黑名单拦截（管理员更新用户入口）
+                if (Security::isWeakPassword($password)) {
+                    return $this->error($response, 10101, '密码过于简单，请换一个更安全的密码');
+                }
                 User::updatePwd($uid, $password);
             }
             if ($name) {
@@ -182,6 +192,11 @@ class AdminUserController extends BaseController
             // 新增用户
             if (User::isExist($username)) {
                 return $this->error($response, 10101, '用户名已存在');
+            }
+
+            // 极弱密码黑名单拦截（管理员新增用户入口）
+            if (Security::isWeakPassword($password)) {
+                return $this->error($response, 10101, '密码过于简单，请换一个更安全的密码');
             }
 
             $newUid = User::register($username, $password);

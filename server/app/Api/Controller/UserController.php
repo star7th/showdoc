@@ -225,6 +225,11 @@ class UserController extends BaseController
             return $this->error($response, 10101, $passwordValidation['message']);
         }
 
+        // 极弱密码黑名单拦截（注册入口）
+        if (Security::isWeakPassword($password)) {
+            return $this->error($response, 10101, '密码过于简单，请换一个更安全的密码');
+        }
+
         if ($password !== $confirmPassword) {
             return $this->error($response, 10101, '两次输入的密码不一致');
         }
@@ -425,6 +430,11 @@ class UserController extends BaseController
         $passwordValidation = Security::validateStrongPassword($newPassword);
         if (!$passwordValidation['valid']) {
             return $this->error($response, 10101, $passwordValidation['message']);
+        }
+
+        // 极弱密码黑名单拦截（修改密码入口）
+        if (Security::isWeakPassword($newPassword)) {
+            return $this->error($response, 10101, '密码过于简单，请换一个更安全的密码');
         }
 
         // 获取当前用户用户名

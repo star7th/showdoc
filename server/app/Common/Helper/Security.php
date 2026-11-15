@@ -196,4 +196,42 @@ class Security
 
         return ['valid' => true, 'message' => '', 'errors' => []];
     }
+
+    /**
+     * 极弱密码拦截（NIST SP 800-63B 黑名单式做法：只禁极弱，不强制强密码）
+     *
+     * 规则：
+     * 1. 长度小于 6 位直接拒绝；
+     * 2. 命中内置静态黑名单（中文互联网常见极弱密码 Top 1000 左右，见 weak_passwords.php）拒绝；
+     * 3. 生日格式（19xx/20xx 开头的 8 位数字，且月/日在合法区间）拒绝。
+     *
+     * 注册、修改密码等入口统一调用本方法。
+     * 仅在设置/修改密码时校验，存量用户密码不受影响。
+     *
+     * @param string $password 待校验的密码
+     * @return bool true 表示极弱密码，应拒绝
+     */
+    public static function isWeakPassword(string $password): bool
+    {
+        // 规则一：长度不足 6 位
+        if (strlen($password) < 6) {
+            return true;
+        }
+
+        // 规则二：命中静态黑名单（字母场景统一转小写比较，如 Password/admin123）
+        static $blacklist = null;
+        if ($blacklist === null) {
+            $blacklist = array_flip(require __DIR__ . '/weak_passwords.php');
+        }
+        if (isset($blacklist[strtolower($password)])) {
+            return true;
+        }
+
+        // 规则三：生日格式（19xx/20xx 年份 + 合法月日，如 19900101、20050608）
+        if (preg_match('/^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/', $password)) {
+            return true;
+        }
+
+        return false;
+    }
 }
