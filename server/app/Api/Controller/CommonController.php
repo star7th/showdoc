@@ -4,6 +4,7 @@ namespace App\Api\Controller;
 
 use App\Common\BaseController;
 use App\Common\Helper\UrlHelper;
+use App\Model\Captcha;
 use Illuminate\Database\Capsule\Manager as DB;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -18,9 +19,10 @@ class CommonController extends BaseController
      */
     public function createCaptcha(Request $request, Response $response): Response
     {
-        // 生成 4 位验证码（数字 + 大写字母），不依赖旧 get_rand_str
+        // 生成 4 位验证码（数字 + 大写字母），不依赖旧 get_rand_str；
+        // 全站登录失败熔断触发时自动升级为 6 位，抬高撞库打码成本（详见 Captcha::captchaLength）
         $chars   = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        $length  = 4;
+        $length  = Captcha::captchaLength();
         $captcha = '';
         $maxIdx  = strlen($chars) - 1;
         for ($i = 0; $i < $length; $i++) {

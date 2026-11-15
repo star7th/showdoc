@@ -18,6 +18,10 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 class UserController extends BaseController
 {
+    /** 密码错误延迟（毫秒）。动机：撞库/暴破依赖高频试探，密码错误时统一延迟 1.5 秒再返回，
+     * 可把攻击者的有效尝试速率压到难以接受的水平；密码正确路径零延迟，正常用户无感。 */
+    const PASSWORD_FAIL_DELAY_MS = 1500;
+
     /**
      * 登录接口（用户名/邮箱/手机号 + 密码 + 图形验证码），
      * 对齐旧版 loginByVerify 的验证码校验逻辑。
@@ -56,7 +60,12 @@ class UserController extends BaseController
         }
 
         if (!$user) {
+            // 全站失败率熔断计数：仅密码错误计入（验证码错误不计），不分 IP 不分用户名。
+            // 攻击者用代理池撞库时，全站失败数会迅速推高，触发验证码升级为 6 位。
+            Captcha::recordLoginPasswordFailure();
             LoginFailureLock::recordFailure($username);
+            // 延迟返回，拖慢撞库试探速率（仅密码错误触发，密码正确路径零延迟）
+            usleep(self::PASSWORD_FAIL_DELAY_MS * 1000);
             return $this->error($response, 10210, '用户名或密码错误');
         }
 
