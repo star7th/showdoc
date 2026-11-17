@@ -82,6 +82,9 @@ class UpdateController extends BaseController
             // 目录覆盖
             $this->copyDir('/showdoc_data/html/', $showdocPath);
 
+            // 清理历史版本更新包残留的测试目录（曾携带攻击测试样本，避免用户服务器被杀软误报）
+            $this->removeDir($showdocPath . 'server/tests/');
+
             // 用备份的数据库还原
             if (isset($bakName) && file_exists($bakName)) {
                 copy($bakName, $dbPath);
@@ -135,6 +138,38 @@ class UpdateController extends BaseController
         }
 
         closedir($dir);
+    }
+
+    /**
+     * 递归删除目录
+     *
+     * @param string $dir 目录路径
+     * @return void
+     */
+    private function removeDir(string $dir): void
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        $items = scandir($dir);
+        if ($items === false) {
+            return;
+        }
+
+        foreach ($items as $item) {
+            if ($item == "." || $item == "..") {
+                continue;
+            }
+            $path = $dir . "/" . $item;
+            if (is_dir($path)) {
+                $this->removeDir($path);
+            } else {
+                @unlink($path);
+            }
+        }
+
+        @rmdir($dir);
     }
 
     /**

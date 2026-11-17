@@ -122,6 +122,57 @@ if (!$ADMIN_TOKEN || $ADMIN_TOKEN === 'CHANGE_ME') {
     die("需要 ADMIN_TOKEN\n");
 }
 
+/**
+ * fixtures 前置检查：缺失时自动尝试调宿主机 python3 运行生成脚本。
+ * python3 或 python-docx/python-pptx 任一缺失时打印提示并整体跳过，不报错中断。
+ *
+ * @param string[] $scripts 生成脚本路径（依次尝试执行）
+ * @param string[] $files   必需的 fixture 文件名列表
+ * @return void（不可用时已打印 SKIP 提示并 exit）
+ */
+function ensureFixturesOrSkip(array $scripts, array $files): void
+{
+    $dir = getenv('FX_DIR') ?: __DIR__ . '/fixtures';
+    $missing = array_values(array_filter($files, static fn($f) => !is_file($dir . '/' . $f)));
+    if (!$missing) {
+        return;
+    }
+    echo '缺少 fixtures：' . implode(', ', $missing) . "\n";
+    $hint = "请在宿主机安装 python3 与 python-docx/python-pptx 后运行：\n";
+    foreach ($scripts as $s) {
+        $hint .= "  python3 {$s}\n";
+    }
+    $py = trim((string) shell_exec('command -v python3 2>/dev/null'));
+    if ($py === '') {
+        echo "SKIP：当前环境无 python3。\n{$hint}";
+        exit(0);
+    }
+    exec(escapeshellarg($py) . ' -c ' . escapeshellarg('import docx, pptx') . ' 2>/dev/null', $out, $rc);
+    if ($rc !== 0) {
+        echo "SKIP：python3 缺少 python-docx / python-pptx 依赖（pip3 install python-docx python-pptx）。\n{$hint}";
+        exit(0);
+    }
+    $envPrefix = getenv('FX_DIR') ? 'FX_OUT=' . escapeshellarg($dir) . ' ' : '';
+    foreach ($scripts as $s) {
+        echo "尝试生成：python3 {$s}\n";
+        system($envPrefix . escapeshellarg($py) . ' ' . escapeshellarg($s) . ' 2>&1', $rc);
+        if ($rc !== 0) {
+            echo "SKIP：生成脚本执行失败（exit={$rc}）。\n{$hint}";
+            exit(0);
+        }
+    }
+    $still = array_filter($files, static fn($f) => !is_file($dir . '/' . $f));
+    if ($still) {
+        echo 'SKIP：生成后仍缺少 ' . implode(', ', $still) . "。\n{$hint}";
+        exit(0);
+    }
+}
+
+ensureFixturesOrSkip(
+    [__DIR__ . '/make_entity_fixtures.py'],
+    ['entity_attack.docx', 'entity_normal.docx']
+);
+
 $trackedItems = []; // item_id => item_name，finally 里清理
 
 try {

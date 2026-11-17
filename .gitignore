@@ -31,3 +31,7 @@ server/.phpunit.result.cache
 server/vendor/bin/.phpunit.result.cache
 server/phpunit.xml.bak
 server/composer.phar
+
+# Office 导入攻击测试样本（含恶意特征，勿入库；由 make_attack_fixtures.py / make_entity_fixtures.py 运行时生成）
+server/tests/office-import/fixtures/atk_*
+server/tests/office-import/fixtures/entity_attack.docx
