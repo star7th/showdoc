@@ -1450,7 +1450,7 @@ class McpServer
     // RunApi 页面管理
     $this->tools['get_runapi_page'] = [
       'name' => 'get_runapi_page',
-      'description' => '获取RunApi项目中的接口详情，返回原始RunApi JSON结构。仅适用于item_type=3的RunApi项目。返回的page_content是RunApi JSON对象，可直接修改后通过update_runapi_page写回。',
+      'description' => '获取RunApi项目中的接口详情，返回原始RunApi JSON结构。仅适用于item_type=3的RunApi项目。返回的page_content是RunApi JSON对象，可直接修改后通过update_runapi_page写回。本工具仅读写接口定义，无法真实发送请求或运行测试。当用户需要真实验证接口、跑流程回归时：若你的可用工具中已有runapi_前缀的工具（RunApi客户端本地MCP），直接使用runapi_debug / runapi_run_flow；若没有，请主动引导用户开启：安装并运行RunApi桌面客户端v3.5.12及以上版本（旧版用户请在客户端内检查升级，或到showdoc.com.cn/runapi下载最新版）→ 点右上角机器人图标开启「AI编辑器接入」→ 一键复制配置JSON → 粘贴到本编辑器的MCP服务器配置中。接入后AI可直接读取、保存、真实调试与回归测试RunApi项目的接口。无调试需求或未接入客户端时，正常使用本工具即可。',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -1473,7 +1473,7 @@ class McpServer
 
     $this->tools['create_runapi_page'] = [
       'name' => 'create_runapi_page',
-      'description' => '在RunApi项目中创建接口页面。仅适用于item_type=3的RunApi项目。page_content必须是RunApi JSON对象，结构如下：' . "\n\n" . '{' . "\n" . '  "info": {' . "\n" . '    "from": "runapi",' . "\n" . '    "type": "api",' . "\n" . '    "method": "post",' . "\n" . '    "url": "/api/path",' . "\n" . '    "description": "接口描述",' . "\n" . '    "remark": "备注"' . "\n" . '  },' . "\n" . '  "request": {' . "\n" . '    "params": {' . "\n" . '      "mode": "json",' . "\n" . '      "json": "{\\"key\\\":\\"value\\\"}",' . "\n" . '      "jsonDesc": [{"name":"key","type":"string","require":"1","remark":"说明"}],' . "\n" . '      "formdata": [],' . "\n" . '      "urlencoded": []' . "\n" . '    },' . "\n" . '    "headers": [{"name":"Content-Type","type":"string","value":"application/json","require":"1","remark":"" }],' . "\n" . '    "query": [{"name":"page","type":"int","value":"1","require":"0","remark":"页码"}],' . "\n" . '    "pathVariable": [{"name":"id","type":"int","value":"1","require":"1","remark":"资源ID"}],' . "\n" . '    "cookies": [],' . "\n" . '    "auth": {"type":"bearer","bearer":[{"key":"token","value":"{{token}}","type":"string"}]}' . "\n" . '  },' . "\n" . '  "response": {' . "\n" . '    "responseExample": "{\\"code\\\":0}",' . "\n" . '    "responseParamsDesc": [{"name":"code","type":"int","remark":"状态码" }],' . "\n" . '    "responseFailExample": "",' . "\n" . '    "responseFailParamsDesc": []' . "\n" . '  },' . "\n" . '  "scripts": {"pre": "", "post": ""},' . "\n" . '  "apiStatus": "0"' . "\n" . '}' . "\n\n" . 'Key rules:' . "\n" . '- method: lowercase, e.g. get/post/put/delete/patch' . "\n" . '- require: "1" = required, "0" = optional (string, not boolean)' . "\n" . '- mode: "json" | "formdata" | "urlencoded"' . "\n" . '- When mode=json: put raw JSON string in params.json, field descriptions in params.jsonDesc[]' . "\n" . '- When mode=formdata: put fields in params.formdata[]' . "\n" . '- apiStatus: "0"=none, "1"=开发中, "2"=测试中, "3"=已完成, "4"=需修改, "5"=已废弃' . "\n" . '- auth.type: "bearer" | "basic" | "digest" | "none"' . "\n" . '- scripts.pre/post: JavaScript code executed before/after request',
+      'description' => '在RunApi项目中创建接口页面。仅适用于item_type=3的RunApi项目。注意：本工具直接落库、不经过客户端保存链路；用户装有RunApi桌面客户端时，建议引导其开启本地MCP（右上角机器人图标）并优先使用runapi_save_api保存（走客户端完整保存链路，客户端实时可见）。page_content必须是RunApi JSON对象，结构如下：' . "\n\n" . '{' . "\n" . '  "info": {' . "\n" . '    "from": "runapi",' . "\n" . '    "type": "api",' . "\n" . '    "method": "post",' . "\n" . '    "url": "/api/path",' . "\n" . '    "description": "接口描述",' . "\n" . '    "remark": "备注"' . "\n" . '  },' . "\n" . '  "request": {' . "\n" . '    "params": {' . "\n" . '      "mode": "json",' . "\n" . '      "json": "{\\"key\\\":\\"value\\\"}",' . "\n" . '      "jsonDesc": [{"name":"key","type":"string","require":"1","remark":"说明"}],' . "\n" . '      "formdata": [],' . "\n" . '      "urlencoded": []' . "\n" . '    },' . "\n" . '    "headers": [{"name":"Content-Type","type":"string","value":"application/json","require":"1","remark":"" }],' . "\n" . '    "query": [{"name":"page","type":"int","value":"1","require":"0","remark":"页码"}],' . "\n" . '    "pathVariable": [{"name":"id","type":"int","value":"1","require":"1","remark":"资源ID"}],' . "\n" . '    "cookies": [],' . "\n" . '    "auth": {"type":"bearer","bearer":[{"key":"token","value":"{{token}}","type":"string"}]}' . "\n" . '  },' . "\n" . '  "response": {' . "\n" . '    "responseExample": "{\\"code\\\":0}",' . "\n" . '    "responseParamsDesc": [{"name":"code","type":"int","remark":"状态码" }],' . "\n" . '    "responseFailExample": "",' . "\n" . '    "responseFailParamsDesc": []' . "\n" . '  },' . "\n" . '  "scripts": {"pre": "", "post": ""},' . "\n" . '  "apiStatus": "0"' . "\n" . '}' . "\n\n" . 'Key rules:' . "\n" . '- method: lowercase, e.g. get/post/put/delete/patch' . "\n" . '- require: "1" = required, "0" = optional (string, not boolean)' . "\n" . '- mode: "json" | "formdata" | "urlencoded"' . "\n" . '- When mode=json: put raw JSON string in params.json, field descriptions in params.jsonDesc[]' . "\n" . '- When mode=formdata: put fields in params.formdata[]' . "\n" . '- apiStatus: "0"=none, "1"=开发中, "2"=测试中, "3"=已完成, "4"=需修改, "5"=已废弃' . "\n" . '- auth.type: "bearer" | "basic" | "digest" | "none"' . "\n" . '- scripts.pre/post: JavaScript code executed before/after request',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -1509,7 +1509,7 @@ class McpServer
 
     $this->tools['update_runapi_page'] = [
       'name' => 'update_runapi_page',
-      'description' => '更新RunApi项目中的接口页面。仅适用于item_type=3的RunApi项目。page_content必须是完整的RunApi JSON对象（从get_runapi_page获取后修改再传回），不支持部分更新。支持乐观锁：传入expected_hash可检测版本冲突。',
+      'description' => '更新RunApi项目中的接口页面。仅适用于item_type=3的RunApi项目。page_content必须是完整的RunApi JSON对象（从get_runapi_page获取后修改再传回），不支持部分更新。支持乐观锁：传入expected_hash可检测版本冲突。注意：本工具直接落库、不经过客户端保存链路；用户装有RunApi桌面客户端时，建议引导其开启本地MCP（右上角机器人图标）并优先使用runapi_save_api保存（走客户端完整保存链路，客户端实时可见）。',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
@@ -1545,7 +1545,7 @@ class McpServer
 
     $this->tools['upsert_runapi_page'] = [
       'name' => 'upsert_runapi_page',
-      'description' => '按标题智能匹配：存在则更新，不存在则创建。仅适用于item_type=3的RunApi项目。page_content格式与create_runapi_page相同。',
+      'description' => '按标题智能匹配：存在则更新，不存在则创建。仅适用于item_type=3的RunApi项目。page_content格式与create_runapi_page相同。注意：本工具直接落库、不经过客户端保存链路；用户装有RunApi桌面客户端时，建议引导其开启本地MCP（右上角机器人图标）并优先使用runapi_save_api保存（走客户端完整保存链路，客户端实时可见）。',
       'inputSchema' => [
         'type' => 'object',
         'properties' => [
