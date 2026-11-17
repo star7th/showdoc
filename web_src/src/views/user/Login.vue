@@ -57,6 +57,11 @@
       </div>
 
     </div>
+
+    <!-- 备案号（后台未填写时不渲染） -->
+    <div class="beian-footer">
+      <BeianLink />
+    </div>
   </div>
 </template>
 
@@ -69,6 +74,7 @@ import CommonInput from '@/components/CommonInput.vue'
 import CommonButton from '@/components/CommonButton.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import LanguageToggle from '@/components/LanguageToggle.vue'
+import BeianLink from '@/components/BeianLink.vue'
 import AlertModal from '@/components/AlertModal/index'
 import ConfirmModal from '@/components/ConfirmModal/index'
 import { getServerHost, appendUrlParams } from '@/utils/system'
@@ -336,6 +342,8 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  padding-bottom: 56px;
+  box-sizing: border-box;
   background-color: var(--color-bg-secondary);
 }
 
@@ -431,5 +439,14 @@ onMounted(async () => {
 .separator {
   margin: 0 10px;
   color: var(--color-text-secondary);
+}
+
+.beian-footer {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
 }
 </style>

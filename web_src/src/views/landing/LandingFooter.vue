@@ -12,28 +12,13 @@
     </div>
     <div class="footer-bottom">
       <span>本站基于开源项目<a href="https://github.com/star7th/showdoc" target="_blank">showdoc</a>构建</span>
-      <a v-if="beian" href="https://beian.miit.gov.cn/" target="_blank">{{ beian }}</a>
+      <BeianLink />
     </div>
   </footer>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import request from '@/utils/request'
-
-const beian = ref('')
-
-// 获取首页设置（包括备案号）
-onMounted(async () => {
-  try {
-    const res: any = await request('/api/common/homePageSetting', {}, 'post', false)
-    if (res && res.data && res.data.beian) {
-      beian.value = res.data.beian
-    }
-  } catch (error) {
-    console.error('Failed to load home page setting:', error)
-  }
-})
+import BeianLink from '@/components/BeianLink.vue'
 </script>
 
 <style lang="scss" scoped>

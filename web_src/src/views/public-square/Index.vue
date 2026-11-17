@@ -95,6 +95,11 @@
         @change="handlePageChange"
       />
     </div>
+
+    <!-- 备案号（后台未填写时不渲染） -->
+    <div class="beian-footer">
+      <BeianLink />
+    </div>
   </div>
 </template>
 
@@ -104,6 +109,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { message } from 'ant-design-vue'
 import CommonSelector from '@/components/CommonSelector.vue'
+import BeianLink from '@/components/BeianLink.vue'
 import { useAppStore } from '@/store/app'
 import { checkPublicSquareEnabled, getPublicItems } from '@/models/publicSquare'
 
@@ -278,6 +284,12 @@ onMounted(() => {
   min-height: 100vh;
   background-color: var(--color-bg-secondary);
   padding: 24px;
+}
+
+.beian-footer {
+  text-align: center;
+  font-size: 12px;
+  padding: 16px 0;
 }
 
 .page-header {
