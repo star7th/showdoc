@@ -149,7 +149,7 @@ class PageHandler extends McpHandler
     }
 
     // 检查读取权限
-    $this->requireReadPermission($itemId);
+    $this->requirePageReadPermission($itemId);
 
     $catId = (int) ($params['cat_id'] ?? 0);
     $page = max(1, (int) ($params['page'] ?? 1));
@@ -223,13 +223,19 @@ class PageHandler extends McpHandler
 
     // 如果是通过 unique_key 查找
     if ($pageId <= 0 && $uniqueKey !== '') {
+      // 分享链接本身即凭证（长随机难猜），此处限流仅防批量扫描，阈值宽松：
+      // 按调用凭证（token）每分钟最多 20 次，不影响正常 AI 客户端常规调用
+      $credKey = md5((string) ($this->tokenInfo['token'] ?? ('uid_' . $this->getUid())));
+      if (!$this->perMinuteAllow('mcp_share_key_' . $credKey, 20)) {
+        McpError::throw(McpError::RATE_LIMITED, '请求过于频繁，请稍后再试');
+      }
       $single = \App\Model\SinglePage::findByUniqueKey($uniqueKey);
       if (!$single) {
         McpError::throw(McpError::RESOURCE_NOT_FOUND, 'unique_key 对应的分享链接不存在或已过期');
       }
       $pageId = (int) ($single->page_id ?? 0);
       if ($pageId <= 0) {
-        McpError::throw(McpError::RESOURCE_NOT_FOUND, 'unique_key 对应的页面不存在');
+        McpError::throw(McpError::RESOURCE_NOT_FOUND, 'unique_key 对应的分享链接不存在或已过期');
       }
       $viaShareLink = true;
     }
@@ -242,7 +248,7 @@ class PageHandler extends McpHandler
         ->where('is_del', 0)
         ->first();
       if (!$pageRow) {
-        McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+        McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
       }
       $pageId = (int) $pageRow->page_id;
     }
@@ -252,19 +258,19 @@ class PageHandler extends McpHandler
       ->where('page_id', $pageId)
       ->first();
     if (!$pageRow) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
     $itemId = (int) $pageRow->item_id;
 
     // 检查读取权限：unique_key 分享链接路径豁免（链接本身即凭证）。
     if (!$viaShareLink) {
-      $this->requireReadPermission($itemId);
+      $this->requirePageReadPermission($itemId);
     }
 
     // 使用 Page::findPageByCache 获取页面（带缓存，自动处理分表和解压）
     $page = Page::findPageByCache($pageId, $itemId);
     if (!$page || (int) ($page['is_del'] ?? 0) === 1) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     // 检查草稿状态（与原后端 PageController::info 一致）
@@ -416,7 +422,7 @@ class PageHandler extends McpHandler
     if ($searchMode === 'auto' || $searchMode === 'title') {
       if ($itemId > 0) {
         // 指定了项目ID：在该项目中用所有关键字搜索
-        $this->requireReadPermission($itemId);
+        $this->requirePageReadPermission($itemId);
         foreach ($keywords as $kw) {
           $found = $this->searchInItem($itemId, $kw, strtolower($kw), 'title', $maxResults);
           foreach ($found as $page) {
@@ -495,7 +501,7 @@ class PageHandler extends McpHandler
     $result = [];
     $seenIds = [];
     if ($itemId > 0) {
-      $this->requireReadPermission($itemId);
+      $this->requirePageReadPermission($itemId);
       foreach ($keywords as $kw) {
         $found = $this->searchInItem($itemId, $kw, strtolower($kw), $searchMode, $maxResults);
         foreach ($found as $page) {
@@ -1533,7 +1539,7 @@ MARKDOWN;
       ->first();
 
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $itemId = (int) $page->item_id;
@@ -1831,7 +1837,7 @@ MARKDOWN;
       ->first();
 
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $itemId = (int) $page->item_id;
@@ -1900,13 +1906,13 @@ MARKDOWN;
       ->first();
 
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $itemId = (int) $page->item_id;
 
     // 检查读取权限
-    $this->requireReadPermission($itemId);
+    $this->requirePageReadPermission($itemId);
 
     // 获取历史版本列表
     $limit = min(500, max(1, (int) ($params['limit'] ?? 20)));
@@ -1956,13 +1962,13 @@ MARKDOWN;
       ->first();
 
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $itemId = (int) $page->item_id;
 
     // 检查读取权限
-    $this->requireReadPermission($itemId);
+    $this->requirePageReadPermission($itemId);
 
     // 获取历史版本
     $historyPage = PageHistory::findById($pageId, $versionId);
@@ -2031,13 +2037,13 @@ MARKDOWN;
       ->first();
 
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $itemId = (int) $page->item_id;
 
     // 检查读取权限
-    $this->requireReadPermission($itemId);
+    $this->requirePageReadPermission($itemId);
 
     // 获取两个历史版本
     $version1 = PageHistory::findById($pageId, $versionId1);
@@ -2175,7 +2181,7 @@ MARKDOWN;
       ->first();
 
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $itemId = (int) $page->item_id;
@@ -2266,7 +2272,7 @@ MARKDOWN;
       ->where('is_del', 0)
       ->first();
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $itemId = (int) $page->item_id;
@@ -2322,12 +2328,12 @@ MARKDOWN;
       ->where('is_del', 0)
       ->first();
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     // 检查读取权限（防止越权获取其他项目的分享链接）
     $itemId = (int) $page->item_id;
-    $this->requireReadPermission($itemId);
+    $this->requirePageReadPermission($itemId);
 
     // 查询 single_page 表
     $single = DB::table('single_page')
@@ -2382,7 +2388,7 @@ MARKDOWN;
       ->where('is_del', 0)
       ->first();
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $itemId = (int) $page->item_id;
@@ -2456,7 +2462,7 @@ MARKDOWN;
       ->first();
 
     if (!$pageRow) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $itemId = (int) $pageRow->item_id;
@@ -2473,7 +2479,7 @@ MARKDOWN;
     // 使用 Page::findPageByCache 获取页面（自动解压，与 getPage 一致）
     $page = Page::findPageByCache($pageId, $itemId);
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     // 获取解压后的内容（与 getPage 一致）

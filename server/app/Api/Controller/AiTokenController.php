@@ -139,6 +139,18 @@ class AiTokenController extends BaseController
       return $this->error($response, 10101, '指定项目范围时必须选择至少一个项目');
     }
 
+    // allowed_items 归属校验（纵深防御）：填写的项目 ID 必须是当前用户
+    // 本人创建或有权管理的项目，防止将他人项目 ID 预绑定进 Token
+    //（MCP Handler 层已有成员兜底，此处从源头拒绝）
+    if (!empty($allowedItems)) {
+      foreach ($allowedItems as $allowedItemId) {
+        $item = Item::findById($allowedItemId);
+        if (!$item || ((int) $item->uid !== $uid && !$this->checkItemManage($uid, $allowedItemId))) {
+          return $this->error($response, 10101, '存在无权操作的项目，请检查 allowed_items');
+        }
+      }
+    }
+
     // 验证过期时间
     if ($expiresAt !== '' && strtotime($expiresAt) === false) {
       return $this->error($response, 10101, '过期时间格式无效');
@@ -224,6 +236,15 @@ class AiTokenController extends BaseController
         $allowedItems = array_map('intval', array_filter($allowedItemsRaw));
       }
       $updateData['allowed_items'] = $allowedItems;
+
+      // allowed_items 归属校验（与 create 分支一致）：填写的项目 ID 必须是
+      // 当前用户本人创建或有权管理的项目，防止经 update 将他人项目 ID 绑进 Token
+      foreach ($allowedItems as $allowedItemId) {
+        $item = Item::findById($allowedItemId);
+        if (!$item || ((int) $item->uid !== $uid && !$this->checkItemManage($uid, $allowedItemId))) {
+          return $this->error($response, 10101, '存在无权操作的项目，请检查 allowed_items');
+        }
+      }
     }
 
     $canCreateItem = $this->getParam($request, 'can_create_item', null);

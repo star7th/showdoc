@@ -797,6 +797,8 @@ class AgentController extends BaseController
         $identity = $this->resolveUserId($request);
         $uid      = $identity['uid'];
         $isGuest  = $identity['is_guest'];
+        // 记录当前用户身份，供 AgentHelper 页面上下文读取时的项目访问校验（checkPageContextAccess）
+        $this->agentContextUid = $isGuest ? 0 : $uid;
 
         // 全局会话仅已登录用户
         if ($itemId <= 0 && $isGuest) {
@@ -962,6 +964,12 @@ class AgentController extends BaseController
 
             // 流式输出文本内容（解析引用标记）
             if ($content !== '') {
+                // system prompt 自述防御：入库内容同样兜底，避免刷新后看到流式拦截前的复述内容
+                if ($this->sysPromptEchoBlocked || $this->detectSystemPromptEcho($content)) {
+                    $this->sysPromptEchoBlocked = true;
+                    error_log('[AgentHelper] system prompt echo blocked (storage)');
+                    $content = '抱歉，我不能输出系统内部指令。';
+                }
                 // SSE 已在 callLlmStream 流式发送，此处仅做引用标记清理（不重复发 SSE）
                 $cleanContent = $this->parseReferences($content, $sessionItemId, false);
                 $fullContent .= $cleanContent;

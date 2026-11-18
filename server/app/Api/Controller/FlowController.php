@@ -277,6 +277,16 @@ class FlowController extends BaseController
             return $this->error($response, 10303, '没有权限');
         }
 
+        // 一致性校验：流程所属项目必须与页面所属项目一致，
+        // 防止用户仅凭页面编辑权去摘除其他项目流程里的页面（对比 addFlowPage 的双向校验）
+        $flow = RunapiFlow::findById((int) ($flowPage->flow_id ?? 0));
+        if (!$flow || (int) ($flow->item_id ?? 0) !== $pageItemId) {
+            return $this->error($response, 10303, '没有权限');
+        }
+        if (!$this->checkItemEdit($uid, (int) ($flow->item_id ?? 0))) {
+            return $this->error($response, 10303, '没有权限');
+        }
+
         $res = RunapiFlowPage::delete($id);
         if ($res) {
             return $this->success($response, ['success' => true]);

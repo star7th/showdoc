@@ -164,6 +164,8 @@ class PageHistory
         try {
             $affected = DB::table('page_history')
                 ->where('page_history_id', $pageHistoryId)
+                // 安全修复：限定只能修改当前页面的历史备注，防止跨页面越权改动
+                ->where('page_id', $pageId)
                 ->update(['page_comments' => $pageComments]);
             return $affected > 0;
         } catch (\Throwable $e) {

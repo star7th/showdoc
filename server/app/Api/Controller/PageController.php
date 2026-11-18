@@ -636,7 +636,6 @@ class PageController extends BaseController
     public function isLock(Request $request, Response $response): Response
     {
         $pageId = (int) $this->getParam($request, 'page_id', 0);
-        $itemId = (int) $this->getParam($request, 'item_id', 0);
         $lock   = 0;
         $exceed = 0;
         $now    = time();
@@ -645,6 +644,14 @@ class PageController extends BaseController
         $loginUser = [];
         $this->requireLoginUser($request, $response, $loginUser, false);
         $uid = (int) ($loginUser['uid'] ?? 0);
+
+        // 安全修复：item_id 以页面真实归属为准，防止请求参数伪造；
+        // 页面不存在按现有错误处理
+        $page = \App\Model\Page::findById($pageId);
+        if (!$page) {
+            return $this->error($response, 10101, '页面不存在');
+        }
+        $itemId = (int) ($page['item_id'] ?? 0);
 
         // 检查锁记录
         $res = \Illuminate\Database\Capsule\Manager::table('page_lock')
@@ -658,6 +665,14 @@ class PageController extends BaseController
         }
 
         // 开源版无页面数量限制
+
+        // 安全修复：无访问权限（含未登录访问受限项目）时只返回锁定布尔值，
+        // 不泄露锁定者用户名等信息
+        if (!$this->checkItemVisit($uid, $itemId)) {
+            return $this->success($response, [
+                'lock' => $lock,
+            ]);
+        }
 
         $lockUid      = $res->lock_uid ?? '';
         $lockUsername = $res->lock_username ?? '';
@@ -970,6 +985,14 @@ class PageController extends BaseController
         // 登录用户（非强制）
         $loginUser = [];
         $this->requireLoginUser($request, $response, $loginUser, false);
+        $uid = (int) ($loginUser['uid'] ?? 0);
+
+        // 安全修复（姊妹漏洞）：即使持有分享 key，也必须通过页面所属项目的
+        // 访问校验（成员/项目密码/公开性），防止越权读取私有/密码保护项目页面
+        $itemId = (int) ($page['item_id'] ?? 0);
+        if (!$this->checkItemVisit($uid, $itemId)) {
+            return $this->error($response, 10303, '您没有访问该项目的权限');
+        }
 
         // 转换为数组格式
         $page = (array) $page;
@@ -1060,6 +1083,13 @@ class PageController extends BaseController
 
         if ($pageId <= 0 || $itemId <= 0) {
             return $this->error($response, 10101, '参数错误');
+        }
+
+        // 归属校验：page_id 必须属于请求参数里的 item_id，
+        // 防止对 A 项目有编辑权的用户跨项目锁定任意页面
+        $page = \App\Model\Page::findById($pageId);
+        if (!$page || (int) ($page['item_id'] ?? 0) !== $itemId) {
+            return $this->error($response, 10101, '页面不存在');
         }
 
         if (!$this->checkItemEdit($uid, $itemId)) {

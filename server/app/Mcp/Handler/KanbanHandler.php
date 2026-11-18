@@ -92,7 +92,7 @@ class KanbanHandler extends McpHandler
       ->where('is_del', 0)
       ->first();
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
     return ['page' => $page, 'itemId' => (int) $page->item_id];
   }
@@ -394,7 +394,8 @@ class KanbanHandler extends McpHandler
     $page = $found['page'];
     $itemId = $found['itemId'];
 
-    $this->requireReadPermission($itemId);
+    // 页面级读取权限统一为存在性不敏感报错（防差异化报错探测页面存在性）
+    $this->requirePageReadPermission($itemId);
 
     $taskData = $this->decodeContent($page->page_content);
     if (!$taskData) {

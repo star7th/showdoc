@@ -371,6 +371,71 @@ abstract class McpHandler
   }
 
   /**
+   * 页面级读取权限校验（防存在性探测）
+   *
+   * 与 requireReadPermission 相同的检查；但"非项目成员"这类拒绝统一改为
+   * 与"页面不存在"完全一致的错误码/文案（RESOURCE_NOT_FOUND + 页面不存在或无权访问），
+   * 避免非成员借差异化报错探测页面存在性。
+   * Token 级错误（读权限/范围）不涉及页面存在性，保持原语义。
+   */
+  protected function requirePageReadPermission(int $itemId): void
+  {
+    try {
+      $this->requireReadPermission($itemId);
+    } catch (McpException $e) {
+      if ($e->getCode() === McpError::NOT_ITEM_MEMBER) {
+        McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
+      }
+      throw $e;
+    }
+  }
+
+  /**
+   * 简单每分钟限流（开源版无 Limiter/Redis，用 Runtime 文件计数器）
+   *
+   * 文件名含分钟数，跨分钟自动失效；文件不可写时不拦截（与全站口径一致）。
+   *
+   * @param string $key   限流键（需自行保证粒度，如凭证指纹）
+   * @param int    $limit 每分钟允许的最大次数
+   * @return bool true=允许，false=超限
+   */
+  protected function perMinuteAllow(string $key, int $limit): bool
+  {
+    $dir = dirname(__DIR__, 2) . '/Runtime/McpRate';
+    if (!is_dir($dir)) {
+      @mkdir($dir, 0755, true);
+    }
+    $minute = gmdate('YmdHi');
+    $file   = $dir . '/' . md5($key . '|' . $minute) . '.cnt';
+
+    $count = 0;
+    $fh = @fopen($file, 'c+');
+    if (!$fh) {
+      return true;
+    }
+    try {
+      flock($fh, LOCK_EX);
+      $raw   = (string) stream_get_contents($fh);
+      $count = (int) $raw;
+      $count++;
+      ftruncate($fh, 0);
+      rewind($fh);
+      fwrite($fh, (string) $count);
+    } finally {
+      flock($fh, LOCK_UN);
+      fclose($fh);
+    }
+
+    // 概率清理上一分钟的计数文件，避免堆积
+    if ($count === 1 && random_int(1, 20) === 1) {
+      $old = $dir . '/' . md5($key . '|' . gmdate('YmdHi', time() - 60)) . '.cnt';
+      @unlink($old);
+    }
+
+    return $count <= $limit;
+  }
+
+  /**
    * 要求写入权限（无权限时抛出异常）
    *
    * @param int $itemId 项目 ID

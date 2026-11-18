@@ -158,6 +158,9 @@ class CatalogController extends BaseController
         // 获取二级目录列表
         $ret = \App\Model\Catalog::getListByLevel($itemId, 2);
 
+        // 安全修复：受限成员的二级目录名同样按白名单过滤，只回有权目录
+        $ret = \App\Model\Catalog::filterMemberCat($uid, $ret ?: []);
+
         return $this->success($response, $ret ?: []);
     }
 

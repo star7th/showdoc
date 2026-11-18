@@ -62,7 +62,7 @@ class RunapiPageHandler extends McpHandler
         ->where('is_del', 0)
         ->first();
       if (!$pageRow) {
-        McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+        McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
       }
       $pageId = (int) $pageRow->page_id;
     }
@@ -71,16 +71,17 @@ class RunapiPageHandler extends McpHandler
     $pageObj = $shard['page'];
     $itemId = $shard['itemId'];
 
+    // 先做页面级权限校验，再区分 item_type/存在性，避免差异化报错泄露页面存在性
+    $this->requirePageReadPermission($itemId);
+
     $item = Item::findById($itemId);
     if (!$item || (int) $item->item_type !== 3) {
       McpError::throw(McpError::OPERATION_FAILED, '该页面不属于RunApi项目（item_type不为3）');
     }
 
-    $this->requireReadPermission($itemId);
-
     $page = (array) $pageObj;
     if ((int) ($page['is_del'] ?? 0) === 1) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     if (($page['is_draft'] ?? 0) == 1) {
@@ -529,7 +530,7 @@ class RunapiPageHandler extends McpHandler
       ->first();
 
     if (!$pageRow) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $itemId = (int) $pageRow->item_id;
@@ -541,7 +542,7 @@ class RunapiPageHandler extends McpHandler
       ->first();
 
     if (!$page) {
-      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在');
+      McpError::throw(McpError::RESOURCE_NOT_FOUND, '页面不存在或无权访问');
     }
 
     $pageArr = (array) $page;
