@@ -306,6 +306,6 @@ export function saveItemAiConfig(params: {
     params,
     'post',
     true,
-    'json'
+    'form'
   )
 }
