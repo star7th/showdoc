@@ -985,14 +985,9 @@ class PageController extends BaseController
         // 登录用户（非强制）
         $loginUser = [];
         $this->requireLoginUser($request, $response, $loginUser, false);
-        $uid = (int) ($loginUser['uid'] ?? 0);
 
-        // 安全修复（姊妹漏洞）：即使持有分享 key，也必须通过页面所属项目的
-        // 访问校验（成员/项目密码/公开性），防止越权读取私有/密码保护项目页面
-        $itemId = (int) ($page['item_id'] ?? 0);
-        if (!$this->checkItemVisit($uid, $itemId)) {
-            return $this->error($response, 10303, '您没有访问该项目的权限');
-        }
+        // 分享 key 本身即访问凭证：单页分享不依赖项目访问权限，
+        // 与 /p/{key}.md 短链行为一致；黑名单、过期 key 等其他安全规则不受影响
 
         // 转换为数组格式
         $page = (array) $page;
