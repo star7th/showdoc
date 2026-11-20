@@ -147,33 +147,51 @@ docker_run() {
 
     ## 首次启动需要拷贝程序文件到 $web_dir/ (/var/www/html)
     if [ -f "$web_dir/index.php" ]; then
-        echo "Found $web_dir/index.php, skip copy."
+        echo "Web root already initialized, skip copy."
     else
-        echo "Not found $web_dir/index.php, copy from $showdoc_dir_html to $web_dir..."
+        echo "Initializing web root: $showdoc_dir_html -> $web_dir ..."
         ## 兼容历史版本 宿主机/showdoc_data/挂载到容器内/showdoc_data_old/
         if [[ -f $showdoc_dir_old/html/index.php && ! -f $showdoc_dir_old/.skip_old ]]; then
-            echo "Found old version of \"showdoc_data\", copy..."
+            echo "Found legacy mount $showdoc_dir_old/html, migrating to $web_dir..."
             rsync -a $showdoc_dir_old/html/ $web_dir/ &&
                 touch $showdoc_dir_old/.skip_old
         else
-            rsync -a $showdoc_dir_html/ $web_dir/
+            ## 假如存在数据库则排除用户数据目录，避免用镜像里的种子库覆盖已有数据库
+            rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' \
+                "$showdoc_dir_html/" "$web_dir/"
+            mkdir -p "$web_dir/Sqlite" "$web_dir/Public/Uploads"
+            ## showdoc.db.php：install/common.php 要求存在且可写
+            ## .user.ini + deny.php：SQLite 目录的 PHP 层访问守卫；.user.ini 的
+            ## auto_prepend_file 指向 deny.php，缺失会导致全站 PHP fatal
+            for f in showdoc.db.php .user.ini deny.php; do
+                [ -f "$web_dir/Sqlite/${f}" ] ||
+                    cp -a "$showdoc_dir_html/Sqlite/${f}" "$web_dir/Sqlite/"
+            done
         fi
+        ## rsync 失败时脚本无 set -e，会继续起 nginx 导致 404，这里显式拦下
+        if [ ! -f "$web_dir/index.php" ]; then
+            echo "ERROR: failed to initialize web root $web_dir" >&2
+            exit 1
+        fi
+        echo "Web root initialized."
     fi
-    echo "Checking upgrade..."
-    ## upgrade (通过 Dockerfile 的环境变量 SHOWDOC_DOCKER_VERSION 变更版本)
-    ## upgrade (通过 composer.json "version" 变更版本)
+    ## 镜像版本号来源二选一：Dockerfile 的 ENV SHOWDOC_DOCKER_VERSION 或 composer.json 的 "version"。
+    ## 当前采用 composer.json；改用环境变量时，取消本函数中 SHOWDOC_DOCKER_VERSION 两处注释即可。
     ver_file=$web_dir/.ver
     version_local="$(cat $ver_file 2>/dev/null || echo "none")"
     version_json=$(grep -o '"version":.*"' $showdoc_dir_html/composer.json | awk '{split($2,a,"\""); print a[2]}')
     # version_json=$(grep -o '"version":.*"' $showdoc_dir_html/composer.json | awk '{print substr($2,2,6)}')
 
-    echo "Local version: $version_local"
-    echo "composer.json version: $version_json"
+    echo "Local version: ${version_local}, image version: ${version_json}"
     # if [[ "$SHOWDOC_DOCKER_VERSION" == "$(cat $ver_file)" ]]; then
     if [[ "${version_local}" == "${version_json}" ]]; then
-        echo "Same version, skip upgrade."
+        echo "Versions match, skip upgrade."
     else
-        echo "Found new version: ${version_local} => ${version_json}, upgrade..."
+        if [[ "${version_local}" == "none" ]]; then
+            echo "First start (no .ver), install ${version_json}..."
+        else
+            echo "Upgrading ${version_local} -> ${version_json}..."
+        fi
         ## 备份数据库文件
         backup_dbfile
         echo "Upgrade application files..."
@@ -187,7 +205,7 @@ docker_run() {
         echo "$version_json" >$ver_file
     fi
 
-    echo "Checking file permission..."
+    echo "Preparing runtime dirs..."
     ## fix file permission
     # find $web_dir -type f -exec chmod 644 {} \;
     # find $web_dir -type d -exec chmod 755 {} \;
@@ -198,6 +216,7 @@ docker_run() {
     # 新版 Slim 4 路径
     runtime_dir_new="$web_dir/server/app/Runtime"
     [[ -d $runtime_dir_new ]] || mkdir -p $runtime_dir_new
+    echo "Fixing permissions..."
     chown -R 1000:1000 \
         $web_dir/Sqlite \
         $web_dir/Public/Uploads \
@@ -238,7 +257,7 @@ EOF
     pids+=("$!")
 
     ## 启动 showdoc 服务
-    echo "Starting showdoc server..."
+    echo "Running showdoc upgrade hook..."
     (
         sleep 3
         cd $showdoc_dir_html/server || exit 1
@@ -247,7 +266,7 @@ EOF
     ## 延迟启动 mock 服务（降权运行：su-exec 切到低权用户 mockmock，绕过 pm2 直接跑 node，
     ## HOME 指向 /tmp 避免 npm/pm2 写 $HOME；7123 非特权端口，无文件写入需求，降权无功能影响）
     (
-        echo "delay 30s start mock..."
+        echo "Mock server starts in 30s..."
         sleep 30
         echo "Starting mock server..."
         cd $showdoc_dir/mock/ || exit 1
@@ -261,6 +280,7 @@ EOF
     pids+=("$!")
 
     ## 启动 supervisor 服务
+    echo
     echo "Starting nginx and php-fpm..."
     ## 在启动 supervisord 之前设置 umask，确保 nginx 和 php-fpm 都使用 0022
     umask 0022
