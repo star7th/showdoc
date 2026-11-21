@@ -156,13 +156,13 @@ docker_run() {
             rsync -a $showdoc_dir_old/html/ $web_dir/ &&
                 touch $showdoc_dir_old/.skip_old
         else
-            ## 假如存在数据库则排除用户数据目录，避免用镜像里的种子库覆盖已有数据库
+            ## 排除用户数据目录（Sqlite/ 数据库、Public/Uploads/ 上传文件），避免镜像种子数据覆盖已有数据；必要文件随后单独补拷
             rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' \
                 "$showdoc_dir_html/" "$web_dir/"
             mkdir -p "$web_dir/Sqlite" "$web_dir/Public/Uploads"
             ## showdoc.db.php：install/common.php 要求存在且可写
             ## .user.ini + deny.php：SQLite 目录的 PHP 层访问守卫；.user.ini 的
-            ## auto_prepend_file 指向 deny.php，缺失会导致全站 PHP fatal
+            ## auto_prepend_file 指向 deny.php，缺失会导致访问 Sqlite/ 下 PHP 文件时 fatal
             for f in showdoc.db.php .user.ini deny.php; do
                 [ -f "$web_dir/Sqlite/${f}" ] ||
                     cp -a "$showdoc_dir_html/Sqlite/${f}" "$web_dir/Sqlite/"
