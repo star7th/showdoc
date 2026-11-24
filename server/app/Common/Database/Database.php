@@ -17,11 +17,11 @@ class Database
 
         $capsule = new Capsule();
 
-        // 开源版默认使用 SQLite，可通过环境变量 DB_TYPE=mysql 切换到 MySQL（可选）
+        // 默认 SQLite；设置 DB_TYPE=pgsql 使用 PostgreSQL。
         $driver = strtolower(Env::get('DB_TYPE', 'sqlite'));
 
         if ($driver === 'sqlite') {
-            // SQLite 配置（开源版主要使用）
+            // SQLite 配置（默认）
             $dbPath = Env::get('DB_NAME', __DIR__ . '/../../../../Sqlite/showdoc.db.php');
             $capsule->addConnection([
                 'driver'   => 'sqlite',
@@ -32,23 +32,26 @@ class Database
                     \PDO::ATTR_STRINGIFY_FETCHES => true,
                 ],
             ]);
-        } else {
-            // MySQL 配置（可选，兼容性）
+        } elseif ($driver === 'pgsql') {
+            // PostgreSQL 配置
             $capsule->addConnection([
-                'driver'    => 'mysql',
-                'host'      => Env::get('DB_HOST', '127.0.0.1'),
-                'port'      => (int) Env::get('DB_PORT', 3306),
-                'database'  => Env::get('DB_NAME', 'showdoc'),
-                'username'  => Env::get('DB_USER', 'root'),
-                'password'  => Env::get('DB_PWD', ''),
-                'charset'   => Env::get('DB_CHARSET', 'utf8mb4'),
-                'collation' => 'utf8mb4_unicode_ci',
-                'prefix'    => '',
-                'options'   => [
+                'driver'   => 'pgsql',
+                'host'     => Env::get('DB_HOST', '127.0.0.1'),
+                'port'     => (int) Env::get('DB_PORT', 5432),
+                'database' => Env::get('DB_NAME', 'showdoc'),
+                'username' => Env::get('DB_USER', 'showdoc'),
+                'password' => Env::get('DB_PWD', ''),
+                'charset'  => Env::get('DB_CHARSET', 'utf8'),
+                'prefix'   => '',
+                'schema'   => Env::get('DB_SCHEMA', 'public'),
+                'sslmode'  => Env::get('DB_SSLMODE', 'prefer'),
+                'options'  => [
                     // 将所有数字字段返回为字符串，兼容旧前端
                     \PDO::ATTR_STRINGIFY_FETCHES => true,
                 ],
             ]);
+        } else {
+            throw new \RuntimeException('Unsupported DB_TYPE: ' . $driver);
         }
 
         $capsule->setAsGlobal();

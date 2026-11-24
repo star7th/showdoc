@@ -43,12 +43,13 @@ class User
         $hashed  = Security::hashPasswordBcrypt($password);
         $now     = time();
 
+        // PostgreSQL 的主键不是 id，必须显式指定 identity 序列；SQLite 会忽略该参数
         $uid = DB::table('user')->insertGetId([
             'username'  => $username,
             'password'  => $hashed,
             'salt'      => '',
             'reg_time'  => $now,
-        ]);
+        ], 'uid');
 
         return $uid ?: null;
     }

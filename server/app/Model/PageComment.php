@@ -46,7 +46,7 @@ class PageComment
     public static function add(array $data): int
     {
         try {
-            $id = DB::table('page_comment')->insertGetId($data);
+            $id = DB::table('page_comment')->insertGetId($data, 'comment_id');
             return (int) $id;
         } catch (\Throwable $e) {
             return 0;

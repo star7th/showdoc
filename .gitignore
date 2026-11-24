@@ -21,6 +21,7 @@ web_src/*.njsproj
 web_src/*.sln
 
 showdocdata/
+.env
 /server/app/Runtime/mcp_rate_limit
 /fixtime.sh
 /install/install.lock

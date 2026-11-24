@@ -72,7 +72,7 @@ class PageFeedback
     public static function add(array $data)
     {
         try {
-            $id = DB::table('page_feedback')->insertGetId($data);
+            $id = DB::table('page_feedback')->insertGetId($data, 'feedback_id');
             return $id ?: false;
         } catch (\Throwable $e) {
             return false;

@@ -307,7 +307,7 @@ class Catalog
             // 新建
             $data['addtime'] = time();
             try {
-                $catId = DB::table('catalog')->insertGetId($data);
+                $catId = DB::table('catalog')->insertGetId($data, 'cat_id');
                 if ($catId > 0) {
                     $row = DB::table('catalog')
                         ->where('cat_id', $catId)
@@ -392,7 +392,7 @@ class Catalog
                     'level'         => $level,
                     'parent_cat_id' => $parentCatId,
                 ];
-                $catId = DB::table('catalog')->insertGetId($addData);
+                $catId = DB::table('catalog')->insertGetId($addData, 'cat_id');
                 if ($catId > 0) {
                     $catIdsArray[$i] = (int) $catId;
                 } else {

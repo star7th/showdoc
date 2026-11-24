@@ -543,12 +543,18 @@ class Item
                 $item['item_domain'] = '';
             }
 
+            // 默认私密：导入/复制时没有密码就生成随机密码
+            $importPassword = $itemPassword ?: htmlspecialchars(htmlspecialchars_decode($item['password'] ?? ''));
+            if ($importPassword === '') {
+                $importPassword = \App\Common\Helper\FileHelper::getRandStr();
+            }
+
             $itemData = [
                 'item_name'        => $itemName ?: htmlspecialchars(htmlspecialchars_decode($item['item_name'] ?? '')),
                 'item_domain'      => $itemDomain ?: htmlspecialchars(htmlspecialchars_decode($item['item_domain'] ?? '')),
                 'item_type'        => (int) ($item['item_type'] ?? 1),
                 'item_description' => $itemDescription ?: htmlspecialchars(htmlspecialchars_decode($item['item_description'] ?? '')),
-                'password'         => $itemPassword ?: htmlspecialchars(htmlspecialchars_decode($item['password'] ?? '')),
+                'password'         => $importPassword,
                 'uid'              => $uid,
                 'username'          => $user->username ?? '',
                 'addtime'           => time(),
@@ -687,14 +693,12 @@ class Item
         }
 
         try {
-            // 如果已经指定了 item_id，直接插入；否则使用 insertGetId 自动生成
-            if (!empty($data['item_id'])) {
-                DB::table('item')->insert($data);
-                return (int) $data['item_id'];
-            } else {
-                $itemId = DB::table('item')->insertGetId($data);
-                return (int) $itemId;
+            // item_id 使用 ShowDoc 自己的随机 ID 方案，不能依赖 PostgreSQL 序列从 1 开始
+            if (empty($data['item_id'])) {
+                $data['item_id'] = self::getANewItemId();
             }
+            DB::table('item')->insert($data);
+            return (int) $data['item_id'];
         } catch (\Throwable $e) {
             return 0;
         }

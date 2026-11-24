@@ -77,7 +77,7 @@ const loading = ref(false)
 const copyItemId = ref<string | number | undefined>(undefined)
 const itemName = ref('')
 const itemDescription = ref('')
-const isOpenItem = ref(true)
+const isOpenItem = ref(false)
 const password = ref('')
 const itemList = ref<any[]>([])
 
@@ -143,6 +143,7 @@ const handleSubmit = async () => {
       copy_item_id: Number(copyItemId.value),
       item_name: itemName.value,
       item_description: itemDescription.value,
+      is_open: isOpenItem.value ? 1 : 0,
       password: isOpenItem.value ? '' : password.value
     })
     if (res.error_code === 0) {

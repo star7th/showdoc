@@ -218,7 +218,7 @@ class Attachment
             'file_size'    => $uploadFile['size'] ?? 0,
             'real_url'     => $url,
             'addtime'      => time(),
-        ]);
+        ], 'file_id');
 
         // 写入 file_page 表
         DB::table('file_page')->insert([

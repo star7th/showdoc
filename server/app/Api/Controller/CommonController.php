@@ -36,7 +36,7 @@ class CommonController extends BaseController
             'mobile'      => '',
             'captcha'     => $captcha,
             'expire_time' => $now + 60 * 10, // 10 分钟有效
-        ]);
+        ], 'captcha_id');
 
         // 清理一年以前的历史验证码
         DB::table('captcha')

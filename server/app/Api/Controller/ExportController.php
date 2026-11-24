@@ -199,7 +199,7 @@ class ExportController extends BaseController
             'uid'         => $uid,
             'export_type' => 'word',
             'item_id'     => $itemId,
-            'addtime'     => date('y-m-d H:i:s'),
+            'addtime'     => time(),
         ]);
 
         // 记录项目变更日志
@@ -362,7 +362,7 @@ class ExportController extends BaseController
             'uid'         => $uid,
             'export_type' => 'markdown',
             'item_id'     => $itemId,
-            'addtime'     => date('y-m-d H:i:s'),
+            'addtime'     => time(),
         ]);
 
         // 记录项目变更日志

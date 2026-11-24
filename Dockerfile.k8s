@@ -1,0 +1,33 @@
+# syntax=docker/dockerfile:1
+#
+# Kubernetes 部署用薄镜像：在已经构建好的 ShowDoc PG 镜像上固定 PostgreSQL 默认值。
+#
+# 先在 showdoc 仓库构建应用镜像：
+#   docker build -t xiagw/showdoc:pg18 .
+#   docker push xiagw/showdoc:pg18
+#
+# 再在部署仓库构建这个文件：
+#   docker build -f Dockerfile.k8s -t xiagw/showdoc:pg18-k8s .
+#   docker push xiagw/showdoc:pg18-k8s
+#
+# DB_HOST / DB_NAME / DB_USER / DB_PWD 先在镜像里写默认值；部署时可用 k8s env/Secret 覆盖。
+# 生产环境不要把真实 DB_PWD 提交到 git，建议构建时用 --build-arg 或运行时 Secret 覆盖。
+
+ARG SHOWDOC_IMAGE=xiagw/showdoc:pg18
+FROM ${SHOWDOC_IMAGE}
+
+# 先写死默认值，部署时 k8s env/Secret 可以覆盖。
+# 注意：DB_PWD 会进入镜像层和 docker inspect，生产环境仍建议用 k8s Secret 覆盖。
+ENV DB_TYPE=pgsql \
+    DB_HOST=pgm-xxxxxxxx.pg.rds.aliyuncs.com \
+    DB_PORT=5432 \
+    DB_NAME=showdoc \
+    DB_USER=showdoc \
+    DB_PWD=change-me \
+    DB_SCHEMA=public \
+    DB_SSLMODE=prefer
+
+# 阿里云 RDS 开启 SSL 后改成：
+# ENV DB_SSLMODE=require
+
+EXPOSE 80
