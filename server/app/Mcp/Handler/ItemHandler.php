@@ -271,6 +271,10 @@ class ItemHandler extends McpHandler
     $itemType = (int) ($params['item_type'] ?? 1);
     $itemDescription = trim($params['item_description'] ?? '');
     $password = trim($params['password'] ?? '');
+    // 默认私密：MCP 不传密码时生成随机密码
+    if ($password === '') {
+      $password = \App\Common\Helper\FileHelper::getRandStr();
+    }
 
     // 检查用户项目数量限制（复用现有逻辑，与 ItemController::add 一致）
     $itemCount = DB::table('item')

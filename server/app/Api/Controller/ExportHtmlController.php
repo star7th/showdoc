@@ -133,7 +133,7 @@ class ExportHtmlController extends BaseController
                 "uid" => $uid,
                 "export_type" => 'html',
                 "item_id" => $itemId,
-                "addtime" => date("y-m-d H:i:s")
+                "addtime" => time()
             ]);
 
             // 记录项目变更日志

@@ -137,7 +137,7 @@ const isCreateMode = computed(() => !props.item_id)
 // 数据状态
 const show = ref(false)
 const loading = ref(false)
-const isOpenItem = ref(true) // 默认为公开项目
+const isOpenItem = ref(false) // 默认私密项目
 const itemGroupIdsLocal = ref<number[]>([])
 const itemGroupList = ref<any[]>([])
 
@@ -211,8 +211,8 @@ const initCreateForm = () => {
   if (props.item_group_id && props.item_group_id > 0) {
     itemGroupIdsLocal.value = [Number(props.item_group_id)]
   }
-  // 创建模式默认为公开项目
-  isOpenItem.value = true
+  // 创建模式默认为私密项目
+  isOpenItem.value = false
 }
 
 // 获取分组列表
@@ -246,6 +246,7 @@ const handleSubmit = async () => {
   const submitData: any = {
     item_name: form.value.item_name,
     item_description: form.value.item_description,
+    is_open: isOpenItem.value ? 1 : 0,
     password: isOpenItem.value ? '' : form.value.password,
     item_group_ids: (itemGroupIdsLocal.value || [])
       .map((v: number) => Number(v))

@@ -31,20 +31,11 @@ class ExportLog
             return 0;
         }
 
-        // 根据数据库类型使用不同的 SQL 语法
-        $driver = DB::connection()->getDriverName();
-        if ($driver === 'sqlite') {
-            // SQLite 语法：addtime 是时间戳，需要转换为日期进行比较
-            $whereRaw = "strftime('%Y-%m-%d', addtime, 'unixepoch') = date('now')";
-        } else {
-            // MySQL 语法：addtime 是时间戳，使用 FROM_UNIXTIME 转换
-            $whereRaw = "to_days(FROM_UNIXTIME(addtime)) = to_days(now())";
-        }
-
+        // addtime 统一存 Unix 时间戳，避免 SQLite/PostgreSQL 的日期函数差异
         return (int) DB::table('export_log')
             ->where('uid', $uid)
             ->where('export_type', $exportType)
-            ->whereRaw($whereRaw)
+            ->where('addtime', '>=', strtotime('today'))
             ->count();
     }
 
@@ -62,24 +53,13 @@ class ExportLog
             return 0;
         }
 
-        // 根据数据库类型使用不同的 SQL 语法
-        $driver = DB::connection()->getDriverName();
-        if ($driver === 'sqlite') {
-            // SQLite 语法：addtime 是时间戳，计算 N 天前的时间戳
-            $intervalDays = $days - 1;
-            $daysAgoTimestamp = time() - ($intervalDays * 24 * 60 * 60);
-            $whereRaw = "addtime >= ?";
-            $bindings = [$daysAgoTimestamp];
-        } else {
-            // MySQL 语法：addtime 是时间戳，使用 UNIX_TIMESTAMP 转换
-            $whereRaw = "addtime >= UNIX_TIMESTAMP(DATE_SUB(CURDATE(),INTERVAL ? DAY))";
-            $bindings = [$days - 1];
-        }
+        // addtime 统一存 Unix 时间戳，避免 SQLite/PostgreSQL 的日期函数差异
+        $start = time() - (($days - 1) * 86400);
 
         return (int) DB::table('export_log')
             ->where('uid', $uid)
             ->where('export_type', $exportType)
-            ->whereRaw($whereRaw, $bindings)
+            ->where('addtime', '>=', $start)
             ->count();
     }
 }

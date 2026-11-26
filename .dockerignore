@@ -1,4 +1,5 @@
 .dockerignore
+.env
 .github
 .gitignore
 Dockerfile*

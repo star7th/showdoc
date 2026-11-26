@@ -149,15 +149,6 @@ const getRegisterConfig = async () => {
   }
 }
 
-// 脚本定时任务
-const scriptCron = async () => {
-  try {
-    await request('/api/ScriptCron/run', {}, 'get', false)
-  } catch (error) {
-    console.error('脚本定时任务失败:', error)
-  }
-}
-
 // 验证 redirect 参数，防止钓鱼跳转
 const validateRedirect = (redirect: string): boolean => {
   try {
@@ -331,7 +322,6 @@ onMounted(async () => {
   // 获取登录配置
   await getOauthConfig()
   await getRegisterConfig()
-  await scriptCron()
 })
 </script>
 

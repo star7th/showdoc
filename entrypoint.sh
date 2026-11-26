@@ -3,6 +3,35 @@
 set -o pipefail
 pids=()
 
+## 只同步运行时代码。文档、构建文件、测试、缓存、用户数据不需要进入 web 根目录。
+## Sqlite/ 和 Public/Uploads/ 是用户数据，单独处理；web_src/ 保留，因为安装器会改
+## web_src/index.html 的语言标记。
+rsync_excludes=(
+    --exclude='Sqlite/'
+    --exclude='Public/Uploads/'
+    --exclude='documentation/'
+    --exclude='.github/'
+    --exclude='.git/'
+    --exclude='.gitignore'
+    --exclude='.dockerignore'
+    --exclude='.editorconfig'
+    --exclude='.gitattributes'
+    --exclude='.env'
+    --exclude='README.md'
+    --exclude='LICENSE.txt'
+    --exclude='SECURITY.md'
+    --exclude='Dockerfile'
+    --exclude='docker-compose.yml'
+    --exclude='entrypoint.sh'
+    --exclude='composer.lock'
+    --exclude='docker/'
+    --exclude='mock/'
+    --exclude='server/app/Runtime/'
+    --exclude='server/Application/Runtime/'
+    --exclude='server/tests/'
+    --exclude='tmp/'
+)
+
 # 基础镜像判定：默认 webdevops/php-nginx（amd64/arm64，supervisord 托管 nginx+php-fpm）。
 # 通过 Dockerfile 的 ARG BASE_IMAGE 注入旧版镜像（wordpress:*，用于 arm/v7 等），
 # 该镜像使用 apache 提供服务，无 supervisord / nginx 配置。
@@ -157,8 +186,7 @@ docker_run() {
                 touch $showdoc_dir_old/.skip_old
         else
             ## 排除用户数据目录（Sqlite/ 数据库、Public/Uploads/ 上传文件），避免镜像种子数据覆盖已有数据；必要文件随后单独补拷
-            rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' \
-                "$showdoc_dir_html/" "$web_dir/"
+            rsync -a "${rsync_excludes[@]}" "$showdoc_dir_html/" "$web_dir/"
             mkdir -p "$web_dir/Sqlite" "$web_dir/Public/Uploads"
             ## showdoc.db.php：install/common.php 要求存在且可写
             ## .user.ini + deny.php：SQLite 目录的 PHP 层访问守卫；.user.ini 的
@@ -195,8 +223,9 @@ docker_run() {
         ## 备份数据库文件
         backup_dbfile
         echo "Upgrade application files..."
-        ## 此处排除 Sqlite/ 和 Public/Uploads/ 目录，保留用户数据
-        rsync -a --exclude='Sqlite/' --exclude='Public/Uploads/' $showdoc_dir_html/ $web_dir/
+        ## 使用统一排除列表：保留 Sqlite/ 和 Public/Uploads/ 用户数据，
+        ## 不复制文档、构建脚本、测试和缓存。
+        rsync -a "${rsync_excludes[@]}" $showdoc_dir_html/ $web_dir/
         ## revert lang if lang=en
         if grep -q 'lang:.*en' $web_dir/web/index.html; then
             sed -i -e "/lang:.*zh-cn.*/s//lang: 'zh-cn'/" $web_dir/web/index.html $web_dir/web_src/index.html

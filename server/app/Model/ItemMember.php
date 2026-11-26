@@ -19,7 +19,7 @@ class ItemMember
         }
 
         try {
-            $id = DB::table('item_member')->insertGetId($data);
+            $id = DB::table('item_member')->insertGetId($data, 'item_member_id');
             return (int) $id;
         } catch (\Throwable $e) {
             return 0;

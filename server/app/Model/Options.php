@@ -44,6 +44,21 @@ class Options
             $value = json_encode($value, JSON_UNESCAPED_UNICODE);
         }
 
+        // PostgreSQL 并发下先查后写会撞 option_name 唯一键，直接 upsert
+        if (DB::connection()->getDriverName() === 'pgsql') {
+            try {
+                DB::table('options')->upsert(
+                    [['option_name' => $name, 'option_value' => $value]],
+                    ['option_name'],
+                    ['option_value']
+                );
+                return true;
+            } catch (\Throwable $e) {
+                error_log("Options::set() failed for '{$name}': " . $e->getMessage());
+                return false;
+            }
+        }
+
         try {
             // 先检查记录是否存在
             $existing = DB::table('options')

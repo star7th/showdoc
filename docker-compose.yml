@@ -14,12 +14,62 @@ services:
         - BASE_IMAGE=${BASE_IMAGE:-webdevops/php-nginx:8.3-alpine}
     environment:
       IN_CHINA: ${IN_CHINA:-false}
+      ## 默认 SQLite，不需要任何 DB_* 配置。
+      ## 使用 PostgreSQL 18：
+      ##   1. 在项目根 .env 设置 DB_TYPE=pgsql、DB_NAME=showdoc、DB_PWD=...
+      ##   2. docker compose --profile postgres up -d
+      ## 注意：需要应用代码已经支持 pgsql（见 documentation/zh-CN/20261117-0840-pg18支持与项目可见性改造.md）。
+      DB_TYPE: ${DB_TYPE:-sqlite}
+      DB_HOST: ${DB_HOST:-postgres}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USER: ${DB_USER:-showdoc}
+      DB_PWD: ${DB_PWD:-showdoc_change_me}
+      DB_SCHEMA: ${DB_SCHEMA:-public}
+    ## 可选注入 .env；默认没有 .env 时完全走 SQLite，不会覆盖 DB_NAME 的默认库文件路径。
+    env_file:
+      - path: .env
+        required: false
+    ## 默认 SQLite 时 postgres 未启用，required: false 让依赖可缺省。
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false
     hostname: showdoc
     ports:
       - 4999:80
     volumes:
       ## 兼容历史版本文件
       - /showdoc_data:/showdoc_data_old
+      ## 本地修改代码并重建镜像后，先 rm -f showdocdata/html/.ver 再 up，
+      ## 否则 entrypoint 会因版本号相同跳过代码同步。
       - ./showdocdata/html:/var/www/html
     restart: always
     tty: true
+
+  ## PostgreSQL 18（可选）。
+  ## 默认不启动：docker compose up -d 只启动 showdoc（SQLite）。
+  ## 启用：docker compose --profile postgres up -d
+  ## 首次启动应用会自动执行 install/showdoc.pgsql.sql 建表。
+  postgres:
+    image: postgres:18
+    profiles: ["postgres"]
+    environment:
+      POSTGRES_DB: ${DB_NAME:-showdoc}
+      POSTGRES_USER: ${DB_USER:-showdoc}
+      POSTGRES_PASSWORD: ${DB_PWD:-showdoc_change_me}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+    volumes:
+      ## 与 showdocdata/html 一样使用宿主机目录，不使用 named volume。
+      ## 首次启用前：
+      ##   mkdir -p showdocdata/postgresql && chmod 777 showdocdata/postgresql
+      ## Linux 也可以 chown -R 999:999 showdocdata/postgresql。
+      ## 目录已存在但属主不是当前用户时，先 rm -rf 再重建。
+      ## PostgreSQL 18 的 PGDATA 是 /var/lib/postgresql/18/docker，
+      ## 必须挂到 /var/lib/postgresql，不能挂 /var/lib/postgresql/data。
+      - ./showdocdata/postgresql:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-showdoc} -d ${DB_NAME:-showdoc}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: always

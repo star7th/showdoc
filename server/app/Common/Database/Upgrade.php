@@ -17,7 +17,7 @@ class Upgrade
      * 当前数据库版本号
      * 注意：如果更新数据库结构，务必更改此版本号
      */
-    private const CURRENT_VERSION = 34;
+    private const CURRENT_VERSION = 36;
 
     /**
      * 检查并执行数据库升级
@@ -27,16 +27,26 @@ class Upgrade
     public static function checkAndUpgrade(): bool
     {
         try {
+            $driver = DB::connection()->getDriverName();
+
+            // PostgreSQL 首次启动：空库没有 options 表，先执行完整 schema。
+            // 已存在的库不在这里自动改表，避免把旧结构误判成最新。
+            if ($driver === 'pgsql' && !self::isTableExist('options')) {
+                if (!self::installPgsqlSchema()) {
+                    return false;
+                }
+            }
+
             $dbVersion = (int) Options::get('db_version_num', 0);
-            
+
             if ($dbVersion < self::CURRENT_VERSION) {
-                $result = self::updateSqlite();
+                $result = $driver === 'pgsql' ? self::updatePgsql() : self::updateSqlite();
                 if ($result) {
                     Options::set('db_version_num', self::CURRENT_VERSION);
                 }
                 return $result;
             }
-            
+
             return true;
         } catch (\Throwable $e) {
             // 升级失败时记录日志，但不阻止应用启动
@@ -517,6 +527,17 @@ class Upgrade
                 DB::statement("ALTER TABLE user ADD salt CHAR(2000) NOT NULL DEFAULT ''");
             }
 
+            // user表增加邮箱/手机号字段（登录查询会用到 email_verify / mobile）
+            if (!self::isColumnExist('user', 'email_verify')) {
+                DB::statement("ALTER TABLE user ADD email_verify INT(1) NOT NULL DEFAULT '0'");
+            }
+            if (!self::isColumnExist('user', 'mobile')) {
+                DB::statement("ALTER TABLE user ADD mobile CHAR(200) NOT NULL DEFAULT ''");
+            }
+            if (!self::isColumnExist('user', 'mobile_verify')) {
+                DB::statement("ALTER TABLE user ADD mobile_verify INT(1) NOT NULL DEFAULT '0'");
+            }
+
             // 创建item_star表
             DB::statement("CREATE TABLE IF NOT EXISTS `item_star` (
                 `id` INTEGER PRIMARY KEY,
@@ -799,6 +820,76 @@ class Upgrade
     }
 
     /**
+     * PostgreSQL 增量升级。
+     *
+     * 首次安装会执行 install/showdoc.pgsql.sql，并把 db_version_num 写成 CURRENT_VERSION，
+     * 正常情况下不会进入这里。后续版本新增表/列时，必须在这里补 PostgreSQL 迁移语句；
+     * 不能复用 SQLite 的 PRAGMA、sqlite_sequence、AUTOINCREMENT。
+     */
+    private static function updatePgsql(): bool
+    {
+        // user 表在旧 SQLite 基础库里没有 email_verify / mobile / mobile_verify，
+        // 但当前登录逻辑会查询这些列。PostgreSQL 首次 schema 已包含它们，
+        // 这里兜底修复已经存在的部署。
+        if (!self::isColumnExist('user', 'email_verify')) {
+            DB::statement('ALTER TABLE "user" ADD COLUMN email_verify SMALLINT NOT NULL DEFAULT 0');
+        }
+        if (!self::isColumnExist('user', 'mobile')) {
+            DB::statement('ALTER TABLE "user" ADD COLUMN mobile VARCHAR(50) NOT NULL DEFAULT \'\'');
+        }
+        if (!self::isColumnExist('user', 'mobile_verify')) {
+            DB::statement('ALTER TABLE "user" ADD COLUMN mobile_verify SMALLINT NOT NULL DEFAULT 0');
+        }
+
+        // upload_file.file_size 在旧 SQLite 里是 CHAR，但代码会 sum() 它。
+        // 早期 PostgreSQL schema 把它建成了 varchar，这里转成 bigint。
+        $fileSize = DB::selectOne(
+            "SELECT data_type FROM information_schema.columns
+             WHERE table_schema = current_schema() AND table_name = 'upload_file' AND column_name = 'file_size'"
+        );
+        if ($fileSize && strtolower((string) $fileSize->data_type) !== 'bigint') {
+            DB::statement('ALTER TABLE upload_file ALTER COLUMN file_size DROP DEFAULT');
+            DB::statement(
+                'ALTER TABLE upload_file ALTER COLUMN file_size TYPE BIGINT '
+                . "USING COALESCE(NULLIF(file_size, '')::bigint, 0)"
+            );
+            DB::statement('ALTER TABLE upload_file ALTER COLUMN file_size SET DEFAULT 0');
+        }
+
+        return true;
+    }
+
+    /**
+     * 在空 PostgreSQL 库上执行完整 schema。
+     */
+    private static function installPgsqlSchema(): bool
+    {
+        $schemaFile = dirname(__DIR__, 4) . '/install/showdoc.pgsql.sql';
+        if (!is_file($schemaFile)) {
+            error_log('PostgreSQL schema file not found: ' . $schemaFile);
+            return false;
+        }
+
+        try {
+            DB::connection()->getPdo()->exec((string) file_get_contents($schemaFile));
+            return true;
+        } catch (\Throwable $e) {
+            error_log('PostgreSQL schema install failed: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * PostgreSQL 表是否存在（当前 schema）。
+     */
+    private static function isTableExist(string $table): bool
+    {
+        // 交给 search_path，兼容 DB_SCHEMA 不是 public 的部署
+        $row = DB::selectOne('SELECT to_regclass(?) AS table_name', [$table]);
+        return $row && $row->table_name !== null;
+    }
+
+    /**
      * 检查表中是否存在指定字段
      * 
      * @param string $table 表名
@@ -808,6 +899,15 @@ class Upgrade
     private static function isColumnExist(string $table, string $column): bool
     {
         try {
+            if (DB::connection()->getDriverName() === 'pgsql') {
+                $row = DB::selectOne(
+                    'SELECT COUNT(*) AS c FROM information_schema.columns
+                     WHERE table_schema = current_schema() AND table_name = ? AND column_name = ?',
+                    [$table, $column]
+                );
+                return (int) ($row->c ?? 0) > 0;
+            }
+
             // SQLite 查询表结构
             $result = DB::select("PRAGMA table_info({$table})");
             foreach ($result as $row) {

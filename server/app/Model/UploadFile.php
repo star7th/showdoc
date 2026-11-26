@@ -49,7 +49,7 @@ class UploadFile
     public static function add(array $data): int
     {
         try {
-            $id = DB::table('upload_file')->insertGetId($data);
+            $id = DB::table('upload_file')->insertGetId($data, 'file_id');
             return (int) $id;
         } catch (\Throwable $e) {
             return 0;

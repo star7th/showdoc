@@ -143,6 +143,10 @@ class McpServer
             'type' => 'string',
             'description' => '项目描述',
           ],
+          'password' => [
+            'type' => 'string',
+            'description' => '访问密码；不传则自动生成随机密码（私密项目）',
+          ],
         ],
         'required' => ['item_name'],
       ],

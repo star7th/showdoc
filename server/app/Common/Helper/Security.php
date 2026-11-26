@@ -2,6 +2,8 @@
 
 namespace App\Common\Helper;
 
+use Illuminate\Database\Capsule\Manager as DB;
+
 class Security
 {
     /**
@@ -20,11 +22,19 @@ class Security
             $s = substr($s, 0, 200);
         }
 
-        // 优先使用 SQLite3 原生转义函数
-        if (class_exists('\SQLite3')) {
-            $s = \SQLite3::escapeString($s);
-        } else {
-            // 备用方案：手动转义
+        // 按当前数据库驱动转义，不能固定用 SQLite3::escapeString()
+        try {
+            if (DB::connection()->getDriverName() === 'pgsql') {
+                $quoted = DB::connection()->getPdo()->quote($s);
+                $s = substr($quoted, 1, -1);
+            } elseif (class_exists('\SQLite3')) {
+                $s = \SQLite3::escapeString($s);
+            } else {
+                $s = str_replace('\\', '\\\\', $s);
+                $s = str_replace("'", "\\'", $s);
+            }
+        } catch (\Throwable $e) {
+            // 没有数据库连接时退回手动转义
             $s = str_replace('\\', '\\\\', $s);
             $s = str_replace("'", "\\'", $s);
         }

@@ -288,7 +288,7 @@ class Page
 
         try {
             $pageId = DB::table('page')
-                ->insertGetId($data);
+                ->insertGetId($data, 'page_id');
             return (int) $pageId;
         } catch (\Throwable $e) {
             return 0;

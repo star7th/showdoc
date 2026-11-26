@@ -739,6 +739,7 @@ class ItemController extends BaseController
         $itemDescription = $this->getParam($request, 'item_description', '');
         $itemDomain      = $this->getParam($request, 'item_domain', '');
         $password        = $this->getParam($request, 'password', '');
+        $isOpen          = (int) $this->getParam($request, 'is_open', 0);
         $itemGroupId     = $this->getParam($request, 'item_group_id', 0);
         $itemGroupIdsRaw = $this->getParam($request, 'item_group_ids', '');
         $allowComment    = $this->getParam($request, 'allow_comment', null);
@@ -780,6 +781,11 @@ class ItemController extends BaseController
             if ($allowFeedback !== null) {
                 $saveData['allow_feedback'] = $allowFeedback ? 1 : 0;
             }
+        }
+
+        // 默认私密：未显式声明公开且没有传新密码时，保留原密码，避免只改名称把项目变成公开。
+        if ($password === '' && !$isOpen && $item && !empty($item->password)) {
+            $saveData['password'] = $item->password;
         }
 
         // 更新项目信息
@@ -867,6 +873,12 @@ class ItemController extends BaseController
         $itemDomain = trim($this->getParam($request, 'item_domain', ''));
         $copyItemId = $this->getParam($request, 'copy_item_id', 0);
         $password = $this->getParam($request, 'password', '');
+        // 默认私密：没有显式声明公开（is_open=1）且密码为空时，生成随机密码。
+        // 复制公开项目也会因此得到私密副本；需要公开副本必须显式传 is_open=1。
+        $isOpen = (int) $this->getParam($request, 'is_open', 0);
+        if ($password === '' && !$isOpen) {
+            $password = \App\Common\Helper\FileHelper::getRandStr();
+        }
         $itemDescription = $this->getParam($request, 'item_description', '');
         $itemType = $this->getParam($request, 'item_type', 1);
         $itemGroupId = $this->getParam($request, 'item_group_id', 0);
@@ -898,6 +910,10 @@ class ItemController extends BaseController
 
             $newItemId = \App\Model\Item::copy($copyItemId, $uid, $itemName, $itemDescription, $password, $itemDomain);
             if ($newItemId) {
+                // 显式要求公开的副本：覆盖 Item::import() 的默认私密兜底
+                if ($isOpen) {
+                    DB::table('item')->where('item_id', $newItemId)->update(['password' => '']);
+                }
                 return $this->success($response, ['item_id' => $newItemId]);
             } else {
                 return $this->error($response, 10101);
